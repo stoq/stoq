@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="Kiwi2.Widgets"/>
+    <widget class="GtkWindow" id="BaseListSlave">
+        <property name="events"></property>
+        <child>
+            <widget class="Kiwi2+Widgets+List+List" id="klist">
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="events"></property>
+                <property name="can_focus">True</property>
+                <property name="shadow_type">in</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <property name="visible">True</property>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

@@ -1,0 +1,62 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <widget class="GtkWindow" id="ToolBar">
+        <property name="title" context="True" translatable="True"></property>
+        <property name="role"></property>
+        <property name="events"></property>
+        <child>
+            <widget class="GtkHBox" id="hbox1">
+                <property name="events"></property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkButton" id="new_button">
+                                <property name="receives_default">True</property>
+                                <property name="events"></property>
+                                <property name="yalign">1.0</property>
+                                <property name="can_focus">True</property>
+                                <property name="visible">True</property>
+                                <property name="label">gtk-new</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                            <packing/>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="edit_button">
+                                <property name="receives_default">True</property>
+                                <property name="events"></property>
+                                <property name="yalign">1.0</property>
+                                <property name="can_focus">True</property>
+                                <property name="visible">True</property>
+                                <property name="label">gtk-edit</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkEventBox" id="toolbar_holder">
+                        <property name="events"></property>
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

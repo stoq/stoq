@@ -1,0 +1,50 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="Kiwi2.Widgets"/>
+    <widget class="GtkWindow" id="NoteSlave">
+        <property name="title" context="True" translatable="True"></property>
+        <property name="role"></property>
+        <property name="events"></property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="events"></property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="True" translatable="True">Notes:</property>
+                        <property name="events"></property>
+                        <property name="xalign">0.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="hadjustment">0.000000 0.000000 522.000000 52.200000 469.800000 522.000000</property>
+                        <property name="border_width">2</property>
+                        <property name="hscrollbar_policy">never</property>
+                        <property name="events"></property>
+                        <property name="vadjustment">0.000000 0.000000 117.000000 11.700000 105.300000 117.000000</property>
+                        <property name="can_focus">True</property>
+                        <property name="shadow_type">in</property>
+                        <property name="vscrollbar_policy">never</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="Kiwi2+Widgets+TextView+TextView" id="notes">
+                                <property name="model_attribute">notes</property>
+                                <property name="data_type">str</property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

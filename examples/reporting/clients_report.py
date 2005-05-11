@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+from sys import path
+path.insert(0, "..")
+
+from stoqlib.reporting import build_report, print_preview, ReportTemplate
+from stoqlib.reporting.tables import TableColumn as TC
+from stoqlib.reporting.common import read_file, safe_int
+
+class ClientsReport(ReportTemplate):
+    """ Sample column table report. If we have to set a fixed size to our columns
+    and allow some interesting resources such truncate parameter, a table
+    column should be a good idea. Once we defined table column instances, we
+    must call a column table report to use it.
+      """
+    def __init__(self, filename, **args):
+        report_name = 'Sample Clients Report'
+        ReportTemplate.__init__(self, filename, report_name, do_header=0)
+        rows = self.get_rows()
+        self.add_column_table(rows, self.get_cols())
+        self.add_paragraph('%d clients listed.' % len(rows), 
+                           style='Normal-AlignRight')
+
+    def get_cols(self):
+        cols = [TC("Id", width=35),
+                TC("Name", width=170, truncate=1),
+                TC("District", width=80, truncate=1),
+                TC("City", width=80, truncate=1),
+                TC("State", width=40),
+                TC("Birth Date", width=70)]
+        return cols
+
+    def get_rows(self):
+        clients = []
+        for data in read_file('csv/clients.csv'):
+            id = safe_int(data[0])
+            name = data[1]
+            district = data[2]
+            city = data[3]
+            state = data[4]
+            birth_date = data[5]
+            columns = [id, name, district, city, state, birth_date]
+
+            clients.append(columns)
+        # Columns will be sorted by id
+        clients.sort()
+        return clients
+
+report_filename = build_report(ClientsReport)
+print_preview(report_filename)
