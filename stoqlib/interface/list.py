@@ -84,8 +84,9 @@ class AdditionListSlave(Delegates.SlaveDelegate):
 
     def run(self, model=None):
         edit_mode = model
-        model = services.run_dialog(self.editor_class, conn=self.parent.conn, 
-                           model=model, **self.editor_kwargs)
+        model = services.run_dialog(self.editor_class, None, 
+                                    conn=self.parent.conn, model=model, 
+                                    **self.editor_kwargs)
         if not services.finish_transaction(self.parent.conn, model):
             services._warn('Transaction not concluded. Probably a failure.')
             return

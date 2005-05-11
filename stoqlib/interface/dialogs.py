@@ -301,9 +301,9 @@ offers a single OK button."""
 def notify_dialog(msg):
     # Avoiding circular reference
     from services import run_dialog
-    run_dialog(NotifyDialog, text=msg)
+    run_dialog(NotifyDialog, None, text=msg)
 
 def confirm_dialog(msg):
     # Avoiding circular reference
     from services import run_dialog
-    return run_dialog(ConfirmDialog, text=msg)
+    return run_dialog(ConfirmDialog, None, text=msg)
