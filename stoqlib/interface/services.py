@@ -139,17 +139,14 @@ def get_dialog(parent, dialog_class, *args, **kwargs):
       instantiation;
     """
     d = dialog_class(*args, **kwargs)
-    if not isinstance(parent, SlaveView):
-        parent = None
-    # If parent is a slaveview, use GTK+ calls to get the toplevel
-    # window. This is a bit of a hack :-/
-    if isinstance(parent, BaseView):
+
+    if isinstance(parent, BaseView):     
         parent = parent.toplevel.get_toplevel()
-    if parent:
-        d.set_transient_for(parent)
+        if parent:
+            d.set_transient_for(parent)
     return d
 
-def run_dialog(dialog_class, parent=None, *args, **kwargs):
+def run_dialog(dialog_class, parent, *args, **kwargs):
     dialog = get_dialog(parent, dialog_class, *args, **kwargs)
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
