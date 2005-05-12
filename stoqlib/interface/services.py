@@ -140,6 +140,8 @@ def get_dialog(parent, dialog_class, *args, **kwargs):
     """
     d = dialog_class(*args, **kwargs)
 
+    # If parent is a BaseView, use GTK+ calls to get the toplevel
+    # window. This is a bit of a hack :-/
     if isinstance(parent, BaseView):     
         parent = parent.toplevel.get_toplevel()
         if parent:
