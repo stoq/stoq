@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="Kiwi2.Widgets"/>
+    <widget class="GtkWindow" id="SimpleEntryEditor">
+        <property name="resizable">False</property>
+        <property name="border_width">5</property>
+        <property name="events"></property>
+        <property name="visible">True</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="column_spacing">5</property>
+                <property name="border_width">7</property>
+                <property name="events"></property>
+                <property name="n_rows">1</property>
+                <property name="n_columns">2</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="Kiwi2+Widgets+Entry+Entry" id="name_entry">
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">name</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="y_options">fill</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="Kiwi2+Widgets+Label+Label" id="name_entry_label">
+                        <property name="model_attribute">name_label</property>
+                        <property name="label" context="True" translatable="True">label: </property>
+                        <property name="use_markup">True</property>
+                        <property name="events"></property>
+                        <property name="xpad">1</property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

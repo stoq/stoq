@@ -104,4 +104,20 @@ class BaseEditor(BaseEditorSlave):
         status """
         self.main_dialog.ok_button.set_sensitive(validation_value)
 
+class SimpleEntryEditor(BaseEditor):
+    """Editor that offers a generic entry to input a string value."""
+    gladefile = "SimpleEntryEditor"
+    widgets = ('name_entry', 'name_entry_label')
+    
+    def __init__(self, conn, model, attr_name, name_entry_label='Name:',
+                 title=''):
+        self.title = title
+        self.attr_name = attr_name
+        BaseEditor.__init__(self, conn, model)
+        self.name_entry_label.set_text(name_entry_label)
 
+    def setup_proxies(self):
+        assert self.model
+        self.name_entry.set_model_attribute(self.attr_name)
+        proxy = self.add_proxy(model=self.model, widgets=['name_entry'])
+        
