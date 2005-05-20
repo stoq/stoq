@@ -30,6 +30,7 @@ import traceback
 import gtk
 
 from Kiwi2 import Delegates
+from Kiwi2 import Views
 from Kiwi2.Widgets import List
 
 from stoqlib import exceptions 
@@ -313,7 +314,7 @@ def get_dialog(parent, dialog_class, *args, **kwargs):
     
     # If parent is a BaseView, use GTK+ calls to get the toplevel
     # window. This is a bit of a hack :-/
-    if isinstance(parent, BaseView):     
+    if isinstance(parent, Views.BaseView):     
         parent = parent.toplevel.get_toplevel()
         if parent:
             d.set_transient_for(parent)
