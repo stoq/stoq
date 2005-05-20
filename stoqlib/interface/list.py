@@ -90,7 +90,7 @@ class AdditionListSlave(Delegates.SlaveDelegate):
         if not services.finish_transaction(self.parent.conn, model):
             services._warn('Transaction not concluded. Probably a failure.')
             return
-        if edit_mode:
+        if edit_mode or model in self.klist:
             self.klist.update_instance(model)
             self.parent.on_edit_item(model)
         else:
