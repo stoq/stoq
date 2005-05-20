@@ -26,8 +26,13 @@ interface/dialogs.py:
    Basic dialogs definition
 """
 
+import traceback
 import gtk
+
 from Kiwi2 import Delegates
+from Kiwi2.Widgets import List
+
+from stoqlib import exceptions 
 
 #
 # Helper classes
@@ -204,10 +209,9 @@ class _BasicPluggableDialog(_BasicDialog):
     warnbox = None
     slave = None
     def _initialize(self, slave, title=" ", header_text="", size=None):
-        from services import _warn
         """May be called by refresh by subdialogs, as necessary"""
         if self.slave:
-            _warn("%s had self.slave set to %s!" % (self, self.slave))
+            exceptions._warn("%s had self.slave set to %s!" % (self, self.slave))
         self.slave = slave
         self.attach_slave("main", slave)
         if self.warnbox:
@@ -298,12 +302,52 @@ offers a single OK button."""
 # Auxiliar methods
 #
 
+def get_dialog(parent, dialog_class, *args, **kwargs):
+    """ Returns a dialog.
+    - parent: the window which is opening the dialog;
+    - dialog_class: the dialog class;
+    - *args, **kwargs: the arguments which should be used on dialog_class
+      instantiation;
+    """    
+    d = dialog_class(*args, **kwargs)
+    
+    # If parent is a BaseView, use GTK+ calls to get the toplevel
+    # window. This is a bit of a hack :-/
+    if isinstance(parent, BaseView):     
+        parent = parent.toplevel.get_toplevel()
+        if parent:
+            d.set_transient_for(parent)
+    return d
+        
+def run_dialog(dialog_class, parent, *args, **kwargs):
+    dialog = get_dialog(parent, dialog_class, *args, **kwargs)
+    if hasattr(dialog, 'main_dialog'):
+        dialog = dialog.main_dialog
+
+    dialog.toplevel.run()
+    retval = dialog.retval
+    dialog.destroy()
+    return retval
+
+def _conflict_dialog(e):
+    traceback.print_stack()
+    sys.stderr.write("XXX ConflictError: %s" % str(e))
+    msg = ("A conflict was generated at the end of the transaction. \n "
+           "Please cancel and do the transaction again.\n\n"
+           "(This problem was registered and will be evaluated.)")
+    notify_dialog(msg)
+
+def notify_if_raises(win, check_func, exceptions=exceptions.ModelDataError, 
+                     text="An error ocurred: %s"):
+    try:
+        check_func()
+    except exceptions, e:
+        notify_dialog(text % e)
+        return True 
+    return False
+
 def notify_dialog(msg):
-    # Avoiding circular reference
-    from services import run_dialog
     run_dialog(NotifyDialog, None, text=msg)
 
 def confirm_dialog(msg):
-    # Avoiding circular reference
-    from services import run_dialog
     return run_dialog(ConfirmDialog, None, text=msg)

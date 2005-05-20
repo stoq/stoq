@@ -26,19 +26,19 @@ interface/search.py:
     Implementation of basic dialogs for search
 """
 
-from Kiwi2.initgtk import gtk
-from Kiwi2.Delegates import SlaveDelegate
+import gtk
+
+from Kiwi2 import Delegates
 from Kiwi2.Widgets.List import List
 
-from stoqlib.interface.dialogs import _BasicDialog
-from stoqlib.interface.services import run_dialog, finish_transaction, \
-                                       lookup_model 
+from stoqlib.interface import dialogs
+from stoqlib import database 
 
 #
 # Slaves for search dialogs.
 #
 
-class _BaseListSlave(SlaveDelegate):
+class _BaseListSlave(Delegates.SlaveDelegate):
     """ Base slave for dialogs that need a Kiwi List. If the 'parent' class
 send a 'parent' argument, the method update_widgets will be called when the
 list be selected ou double clicked. """
@@ -47,8 +47,8 @@ list be selected ou double clicked. """
     widgets = ('klist', )
 
     def __init__(self, parent=None, columns=None, objects=None):
-        SlaveDelegate.__init__(self, widgets=self.widgets, 
-                               gladefile=self.gladefile)
+        Delegates.SlaveDelegate.__init__(self, widgets=self.widgets, 
+                                         gladefile=self.gladefile)
 
         if not columns and (not parent or not hasattr(parent, 'get_columns')):
             raise Exception, ("You must supply columns via parameter of in"
@@ -73,7 +73,7 @@ list be selected ou double clicked. """
     def on_klist__double_click(self, *args):
         self.update_widgets()
 
-class _SearchSlave(SlaveDelegate):
+class _SearchSlave(Delegates.SlaveDelegate):
     """ Slave for internal use of _SearchDialog, offering an eventbox for
 insertion by an user search bar and managing the "Filter" and "Clear" 
 buttons. """
@@ -82,9 +82,8 @@ buttons. """
     widgets = ('search_button', 'erase_button', 'searchbar_holder')
 
     def __init__(self, parent):
-        SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                               gladefile=self.gladefile,
-                               widgets=self.widgets)
+        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile,
+                                         widgets=self.widgets)
         self.parent = parent
 
     #
@@ -98,7 +97,7 @@ buttons. """
         self.parent.clear_klist()
 
 
-class _SearchEditorToolBar(SlaveDelegate):
+class _SearchEditorToolBar(Delegates.SlaveDelegate):
     """ Slave for internal use of _SearchEditor, offering an eventbox for a
 toolbar and managing the 'New' and 'Edit' buttons. """
 
@@ -107,9 +106,8 @@ toolbar and managing the 'New' and 'Edit' buttons. """
     widgets = ('new_button', 'edit_button', 'toolbar_holder')
 
     def __init__(self, parent):
-        SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                               gladefile=self.gladefile,
-                               widgets=self.widgets)
+        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile,
+                                         widgets=self.widgets)
         self.parent = parent
 
     #
@@ -127,7 +125,7 @@ toolbar and managing the 'New' and 'Edit' buttons. """
 # Base dialogs for search.
 #
 
-class _SearchDialog(_BasicDialog):
+class _SearchDialog(dialogs._BasicDialog):
     """  Base class for *all* the search dialogs, responsible for the list
 construction and "Filter" and "Clear" buttons management.
 
@@ -152,10 +150,10 @@ or then, call it in its constructor, like:
     size = ()
             
     def __init__(self, conn, catalog_class, hide_footer=True):
-        _BasicDialog.__init__(self)
-        _BasicDialog._initialize(self, main_label_text=self.main_label_text, 
-                                 title=self.title, size=self.size, 
-                                 hide_footer=hide_footer)
+        dialogs._BasicDialog.__init__(self)
+        dialogs._BasicDialog._initialize(self, hide_footer=hide_footer,
+                                         main_label_text=self.main_label_text, 
+                                         title=self.title, size=self.size)
         self.conn, self.catalog_class = conn, catalog_class
 
     def setup_slaves(self, **kwargs):
@@ -227,10 +225,10 @@ This is also a subclass of _SearchDialog and the same rules are required.
 
     def new(self):
         conn = self.conn.create_connection()
-        rv = run_dialog(self.editor_class, None, conn)
-        if finish_transaction(conn, rv):
+        rv = dialogs.run_dialog(self.editor_class, None, conn)
+        if database.finish_transaction(conn, rv):
             self.conn.sync()
-            rv = lookup_model(self.conn, rv)
+            rv = database.lookup_model(self.conn, rv)
             self.klist.add_instance(rv)
         conn.close()
     
@@ -239,11 +237,11 @@ This is also a subclass of _SearchDialog and the same rules are required.
         assert len(self.klist.get_selected()) == 1, msg
         obj = self.klist.get_selected()[0]
         conn = self.conn.create_connection()
-        obj = lookup_model(conn, obj)
-        rv = run_dialog(self.editor_class, None, conn, obj)
-        if finish_transaction(conn, rv):
+        obj = database.lookup_model(conn, obj)
+        rv = dialogs.run_dialog(self.editor_class, None, conn, obj)
+        if database.finish_transaction(conn, rv):
             self.conn.sync()
-            rv = lookup_model(self.conn, rv)
+            rv = database.lookup_model(self.conn, rv)
             self.klist.update_instance(rv)
         conn.close()
 

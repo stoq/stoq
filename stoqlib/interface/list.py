@@ -27,8 +27,11 @@ interface/list.py:
 """
 
 import gtk
+
 from Kiwi2 import Delegates
-from stoqlib.interface import dialogs, search, editors, services
+
+from stoqlib.interface import dialogs, search, editors
+from stoqlib import database, exceptions
 
 class AdditionListSlave(Delegates.SlaveDelegate):
     """ A slave that offers a simple list and its management. 
@@ -53,12 +56,11 @@ class AdditionListSlave(Delegates.SlaveDelegate):
 
     def __init__(self, parent, editor_class, columns, klist_objects=None,
                  **editor_kwargs):
-        Delegates.SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                               gladefile=self.gladefile, widgets=self.widgets)
+        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+                                         widgets=self.widgets)
         self.editor_class = editor_class
         self.columns = columns
         self.editor_kwargs = editor_kwargs
-        
         self.parent = parent
         self._setup_list()
 
@@ -84,11 +86,10 @@ class AdditionListSlave(Delegates.SlaveDelegate):
 
     def run(self, model=None):
         edit_mode = model
-        model = services.run_dialog(self.editor_class, None, 
-                                    conn=self.parent.conn, model=model, 
-                                    **self.editor_kwargs)
-        if not services.finish_transaction(self.parent.conn, model):
-            services._warn('Transaction not concluded. Probably a failure.')
+        model = dialogs.run_dialog(self.editor_class, None, conn=self.parent.conn,
+                                   model=model, **self.editor_kwargs)
+        if not database.finish_transaction(self.parent.conn, model):
+            exceptions._warn('Transaction not concluded. Probably a failure.')
             return
         if edit_mode or model in self.klist:
             self.klist.update_instance(model)
