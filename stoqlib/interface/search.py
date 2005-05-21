@@ -57,7 +57,7 @@ list be selected ou double clicked. """
 
         self.parent = parent
         
-        self.klist.set_column_definitions(columns)
+        self.klist.set_columns(columns)
         if objects:
             self.klist.add_list(objects)
 

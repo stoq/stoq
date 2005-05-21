@@ -70,7 +70,7 @@ class AdditionListSlave(Delegates.SlaveDelegate):
         self.update_widgets()
 
     def _setup_list(self):
-        self.klist.set_column_definitions(self.columns)
+        self.klist.set_columns(self.columns)
         self.klist.set_selection_mode(gtk.SELECTION_EXTENDED)
 
     def update_widgets(self, *args):
