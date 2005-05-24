@@ -246,7 +246,11 @@ class _SearchEditor(_SearchDialog):
 
     def run(self, obj=None):
         conn = self.conn.create_connection()
-        rv = dialogs.run_dialog(self.editor_class, None, conn)
+        
+        if obj:
+            obj = database.lookup_model(conn, obj)
+        
+        rv = dialogs.run_dialog(self.editor_class, self, conn, obj)
         if database.finish_transaction(conn, rv):
             self.conn.sync()
             rv = database.lookup_model(self.conn, rv)
