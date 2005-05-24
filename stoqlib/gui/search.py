@@ -190,6 +190,7 @@ class _SearchDialog(dialogs._BasicDialog):
     def clear_klist(self):
         self.klist.clear()
         self.update_widgets()
+        self.update_edit_button()
 
     def confirm(self):
         self.retval = self.klist.get_selected()
