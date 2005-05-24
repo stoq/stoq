@@ -21,12 +21,12 @@
 ## USA.
 ##
 """
-interface/editors.py:
+gui/editors.py:
 
     Base classes for editors
 """
 
-from stoqlib.interface.dialogs import BasicWrappingDialog
+from stoqlib.gui.dialogs import BasicWrappingDialog
 from Kiwi2.Delegates import SlaveDelegate
 
 

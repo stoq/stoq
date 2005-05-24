@@ -68,7 +68,7 @@
                                                                 <child>
                                                                     <widget class="GtkImage" id="edit_button-image">
                                                                         <property name="visible">True</property>
-                                                                        <property name="file">/home/evandro/devel/stoqlib/interface/pixmaps/stock_edit.xpm</property>
+                                                                        <property name="file">/home/evandro/devel/stoqlib/gui/pixmaps/stock_edit.xpm</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>

@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-interface/application.py:
+gui/application.py:
 
     Base classes for applications
 """
@@ -33,7 +33,7 @@ from IndexedCatalog import Shelf
 from Kiwi2 import initgtk 
 from Kiwi2 import Delegates 
 
-from stoqlib.interface import dialogs 
+from stoqlib.gui import dialogs 
 from stoqlib import database
 
 

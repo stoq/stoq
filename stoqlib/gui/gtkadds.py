@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-interface/gtkadds.py:
+gui/gtkadds.py:
 
     Some extra methods to deal with gtk/kiwi widgets
 """
@@ -62,7 +62,7 @@ def change_button_appearance(button, icon=None, text=None):
     if text or text == '':
         label.set_text(text)
 
-dir = stoqlib.__path__[0] + '/interface/pixmaps/'
+dir = stoqlib.__path__[0] + '/gui/pixmaps/'
 register_iconsets([
     ('stoq-search-pos1', dir+"searchtool-animation-pos1.png"),
     ('stoq-search-pos2', dir+"searchtool-animation-pos2.png"),

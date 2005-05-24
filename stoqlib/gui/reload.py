@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-interface/reload.py:
+gui/reload.py:
 
    Reload routines
 """
