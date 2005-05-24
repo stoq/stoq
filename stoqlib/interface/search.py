@@ -26,13 +26,11 @@ interface/search.py:
     Implementation of basic dialogs for search
 """
 
-import gtk
-
-from Kiwi2 import Delegates
-from Kiwi2.Widgets.List import List
+from Kiwi2 import Delegates 
 
 from stoqlib.interface import dialogs
 from stoqlib import database 
+
 
 #
 # Slaves for search dialogs.
@@ -40,8 +38,8 @@ from stoqlib import database
 
 class _BaseListSlave(Delegates.SlaveDelegate):
     """ Base slave for dialogs that need a Kiwi List. If the 'parent' class
-send a 'parent' argument, the method update_widgets will be called when the
-list be selected ou double clicked. """
+    send a 'parent' argument, the method update_widgets will be called when 
+    the list be selected ou double clicked. """
 
     gladefile = 'BaseListSlave'
     widgets = ('klist', )
@@ -73,12 +71,13 @@ list be selected ou double clicked. """
     def on_klist__double_click(self, *args):
         self.update_widgets()
 
+
 class _SearchSlave(Delegates.SlaveDelegate):
     """ Slave for internal use of _SearchDialog, offering an eventbox for
-insertion by an user search bar and managing the "Filter" and "Clear" 
-buttons. """
+    insertion by an user search bar and managing the "Filter" and "Clear" 
+    buttons. """
 
-    toplevel_name = gladefile = 'SearchSlave'
+    gladefile = 'SearchSlave'
     widgets = ('search_button', 'erase_button', 'searchbar_holder')
 
     def __init__(self, parent):
@@ -95,18 +94,20 @@ buttons. """
 
     def on_erase_button__clicked(self, *args):
         self.parent.clear_klist()
+        self.parent.clear_fields()
 
 
 class _SearchEditorToolBar(Delegates.SlaveDelegate):
     """ Slave for internal use of _SearchEditor, offering an eventbox for a
-toolbar and managing the 'New' and 'Edit' buttons. """
+    toolbar and managing the 'New' and 'Edit' buttons. """
 
     toplevel_name = 'ToolBar'
     gladefile = 'SearchEditor'
     widgets = ('new_button', 'edit_button', 'toolbar_holder')
 
     def __init__(self, parent):
-        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile,
+        Delegates.SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
+                                         gladefile=self.gladefile,
                                          widgets=self.widgets)
         self.parent = parent
 
@@ -126,23 +127,23 @@ toolbar and managing the 'New' and 'Edit' buttons. """
 #
 
 class _SearchDialog(dialogs._BasicDialog):
-    """  Base class for *all* the search dialogs, responsible for the list
-construction and "Filter" and "Clear" buttons management.
+    """ Base class for *all* the search dialogs, responsible for the list
+    construction and "Filter" and "Clear" buttons management.
 
-This class must be subclassed and its subclass *must* implement the methods
-'get_columns' and 'get_query' (if desired, 'get_query' can be implemented in
-the user's slave class, so _SearchDialog will get its slave instance and 
-call 'get_query' directly). Its subclass also must implement a setup_slaves
-method and call its equivalent base class method as in:
+    This class must be subclassed and its subclass *must* implement the 
+    methods 'get_columns' and 'get_query' (if desired, 'get_query' can be 
+    implemented in the user's slave class, so _SearchDialog will get its 
+    slave instance and call 'get_query' directly). Its subclass also must 
+    implement a setup_slaves method and call its equivalent base class 
+    method as in:
 
     def setup_slave(self):
         _SearchDialog.setup_slaves(self)
 
-or then, call it in its constructor, like:
+    or then, call it in its constructor, like:
 
     def __init__(self, *args):
         _SearchDialog.__init__(self)
-        _SearchDialog.setup_slaves(self)
         ...
     """
     main_label_text = ''
@@ -155,6 +156,8 @@ or then, call it in its constructor, like:
                                          main_label_text=self.main_label_text, 
                                          title=self.title, size=self.size)
         self.conn, self.catalog_class = conn, catalog_class
+        self.setup_slaves()
+        self.update_edit_button()
 
     def setup_slaves(self, **kwargs):
         self.klist_slave = _BaseListSlave(parent=self)
@@ -167,6 +170,7 @@ or then, call it in its constructor, like:
 
     def update_klist(self, *args):
         assert self.conn
+        self.klist.clear()
         query = self.get_query()
         if query:
             objs = self.conn[self.catalog_class].query(*query)
@@ -174,25 +178,38 @@ or then, call it in its constructor, like:
             objs = self.conn[self.catalog_class].dump()
         if objs:
             self.klist.add_list(objs)
+
+        # A hack to allow me set the sensitive state of edit_button for
+        # _SearchEditor. Also, internal operations must be done in
+        # update_edit_button; update_widgets is *exclusive* for _SearchEditor
+        # and _SearchDialog subclasses now.
+        self.update_edit_button()
+
         self.update_widgets()
 
     def clear_klist(self):
         self.klist.clear()
         self.update_widgets()
 
-    def update_widgets(self, *args):
-        """ Subclass can have an 'update_widgets', and this method will be
-called when a signal is emitted by 'Filter' or 'Clear' buttons and also when a 
-list item is selected. """
+    def confirm(self):
+        self.retval = self.klist.get_selected()
+        self.close()
+
+    def update_edit_button(self):
+        pass
 
     #
     # Hook methods
     #
 
     def on_delete_items(self, items):
-        """ This hook could be useful for AdditionListSlave instances. It must
-be redefined by childs when it's necessary. """
+        """ This hook could be useful for AdditionListSlave instances. It 
+        must be redefined by childs when it's necessary. """
 
+    def update_widgets(self, *args):
+        """ Subclass can have an 'update_widgets', and this method will be
+        called when a signal is emitted by 'Filter' or 'Clear' buttons and 
+        also when a list item is selected. """
 
     #
     # Specification of methods that all subclasses *must* to implement
@@ -206,12 +223,12 @@ be redefined by childs when it's necessary. """
         return user_slave.get_query()
 
 class _SearchEditor(_SearchDialog):
-    """ Base class for a search "editor" dialog, that offers a 'new' and 'edit'
-button on the dialog footer. The 'new' and 'edit' buttons will call 
-'editor_class' sending as its parameters a new connection and the object to 
-edit for 'edit' button.
-
-This is also a subclass of _SearchDialog and the same rules are required. 
+    """ Base class for a search "editor" dialog, that offers a 'new' and 
+    'edit' button on the dialog footer. The 'new' and 'edit' buttons will 
+    call 'editor_class' sending as its parameters a new connection and the 
+    object to edit for 'edit' button.
+    
+    This is also a subclass of _SearchDialog and the same rules are required. 
     """
 
     def __init__(self, conn, catalog_class, editor_class, hide_footer=True):
@@ -223,25 +240,35 @@ This is also a subclass of _SearchDialog and the same rules are required.
         self.toolbar = _SearchEditorToolBar(self)
         self.attach_slave('extra_holder', self.toolbar)
 
-    def new(self):
+    def update_edit_button(self):
+        self.toolbar.edit_button.set_sensitive(len(self.klist))
+
+    def run(self, obj=None):
         conn = self.conn.create_connection()
         rv = dialogs.run_dialog(self.editor_class, None, conn)
         if database.finish_transaction(conn, rv):
             self.conn.sync()
             rv = database.lookup_model(self.conn, rv)
-            self.klist.add_instance(rv)
+            if not obj:
+                self.klist.add_instance(rv)
+            else:
+                self.klist.update_instance(rv)
+            self.update_klist()
         conn.close()
-    
+
     def edit(self):
         msg = _("You should have only one item selected.")
         assert len(self.klist.get_selected()) == 1, msg
         obj = self.klist.get_selected()[0]
-        conn = self.conn.create_connection()
-        obj = database.lookup_model(conn, obj)
-        rv = dialogs.run_dialog(self.editor_class, None, conn, obj)
-        if database.finish_transaction(conn, rv):
-            self.conn.sync()
-            rv = database.lookup_model(self.conn, rv)
-            self.klist.update_instance(rv)
-        conn.close()
+        self.run(obj) 
+    
+    #
+    # Hook methods
+    #
 
+    def clear_fields(self):
+        """ This hook is used when an Erase button was pushed to clean 
+        fields defined by the constructor """
+        
+    def new(self):
+        self.run()
