@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-interface/dialogs.py:
+gui/dialogs.py:
 
    Basic dialogs definition
 """

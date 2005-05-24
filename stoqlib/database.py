@@ -28,7 +28,7 @@ database.py:
 from ZODB import POSException 
 from Kiwi2 import Delegates 
 
-from stoqlib.interface import dialogs 
+from stoqlib.gui import dialogs 
 
 def finish_transaction(conn, model=1):
     """ Function to commit/abort created/modified models. """ 

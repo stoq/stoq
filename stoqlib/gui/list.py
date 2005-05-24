@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-interface/list.py:
+gui/list.py:
 
     List management for common dialogs.
 """
@@ -30,7 +30,7 @@ import gtk
 
 from Kiwi2 import Delegates
 
-from stoqlib.interface import dialogs, search, editors
+from stoqlib.gui import dialogs, search, editors
 from stoqlib import database, exceptions
 
 class AdditionListSlave(Delegates.SlaveDelegate):

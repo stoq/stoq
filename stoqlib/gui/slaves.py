@@ -21,12 +21,12 @@
 ## USA.
 ##
 """
-interface/slaves.py:
+gui/slaves.py:
 
    Basic slave definitions
 """
 
-from stoqlib.interface import editors
+from stoqlib.gui import editors
 
 class NoteSlave(editors.BaseEditorSlave):
     """

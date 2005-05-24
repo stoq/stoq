@@ -21,14 +21,14 @@
 ## USA.
 ##
 """
-interface/search.py:
+gui/search.py:
 
     Implementation of basic dialogs for search
 """
 
 from Kiwi2 import Delegates 
 
-from stoqlib.interface import dialogs
+from stoqlib.gui import dialogs
 from stoqlib import database 
 
 

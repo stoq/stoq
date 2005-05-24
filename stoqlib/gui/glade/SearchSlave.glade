@@ -106,7 +106,7 @@
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkImage" id="erase_button_image">
-                                                                <property name="file">/home/henrique/devel/stoqlib/stoqlib/stoqlib/interface/pixmaps/reset.xpm</property>
+                                                                <property name="file">/home/henrique/devel/stoqlib/stoqlib/stoqlib/gui/pixmaps/reset.xpm</property>
                                                                 <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
