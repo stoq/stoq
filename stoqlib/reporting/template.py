@@ -275,7 +275,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         self.add_blank_space(margins)
         table_builder = tables.ReportTableBuilder(data, style, header,
                                                   table_line,
-                                                  etra_row=extra_row)
+                                                  extra_row=extra_row)
         kwargs["align"] = align
         table_builder.set_highlight(highlight)
         self.add(table_builder.create_table(*args, **kwargs))
