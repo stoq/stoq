@@ -1,11 +1,11 @@
 EPYDOC=epydoc
 
-MODULES=../../stoqlib/reporting/__init__.py \
-		../../stoqlib/reporting/default_style.py \
-		../../stoqlib/reporting/flowables.py \
-		../../stoqlib/reporting/printing.py \
-		../../stoqlib/reporting/tables.py \
-		../../stoqlib/reporting/template.py
+MODULES=../../../stoqlib/reporting/__init__.py \
+		../../../stoqlib/reporting/default_style.py \
+		../../../stoqlib/reporting/flowables.py \
+		../../../stoqlib/reporting/printing.py \
+		../../../stoqlib/reporting/tables.py \
+		../../../stoqlib/reporting/template.py
 
 PROGRAM_NAME=Stoqlib\ Reporting
 
