@@ -10,7 +10,7 @@ pode ser obtida através de, por exemplo, uma pesquisa em uma base de dados).
 
 from printing import ReportTemplate
 
-import os, tempfile
+import os, tempfile, sys
 from types import TupleType, StringType
 
 __name__ = "Stoqlib Reporting"
@@ -20,7 +20,7 @@ __email__ = "async@async.com.br"
 __license__ = "GNU LGPL 2.1"
 
 # Editores padrões à serem utilizados para visualização de documentos
-PROGRAMS = [('gv', '-media', 'automatic'), 'xpdf', 'ggv']
+PROGRAMS = ['gv', 'xpdf', 'ggv']
 
 def build_report(report_class, *args):
     """ Função responsável pela construção do relatório.
@@ -33,7 +33,7 @@ def build_report(report_class, *args):
         - args: argumentos extras que podem ser passados à classe 
           especificada no parâmetro report_class.
     """
-    filename = tempfile.mktemp()
+    filename = '%s.pdf' % tempfile.mktemp() 
     report = report_class(filename, *args)
     report.save()
     return filename
@@ -51,6 +51,10 @@ def print_file(filename, printer=None, extra_opts=[]):
     """
     if not os.path.exists(filename):
         raise ValueError, "File %s not found" % filename
+
+    if sys.platform == "win32":
+        return print_preview(filename)
+	
     options = " ".join(extra_opts)
     if printer:
         options += " -P%s" % printer
@@ -72,6 +76,11 @@ def print_preview(filename, keep_file=0):
         raise OSError, "the file does not exist"
 
     path = os.environ['PATH'].split(':')
+
+    # Open the file with the program registered for the PDF extension.
+    if sys.platform == "win32": 
+        os.system('start %s' % filename) 
+        return
 
     for program in PROGRAMS:
         args = []
