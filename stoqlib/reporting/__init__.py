@@ -10,7 +10,9 @@ pode ser obtida através de, por exemplo, uma pesquisa em uma base de dados).
 
 from printing import ReportTemplate
 
-import os, tempfile, sys
+import os
+import tempfile
+import sys
 from types import TupleType, StringType
 
 __name__ = "Stoqlib Reporting"
@@ -20,7 +22,9 @@ __email__ = "async@async.com.br"
 __license__ = "GNU LGPL 2.1"
 
 # Editores padrões à serem utilizados para visualização de documentos
-PROGRAMS = ['gv', 'xpdf', 'ggv']
+PROGRAMS = [('xpdf', ()),
+            ('gv', ()),
+            ('ggv', ())]
 
 def build_report(report_class, *args):
     """ Função responsável pela construção do relatório.
@@ -82,22 +86,15 @@ def print_preview(filename, keep_file=0):
         os.system('start %s' % filename) 
         return
 
-    for program in PROGRAMS:
-        args = []
-        if type(program) is TupleType:
-            # grab args and program from tuple
-            args.extend(program[1:])
-            program = program[0]
-        elif type(program) is not StringType:
-            raise AssertionError
-        args.append(filename)
+    for program, args in PROGRAMS:
+        assert (type(program) is StringType) and (type(args) is TupleType)
         for part in path:
             full = os.path.join(part, program)
             if not os.access(full, os.R_OK|os.X_OK):
                 continue
             if not os.fork():
                 args = " ".join(args)
-                os.system("%s %s" % (full, args))
+                os.system("%s %s %s" % (full, args, filename))
                 if not keep_file:
                     os.remove(filename)
                 # See http://www.gtk.org/faq/#AEN505 -- _exit()
@@ -105,5 +102,6 @@ def print_preview(filename, keep_file=0):
                 # errors after we close the child window.
                 os._exit(-1)
             return
+
     print "Could not find a pdf viewer, aborting"
 
