@@ -7,6 +7,7 @@
             <widget class="Kiwi2+Widgets+List+List" id="klist">
                 <property name="hscrollbar_policy">automatic</property>
                 <property name="events"></property>
+                <property name="selection_mode">single</property>
                 <property name="can_focus">True</property>
                 <property name="shadow_type">in</property>
                 <property name="vscrollbar_policy">automatic</property>

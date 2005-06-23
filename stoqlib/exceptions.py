@@ -32,6 +32,34 @@ import sys
 def _warn(msg):
     sys.stderr.write("Application warning: "+msg+"\n")
 
-class ModelDataError(Exception): 
-    """Exception for database problems and instability. """
 
+class ConfigError(Exception):
+    """Error for config files which don't have a certain section"""
+
+
+class FilePermissionError(Exception):
+    """General error for file permissions."""
+
+
+class NoConfigurationError(Exception):
+    """Raise this error when we don't have a config option properly set."""
+
+
+class ModelDataError(Exception): 
+    """General model data errors """
+
+    
+class SellError(Exception):
+    """Exceptions for sale operations"""
+
+
+class DatabaseInconsistency(Exception):
+    """Exceptions for missing data or inconsistency"""
+
+
+class DatabaseError(Exception):
+    """General database errors"""
+
+
+class StockError(Exception):
+    """Exception for stock operations"""

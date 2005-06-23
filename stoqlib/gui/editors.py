@@ -37,11 +37,6 @@ class BaseEditorSlave(SlaveDelegate):
     gladefile = None
     widgets = ()
 
-    # FIXME waiting for kiwi2 suport.
-    # validated_attrs = {}
-    # required_attrs = []
-    # focus_sequence = []
-
     def __init__(self, conn, model=None):
         # The model attribute represents the main object that has been
         # edited by an interface. It will be always the object the is sent
@@ -49,9 +44,9 @@ class BaseEditorSlave(SlaveDelegate):
         self.conn = conn
         self.model = model
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)         
-        self.setup_slaves()
+                               widgets=self.widgets)
         self.setup_proxies()
+        self.setup_slaves()
 
     def setup_proxies(self):
         """ This method should be defined in each child. """
@@ -60,10 +55,13 @@ class BaseEditorSlave(SlaveDelegate):
         """ This method should be defined in each child. """
 
 
+
     #
     # Hook methods
     #
-        
+
+
+
     def on_cancel(self):
         """ This is a hook method which must be redefined when some
         action needs to be executed when cancelling in the dialog. """
@@ -71,7 +69,7 @@ class BaseEditorSlave(SlaveDelegate):
 
     def on_delete_items(self):
         """Redefine this when you need to perform some deletions on database
-        catalog associated with a AdditionListSlave instance."""
+        table associated with a AdditionListSlave instance."""
 
     def on_confirm(self):
         """ This is a hook method which must be redefined when some
@@ -84,6 +82,7 @@ class BaseEditorSlave(SlaveDelegate):
         special validators that provide some tasks over more than one widget
         value """
         return True
+
 
 class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of

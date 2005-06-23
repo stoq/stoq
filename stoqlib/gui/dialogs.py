@@ -27,17 +27,21 @@ gui/dialogs.py:
 """
 
 import traceback
-import gtk
 
+import gtk
 from Kiwi2 import Delegates
 from Kiwi2 import Views
 from Kiwi2.Widgets import List
 
 from stoqlib import exceptions 
 
+
+
 #
 # Helper classes
 #
+
+
 
 class Warnbox(Delegates.SlaveDelegate):
     gladefile = "Warnbox"
@@ -90,11 +94,14 @@ the retval attribute"""
         self.show()
 
 
+
 #
 # Abstract classes: inherit only, do not use.
 #
 
-class _AbstractDialog(Delegates.Delegate, RunnableView):
+
+
+class AbstractDialog(Delegates.Delegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
     gladefile = None
     widgets = ()
@@ -105,23 +112,28 @@ class _AbstractDialog(Delegates.Delegate, RunnableView):
         
         self.setup_keyactions()
         Delegates.Delegate.__init__(self, gladefile=self.gladefile, 
-                          delete_handler=delete_handler,
-                          widgets=self.widgets, keyactions=self.keyactions)
+                                    delete_handler=delete_handler,
+                                    widgets=self.widgets, 
+                                    keyactions=self.keyactions)
 
     def setup_keyactions(self):
         self.keyactions = {}
 
+
+
 #
-# Special note for _BasicDialog and _BasicPluggableDialog: if you inherit
-# from this class, you *must* call _Basic*Dialog._initialize() right after
-# calling _Basic*Dialog.__init__() or the dialog will not be set up
+# Special note for BasicDialog and BasicPluggableDialog: if you inherit
+# from this class, you *must* call Basic*Dialog._initialize() right after
+# calling Basic*Dialog.__init__() or the dialog will not be set up
 # correctly. Initialization has been broken into two steps to allow it to
 # be called conveniently from a consumer refresh() method. See
 # NotifyDialog/PluggableNotifyDialog for an example of how __init__ should
 # behave.
 #
 
-class _BasicDialog(_AbstractDialog):
+
+
+class BasicDialog(AbstractDialog):
     """Abstract class that offers a Dialog with two buttons. It should
 be subclassed and customized."""
 
@@ -139,7 +151,7 @@ be subclassed and customized."""
     def __init__(self, delete_handler=None):
         if not delete_handler:
             delete_handler = self.cancel
-        _AbstractDialog.__init__(self, delete_handler=delete_handler)
+        AbstractDialog.__init__(self, delete_handler=delete_handler)
 
     # Yes, title=" ". Use a single space to work around *cough* BROKEN
     # window managers that want to set the title as Unnamed or ? when an
@@ -187,17 +199,21 @@ be subclassed and customized."""
         self.main_label.set_justify(just)
 
 
+
     #
     # Kiwi handlers
     #
         
+
 
     def on_ok_button__clicked(self, *args):
         self.confirm()
     
     def on_cancel_button__clicked(self, *args):
         self.cancel()
-    
+
+
+
 #
 # Main classes start here. There are two basic types: Notify and
 # Confirm dialogs, the only difference between them being that Notify
@@ -205,7 +221,9 @@ be subclassed and customized."""
 # second set offers a pluggable slave area.
 #
 
-class _BasicPluggableDialog(_BasicDialog):
+
+
+class BasicPluggableDialog(BasicDialog):
     """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
     warnbox = None
     slave = None
@@ -218,8 +236,8 @@ class _BasicPluggableDialog(_BasicDialog):
         if self.warnbox:
             self.clear_notices()
             self.warnbox = None
-        _BasicDialog._initialize(self, title=title, header_text=header_text,
-                                 size=size)
+        BasicDialog._initialize(self, title=title, header_text=header_text,
+                                size=size)
     
     def enable_notices(self):
         """Enables display of notice messages with icons using alert()
@@ -258,31 +276,35 @@ class _BasicPluggableDialog(_BasicDialog):
         self.close()
 
 
+
 #
 # Wrapping variants, which take a slave as a parameter and set it up to
 # have a "normal" dialog API, which follows the BasicPluggableDialog
 # interface for stoqlib.services run_dialog compatibility.
 #       
-        
-class BasicWrappingDialog(_BasicPluggableDialog):
+
+
+
+class BasicWrappingDialog(BasicPluggableDialog):
     """ Abstract class for Wrapping*Dialog; run and set_transient_for to
     the wrapped slave and ok_button sensitivity control """
     def __init__(self, slave, title=" ", header_text="", size=None):
-        _BasicPluggableDialog.__init__(self)
-        _BasicPluggableDialog._initialize(self, slave, title, header_text, size)
+        BasicPluggableDialog.__init__(self)
+        BasicPluggableDialog._initialize(self, slave, title, header_text, 
+                                         size)
         slave.run = self.run
         slave.set_transient_for = self.set_transient_for
 
-class ConfirmDialog(_BasicDialog):
+class ConfirmDialog(BasicDialog):
     """Dialog offers an option to confirm or cancel an event. It prints
         self.close()
 text in a label and offers OK/Cancel buttons."""
 
     title = 'Confirmation'
     def __init__(self, text):
-        _BasicDialog.__init__(self)
+        BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
-        _BasicDialog._initialize(self, text, title=self.title)
+        BasicDialog._initialize(self, text, title=self.title)
 
     def setup_keyactions(self):
         self.keyactions = { gtk.keysyms.Escape: self.cancel,
@@ -299,9 +321,12 @@ offers a single OK button."""
         self.cancel_button.hide()
 
 
+
 #
 # Auxiliar methods
 #
+
+
 
 def get_dialog(parent, dialog_class, *args, **kwargs):
     """ Returns a dialog.

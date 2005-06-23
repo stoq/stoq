@@ -42,3 +42,4 @@ class NoteSlave(editors.BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
+

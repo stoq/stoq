@@ -29,12 +29,10 @@ gui/application.py:
 import gtk
 import gobject
 
-from IndexedCatalog import Shelf
 from Kiwi2 import initgtk 
 from Kiwi2 import Delegates 
 
 from stoqlib.gui import dialogs 
-from stoqlib import database
 
 
 #
@@ -55,7 +53,7 @@ class BaseApp:
         self.main_window.show()
 
     def shutdown(self, *args):
-        initgtk.quit_if_last()
+        gtk.main_quit()
 
     def do_sync(self, *args):
         if hasattr(self.main_window, 'sync'):
@@ -73,9 +71,10 @@ class BaseAppWindow(Delegates.Delegate):
     widgets = ()
     def __init__(self, app, keyactions=None):
         Delegates.Delegate.__init__(self, delete_handler=app.shutdown,
-                          keyactions=keyactions, widgets=self.widgets,
-                          gladefile=self.gladefile,
-                          toplevel_name=self.toplevel_name)
+                                    keyactions=keyactions, 
+                                    widgets=self.widgets,
+                                    gladefile=self.gladefile,
+                                    toplevel_name=self.toplevel_name)
 
     def set_sensitive(self, widgets, value):
         """Sets one or more widgets to state sensitive. XXX: Kiwi?"""
@@ -89,26 +88,4 @@ class BaseAppWindow(Delegates.Delegate):
     def run_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for running dialogs. """
         return dialogs.run_dialog(dialog_class, self, *args, **kwargs)
-
-    def lookup_model(self, conn, model):
-        """ Encapsuled method for looking up models. """
-        return database.lookup_model(conn, model)
-
-    def ensure_insert_model(self, conn, model):
-        """ Encapsuled method for inserting models in catalogs. """
-        return database.ensure_insert_model(conn, model)
-
-    def finish_transaction(self, conn, model=1, keep=0):
-        """ Encapsuled method for committing/aborting changes in models.
-        This method is special (and different from the standalone
-        finish_transaction) because, unless keep=1 is provided, the
-        connection provided is also closed."""
-        # Default model is 1 which means that we'll commit if nothing
-        # was passed in.
-        if not isinstance(conn, Shelf.Shelf):
-            raise TypeError, "conn must be Shelf, got %r" % conn
-        ret = database.finish_transaction(conn, model)
-        if not keep:
-            conn.close()
-        return ret
 

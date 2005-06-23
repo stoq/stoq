@@ -26,17 +26,21 @@ gui/search.py:
     Implementation of basic dialogs for search
 """
 
+import gtk
 from Kiwi2 import Delegates 
 
 from stoqlib.gui import dialogs
-from stoqlib import database 
+from stoqlib import database
+
 
 
 #
 # Slaves for search dialogs.
 #
 
-class _BaseListSlave(Delegates.SlaveDelegate):
+
+
+class BaseListSlave(Delegates.SlaveDelegate):
     """ Base slave for dialogs that need a Kiwi List. If the 'parent' class
     send a 'parent' argument, the method update_widgets will be called when 
     the list be selected ou double clicked. """
@@ -72,8 +76,8 @@ class _BaseListSlave(Delegates.SlaveDelegate):
         self.update_widgets()
 
 
-class _SearchSlave(Delegates.SlaveDelegate):
-    """ Slave for internal use of _SearchDialog, offering an eventbox for
+class SearchSlave(Delegates.SlaveDelegate):
+    """ Slave for internal use of SearchDialog, offering an eventbox for
     insertion by an user search bar and managing the "Filter" and "Clear" 
     buttons. """
 
@@ -85,9 +89,13 @@ class _SearchSlave(Delegates.SlaveDelegate):
                                          widgets=self.widgets)
         self.parent = parent
 
+
+
     #
     # Kiwi handlers
     #
+
+
 
     def on_search_button__clicked(self, *args):
         self.parent.update_klist()
@@ -97,8 +105,8 @@ class _SearchSlave(Delegates.SlaveDelegate):
         self.parent.clear_fields()
 
 
-class _SearchEditorToolBar(Delegates.SlaveDelegate):
-    """ Slave for internal use of _SearchEditor, offering an eventbox for a
+class SearchEditorToolBar(Delegates.SlaveDelegate):
+    """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 
     toplevel_name = 'ToolBar'
@@ -111,80 +119,85 @@ class _SearchEditorToolBar(Delegates.SlaveDelegate):
                                          widgets=self.widgets)
         self.parent = parent
 
+
+
     #
     # Kiwi handlers
     #
 
-    def on_edit_button__clicked(self, *args):
-        self.parent.edit()
+
+
+    def on_edit_button__clicked(self, widget):
+        self.parent.edit(widget)
 
     def on_new_button__clicked(self, *args):
         self.parent.new()
+
 
 
 #
 # Base dialogs for search.
 #
 
-class _SearchDialog(dialogs._BasicDialog):
+
+
+class SearchDialog(dialogs.BasicDialog):
     """ Base class for *all* the search dialogs, responsible for the list
     construction and "Filter" and "Clear" buttons management.
 
     This class must be subclassed and its subclass *must* implement the 
     methods 'get_columns' and 'get_query' (if desired, 'get_query' can be 
-    implemented in the user's slave class, so _SearchDialog will get its 
+    implemented in the user's slave class, so SearchDialog will get its 
     slave instance and call 'get_query' directly). Its subclass also must 
     implement a setup_slaves method and call its equivalent base class 
     method as in:
 
     def setup_slave(self):
-        _SearchDialog.setup_slaves(self)
+        SearchDialog.setup_slaves(self)
 
     or then, call it in its constructor, like:
 
     def __init__(self, *args):
-        _SearchDialog.__init__(self)
+        SearchDialog.__init__(self)
         ...
     """
     main_label_text = ''
     title = ''
     size = ()
             
-    def __init__(self, conn, catalog_class, hide_footer=True):
-        dialogs._BasicDialog.__init__(self)
-        dialogs._BasicDialog._initialize(self, hide_footer=hide_footer,
-                                         main_label_text=self.main_label_text, 
-                                         title=self.title, size=self.size)
-        self.conn, self.catalog_class = conn, catalog_class
+    def __init__(self, table, hide_footer=True):
+        dialogs.BasicDialog.__init__(self)
+        dialogs.BasicDialog._initialize(self, hide_footer=hide_footer,
+                                        main_label_text=self.main_label_text, 
+                                        title=self.title, size=self.size)
+        self.table = table
+        self.conn = database.get_model_connection()
+        assert self.conn
         self.setup_slaves()
         self.update_edit_button()
 
     def setup_slaves(self, **kwargs):
-        self.klist_slave = _BaseListSlave(parent=self)
+        self.klist_slave = BaseListSlave(parent=self)
         self.klist = self.klist_slave.klist
 
-        self.search_bar = _SearchSlave(self)
+        self.search_bar = SearchSlave(self)
 
         self.attach_slave('main', self.klist_slave)
         self.attach_slave('header', self.search_bar)
 
     def update_klist(self, *args):
-        assert self.conn
         self.klist.clear()
+
         query = self.get_query()
-        if query:
-            objs = self.conn[self.catalog_class].query(*query)
-        else:
-            objs = self.conn[self.catalog_class].dump()
-        if objs:
+        objs = self.table.select(query, connection=self.conn)
+        if objs.count():
             self.klist.add_list(objs)
 
         # A hack to allow me set the sensitive state of edit_button for
-        # _SearchEditor. Also, internal operations must be done in
-        # update_edit_button; update_widgets is *exclusive* for _SearchEditor
-        # and _SearchDialog subclasses now.
+        # SearchEditor. Also, internal operations must be done in
+        # update_edit_button; update_widgets is *exclusive* for SearchEditor
+        # and SearchDialog subclasses now.
         self.update_edit_button()
-
         self.update_widgets()
 
     def clear_klist(self):
@@ -199,9 +212,13 @@ class _SearchDialog(dialogs._BasicDialog):
     def update_edit_button(self):
         pass
 
+
+
     #
     # Hook methods
     #
+
+
 
     def on_delete_items(self, items):
         """ This hook could be useful for AdditionListSlave instances. It 
@@ -212,9 +229,13 @@ class _SearchDialog(dialogs._BasicDialog):
         called when a signal is emitted by 'Filter' or 'Clear' buttons and 
         also when a list item is selected. """
 
+
+
     #
     # Specification of methods that all subclasses *must* to implement
     #
+
+
 
     def get_columns(self):
         raise NotImplementedError
@@ -223,53 +244,55 @@ class _SearchDialog(dialogs._BasicDialog):
         user_slave = self.search_bar.get_slave('searchbar_holder')
         return user_slave.get_query()
 
-class _SearchEditor(_SearchDialog):
+
+class SearchEditor(SearchDialog):
     """ Base class for a search "editor" dialog, that offers a 'new' and 
     'edit' button on the dialog footer. The 'new' and 'edit' buttons will 
     call 'editor_class' sending as its parameters a new connection and the 
     object to edit for 'edit' button.
     
-    This is also a subclass of _SearchDialog and the same rules are required. 
+    This is also a subclass of SearchDialog and the same rules are required. 
     """
 
-    def __init__(self, conn, catalog_class, editor_class, hide_footer=True):
-        _SearchDialog.__init__(self, conn, catalog_class, hide_footer)
+    def __init__(self, table, editor_class, hide_footer=True):
+        SearchDialog.__init__(self, table, hide_footer)
         self.editor_class = editor_class
+        self.klist.connect('double_click', self.edit)
 
     def setup_slaves(self):
-        _SearchDialog.setup_slaves(self)
-        self.toolbar = _SearchEditorToolBar(self)
+        SearchDialog.setup_slaves(self)
+        self.toolbar = SearchEditorToolBar(self)
         self.attach_slave('extra_holder', self.toolbar)
 
     def update_edit_button(self):
         self.toolbar.edit_button.set_sensitive(len(self.klist))
 
     def run(self, obj=None):
-        conn = self.conn.create_connection()
+        if obj: 
+            obj = self.table.get(id=obj.id, connection=self.conn)
         
-        if obj:
-            obj = database.lookup_model(conn, obj)
-        
-        rv = dialogs.run_dialog(self.editor_class, self, conn, obj)
-        if database.finish_transaction(conn, rv):
-            self.conn.sync()
-            rv = database.lookup_model(self.conn, rv)
-            if not obj:
-                self.klist.add_instance(rv)
-            else:
-                self.klist.update_instance(rv)
-            self.update_klist()
-        conn.close()
+        rv = dialogs.run_dialog(self.editor_class, self, 
+                                self.conn, obj)
+        if not rv:
+            self.conn.rollback()
+            self.conn.begin()
+            return
+        self.conn.commit()
+        self.update_klist()
+        self.klist.select_instance(rv)
 
-    def edit(self):
-        msg = _("You should have only one item selected.")
-        assert len(self.klist.get_selected()) == 1, msg
-        obj = self.klist.get_selected()[0]
+    def edit(self, widget, obj=None):
+        if obj is None:
+            obj = self.klist.get_selected()[0]
         self.run(obj) 
+    
+
     
     #
     # Hook methods
     #
+
+
 
     def clear_fields(self):
         """ This hook is used when an Erase button was pushed to clean 
