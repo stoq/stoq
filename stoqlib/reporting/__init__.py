@@ -10,9 +10,7 @@ pode ser obtida através de, por exemplo, uma pesquisa em uma base de dados).
 
 from printing import ReportTemplate
 
-import os
-import tempfile
-import sys
+import os, tempfile
 from types import TupleType, StringType
 
 __name__ = "Stoqlib Reporting"
@@ -22,9 +20,7 @@ __email__ = "async@async.com.br"
 __license__ = "GNU LGPL 2.1"
 
 # Editores padrões à serem utilizados para visualização de documentos
-PROGRAMS = [('xpdf', ()),
-            ('gv', ()),
-            ('ggv', ())]
+PROGRAMS = [('gv', '-media', 'automatic'), 'xpdf', 'ggv']
 
 def build_report(report_class, *args):
     """ Função responsável pela construção do relatório.
@@ -37,7 +33,7 @@ def build_report(report_class, *args):
         - args: argumentos extras que podem ser passados à classe 
           especificada no parâmetro report_class.
     """
-    filename = '%s.pdf' % tempfile.mktemp() 
+    filename = tempfile.mktemp()
     report = report_class(filename, *args)
     report.save()
     return filename
@@ -55,10 +51,6 @@ def print_file(filename, printer=None, extra_opts=[]):
     """
     if not os.path.exists(filename):
         raise ValueError, "File %s not found" % filename
-
-    if sys.platform == "win32":
-        return print_preview(filename)
-	
     options = " ".join(extra_opts)
     if printer:
         options += " -P%s" % printer
@@ -81,20 +73,22 @@ def print_preview(filename, keep_file=0):
 
     path = os.environ['PATH'].split(':')
 
-    # Open the file with the program registered for the PDF extension.
-    if sys.platform == "win32": 
-        os.system('start %s' % filename) 
-        return
-
-    for program, args in PROGRAMS:
-        assert (type(program) is StringType) and (type(args) is TupleType)
+    for program in PROGRAMS:
+        args = []
+        if type(program) is TupleType:
+            # grab args and program from tuple
+            args.extend(program[1:])
+            program = program[0]
+        elif type(program) is not StringType:
+            raise AssertionError
+        args.append(filename)
         for part in path:
             full = os.path.join(part, program)
             if not os.access(full, os.R_OK|os.X_OK):
                 continue
             if not os.fork():
                 args = " ".join(args)
-                os.system("%s %s %s" % (full, args, filename))
+                os.system("%s %s" % (full, args))
                 if not keep_file:
                     os.remove(filename)
                 # See http://www.gtk.org/faq/#AEN505 -- _exit()
@@ -102,6 +96,5 @@ def print_preview(filename, keep_file=0):
                 # errors after we close the child window.
                 os._exit(-1)
             return
-
     print "Could not find a pdf viewer, aborting"
 

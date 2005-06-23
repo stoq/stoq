@@ -23,52 +23,17 @@
 """
 database.py:
 
-    Auxiliar methods to work with databases.
+    Database access methods
 """
-from ZODB import POSException 
-from Kiwi2 import Delegates 
 
-from stoqlib.gui import dialogs 
+_model_connection_func = None
 
-def finish_transaction(conn, model=1):
-    """ Function to commit/abort created/modified models. """ 
-    if model:
-        try:
-            conn.commit()
-            return model
-        except POSException.ConflictError, e:
-            dialogs._conflict_dialog(e)
-            conn.sync()
-            return None
-    else:
-        conn.abort()
-        conn.sync()
-        return None
+def get_model_connection():
+    global _model_connection_func
+    assert _model_connection_func
+    return _model_connection_func()
 
-def lookup_model(conn, model):
-    """ Function to lookup the model according to the connection which
-    should be used by a dialog.
-    - model: can be a model, or a list of models. """
-    if isinstance(model, list) or isinstance(model, tuple):
-        model = [conn.lookup(item) for item in model]
-    else:
-        model = conn.lookup(model)
-    return model
-
-def ensure_insert_model(conn, model):
-    if not model:
-        raise AttributeError, "Trying to insert a None model in the catalog."
-    cat = conn.get_catalog(model.__class__)
-    if not cat.has_object(model):
-        try:
-            cat.insert(model)
-        except POSException.ConflictError, e:
-            # In this case it's definitely an RCE
-            dialogs._conflict_dialog(e)        
-            conn.sync()
-            return None
-    # Calling a hook for doing something needed after the model insertion in
-    # the catalog
-    model.after_insert_model(conn)
-    return model
-
+def set_model_connection_func(func):
+    global _model_connection_func
+    assert func
+    _model_connection_func = func
