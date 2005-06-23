@@ -32,6 +32,7 @@ from Kiwi2 import Delegates
 from stoqlib.gui import dialogs, search, editors
 from stoqlib import exceptions
 
+
 class AdditionListSlave(Delegates.SlaveDelegate):
     """ A slave that offers a simple list and its management. 
     
@@ -108,9 +109,13 @@ class AdditionListSlave(Delegates.SlaveDelegate):
         model = objs_selected[0]
         self.run(model)
 
+
+
     #
     # Public API
     #
+
+
 
     def hide_add_button(self):
         self.add_button.hide()
@@ -121,9 +126,13 @@ class AdditionListSlave(Delegates.SlaveDelegate):
     def hide_del_button(self):
         self.del_button.hide()
 
+
+
     #
     # Kiwi handlers
     #
+
+
 
     def on_klist__double_click(self, *args):
         self.edit()
@@ -160,6 +169,7 @@ class AdditionListSlave(Delegates.SlaveDelegate):
         
         self.klist.unselect_all()
         self.update_widgets()
+
 
 class AdditionListDialog(dialogs.BasicPluggableDialog):
     size = (500, 500)
@@ -203,9 +213,13 @@ class AdditionListDialog(dialogs.BasicPluggableDialog):
     def validate_confirm(self):
         return True    
 
+
+
     #
     # AdditionListSlave callbacks
     #
+
+
 
     def on_add_item(self, obj):
         pass
@@ -215,6 +229,7 @@ class AdditionListDialog(dialogs.BasicPluggableDialog):
 
     def on_edit_item(self, obj):
         pass
+
 
 class SimpleListDialog(dialogs.BasicDialog):
     size = (500, 400)
