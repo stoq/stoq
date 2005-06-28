@@ -143,14 +143,14 @@ class SearchEditorToolBar(Delegates.SlaveDelegate):
 
 class SearchDialog(dialogs.BasicDialog):
     """  Base class for *all* the search dialogs, responsible for the list
-construction and "Filter" and "Clear" buttons management.
+    construction and "Filter" and "Clear" buttons management.
 
-    This class must be subclassed and its subclass *must* implement the 
-methods 'get_columns' and 'get_query_and_parameters' (if desired,
-'get_query_and_parameters' can be implemented in the user's slave class, so 
-SearchDialog will get its slave instance and call the method directly). Its
-subclass also must implement a setup_slaves method and call its equivalent 
-base class method as in:
+    This class must be subclassed and its subclass *must* implement the methods
+    'get_columns' and 'get_query_and_args' (if desired, 'get_query_and_args' 
+    can be implemented in the user's slave class, so SearchDialog will get its
+    slave instance and call the method directly). Its subclass also must 
+    implement a setup_slaves method and call its equivalent base class method 
+    as in:
 
     def setup_slave(self):
         SearchDialog.setup_slaves(self)
@@ -188,7 +188,7 @@ base class method as in:
     def update_klist(self, *args):
         self.klist.clear()
 
-        query, kwargs = self.get_query_and_parameters()
+        query, kwargs = self.get_query_and_args()
         assert not kwargs.has_key('connection')
         kwargs['connection'] = self.conn
 
@@ -244,9 +244,9 @@ base class method as in:
     def get_columns(self):
         raise NotImplementedError
 
-    def get_query_and_parameters(self):
+    def get_query_and_args(self):
         user_slave = self.search_bar.get_slave('searchbar_holder')
-        return user_slave.get_query_and_parameters()
+        return user_slave.get_query_and_args()
 
 
 class SearchEditor(SearchDialog):
