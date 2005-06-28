@@ -142,15 +142,15 @@ class SearchEditorToolBar(Delegates.SlaveDelegate):
 
 
 class SearchDialog(dialogs.BasicDialog):
-    """ Base class for *all* the search dialogs, responsible for the list
-    construction and "Filter" and "Clear" buttons management.
+    """  Base class for *all* the search dialogs, responsible for the list
+construction and "Filter" and "Clear" buttons management.
 
     This class must be subclassed and its subclass *must* implement the 
-    methods 'get_columns' and 'get_query' (if desired, 'get_query' can be 
-    implemented in the user's slave class, so SearchDialog will get its 
-    slave instance and call 'get_query' directly). Its subclass also must 
-    implement a setup_slaves method and call its equivalent base class 
-    method as in:
+methods 'get_columns' and 'get_query_and_parameters' (if desired,
+'get_query_and_parameters' can be implemented in the user's slave class, so 
+SearchDialog will get its slave instance and call the method directly). Its
+subclass also must implement a setup_slaves method and call its equivalent 
+base class method as in:
 
     def setup_slave(self):
         SearchDialog.setup_slaves(self)
@@ -188,8 +188,12 @@ class SearchDialog(dialogs.BasicDialog):
     def update_klist(self, *args):
         self.klist.clear()
 
-        query = self.get_query()
-        objs = self.table.select(query, connection=self.conn)
+        query, kwargs = self.get_query_and_parameters()
+        assert not kwargs.has_key('connection')
+        kwargs['connection'] = self.conn
+
+        objs = self.table.select(query, **kwargs)
+
         if objs.count():
             self.klist.add_list(objs)
 
@@ -240,9 +244,9 @@ class SearchDialog(dialogs.BasicDialog):
     def get_columns(self):
         raise NotImplementedError
 
-    def get_query(self):
+    def get_query_and_parameters(self):
         user_slave = self.search_bar.get_slave('searchbar_holder')
-        return user_slave.get_query()
+        return user_slave.get_query_and_parameters()
 
 
 class SearchEditor(SearchDialog):
