@@ -26,6 +26,8 @@ gui/search.py:
     Implementation of basic dialogs for search
 """
 
+import types
+
 import gtk
 from Kiwi2 import Delegates 
 
@@ -188,7 +190,13 @@ class SearchDialog(dialogs.BasicDialog):
     def update_klist(self, *args):
         self.klist.clear()
 
-        query, kwargs = self.get_query_and_args()
+        retval = self.get_query_and_args()
+        kwargs = {}
+        if retval and type(retval) is types.TupleType:
+            query, kwargs = retval
+        else:
+            query = retval or None
+
         assert not kwargs.has_key('connection')
         kwargs['connection'] = self.conn
 
