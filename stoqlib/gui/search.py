@@ -289,9 +289,13 @@ class SearchEditor(SearchDialog):
             self.conn.rollback()
             self.conn.begin()
             return
+
         self.conn.commit()
         self.update_klist()
-        self.klist.select_instance(rv)
+
+        if rv in self.klist:
+            self.klist.select_instance(rv)
+
 
     def edit(self, widget, obj=None):
         if obj is None:
