@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <glade-interface>
-    <requires lib="Kiwi2.Widgets"/>
+    <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="Warnbox">
         <property name="title" context="True" translatable="True"></property>
         <property name="role"></property>
@@ -36,7 +36,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="Kiwi2+Widgets+Label+Label" id="label">
+                    <widget class="kiwi+ui+widgets+label+Label" id="label">
                         <property name="pattern" context="True" translatable="True"></property>
                         <property name="label" context="True" translatable="True">label</property>
                         <property name="use_markup">True</property>

@@ -29,7 +29,7 @@ gui/search.py:
 import types
 
 import gtk
-from Kiwi2 import Delegates 
+from kiwi.ui.delegates import SlaveDelegate
 
 from stoqlib.gui import dialogs
 from stoqlib import database
@@ -42,7 +42,7 @@ from stoqlib import database
 
 
 
-class BaseListSlave(Delegates.SlaveDelegate):
+class BaseListSlave(SlaveDelegate):
     """ Base slave for dialogs that need a Kiwi List. If the 'parent' class
     send a 'parent' argument, the method update_widgets will be called when 
     the list be selected ou double clicked. """
@@ -51,8 +51,8 @@ class BaseListSlave(Delegates.SlaveDelegate):
     widgets = ('klist', )
 
     def __init__(self, parent=None, columns=None, objects=None):
-        Delegates.SlaveDelegate.__init__(self, widgets=self.widgets, 
-                                         gladefile=self.gladefile)
+        SlaveDelegate.__init__(self, widgets=self.widgets, 
+                               gladefile=self.gladefile)
 
         if not columns and (not parent or not hasattr(parent, 'get_columns')):
             raise Exception, ("You must supply columns via parameter of in"
@@ -78,7 +78,7 @@ class BaseListSlave(Delegates.SlaveDelegate):
         self.update_widgets()
 
 
-class SearchSlave(Delegates.SlaveDelegate):
+class SearchSlave(SlaveDelegate):
     """ Slave for internal use of SearchDialog, offering an eventbox for
     insertion by an user search bar and managing the "Filter" and "Clear" 
     buttons. """
@@ -87,8 +87,8 @@ class SearchSlave(Delegates.SlaveDelegate):
     widgets = ('search_button', 'erase_button', 'searchbar_holder')
 
     def __init__(self, parent):
-        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                                         widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+                               widgets=self.widgets)
         self.parent = parent
 
 
@@ -107,7 +107,7 @@ class SearchSlave(Delegates.SlaveDelegate):
         self.parent.clear_fields()
 
 
-class SearchEditorToolBar(Delegates.SlaveDelegate):
+class SearchEditorToolBar(SlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 
@@ -116,9 +116,8 @@ class SearchEditorToolBar(Delegates.SlaveDelegate):
     widgets = ('new_button', 'edit_button', 'toolbar_holder')
 
     def __init__(self, parent):
-        Delegates.SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                                         gladefile=self.gladefile,
-                                         widgets=self.widgets)
+        SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
+                               gladefile=self.gladefile, widgets=self.widgets)
         self.parent = parent
 
 

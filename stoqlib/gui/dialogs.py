@@ -29,9 +29,8 @@ gui/dialogs.py:
 import traceback
 
 import gtk
-from Kiwi2 import Delegates
-from Kiwi2 import Views
-from Kiwi2.Widgets import List
+from kiwi.ui.delegates import SlaveDelegate, Delegate
+from kiwi.ui.views import BaseView
 
 from stoqlib import exceptions 
 
@@ -43,12 +42,12 @@ from stoqlib import exceptions
 
 
 
-class Warnbox(Delegates.SlaveDelegate):
+class Warnbox(SlaveDelegate):
     gladefile = "Warnbox"
     widgets = ("error_icon", "alert_icon", "label")
 
     def __init__(self):
-        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
     
     def setup_label(self, message):
@@ -101,7 +100,7 @@ the retval attribute"""
 
 
 
-class AbstractDialog(Delegates.Delegate, RunnableView):
+class AbstractDialog(Delegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
     gladefile = None
     widgets = ()
@@ -111,10 +110,9 @@ class AbstractDialog(Delegates.Delegate, RunnableView):
             delete_handler = self.close
         
         self.setup_keyactions()
-        Delegates.Delegate.__init__(self, gladefile=self.gladefile, 
-                                    delete_handler=delete_handler,
-                                    widgets=self.widgets, 
-                                    keyactions=self.keyactions)
+        Delegate.__init__(self, gladefile=self.gladefile, 
+                          delete_handler=delete_handler, widgets=self.widgets, 
+                          keyactions=self.keyactions)
 
     def setup_keyactions(self):
         self.keyactions = {}
@@ -339,7 +337,7 @@ def get_dialog(parent, dialog_class, *args, **kwargs):
     
     # If parent is a BaseView, use GTK+ calls to get the toplevel
     # window. This is a bit of a hack :-/
-    if isinstance(parent, Views.BaseView):     
+    if isinstance(parent, BaseView):     
         parent = parent.toplevel.get_toplevel()
         if parent:
             d.set_transient_for(parent)
