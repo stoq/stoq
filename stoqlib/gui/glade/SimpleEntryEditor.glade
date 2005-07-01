@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <glade-interface>
-    <requires lib="Kiwi2.Widgets"/>
+    <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="SimpleEntryEditor">
         <property name="resizable">False</property>
         <property name="border_width">5</property>
@@ -15,7 +15,7 @@
                 <property name="n_columns">2</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="Kiwi2+Widgets+Entry+Entry" id="name_entry">
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="name_entry">
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">name</property>
@@ -31,7 +31,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="Kiwi2+Widgets+Label+Label" id="name_entry_label">
+                    <widget class="kiwi+ui+widgets+label+Label" id="name_entry_label">
                         <property name="model_attribute">name_label</property>
                         <property name="label" context="True" translatable="True">label: </property>
                         <property name="use_markup">True</property>

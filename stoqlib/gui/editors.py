@@ -26,9 +26,9 @@ gui/editors.py:
     Base classes for editors
 """
 
-from stoqlib.gui.dialogs import BasicWrappingDialog
-from Kiwi2.Delegates import SlaveDelegate
+from kiwi.ui.delegates import SlaveDelegate
 
+from stoqlib.gui.dialogs import BasicWrappingDialog
 
 class BaseEditorSlave(SlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for

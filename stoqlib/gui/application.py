@@ -28,9 +28,7 @@ gui/application.py:
 
 import gtk
 import gobject
-
-from Kiwi2 import initgtk 
-from Kiwi2 import Delegates 
+from kiwi.ui.delegates import Delegate
 
 from stoqlib.gui import dialogs 
 
@@ -65,16 +63,15 @@ class BaseApp:
 # Expects an app, with app.shutdown available as a handler
 #
 
-class BaseAppWindow(Delegates.Delegate):
+class BaseAppWindow(Delegate):
     """ Class to be inherited by applications main window.  """
     gladefile = toplevel_name = ''
     widgets = ()
     def __init__(self, app, keyactions=None):
-        Delegates.Delegate.__init__(self, delete_handler=app.shutdown,
-                                    keyactions=keyactions, 
-                                    widgets=self.widgets,
-                                    gladefile=self.gladefile,
-                                    toplevel_name=self.toplevel_name)
+        Delegate.__init__(self, delete_handler=app.shutdown, 
+                          keyactions=keyactions, widgets=self.widgets,
+                          gladefile=self.gladefile,
+                          toplevel_name=self.toplevel_name)
 
     def set_sensitive(self, widgets, value):
         """Sets one or more widgets to state sensitive. XXX: Kiwi?"""

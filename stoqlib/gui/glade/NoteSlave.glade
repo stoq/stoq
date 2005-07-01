@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <glade-interface>
-    <requires lib="Kiwi2.Widgets"/>
+    <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="NoteSlave">
         <property name="title" context="True" translatable="True"></property>
         <property name="role"></property>
@@ -33,7 +33,7 @@
                         <property name="vscrollbar_policy">never</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="Kiwi2+Widgets+TextView+TextView" id="notes">
+                            <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
                                 <property name="model_attribute">notes</property>
                                 <property name="data_type">str</property>
                                 <property name="visible">True</property>

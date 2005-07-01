@@ -27,13 +27,13 @@ gui/lists.py:
 """
 
 import gtk
-from Kiwi2 import Delegates
+from kiwi.ui.delegates import SlaveDelegate
 
 from stoqlib.gui import dialogs, search, editors
 from stoqlib import exceptions
 
 
-class AdditionListSlave(Delegates.SlaveDelegate):
+class AdditionListSlave(SlaveDelegate):
     """ A slave that offers a simple list and its management. 
     
     editor_class    = represents the window that is going to be open when user 
@@ -52,8 +52,8 @@ class AdditionListSlave(Delegates.SlaveDelegate):
 
     def __init__(self, conn, parent, editor_class, columns, klist_objects=None,
                  **editor_kwargs):
-        Delegates.SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                                         widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+                               widgets=self.widgets)
         self.conn = conn
         self.editor_class = editor_class
         self.columns = columns
