@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="kiwi"/>
+    <widget class="GtkWindow" id="SearchBar">
+        <property name="events"></property>
+        <child>
+            <widget class="GtkAlignment" id="alignment1">
+                <property name="yscale">0.0</property>
+                <property name="border_width">5</property>
+                <property name="xscale">0.509999990463</property>
+                <property name="events"></property>
+                <property name="xalign">0.00999999977648</property>
+                <property name="yalign">0.0</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="events"></property>
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkImage" id="search_icon">
+                                <property name="events"></property>
+                                <property name="stock">gtk-missing-image</property>
+                                <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing/>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel15">
+                                <property name="label" context="True" translatable="True">Search Item:</property>
+                                <property name="use_markup">True</property>
+                                <property name="events"></property>
+                                <property name="xalign">1.0</property>
+                                <property name="data_type">str</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkEntry" id="search_entry">
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="search_button">
+                                <property name="receives_default">True</property>
+                                <property name="events"></property>
+                                <property name="can_focus">True</property>
+                                <property name="visible">True</property>
+                                <property name="label">Search</property>
+                            </widget>
+                            <packing>
+                                <property name="position">3</property>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                    </widget>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

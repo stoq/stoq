@@ -20,19 +20,22 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 gui/search.py:
 
     Implementation of basic dialogs for search
 """
 
-import types
-
 import gtk
+import gobject
+import sqlobject
 from kiwi.ui.delegates import SlaveDelegate
 
-from stoqlib.gui import dialogs
-from stoqlib import database
+import stoqlib
+from stoqlib.gui import dialogs, gtkadds
+from stoqlib import database, exceptions, common
 
 
 
@@ -78,33 +81,212 @@ class BaseListSlave(SlaveDelegate):
         self.update_widgets()
 
 
-class SearchSlave(SlaveDelegate):
-    """ Slave for internal use of SearchDialog, offering an eventbox for
-    insertion by an user search bar and managing the "Filter" and "Clear" 
-    buttons. """
+class SearchBar(SlaveDelegate):
+    """ A portable search bar slave for dialogs.
 
-    gladefile = 'SearchSlave'
-    widgets = ('search_button', 'erase_button', 'searchbar_holder')
+    table_type  =  The table type which we want to query on.
+    fields      =  A list of tuples. Each tuple has its first element as 
+                   a tuple of the object column names and the second element
+                   is the table type of these columns.
+                   E.g: [(('name', phone_number), Person), 
+                         (('street', 'number'), Address)]
 
-    def __init__(self, parent):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+    Each parent must define a hook 'update_klist(objs)' which will be 
+    called after the search.
+    """
+    gladefile = 'SearchBar'
+    
+    widgets = ('search_button',
+               "search_entry",
+               "search_icon")
+
+    SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+    ANIMATE_TIMEOUT = 200
+
+    def __init__(self, parent, table_type, fields, clause_tables=None,
+                 query_args=None):
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
+        self._animate_search_icon_id = -1
+        self.search_icon.set_from_stock("searchtool-icon1", 
+                                        self.SEARCH_ICON_SIZE)
+        self._update_widgets()
         self.parent = parent
+        self.conn = self.parent.conn
+        self.fields = fields
+        self.table_type = table_type
+        self.clause_tables = clause_tables
+        self.query_args = query_args
+        self._split_field_types()
+
+    def _update_widgets(self):
+        if self.search_entry.get_text() != '':
+            self.search_button.set_sensitive(True)
+        else:
+            self.search_button.set_sensitive(False)
 
 
 
     #
-    # Kiwi handlers
+    # Preparing query fields and groups
     #
 
+
+
+    def _split_field_types(self):
+        self.int_fields = []
+        self.float_fields = []
+        self.str_fields = []
+        # TODO Just a beginnig for a date time suport. We will implement 
+        # this part soon and when we add a slave area for DateTime widgets.
+        self.dtime_fields = []
+
+        for fields, table_type in self.fields:
+            for column in table_type.sqlmeta._columns:
+                if not column.origName in fields:
+                    continue
+                db_table_name = table_type.get_db_table_name()
+                value = (column.dbName, db_table_name)
+
+                if isinstance(column, sqlobject.col.SOStringCol):
+                   self.str_fields.append(value)
+                elif isinstance(column, sqlobject.col.SOIntCol):
+                     self.int_fields.append(value)
+                elif isinstance(column, sqlobject.col.SOFloatCol):
+                     self.float_fields.append(value)
+                elif isinstance(column, sqlobject.col.SODateTimeCol):
+                     self.dtime_fields.append(value)
+
+    def _set_query_str(self, search_str, query):
+        query_str = "%s ~* '%s'"
+        self._set_query(self.str_fields, query_str, search_str, query)
+
+    def _set_query_float(self, search_str, query):
+        query_str = "%s = %f"
+        search_str = float(search_str)
+        self._set_query(self.float_fields, query_str, search_str, query)
+           
+    def _set_query_int(self, search_str, query):
+        query_str = "%s = %d"
+        search_str = int(search_str)
+        self._set_query(self.int_fields, query_str, search_str, query)
+
+    def _set_query(self, fields, query_str, search_str, query):
+        for field_name, table_name in fields:
+            if self.clause_tables:
+                base_query = "%s." + query_str
+                base_query = base_query % (table_name, field_name, 
+                                           search_str)
+                query.append(base_query)
+            else:
+                query.append(query_str % (field_name, search_str))
+
+
+
+    #
+    # Building query
+    #
+
+
+
+    def _build_query(self, search_str):
+        """Here we build queries after check the search string type. 
+        Queries are always optimized for field types to avoid database 
+        input syntax errors and also make smart searches."""
+        query = []
+        if common.is_integer(search_str):
+            self._set_query_int(search_str, query)
+        elif common.is_float(search_str):
+            self._set_query_float(search_str, query)
+        self._set_query_str(search_str, query)
+
+        return " or ".join(query)
+
+
+
+    #
+    # Performing search
+    #
+
+
+
+    def _run_query(self):
+        search_str = self.search_entry.get_text()
+        if not search_str:
+            # Clear the kiwi list if we don't have a valid search string
+            self.parent.update_klist()
+            return
+        query = self._build_query(search_str)
+
+        kwargs = {'connection': self.conn}
+        if self.query_args:
+            keys = ['connection', 'clauseTables', 'distinct']
+            for query_arg in keys:
+                msg = 'Invalid query argument %s' % query_arg
+                assert not query_arg in self.query_args, msg
+            kwargs.update(self.query_args)
+
+        if self.clause_tables:
+            kwargs['clauseTables'] = self.clause_tables
+            kwargs['distinct'] = True
+        objs = self.table_type.select(query, **kwargs)
+        objs = self.parent.filter_results(objs)
+        self.parent.update_klist(objs)
+
+    def search_items(self):
+        self.start_animate_search_icon()
+        self._run_query()
+        self.stop_animate_search_icon()
+
+
+
+    #
+    # Animation
+    #
+
+
+
+    def _animate_search_icon(self):
+        dir = stoqlib.__path__[0] + '/gui/pixmaps'
+        stocklist = ["searchtool-icon2",
+                     "searchtool-icon3",
+                     "searchtool-icon4",
+                     "searchtool-icon1"]
+        
+        while True:
+            for stock in stocklist:
+                self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
+                yield True
+        
+        yield False
+
+    def start_animate_search_icon(self):
+        self._animate_search_icon_id = \
+            gobject.timeout_add(self.ANIMATE_TIMEOUT, 
+                                self._animate_search_icon().next)
+    
+    def stop_animate_search_icon(self):
+        if self._animate_search_icon_id == -1:
+            # TODO: it's wierd that _warn method is private. Need some refactoring
+            exceptions._warn("Search icon animation hasn't started")
+        gobject.source_remove(self._animate_search_icon_id)
+    
+
+    
+    #
+    # Callbacks
+    # 
+    
 
 
     def on_search_button__clicked(self, *args):
-        self.parent.update_klist()
+        self.search_items()
 
-    def on_erase_button__clicked(self, *args):
-        self.parent.clear_klist()
-        self.parent.clear_fields()
+    def on_search_entry__activate(self, *args):
+        self.search_items()
+
+    def on_search_entry__changed(self, *args):
+        self._update_widgets()
 
 
 class SearchEditorToolBar(SlaveDelegate):
@@ -117,7 +299,8 @@ class SearchEditorToolBar(SlaveDelegate):
 
     def __init__(self, parent):
         SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                               gladefile=self.gladefile, widgets=self.widgets)
+                               gladefile=self.gladefile, 
+                               widgets=self.widgets)
         self.parent = parent
 
 
@@ -166,70 +349,72 @@ class SearchDialog(dialogs.BasicDialog):
     title = ''
     size = ()
             
-    def __init__(self, table, hide_footer=True):
+    def __init__(self, table, search_table=None, hide_footer=True,
+                 title=''):
         dialogs.BasicDialog.__init__(self)
+        title = title or self.title
         dialogs.BasicDialog._initialize(self, hide_footer=hide_footer,
                                         main_label_text=self.main_label_text, 
-                                        title=self.title, size=self.size)
+                                        title=title, size=self.size)
         self.table = table
+        self.search_table = search_table or self.table
         self.conn = database.get_model_connection()
         assert self.conn
         self.setup_slaves()
-        self.update_edit_button()
 
     def setup_slaves(self, **kwargs):
         self.klist_slave = BaseListSlave(parent=self)
-        self.klist = self.klist_slave.klist
-
-        self.search_bar = SearchSlave(self)
-
         self.attach_slave('main', self.klist_slave)
+        self.klist = self.klist_slave.klist
+        # We can not change this through gazpacho because BaseListSlave 
+        # can be used for some other classes which should always redefine
+        # this mode
+        self.klist.set_selection_mode(gtk.SELECTION_BROWSE)
+
+        fields = self.get_table_fields()
+        query_args = self.get_query_args()
+        clause_tables = self.get_clause_tables()
+        self.search_bar = SearchBar(self, self.search_table, fields, 
+                                    clause_tables=clause_tables,
+                                    query_args=query_args)
         self.attach_slave('header', self.search_bar)
 
-    def update_klist(self, *args):
-        self.klist.clear()
-
-        retval = self.get_query_and_args()
-        kwargs = {}
-        if retval and type(retval) is types.TupleType:
-            query, kwargs = retval
-        else:
-            query = retval or None
-
-        assert not kwargs.has_key('connection')
-        kwargs['connection'] = self.conn
-
-        objs = self.table.select(query, **kwargs)
-
-        if objs.count():
-            self.klist.add_list(objs)
-
-        # A hack to allow me set the sensitive state of edit_button for
-        # SearchEditor. Also, internal operations must be done in
-        # update_edit_button; update_widgets is *exclusive* for SearchEditor
-        # and SearchDialog subclasses now.
-        self.update_edit_button()
-        self.update_widgets()
 
     def clear_klist(self):
         self.klist.clear()
         self.update_widgets()
-        self.update_edit_button()
 
     def confirm(self):
         self.retval = self.klist.get_selected()
         self.close()
 
-    def update_edit_button(self):
-        pass
-
 
 
     #
-    # Hook methods
+    # Hooks
     #
 
 
+
+    def update_klist(self, objs=None):
+        """A hook called by SearchBar and BaseListSlave instances."""
+        self.klist.clear()
+        
+        if not objs:
+            self.update_widgets()
+            return
+
+        if isinstance(objs, (list, tuple)):
+            count = len(objs)
+        elif isinstance(objs, sqlobject.sresults.SelectResults):
+            count = objs.count()
+        else:
+            msg = 'Invalid type for result objects: Type: %s'
+            raise TypeError, msg % type(objs)
+            
+        if count:
+            self.klist.add_list(objs)
+        self.update_widgets()
 
     def on_delete_items(self, items):
         """ This hook could be useful for AdditionListSlave instances. It 
@@ -251,9 +436,28 @@ class SearchDialog(dialogs.BasicDialog):
     def get_columns(self):
         raise NotImplementedError
 
-    def get_query_and_args(self):
-        user_slave = self.search_bar.get_slave('searchbar_holder')
-        return user_slave.get_query_and_args()
+    def get_table_fields(self):
+        """Return a list of tuples. Each tuple has its first element as 
+           a tuple of the object column names and the second element
+           is the table type of these columns.
+           E.g: [(('name', phone_number), Person), 
+                 (('street', 'number'), Address)] """
+        raise NotImplementedError
+
+    def get_query_args(self):
+        """An optional list of SQLObject arguments for select function."""
+
+    def get_clause_tables(self):
+        """Every time we use an implicit join we must supply a list of one
+        or more database table names which represents clause tables for 
+        the query.  Clause tables ARE ALWAYS DIFFERENT FROM THE MAIN 
+        TABLE."""
+
+    def filter_results(self, objects):
+        """Call sites can implement a filter here to allow multiple selects
+        for one search when it's necessary. Multiple selects are often 
+        much better than one super complex query."""
+        return objects
 
 
 class SearchEditor(SearchDialog):
@@ -265,17 +469,20 @@ class SearchEditor(SearchDialog):
     This is also a subclass of SearchDialog and the same rules are required. 
     """
 
-    def __init__(self, table, editor_class, hide_footer=True):
-        SearchDialog.__init__(self, table, hide_footer)
+    def __init__(self, table, editor_class, search_table=None,
+                 hide_footer=True, title=''):
+        SearchDialog.__init__(self, table, search_table=search_table,
+                              hide_footer=hide_footer, title=title)
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
+        self.update_widgets()
 
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
         self.toolbar = SearchEditorToolBar(self)
         self.attach_slave('extra_holder', self.toolbar)
 
-    def update_edit_button(self):
+    def update_widgets(self, *args):
         self.toolbar.edit_button.set_sensitive(len(self.klist))
 
     def run(self, obj=None):
@@ -290,7 +497,7 @@ class SearchEditor(SearchDialog):
             return
 
         self.conn.commit()
-        self.update_klist()
+        self.search_bar.search_items()
 
         if rv in self.klist:
             self.klist.select_instance(rv)
@@ -304,14 +511,10 @@ class SearchEditor(SearchDialog):
 
     
     #
-    # Hook methods
+    # Hooks
     #
 
 
 
-    def clear_fields(self):
-        """ This hook is used when an Erase button was pushed to clean 
-        fields defined by the constructor """
-        
     def new(self):
         self.run()

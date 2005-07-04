@@ -26,6 +26,8 @@ gui/gtkadds.py:
     Some extra methods to deal with gtk/kiwi widgets
 """
 
+import os
+
 import gtk
 import stoqlib
 
@@ -34,8 +36,10 @@ import stoqlib
 def register_iconsets(icon_info):
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
-    for stock_id, file in icon_info:
+    dir = os.path.join(stoqlib.__path__[0], 'gui', 'pixmaps')
+    for stock_id, file_name in icon_info:
         # only load image files when our stock_id is not present
+        file = os.path.join(dir, file_name)
         if stock_id not in stock_ids:
             pixbuf = gtk.gdk.pixbuf_new_from_file(file)
             iconset = gtk.IconSet(pixbuf)
@@ -62,13 +66,12 @@ def change_button_appearance(button, icon=None, text=None):
     if text or text == '':
         label.set_text(text)
 
-dir = stoqlib.__path__[0] + '/gui/pixmaps/'
 register_iconsets([
-    ('stoq-search-pos1', dir+"searchtool-animation-pos1.png"),
-    ('stoq-search-pos2', dir+"searchtool-animation-pos2.png"),
-    ('stoq-search-pos3', dir+"searchtool-animation-pos3.png"),
-    ('stoq-search-pos4', dir+"searchtool-animation-pos4.png"),
-    ('stoq-user-small', dir+"user-small.png"),
-    ('stoq-users', dir+"users.png"),
-    ('stoq-sales', dir+"sales.xpm")
+    ('searchtool-icon1', "searchtool-animation1.png"),
+    ('searchtool-icon2', "searchtool-animation2.png"),
+    ('searchtool-icon3', "searchtool-animation3.png"),
+    ('searchtool-icon4', "searchtool-animation4.png"),
+    ('stoq-user-small', "user-small.png"),
+    ('stoq-users', "users.png"),
+    ('stoq-sales', "sales.xpm")
     ])
