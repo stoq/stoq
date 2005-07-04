@@ -198,6 +198,10 @@ class SearchBar(SlaveDelegate):
             self._set_query_int(search_str, query)
         elif common.is_float(search_str):
             self._set_query_float(search_str, query)
+        else:
+            # Instead of checking for another type, perform later a 
+            # query for string fields and for any search string.
+            pass
         self._set_query_str(search_str, query)
 
         return " or ".join(query)
