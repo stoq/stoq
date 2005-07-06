@@ -140,6 +140,7 @@ be subclassed and customized."""
     widgets = ('top_separator', 
                'header', 
                'header_label',
+               'extra_header',
                'main', 
                'main_label', 
                'ok_button',
