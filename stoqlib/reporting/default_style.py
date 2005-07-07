@@ -24,7 +24,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
 from reportlab.lib.enums import TA_RIGHT, TA_CENTER
-from reportlab.platypus import TableStyle, CellStyle
+from reportlab.platypus import TableStyle
 
 STYLE_SHEET = StyleSheet1()
 STYLE_SHEET.add(ParagraphStyle(

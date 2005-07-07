@@ -29,8 +29,9 @@ gui/lists.py:
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
 
-from stoqlib.gui import dialogs, search, editors
-from stoqlib import exceptions
+from stoqlib.gui.dialogs import run_dialog, confirm_dialog
+from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
+from stoqlib.gui.search import BaseListSlave
 
 
 class AdditionListSlave(SlaveDelegate):
@@ -84,8 +85,8 @@ class AdditionListSlave(SlaveDelegate):
 
     def run(self, model=None):
         edit_mode = model
-        model = dialogs.run_dialog(self.editor_class, None, conn=self.conn,
-                                   model=model, **self.editor_kwargs)
+        model = run_dialog(self.editor_class, None, conn=self.conn,
+                           model=model, **self.editor_kwargs)
         if not model:
             return
         if edit_mode or model in self.klist:
@@ -155,7 +156,7 @@ class AdditionListSlave(SlaveDelegate):
         else:
             msg = _('Are you sure you want delete this item ?')
 
-        if not dialogs.confirm_dialog(msg):
+        if not confirm_dialog(msg):
             return
 
         self.parent.on_delete_items(objs_selected)
@@ -171,13 +172,13 @@ class AdditionListSlave(SlaveDelegate):
         self.update_widgets()
 
 
-class AdditionListDialog(dialogs.BasicPluggableDialog):
+class AdditionListDialog(BasicPluggableDialog):
     size = (500, 500)
 
     def __init__(self, conn, parent, editor_class, columns, klist_objects,
                  title='', **editor_kwargs):
         self.title = title
-        dialogs.BasicPluggableDialog.__init__(self)
+        BasicPluggableDialog.__init__(self)
         self.conn = conn
         self._initialize(editor_class, columns, klist_objects, **editor_kwargs)
 
@@ -192,9 +193,8 @@ class AdditionListDialog(dialogs.BasicPluggableDialog):
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm
 
-        dialogs.BasicPluggableDialog._initialize(self, self.addition_list,
-                                                 size=self.size,
-                                                 title=self.title)
+        BasicPluggableDialog._initialize(self, self.addition_list,
+                                         size=self.size, title=self.title)
 
 
 
@@ -231,12 +231,12 @@ class AdditionListDialog(dialogs.BasicPluggableDialog):
         pass
 
 
-class SimpleListDialog(dialogs.BasicDialog):
+class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
     def __init__(self, columns, objects, parent=None, hide_cancel_btn=True):
-        dialogs.BasicDialog.__init__(self)
-        dialogs.BasicDialog._initialize(self, size=self.size)
+        BasicDialog.__init__(self)
+        BasicDialog._initialize(self, size=self.size)
 
         if hide_cancel_btn:
             self.cancel_button.hide()
@@ -244,7 +244,7 @@ class SimpleListDialog(dialogs.BasicDialog):
         self.setup_slave(columns, objects, parent)
 
     def setup_slave(self, columns, objects, parent):
-        self.list_slave = search.BaseListSlave(parent, columns, objects)
+        self.list_slave = BaseListSlave(parent, columns, objects)
         self.list_slave.klist.set_selection_mode(gtk.SELECTION_EXTENDED)
         self.attach_slave('main', self.list_slave)
 

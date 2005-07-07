@@ -4,11 +4,10 @@ Este módulo implementa as classes para inserção de todos os tipos de tabelas
 disponiblizados pelo Stoqlib Reporting. 
 """
 import operator
-from types import StringType, ListType, TupleType
+from types import StringType
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
-from reportlab.platypus import TableStyle, ActionFlowable, KeepTogether, \
-                               Paragraph, Table as RTable
+from reportlab.platypus import TableStyle, Paragraph, Table as RTable
 
 # All UPPERCASE constants (except LEFT, CENTER and RIGHT) are from here:
 from default_style import *

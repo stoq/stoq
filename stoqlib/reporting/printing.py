@@ -9,12 +9,12 @@ from mx.DateTime import now
 from reportlab.lib.units import mm
 
 # sibling imports
-from stoqlib.reporting import template
+from stoqlib.reporting.template import BaseReportTemplate
 from stoqlib.reporting.default_style import *
 
 SMALL_FONT = ("Helvetica", 12)
 
-class ReportTemplate(template.BaseReportTemplate):
+class ReportTemplate(BaseReportTemplate):
     """ 
     Classe responsável pela configuração da página e desenho de elementos
     fixos de cada página. 
@@ -42,10 +42,9 @@ class ReportTemplate(template.BaseReportTemplate):
             página criada.
         """
         self.timestamp = timestamp
-        template.BaseReportTemplate.__init__(self, filename, report_name,
-                                             do_header=do_header,
-                                             do_footer=do_footer,
-                                             **kwargs)
+        BaseReportTemplate.__init__(self, filename, report_name,
+                                    do_header=do_header, do_footer=do_footer,
+                                    **kwargs)
 
     def draw_header(self, canvas):
         """

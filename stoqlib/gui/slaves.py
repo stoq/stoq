@@ -26,9 +26,9 @@ gui/slaves.py:
    Basic slave definitions
 """
 
-from stoqlib.gui import editors
+from stoqlib.gui.editors import BaseEditorSlave
 
-class NoteSlave(editors.BaseEditorSlave):
+class NoteSlave(BaseEditorSlave):
     """
     Slave store general notes. The model must have an attribute 'notes' to work.
     """
@@ -38,7 +38,7 @@ class NoteSlave(editors.BaseEditorSlave):
     
     def __init__(self, conn, model): 
         self.model = model
-        editors.BaseEditorSlave.__init__(self, conn, self.model)
+        BaseEditorSlave.__init__(self, conn, self.model)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
