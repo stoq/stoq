@@ -27,12 +27,13 @@ gui/dialogs.py:
 """
 
 import traceback
+import sys
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
 
-from stoqlib import exceptions 
+from stoqlib.exceptions import _warn, ModelDataError
 
 
 
@@ -229,7 +230,7 @@ class BasicPluggableDialog(BasicDialog):
     def _initialize(self, slave, title=" ", header_text="", size=None):
         """May be called by refresh by subdialogs, as necessary"""
         if self.slave:
-            exceptions._warn("%s had self.slave set to %s!" % (self, self.slave))
+            _warn("%s had self.slave set to %s!" % (self, self.slave))
         self.slave = slave
         self.attach_slave("main", slave)
         if self.warnbox:
@@ -362,7 +363,7 @@ def _conflict_dialog(e):
            "(This problem was registered and will be evaluated.)")
     notify_dialog(msg)
 
-def notify_if_raises(win, check_func, exceptions=exceptions.ModelDataError, 
+def notify_if_raises(win, check_func, exceptions=ModelDataError, 
                      text="An error ocurred: %s"):
     try:
         check_func()

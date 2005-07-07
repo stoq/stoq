@@ -34,9 +34,10 @@ import sqlobject
 from kiwi.ui.delegates import SlaveDelegate
 
 import stoqlib
-from stoqlib.gui import dialogs, gtkadds
-from stoqlib import database, exceptions, common
-
+from stoqlib.gui.dialogs import BasicDialog, run_dialog
+from stoqlib.exceptions import _warn
+from stoqlib.common import is_integer, is_float
+from stoqlib.database import get_model_connection
 
 
 #
@@ -194,9 +195,9 @@ class SearchBar(SlaveDelegate):
         Queries are always optimized for field types to avoid database 
         input syntax errors and also make smart searches."""
         query = []
-        if common.is_integer(search_str):
+        if is_integer(search_str):
             self._set_query_int(search_str, query)
-        elif common.is_float(search_str):
+        elif is_float(search_str):
             self._set_query_float(search_str, query)
         else:
             # Instead of checking for another type, perform later a 
@@ -272,7 +273,7 @@ class SearchBar(SlaveDelegate):
     def stop_animate_search_icon(self):
         if self._animate_search_icon_id == -1:
             # TODO: it's wierd that _warn method is private. Need some refactoring
-            exceptions._warn("Search icon animation hasn't started")
+            _warn("Search icon animation hasn't started")
         gobject.source_remove(self._animate_search_icon_id)
     
 
@@ -329,7 +330,7 @@ class SearchEditorToolBar(SlaveDelegate):
 
 
 
-class SearchDialog(dialogs.BasicDialog):
+class SearchDialog(BasicDialog):
     """  Base class for *all* the search dialogs, responsible for the list
     construction and "Filter" and "Clear" buttons management.
 
@@ -355,14 +356,14 @@ class SearchDialog(dialogs.BasicDialog):
             
     def __init__(self, table, search_table=None, hide_footer=True,
                  title=''):
-        dialogs.BasicDialog.__init__(self)
+        BasicDialog.__init__(self)
         title = title or self.title
-        dialogs.BasicDialog._initialize(self, hide_footer=hide_footer,
+        BasicDialog._initialize(self, hide_footer=hide_footer,
                                         main_label_text=self.main_label_text, 
                                         title=title, size=self.size)
         self.table = table
         self.search_table = search_table or self.table
-        self.conn = database.get_model_connection()
+        self.conn = get_model_connection()
         assert self.conn
         self.setup_slaves()
 
@@ -493,8 +494,7 @@ class SearchEditor(SearchDialog):
         if obj: 
             obj = self.table.get(id=obj.id, connection=self.conn)
         
-        rv = dialogs.run_dialog(self.editor_class, self, 
-                                self.conn, obj)
+        rv = run_dialog(self.editor_class, self, self.conn, obj)
         if not rv:
             self.conn.rollback()
             self.conn.begin()

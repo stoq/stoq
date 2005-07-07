@@ -30,7 +30,7 @@ import gtk
 import gobject
 from kiwi.ui.delegates import Delegate
 
-from stoqlib.gui import dialogs 
+from stoqlib.gui.dialogs import get_dialog, run_dialog
 
 
 #
@@ -80,9 +80,9 @@ class BaseAppWindow(Delegate):
 
     def get_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for getting dialogs. """
-        return dialogs.get_dialog(self, dialog_class, *args, **kwargs)
+        return get_dialog(self, dialog_class, *args, **kwargs)
 
     def run_dialog(self, dialog_class, *args, **kwargs):
         """ Encapsuled method for running dialogs. """
-        return dialogs.run_dialog(dialog_class, self, *args, **kwargs)
+        return run_dialog(dialog_class, self, *args, **kwargs)
 
