@@ -28,16 +28,23 @@ gui/search.py:
     Implementation of basic dialogs for search
 """
 
+import string
+
 import gtk
 import gobject
-import sqlobject
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.widgets.list import Column
+from sqlobject.sresults import SelectResults
+from sqlobject.sqlbuilder import LIKE, AND, func, OR
+from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
+                           SODateTimeCol)
 
 import stoqlib
 from stoqlib.gui.dialogs import BasicDialog, run_dialog
 from stoqlib.exceptions import _warn
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import get_model_connection
+from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
 
 #
@@ -104,8 +111,7 @@ class SearchBar(SlaveDelegate):
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
-    def __init__(self, parent, table_type, fields, clause_tables=None,
-                 query_args=None):
+    def __init__(self, parent, table_type, columns, query_args=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
@@ -114,9 +120,8 @@ class SearchBar(SlaveDelegate):
         self._update_widgets()
         self.parent = parent
         self.conn = self.parent.conn
-        self.fields = fields
+        self.columns = columns
         self.table_type = table_type
-        self.clause_tables = clause_tables
         self.query_args = query_args
         self._split_field_types()
 
@@ -142,45 +147,56 @@ class SearchBar(SlaveDelegate):
         # this part soon and when we add a slave area for DateTime widgets.
         self.dtime_fields = []
 
-        for fields, table_type in self.fields:
-            for column in table_type.sqlmeta._columns:
-                if not column.origName in fields:
-                    continue
-                db_table_name = table_type.get_db_table_name()
-                value = (column.dbName, db_table_name)
+        attributes = [c.attribute for c in self.columns]
+        for k_column in self.columns:
+            if isinstance(k_column, FacetColumn):
+                facet = k_column._facet
+                table_type = self.table_type.getAdapterClass(facet)
+            elif isinstance(k_column, ForeignKeyColumn):
+                table_type = k_column._table
+            elif isinstance(k_column, Column):
+                table_type = self.table_type
+            else:
+                raise TypeError('Invalid column type %s' % type(k_column))
 
-                if isinstance(column, sqlobject.col.SOStringCol):
+            for column in table_type.sqlmeta._columns:
+                if not column.origName in attributes:
+                    continue
+                value = (column.name, table_type)
+
+                if (isinstance(column, SOStringCol) 
+                    and value not in self.str_fields):
                    self.str_fields.append(value)
-                elif isinstance(column, sqlobject.col.SOIntCol):
+                elif (isinstance(column, SOIntCol)
+                      and value not in self.int_fields):
                      self.int_fields.append(value)
-                elif isinstance(column, sqlobject.col.SOFloatCol):
+                elif (isinstance(column, SOFloatCol)
+                      and value not in self.float_fields):
                      self.float_fields.append(value)
-                elif isinstance(column, sqlobject.col.SODateTimeCol):
+                elif (isinstance(column, SODateTimeCol)
+                      and value not in self.dtime_fields):
                      self.dtime_fields.append(value)
 
     def _set_query_str(self, search_str, query):
-        query_str = "%s ~* '%s'"
-        self._set_query(self.str_fields, query_str, search_str, query)
+        search_str = '%%%s%%' % string.upper(search_str)
+        for field_name, table_type in self.str_fields:
+            table_field = getattr(table_type.q, field_name) 
+            q = LIKE(func.UPPER(table_field), search_str)
+            query.append(q)
 
     def _set_query_float(self, search_str, query):
-        query_str = "%s = %f"
         search_str = float(search_str)
-        self._set_query(self.float_fields, query_str, search_str, query)
+        for field_name, table_type in self.float_fields:
+            table_field = getattr(table_type.q, field_name) 
+            q = table_field == search_str
+            query.append(q)
            
     def _set_query_int(self, search_str, query):
-        query_str = "%s = %d"
         search_str = int(search_str)
-        self._set_query(self.int_fields, query_str, search_str, query)
-
-    def _set_query(self, fields, query_str, search_str, query):
-        for field_name, table_name in fields:
-            if self.clause_tables:
-                base_query = "%s." + query_str
-                base_query = base_query % (table_name, field_name, 
-                                           search_str)
-                query.append(base_query)
-            else:
-                query.append(query_str % (field_name, search_str))
+        for field_name, table_type in self.int_fields:
+            table_field = getattr(table_type.q, field_name) 
+            q = table_field == search_str
+            query.append(q)
 
 
 
@@ -205,7 +221,8 @@ class SearchBar(SlaveDelegate):
             pass
         self._set_query_str(search_str, query)
 
-        return " or ".join(query)
+        query = OR(*query)
+        return query
 
 
 
@@ -223,6 +240,9 @@ class SearchBar(SlaveDelegate):
             return
         query = self._build_query(search_str)
 
+        extra_query = self.parent.get_extra_query()
+        if extra_query:
+            query = AND(query, extra_query) 
         kwargs = {'connection': self.conn}
         if self.query_args:
             keys = ['connection', 'clauseTables', 'distinct']
@@ -231,9 +251,7 @@ class SearchBar(SlaveDelegate):
                 assert not query_arg in self.query_args, msg
             kwargs.update(self.query_args)
 
-        if self.clause_tables:
-            kwargs['clauseTables'] = self.clause_tables
-            kwargs['distinct'] = True
+        kwargs['distinct'] = True
         objs = self.table_type.select(query, **kwargs)
         objs = self.parent.filter_results(objs)
         self.parent.update_klist(objs)
@@ -376,11 +394,9 @@ class SearchDialog(BasicDialog):
         # this mode
         self.klist.set_selection_mode(gtk.SELECTION_BROWSE)
 
-        fields = self.get_table_fields()
+        columns = self.get_columns()
         query_args = self.get_query_args()
-        clause_tables = self.get_clause_tables()
-        self.search_bar = SearchBar(self, self.search_table, fields, 
-                                    clause_tables=clause_tables,
+        self.search_bar = SearchBar(self, self.search_table, columns, 
                                     query_args=query_args)
         self.attach_slave('header', self.search_bar)
 
@@ -411,7 +427,7 @@ class SearchDialog(BasicDialog):
 
         if isinstance(objs, (list, tuple)):
             count = len(objs)
-        elif isinstance(objs, sqlobject.sresults.SelectResults):
+        elif isinstance(objs, SelectResults):
             count = objs.count()
         else:
             msg = 'Invalid type for result objects: Type: %s'
@@ -441,22 +457,11 @@ class SearchDialog(BasicDialog):
     def get_columns(self):
         raise NotImplementedError
 
-    def get_table_fields(self):
-        """Return a list of tuples. Each tuple has its first element as 
-           a tuple of the object column names and the second element
-           is the table type of these columns.
-           E.g: [(('name', phone_number), Person), 
-                 (('street', 'number'), Address)] """
-        raise NotImplementedError
-
     def get_query_args(self):
         """An optional list of SQLObject arguments for select function."""
 
-    def get_clause_tables(self):
-        """Every time we use an implicit join we must supply a list of one
-        or more database table names which represents clause tables for 
-        the query.  Clause tables ARE ALWAYS DIFFERENT FROM THE MAIN 
-        TABLE."""
+    def get_extra_query(self):
+        """An optional SQLObject.sqlbuilder query for select statement."""
 
     def filter_results(self, objects):
         """Call sites can implement a filter here to allow multiple selects
