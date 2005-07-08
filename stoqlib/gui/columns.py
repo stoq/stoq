@@ -53,5 +53,5 @@ class ForeignKeyColumn(Column):
         Column.__init__(self, *args, **kwargs)
  
     def get_attribute(self, instance, name, default=None):
-        attr = '%s.%s' % (self._obj_field, self.attribute)
+        attr = '%s.%s' % (self._obj_field, name)
         return kgetattr(instance, attr, default)
