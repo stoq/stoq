@@ -366,19 +366,22 @@ class SearchDialog(BasicDialog):
 
     def __init__(self, *args):
         SearchDialog.__init__(self)
+
+    Some important parameters:
+    table = the table type which we will query on to get the objects.
         ...
     """
     main_label_text = ''
     title = ''
     size = ()
             
-    def __init__(self, table, search_table=None, hide_footer=True,
-                 title=''):
+    def __init__(self, table, search_table=None,
+                 hide_footer=True, title=''):
         BasicDialog.__init__(self)
         title = title or self.title
         BasicDialog._initialize(self, hide_footer=hide_footer,
-                                        main_label_text=self.main_label_text, 
-                                        title=title, size=self.size)
+                                main_label_text=self.main_label_text, 
+                                title=title, size=self.size)
         self.table = table
         self.search_table = search_table or self.table
         self.conn = get_model_connection()
@@ -477,12 +480,17 @@ class SearchEditor(SearchDialog):
     object to edit for 'edit' button.
     
     This is also a subclass of SearchDialog and the same rules are required. 
+
+    Some important parameters:
+    interface = The interface which we need to apply to the objects in 
+                kiwi list to get adapter for the editor.
     """
 
-    def __init__(self, table, editor_class, search_table=None,
-                 hide_footer=True, title=''):
-        SearchDialog.__init__(self, table, search_table=search_table,
+    def __init__(self, table, editor_class, interface=None,
+                 search_table=None, hide_footer=True, title=''):
+        SearchDialog.__init__(self, table, search_table,
                               hide_footer=hide_footer, title=title)
+        self.interface = interface
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
         self.update_widgets()
@@ -497,7 +505,15 @@ class SearchEditor(SearchDialog):
 
     def run(self, obj=None):
         if obj: 
-            obj = self.table.get(id=obj.id, connection=self.conn)
+            if self.interface:
+                if obj.is_adapter():
+                    adapted = obj.get_adapted()
+                else:
+                    adapted = obj
+                obj = self.interface(adapted, connection=self.conn)
+                
+            else:
+                obj = self.table.get(id=obj.id, connection=self.conn)
         
         rv = run_dialog(self.editor_class, self, self.conn, obj)
         if not rv:
