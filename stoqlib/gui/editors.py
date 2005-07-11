@@ -117,6 +117,6 @@ class SimpleEntryEditor(BaseEditor):
 
     def setup_proxies(self):
         assert self.model
-        self.name_entry.set_model_attribute(self.attr_name)
+        self.name_entry.set_property('model-attribute', self.attr_name)
         proxy = self.add_proxy(model=self.model, widgets=['name_entry'])
         
