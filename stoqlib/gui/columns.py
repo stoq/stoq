@@ -26,6 +26,7 @@ gui/columns.py:
     Special columns definition for kiwi lists.
 """
 
+from twisted.python.components import Adapter
 from kiwi.accessors import kgetattr
 from kiwi.ui.widgets.list import Column
  
@@ -35,7 +36,7 @@ class FacetColumn(Column):
         Column.__init__(self, *args, **kwargs)
  
     def get_attribute(self, instance, name, default=None):
-        if not instance.is_adapter():
+        if not isinstance(instance, Adapter):
             obj = self._facet(instance)
         else:
             original = instance.get_adapted()

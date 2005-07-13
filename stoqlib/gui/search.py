@@ -395,9 +395,14 @@ class SearchDialog(BasicDialog):
     size = ()
             
     def __init__(self, table, search_table=None,
-                 hide_footer=True, title=''):
+                 hide_footer=True, title='', 
+                 selection_mode=gtk.SELECTION_BROWSE):
         BasicDialog.__init__(self)
         title = title or self.title
+        avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
+        if selection_mode not in avaliable_modes:
+            raise ValueError('Invalid selection mode %' % selection_mode)
+        self.selection_mode = selection_mode
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text, 
                                 title=title, size=self.size)
@@ -415,7 +420,7 @@ class SearchDialog(BasicDialog):
         # We can not change this through gazpacho because BaseListSlave 
         # can be used for some other classes which should always redefine
         # this mode
-        self.klist.set_selection_mode(gtk.SELECTION_BROWSE)
+        self.klist.set_selection_mode(self.selection_mode)
 
         columns = self.get_columns()
         query_args = self.get_query_args()
@@ -429,9 +434,16 @@ class SearchDialog(BasicDialog):
         self.update_widgets()
 
     def confirm(self):
-        self.retval = self.klist.get_selected()
+        mode = self.klist.get_selection_mode()
+        if mode == gtk.SELECTION_BROWSE:
+            self.retval = self.klist.get_selected()
+        else:
+            self.retval = self.klist.get_selected_rows()
         self.close()
 
+    def cancel(self, *args):
+        self.retval = []
+        self.close()
 
 
     #
@@ -458,6 +470,7 @@ class SearchDialog(BasicDialog):
             
         if count:
             self.klist.add_list(objs)
+            self.klist.select_instance(objs[0])
         self.update_widgets()
 
     def on_delete_items(self, items):
@@ -507,9 +520,11 @@ class SearchEditor(SearchDialog):
     """
 
     def __init__(self, table, editor_class, interface=None,
-                 search_table=None, hide_footer=True, title=''):
+                 search_table=None, hide_footer=True, title='',
+                 selection_mode=gtk.SELECTION_BROWSE):
         SearchDialog.__init__(self, table, search_table,
-                              hide_footer=hide_footer, title=title)
+                              hide_footer=hide_footer, title=title,
+                              selection_mode=selection_mode)
         self.interface = interface
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
@@ -526,7 +541,7 @@ class SearchEditor(SearchDialog):
     def run(self, obj=None):
         if obj: 
             if self.interface:
-                if obj.is_adapter():
+                if isinstance(obj, Adapter):
                     adapted = obj.get_adapted()
                 else:
                     adapted = obj
