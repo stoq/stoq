@@ -32,6 +32,7 @@ import string
 
 import gtk
 import gobject
+from twisted.python.components import Adapter
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from sqlobject.sresults import SelectResults
@@ -111,7 +112,8 @@ class SearchBar(SlaveDelegate):
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
-    def __init__(self, parent, table_type, columns, query_args=None):
+    def __init__(self, parent, table_type, columns=None, query_args=None,
+                 search_callback=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
@@ -123,6 +125,7 @@ class SearchBar(SlaveDelegate):
         self.columns = columns
         self.table_type = table_type
         self.query_args = query_args
+        self._search_callback = search_callback
         self._split_field_types()
 
     def _update_widgets(self):
@@ -130,7 +133,13 @@ class SearchBar(SlaveDelegate):
             self.search_button.set_sensitive(True)
         else:
             self.search_button.set_sensitive(False)
+        self.search_entry.grab_focus()
 
+    def get_search_string(self):
+        return self.search_entry.get_text()
+
+    def set_search_string(self, search_str):
+        return self.search_entry.set_text(search_str)
 
 
     #
@@ -146,12 +155,17 @@ class SearchBar(SlaveDelegate):
         # TODO Just a beginnig for a date time suport. We will implement 
         # this part soon and when we add a slave area for DateTime widgets.
         self.dtime_fields = []
+        if not self.columns:
+            return
 
         attributes = [c.attribute for c in self.columns]
         for k_column in self.columns:
             if isinstance(k_column, FacetColumn):
-                facet = k_column._facet
-                table_type = self.table_type.getAdapterClass(facet)
+                if issubclass(self.table_type, Adapter):
+                    table_type = self.table_type
+                else:
+                    facet = k_column.get_facet()
+                    table_type = self.table_type.getAdapterClass(facet)
             elif isinstance(k_column, ForeignKeyColumn):
                 table_type = k_column._table
             elif isinstance(k_column, Column):
@@ -233,7 +247,7 @@ class SearchBar(SlaveDelegate):
 
 
     def _run_query(self):
-        search_str = self.search_entry.get_text()
+        search_str = self.get_search_string()
         if not search_str:
             # Clear the kiwi list if we don't have a valid search string
             self.parent.update_klist()
@@ -252,13 +266,18 @@ class SearchBar(SlaveDelegate):
             kwargs.update(self.query_args)
 
         kwargs['distinct'] = True
+        
         objs = self.table_type.select(query, **kwargs)
         objs = self.parent.filter_results(objs)
         self.parent.update_klist(objs)
 
     def search_items(self):
         self.start_animate_search_icon()
-        self._run_query()
+        if self._search_callback:
+            # Perform an alternative search as desired
+            self._search_callback()
+        else:
+            self._run_query()
         self.stop_animate_search_icon()
 
 
@@ -382,6 +401,7 @@ class SearchDialog(BasicDialog):
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text, 
                                 title=title, size=self.size)
+        self.set_ok_label(_('Select Items'))
         self.table = table
         self.search_table = search_table or self.table
         self.conn = get_model_connection()

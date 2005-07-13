@@ -43,6 +43,9 @@ class FacetColumn(Column):
             obj = self._facet(original, connection=conn)
         return kgetattr(obj, name, default)
 
+    def get_facet(self):
+        return self._facet
+
 class ForeignKeyColumn(Column):
     def __init__(self, table, *args, **kwargs):
         if not 'obj_field' in kwargs:
@@ -55,3 +58,15 @@ class ForeignKeyColumn(Column):
     def get_attribute(self, instance, name, default=None):
         attr = '%s.%s' % (self._obj_field, name)
         return kgetattr(instance, attr, default)
+
+class AccessorColumn(Column):
+    def __init__(self, attribute, accessor, *args, **kwargs):
+        if not accessor:
+            raise TypeError('AccessorColumn needs an accessor argument')
+ 
+        self.accessor = accessor
+        assert callable(self.accessor)
+        Column.__init__(self, attribute=attribute, *args, **kwargs)
+ 
+    def get_attribute(self, instance, name, default=None):
+        return self.accessor(instance)
