@@ -190,10 +190,10 @@ be subclassed and customized."""
         self.ok_button.set_sensitive(False)
 
     def set_ok_label(self, text):
-        self.ok_button.children()[0].set_text(text)
+        self.ok_button.set_label(text)
 
     def set_cancel_label(self, text):
-        self.cancel_button.children()[0].set_text(text)
+        self.cancel_button.set_label(text)
 
     def justify_label(self, just):
         self.main_label.set_justify(just)
