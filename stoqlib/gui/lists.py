@@ -69,14 +69,17 @@ class AdditionListSlave(SlaveDelegate):
 
     def _setup_list(self):
         self.klist.set_columns(self.columns)
-        self.klist.set_selection_mode(gtk.SELECTION_EXTENDED)
+        self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def update_widgets(self, *args):
         widgets = (self.add_button, self.delete_button, self.edit_button)
         for w in widgets:
             w.set_sensitive(True)
 
-        objs_selected = self.klist.get_selected()
+        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            objs_selected = self.klist.get_selected_rows()
+        else:
+            objs_selected = self.klist.get_selected()
         if not objs_selected:
             self.delete_button.set_sensitive(False)
             self.edit_button.set_sensitive(False)
@@ -245,7 +248,7 @@ class SimpleListDialog(BasicDialog):
 
     def setup_slave(self, columns, objects, parent):
         self.list_slave = BaseListSlave(parent, columns, objects)
-        self.list_slave.klist.set_selection_mode(gtk.SELECTION_EXTENDED)
+        self.list_slave.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self.attach_slave('main', self.list_slave)
 
     # BasicDialog 'confirm' method override
