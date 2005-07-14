@@ -565,7 +565,15 @@ class SearchEditor(SearchDialog):
 
     def edit(self, widget, obj=None):
         if obj is None:
-            obj = self.klist.get_selected()[0]
+            msg = "There should be only one item selected. Got %s items"
+            if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+                obj = self.klist.get_selected_rows()
+                msg = "There should be only one item selected. Got %s items"
+                qty = len(obj)
+                assert qty == 1, msg % qty
+            else:
+                obj = self.klist.get_selected()
+                assert obj, msg % 0
         self.run(obj) 
     
 
