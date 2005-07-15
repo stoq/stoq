@@ -375,5 +375,5 @@ def notify_if_raises(win, check_func, exceptions=ModelDataError,
 def notify_dialog(msg, title=None):
     run_dialog(NotifyDialog, None, text=msg, title=title)
 
-def confirm_dialog(msg, title):
+def confirm_dialog(msg, title=None):
     return run_dialog(ConfirmDialog, None, text=msg, title=title)
