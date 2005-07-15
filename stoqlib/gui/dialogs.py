@@ -296,15 +296,15 @@ class BasicWrappingDialog(BasicPluggableDialog):
         slave.set_transient_for = self.set_transient_for
 
 class ConfirmDialog(BasicDialog):
-    """Dialog offers an option to confirm or cancel an event. It prints
-        self.close()
-text in a label and offers OK/Cancel buttons."""
+    """Dialog offers an option to confirm or cancel an event. 
+    It prints text in a label and offers OK/Cancel buttons."""
 
     title = 'Confirmation'
-    def __init__(self, text):
+    def __init__(self, text, title=None):
         BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
-        BasicDialog._initialize(self, text, title=self.title)
+        title = title or self.title
+        BasicDialog._initialize(self, text, title=title)
 
     def setup_keyactions(self):
         self.keyactions = { gtk.keysyms.Escape: self.cancel,
@@ -316,8 +316,8 @@ class NotifyDialog(ConfirmDialog):
 offers a single OK button."""
 
     title = 'Notification'
-    def __init__(self, text):
-        ConfirmDialog.__init__(self, text)
+    def __init__(self, text, title=None):
+        ConfirmDialog.__init__(self, text, title)
         self.cancel_button.hide()
 
 
@@ -372,8 +372,8 @@ def notify_if_raises(win, check_func, exceptions=ModelDataError,
         return True 
     return False
 
-def notify_dialog(msg):
-    run_dialog(NotifyDialog, None, text=msg)
+def notify_dialog(msg, title=None):
+    run_dialog(NotifyDialog, None, text=msg, title=title)
 
-def confirm_dialog(msg):
-    return run_dialog(ConfirmDialog, None, text=msg)
+def confirm_dialog(msg, title):
+    return run_dialog(ConfirmDialog, None, text=msg, title=title)
