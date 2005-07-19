@@ -34,10 +34,12 @@ class NoteSlave(BaseEditorSlave):
     """
 
     gladefile = 'NoteSlave'
+    model_type = None
     widgets = ('notes',)
     
     def __init__(self, conn, model): 
         self.model = model
+        self.model_type = self.model_type or type(model)
         BaseEditorSlave.__init__(self, conn, self.model)
 
     def setup_proxies(self):
