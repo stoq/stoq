@@ -42,9 +42,9 @@ class BaseEditorSlave(SlaveDelegate):
         # The model attribute represents the main object that has been
         # edited by an interface. It will be always the object the is sent
         # from a kiwi list to an editor.
-        if not model_type:
+        if not self.model_type:
             raise TypeError('You must provide a valid model_type attribute.')
-        if model and not isinstance(model, model_type):
+        if model and not isinstance(model, self.model_type):
             raise TypeError('Invalid type for model attribute. Type: %s' %
                             type(model))
         self.conn = conn
