@@ -1,0 +1,367 @@
+# -*- Mode: Python; coding: iso-8859-1 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+"""
+lib/domain/product.py:
+    
+    Base classes to manage product's informations
+"""
+
+from stoqlib.exceptions import StockError, SellError
+from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
+from sqlobject.sqlbuilder import AND
+
+from stoq.domain.base_model import Domain, ModelAdapter
+from stoq.domain.sellable import (AbstractSellable, 
+                                  AbstractSellableItem,
+                                  get_formated_price)
+from stoq.domain.person import PersonAdaptToBranch
+from stoq.domain.stock import AbstractStockItem
+from stoq.domain.interfaces import (ISellable, IStorable, ISellableItem,
+                                    IStockItem)
+from stoq.lib.parameters import get_system_parameter
+from stoq.lib.runtime import get_connection
+
+
+
+__connection__ = get_connection()
+
+
+
+#
+# Base Domain Classes
+#
+
+
+
+class ProductSupplierInfo(Domain):
+    """ This class store information of the suppliers of a product. Each
+    product can has more than one supplier.  """
+    
+    base_cost = FloatCol(default=0.0)
+    notes = StringCol(default='')
+    is_main_supplier = BoolCol(default=False)
+    supplier =  ForeignKey('PersonAdaptToSupplier')
+    product =  ForeignKey('Product')
+
+
+
+    #
+    # Auxiliar methods
+    #
+
+
+
+    def get_name(self):
+        return self.supplier.get_adapted().name
+
+
+class Product(Domain):
+    """ Class responsible to store basic products informations """
+    
+    notes = StringCol(default='')
+    suppliers = MultipleJoin('ProductSupplierInfo')
+
+
+
+    #   
+    # Acessors
+    #   
+        
+
+
+    def get_main_supplier_info(self):
+        if not self.suppliers:
+            return
+        supplier_data = [supplier_info for supplier_info in self.suppliers 
+                                        if supplier_info.is_main_supplier]
+        assert not len(supplier_data) > 1
+        return supplier_data[0]
+
+
+class ProductStockReference(Domain):
+    """ Base stock informations for products"""
+
+    quantity = FloatCol(default=0.0)
+    logic_quantity = FloatCol(default=0.0)
+    branch =  ForeignKey('PersonAdaptToBranch')
+    product_item =  ForeignKey('ProductAdaptToSellableItem')
+
+
+
+#
+# Adapters
+#
+
+
+
+class ProductAdaptToSellable(AbstractSellable):
+    """ A product implementation as a sellable facet. """
+
+    __implements__ = ISellable,
+
+Product.registerFacet(ProductAdaptToSellable)
+
+
+class ProductAdaptToStorable(ModelAdapter):
+    """ A product implementation as a storable facet. """
+    
+    __implements__ = IStorable,
+
+    def __init__(self, _original=None, *args, **kwargs):
+        ModelAdapter.__init__(self, _original, *args, **kwargs)
+        conn = self.get_connection()
+        sparam = get_system_parameter(conn)
+        self.precision = sparam.STOCK_BALANCE_PRECISION
+
+    def get_stocks(self, branch=None):
+        product_id = self.get_adapted().id
+        conn = self.get_connection()
+        query = "original_id = '%d'" % product_id
+        stocks = ProductAdaptToStockItem.select(query, connection=conn)
+        if not branch:
+            return stocks
+        table, parent = ProductAdaptToStockItem, AbstractStockItem
+        q1 = table.q.id == parent.q.id
+        q2 = parent.q.branchID == branch.id
+        q3 = table.q._originalID == product_id
+        query = AND(q1, q2, q3)
+        return ProductAdaptToStockItem.select(query, connection=conn)
+
+    def fill_stocks(self):
+        conn = self.get_connection()
+        branch_companies = PersonAdaptToBranch.select(connection=conn)
+        for branch in branch_companies:
+            storable_add_stock_item(self, conn, branch)
+
+    def increase_stock(self, quantity, branch=None):
+        stocks = self.get_stocks(branch)
+        for stock_item in stocks:
+            stock_item.quantity += quantity
+
+    def increase_logic_stock(self, quantity, branch=None):
+        self._check_logic_quantity()
+        stocks = self.get_stocks(branch)
+        for stock_item in stocks:
+            stock_item.logic_quantity += quantity
+
+    def check_rejected_stocks(self, stocks, quantity, check_logic=False):
+        for stock_item in stocks:
+            if check_logic:
+                base_qty = stock_item.logic_quantity
+            else:
+                base_qty = stock_item.quantity
+            if base_qty < quantity:
+                msg = ('Quantity to decrease is greater than available '
+                       'stock.')
+                raise StockError(msg)
+
+    def decrease_stock(self, quantity, branch=None):
+        if not self._has_qty_available(quantity, branch):
+            # Of course that here we must use the logic quantity balance 
+            # as an addition to our main stock
+            logic_qty = self.get_logic_balance(branch)
+            balance = self.get_full_balance(branch) - logic_qty
+            logic_sold_qty = quantity - balance
+            quantity -= logic_sold_qty
+            self.decrease_logic_stock(logic_sold_qty, branch)
+
+        stocks = self.get_stocks(branch)
+        self.check_rejected_stocks(stocks, quantity)
+
+        for stock_item in stocks:
+            stock_item.quantity -= quantity
+
+    def decrease_logic_stock(self, quantity, branch=None):
+        self._check_logic_quantity()
+        rejected = []
+
+        stocks = self.get_stocks(branch)
+        self.check_rejected_stocks(stocks, quantity, check_logic=True)
+
+        for stock_item in stocks:
+            stock_item.logic_quantity -= quantity
+
+    def get_full_balance(self, branch=None):
+        """ Get the stock balance and the logic balance."""
+        stocks = self.get_stocks(branch)
+        if not stocks.count():
+            raise StockError, 'Invalid stock references for %s' % self
+        value = 0.0
+        sparam = get_system_parameter(self.get_connection())
+        has_logic_qty = sparam.USE_LOGIC_QUANTITY
+        for stock_item in stocks:
+            value += stock_item.quantity
+            if has_logic_qty:
+                value += stock_item.logic_quantity
+        return value
+
+    def get_logic_balance(self, branch=None):
+        stocks = self.get_stocks(branch)
+        assert stocks.count() >= 1
+        values = [stock_item.logic_quantity for stock_item in stocks]
+        return reduce(operator.add, value, 0.0)
+
+    def get_average_stock_price(self):
+        total_cost = 0.0
+        total_qty = 0.0
+        for stock_item in self.get_stocks():
+            total_cost += stock_item.total_cost
+            total_qty += stock_item.quantity
+
+        if total_cost and not total_qty:
+            msg = ('%s has inconsistent stock information: Quantity = 0 '
+                   'and TotalCost= %f')
+            raise StockError(msg % (self.get_adapted(), total_cost))
+        if not total_qty:
+            return 0.0
+        return total_cost / total_qty
+
+    def _has_qty_available(self, quantity, branch):
+        logic_qty = self.get_logic_balance(branch)
+        balance = self.get_full_balance(branch) - logic_qty
+        qty_ok =  quantity <= balance
+        logic_qty_ok = quantity <= self.get_balance(branch)
+        sparam = get_system_parameter(self.get_connection())
+        has_logic_qty = sparam.USE_LOGIC_QUANTITY
+        if not qty_ok and not (has_logic_qty and logic_qty_ok):
+            msg = ('Quantity to sell is greater than the available '
+                   'stock.')
+            raise StockError(msg)
+        return qty_ok
+
+
+
+    #
+    # Accessors
+    #
+
+
+
+    def get_full_balance_string(self, branch=None):
+        return '%.*f' % (int(self.precision), self.get_full_balance(branch))
+
+
+
+    #
+    # Reserved methods
+    #
+
+
+
+    def _check_logic_quantity(self):
+        sparam = get_system_parameter(self.get_connection())
+        if not sparam.USE_LOGIC_QUANTITY:
+            msg = ("This company doesn't allow logic quantity "
+                   "operations.")
+            raise StockError(msg)
+
+
+        
+    #
+    # Hooks
+    #
+
+
+        
+    def after_insert_model(self):
+        self.fill_stocks()
+
+Product.registerFacet(ProductAdaptToStorable)
+
+
+class ProductAdaptToSellableItem(AbstractSellableItem):
+    """ Class responsible to store basic products informations """
+
+    __implements__ = ISellableItem,
+
+    origins  = MultipleJoin('ProductStockReference')
+
+    def sell(self, conn, branch, order_product=False):
+        sparam = get_system_parameter(conn)
+        if not (branch and 
+                branch.id == sparam.CURRENT_BRANCH.id or 
+                branch.id == sparam.CURRENT_WAREHOUSE.id):
+            msg = ("Stock still doesn't support sales for "
+                   "branch companies different than the "
+                   "current one or the warehouse")
+            raise SellError(msg)
+
+        if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
+            msg = _("This company doesn't allow order products")
+            raise SellError(msg)
+        
+        adapted = self.get_adapted()
+        sellable_item = ISellable(adapted)
+        sellable_item.setConnection(conn)
+        if not sellable_item.can_be_sold():
+            msg = '%s is already sold' % adapted
+            raise SellError(msg)
+            
+        if order_product:
+            # If order_product is True we will not update the stock for this
+            # product
+            return
+
+        storable_item = IStorable(adapted)
+        storable_item.setConnection(conn)
+        # Update the stock
+        storable_item.decrease_stock(self.quantity, branch)
+
+        # The function get_balance returns the current amount of items in the
+        # stock. If get_balance == 0 we have no more stock for this product
+        # and we need to set it as sold.
+        logic_qty = storable.get_logic_balance()
+        balance = storable.get_full_balance() - logic_qty
+        if not balance:
+            sellable_item.set_sold()
+
+Product.registerFacet(ProductAdaptToSellableItem)
+
+
+class ProductAdaptToStockItem(AbstractStockItem):
+    """ Class that makes a reference to the product stock of a 
+    certain branch company."""
+
+    __implements__ = IStockItem,
+
+
+Product.registerFacet(ProductAdaptToStockItem)
+
+
+
+#
+# Auxiliar methods
+#
+
+
+
+def storable_add_stock_item(storable, conn, branch):
+    adapted = storable.get_adapted()
+    adapted.addFacet(IStockItem, branch=branch, connection=conn)
+
+
+def storables_set_branch(conn, branch):
+    """A method that must be called always when a new branch company is
+    created. It creates a new stock reference for all the products."""
+    for storable in ProductAdaptToStorable.select(connection=conn):
+        storable_add_stock_item(storable, conn, branch)

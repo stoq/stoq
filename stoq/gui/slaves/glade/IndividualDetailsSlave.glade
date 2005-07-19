@@ -1,0 +1,341 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="kiwi"/>
+    <widget class="GtkWindow" id="IndividualDetailsSlave">
+        <property name="title" context="True" translatable="True"></property>
+        <property name="role"></property>
+        <property name="events"></property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="row_spacing">5</property>
+                <property name="column_spacing">5</property>
+                <property name="border_width">5</property>
+                <property name="events"></property>
+                <property name="n_rows">5</property>
+                <property name="n_columns">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="marital_status">
+                        <property name="model_attribute">marital_status</property>
+                        <property name="events"></property>
+                        <property name="data_type">int</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="marital_status_lbl">
+                        <property name="label" context="True" translatable="True">Marital Status:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="birth_date">
+                        <property name="model_attribute">birth_date</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">date</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="y_options"></property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="True" translatable="True">Birth Date:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="y_options"></property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="birth_loc_state">
+                        <property name="model_attribute">state</property>
+                        <property name="events"></property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="label" context="True" translatable="True">Birth State</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label6">
+                        <property name="label" context="True" translatable="True">Mother's name:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options"></property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="mother_name">
+                        <property name="model_attribute">mother_name</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">2</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="gender_lbl">
+                        <property name="label" context="True" translatable="True">Gender:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="gender">
+                        <property name="model_attribute">gender</property>
+                        <property name="events"></property>
+                        <property name="data_type">int</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">3</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="occupation">
+                        <property name="model_attribute">occupation</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">3</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="birth_loc_city">
+                        <property name="model_attribute">city</property>
+                        <property name="events"></property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="birth_loc_country">
+                        <property name="model_attribute">country</property>
+                        <property name="events"></property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="father_name">
+                        <property name="model_attribute">father_name</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">str</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="label" context="True" translatable="True">Father's Name:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">2</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="True" translatable="True">Birth Country:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="True" translatable="True">Birth City:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="y_options"></property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="occupation_lbl">
+                        <property name="label" context="True" translatable="True">Occupation:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="spouse_lbl">
+                        <property name="label" context="True" translatable="True">Spouse:</property>
+                        <property name="events"></property>
+                        <property name="xpad">2</property>
+                        <property name="xalign">1.0</property>
+                        <property name="sensitive">False</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options"></property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="spouse">
+                        <property name="model_attribute">spouse</property>
+                        <property name="events"></property>
+                        <property name="sensitive">False</property>
+                        <property name="data_type">object</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options"></property>
+                        <property name="x_options">expand | fill | shrink</property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">5</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkButton" id="new_spouse_button">
+                        <property name="receives_default">True</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkImage" id="new_spouse_button-image">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-new</property>
+                                <property name="icon-size">4</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">5</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options"></property>
+                        <property name="x_options">shrink</property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

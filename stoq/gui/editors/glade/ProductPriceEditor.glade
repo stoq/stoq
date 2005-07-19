@@ -1,0 +1,556 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="kiwi"/>
+    <widget class="GtkWindow" id="ProductPriceEditor">
+        <property name="events"></property>
+        <property name="destroy_with_parent">True</property>
+        <property name="window_position">center-always</property>
+        <property name="modal">True</property>
+        <child>
+            <widget class="GtkTable" id="table2">
+                <property name="row_spacing">5</property>
+                <property name="column_spacing">5</property>
+                <property name="events"></property>
+                <property name="n_rows">8</property>
+                <property name="n_columns">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="True" translatable="True">Base Cost:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="True" translatable="True">Markup:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="label" context="True" translatable="True">Sale Price:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="label" context="True" translatable="True">Comission:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="price">
+                        <property name="model_attribute">price</property>
+                        <property name="events"></property>
+                        <property name="width_chars">5</property>
+                        <property name="xalign">1.0</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">float</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">3</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="cost">
+                        <property name="model_attribute">cost</property>
+                        <property name="label" context="True" translatable="True">0,00</property>
+                        <property name="use_markup">True</property>
+                        <property name="events"></property>
+                        <property name="width_chars">0</property>
+                        <property name="xalign">1.0</property>
+                        <property name="data_type">float</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkAlignment" id="alignment1">
+                        <property name="yscale">0.0</property>
+                        <property name="xscale">0.0</property>
+                        <property name="events"></property>
+                        <property name="xalign">0.0</property>
+                        <property name="yalign">0.0</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="events"></property>
+                                <property name="spacing">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="comission">
+                                        <property name="numeric">True</property>
+                                        <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
+                                        <property name="model_attribute">comission</property>
+                                        <property name="text" context="True" translatable="True">0,00</property>
+                                        <property name="events"></property>
+                                        <property name="width_chars">6</property>
+                                        <property name="digits">2</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="data_type">float</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing/>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label9">
+                                        <property name="label" context="True" translatable="True">%  </property>
+                                        <property name="events"></property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label11">
+                                        <property name="label" context="True" translatable="True">Max Discount:</property>
+                                        <property name="events"></property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="max_discount">
+                                        <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
+                                        <property name="model_attribute">max_discount</property>
+                                        <property name="text" context="True" translatable="True">0,00</property>
+                                        <property name="events"></property>
+                                        <property name="width_chars">6</property>
+                                        <property name="digits">2</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="data_type">float</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">3</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox3">
+                        <property name="events"></property>
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="markup">
+                                <property name="numeric">True</property>
+                                <property name="adjustment">0.000000 -999999.000000 999999.000000 1.000000 10.000000 0.000000</property>
+                                <property name="model_attribute">markup</property>
+                                <property name="text" context="True" translatable="True">0,00</property>
+                                <property name="events"></property>
+                                <property name="width_chars">6</property>
+                                <property name="digits">2</property>
+                                <property name="xalign">1.0</property>
+                                <property name="can_focus">True</property>
+                                <property name="data_type">float</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label10">
+                                <property name="label" context="True" translatable="True">%  </property>
+                                <property name="events"></property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="True" translatable="True">Base Markup:</property>
+                                <property name="events"></property>
+                                <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="base_markup">
+                                <property name="model_attribute">base_markup</property>
+                                <property name="label" context="True" translatable="True">0.00</property>
+                                <property name="use_markup">True</property>
+                                <property name="events"></property>
+                                <property name="width_chars">0</property>
+                                <property name="xpad">12</property>
+                                <property name="xalign">1.0</property>
+                                <property name="data_type">float</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">3</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label6">
+                        <property name="ypad">5</property>
+                        <property name="label" context="True" translatable="True"> &lt;u&gt;Currently on sale:&lt;/u&gt;</property>
+                        <property name="use_markup">True</property>
+                        <property name="events"></property>
+                        <property name="xalign">0.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">6</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">5</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label7">
+                        <property name="label" context="True" translatable="True">Price:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">7</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id = "on_sale_price">
+                        <property name="model_attribute">on_sale_price</property>
+                        <property name="events"></property>
+                        <property name="width_chars">5</property>
+                        <property name="xalign">1.0</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">float</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">6</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label8">
+                        <property name="label" context="True" translatable="True">From:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">7</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="on_sale_start_date">
+                        <property name="model_attribute">on_sale_start_date</property>
+                        <property name="events"></property>
+                        <property name="width_chars">10</property>
+                        <property name="xalign">1.0</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">date</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">7</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label14">
+                        <property name="label" context="True" translatable="True">To</property>
+                        <property name="events"></property>
+                        <property name="max_width_chars">0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">7</property>
+                        <property name="right_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="on_sale_end_date">
+                        <property name="model_attribute">on_sale_end_date</property>
+                        <property name="events"></property>
+                        <property name="width_chars">10</property>
+                        <property name="xalign">1.0</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">date</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="y_options"></property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">7</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkAlignment" id="alignment2">
+                        <property name="yscale">0.0</property>
+                        <property name="xscale">0.5</property>
+                        <property name="events"></property>
+                        <property name="xalign">0.00999999977648</property>
+                        <property name="yalign">0.0</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkHSeparator" id="hseparator2">
+                                <property name="events"></property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">2</property>
+                        <property name="right_attach">6</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label12">
+                        <property name="label" context="True" translatable="True">%</property>
+                        <property name="events"></property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">5</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">4</property>
+                        <property name="right_attach">5</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">7</property>
+                        <property name="bottom_attach">8</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">5</property>
+                        <property name="bottom_attach">6</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="right_attach">5</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label19">
+                        <property name="label" context="True" translatable="True">%</property>
+                        <property name="events"></property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">4</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">5</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

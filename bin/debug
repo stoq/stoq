@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+# -*- Mode: Python; coding: iso-8859-1 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##
+"""
+bin/debug:
+
+   A debug session for domain objects.
+"""
+
+import sys
+import code
+try:
+    import readline
+except ImportError:
+    print "Module readline not available."
+else:
+    import rlcompleter
+    readline.parse_and_bind("tab: complete")
+
+from sqlobject import *
+from sqlobject.sqlbuilder import *
+
+from stoq.lib import i18n
+from stoq.domain.base_model import *
+from stoq.domain.interfaces import *
+from stoq.domain.tables import get_table_types
+from stoq.lib.runtime import get_connection, new_transaction
+
+names = []
+for table in get_table_types():
+    table_name = table.__name__
+    locals()[table_name] = table
+    names.append(table_name)
+
+locals()['conn'] = new_transaction()
+names.sort()
+
+def get_person():
+    return Person(name='a person', connection=conn)
+
+if 'tables' in sys.argv:
+    print "Available tables:", ', '.join(names)
+
+code.interact(local=globals())

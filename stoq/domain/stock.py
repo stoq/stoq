@@ -1,0 +1,55 @@
+# -*- Mode: Python; coding: iso-8859-1 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+"""
+lib/domain/stock.py:
+    
+    Domain classes to manage stocks.
+"""
+
+
+from sqlobject import FloatCol, ForeignKey
+
+from stoq.domain.base_model import InheritableModelAdapter 
+from stoq.domain.interfaces import IStockItem
+from stoq.lib.runtime import get_connection
+
+
+__connection__ = get_connection()
+
+
+
+#
+# Adapters
+#
+
+
+
+class AbstractStockItem(InheritableModelAdapter):
+    """ Class to reference to the stock of a certain branch company."""
+
+    ___implements___ = IStockItem,
+
+    stock_cost = FloatCol(default=0.0)
+    quantity = FloatCol(default=0.0)
+    logic_quantity = FloatCol(default=0.0)
+    branch =  ForeignKey('PersonAdaptToBranch')

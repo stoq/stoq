@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+# -*- Mode: Python; coding: iso-8859-1 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+"""
+sbin/init-database:
+
+    Script to delete all the tables in an existent database or simple 
+    create all the tables in an empty database. Note that you must have a 
+    database already created to run this script properly.
+"""
+
+import os
+import sys
+import getpass
+import time
+import string
+
+from stoq.lib import i18n
+from stoq.lib.parameters import get_system_parameter, ensure_system_parameters
+from stoq.lib.runtime import new_transaction
+from stoq.domain.person import EmployeePosition, PersonAdaptToUser
+from stoq.domain.tables import get_table_types
+from stoq.domain.interfaces import IIndividual, IEmployee, IUser
+
+    
+DOMAIN = 'stoq'
+APPNAME = 'init-database'
+
+def ensure_root_user(name, username, password):
+    print _("Creating root user..."), 
+    trans = new_transaction()
+
+    # XXX Person for root user is the same of Current Branch. I'm not 
+    # sure if it's the best approach but for sure it's better than 
+    # create another one just for this user.
+    company = get_system_parameter(trans).CURRENT_BRANCH
+    person_obj = company.get_adapted()
+
+    # Dependencies to create an user.
+    position = EmployeePosition(name='Root position', connection=trans)
+    user = person_obj.addFacet(IIndividual, connection=trans)
+    user = person_obj.addFacet(IEmployee, position=position,
+                               connection=trans)
+    
+    user = person_obj.addFacet(IUser, username=username, password=password,
+                               connection=trans)
+    catalog = PersonAdaptToUser
+    ret = catalog.select(catalog.q.username == 'root', connection=trans)
+    assert ret, ret.count() == 1
+    assert ret[0].password == password
+    trans.commit()
+
+    print _("done")
+    return user
+
+def setup_tables(delete_only=False):
+    catalog_types = get_table_types()
+    trans = new_transaction()
+    for catalog in catalog_types:
+        if trans.tableExists(catalog.get_db_table_name()):
+            catalog.dropTable(ifExists=True, cascade=True, connection=trans)
+            print _('<removed>:  '), catalog
+        if delete_only:
+            continue
+        catalog.createTable(connection=trans)
+        catalog.sqlmeta.cacheValues = False
+        print _('<created>:  '), catalog
+
+    trans.commit()
+    print _('done')
+    sys.stdout.flush()
+
+if __name__ == "__main__":
+
+    print _('Setting up database... ')
+    setup_tables(delete_only=True)
+    if 'delete' in sys.argv:
+        raise SystemExit
+
+    name, username = "Superuser", "root"
+    password = getpass.getpass(_("Enter root password for database: "))
+
+    setup_tables()
+
+    print _("Ensuring system parameters ...")
+    ensure_system_parameters()
+    
+    ensure_root_user(name, username, password)
+
+    print _("done")

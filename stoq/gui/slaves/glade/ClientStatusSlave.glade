@@ -1,0 +1,91 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <requires lib="kiwi"/>
+    <widget class="GtkWindow" id="ClientStatusSlave">
+        <property name="title" context="True" translatable="True"></property>
+        <property name="role"></property>
+        <property name="events"></property>
+        <child>
+            <widget class="GtkHBox" id="hbox1">
+                <property name="events"></property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="True" translatable="True">Status:</property>
+                        <property name="events"></property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing/>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="ok">
+                        <property name="model_attribute">status</property>
+                        <property name="data_value">0</property>
+                        <property name="label" context="True" translatable="True">Ok</property>
+                        <property name="events"></property>
+                        <property name="active">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">int</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="visible">True</property>
+                        <property name="label">Ok</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="indebted">
+                        <property name="model_attribute">status</property>
+                        <property name="data_value">1</property>
+                        <property name="group">ok</property>
+                        <property name="label" context="True" translatable="True">Indebted</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">int</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="visible">True</property>
+                        <property name="label">Indebted</property>
+                    </widget>
+                    <packing>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="insolvent">
+                        <property name="model_attribute">status</property>
+                        <property name="data_value">2</property>
+                        <property name="group">ok</property>
+                        <property name="label" context="True" translatable="True">Insolvent</property>
+                        <property name="events"></property>
+                        <property name="can_focus">True</property>
+                        <property name="data_type">int</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="visible">True</property>
+                        <property name="label">Insolvent</property>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="inactive">
+                        <property name="model_attribute">status</property>
+                        <property name="data_value">3</property>
+                        <property name="group">ok</property>
+                        <property name="label" translatable="True">toggle button</property>
+                        <property name="data_type">int</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="visible">True</property>
+                        <property name="label">Inactive</property>
+                    </widget>
+                    <packing>
+                        <property name="position">4</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
