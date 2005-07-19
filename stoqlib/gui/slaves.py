@@ -34,7 +34,6 @@ class NoteSlave(BaseEditorSlave):
     """
 
     gladefile = 'NoteSlave'
-    model_type = None
     widgets = ('notes',)
     
     def __init__(self, conn, model): 
