@@ -30,10 +30,14 @@ stoq/gui/editors/person_templates.py:
 """
 
 
+from stoqlib.gui.dialogs import run_dialog
 from stoqlib.gui.editors import BaseEditorSlave
 from stoqlib.gui.slaves import NoteSlave
 
-from Stoq2.domain.person import Person
+from stoq.domain.person import Person
+from stoq.gui.editors.address import AddressAdditionDialog
+from stoq.gui.slaves.liaison import LiaisonListSlave
+from stoq.gui.slaves.address import AddressSlave
 
 
 class PersonEditorTemplate(BaseEditorSlave):
@@ -66,6 +70,32 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.attach_slave(name, slave_type(self.conn, slave_model))
 
     #
+    # Kiwi handlers
+    #
+
+    def on_address_button__clicked(self, *args):
+        addresses = self.model.addresses
+        main_address = self.model.get_main_address()
+        if addresses and main_address:
+            addresses.remove(main_address)
+
+        result = run_dialog(AddressAdditionDialog, self, self.conn, addresses)
+        if not result:
+            return
+    
+        new_main_address = None
+
+        for address in result:
+            if address.is_main_address:
+                new_main_address = address
+                if main_address:
+                    main_address.is_main_address = False
+            address.person = self.model
+
+        if new_main_address:
+            self.address_slave.set_model(new_main_address)
+
+    #
     # BaseEditorSlave hooks
     #
 
@@ -73,6 +103,29 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_slaves(self):
+        main_address = self.model.get_main_address()
+        self.address_slave = self.attach_model_slave('address_holder',
+                                                     AddressSlave, 
+                                                     main_address)
+        liaisons = self.model.liaions
+        name = 'contact_list_holder'
+        self.liaison_list_slave = self.attach_model_slave(name,
+                                                          LiaisonListSlave,
+                                                          liaisons)
+
         self.attach_model_slave('note_holder', NoteSlave, self.model)
+
+    def on_confirm(self):
+        self.address_slave.on_confirm()
+        main_address = self.address_slave.model
+        main_address.person = self.model
+
+        liaions = self.liaison_list_slave.get_liaisons()
+
+        for liaison in liaions:
+            liaison.person = self.model
+
+        return self.model
+
 
 
