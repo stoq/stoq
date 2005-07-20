@@ -23,14 +23,6 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Individuals">
-                        <property name="label">Individuals</property>
-                        <property name="tooltip">Search for individuals</property>
-                        <property name="callback">_on_individuals_action__clicked</property>
-                        <property name="accelerator"></property>
-                    </object>
-                </child>
-                <child>
                     <object class="GtkAction" id="Quit">
                         <property name="label">_Quit</property>
                         <property name="tooltip">Quit the program</property>
@@ -99,14 +91,6 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Companies">
-                        <property name="label">Companies</property>
-                        <property name="tooltip">Search for companies</property>
-                        <property name="callback">_on_companies_action__clicked</property>
-                        <property name="accelerator"></property>
-                    </object>
-                </child>
-                <child>
                     <object class="GtkAction" id="Copy">
                         <property name="label">_Copy</property>
                         <property name="tooltip">Copy selected object into the clipboard</property>
@@ -130,14 +114,6 @@
                         <property name="stock_id">gtk-new</property>
                         <property name="callback"></property>
                         <property name="accelerator">&lt;control&gt;n</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkAction" id="Persons">
-                        <property name="label">Persons</property>
-                        <property name="tooltip">Search for Persons</property>
-                        <property name="callback">_on_persons_action__clicked</property>
-                        <property name="accelerator"></property>
                     </object>
                 </child>
                 <child>
@@ -272,7 +248,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
 <menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder"
-name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separator/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sellable Category" name="Sellable Category"/><menuitem action="SellableSubcategory" name="SellableSubcategory"/><separator/><menuitem action="Sales" name="Sales"/><menuitem action="Products" name="Products"/><separator/><menuitem action="Persons" name="Persons"/><menuitem action="Individuals" name="Individuals"/><menuitem action="Clients" name="Clients"/><menuitem action="Companies" name="Companies"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Employees" name="Employees"/></menu><menu action="HelpMenu" name="HelpMenu"><menuitem action="About" name="About"/></menu><menu action="UsersMenu" name="UsersMenu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu></menubar></ui>]]></ui>
+name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separator/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sellable Category" name="Sellable Category"/><menuitem action="SellableSubcategory" name="SellableSubcategory"/><separator/><menuitem action="Sales" name="Sales"/><menuitem action="Products" name="Products"/><separator/><menuitem action="Clients" name="Clients"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Employees" name="Employees"/></menu><menu action="HelpMenu" name="HelpMenu"><menuitem action="About" name="About"/></menu><menu action="UsersMenu" name="UsersMenu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu></menubar></ui>]]></ui>
 
     </object>
     <widget class="GtkWindow" id="pos">

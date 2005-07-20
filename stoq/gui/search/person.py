@@ -26,22 +26,17 @@ gui/search/person.py
     Search dialogs for person objects
 """
 
-from sqlobject.sqlbuilder import INNERJOINOn, LEFTJOINOn, AND
-from kiwi.ui.views import SlaveView
+from sqlobject.sqlbuilder import LEFTJOINOn, AND
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
 from stoq.gui.editors.client_editor import ClientEditor
-from stoq.gui.editors.person_editor import PersonEditor
-from stoq.gui.editors.individual_editor import IndividualEditor
-from stoq.gui.editors.company_editor import (CompanyEditor, 
-                                             SupplierEditor)
+from stoq.gui.editors.company_editor import SupplierEditor
 from stoq.gui.editors.employee_editor import EmployeeEditor
 from stoq.domain.interfaces import (ICompany, IIndividual, 
-                                    IEmployee, ISupplier,
-                                    IClient)
-from stoq.domain.person import (Person, Address, EmployeePosition,
+                                    ISupplier, IClient)
+from stoq.domain.person import (Person, EmployeePosition,
                                 PersonAdaptToIndividual,
                                 PersonAdaptToClient,
                                 PersonAdaptToCompany,
@@ -152,80 +147,3 @@ class ClientSearch(BasePersonSearch):
         return AND(q1, q2)
 
 
-class CompanySearch(BasePersonSearch):
-    title = _('Company Search')
-    editor_class = CompanyEditor
-    table = Person
-    interface = ICompany
-
-
-
-    #
-    # Hooks
-    #
-
-
-
-    def get_columns(self):
-        return [Column('name', _('Name'), str, sorted=True,
-                       width=250), 
-                FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
-                            width=250),
-                FacetColumn(ICompany, 'cnpj', _('CNPJ'), str)]
-
-    def get_query_args(self):
-        return dict(join = INNERJOINOn(Person, PersonAdaptToCompany,
-                        Person.q.id == PersonAdaptToCompany.q._originalID))
-
-
-class IndividualSearch(BasePersonSearch):
-    title = _('Individual Search')
-    editor_class = IndividualEditor
-    table = Person
-    interface = IIndividual
-    
-
-
-    #
-    # Hooks
-    #
-
-
-
-    def get_columns(self):
-        return [Column('name', _('Name'), str, sorted=True,
-                       width=250), 
-                Column('phone_number', _('Phone Number'), str,
-                       width=130),
-                FacetColumn(IIndividual, 'cpf', _('Cpf'), str,
-                            width=130),
-                FacetColumn(IIndividual, 'rg_number', _('RG'), str)]
-
-    def get_query_args(self):
-        return dict(join = INNERJOINOn(Person, PersonAdaptToIndividual,
-                    Person.q.id == PersonAdaptToIndividual.q._originalID))
-                             
-
-class PersonSearch(BasePersonSearch):
-    title = _('Person Search')
-    editor_class = PersonEditor
-    table = Person
-
-
-
-    #
-    # Hooks
-    #
-
-
-
-    def get_columns(self):
-        return [Column('name', _('Name'), str, sorted=True, width=250), 
-                Column('phone_number', _('Phone Number'), str, width=120),
-                Column('mobile_number', _('Mobile Number'), str, width=120),
-                ForeignKeyColumn(Address, 'street', _('Street'), 
-                                 str, obj_field='main_address')]
-
-    def get_query_args(self):
-        return dict(join = LEFTJOINOn(Person, Address,
-                    Person.q.id == Address.q.personID))

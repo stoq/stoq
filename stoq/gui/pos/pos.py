@@ -48,9 +48,6 @@ from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
 from stoq.gui.search.person import (ClientSearch, 
-                                    IndividualSearch,
-                                    PersonSearch,
-                                    CompanySearch,
                                     EmployeeSearch,
                                     SupplierSearch)
 
@@ -276,15 +273,6 @@ class POS(AppWindow):
 
     def _on_clients_action__clicked(self, *args):
         self.search_clients()
-
-    def _on_individuals_action__clicked(self, *args):
-        self.run_dialog(IndividualSearch, hide_footer=True)
-                        
-    def _on_persons_action__clicked(self, *args):
-        self.run_dialog(PersonSearch, hide_footer=True)
-
-    def _on_companies_action__clicked(self, *args):
-        self.run_dialog(CompanySearch, hide_footer=True)
 
     def _on_suppliers_action__clicked(self, *args):
         self.run_dialog(SupplierSearch, hide_footer=True)
