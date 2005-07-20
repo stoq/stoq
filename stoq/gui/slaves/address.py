@@ -35,6 +35,7 @@ from stoq.lib.parameters import get_system_parameter
 
 
 class AddressSlave(BaseEditorSlave):
+    model_type = Address
     gladefile = 'AddressSlave'
     
     widgets = ('street',
@@ -50,6 +51,13 @@ class AddressSlave(BaseEditorSlave):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
+
+        # XXX: Waiting fix for bug #2043. We should create Address and
+        # CityLocation objects not persistents.
+        if model is None:
+            model = Address(person=None, city_location=None,
+                            is_main_address=self.is_main_address,
+                            connection=conn)
 
         BaseEditorSlave.__init__(self, conn, model)
 
@@ -115,15 +123,10 @@ class AddressSlave(BaseEditorSlave):
 
         # XXX: Waiting fix for bug #2043. We should create Address and
         # CityLocation objects not persistents.
-        if self.model is None or self.model.city_location is None:
+        if self.model.city_location is None:
             city_loc = CityLocation(connection=self.conn)
         else:
             city_loc = self.model.city_location.clone()
-
-        if self.model is None:
-            self.model = Address(person=None, city_location=city_loc,
-                                 is_main_address=self.is_main_address,
-                                 connection=self.conn)
         self.model.city_location = city_loc
 
         self.proxy = self.add_proxy(self.model, self.widgets)

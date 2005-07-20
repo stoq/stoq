@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<glade-interface>
+    <widget class="GtkWindow" id="AddressEditor">
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkEventBox" id="main_holder">
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing/>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+checkbutton+CheckButton" id="is_main_address_checkbutton">
+                        <property name="model_attribute">is_main_address</property>
+                        <property name="label" translatable="True">Main address</property>
+                        <property name="draw_indicator">True</property>
+                        <property name="visible">True</property>
+                        <property name="label">Main address</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

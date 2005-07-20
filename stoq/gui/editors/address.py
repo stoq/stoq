@@ -50,13 +50,11 @@ class AddressAdditionDialog(AdditionListDialog):
 
     def get_columns(self):
         return [Column('address_string', title=_('Address'),
-                       data_type=str,
-                       expand=True),
-                Column('city', title=_('City'), 
-                       data_type=str, 
-                       width=200),
-                Column('state', title=_('State'),
-                       data_type=str)]
+                       data_type=str, width=250, expand=True),
+                Column('city', title=_('City'), width=100,
+                       data_type=str),
+                Column('state', title=_('State'), 
+                       width=50, data_type=str)]
 
     def set_main_address(self, main_address):
         if self.main_address:
@@ -83,6 +81,7 @@ class AddressAdditionDialog(AdditionListDialog):
 
 
 class AddressEditor(BaseEditor):
+    model_type = Address
     title = _('Address Editor')
     gladefile = 'AddressEditor'
 

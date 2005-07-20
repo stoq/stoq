@@ -31,9 +31,9 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
-from stoq.gui.editors.client_editor import ClientEditor
-from stoq.gui.editors.company_editor import SupplierEditor
-from stoq.gui.editors.employee_editor import EmployeeEditor
+from stoq.gui.editors.client import ClientEditor
+from stoq.gui.editors.supplier import SupplierEditor
+from stoq.gui.editors.employee import EmployeeEditor
 from stoq.domain.interfaces import (ICompany, IIndividual, 
                                     ISupplier, IClient)
 from stoq.domain.person import (Person, EmployeePosition,

@@ -119,7 +119,25 @@ class Address(Domain):
 
     person = ForeignKey('Person')
     city_location = ForeignKey('CityLocation')
-    
+
+    def is_valid_model(self):
+        return (self.street and self.number and self.district
+                and self.city_location.is_valid_model())
+
+    def get_city(self):
+        return self.city_location.city
+
+    def get_country(self):
+        return self.city_location.country
+
+    def get_state(self):
+        return self.city_location.state
+
+    def get_address_string(self):
+        if self.street and self.number and self.district:
+            return '%s %s, %s' % (self.street, self.number, self.district)
+
+
 class Liaison(Domain):
     """ 
     Base class to store the person's contact informations.

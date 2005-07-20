@@ -34,13 +34,18 @@ from stoqlib.gui.dialogs import run_dialog
 from stoqlib.gui.editors import BaseEditorSlave
 from stoqlib.gui.slaves import NoteSlave
 
-from stoq.domain.person import Person
+from stoq.domain.person import (Person, CityLocation, PersonAdaptToIndividual,
+                                PersonAdaptToCompany)
 from stoq.gui.editors.address import AddressAdditionDialog
 from stoq.gui.slaves.liaison import LiaisonListSlave
 from stoq.gui.slaves.address import AddressSlave
+from stoq.gui.slaves.company import CompanyDocumentsSlave
+from stoq.gui.slaves.individual import (IndividualDetailsSlave,
+                                        IndividualDocuments)
 
 
 class PersonEditorTemplate(BaseEditorSlave):
+    model_type = Person
     gladefile = 'PersonEditorTemplate'
     proxy_widgets = ('name', 
                      'phone_number',
@@ -67,7 +72,9 @@ class PersonEditorTemplate(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def attach_model_slave(self, name, slave_type, slave_model):
-        self.attach_slave(name, slave_type(self.conn, slave_model))
+        slave = slave_type(self.conn, slave_model)
+        self.attach_slave(name, slave)
+        return slave
 
     #
     # Kiwi handlers
@@ -107,7 +114,7 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.address_slave = self.attach_model_slave('address_holder',
                                                      AddressSlave, 
                                                      main_address)
-        liaisons = self.model.liaions
+        liaisons = self.model.liaisons
         name = 'contact_list_holder'
         self.liaison_list_slave = self.attach_model_slave(name,
                                                           LiaisonListSlave,
@@ -120,12 +127,101 @@ class PersonEditorTemplate(BaseEditorSlave):
         main_address = self.address_slave.model
         main_address.person = self.model
 
-        liaions = self.liaison_list_slave.get_liaisons()
+        liaisons = self.liaison_list_slave.get_liaisons()
 
-        for liaison in liaions:
+        for liaison in liaisons:
             liaison.person = self.model
 
         return self.model
+
+
+class IndividualEditorTemplate(BaseEditorSlave):
+    model_type = PersonAdaptToIndividual
+    gladefile = 'BaseTemplate'
+    widgets = ('main_holder', )
+
+    def __init__(self, conn, model=None):
+        BaseEditorSlave.__init__(self, conn, model)
+
+    def ensure_city_location_objects(self):
+        """ This method ensure that, if the city location objects for birth
+        location and main address city location has the same contents, only
+        one CityLocation object is created. """
+
+        birthloc = self.model.birth_location
+        person = self.model.get_adapted()
+        main_address = person.get_main_address()
+        addrloc = main_address.city_location
+    
+        same_contents = (addrloc.city == birthloc.city
+                         and addrloc.country == birthloc.country
+                         and addrloc.state == birthloc.state)
+
+        if (birthloc.id != addrloc.id) and same_contents:
+            main_address.city_location = birthloc
+            CityLocation.delete(addrloc.id, connection=self.conn)
+
+    def attach_person_slave(self, slave):
+        self.person_slave.attach_slave('person_status_holder', slave)
+
+    def attach_custom_slave(self, slave):
+        self.person_slave.attach_slave('custom_holder', slave)
+
+    def show_custom_holder(self, name):
+        custom_holder = self.person_slave.custom_holder
+        custom_holder.show()
+        self.person_slave.notebook.set_tab_label_text(custom_holder, name)
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_slaves(self):
+        self.person_slave = PersonEditorTemplate(self.conn,
+                                                 self.model.get_adapted())
+        self.attach_slave('main_holder', self.person_slave)
+
+        slave_class = IndividualDocuments
+        self.documents_slave = self.person_slave.attach_model_slave('id_holder',
+                                                                    slave_class,
+                                                                    self.model)
+        holder_name = 'details_holder'
+        slave_class = IndividualDetailsSlave
+        self.details_slave = self.person_slave.attach_model_slave(holder_name,
+                                                                  slave_class,
+                                                                  self.model)
+
+    def on_confirm(self):
+        self.details_slave.on_confirm()
+        self.person_slave.on_confirm()
+
+        if self.model.birth_location:
+            self.ensure_city_location_objects()
+
+        return self.model
+
+
+
+class CompanyEditorTemplate(BaseEditorSlave):
+    model_type = PersonAdaptToCompany
+    gladefile = 'BaseTemplate'
+    widgets = ('main_holder', )
+
+    def __init__(self, conn, model=None):
+        BaseEditorSlave.__init__(self, conn, model)
+
+    def setup_slaves(self):
+        self.company_docs_slave = CompanyDocumentsSlave(self.conn, self.model)
+        self.person_slave = PersonEditorTemplate(self.conn, 
+                                                 self.model.get_adapted())
+                                                        
+        self.attach_slave('main_holder', self.person_slave)
+        self.person_slave.attach_slave('id_holder', self.company_docs_slave)
+
+    def on_confirm(self):
+        self.person_slave.on_confirm()
+        return self.model
+
 
 
 

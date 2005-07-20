@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-gui/editors/category.py:
+stoq/gui/editors/category.py:
 
     Sellable category editors implementation.
 """
@@ -43,15 +43,15 @@ class BaseSellableCategoryEditor(BaseEditor):
                'markup')
 
     def __init__(self, conn, model=None):
+        if not model:
+            table = AbstractSellableCategory
+            category_data = table(connection=conn, description='')
+            model = BaseSellableCategory(connection=conn, 
+                                         category_data=category_data)
+
         BaseEditor.__init__(self, conn=conn, model=model)
 
     def setup_proxies(self):
-        if not self.model:
-            table = AbstractSellableCategory
-            category_data = table(connection=self.conn, description='')
-            self.model = BaseSellableCategory(connection=self.conn, 
-                                              category_data=category_data)
-
         self.add_proxy(model=self.model, widgets=self.widgets)
 
 
@@ -64,6 +64,18 @@ class SellableCategoryEditor(BaseEditor):
                'base_category')
 
     def __init__(self, conn, model=None):
+        if not model:
+            sparam = get_system_parameter(conn)
+            suggested_base_cat = sparam.DEFAULT_BASE_CATEGORY
+
+            table = AbstractSellableCategory
+            category_data = table(connection=conn, description='')
+
+            table = SellableCategory
+            model = table(connection=conn,
+                          base_category=suggested_base_cat,
+                          category_data=category_data)
+
         BaseEditor.__init__(self, conn=conn, model=model)
 
     def setup_combo(self):
@@ -78,17 +90,5 @@ class SellableCategoryEditor(BaseEditor):
         # We need to prefill combobox before to set a proxy, since we want
         # the attribute 'group' be set properly in the combo.
         self.setup_combo()
-
-        if not self.model:
-            sparam = get_system_parameter(self.conn)
-            suggested_base_cat = sparam.DEFAULT_BASE_CATEGORY
-
-            table = AbstractSellableCategory
-            category_data = table(connection=self.conn, description='')
-
-            table = SellableCategory
-            self.model = table(connection=self.conn,
-                               base_category=suggested_base_cat,
-                               category_data=category_data)
 
         self.add_proxy(model=self.model, widgets=self.widgets)

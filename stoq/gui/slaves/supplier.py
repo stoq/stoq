@@ -20,32 +20,25 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
-##              Henrique Romano             <henrique@async.com.br>
-##
 """
-stoq/gui/editors/contact.py:
+stoq/gui/slaves/supplier.py
 
-    Person Liaisons editor implementation.
+    Supplier editor slaves implementation.
 """
 
 
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import Liaison
+from stoq.domain.person import PersonAdaptToSupplier
 
 
-class ContactEditor(BaseEditor):
-    model_type = Liaison
-    gladefile = 'ContactEditor'
-    widgets = ('name', 'phone_number')
-    title = _('Liaison Editor')
+class SupplierDetailsSlave(BaseEditorSlave):
+    model_type = PersonAdaptToSupplier
+    gladefile = 'SupplierDetailsSlave'
+    widgets = ('active', 'inactive', 'blocked', 'product_desc')
 
-    def __init__(self, conn, model=None):
-        if not model:
-            model = Liaison(person=None, connection=conn)
-
-        BaseEditor.__init__(self, conn)
+    def __init__(self, conn, model):
+        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)

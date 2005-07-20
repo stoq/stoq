@@ -24,7 +24,7 @@
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-gui/editors/product.py:
+stoq/gui/editors/product.py:
 
    Product editor implementation.
 """
@@ -293,8 +293,13 @@ class ProductEditor(BaseEditor):
                storable_widgets
 
     def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
+        if not model:
+            model = Product(connection=conn)
+            model.addFacet(ISellable, code='', description='', price=0.0, 
+                           connection=conn)
+            model.addFacet(IStorable, connection=conn)
 
+        BaseEditor.__init__(self, conn, model)
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_price_lbl, self.price):
@@ -347,18 +352,11 @@ class ProductEditor(BaseEditor):
         self.set_widget_formats()
         self.setup_combos()
 
-        if not self.model:
-            self.model = Product(connection=self.conn)
-            sellable = self.model.addFacet(ISellable, code='', description='',
-                                           price=0.0, connection=self.conn)
-            storable = self.model.addFacet(IStorable, connection=self.conn)
-        else:
-            sellable = ISellable(self.model)
-            storable = IStorable(self.model)
-
         self.main_proxy = self.add_proxy(self.model, self.product_widgets)
 
+        sellable = ISellable(self.model)
         self.sellable_proxy = self.add_proxy(sellable, self.sellable_widgets)
+        storable = IStorable(self.model)
         self.storable_proxy = self.add_proxy(storable, self.storable_widgets)
 
 
