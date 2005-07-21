@@ -40,10 +40,11 @@ from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.parameters import get_system_parameter
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.person import Person
-from stoq.domain.product import Product
+from stoq.domain.product import Product, ProductAdaptToSellableItem
 from stoq.domain.interfaces import (IIndividual, IClient, ISellable,
                                     ISellableItem)
 from stoq.gui.editors.product import ProductEditor
+from stoq.gui.editors.product_item import ProductItemEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -304,8 +305,19 @@ class POS(AppWindow):
         self.run_dialog(dlg)
 
     def on_edit_button__clicked(self, *args):
-        #dialog not implemented yet
-        pass
+        sellable_item = self.order_list.get_selected()
+        if isinstance(sellable_item, ProductAdaptToSellableItem):
+            model = self.run_dialog(ProductItemEditor, self.conn,
+                                    self.order_list.get_selected())
+        else:
+            # XXX: Waiting fix for bug #2080 (ServiceItemEditor
+            # implementation)
+            return
+
+        if not model:
+            return
+        self.order_list.update_instance(model)
+        self._update_order_lbls()
 
     def on_checkout_button__clicked(self, *args):
         #dialog not implemented yet

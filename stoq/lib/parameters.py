@@ -93,6 +93,8 @@ Current System parameters:
                                If the answer is negative, we will disable
                                stock operations in the system.
 
+    * EDIT_SELLABLE_PRICE(integer): if the sellable is editable when editing
+                                    SellableItem objects.
 """
     
 from stoqlib.exceptions import DatabaseInconsistency
@@ -251,6 +253,10 @@ class ParameterAccess:
     def STOCK_BALANCE_PRECISION(self):
         return int(self._get_constant('STOCK_BALANCE_PRECISION'))
 
+    @property
+    def EDIT_SELLABLE_PRICE(self):
+        return int(self._get_constant('EDIT_SELLABLE_PRICE'))
+
 
 def get_system_parameter(conn):
     return ParameterAccess(conn)
@@ -298,7 +304,8 @@ def ensure_general_settings(conn):
                   ('SELLABLE_PRICE_PRECISION', 2),
                   ('HAS_STOCK_MODE', 1),
                   ('STOCK_BALANCE_PRECISION', 2),
-                  ('ACCEPT_ORDER_PRODUCTS', 1)]
+                  ('ACCEPT_ORDER_PRODUCTS', 1),
+                  ('EDIT_SELLABLE_PRICE', 1)]
 
     for item in parameters:
         if get_parameter_by_field(item[0], conn):
