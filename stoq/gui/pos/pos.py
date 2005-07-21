@@ -218,16 +218,16 @@ class POS(AppWindow):
     def get_columns(self):
         """Hook called by BaseListSlave"""
         return [FacetColumn(ISellable, 'code', title=_('Code'), 
-                            sorted=True, data_type=str, width=50),
+                            sorted=True, data_type=str, width=90),
                 FacetColumn(ISellable, 'description', 
                             title=_('Description'), data_type=str, 
-                            width=260),
+                            expand=True),
                 Column('price', title=_('Price'), data_type=float, 
-                       width=50),
+                       width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
-                       width=20),
+                       width=90),
                 Column('total', title=_('Total'), data_type=float,
-                      width=50)]
+                       width=100)]
 
 
 
