@@ -26,7 +26,7 @@
 """
 stoq/gui/editors/product.py:
 
-   Product editor implementation.
+   Editors definitions for products.
 """
 
 from kiwi.datatypes import ValidationError
@@ -38,14 +38,15 @@ from stoqlib.gui.dialogs import run_dialog
 from stoq.domain.sellable import SellableCategory
 from stoq.domain.person import PersonAdaptToSupplier
 from stoq.domain.product import (ProductSupplierInfo, Product,
-                                 ProductAdaptToSellable)
+                                 ProductAdaptToSellable,
+                                 ProductAdaptToSellableItem)
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.lib.parameters import get_system_parameter
 
 
 
 #
-# Editor slaves implementation
+# Slaves
 #
 
 
@@ -179,6 +180,7 @@ class ProductSupplierEditor(BaseEditor):
         if not value or value <= 0.0:
             return ValidationError("Value must be greater than zero.")
 
+
 class ProductPriceEditor(BaseEditor):
     gladefile = 'ProductPriceEditor'
     model_type = ProductAdaptToSellable
@@ -266,7 +268,7 @@ class ProductPriceEditor(BaseEditor):
 
 
 #
-# Editor implementation
+# Editors
 #
 
 
@@ -372,4 +374,53 @@ class ProductEditor(BaseEditor):
 
     def on_supplier_button__clicked(self, button):
         self.edit_supplier()
+
+
+class ProductItemEditor(BaseEditor):
+    title = _('Editing Product')
+    size = (550, 100)
+
+    model_type = ProductAdaptToSellableItem
+    gladefile = 'ProductItemEditor'
+    proxy_widgets = ('quantity', 'price')
+    widgets = ('product_name', 'price_label') + proxy_widgets
+
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+
+    def hide_price_fields(self):
+        for widget in (self.price, self.price_label):
+            widget.hide()
+
+
+
+    #
+    # BaseEditor hooks
+    #
+
+
+
+    def setup_proxies(self):
+        # We need to setup the widgets format before the proxy fill them
+        # with the values.
+        self.setup_widgets()
+
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    def setup_widgets(self):
+        adapted = self.model.get_adapted()
+        sellable = ISellable(adapted)
+        self.product_name.set_text(sellable.description)
+
+        sparam = get_system_parameter(self.conn)
+        if not sparam.EDIT_SELLABLE_PRICE:
+            self.hide_price_fields()
+            return
+        self.price.set_data_format('%.02f')
+
+    def on_confirm(self):
+        # XXX: this editor must use non-persistent objects. In this method
+        # we will only ensure the non-persistent copy .
+        # Waiting fix for bug #2043
+        return self.model
 

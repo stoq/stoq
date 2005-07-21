@@ -43,8 +43,7 @@ from stoq.domain.person import Person
 from stoq.domain.product import Product, ProductAdaptToSellableItem
 from stoq.domain.interfaces import (IIndividual, IClient, ISellable,
                                     ISellableItem)
-from stoq.gui.editors.product import ProductEditor
-from stoq.gui.editors.product_item import ProductItemEditor
+from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
