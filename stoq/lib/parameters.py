@@ -93,8 +93,9 @@ Current System parameters:
                                If the answer is negative, we will disable
                                stock operations in the system.
 
-    * EDIT_SELLABLE_PRICE(integer): if the sellable is editable when editing
-                                    SellableItem objects.
+    * EDIT_SELLABLE_PRICE(integer): Can we change the price attribute
+                                    of a SellableItem object during a
+                                    sale ?
 """
     
 from stoqlib.exceptions import DatabaseInconsistency
@@ -141,12 +142,55 @@ class ParameterAccess:
         parameter = get_system_parameter(conn).parameter_name
     """
 
+    # Add new general settings here instead of create a single method for each
+    # parameter. This is always useful when the parameter is not an object but
+    # just a single string, integer or float value.
+    constants = dict(USE_LOGIC_QUANTITY=1,
+                     MAX_LATE_DAYS=30,
+                     SELLABLE_PRICE_PRECISION=2,
+                     HAS_STOCK_MODE=1,
+                     STOCK_BALANCE_PRECISION=2,
+                     EDIT_SELLABLE_PRICE=1,
+                     ACCEPT_ORDER_PRODUCTS=1)
+
     def __init__(self, conn):
         self.conn = conn
 
     def _get_constant(self, key):
         sparam = get_parameter_by_field(key, self.conn)
         return sparam.field_value
+
+    def get_integer_parameter(self, key):
+        param = self._get_constant(key)
+        try:
+            param = int(param)
+        except ValueError, e:
+            msg = 'Parameter %s should be an integer.'
+            raise ValueError(msg % key)
+        return param
+
+
+    
+    #
+    # Classmethods
+    #
+
+
+
+    @classmethod
+    def ensure_general_settings(cls, conn):
+        for constant, value in cls.constants.items():
+            if get_parameter_by_field(constant, conn):
+                continue
+            set_schema(conn, constant, value)
+
+
+
+    #
+    # Properties
+    #
+
+
 
     @property
     def SUPPLIER_SUGGESTED(self):
@@ -219,15 +263,15 @@ class ParameterAccess:
 
     @property
     def USE_LOGIC_QUANTITY(self):
-        return int(self._get_constant('USE_LOGIC_QUANTITY'))
+        return self.get_integer_parameter('USE_LOGIC_QUANTITY')
 
     @property
     def MAX_LATE_DAYS(self):
-        return int(self._get_constant('MAX_LATE_DAYS'))
+        return self.get_integer_parameter('MAX_LATE_DAYS')
         
     @property
     def ACCEPT_ORDER_PRODUCTS(self):
-        return int(self._get_constant('ACCEPT_ORDER_PRODUCTS'))
+        return self.get_integer_parameter('ACCEPT_ORDER_PRODUCTS')
 
     @property
     def CITY_SUGGESTED(self):
@@ -243,19 +287,19 @@ class ParameterAccess:
 
     @property
     def SELLABLE_PRICE_PRECISION(self):
-        return int(self._get_constant('SELLABLE_PRICE_PRECISION'))
+        return self.get_integer_parameter('SELLABLE_PRICE_PRECISION')
 
     @property
     def HAS_STOCK_MODE(self):
-        return int(self._get_constant('HAS_STOCK_MODE'))
+        return self.get_integer_parameter('HAS_STOCK_MODE')
 
     @property
     def STOCK_BALANCE_PRECISION(self):
-        return int(self._get_constant('STOCK_BALANCE_PRECISION'))
+        return self.get_integer_parameter('STOCK_BALANCE_PRECISION')
 
     @property
     def EDIT_SELLABLE_PRICE(self):
-        return int(self._get_constant('EDIT_SELLABLE_PRICE'))
+        return self.get_integer_parameter('EDIT_SELLABLE_PRICE')
 
 
 def get_system_parameter(conn):
@@ -293,26 +337,6 @@ def get_foreign_key_parameter(field_name, conn):
 def set_schema(conn, field_name, field_value, foreign_key=None):
     ParameterData(connection=conn, field_name=field_name, 
                   field_value=field_value, foreign_key=foreign_key)
-
-
-# Add new general settings here instead of create a single method for each
-# parameter. This is always useful when the parameter is not an object but
-# just a single string, integer or float value.
-def ensure_general_settings(conn):
-    parameters = [('USE_LOGIC_QUANTITY', 1),
-                  ('MAX_LATE_DAYS', 30),
-                  ('SELLABLE_PRICE_PRECISION', 2),
-                  ('HAS_STOCK_MODE', 1),
-                  ('STOCK_BALANCE_PRECISION', 2),
-                  ('ACCEPT_ORDER_PRODUCTS', 1),
-                  ('EDIT_SELLABLE_PRICE', 1)]
-
-    for item in parameters:
-        if get_parameter_by_field(item[0], conn):
-            return
-    
-    for item in parameters:
-        set_schema(conn, *item)
 
 
 def ensure_supplier_suggested(conn):
@@ -404,7 +428,7 @@ def ensure_city_location(conn):
 def ensure_system_parameters():
     trans = new_transaction()
 
-    ensure_general_settings(trans)
+    ParameterAccess.ensure_general_settings(trans)
     ensure_default_employee_position(trans)
     ensure_supplier_suggested(trans)
     ensure_default_base_category(trans)
