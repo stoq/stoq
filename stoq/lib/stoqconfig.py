@@ -127,8 +127,9 @@ class AppConfig:
 
     def setup_gladepath(self):
         glade_paths = []
+        # A list of subdirectories in stoq/gui/
         dirs = ['components', 'slaves', self.appname, 'search',
-                'editors']
+                'editors', 'templates']
         for dir in dirs:
             glade_paths.append(os.path.join(self.stoq_path,"gui", 
                                             dir, "glade"))

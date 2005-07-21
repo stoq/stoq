@@ -32,7 +32,7 @@ gui/editors/person/employee.py
 
 from stoqlib.gui.editors import BaseEditor
 
-from stoq.gui.editors.person_templates import IndividualEditorTemplate
+from stoq.gui.templates.person import IndividualEditorTemplate
 from stoq.domain.interfaces import IIndividual, IEmployee
 from stoq.domain.person import (Person, EmployeePosition,
                                 PersonAdaptToEmployee)

@@ -24,7 +24,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoq/gui/editors/person_templates.py:
+stoq/gui/templates/person.py:
 
     Templates implementation for person editors.
 """
@@ -221,7 +221,3 @@ class CompanyEditorTemplate(BaseEditorSlave):
     def on_confirm(self):
         self.person_slave.on_confirm()
         return self.model
-
-
-
-

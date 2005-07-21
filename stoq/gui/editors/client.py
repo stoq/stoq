@@ -28,7 +28,7 @@ stoq/gui/editors/client.py
 
 from stoqlib.gui.editors import BaseEditor
 
-from stoq.gui.editors.person_templates import IndividualEditorTemplate
+from stoq.gui.templates.person import IndividualEditorTemplate
 from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.interfaces import IIndividual, IClient
