@@ -179,11 +179,11 @@ class SellableSearch(SearchDialog):
         """Hook called by SearchDialog"""
         self.has_stock_mode = get_system_parameter(self.conn).HAS_STOCK_MODE
         columns = [Column('code', title=_('Code'), sorted=True,
-                          data_type=str, width=10),
+                          data_type=str, width=100),
                    Column('description', title=_('Description'),
-                          expand=True, data_type=str, width=300),
+                          expand=True, data_type=str),
                    Column('price', title=_('Price'), data_type=float,
-                          width=50)]
+                          width=90)]
         if self.has_stock_mode:
             column = AccessorColumn('stock', self.get_stock_balance, 
                                     title=_('Stock'), data_type=float)
