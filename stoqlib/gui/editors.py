@@ -125,4 +125,28 @@ class SimpleEntryEditor(BaseEditor):
         assert self.model
         self.name_entry.set_property('model-attribute', self.attr_name)
         proxy = self.add_proxy(model=self.model, widgets=['name_entry'])
-        
+
+class NoteEditor(BaseEditor):
+    """ Simple editor that offers a label and a textview. """
+    gladefile = "NoteSlave"
+    widgets = ('notes', )
+    size = (500, 200)
+
+    def __init__(self, conn, model, attr_name, title=''):
+        assert model, ("You must supply a valid model to this editor "
+                       "(%r)" % self)
+        self.model_type = type(model)
+        self.title = title
+        self.attr_name = attr_name
+
+        BaseEditor.__init__(self, conn, model)
+
+    # 
+    # BaseEditor hooks
+    #
+
+    def setup_proxies(self):
+        self.notes.set_property('model-attribute', self.attr_name)
+        proxy = self.add_proxy(model=self.model, widgets=self.widgets)
+
+
