@@ -202,14 +202,8 @@ class Person(Domain):
             raise DatabaseInconsistency, msg
         return address[0]
 
-    def get_main_address_string(self):
-        address = self.get_main_address()
-        address_str = "%s, %s, %s" % (address.street, address.number,
-                                      address.district)
-        return address_str
-    
 
-    
+
     #
     # Auxiliar methods
     #
