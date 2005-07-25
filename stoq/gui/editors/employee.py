@@ -36,7 +36,8 @@ from stoq.gui.templates.person import IndividualEditorTemplate
 from stoq.domain.interfaces import IIndividual, IEmployee
 from stoq.domain.person import (Person, EmployeePosition,
                                 PersonAdaptToEmployee)
-from stoq.gui.slaves.employee import EmployeeDetailsSlave
+from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
+                                      EmployeeStatusSlave)
 
 
 class EmployeeEditor(BaseEditor):
@@ -73,6 +74,9 @@ class EmployeeEditor(BaseEditor):
 
         self.details_slave = EmployeeDetailsSlave(self.conn, self.model)
         self.individual_slave.attach_custom_slave(self.details_slave)
+
+        self.status_slave = EmployeeStatusSlave(self.conn, self.model)
+        self.individual_slave.attach_person_slave(self.status_slave)
         
     def on_confirm(self):
         self.individual_slave.on_confirm()

@@ -150,3 +150,15 @@ class EmployeeDetailsSlave(BaseEditorSlave):
             self.add_proxy(obj, widgets)
 
 
+class EmployeeStatusSlave(BaseEditorSlave):
+    gladefile = 'EmployeeStatusSlave'
+    widgets = ('normal', 'away', 'vacation', 'off')
+    model_type = PersonAdaptToEmployee
+
+    def __init__(self, conn, model):
+        BaseEditorSlave.__init__(self, conn, model)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, self.widgets)
+
+    
