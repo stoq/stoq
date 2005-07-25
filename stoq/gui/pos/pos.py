@@ -51,7 +51,7 @@ from stoq.gui.search.person import (ClientSearch,
                                     EmployeeSearch,
                                     SupplierSearch)
 
-class POS(AppWindow):
+class POSApp(AppWindow):
    
     toplevel_name = gladefile = "pos"
     

@@ -27,9 +27,9 @@ interface/pos/app.py:
 """
 
 from stoq.gui.application import App
-from stoq.gui.pos.pos import POS
+from stoq.gui.pos.pos import POSApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
-    app = App(POS, config)
+    app = App(POSApp, config)
     app.run()
