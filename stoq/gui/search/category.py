@@ -99,11 +99,11 @@ class SellableCatSearch(SearchEditor):
                                  obj_field='category_data', width=210),
                 ForeignKeyColumn(AbstractSellableCategory, 
                                  'suggested_markup', 
-                                 _('Suggested Markup(%s)'), str, 
+                                 _('Suggested Markup(%)'), str, 
                                  obj_field='category_data', width=170),
                 ForeignKeyColumn(AbstractSellableCategory, 
                                  'salesperson_comission', 
-                                 _('Suggested Comission(%s)'), str, 
+                                 _('Suggested Comission(%)'), str, 
                                  obj_field='category_data', )]
 
 
