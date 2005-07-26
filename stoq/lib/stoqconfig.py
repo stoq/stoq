@@ -30,22 +30,17 @@ import os
 import sys
 import binascii
 import time
-import string
 
 import gtk
 import gobject
-from kiwi.environ import set_imagepath, get_gladepath, set_gladepath
-import stoqlib
 from stoqlib.exceptions import DatabaseError, _warn
 from stoqlib.database import set_model_connection_func
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.gtkadds import register_iconsets
 
-import stoq
 from stoq.gui.components.login import LoginDialog
 from stoq.lib.configparser import StoqConfigParser
-from stoq.lib.runtime import (new_transaction, set_current_user,
-                              get_stoq_path)
+from stoq.lib.runtime import new_transaction, set_current_user
 from stoq.domain.person import PersonAdaptToUser
 from stoq.domain.tables import check_tables
 from stoq.domain.base_model import set_inheritable_model_connection
@@ -66,7 +61,6 @@ class AppConfig:
     def __init__(self, domain):
         self.domain = domain
         self.config_data = StoqConfigParser(self.domain)
-        self.stoq_path = get_stoq_path()
 
     def init_log(self):
         sys.stderr.write("-"*76 + "\n")
@@ -82,15 +76,6 @@ class AppConfig:
 
 
 
-    def get_app_list(self):
-        """Returns a list of applications valid in this installation"""
-        # We need to call _parse_apps to make sure all applications
-        # are correctly parsed, since get_apps() may be invoked
-        # before setup_app().
-        if not self._applications:
-            self._parse_apps()
-        return self._applications
-    
     def check_dir_and_create(self, dir):
         if not os.path.isdir(dir):
             if os.path.exists(dir):
@@ -101,22 +86,6 @@ class AppConfig:
             return
         self.config_data.check_permissions(dir, executable=True)
 
-    def _parse_apps(self):
-        # Collects the application names from the gui/ directory and
-        # sets a list member. 
-        appdir = os.path.join(self.stoq_path, 'gui') 
-        self.config_data.check_permissions(appdir, executable=True)
-
-        # Find out what applications we have available
-        self._applications = []
-        exists = os.path.isfile
-        for sub_dir in os.listdir(appdir):
-            dir = os.path.join(appdir, sub_dir)
-            if exists(os.path.join(dir, 'app.py')):
-                self.config_data.check_permissions(dir)
-                self._applications.append(sub_dir)
-        self._applications.sort()
-
 
 
     #
@@ -125,18 +94,6 @@ class AppConfig:
 
 
 
-    def setup_gladepath(self):
-        glade_paths = []
-        # A list of subdirectories in stoq/gui/
-        dirs = ['components', 'slaves', self.appname, 'search',
-                'editors', 'templates']
-        for dir in dirs:
-            glade_paths.append(os.path.join(self.stoq_path,"gui", 
-                                            dir, "glade"))
-        for glade_path in glade_paths:
-            msg = "The stoq directory %s doesn't exists." % glade_path
-            assert os.path.isdir(glade_path), msg
-            set_gladepath(get_gladepath() + [glade_path])
 
     def setup_app(self, appname, splash=False):
         try:
@@ -164,26 +121,12 @@ class AppConfig:
         self.init_log()
         self.log("Stoq: initializing application %s" % appname)
 
-        # This part will be improved on bug 2068.
-        pixmaps_path = os.environ.get('STOQ_PIXMAPS_PATH')
-        msg = "The stoqlib directory %s doesn't exists." % pixmaps_path
-        assert os.path.isdir(pixmaps_path), msg
-        
         # Registering some new important stock icons
         register_iconsets()
-        
-        set_imagepath([pixmaps_path])
-
-        self.setup_gladepath()
 
         set_model_connection_func(new_transaction)
         set_inheritable_model_connection(new_transaction())
         assert self.validate_user()
-
-        if self.splash:
-            show_splash(pixmaps_path)
-
-
 
     #
     # User validation and AppHelper setup
