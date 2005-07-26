@@ -20,14 +20,10 @@
 
 import os
 
-from kiwi.environ import get_gladepath, set_gladepath
+from kiwi.environ import environ
 
 import stoqlib
 
-path = [os.path.join(stoqlib.__path__[0], "gui", "glade")]
-
-# If it doesn't already exists in the gladepath, add it
-gladepath = get_gladepath()
-if path not in gladepath:
-    set_gladepath(gladepath + path)
+glade_dir = os.path.join(stoqlib.__path__[0], "gui", "glade")
+environ.add_resource("glade", glade_dir)
 
