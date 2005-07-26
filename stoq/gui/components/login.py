@@ -32,9 +32,8 @@ import os
 import gtk
 import gobject
 from kiwi.ui.delegates import Delegate
+from kiwi.environ import environ
 from stoqlib.gui.dialogs import RunnableView
-
-from stoq.lib.runtime import get_stoq_path
 
 
 class LoginDialog(Delegate, RunnableView):
@@ -58,17 +57,10 @@ class LoginDialog(Delegate, RunnableView):
         self.setup_widgets()
 
     def setup_widgets(self):
-        # XXX Bug 2068 will improve this part.
-        pixmaps_path = os.environ.get('STOQ_PIXMAPS_PATH')
-        msg = "The stoqlib directory %s doesn't exists." % pixmaps_path
-        assert os.path.isdir(pixmaps_path), msg
-        # Interestingly enough, loading an XPM is slower than a JPG here
-        logo = os.path.join(pixmaps_path, "logo.xpm")
-
-
-
+        filename = environ.find_resource("pixmap", "logo.xpm")
+        
         gtkimage = gtk.Image()
-        gtkimage.set_from_file(logo)
+        gtkimage.set_from_file(filename)
 
         self.logo_container.add(gtkimage)
         self.logo_container.show_all()
