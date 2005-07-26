@@ -23,7 +23,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-lib/domain/sellable.py:
+stoq/domain/sellable.py:
 
    This module implements base classes to "sellable objects", such a product
    or a service, implemented in your own modules.
@@ -33,8 +33,9 @@ import datetime
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
 
-from stoq.domain.base_model import Domain, InheritableModelAdapter
-from stoq.domain.interfaces import ISellable, ISellableItem
+from stoq.domain.base_model import (Domain, InheritableModelAdapter,
+                                    InheritableModel)
+from stoq.domain.interfaces import ISellable, IContainer
 from stoq.lib.validators import is_date_in_interval
 from stoq.lib.parameters import get_system_parameter
 from stoq.lib.runtime import get_connection, new_transaction
@@ -45,7 +46,7 @@ __connection__ = get_connection()
 
 
 #
-# Objects
+# Base Domain Classes
 #
 
 
@@ -71,10 +72,51 @@ class SellableCategory(Domain):
                self.base_category.category_data.suggested_markup
 
 
+class AbstractSellableItem(InheritableModel):
+    """ Abstract representation of a concrete sellable"""
+
+    quantity = FloatCol()
+    base_price = FloatCol()
+    price = FloatCol()
+    sale = ForeignKey('Sale')
+    sellable = ForeignKey('AbstractSellable')
+
+    def __init__(self, *args, **kwargs):
+        if not self.is_parent_kwargs(kwargs):
+            if not 'price' in kwargs:
+                raise TypeError('You should provide a price argument.')
+            if not 'base_price' in kwargs:
+                kwargs['base_price'] = kwargs['price']
+            if not 'quantity' in kwargs:
+                kwargs['quantity'] = 1.0
+        InheritableModel.__init__(self, *args, **kwargs)
+
+    def sell(self):
+        conn = self.get_connection()
+        sellable = ISellable(self.get_adapted(), connection=conn)
+        if not sellable.can_be_sold():
+            msg = '%s is already sold' % self.get_adapted()
+            raise SellError(msg)
+        sellable.set_sold()
+
+
+    
+    #
+    # Accessors
+    #
+
+
+
+    def get_total(self):
+        return self.price * self.quantity
+
+
 class AbstractSellable(InheritableModelAdapter):
     """ A sellable (a product or a service, for instance). """
 
-    __implements__ = ISellable,
+    __implements__ = ISellable, IContainer
+
+    sellable_table = None
 
     STATE_AVALIABLE = 0
     STATE_SOLD = 1
@@ -94,6 +136,46 @@ class AbstractSellable(InheritableModelAdapter):
     on_sale_end_date = DateTimeCol(default=None)
 
     category = ForeignKey('SellableCategory', default=None)
+
+
+
+    #
+    # IContainer methods
+    #
+
+
+
+    
+    def add_item(self, item):
+        raise NotImplementedError("You should call add_selabble_item "
+                                  "instead.")
+
+    def get_items(self):
+        if not self.sellable_table:
+            raise TypeError("Subclasses must provide a sellable_table"
+                            " attribute")
+        conn = self.get_connection()
+        table, parent = self.sellable_table, AbstractSellableItem
+        query = table.q.id == parent.q.sellableID
+        return self.sellable_table.select(query, connection=conn)
+
+    def remove_item(self, item):
+        if not self.sellable_table:
+            raise TypeError("Subclasses must provide a sellable_table"
+                            " attribute")
+        conn = self.get_connection()
+        if not isinstance(item, self.sellable_table):
+            raise TypeError("Item should be of type %s, got "
+                            % (self.sellable_table, type(item)))
+        self.sellable_table.delete(item.id, connection=conn)
+
+
+
+    #
+    # ISellable methods
+    #
+
+
 
     def can_be_sold(self):
         return self.state == self.STATE_AVALIABLE
@@ -124,7 +206,7 @@ class AbstractSellable(InheritableModelAdapter):
 
 
     #
-    # Auxiliar methods
+    # Auxiliary methods
     #
 
 
@@ -133,48 +215,10 @@ class AbstractSellable(InheritableModelAdapter):
         return self.category and self.category.get_markup() 
 
 
-class AbstractSellableItem(InheritableModelAdapter):
-    """ Abstract representation of a concrete sellable"""
-
-    __implements__ = ISellableItem,
-    
-    quantity = FloatCol()
-    base_price = FloatCol()
-    price = FloatCol()
-
-    def __init__(self, _original=None, *args, **kwargs):
-        if not self.is_parent_kwargs(kwargs):
-            assert 'price' in kwargs
-            if not 'base_price' in kwargs:
-                kwargs['base_price'] = kwargs['price']
-            if not 'quantity' in kwargs:
-                kwargs['quantity'] = 1
-        InheritableModelAdapter.__init__(self, _original, *args, **kwargs)
-
-    def sell(self):
-        conn = self.get_connection()
-        sellable = ISellable(self.get_adapted(), connection=conn)
-        if not sellable.can_be_sold():
-            msg = '%s is already sold' % self.get_adapted()
-            raise SellError(msg)
-        sellable.set_sold()
-
-
-    
-    #
-    # Accessors
-    #
-
-
-    def get_total(self):
-        return self.price * self.quantity
-
-
 
 #
-# Auxiliar methods
+# Auxiliary functions
 #
-
 
 
 

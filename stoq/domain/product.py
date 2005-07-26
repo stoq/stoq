@@ -21,12 +21,12 @@
 ## USA.
 ##
 """
-lib/domain/product.py:
+stoq/domain/product.py:
     
     Base classes to manage product's informations
 """
 
-from stoqlib.exceptions import StockError, SellError
+from stoqlib.exceptions import StockError, SellError, _warn
 from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 
@@ -36,8 +36,7 @@ from stoq.domain.sellable import (AbstractSellable,
                                   get_formated_price)
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
-from stoq.domain.interfaces import (ISellable, IStorable, ISellableItem,
-                                    IStockItem)
+from stoq.domain.interfaces import ISellable, IStorable, IContainer
 from stoq.lib.parameters import get_system_parameter
 from stoq.lib.runtime import get_connection
 
@@ -66,7 +65,7 @@ class ProductSupplierInfo(Domain):
 
 
     #
-    # Auxiliar methods
+    # Auxiliary methods
     #
 
 
@@ -104,7 +103,106 @@ class ProductStockReference(Domain):
     quantity = FloatCol(default=0.0)
     logic_quantity = FloatCol(default=0.0)
     branch =  ForeignKey('PersonAdaptToBranch')
-    product_item =  ForeignKey('ProductAdaptToSellableItem')
+    product_item =  ForeignKey('ProductSellableItem')
+
+
+class ProductSellableItem(AbstractSellableItem):
+    """ Class responsible to store basic products informations """
+
+    __implements__ = IContainer, 
+
+
+
+    #
+    # IContainer implementation
+    #
+
+
+
+    def add_item(self, item):
+        raise NotImplementedError('This method should be replaced by '
+                                  'add_stock_reference')
+        
+    def get_items(self):
+        conn = self.get_connection()
+        return ProductStockReference.selectBy(connection=conn,
+                                              product_item=self)
+
+    def remove_item(self, item):
+        conn = self.get_connection()
+        if not isinstance(item, ProductStockReference):
+            raise TypeError("Item should be of type ProductStockReference,"
+                            " got " % type(item))
+        ProductStockItem.delete(item.id, connection=conn)
+
+
+
+    #
+    # Basic methods
+    #
+
+
+    
+    def sell(self, conn, branch, order_product=False):
+        sparam = get_system_parameter(conn)
+        if not (branch and 
+                branch.id == sparam.CURRENT_BRANCH.id or 
+                branch.id == sparam.CURRENT_WAREHOUSE.id):
+            msg = ("Stock still doesn't support sales for "
+                   "branch companies different than the "
+                   "current one or the warehouse")
+            raise SellError(msg)
+
+        if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
+            msg = _("This company doesn't allow order products")
+            raise SellError(msg)
+        
+        adapted = self.get_adapted()
+        sellable_item = ISellable(adapted)
+        sellable_item.setConnection(conn)
+        if not sellable_item.can_be_sold():
+            msg = '%s is already sold' % adapted
+            raise SellError(msg)
+            
+        if order_product:
+            # If order_product is True we will not update the stock for this
+            # product
+            return
+
+        storable_item = IStorable(adapted)
+        storable_item.setConnection(conn)
+        # Update the stock
+        storable_item.decrease_stock(self.quantity, branch)
+
+        # The function get_balance returns the current amount of items in the
+        # stock. If get_balance == 0 we have no more stock for this product
+        # and we need to set it as sold.
+        logic_qty = storable.get_logic_balance()
+        balance = storable.get_full_balance() - logic_qty
+        if not balance:
+            sellable_item.set_sold()
+
+            
+            
+    #
+    # Auxiliary methods
+    #            
+
+
+
+    def add_stock_reference(self, branch, quantity=0.0, 
+                            logic_quantity=0.0):
+        conn = self.get_connection()
+        return ProductStockReference(connection=conn, quantity=quantity, 
+                                     logic_quantity=logic_quantity, 
+                                     branch=branch, product_item=self)
+
+
+class ProductStockItem(AbstractStockItem):
+    """ Class that makes a reference to the product stock of a 
+    certain branch company."""
+
+    storable = ForeignKey('ProductAdaptToStorable')
 
 
 
@@ -117,7 +215,21 @@ class ProductStockReference(Domain):
 class ProductAdaptToSellable(AbstractSellable):
     """ A product implementation as a sellable facet. """
 
-    __implements__ = ISellable,
+    sellable_table = ProductSellableItem
+
+
+
+    #
+    # Auxiliary methods
+    #
+
+
+
+    def add_sellable_item(self, sale, quantity, base_price, price):
+        conn = self.get_connection()
+        return ProductSellableItem(connection=conn, quantity=quantity,
+                                   base_price=base_price, price=price,
+                                   sale=sale, sellable=self)
 
 Product.registerFacet(ProductAdaptToSellable)
 
@@ -125,7 +237,7 @@ Product.registerFacet(ProductAdaptToSellable)
 class ProductAdaptToStorable(ModelAdapter):
     """ A product implementation as a storable facet. """
     
-    __implements__ = IStorable,
+    __implements__ = IStorable, IContainer
 
     def __init__(self, _original=None, *args, **kwargs):
         ModelAdapter.__init__(self, _original, *args, **kwargs)
@@ -133,25 +245,43 @@ class ProductAdaptToStorable(ModelAdapter):
         sparam = get_system_parameter(conn)
         self.precision = sparam.STOCK_BALANCE_PRECISION
 
-    def get_stocks(self, branch=None):
-        product_id = self.get_adapted().id
+
+
+    #
+    # IContainer implementation
+    #
+
+    
+
+    def add_item(self, item):
+        raise NotImplementedError('This method should be replaced '
+                                  'by add_stock_item')
+
+
+    def get_items(self):
+        raise NotImplementedError('This method should be replaced '
+                                  'by get_stocks')
+
+    def remove_item(self, item):
         conn = self.get_connection()
-        query = "original_id = '%d'" % product_id
-        stocks = ProductAdaptToStockItem.select(query, connection=conn)
-        if not branch:
-            return stocks
-        table, parent = ProductAdaptToStockItem, AbstractStockItem
-        q1 = table.q.id == parent.q.id
-        q2 = parent.q.branchID == branch.id
-        q3 = table.q._originalID == product_id
-        query = AND(q1, q2, q3)
-        return ProductAdaptToStockItem.select(query, connection=conn)
+        if not isinstance(item, ProductStockItem):
+            raise TypeError("Item should be of type ProductStockItem, got "
+                            % type(item))
+        ProductStockItem.delete(item.id, connection=conn)
+
+
+
+    #
+    # IStorable implementation
+    #
+
+
 
     def fill_stocks(self):
         conn = self.get_connection()
         branch_companies = PersonAdaptToBranch.select(connection=conn)
         for branch in branch_companies:
-            storable_add_stock_item(self, conn, branch)
+            self.add_stock_item(branch)
 
     def increase_stock(self, quantity, branch=None):
         stocks = self.get_stocks(branch)
@@ -263,8 +393,8 @@ class ProductAdaptToStorable(ModelAdapter):
 
 
     #
-    # Reserved methods
-    #
+    # Auxiliary methods
+    #            
 
 
 
@@ -274,6 +404,26 @@ class ProductAdaptToStorable(ModelAdapter):
             msg = ("This company doesn't allow logic quantity "
                    "operations.")
             raise StockError(msg)
+
+    def add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
+                       logic_quantity=0.0):
+        conn = self.get_connection()
+        return ProductStockItem(connection=conn, branch=branch,
+                                stock_cost=stock_cost, quantity=quantity,
+                                logic_quantity=logic_quantity,
+                                storable=self)
+
+    def get_stocks(self, branch=None):
+        conn = self.get_connection()
+        table, parent = ProductStockItem, AbstractStockItem
+        q1 = table.q.id == parent.q.id
+        q2 = table.q.storableID == self.id
+        if not branch:
+            query = AND(q1, q2)
+        else:
+            q3 = parent.q.branchID == branch.id
+            query = AND(q1, q2, q3)
+        return ProductStockItem.select(query, connection=conn)
 
 
         
@@ -289,79 +439,15 @@ class ProductAdaptToStorable(ModelAdapter):
 Product.registerFacet(ProductAdaptToStorable)
 
 
-class ProductAdaptToSellableItem(AbstractSellableItem):
-    """ Class responsible to store basic products informations """
-
-    __implements__ = ISellableItem,
-
-    origins  = MultipleJoin('ProductStockReference')
-
-    def sell(self, conn, branch, order_product=False):
-        sparam = get_system_parameter(conn)
-        if not (branch and 
-                branch.id == sparam.CURRENT_BRANCH.id or 
-                branch.id == sparam.CURRENT_WAREHOUSE.id):
-            msg = ("Stock still doesn't support sales for "
-                   "branch companies different than the "
-                   "current one or the warehouse")
-            raise SellError(msg)
-
-        if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
-            msg = _("This company doesn't allow order products")
-            raise SellError(msg)
-        
-        adapted = self.get_adapted()
-        sellable_item = ISellable(adapted)
-        sellable_item.setConnection(conn)
-        if not sellable_item.can_be_sold():
-            msg = '%s is already sold' % adapted
-            raise SellError(msg)
-            
-        if order_product:
-            # If order_product is True we will not update the stock for this
-            # product
-            return
-
-        storable_item = IStorable(adapted)
-        storable_item.setConnection(conn)
-        # Update the stock
-        storable_item.decrease_stock(self.quantity, branch)
-
-        # The function get_balance returns the current amount of items in the
-        # stock. If get_balance == 0 we have no more stock for this product
-        # and we need to set it as sold.
-        logic_qty = storable.get_logic_balance()
-        balance = storable.get_full_balance() - logic_qty
-        if not balance:
-            sellable_item.set_sold()
-
-Product.registerFacet(ProductAdaptToSellableItem)
-
-
-class ProductAdaptToStockItem(AbstractStockItem):
-    """ Class that makes a reference to the product stock of a 
-    certain branch company."""
-
-    __implements__ = IStockItem,
-
-
-Product.registerFacet(ProductAdaptToStockItem)
-
-
 
 #
-# Auxiliar methods
+# Auxiliary functions
 #
 
-
-
-def storable_add_stock_item(storable, conn, branch):
-    adapted = storable.get_adapted()
-    adapted.addFacet(IStockItem, branch=branch, connection=conn)
 
 
 def storables_set_branch(conn, branch):
     """A method that must be called always when a new branch company is
     created. It creates a new stock reference for all the products."""
     for storable in ProductAdaptToStorable.select(connection=conn):
-        storable_add_stock_item(storable, conn, branch)
+        storable.add_stock_item(branch)

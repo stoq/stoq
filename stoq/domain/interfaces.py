@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-lib/domain/interfaces.py:
+stoq/domain/interfaces.py:
 
     Interfaces definition for all domain classes.
 """
@@ -83,11 +83,27 @@ class ConnInterface(Interface):
 
 
 
+class IContainer(ConnInterface):
+    """An objects that holds other objects or items"""
+
+
+    def add_item(item):
+        """Add a persistent or non-persistent item associated with this
+        model."""
+
+    def get_items():
+        """Get all the items in the container. The result value could be a
+        simple python list or an instance which maps to SQL statement.  """
+
+    def remove_items(item):
+        """Remove from the list or database the item desired."""
+
+
 class ISellable(ConnInterface):
     """ Represents the sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
-    only its reference as a sellable. See ISellableItem to get the interface
-    for a concrete item."""
+    only its reference as a sellable. Concrete items are defined by
+    IContainer routines."""
 
     state = Attribute('state', 
                       'enum',
@@ -132,32 +148,11 @@ class ISellable(ConnInterface):
         pass
 
 
-class ISellableItem(ConnInterface):
-    """A sellble item reference, represents a concrete item, with specific
-    information about quantity and sale price."""
-
-    quantity = Attribute('price',
-                         'float', 
-                         'quantity of sellable')
-    base_price = Attribute('price', 
-                           'float', 
-                           'base_price of sellable')
-    price = Attribute('price', 
-                      'float', 
-                      'price of sellable')
-
-    def sell(conn):
-        pass
-
 
 class IStorable(ConnInterface):
     """Storable documentation for a certain product or a sellable item. 
-    Each storable can have references to many concrete items which are 
-    described by IStockItem."""
-
-    def get_stocks(conn):
-        """A list of objects which have stock information of the current 
-        item in all the branches"""
+    Each storable can have references to many concrete items which will
+    be defined by IContainer routines."""
 
     def fill_stocks(conn):
         """Fill the stock references of the current product to point to 
@@ -201,23 +196,6 @@ class IStorable(ConnInterface):
         stock of the sellable item"""
         
         
-class IStockItem(ConnInterface):
-    """Storable information for a stock item, a concrete item which lives
-    in a branch.""" 
-
-    stock_cost = Attribute('stock_cost', 
-                           'float',
-                           'The amount paid for this item')
-    branch = Attribute('branch',
-                       'Branch',
-                       'A reference to a branch company object')
-    qty_sold = Attribute('qty_sold', 
-                         'float', 
-                         'The quantity sold for this item')
-    logic_qty_sold = Attribute('logic_qty_sold',
-                               'float', 
-                               'The logic quantity sold for this item')
-
 class IIndividual(ConnInterface):
     """Being or characteristic of a single person, concerning one
     person exclusively"""

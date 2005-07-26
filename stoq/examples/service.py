@@ -22,15 +22,14 @@
 ## USA.
 ##
 """
-examples/service.py:
+stoq/examples/service.py:
 
     Create service objects for an example database.
 """
 
 from stoq.lib import i18n
 from stoq.domain.service import Service, ServiceAdaptToSellable
-from stoq.domain.product import (Product, ProductAdaptToSellable,
-                                 ProductAdaptToStockItem)
+from stoq.domain.product import Product, ProductAdaptToSellable
 from stoq.domain.interfaces import ISellable
 from stoq.domain.sellable import AbstractSellable
 from stoq.lib.runtime import new_transaction

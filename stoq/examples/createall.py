@@ -22,7 +22,7 @@
 ## USA.
 ##
 """
-examples/createall.py:
+stoq/examples/createall.py:
 
     Create all objects for an example database used by Stoq applications.
 """

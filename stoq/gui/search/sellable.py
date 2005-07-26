@@ -24,7 +24,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##
 """
-gui/search/sellable:
+stoq/gui/search/sellable:
 
     Implementation of sellable search
 """
@@ -128,10 +128,11 @@ class SellableSearch(SearchDialog):
     size = (800, 500)
     search_table = AbstractSellable
  
-    def __init__(self, search_str=None):
+    def __init__(self, search_str=None, conn=None):
         selection_mode = gtk.SELECTION_MULTIPLE
         SearchDialog.__init__(self, self.search_table, hide_footer=False,
                               selection_mode=selection_mode)
+        self.conn = conn or self.conn
         self.search_bar.set_search_string(search_str)
         self.search_bar.search_items()
 
@@ -145,8 +146,6 @@ class SellableSearch(SearchDialog):
             self.attach_slave('extra_holder', self.footer_slave)
         else:
             self.footer_slave = None
-
-
 
 
     

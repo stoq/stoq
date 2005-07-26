@@ -22,7 +22,7 @@
 ## USA.
 ##
 """
-examples/products.py:
+stoq/examples/products.py:
 
     Create product objects for an example database.
 

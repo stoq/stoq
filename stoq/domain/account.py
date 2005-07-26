@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-lib/domain/account.py:
+stoq/domain/account.py:
     
     Domain classes to manage bank accounts.
 """

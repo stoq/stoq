@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-lib/domain/service.py:
+stoq/domain/service.py:
     
     Base classes to manage services informations
 """
@@ -31,7 +31,7 @@ from sqlobject import StringCol
 
 from stoq.domain.base_model import Domain
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
-from stoq.domain.interfaces import ISellable, ISellableItem
+from stoq.domain.interfaces import ISellable, IContainer
 from stoq.lib.runtime import get_connection
 
 
@@ -52,6 +52,25 @@ class Service(Domain):
     notes = StringCol(default='')
 
 
+class ServiceSellableItem(AbstractSellableItem):
+    """ A service implementation as a sellable item. """
+
+
+    
+    #
+    # Auxiliary methods
+    #
+
+
+
+    def sell(self):
+        conn = self.get_connection()
+        sellable = ISellable(self.get_adapted(), connection=conn)
+        if not sellable.can_be_sold():
+            msg = '%s is already sold' % self.get_adapted()
+            raise SellError(msg)
+
+
 
 #
 # Adapters
@@ -62,21 +81,20 @@ class Service(Domain):
 class ServiceAdaptToSellable(AbstractSellable):
     """ A service implementation as a sellable facet. """
 
-    __implements__ = ISellable,
+    sellable_table = ServiceSellableItem
+
+
+
+    #
+    # Auxiliary methods
+    #
+
+
+
+    def add_sellable_item(self, sale, quantity, base_price, price):
+        conn = self.get_connection()
+        return ServiceSellableItem(connection=conn, quantity=quantity,
+                                   base_price=base_price, price=price,
+                                   sale=sale, sellable=self)
 
 Service.registerFacet(ServiceAdaptToSellable)
-
-
-class ServiceAdaptToSellableItem(AbstractSellableItem):
-    """ A service implementation as a sellable facet. """
-
-    __implements__ = ISellableItem,
-
-    def sell(self):
-        conn = self.get_connection()
-        sellable = ISellable(self.get_adapted(), connection=conn)
-        if not sellable.can_be_sold():
-            msg = '%s is already sold' % self.get_adapted()
-            raise SellError(msg)
-    
-Service.registerFacet(ServiceAdaptToSellableItem)

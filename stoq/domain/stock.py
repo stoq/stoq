@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-lib/domain/stock.py:
+stoq/domain/stock.py:
     
     Domain classes to manage stocks.
 """
@@ -29,8 +29,7 @@ lib/domain/stock.py:
 
 from sqlobject import FloatCol, ForeignKey
 
-from stoq.domain.base_model import InheritableModelAdapter 
-from stoq.domain.interfaces import IStockItem
+from stoq.domain.base_model import InheritableModel
 from stoq.lib.runtime import get_connection
 
 
@@ -44,10 +43,8 @@ __connection__ = get_connection()
 
 
 
-class AbstractStockItem(InheritableModelAdapter):
-    """ Class to reference to the stock of a certain branch company."""
-
-    ___implements___ = IStockItem,
+class AbstractStockItem(InheritableModel):
+    """ A reference to the stock of a certain branch company."""
 
     stock_cost = FloatCol(default=0.0)
     quantity = FloatCol(default=0.0)

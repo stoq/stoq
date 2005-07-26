@@ -39,7 +39,7 @@ from stoq.domain.sellable import SellableCategory
 from stoq.domain.person import PersonAdaptToSupplier
 from stoq.domain.product import (ProductSupplierInfo, Product,
                                  ProductAdaptToSellable,
-                                 ProductAdaptToSellableItem)
+                                 ProductSellableItem)
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.lib.parameters import get_system_parameter
 
@@ -380,7 +380,7 @@ class ProductItemEditor(BaseEditor):
     title = _('Editing Product')
     size = (550, 100)
 
-    model_type = ProductAdaptToSellableItem
+    model_type = ProductSellableItem
     gladefile = 'ProductItemEditor'
     proxy_widgets = ('quantity', 'price')
     widgets = ('product_name', 'price_label') + proxy_widgets
@@ -408,8 +408,7 @@ class ProductItemEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_widgets(self):
-        adapted = self.model.get_adapted()
-        sellable = ISellable(adapted)
+        sellable = self.model.sellable
         self.product_name.set_text(sellable.description)
 
         sparam = get_system_parameter(self.conn)

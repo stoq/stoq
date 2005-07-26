@@ -22,7 +22,7 @@
 ## USA.
 ##
 """
-examples/person.py:
+stoq/examples/person.py:
 
     Create person objects for an example database.
 """

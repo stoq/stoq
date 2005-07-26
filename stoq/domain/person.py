@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-lib/domain/person.py:
+stoq/domain/person.py:
 
    Person domain classes for Stoq applications.
 """
@@ -205,7 +205,7 @@ class Person(Domain):
 
 
     #
-    # Auxiliar methods
+    # Auxiliary methods
     #
 
 

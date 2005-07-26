@@ -102,7 +102,7 @@ def set_current_user(user):
 
 
 #
-# Auxiliar routines
+# Auxiliary functions
 #
 
 

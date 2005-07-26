@@ -24,25 +24,28 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##
 """
-gui/pos/pos.py:
+stoq/gui/pos/pos.py:
 
     Main interface definition for pos application.
 """
 
 import operator
 
+from twisted.python.components import implements
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchBar, BaseListSlave
-from stoqlib.gui.columns import FacetColumn
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.parameters import get_system_parameter
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.person import Person
-from stoq.domain.product import Product, ProductAdaptToSellableItem
-from stoq.domain.interfaces import (IIndividual, IClient, ISellable,
-                                    ISellableItem)
+from stoq.domain.base_model import set_inheritable_model_connection
+from stoq.domain.service import ServiceAdaptToSellable
+from stoq.domain.sale import Sale
+from stoq.domain.product import (Product, ProductSellableItem, 
+                                 ProductAdaptToSellable)
+from stoq.domain.interfaces import IIndividual, IClient, ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
@@ -138,15 +141,11 @@ class POSApp(AppWindow):
             self.quantity.set_text('0')
             self.quantity.set_sensitive(False)
         else:
-            sellable = self.get_sellable_model(model)
+            sellable = model.sellable
             self.price.show()
             self.product.set_color('black')
             self.product.set_text(sellable.description)
             self.quantity.set_sensitive(True)
-
-    def get_sellable_model(self, sellable_item):
-        adapted = sellable_item.get_adapted()
-        return ISellable(adapted, connection=self.conn)
 
     def search_clients(self):
         person = self.run_dialog(ClientSearch)
@@ -154,13 +153,22 @@ class POSApp(AppWindow):
             self.person_proxy.new_model(person, relax_type=True)
         self.update_widgets()
 
-    def add_sellable_item(self, item):
-        adapted = item.get_adapted()
-        sellable_item = ISellableItem(adapted)
-        if sellable_item in self.order_list:
+    def add_sellable_item(self, sellable):
+        if not implements(sellable, ISellable):
+            raise TypeError("The object must implement a sellable facet.")
+        sellables = [s.sellable for s in self.order_list]
+        if sellable in sellables:
             return
-        sellable_item = adapted.addFacet(ISellableItem, price=item.price,
-                                         connection=self.conn)
+        # FIXME Waiting for SQLObject bug fix. When calling select from a
+        # InheritableSQLObject table connection is not set properly. When
+        # we fix this bug the three lines bellow won't be necessary anymore.
+        table = type(sellable)
+        sellable = table.get(sellable.id, connection=self.conn)
+        set_inheritable_model_connection(self.conn)
+        
+        sellable_item = sellable.add_sellable_item(self.sale, quantity=1.0,
+                                                   base_price=sellable.price,
+                                                   price=sellable.price)
         self.order_list.add_instance(sellable_item)
 
     def select_first_item(self):
@@ -170,6 +178,7 @@ class POSApp(AppWindow):
             self.order_list.select_instance(self.order_list[0])
 
     def reset_order(self):
+        self.sale = Sale(connection=self.conn)
         self.person_proxy.new_model(None, relax_type=True)
         self.product_proxy.new_model(None, relax_type=True)
         items = self.order_list[:]
@@ -199,7 +208,7 @@ class POSApp(AppWindow):
             self.client_name.set_color('black')
         model = self.order_list.get_selected()
         if model:
-            sellable = self.get_sellable_model(model)
+            sellable = model.sellable
             self._update_product_widgets(model)
             self.price.set_text(sellable.get_price_string())
         else:
@@ -209,7 +218,7 @@ class POSApp(AppWindow):
     def run_search(self):
         """Hook called by SearchDialog"""
         search_str = self.search_bar.get_search_string()
-        items = self.run_dialog(SellableSearch, search_str)
+        items = self.run_dialog(SellableSearch, search_str, conn=self.conn)
         for item in items:
             self.add_sellable_item(item)
         self.select_first_item()
@@ -217,11 +226,10 @@ class POSApp(AppWindow):
 
     def get_columns(self):
         """Hook called by BaseListSlave"""
-        return [FacetColumn(ISellable, 'code', title=_('Code'), 
-                            sorted=True, data_type=str, width=90),
-                FacetColumn(ISellable, 'description', 
-                            title=_('Description'), data_type=str, 
-                            expand=True),
+        return [Column('sellable.code', title=_('Code'), sorted=True, 
+                       data_type=str, width=90),
+                Column('sellable.description', title=_('Description'), 
+                       data_type=str, expand=True),
                 Column('price', title=_('Price'), data_type=float, 
                        width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
@@ -305,7 +313,7 @@ class POSApp(AppWindow):
 
     def on_edit_button__clicked(self, *args):
         sellable_item = self.order_list.get_selected()
-        if isinstance(sellable_item, ProductAdaptToSellableItem):
+        if isinstance(sellable_item, ProductSellableItem):
             model = self.run_dialog(ProductItemEditor, self.conn,
                                     self.order_list.get_selected())
         else:

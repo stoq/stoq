@@ -21,7 +21,7 @@
 ## USA.
 ##
 """
-domain/tables.py:
+stoq/domain/tables.py:
 
     A list of all tables in database and a way to get them.
 
@@ -44,6 +44,7 @@ from stoq.lib.runtime import get_connection
 TABLES = [
      ('stoq.domain.base_model',  ("SystemModelData",
                                   "InheritableModelAdapter",
+                                  "InheritableModel",
                                   )),
      ('stoq.lib.parameters',     ("ParameterData",
                                   )),
@@ -67,6 +68,8 @@ TABLES = [
                                   "PersonAdaptToBranch",
                                   "PersonAdaptToSalesPerson",
                                   )),
+     ('stoq.domain.sale',       ("Sale",
+                                  )),
      ('stoq.domain.sellable',    ("AbstractSellableCategory",
                                   "BaseSellableCategory",
                                   "SellableCategory", 
@@ -77,22 +80,22 @@ TABLES = [
                                   )),
      ('stoq.domain.service',     ("Service",
                                   "ServiceAdaptToSellable",
-                                  "ServiceAdaptToSellableItem",
+                                  "ServiceSellableItem",
                                   )),
      ('stoq.domain.product',     ("Product",
                                   "ProductSupplierInfo", 
-                                  "ProductAdaptToSellableItem",
+                                  "ProductSellableItem",
                                   "ProductStockReference", 
                                   "ProductAdaptToSellable",
                                   "ProductAdaptToStorable",
-                                  "ProductAdaptToStockItem",
+                                  "ProductStockItem",
                                   )),
 ]
 
 
 
 #
-# Auxiliar methods
+# Auxiliar routines
 #
 
 
