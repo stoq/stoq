@@ -56,9 +56,9 @@ class BaseSellableCatSearch(SearchEditor):
     def get_columns(self):
         return [Column('description', _('Description'), str, 
                        sorted=True, width=300),
-                Column('suggested_markup', _('Suggested Markup(%)'), 
+                Column('suggested_markup', _('Suggested Markup (%)'), 
                        float, width=180),
-                Column('salesperson_comission', _('Suggested Comission(%)'), 
+                Column('salesperson_comission', _('Suggested Commission (%)'), 
                        float)]
 
     def get_query_args(self):
@@ -99,11 +99,11 @@ class SellableCatSearch(SearchEditor):
                                  obj_field='category_data', width=210),
                 ForeignKeyColumn(AbstractSellableCategory, 
                                  'suggested_markup', 
-                                 _('Suggested Markup(%)'), str, 
+                                 _('Suggested Markup (%)'), str, 
                                  obj_field='category_data', width=170),
                 ForeignKeyColumn(AbstractSellableCategory, 
                                  'salesperson_comission', 
-                                 _('Suggested Comission(%)'), str, 
+                                 _('Suggested Commission (%)'), str, 
                                  obj_field='category_data', )]
 
 
