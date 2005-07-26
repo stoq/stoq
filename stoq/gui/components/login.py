@@ -57,6 +57,7 @@ class LoginDialog(Delegate, RunnableView):
         self.setup_widgets()
 
     def setup_widgets(self):
+        # Interestingly enough, loading an XPM is slower than a JPG here
         filename = environ.find_resource("pixmap", "logo.xpm")
         
         gtkimage = gtk.Image()
