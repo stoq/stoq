@@ -26,9 +26,6 @@ lib/runtime.py:
     Runtime methods for Stoq applications.
 """
 
-import os
-import string
-
 import sqlobject
 from stoq.lib.configparser import StoqConfigParser
 
@@ -98,16 +95,3 @@ def set_current_user(user):
     assert user
     # He we store a PersonAdaptToUser object.
     _current_user = user
-
-
-
-#
-# Auxiliary functions
-#
-
-
-
-def get_stoq_path():
-    file_path = os.path.abspath(__file__)
-    component_dir = file_path.split(os.sep)[:-2]
-    return string.join(component_dir, os.sep)

@@ -1,77 +1,81 @@
 #!/usr/bin/env python
-# -*- Mode: Python; coding: iso-8859-1 -*-
-# vi:si:et:sw=4:sts=4:ts=4
+#
+# Copyright (C) 2005 by Async Open Source 
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
-## All rights reserved
-##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
-##
-## This program is distributed in the hope that it will be useful,
-## but WITHOUT ANY WARRANTY; without even the implied warranty of
-## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
-##
-## You should have received a copy of the GNU General Public License
-## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-## USA.
-##
-"""
-bin/stoq:
-
-    Script to start application
-"""
-    
+import os
 import sys
-import gtk
 
-from stoq.lib import i18n
-from stoq.lib.stoqconfig import AppConfig
+# Required version of Python
+REQUIRED_VERSION = (2, 4)
 
+# Directory name, defaults to name of binary, it is relative to ..
+# a, __init__.py and main.py is expected to be found there.
+DIRNAME = None
 
+# Application name, defaults to capitalized name of binary
+APPNAME = None
 
-#
-# Begin application
-#
+# Do not modify code below this point
+dirname = DIRNAME or os.path.split(sys.argv[0])[1]
+appname = APPNAME or dirname.capitalize()
 
+version_string = sys.version.split(' ')[0]
+majmin = tuple(map(int, version_string.split('.')))
+if majmin < REQUIRED_VERSION:
+    raise SystemExit("ERROR: Python %s or higher is required to run %s, "
+                     "%s found" % ('.'.join(map(str, REQUIRED_VERSION)),
+                                   appname,
+                                   version_string))
 
+# Figure out the directy which is the prefix
+# path-of-current-file/..
+currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
+basedir = os.path.abspath(os.path.join(currentdir, '..'))
 
-def run_application():
-    APPNAME = "stoq"
-
-    config = AppConfig(APPNAME)
-    APPS = config.get_app_list()
-
-    if len(sys.argv) < 2:
-       raise SystemExit, \
-         """Usage: stoq <application>. Valid applications are: %s""" % APPS
-
-    appname = sys.argv[1].strip()
-    if appname.endswith('/'):
-        appname = appname[:-1]
-
-    if not appname in APPS:
-        raise SystemExit, \
-            "'%s' is not an application. Valid applications are: %s" \
-            % (appname, APPS)
-
-    config.setup_app(appname, splash=True)
-
-    module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), appname)
-    if not hasattr(module, "main"):
-        raise RunTimeError, "Application %s must have a app.main() function"
-
-    if not 'noexec' in sys.argv:
-        module.main(config)
-
-    gtk.main()
-    config.log("Shutting down application")
-
-
-run_application()
+# Add the base directory where the application is installed in to sys.path
+if os.path.exists(os.path.join(basedir, 'lib')):
+    pythondir = os.path.join(basedir, 'lib',
+                             'python%d.%d' % sys.version_info[:2],
+                             'site-packages')
+    if not os.path.exists(pythondir):
+        raise SystemExit("ERROR: Could not find required directory: %s" %
+                         pythondir)
+elif not os.path.exists(os.path.join(basedir, dirname)):
+    raise SystemExit("ERROR: Could not find required directory: %s" %
+                     os.path.join(basedir, dirname))
+else:
+    pythondir = basedir
     
+sys.path.insert(0, pythondir)
+
+main_module = dirname + '.main'
+try:
+    module = __import__(main_module, globals(), locals(), 'main')
+except Exception, e:
+    raise SystemExit("ERROR: Failed to import required module %s\n\n"
+                     "Exception raised during import:\n %s: %s\n" %
+                     (main_module, e.__class__.__name__, e))
+
+main = getattr(module, 'main', None)
+if not main or not callable(main):
+    raise SystemExit("ERROR: Could not find callable 'main' in module %s" %
+                     main_module)
+
+try:
+    sys.exit(main(sys.argv))
+except KeyboardInterrupt:
+    raise SystemExit
