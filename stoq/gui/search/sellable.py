@@ -41,7 +41,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject.sqlbuilder import IN, LEFTJOINOn
 
 from stoq.lib.defaults import ALL_BRANCHES
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.stock import AbstractStockItem
 from stoq.domain.product import ProductAdaptToSellable
@@ -176,7 +176,7 @@ class SellableSearch(SearchDialog):
 
     def get_columns(self):
         """Hook called by SearchDialog"""
-        self.has_stock_mode = get_system_parameter(self.conn).HAS_STOCK_MODE
+        self.has_stock_mode = sysparam(self.conn).HAS_STOCK_MODE
         columns = [Column('code', title=_('Code'), sorted=True,
                           data_type=str, width=100),
                    Column('description', title=_('Description'),

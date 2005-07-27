@@ -37,7 +37,7 @@ from stoq.domain.sellable import (AbstractSellable,
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
 from stoq.domain.interfaces import ISellable, IStorable, IContainer
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_connection
 
 
@@ -242,8 +242,7 @@ class ProductAdaptToStorable(ModelAdapter):
     def __init__(self, _original=None, *args, **kwargs):
         ModelAdapter.__init__(self, _original, *args, **kwargs)
         conn = self.get_connection()
-        sparam = get_system_parameter(conn)
-        self.precision = sparam.STOCK_BALANCE_PRECISION
+        self.precision = sysparam(conn).STOCK_BALANCE_PRECISION
 
 
 
@@ -337,8 +336,7 @@ class ProductAdaptToStorable(ModelAdapter):
         if not stocks.count():
             raise StockError, 'Invalid stock references for %s' % self
         value = 0.0
-        sparam = get_system_parameter(self.get_connection())
-        has_logic_qty = sparam.USE_LOGIC_QUANTITY
+        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         for stock_item in stocks:
             value += stock_item.quantity
             if has_logic_qty:
@@ -371,8 +369,7 @@ class ProductAdaptToStorable(ModelAdapter):
         balance = self.get_full_balance(branch) - logic_qty
         qty_ok =  quantity <= balance
         logic_qty_ok = quantity <= self.get_balance(branch)
-        sparam = get_system_parameter(self.get_connection())
-        has_logic_qty = sparam.USE_LOGIC_QUANTITY
+        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
             msg = ('Quantity to sell is greater than the available '
                    'stock.')
@@ -399,8 +396,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
 
     def _check_logic_quantity(self):
-        sparam = get_system_parameter(self.get_connection())
-        if not sparam.USE_LOGIC_QUANTITY:
+        if not sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
             msg = ("This company doesn't allow logic quantity "
                    "operations.")
             raise StockError(msg)

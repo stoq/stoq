@@ -28,7 +28,7 @@ stoq/gui/editors/category.py:
 
 from stoqlib.gui.editors import BaseEditor
 
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import (AbstractSellableCategory,
                                   BaseSellableCategory,
                                   SellableCategory)
@@ -65,8 +65,7 @@ class SellableCategoryEditor(BaseEditor):
 
     def __init__(self, conn, model=None):
         if not model:
-            sparam = get_system_parameter(conn)
-            suggested_base_cat = sparam.DEFAULT_BASE_CATEGORY
+            suggested_base_cat = sysparam(conn).DEFAULT_BASE_CATEGORY
 
             table = AbstractSellableCategory
             category_data = table(connection=conn, description='')

@@ -139,7 +139,7 @@ class ParameterAccess:
 
     Usage:
 
-        parameter = get_system_parameter(conn).parameter_name
+        parameter = sysparam(conn).parameter_name
     """
 
     # Add new general settings here instead of create a single method for each
@@ -302,7 +302,7 @@ class ParameterAccess:
         return self.get_integer_parameter('EDIT_SELLABLE_PRICE')
 
 
-def get_system_parameter(conn):
+def sysparam(conn):
     return ParameterAccess(conn)
 
 
