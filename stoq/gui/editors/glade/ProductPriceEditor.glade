@@ -16,7 +16,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Base Cost:</property>
+                        <property name="label" context="True" translatable="yes">Base Cost:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -28,7 +28,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="True">Markup:</property>
+                        <property name="label" context="True" translatable="yes">Markup:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -42,7 +42,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label4">
-                        <property name="label" context="True" translatable="True">Sale Price:</property>
+                        <property name="label" context="True" translatable="yes">Sale Price:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -56,7 +56,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label5">
-                        <property name="label" context="True" translatable="True">Comission:</property>
+                        <property name="label" context="True" translatable="yes">Comission:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -90,7 +90,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="cost">
                         <property name="model_attribute">cost</property>
-                        <property name="label" context="True" translatable="True">0,00</property>
+                        <property name="label" context="True" translatable="yes">0,00</property>
                         <property name="use_markup">True</property>
                         <property name="events"></property>
                         <property name="width_chars">0</property>
@@ -174,7 +174,7 @@
                                         <property name="numeric">True</property>
                                         <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
                                         <property name="model_attribute">comission</property>
-                                        <property name="text" context="True" translatable="True">0,00</property>
+                                        <property name="text" context="True" translatable="yes">0,00</property>
                                         <property name="events"></property>
                                         <property name="width_chars">6</property>
                                         <property name="digits">2</property>
@@ -187,7 +187,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="label9">
-                                        <property name="label" context="True" translatable="True">%  </property>
+                                        <property name="label" context="True" translatable="yes">%  </property>
                                         <property name="events"></property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -198,7 +198,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="label11">
-                                        <property name="label" context="True" translatable="True">Max Discount:</property>
+                                        <property name="label" context="True" translatable="yes">Max Discount:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -211,7 +211,7 @@
                                     <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="max_discount">
                                         <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
                                         <property name="model_attribute">max_discount</property>
-                                        <property name="text" context="True" translatable="True">0,00</property>
+                                        <property name="text" context="True" translatable="yes">0,00</property>
                                         <property name="events"></property>
                                         <property name="width_chars">6</property>
                                         <property name="digits">2</property>
@@ -246,7 +246,7 @@
                                 <property name="numeric">True</property>
                                 <property name="adjustment">0.000000 -999999.000000 999999.000000 1.000000 10.000000 0.000000</property>
                                 <property name="model_attribute">markup</property>
-                                <property name="text" context="True" translatable="True">0,00</property>
+                                <property name="text" context="True" translatable="yes">0,00</property>
                                 <property name="events"></property>
                                 <property name="width_chars">6</property>
                                 <property name="digits">2</property>
@@ -261,7 +261,7 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label10">
-                                <property name="label" context="True" translatable="True">%  </property>
+                                <property name="label" context="True" translatable="yes">%  </property>
                                 <property name="events"></property>
                                 <property name="visible">True</property>
                             </widget>
@@ -272,7 +272,7 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label3">
-                                <property name="label" context="True" translatable="True">Base Markup:</property>
+                                <property name="label" context="True" translatable="yes">Base Markup:</property>
                                 <property name="events"></property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -285,7 +285,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="base_markup">
                                 <property name="model_attribute">base_markup</property>
-                                <property name="label" context="True" translatable="True">0.00</property>
+                                <property name="label" context="True" translatable="yes">0.00</property>
                                 <property name="use_markup">True</property>
                                 <property name="events"></property>
                                 <property name="width_chars">0</property>
@@ -311,7 +311,7 @@
                 <child>
                     <widget class="GtkLabel" id="label6">
                         <property name="ypad">5</property>
-                        <property name="label" context="True" translatable="True"> &lt;u&gt;Currently on sale:&lt;/u&gt;</property>
+                        <property name="label" context="True" translatable="yes"> &lt;u&gt;Currently on sale:&lt;/u&gt;</property>
                         <property name="use_markup">True</property>
                         <property name="events"></property>
                         <property name="xalign">0.0</property>
@@ -336,7 +336,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label7">
-                        <property name="label" context="True" translatable="True">Price:</property>
+                        <property name="label" context="True" translatable="yes">Price:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -378,7 +378,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label8">
-                        <property name="label" context="True" translatable="True">From:</property>
+                        <property name="label" context="True" translatable="yes">From:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -411,7 +411,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label14">
-                        <property name="label" context="True" translatable="True">To</property>
+                        <property name="label" context="True" translatable="yes">To</property>
                         <property name="events"></property>
                         <property name="max_width_chars">0</property>
                         <property name="visible">True</property>
@@ -469,7 +469,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label12">
-                        <property name="label" context="True" translatable="True">%</property>
+                        <property name="label" context="True" translatable="yes">%</property>
                         <property name="events"></property>
                         <property name="visible">True</property>
                     </widget>
@@ -537,7 +537,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label19">
-                        <property name="label" context="True" translatable="True">%</property>
+                        <property name="label" context="True" translatable="yes">%</property>
                         <property name="events"></property>
                         <property name="visible">True</property>
                     </widget>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <glade-interface>
     <widget class="GtkWindow" id="EmployeeDetailsSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <child>
@@ -17,7 +17,7 @@
                         <child>
                             <widget class="GtkFrame" id="frame7">
                                 <property name="border_width">2</property>
-                                <property name="label" context="True" translatable="True">Personal Details</property>
+                                <property name="label" context="True" translatable="yes">Personal Details</property>
                                 <property name="events"></property>
                                 <property name="label_xalign">0.0</property>
                                 <property name="visible">True</property>
@@ -60,7 +60,7 @@
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="person_dependent_number_label">
-                                                <property name="label" context="True" translatable="True">Dependent 
+                                                <property name="label" context="True" translatable="yes">Dependent 
 Number:</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>
@@ -75,7 +75,7 @@ Number:</property>
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="education_level_label">
-                                                <property name="label" context="True" translatable="True">Education 
+                                                <property name="label" context="True" translatable="yes">Education 
 Level:</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>
@@ -94,7 +94,7 @@ Level:</property>
                         <child>
                             <widget class="GtkFrame" id="frame1">
                                 <property name="border_width">2</property>
-                                <property name="label" context="True" translatable="True">Work Permit</property>
+                                <property name="label" context="True" translatable="yes">Work Permit</property>
                                 <property name="events"></property>
                                 <property name="label_xalign">0.0</property>
                                 <property name="visible">True</property>
@@ -137,7 +137,7 @@ Level:</property>
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="workpermit_serie_label">
-                                                <property name="label" context="True" translatable="True">Serie:</property>
+                                                <property name="label" context="True" translatable="yes">Serie:</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>
                                                 <property name="visible">True</property>
@@ -150,7 +150,7 @@ Level:</property>
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="workpermit_number_label">
-                                                <property name="label" context="True" translatable="True">Number:</property>
+                                                <property name="label" context="True" translatable="yes">Number:</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>
                                                 <property name="visible">True</property>
@@ -175,7 +175,7 @@ Level:</property>
                 <child>
                     <widget class="GtkFrame" id="frame5">
                         <property name="border_width">2</property>
-                        <property name="label" context="True" translatable="True">Voter Id</property>
+                        <property name="label" context="True" translatable="yes">Voter Id</property>
                         <property name="events"></property>
                         <property name="label_xalign">0.0</property>
                         <property name="visible">True</property>
@@ -233,7 +233,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_zone_label">
-                                        <property name="label" context="True" translatable="True">Zone:</property>
+                                        <property name="label" context="True" translatable="yes">Zone:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -246,7 +246,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_section_label">
-                                        <property name="label" context="True" translatable="True">Section:</property>
+                                        <property name="label" context="True" translatable="yes">Section:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -259,7 +259,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_number_label">
-                                        <property name="label" context="True" translatable="True">Number:</property>
+                                        <property name="label" context="True" translatable="yes">Number:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -280,7 +280,7 @@ Level:</property>
                 <child>
                     <widget class="GtkFrame" id="frame3">
                         <property name="border_width">2</property>
-                        <property name="label" context="True" translatable="True">Military Certificate</property>
+                        <property name="label" context="True" translatable="yes">Military Certificate</property>
                         <property name="events"></property>
                         <property name="label_xalign">0.0</property>
                         <property name="visible">True</property>
@@ -338,7 +338,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_category_label">
-                                        <property name="label" context="True" translatable="True">Category:</property>
+                                        <property name="label" context="True" translatable="yes">Category:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -351,7 +351,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_serie_label">
-                                        <property name="label" context="True" translatable="True">Serie:</property>
+                                        <property name="label" context="True" translatable="yes">Serie:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -364,7 +364,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_number_label">
-                                        <property name="label" context="True" translatable="True">Number:</property>
+                                        <property name="label" context="True" translatable="yes">Number:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -385,7 +385,7 @@ Level:</property>
                 <child>
                     <widget class="GtkFrame" id="frame6">
                         <property name="border_width">2</property>
-                        <property name="label" context="True" translatable="True">Admission Data</property>
+                        <property name="label" context="True" translatable="yes">Admission Data</property>
                         <property name="events"></property>
                         <property name="label_xalign">0.0</property>
                         <property name="visible">True</property>
@@ -415,7 +415,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="expire_vacation_label">
-                                        <property name="label" context="True" translatable="True">Vacation:</property>
+                                        <property name="label" context="True" translatable="yes">Vacation:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -444,7 +444,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="salary_label">
-                                        <property name="label" context="True" translatable="True">Salary:</property>
+                                        <property name="label" context="True" translatable="yes">Salary:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -458,7 +458,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="admission_date_label">
-                                        <property name="label" context="True" translatable="True">Date:</property>
+                                        <property name="label" context="True" translatable="yes">Date:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -470,7 +470,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="registry_number_label">
-                                        <property name="label" context="True" translatable="True">Registry:</property>
+                                        <property name="label" context="True" translatable="yes">Registry:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -484,7 +484,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="position_label">
-                                        <property name="label" context="True" translatable="True">Position:</property>
+                                        <property name="label" context="True" translatable="yes">Position:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -551,7 +551,7 @@ Level:</property>
                 <child>
                     <widget class="GtkFrame" id="frame2">
                         <property name="border_width">2</property>
-                        <property name="label" context="True" translatable="True">PIS</property>
+                        <property name="label" context="True" translatable="yes">PIS</property>
                         <property name="events"></property>
                         <property name="label_xalign">0.0</property>
                         <property name="visible">True</property>
@@ -609,7 +609,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="pis_bank_label">
-                                        <property name="label" context="True" translatable="True">Bank:</property>
+                                        <property name="label" context="True" translatable="yes">Bank:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -622,7 +622,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="pis_registry_date_label">
-                                        <property name="label" context="True" translatable="True">Date:</property>
+                                        <property name="label" context="True" translatable="yes">Date:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -635,7 +635,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="pis_number_label">
-                                        <property name="label" context="True" translatable="True">Number:</property>
+                                        <property name="label" context="True" translatable="yes">Number:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -657,7 +657,7 @@ Level:</property>
                 <child>
                     <widget class="GtkFrame" id="frame4">
                         <property name="border_width">2</property>
-                        <property name="label" context="True" translatable="True">Bank Information</property>
+                        <property name="label" context="True" translatable="yes">Bank Information</property>
                         <property name="events"></property>
                         <property name="label_xalign">0.0</property>
                         <property name="visible">True</property>
@@ -715,7 +715,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="bank_account_label">
-                                        <property name="label" context="True" translatable="True">Account:</property>
+                                        <property name="label" context="True" translatable="yes">Account:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -728,7 +728,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="bank_agency_label">
-                                        <property name="label" context="True" translatable="True">Agency:</property>
+                                        <property name="label" context="True" translatable="yes">Agency:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -741,7 +741,7 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="bank_label">
-                                        <property name="label" context="True" translatable="True">Bank:</property>
+                                        <property name="label" context="True" translatable="yes">Bank:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>

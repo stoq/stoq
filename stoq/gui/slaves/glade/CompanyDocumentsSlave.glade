@@ -2,7 +2,7 @@
 <glade-interface>
     <requires lib="kiwi"/>
     <widget class="GtkWindow" id="CompanyDocumentsSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <child>
@@ -61,7 +61,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label3">
-                        <property name="label" context="True" translatable="True">State Registry:</property>
+                        <property name="label" context="True" translatable="yes">State Registry:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -77,7 +77,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="True">CNPJ</property>
+                        <property name="label" context="True" translatable="yes">CNPJ</property>
                         <property name="events"></property>
                         <property name="visible">True</property>
                     </widget>
@@ -90,7 +90,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Fancy Name:</property>
+                        <property name="label" context="True" translatable="yes">Fancy Name:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>

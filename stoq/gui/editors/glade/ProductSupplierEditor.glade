@@ -97,7 +97,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Standard Supplier:</property>
+                        <property name="label" context="True" translatable="yes">Standard Supplier:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -110,7 +110,7 @@
                 <child>
                     <widget class="GtkLabel" id="label3">
                         <property name="wrap">True</property>
-                        <property name="label" context="True" translatable="True">Additional 
+                        <property name="label" context="True" translatable="yes">Additional 
 Information:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
@@ -153,7 +153,7 @@ Information:</property>
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="True">Supplier Cost:</property>
+                        <property name="label" context="True" translatable="yes">Supplier Cost:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>

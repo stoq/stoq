@@ -16,7 +16,7 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="product_name">
                                 <property name="data_type">str</property>
                                 <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
-                                <property name="label" context="True" translatable="True">XXX</property>
+                                <property name="label" context="True" translatable="yes">XXX</property>
                                 <property name="use_markup">True</property>
                                 <property name="xalign">0.0</property>
                                 <property name="visible">True</property>
@@ -25,7 +25,7 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="price_label">
-                                <property name="label" context="True" translatable="True">Price:</property>
+                                <property name="label" context="True" translatable="yes">Price:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -52,7 +52,7 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label3">
-                                <property name="label" context="True" translatable="True">Quantity:</property>
+                                <property name="label" context="True" translatable="yes">Quantity:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -70,7 +70,7 @@
                                 <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                                 <property name="model_attribute">quantity</property>
                                 <property name="numeric">True</property>
-                                <property name="text" context="True" translatable="True">0,00</property>
+                                <property name="text" context="True" translatable="yes">0,00</property>
                                 <property name="width_chars">6</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>

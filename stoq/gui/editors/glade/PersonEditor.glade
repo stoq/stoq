@@ -2,7 +2,7 @@
 <glade-interface>
     <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="PersonEditor">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="border_width">3</property>
         <property name="role"></property>
         <property name="events"></property>
@@ -29,7 +29,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="name_lbl">
-                                        <property name="label" context="True" translatable="True">Name:</property>
+                                        <property name="label" context="True" translatable="yes">Name:</property>
                                         <property name="events"></property>
                                         <property name="xpad">2</property>
                                         <property name="xalign">1.0</property>
@@ -62,7 +62,7 @@
                         </child>
                         <child>
                             <widget class="GtkFrame" id="id_frame">
-                                <property name="label" context="True" translatable="True">Identification</property>
+                                <property name="label" context="True" translatable="yes">Identification</property>
                                 <property name="events"></property>
                                 <property name="shadow">etched-out</property>
                                 <property name="label_xalign">0.0</property>
@@ -91,7 +91,7 @@
                         </child>
                         <child>
                             <widget class="GtkFrame" id="address_frame">
-                                <property name="label" context="True" translatable="True">Main Address</property>
+                                <property name="label" context="True" translatable="yes">Main Address</property>
                                 <property name="events"></property>
                                 <property name="shadow">etched-out</property>
                                 <property name="label_xalign">0.0</property>
@@ -143,9 +143,9 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="True"></property>
+                        <property name="menu_label" translatable="yes"></property>
                         <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="True">Identification</property>
+                        <property name="tab_label" translatable="yes">Identification</property>
                     </packing>
                 </child>
                 <child>
@@ -163,7 +163,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="phone_number_lbl">
-                                        <property name="label" context="True" translatable="True">Phone Number:</property>
+                                        <property name="label" context="True" translatable="yes">Phone Number:</property>
                                         <property name="events"></property>
                                         <property name="xpad">2</property>
                                         <property name="xalign">1.0</property>
@@ -189,7 +189,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="mobile_lbl">
-                                        <property name="label" context="True" translatable="True">Mobile:</property>
+                                        <property name="label" context="True" translatable="yes">Mobile:</property>
                                         <property name="events"></property>
                                         <property name="xpad">2</property>
                                         <property name="xalign">1.0</property>
@@ -217,7 +217,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="fax_lbl">
-                                        <property name="label" context="True" translatable="True">Fax: </property>
+                                        <property name="label" context="True" translatable="yes">Fax: </property>
                                         <property name="events"></property>
                                         <property name="xpad">2</property>
                                         <property name="xalign">1.0</property>
@@ -247,7 +247,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="email_lbl">
-                                        <property name="label" context="True" translatable="True">E-mail:</property>
+                                        <property name="label" context="True" translatable="yes">E-mail:</property>
                                         <property name="events"></property>
                                         <property name="xpad">2</property>
                                         <property name="xalign">1.0</property>
@@ -284,7 +284,7 @@
                         </child>
                         <child>
                             <widget class="GtkFrame" id="frame1">
-                                <property name="label" context="True" translatable="True">More Contacts</property>
+                                <property name="label" context="True" translatable="yes">More Contacts</property>
                                 <property name="events"></property>
                                 <property name="shadow">etched-out</property>
                                 <property name="label_xalign">0.0</property>
@@ -308,7 +308,7 @@
                     <packing>
                         <property name="position">1</property>
                         <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="True">Contact</property>
+                        <property name="tab_label" translatable="yes">Contact</property>
                     </packing>
                 </child>
                 <child>
@@ -354,10 +354,10 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="True"></property>
+                        <property name="menu_label" translatable="yes"></property>
                         <property name="position">2</property>
                         <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="True">Details</property>
+                        <property name="tab_label" translatable="yes">Details</property>
                     </packing>
                 </child>
                 <child>
@@ -369,10 +369,10 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="True"></property>
+                        <property name="menu_label" translatable="yes"></property>
                         <property name="position">3</property>
                         <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="True">Customizable</property>
+                        <property name="tab_label" translatable="yes">Customizable</property>
                     </packing>
                 </child>
             </widget>

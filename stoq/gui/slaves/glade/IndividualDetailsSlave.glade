@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <glade-interface>
     <widget class="GtkWindow" id="IndividualDetailsSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <child>
@@ -76,7 +76,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="marital_status_lbl">
-                        <property name="label" context="True" translatable="True">Marital Status:</property>
+                        <property name="label" context="True" translatable="yes">Marital Status:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -105,7 +105,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Birth Date:</property>
+                        <property name="label" context="True" translatable="yes">Birth Date:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -118,7 +118,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label4">
-                        <property name="label" context="True" translatable="True">Birth State</property>
+                        <property name="label" context="True" translatable="yes">Birth State</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -133,7 +133,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label6">
-                        <property name="label" context="True" translatable="True">Mother's name:</property>
+                        <property name="label" context="True" translatable="yes">Mother's name:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -164,7 +164,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="gender_lbl">
-                        <property name="label" context="True" translatable="True">Gender:</property>
+                        <property name="label" context="True" translatable="yes">Gender:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -225,7 +225,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label5">
-                        <property name="label" context="True" translatable="True">Father's Name:</property>
+                        <property name="label" context="True" translatable="yes">Father's Name:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -242,7 +242,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="True">Birth Country:</property>
+                        <property name="label" context="True" translatable="yes">Birth Country:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -259,7 +259,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label3">
-                        <property name="label" context="True" translatable="True">Birth City:</property>
+                        <property name="label" context="True" translatable="yes">Birth City:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -274,7 +274,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="occupation_lbl">
-                        <property name="label" context="True" translatable="True">Occupation:</property>
+                        <property name="label" context="True" translatable="yes">Occupation:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
@@ -291,7 +291,7 @@
                 </child>
                 <child>
                     <widget class="GtkLabel" id="spouse_lbl">
-                        <property name="label" context="True" translatable="True">Spouse:</property>
+                        <property name="label" context="True" translatable="yes">Spouse:</property>
                         <property name="events"></property>
                         <property name="xpad">2</property>
                         <property name="xalign">1.0</property>
