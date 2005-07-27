@@ -37,6 +37,7 @@ from stoqlib.gui.search import SearchBar, BaseListSlave
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
+from stoq.lib.validators import format_quantity
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.person import Person
 from stoq.domain.base_model import set_inheritable_model_connection
@@ -231,8 +232,8 @@ class POSApp(AppWindow):
                        data_type=str, expand=True),
                 Column('price', title=_('Price'), data_type=float, 
                        width=90),
-                Column('quantity', title=_('Quantity'), data_type=float,
-                       width=90),
+                Column('quantity', title=_('Quantity'), data_type=str,
+                       width=90, format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=float,
                        width=100)]
 

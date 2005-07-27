@@ -41,3 +41,12 @@ def is_date_in_interval(date, start_date, end_date):
         assert isinstance(end_date, datetime.datetime)
         q2 = date <= end_date
     return q1 and q2
+
+# XXX: This function must considerate the default precision registered in
+# the system. Waiting fix for bug 2100
+def format_quantity(quantity):
+    if (quantity * 100 % 100) == 0:
+        return '%.0f' % quantity
+    return '%.2f' % quantity
+
+
