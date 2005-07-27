@@ -37,7 +37,6 @@ from stoqlib.gui.search import SearchBar, BaseListSlave
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
-from stoq.lib.parameters import get_system_parameter
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.person import Person
 from stoq.domain.base_model import set_inheritable_model_connection

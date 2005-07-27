@@ -31,7 +31,7 @@ from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.domain.person import CityLocation, Address
 from stoq.lib.runtime import new_transaction
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 
 
 class AddressSlave(BaseEditorSlave):
@@ -62,10 +62,9 @@ class AddressSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_entries_completion(self):
-        sparam = get_system_parameter(self.conn)
-        cities = [sparam.CITY_SUGGESTED]
-        countries = [sparam.COUNTRY_SUGGESTED]
-        states = sparam.CITY_LOCATION_STATES
+        cities = [sysparam(self.conn).CITY_SUGGESTED]
+        countries = [sysparam(self.conn).COUNTRY_SUGGESTED]
+        states = sysparam(self.conn).CITY_LOCATION_STATES
 
         # XXX: Maybe we can to do a "select distinct" and remove this loop
         for city_loc in CityLocation.select(connection=self.conn):

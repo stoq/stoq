@@ -41,7 +41,7 @@ from stoq.domain.product import (ProductSupplierInfo, Product,
                                  ProductAdaptToSellable,
                                  ProductSellableItem)
 from stoq.domain.interfaces import ISellable, IStorable
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 
 
 
@@ -124,8 +124,7 @@ class ProductSupplierEditor(BaseEditor):
 
         model = self.model.get_main_supplier_info()
         if not model:
-            sparam = get_system_parameter(self.conn)
-            supplier = sparam.SUPPLIER_SUGGESTED
+            supplier = sysparam(self.conn).SUPPLIER_SUGGESTED
             model = ProductSupplierInfo(connection=self.conn, product=None, 
                                         is_main_supplier=True,
                                         supplier=supplier)
@@ -411,8 +410,7 @@ class ProductItemEditor(BaseEditor):
         sellable = self.model.sellable
         self.product_name.set_text(sellable.description)
 
-        sparam = get_system_parameter(self.conn)
-        if not sparam.EDIT_SELLABLE_PRICE:
+        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
             self.hide_price_fields()
             return
         self.price.set_data_format('%.02f')

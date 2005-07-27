@@ -29,7 +29,7 @@ stoq/gui/slaves/individual.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.lib.parameters import get_system_parameter
+from stoq.lib.parameters import sysparam
 from stoq.domain.person import CityLocation, PersonAdaptToIndividual
 from stoq.lib.runtime import new_transaction
 
@@ -72,10 +72,9 @@ class IndividualDetailsSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_entries_completion(self):
-        sparam = get_system_parameter(self.conn)
-        cities = [sparam.CITY_SUGGESTED]
-        states = sparam.CITY_LOCATION_STATES
-        countries = [sparam.COUNTRY_SUGGESTED]
+        cities = [sysparam(self.conn).CITY_SUGGESTED]
+        states = sysparam(self.conn).CITY_LOCATION_STATES
+        countries = [sysparam(self.conn).COUNTRY_SUGGESTED]
 
         for city_loc in CityLocation.select(connection=self.conn):
             if city_loc.city and city_loc.city not in cities:

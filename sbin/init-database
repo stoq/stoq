@@ -36,7 +36,7 @@ import time
 import string
 
 from stoq.lib import i18n
-from stoq.lib.parameters import get_system_parameter, ensure_system_parameters
+from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.lib.runtime import new_transaction
 from stoq.domain.person import EmployeePosition, PersonAdaptToUser
 from stoq.domain.tables import get_table_types
@@ -53,7 +53,7 @@ def ensure_root_user(name, username, password):
     # XXX Person for root user is the same of Current Branch. I'm not 
     # sure if it's the best approach but for sure it's better than 
     # create another one just for this user.
-    company = get_system_parameter(trans).CURRENT_BRANCH
+    company = sysparam(trans).CURRENT_BRANCH
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
