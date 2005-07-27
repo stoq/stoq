@@ -5,7 +5,7 @@
     <widget class="GtkWindow" id="NoteSlave">
         <property name="resize_mode">queue</property>
         <property name="role"></property>
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="type">toplevel</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
@@ -13,7 +13,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Notes:</property>
+                        <property name="label" context="True" translatable="yes">Notes:</property>
                         <property name="xalign">0.0</property>
                         <property name="visible">True</property>
                     </widget>

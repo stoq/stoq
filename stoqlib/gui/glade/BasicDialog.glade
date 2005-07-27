@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <glade-interface>
     <widget class="GtkDialog" id="BasicDialog">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="resize_mode">queue</property>
         <property name="role"></property>
         <property name="events"></property>
@@ -23,7 +23,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="header_label">
-                                        <property name="label" context="True" translatable="True">header</property>
+                                        <property name="label" context="True" translatable="yes">header</property>
                                         <property name="events"></property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -62,7 +62,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="main_label">
-                                        <property name="label" context="True" translatable="True">label</property>
+                                        <property name="label" context="True" translatable="yes">label</property>
                                         <property name="events"></property>
                                         <property name="visible">True</property>
                                     </widget>

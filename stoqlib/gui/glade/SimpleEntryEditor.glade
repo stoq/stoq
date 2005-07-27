@@ -33,7 +33,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="name_entry_label">
                         <property name="model_attribute">name_label</property>
-                        <property name="label" context="True" translatable="True">label: </property>
+                        <property name="label" context="True" translatable="yes">label: </property>
                         <property name="use_markup">True</property>
                         <property name="events"></property>
                         <property name="xpad">1</property>

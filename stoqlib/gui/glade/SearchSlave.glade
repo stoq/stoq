@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <glade-interface>
     <widget class="GtkWindow" id="SearchSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
         <child>
@@ -31,7 +31,7 @@
                                 <child>
                                     <widget class="GtkButton" id="search_button">
                                         <property name="receives_default">True</property>
-                                        <property name="label" context="True" translatable="True">Search</property>
+                                        <property name="label" context="True" translatable="yes">Search</property>
                                         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                         <property name="width_request">80</property>
                                         <property name="xalign">0.49</property>
@@ -64,8 +64,8 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="search_button_label">
-                                                                <property name="pattern" context="True" translatable="True"></property>
-                                                                <property name="label" context="True" translatable="True">Search</property>
+                                                                <property name="pattern" context="True" translatable="yes"></property>
+                                                                <property name="label" context="True" translatable="yes">Search</property>
                                                                 <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
@@ -87,7 +87,7 @@
                                 <child>
                                     <widget class="GtkButton" id="erase_button">
                                         <property name="receives_default">True</property>
-                                        <property name="label" context="True" translatable="True"></property>
+                                        <property name="label" context="True" translatable="yes"></property>
                                         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                         <property name="can_focus">True</property>
                                         <property name="visible">True</property>
@@ -117,8 +117,8 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="erase_button_label">
-                                                                <property name="pattern" context="True" translatable="True"></property>
-                                                                <property name="label" context="True" translatable="True"></property>
+                                                                <property name="pattern" context="True" translatable="yes"></property>
+                                                                <property name="label" context="True" translatable="yes"></property>
                                                                 <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
@@ -145,8 +145,8 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label1">
-                                <property name="pattern" context="True" translatable="True"></property>
-                                <property name="label" context="True" translatable="True"></property>
+                                <property name="pattern" context="True" translatable="yes"></property>
+                                <property name="label" context="True" translatable="yes"></property>
                                 <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                 <property name="visible">True</property>
                             </widget>
