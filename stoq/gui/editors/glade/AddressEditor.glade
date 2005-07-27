@@ -18,7 +18,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+checkbutton+CheckButton" id="is_main_address_checkbutton">
                         <property name="model_attribute">is_main_address</property>
-                        <property name="label" translatable="True">Main address</property>
+                        <property name="label" translatable="yes">Main address</property>
                         <property name="draw_indicator">True</property>
                         <property name="visible">True</property>
                         <property name="label">Main address</property>

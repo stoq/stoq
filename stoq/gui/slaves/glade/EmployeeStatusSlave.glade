@@ -2,7 +2,7 @@
 <glade-interface>
     <requires lib="kiwi"/>
     <widget class="GtkWindow" id="EmployeeStatusSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <property name="can_focus">True</property>
@@ -13,7 +13,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="True">Status:</property>
+                        <property name="label" context="True" translatable="yes">Status:</property>
                         <property name="events"></property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
@@ -24,7 +24,7 @@
                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="normal">
                         <property name="model_attribute">status</property>
                         <property name="data_value">0</property>
-                        <property name="label" context="True" translatable="True">Normal</property>
+                        <property name="label" context="True" translatable="yes">Normal</property>
                         <property name="events"></property>
                         <property name="active">True</property>
                         <property name="can_focus">True</property>
@@ -42,7 +42,7 @@
                         <property name="model_attribute">status</property>
                         <property name="data_value">2</property>
                         <property name="group">normal</property>
-                        <property name="label" context="True" translatable="True">Vacation</property>
+                        <property name="label" context="True" translatable="yes">Vacation</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
                         <property name="data_type">int</property>
@@ -59,7 +59,7 @@
                         <property name="model_attribute">status</property>
                         <property name="data_value">1</property>
                         <property name="group">normal</property>
-                        <property name="label" context="True" translatable="True">Away</property>
+                        <property name="label" context="True" translatable="yes">Away</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
                         <property name="data_type">int</property>
@@ -76,7 +76,7 @@
                         <property name="model_attribute">status</property>
                         <property name="data_value">3</property>
                         <property name="group">normal</property>
-                        <property name="label" context="True" translatable="True">Desligado</property>
+                        <property name="label" context="True" translatable="yes">Desligado</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
                         <property name="data_type">int</property>

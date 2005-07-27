@@ -2,7 +2,7 @@
 <glade-interface>
     <widget class="GtkWindow" id="LoginDialog">
         <property name="resizable">False</property>
-        <property name="title" context="True" translatable="True">Access Control</property>
+        <property name="title" context="True" translatable="yes">Access Control</property>
         <property name="role"></property>
         <property name="events"></property>
         <property name="window_position">center-always</property>
@@ -64,7 +64,7 @@
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="label2">
-                                                <property name="label" context="True" translatable="True">_Password:</property>
+                                                <property name="label" context="True" translatable="yes">_Password:</property>
                                                 <property name="use_underline">True</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>
@@ -79,7 +79,7 @@
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="label1">
-                                                <property name="label" context="True" translatable="True">_Username:</property>
+                                                <property name="label" context="True" translatable="yes">_Username:</property>
                                                 <property name="use_underline">True</property>
                                                 <property name="events"></property>
                                                 <property name="xalign">1.0</property>

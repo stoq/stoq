@@ -252,7 +252,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
 
     </object>
     <widget class="GtkWindow" id="pos">
-        <property name="title" context="True" translatable="True">STOQ - POS Application</property>
+        <property name="title" context="True" translatable="yes">STOQ - POS Application</property>
         <property name="role"></property>
         <property name="events"></property>
         <property name="destroy_with_parent">True</property>
@@ -286,7 +286,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="label1">
-                                        <property name="label" context="True" translatable="True">&lt;b&gt;Client:&lt;/b&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;b&gt;Client:&lt;/b&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">0.0</property>
@@ -299,7 +299,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="client_name">
                                         <property name="model_attribute">name</property>
-                                        <property name="label" context="True" translatable="True">&lt;span color='red'&gt;Not selected&lt;/span&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;span color='red'&gt;Not selected&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">0.0</property>
@@ -407,7 +407,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="product">
                                         <property name="model_attribute">description</property>
-                                        <property name="label" context="True" translatable="True">&lt;b&gt;&lt;span size='10000'&gt;No product selected&lt;/span&gt;&lt;/b&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;b&gt;&lt;span size='10000'&gt;No product selected&lt;/span&gt;&lt;/b&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">0.0</property>
@@ -429,7 +429,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                     <widget
                                     class="kiwi+ui+widgets+label+Label"
                                     id="price">
-                                        <property name="label" context="True" translatable="True">&lt;span size='x-large'&gt;&lt;b&gt;0.00&lt;/b&gt;&lt;/span&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;span size='x-large'&gt;&lt;b&gt;0.00&lt;/b&gt;&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">0.0</property>
@@ -443,7 +443,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="label4">
-                                        <property name="label" context="True" translatable="True">Quantity:</property>
+                                        <property name="label" context="True" translatable="yes">Quantity:</property>
                                         <property name="events"></property>
                                         <property name="xpad">3</property>
                                         <property name="xalign">1.0</property>
@@ -458,7 +458,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                     <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="quantity">
                                         <property name="adjustment">1.000000 0.000000 99999.000000 1.000000 10.000000 0.000000</property>
                                         <property name="model_attribute">quantity</property>
-                                        <property name="text" context="True" translatable="True">1</property>
+                                        <property name="text" context="True" translatable="yes">1</property>
                                         <property name="events"></property>
                                         <property name="value">1.0</property>
                                         <property name="can_focus">True</property>
@@ -523,7 +523,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="total_lbl">
-                                        <property name="label" context="True" translatable="True">&lt;span size='x-large'&gt;&lt;b&gt;Total: &lt;/b&gt;&lt;/span&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;span size='x-large'&gt;&lt;b&gt;Total: &lt;/b&gt;&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
@@ -533,7 +533,7 @@ name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separat
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="total">
-                                        <property name="label" context="True" translatable="True">&lt;span size='x-large'&gt;&lt;b&gt;0.00&lt;/b&gt;&lt;/span&gt;</property>
+                                        <property name="label" context="True" translatable="yes">&lt;span size='x-large'&gt;&lt;b&gt;0.00&lt;/b&gt;&lt;/span&gt;</property>
                                         <property name="use_markup">True</property>
                                         <property name="events"></property>
                                         <property name="xalign">0.0</property>
