@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <glade-interface>
     <widget class="GtkWindow" id="ToolBar">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <child>

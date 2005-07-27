@@ -2,7 +2,7 @@
 <glade-interface>
     <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="AdditionListSlave">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events"></property>
         <child>

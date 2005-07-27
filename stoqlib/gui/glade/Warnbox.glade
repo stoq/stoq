@@ -2,7 +2,7 @@
 <glade-interface>
     <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="Warnbox">
-        <property name="title" context="True" translatable="True"></property>
+        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
         <property name="visible">True</property>
@@ -37,8 +37,8 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="label">
-                        <property name="pattern" context="True" translatable="True"></property>
-                        <property name="label" context="True" translatable="True">label</property>
+                        <property name="pattern" context="True" translatable="yes"></property>
+                        <property name="label" context="True" translatable="yes">label</property>
                         <property name="use_markup">True</property>
                         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                         <property name="xalign">0.02</property>
