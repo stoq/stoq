@@ -26,7 +26,7 @@ gui/editors.py:
 
 from kiwi.ui.delegates import SlaveDelegate
 
-from stoqlib.gui.dialogs import BasicWrappingDialog
+from stoqlib.gui.dialogs import BasicPluggableDialog
 
 class BaseEditorSlave(SlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
@@ -98,10 +98,23 @@ class BaseEditor(BaseEditorSlave):
 
     def __init__(self, conn, model=None):
         BaseEditorSlave.__init__(self, conn, model)
-        self.main_dialog = BasicWrappingDialog(self, self.title, 
-                                               self.header, self.size)
+
+        # First create the Dialog, so the validation function can
+        # access the ok button
+        self.main_dialog = BasicPluggableDialog()
+
+        # Then register the validation function
         self.register_validate_function(self.refresh_ok)
 
+        # Third, call _initialize which will attach the slave and
+        # trigger validation, which is okay at this point
+        self.main_dialog._initialize(slave=self,
+                                     title=self.title,
+                                     header_text=self.header, 
+                                     size=self.size)
+        self.run = self.main_dialog.run
+        self.set_transient_for = self.main_dialog.set_transient_for
+        
     def refresh_ok(self, validation_value):
         """ Refreshes ok button sensitivity according to widget validators
         status """
