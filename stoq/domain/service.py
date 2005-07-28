@@ -27,7 +27,7 @@ stoq/domain/service.py:
 """
 
 from stoqlib.exceptions import SellError
-from sqlobject import StringCol
+from sqlobject import StringCol, DateTimeCol
 
 from stoq.domain.base_model import Domain
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
@@ -82,6 +82,11 @@ class ServiceAdaptToSellable(AbstractSellable):
     """ A service implementation as a sellable facet. """
 
     sellable_table = ServiceSellableItem
+
+    delivery_address = StringCol(default='')
+    notes = StringCol(default=None)
+    estimated_fix_date = DateTimeCol(default=None)
+    completion_date = DateTimeCol(default=None)
 
 
 

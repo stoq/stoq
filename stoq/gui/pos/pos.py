@@ -47,6 +47,7 @@ from stoq.domain.product import (Product, ProductSellableItem,
                                  ProductAdaptToSellable)
 from stoq.domain.interfaces import IIndividual, IClient, ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -315,12 +316,10 @@ class POSApp(AppWindow):
         sellable_item = self.order_list.get_selected()
         if isinstance(sellable_item, ProductSellableItem):
             model = self.run_dialog(ProductItemEditor, self.conn,
-                                    self.order_list.get_selected())
+                                    sellable_item)
         else:
-            # XXX: Waiting fix for bug #2080 (ServiceItemEditor
-            # implementation)
-            return
-
+            model = self.run_dialog(ServiceEditor, self.conn,
+                                    sellable_item)
         if not model:
             return
         self.order_list.update_instance(model)
