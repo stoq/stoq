@@ -101,9 +101,8 @@ class POSApp(AppWindow):
         self.person_proxy = self.add_proxy(widgets=self.client_widgets)
 
     def _setup_signals(self):
-        # connect list signals
-        selection = self.order_list.treeview.get_selection()
-        selection.connect("changed", self._on_order_list_selection_changed)
+        self.order_list.connect("selection-changed", 
+                                self._on_order_list_selection_changed)
 
     def _setup_widgets(self):
         self.price.set_size('large')
