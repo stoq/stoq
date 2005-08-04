@@ -139,7 +139,7 @@ class AdditionListSlave(SlaveDelegate):
     def on_klist__double_click(self, *args):
         self.edit()
 
-    def on_klist__selection_change(self, *args):
+    def on_klist__selection_changed(self, *args):
         self.update_widgets()
 
     def on_add_button__clicked(self, *args):
