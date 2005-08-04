@@ -63,8 +63,8 @@ class BaseListSlave(SlaveDelegate):
                                gladefile=self.gladefile)
 
         if not columns and (not parent or not hasattr(parent, 'get_columns')):
-            raise Exception, ("You must supply columns via parameter of in"
-                              " parent.")
+            raise TypeError("You must supply columns via parameter of in"
+                            " parent.")
         columns = columns or parent.get_columns()
 
         self.parent = parent
