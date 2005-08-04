@@ -79,7 +79,7 @@ class BaseListSlave(SlaveDelegate):
         if self.parent:
             self.parent.update_widgets()
 
-    def on_klist__selection_change(self, *args):
+    def on_klist__selection_changed(self, *args):
         self.update_widgets()
 
     def on_klist__double_click(self, *args):
