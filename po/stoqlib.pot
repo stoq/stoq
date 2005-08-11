@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-02 17:41-0300\n"
+"POT-Creation-Date: 2005-08-11 19:04-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../stoqlib/gui/lists.py:156
-msgid "Are you sure you want delete these items ?"
+msgid "Are you sure you want delete these items?"
 msgstr ""
 
 #: ../stoqlib/gui/lists.py:158
-msgid "Are you sure you want delete this item ?"
+msgid "Are you sure you want delete this item?"
 msgstr ""
 
 #: ../stoqlib/gui/search.py:405

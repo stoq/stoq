@@ -153,9 +153,9 @@ class AdditionListSlave(SlaveDelegate):
         assert objs_selected, 'Bug: there are no objects selected.'
         qty = len(objs_selected)
         if qty > 1:
-            msg = _('Are you sure you want delete these items ?')
+            msg = _('Are you sure you want delete these items?')
         else:
-            msg = _('Are you sure you want delete this item ?')
+            msg = _('Are you sure you want delete this item?')
 
         if not confirm_dialog(msg):
             return
