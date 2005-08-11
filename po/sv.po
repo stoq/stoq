@@ -1,0 +1,53 @@
+# Swedish translation for stoqlib
+# Copyright (C) 2005 Async Open Source
+# This file is distributed under the same license as the stoqlib package.
+# Johan Dahlin <jdahlin@async.com.br> 2005
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: stoqlib 0.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2005-08-02 17:41-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
+"Language-Team: Swedish <sv@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../stoqlib/gui/lists.py:156
+msgid "Are you sure you want delete these items ?"
+msgstr "Är du säker på att du vill radera dessa föremål ?"
+
+#: ../stoqlib/gui/lists.py:158
+msgid "Are you sure you want delete this item ?"
+msgstr "Är du säker på att du vill radera detta föremålet ?"
+
+#: ../stoqlib/gui/search.py:405
+msgid "Select Items"
+msgstr "Välj föremål"
+
+#: ../stoqlib/gui/glade/SearchBar.glade.h:1
+msgid "Search Item:"
+msgstr "Välj föremål:"
+
+#: ../stoqlib/gui/glade/SearchSlave.glade.h:1
+msgid "Search"
+msgstr "Sök"
+
+#: ../stoqlib/gui/glade/NoteSlave.glade.h:1
+msgid "Notes:"
+msgstr "Noteringar:"
+
+#: ../stoqlib/gui/glade/Warnbox.glade.h:1
+#: ../stoqlib/gui/glade/BasicDialog.glade.h:2
+msgid "label"
+msgstr "ettiket"
+
+#: ../stoqlib/gui/glade/BasicDialog.glade.h:1
+msgid "header"
+msgstr "huvud"
+
+#: ../stoqlib/gui/glade/SimpleEntryEditor.glade.h:1
+msgid "label: "
+msgstr "ettiket:"

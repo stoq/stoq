@@ -18,3 +18,24 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
+import gettext
+import os.path
+
+# This sort of sucks, but it's the cheapest solution for now.
+
+# prefix = $DIR/..
+# if a locale directoy exists in directory, be happy
+# otherwise, check ../../../share/locale
+# if any of them exist, pass in the path to gettext.bindtextdomain
+
+prefix = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+locale = os.path.join(prefix, 'locale')
+if not os.path.exists(locale):
+    locale = os.path.abspath(os.path.join(prefix,
+                                          '..', '..', '..',
+                                          'share', 'locale'))
+
+if os.path.exists(locale):
+    gettext.bindtextdomain('stoqlib', locale)
+    gettext.bind_textdomain_codeset('stoqlib', 'utf-8')
+    gettext.textdomain('stoqlib')
