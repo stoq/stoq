@@ -1,0 +1,2 @@
+recursive-include stoq *.py
+recursive-include stoq *.glade
