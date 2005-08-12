@@ -38,4 +38,3 @@ if not os.path.exists(locale):
 if os.path.exists(locale):
     gettext.bindtextdomain('stoqlib', locale)
     gettext.bind_textdomain_codeset('stoqlib', 'utf-8')
-    gettext.textdomain('stoqlib')
