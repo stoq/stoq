@@ -23,15 +23,10 @@
 """
 lib/i18n.py:
 
-    Internacionalization file for Stoq applications.
+    Internationalization for Stoq applications.
    """
+
+import __builtin__
 import gettext
 
-try:
-  gettext.install('stoq')
-  # TODO: gettext.translation() is the right approach here but we don't have
-  # translations yet.
-except IOError:
-  print 'Warning: no translation file found for your locale. No translation '\
-        'will be performed'
-  _ = lambda x: x
+__builtin__.__dict__['_'] = gettext.gettext

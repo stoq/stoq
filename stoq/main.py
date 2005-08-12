@@ -19,6 +19,7 @@
 # USA.
 #
 
+import gettext
 import os
 
 from kiwi.environ import environ
@@ -53,7 +54,19 @@ if os.path.exists(module.glade_dir) and os.path.isdir(module.glade_dir):
 environ.add_resource("pixmap", module.pixmap_dir)
 
 appdir = os.path.join(module.basedir, "stoq", "gui")
-                      
+
+# Tell gettext that translations (.mo files) for the translation
+# domain stoq can be found in locale_dir, 
+gettext.bindtextdomain('stoq', module.locale_dir)
+
+# We always want to load in utf-8 charset, makes everything
+# a lot easier when using pygtk
+gettext.bind_textdomain_codeset('stoq', 'utf-8')
+
+# Set the default domain to stoq, so we don't need to explicitly
+# specify the domain each time we want to do a translation lookup 
+gettext.textdomain('stoq')
+
 def get_app_list():
     # Collects the application names from the gui/ directory and
     # sets a list member. 

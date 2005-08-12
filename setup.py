@@ -1,10 +1,39 @@
 #!/usr/bin/env python
 from distutils.core import setup
 from distutils.command.install_lib import install_lib
+from distutils.command.install_data import install_data
 from distutils.dep_util import newer
+from distutils.log import info
 from fnmatch import fnmatch
 import os
 import sys
+
+class InstallData(install_data):
+    def run(self):
+        self.data_files.extend(self._compile_po_files())
+        
+        install_data.run(self)
+
+    def _compile_po_files(self):
+        data_files = []
+        for po in listfiles('po', '*.po'):
+            lang = os.path.basename(po[:-3])
+            mo = os.path.join('locale', lang,
+                              'LC_MESSAGES', 'stoq.mo')
+
+            if not os.path.exists(mo) or newer(po, mo):
+                directory = os.path.dirname(mo)
+                if not os.path.exists(directory):
+                    info("creating %s" % directory)
+                    os.makedirs(directory)
+                cmd = 'msgfmt -o %s %s' % (mo, po)
+                info('compiling %s -> %s' % (po, mo))
+                if os.system(cmd) != 0:
+                    raise SystemExit("Error while running msgfmt")
+            dest = os.path.dirname(os.path.join('share', mo))
+            data_files.append((dest, [mo]))
+            
+        return data_files
 
 class InstallLib(install_lib):
     def install(self):
@@ -14,6 +43,7 @@ prefix = r"%(prefix)s"
 basedir = r"%(basedir)s"
 pixmap_dir = os.path.join(prefix, 'share', 'stoq', 'pixmaps')
 glade_dir = os.path.join(prefix, 'share', 'stoq', 'glade')
+locale_dir = os.path.join(prefix, 'share', 'locale')
 '''
         filename = os.path.join(self.build_dir, 'stoq', 
                                 '__installed__.py')
@@ -77,5 +107,6 @@ setup(name='stoq',
                 'stoq.lib'],
       scripts=['bin/stoq'],
       data_files=data_files,
-      cmdclass=dict(install_lib=InstallLib))
+      cmdclass=dict(install_lib=InstallLib,
+                    install_data=InstallData))
 
