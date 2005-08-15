@@ -57,11 +57,10 @@ class BaseListSlave(SlaveDelegate):
 
     gladefile = 'BaseListSlave'
     widgets = ('klist', )
-    domain = 'stoqlib'
     
     def __init__(self, parent=None, columns=None, objects=None):
         SlaveDelegate.__init__(self, widgets=self.widgets, 
-                               gladefile=self.gladefile, domain=self.domain)
+                               gladefile=self.gladefile)
 
         if not columns and (not parent or not hasattr(parent, 'get_columns')):
             raise TypeError("You must supply columns via parameter of in"
@@ -105,14 +104,13 @@ class SearchBar(SlaveDelegate):
     widgets = ('search_button',
                "search_entry",
                "search_icon")
-    domain = 'stoqlib'
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, parent, table_type, columns=None, query_args=None,
                  search_callback=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                               widgets=self.widgets, domain=self.domain)
+                               widgets=self.widgets)
         self._animate_search_icon_id = -1
         self.search_icon.set_from_stock("searchtool-icon1", 
                                         self.SEARCH_ICON_SIZE)
@@ -335,7 +333,6 @@ class SearchEditorToolBar(SlaveDelegate):
     toplevel_name = 'ToolBar'
     gladefile = 'SearchEditor'
     widgets = ('new_button', 'edit_button', 'toolbar_holder')
-    domain = 'stoqlib'
     
     def __init__(self, parent):
         SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,

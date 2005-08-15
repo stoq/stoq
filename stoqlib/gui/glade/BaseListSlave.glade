@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<glade-interface>
+<glade-interface domain="stoqlib">
     <requires lib="kiwi2"/>
     <widget class="GtkWindow" id="BaseListSlave">
         <property name="events"></property>
