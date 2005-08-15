@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<glade-interface>
+<glade-interface domain="stoqlib">
     <widget class="GtkDialog" id="BasicDialog">
         <property name="title" context="True" translatable="yes"></property>
         <property name="resize_mode">queue</property>
