@@ -101,6 +101,7 @@ class BaseEditor(BaseEditorSlave):
         self.main_dialog = BasicWrappingDialog(self, self.title, 
                                                self.header, self.size)
         self.register_validate_function(self.refresh_ok)
+        self.force_validation()
 
     def refresh_ok(self, validation_value):
         """ Refreshes ok button sensitivity according to widget validators
