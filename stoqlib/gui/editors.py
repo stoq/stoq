@@ -54,14 +54,15 @@ class BaseEditorSlave(SlaveDelegate):
         self.setup_proxies()
         self.setup_slaves()
 
-    def create_model(self, model):
+    def create_model(self):
         """
         It is expected to return a new model, which will be used if a model
         wasn't sent to the object at instantiation time.
-        
-        It can be overridden in a subclass.
+        The default behavior is to raise a TypeError, which can
+        be overridden in a subclass.
         """
-        return model
+        raise TypeError("%r needs a model, got None. Perhaps you want to "
+                        "implement create_model?" % self)
     
     def setup_proxies(self):
         """ This method should be defined in each child. """
