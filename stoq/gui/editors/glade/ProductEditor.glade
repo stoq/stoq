@@ -5,7 +5,6 @@
         <property name="events"></property>
         <property name="window_position">center-always</property>
         <property name="modal">True</property>
-        <property name="visible">True</property>
         <child>
             <widget class="GtkTable" id="table1">
                 <property name="row_spacing">5</property>
