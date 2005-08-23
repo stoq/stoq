@@ -61,11 +61,15 @@ class AddressAdditionDialog(AdditionListDialog):
             self.main_address.is_main_address = False
         self.main_address = main_address
 
+
+
     #
     # AdditionListDialog hooks
     #
 
-    def on_delete_items(self, items):
+
+
+    def before_delete_items(self, items):
         assert len(items) >= 1
 
         for item in items:

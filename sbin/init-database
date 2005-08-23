@@ -83,7 +83,6 @@ def setup_tables(delete_only=False):
         if delete_only:
             continue
         catalog.createTable(connection=trans)
-        catalog.sqlmeta.cacheValues = False
         print _('<created>:  '), catalog
 
     trans.commit()
