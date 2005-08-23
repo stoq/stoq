@@ -63,4 +63,4 @@ class StockError(Exception):
     """Exception for stock operations"""
 
 class SelectionError(Exception):
-    """Raise when having a invalid number of data selected in a list"""
+    """Invalid number of items selected in a list"""

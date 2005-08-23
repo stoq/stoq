@@ -43,9 +43,9 @@ class AdditionListSlave(SlaveDelegate):
                       klist widget.
     editor_kwargs   = additional arguments for editor class constructor.
 
-    before_delete_items = a hook method that must be defined in parent 
-                            instance to perform some tasks in database 
-                            before deletions.
+    before_delete_items = a hook method that may be defined by parent. For
+                          instance, use this hook to do some interesting 
+                          tasks before delete items from a list.
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
@@ -78,16 +78,16 @@ class AdditionListSlave(SlaveDelegate):
         return [selection]
 
     def _update_widgets(self, *args):
-        delete = edit = True
+        can_delete = can_edit = True
         objs = self.get_selection()
         if not objs:
-            edit = delete = False
+            can_edit = can_delete = False
         elif len(objs) > 1:
-            edit = False
+            can_edit = False
             
         self.add_button.set_sensitive(True)
-        self.edit_button.set_sensitive(edit)
-        self.delete_button.set_sensitive(delete)
+        self.edit_button.set_sensitive(can_edit)
+        self.delete_button.set_sensitive(can_delete)
 
     def run(self, model=None):
         edit_mode = model
@@ -112,8 +112,8 @@ class AdditionListSlave(SlaveDelegate):
         objs = self.get_selection()
         qty = len(objs)
         if qty != 1:
-            msg = ("You should have just one item selected, "
-                   "found %s")
+            msg = ("Please select only one item before choosing Edit."
+                   "\nThere are currently %d items selected")
             raise SelectionError(msg % qty)
         model = objs[0]
         self.run(model)
@@ -162,9 +162,9 @@ class AdditionListSlave(SlaveDelegate):
             raise SelectionError('There are no objects selected')
 
         if qty > 1:
-            msg = _('Are you sure you want delete these items?')
+            msg = _('Delete these %d items?' % qty)
         else:
-            msg = _('Are you sure you want delete this item?')
+            msg = _('Delete this item?')
 
         if not confirm_dialog(msg):
             return
