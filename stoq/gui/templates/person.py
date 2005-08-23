@@ -63,14 +63,10 @@ class PersonEditorTemplate(BaseEditorSlave):
                'note_holder',
                'address_button') + proxy_widgets
 
-    def __init__(self, conn, model=None):
-        """ model: a Person object or nothing """
-        if not model:
-            # XXX: Waiting fix for bug #2043
-            model = Person(name="", connection=conn)
-
-        BaseEditorSlave.__init__(self, conn, model)
-
+    def create_model(self, conn):
+        # XXX: Waiting fix for bug #2043
+        return Person(name="", connection=conn)
+    
     def attach_model_slave(self, name, slave_type, slave_model):
         slave = slave_type(self.conn, slave_model)
         self.attach_slave(name, slave)
@@ -140,9 +136,6 @@ class IndividualEditorTemplate(BaseEditorSlave):
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
-    def __init__(self, conn, model=None):
-        BaseEditorSlave.__init__(self, conn, model)
-
     def ensure_city_location_objects(self):
         """ This method ensure that, if the city location objects for birth
         location and main address city location has the same contents, only
@@ -206,9 +199,6 @@ class CompanyEditorTemplate(BaseEditorSlave):
     model_type = PersonAdaptToCompany
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
-
-    def __init__(self, conn, model=None):
-        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_slaves(self):
         self.company_docs_slave = CompanyDocumentsSlave(self.conn, self.model)

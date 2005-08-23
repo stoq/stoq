@@ -41,11 +41,8 @@ class ContactEditor(BaseEditor):
     widgets = ('name', 'phone_number')
     title = _('Liaison Editor')
 
-    def __init__(self, conn, model=None):
-        if not model:
-            model = Liaison(person=None, connection=conn)
-
-        BaseEditor.__init__(self, conn)
+    def create_model(self, conn):
+        return Liaison(person=None, connection=conn)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)

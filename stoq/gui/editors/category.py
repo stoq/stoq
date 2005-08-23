@@ -42,15 +42,12 @@ class BaseSellableCategoryEditor(BaseEditor):
     widgets = ('description',
                'markup')
 
-    def __init__(self, conn, model=None):
-        if not model:
-            table = AbstractSellableCategory
-            category_data = table(connection=conn, description='')
-            model = BaseSellableCategory(connection=conn, 
-                                         category_data=category_data)
-
-        BaseEditor.__init__(self, conn=conn, model=model)
-
+    def create_model(self, conn):
+        category_data = AbstractSellableCategory(description='',
+                                                 connection=conn)
+        return BaseSellableCategory(category_data=category_data,
+                                    connection=conn)
+    
     def setup_proxies(self):
         self.add_proxy(model=self.model, widgets=self.widgets)
 
@@ -63,19 +60,14 @@ class SellableCategoryEditor(BaseEditor):
                'suggested_markup',
                'base_category')
 
-    def __init__(self, conn, model=None):
-        if not model:
-            suggested_base_cat = sysparam(conn).DEFAULT_BASE_CATEGORY
+    def create_model(self, conn):
+        category_data = AbstractSellableCategory(description='',
+                                                 connection=conn)
 
-            table = AbstractSellableCategory
-            category_data = table(connection=conn, description='')
-
-            table = SellableCategory
-            model = table(connection=conn,
-                          base_category=suggested_base_cat,
-                          category_data=category_data)
-
-        BaseEditor.__init__(self, conn=conn, model=model)
+        suggested_base_cat = sysparam(conn).DEFAULT_BASE_CATEGORY
+        return SellableCategory(base_category=suggested_base_cat,
+                                category_data=category_data,
+                                connection=conn)
 
     def setup_combo(self):
         table = BaseSellableCategory

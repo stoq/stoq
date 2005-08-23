@@ -43,9 +43,6 @@ class IndividualDocuments(BaseEditorSlave):
                'rg_expedition_local',
                'rg_number')
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
-
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
 
@@ -67,9 +64,6 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
     widgets = (proxy_widgets + birth_loc_widgets + 
                ('new_spouse_button', 'spouse', 'spouse_lbl'))
-
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]

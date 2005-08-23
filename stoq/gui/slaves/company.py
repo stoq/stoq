@@ -39,9 +39,6 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                'fancy_name',
                'state_registry')
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
-
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
 

@@ -40,9 +40,6 @@ class ClientStatusSlave(BaseEditorSlave):
                'insolvent',
                'inactive')
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
-
     # 
     # BaseEditorSlave hooks
     # 
