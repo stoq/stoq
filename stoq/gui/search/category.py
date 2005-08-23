@@ -44,28 +44,31 @@ from stoq.gui.editors.category import (BaseSellableCategoryEditor,
 class BaseSellableCatSearch(SearchEditor):
     size = (700, 500)
     title = _('Base Sellable Category Search')
-    search_table = AbstractSellableCategory
     table = BaseSellableCategory
     editor_class = BaseSellableCategoryEditor
 
     def __init__(self):
         SearchEditor.__init__(self, self.table, self.editor_class, 
-                              search_table=self.search_table, 
                               hide_footer=True)
 
     def get_columns(self):
-        return [Column('description', _('Description'), str, 
-                       sorted=True, width=300),
-                Column('suggested_markup', _('Suggested Markup (%)'), 
-                       float, width=180),
-                Column('salesperson_comission', _('Suggested Commission (%)'), 
-                       float)]
+        return [ForeignKeyColumn(AbstractSellableCategory,
+                                 'description', _('Description'), str, 
+                                 obj_field='category_data', sorted=True,
+                                 width=300),
+                ForeignKeyColumn(AbstractSellableCategory,
+                                 'suggested_markup', _('Suggested Markup (%)'), 
+                                 float, obj_field='category_data', width=180),
+                ForeignKeyColumn(AbstractSellableCategory, 
+                                 'salesperson_comission', 
+                                 _('Suggested Commission (%)'), 
+                                 float, obj_field='category_data')]
 
     def get_query_args(self):
-        return dict(join = INNERJOINOn(AbstractSellableCategory, 
-                                    BaseSellableCategory,
-                                    AbstractSellableCategory.q.id == 
-                                    BaseSellableCategory.q.category_dataID))
+        return dict(join=INNERJOINOn(BaseSellableCategory, 
+                                     AbstractSellableCategory,
+                                     AbstractSellableCategory.q.id==
+                                     BaseSellableCategory.q.category_dataID))
 
 
 class SellableCatSearch(SearchEditor):

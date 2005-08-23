@@ -52,11 +52,15 @@ class LiaisonListSlave(AdditionListSlave):
     def get_liaisons(self):
         return self.klist
 
+
+
     #
     # AdditionListSlave hooks
     # 
 
-    def on_delete_items(self, items):
+
+
+    def before_delete_items(self, items):
         for item in items:
             Liaison.delete(item.id, connection=self.conn)
 

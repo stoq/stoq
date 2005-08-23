@@ -40,7 +40,6 @@ from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.validators import format_quantity
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.person import Person
-from stoq.domain.base_model import set_inheritable_model_connection
 from stoq.domain.service import ServiceAdaptToSellable
 from stoq.domain.sale import Sale
 from stoq.domain.product import (Product, ProductSellableItem, 
@@ -159,12 +158,8 @@ class POSApp(AppWindow):
         sellables = [s.sellable for s in self.order_list]
         if sellable in sellables:
             return
-        # FIXME Waiting for SQLObject bug fix. When calling select from a
-        # InheritableSQLObject table connection is not set properly. When
-        # we fix this bug the three lines bellow won't be necessary anymore.
         table = type(sellable)
         sellable = table.get(sellable.id, connection=self.conn)
-        set_inheritable_model_connection(self.conn)
         
         sellable_item = sellable.add_sellable_item(self.sale, quantity=1.0,
                                                    base_price=sellable.price,

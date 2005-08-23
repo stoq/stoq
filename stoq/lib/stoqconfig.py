@@ -43,7 +43,6 @@ from stoq.lib.configparser import StoqConfigParser
 from stoq.lib.runtime import new_transaction, set_current_user
 from stoq.domain.person import PersonAdaptToUser
 from stoq.domain.tables import check_tables
-from stoq.domain.base_model import set_inheritable_model_connection
 
 SPLASH_TIMEOUT = 4000
 
@@ -125,7 +124,6 @@ class AppConfig:
         register_iconsets()
 
         set_model_connection_func(new_transaction)
-        set_inheritable_model_connection(new_transaction())
         assert self.validate_user()
 
     #

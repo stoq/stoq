@@ -81,15 +81,18 @@ class AbstractSellableItem(InheritableModel):
     sale = ForeignKey('Sale')
     sellable = ForeignKey('AbstractSellable')
 
-    def __init__(self, *args, **kwargs):
-        if not self.is_parent_kwargs(kwargs):
-            if not 'price' in kwargs:
+    def _create(self, id, **kw):
+        # XXX This code doesn't work in the constructor because the
+        # connection argument is not set properly there. Waiting for
+        # SQLObject improvements.
+        if not 'kw' in kw:
+            if not 'price' in kw:
                 raise TypeError('You should provide a price argument.')
-            if not 'base_price' in kwargs:
-                kwargs['base_price'] = kwargs['price']
-            if not 'quantity' in kwargs:
-                kwargs['quantity'] = 1.0
-        InheritableModel.__init__(self, *args, **kwargs)
+            if not 'base_price' in kw:
+                kw['base_price'] = kw['price']
+            if not 'quantity' in kw:
+                kw['quantity'] = 1.0
+        InheritableModel._create(self, id, **kw)
 
     def sell(self):
         conn = self.get_connection()

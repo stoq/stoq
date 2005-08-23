@@ -42,8 +42,7 @@ from psycopg import OperationalError
 from stoq.lib.runtime import get_connection
 
 TABLES = [
-     ('stoq.domain.base_model',  ("SystemModelData",
-                                  "InheritableModelAdapter",
+     ('stoq.domain.base_model',  ("InheritableModelAdapter",
                                   "InheritableModel",
                                   )),
      ('stoq.lib.parameters',     ("ParameterData",
