@@ -41,17 +41,28 @@ class BaseEditorSlave(SlaveDelegate):
         # edited by an interface. It will be always the object the is sent
         # from a kiwi list to an editor.
         if not self.model_type:
-            raise TypeError('You must provide a valid model_type attribute.')
+            raise TypeError('%r requires a model_type class attribute.' % self)
         if model and not isinstance(model, self.model_type):
             raise TypeError('Invalid type for model attribute. Type: %s' %
                             type(model))
         self.conn = conn
-        self.model = model
+        if model is None:
+            model = self.create_model()
+        self.model = model 
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets)
         self.setup_proxies()
         self.setup_slaves()
 
+    def create_model(self, model):
+        """
+        It is expected to return a new model, which will be used if a model
+        wasn't sent to the object at instantiation time.
+        
+        It can be overridden in a subclass.
+        """
+        return model
+    
     def setup_proxies(self):
         """ This method should be defined in each child. """
 
