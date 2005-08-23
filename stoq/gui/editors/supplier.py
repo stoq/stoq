@@ -30,13 +30,16 @@ stoq/gui/editors/supplier.py
 """
 
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.templates.person import CompanyEditorTemplate
-from stoq.domain.interfaces import IIndividual, ISupplier, ICompany
+from stoq.domain.interfaces import ISupplier, ICompany
 from stoq.domain.person import Person, PersonAdaptToSupplier
 
+_ = gettext.gettext
 
 class SupplierEditor(BaseEditor):
     title = _('Supplier Editor')

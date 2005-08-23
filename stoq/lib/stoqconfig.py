@@ -26,6 +26,7 @@ lib/config.py:
     Configuration file for stoq applications
 """
     
+import gettext
 import os
 import sys
 import binascii
@@ -44,6 +45,7 @@ from stoq.lib.runtime import new_transaction, set_current_user
 from stoq.domain.person import PersonAdaptToUser
 from stoq.domain.tables import check_tables
 
+_ = gettext.gettext
 SPLASH_TIMEOUT = 4000
 
 

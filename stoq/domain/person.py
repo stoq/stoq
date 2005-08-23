@@ -26,6 +26,8 @@ stoq/domain/person.py:
    Person domain classes for Stoq applications.
 """
 
+import gettext
+
 from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol, 
                        ForeignKey, MultipleJoin, BoolCol)
 from twisted.python.components import CannotAdapt
@@ -38,6 +40,7 @@ from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     ISalesPerson)
 
 
+_ = gettext.gettext
 __connection__ = get_connection()
 
     

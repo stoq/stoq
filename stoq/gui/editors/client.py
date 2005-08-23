@@ -26,6 +26,8 @@ stoq/gui/editors/client.py
     Base classes to client editors
 """
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.gui.templates.person import IndividualEditorTemplate
@@ -33,6 +35,7 @@ from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.interfaces import IIndividual, IClient
 
+_ = gettext.gettext
 
 class ClientEditor(BaseEditor):
     title = _("Client Editor")

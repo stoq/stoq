@@ -26,6 +26,8 @@ gui/search/person.py
     Search dialogs for person objects
 """
 
+import gettext
+
 from sqlobject.sqlbuilder import LEFTJOINOn, AND
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
@@ -43,6 +45,7 @@ from stoq.domain.person import (Person, EmployeePosition,
                                 PersonAdaptToSupplier,
                                 PersonAdaptToEmployee)
 
+_ = gettext.gettext
 
 class BasePersonSearch(SearchEditor):
     size = (800,500)

@@ -27,10 +27,13 @@ stoq/gui/editors/category.py:
 """
 
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.domain.service import ServiceSellableItem
 
+_ = gettext.gettext
 
 class ServiceEditor(BaseEditor):
     gladefile = 'ServiceEditor'

@@ -30,7 +30,6 @@ stoq/examples/products.py:
     examples/person.py, oterwise the stocks won't be created properly.
 """
 
-from stoq.lib import i18n
 from stoq.domain.product import Product
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.domain.sellable import (BaseSellableCategory,

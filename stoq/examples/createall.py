@@ -27,7 +27,6 @@ stoq/examples/createall.py:
     Create all objects for an example database used by Stoq applications.
 """
 
-from stoq.lib import i18n
 from stoq.examples.person import create_persons
 from stoq.examples.product import create_products
 from stoq.examples.service import create_services

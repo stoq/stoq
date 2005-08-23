@@ -26,8 +26,10 @@ lib/defaults.py
     Default values for Stoq applications.
 """
     
+import gettext
 import datetime
 
+_ = gettext.gettext
 
 
 #

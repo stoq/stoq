@@ -33,7 +33,8 @@ stoq/domain/tables.py:
 
 """
 
-import sqlobject 
+import gettext
+
 from stoqlib.exceptions import DatabaseError
 # XXX This is postgres specific. We should use a better approach which
 # could accept many other databases. Waiting for SQLObject suport.
@@ -41,6 +42,7 @@ from psycopg import OperationalError
 
 from stoq.lib.runtime import get_connection
 
+_ = gettext.gettext
 TABLES = [
      ('stoq.domain.base_model',  ("InheritableModelAdapter",
                                   "InheritableModel",

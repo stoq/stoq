@@ -34,7 +34,6 @@ import datetime
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey
 from sqlobject.styles import mixedToUnder
-from sqlobject.sqlbuilder import NoDefault
 from sqlobject.inheritance import InheritableSQLObject
 from twisted.python.components import Componentized, Interface, Adapter
 from twisted.python.reflect import qual

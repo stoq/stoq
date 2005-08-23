@@ -26,16 +26,19 @@ stoq/domain/service.py:
     Base classes to manage services informations
 """
 
+import gettext
+
 from stoqlib.exceptions import SellError
 from sqlobject import StringCol, DateTimeCol
 
 from stoq.domain.base_model import Domain
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
-from stoq.domain.interfaces import ISellable, IContainer
+from stoq.domain.interfaces import ISellable
 from stoq.lib.runtime import get_connection
 
 
 
+_ = gettext.gettext
 __connection__ = get_connection()
 
 

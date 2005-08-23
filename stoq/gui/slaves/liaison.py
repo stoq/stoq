@@ -29,6 +29,8 @@ gui/slaves/liaison.py:
         Liaison slave implementation.
 """
 
+import gettext
+
 
 from stoqlib.gui.lists import AdditionListSlave
 from kiwi.ui.widgets.list import Column
@@ -36,6 +38,7 @@ from kiwi.ui.widgets.list import Column
 from stoq.gui.editors.contact import ContactEditor
 from stoq.domain.person import Liaison
 
+_ = gettext.gettext
 
 class LiaisonListSlave(AdditionListSlave):
 

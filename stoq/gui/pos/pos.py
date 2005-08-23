@@ -29,6 +29,7 @@ stoq/gui/pos/pos.py:
     Main interface definition for pos application.
 """
 
+import gettext
 import operator
 
 from twisted.python.components import implements
@@ -39,12 +40,9 @@ from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.validators import format_quantity
 from stoq.domain.sellable import AbstractSellable, get_formated_price
-from stoq.domain.person import Person
-from stoq.domain.service import ServiceAdaptToSellable
 from stoq.domain.sale import Sale
-from stoq.domain.product import (Product, ProductSellableItem, 
-                                 ProductAdaptToSellable)
-from stoq.domain.interfaces import IIndividual, IClient, ISellable
+from stoq.domain.product import ProductSellableItem
+from stoq.domain.interfaces import ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.sellable import SellableSearch
@@ -53,6 +51,8 @@ from stoq.gui.search.category import (BaseSellableCatSearch,
 from stoq.gui.search.person import (ClientSearch, 
                                     EmployeeSearch,
                                     SupplierSearch)
+
+_ = gettext.gettext
 
 class POSApp(AppWindow):
    
