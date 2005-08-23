@@ -51,15 +51,14 @@ class AddressSlave(BaseEditorSlave):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
+        BaseEditorSlave.__init__(self, conn, model)
 
+    def create_model(self, conn):
         # XXX: Waiting fix for bug #2043. We should create Address and
         # CityLocation objects not persistents.
-        if model is None:
-            model = Address(person=None, city_location=None,
-                            is_main_address=self.is_main_address,
-                            connection=conn)
-
-        BaseEditorSlave.__init__(self, conn, model)
+        return Address(person=None, city_location=None,
+                       is_main_address=self.is_main_address,
+                       connection=conn)
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]

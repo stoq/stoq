@@ -46,23 +46,14 @@ class EmployeeEditor(BaseEditor):
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
-    def __init__(self, conn, model=None):
-        if not model:
-            # XXX: Waiting fix for bug #2043. We should create a Employee
-            # object not persistent (int this way, we don't need create a
-            # Person object and its dependencies).
-            person = Person(name='', connection=conn)
-            individual = person.addFacet(IIndividual, connection=conn)
-            employee = person.addFacet(IEmployee, connection=conn,
-                                       position=None)
-            model = employee
-
-        BaseEditor.__init__(self, conn, model)
-
-    # 
-    # BaseEditor
-    #
-
+    def create_model(self, conn):
+        # XXX: Waiting fix for bug #2043. We should create a Employee
+        # object not persistent (int this way, we don't need create a
+        # Person object and its dependencies).
+        person = Person(name='', connection=conn)
+        individual = person.addFacet(IIndividual, connection=conn)
+        return person.addFacet(IEmployee, connection=conn,
+                               position=None)
     def setup_slaves(self):
         individual = IIndividual(self.model.get_adapted(),
                                  connection=self.conn)

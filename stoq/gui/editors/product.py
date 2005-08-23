@@ -293,15 +293,6 @@ class ProductEditor(BaseEditor):
                'sale_price_button') + product_widgets + sellable_widgets + \
                storable_widgets
 
-    def __init__(self, conn, model=None):
-        if not model:
-            model = Product(connection=conn)
-            model.addFacet(ISellable, code='', description='', price=0.0, 
-                           connection=conn)
-            model.addFacet(IStorable, connection=conn)
-
-        BaseEditor.__init__(self, conn, model)
-
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_price_lbl, self.price):
             widget.set_data_format('%.02f')
@@ -339,6 +330,13 @@ class ProductEditor(BaseEditor):
     #
 
 
+
+    def create_model(self, conn):
+        model = Product(connection=conn)
+        model.addFacet(ISellable, code='', description='', price=0.0, 
+                       connection=conn)
+        model.addFacet(IStorable, connection=conn)
+        return model
 
     def setup_combos(self):
         table = SellableCategory
@@ -383,9 +381,6 @@ class ProductItemEditor(BaseEditor):
     gladefile = 'ProductItemEditor'
     proxy_widgets = ('quantity', 'price')
     widgets = ('product_name', 'price_label') + proxy_widgets
-
-    def __init__(self, conn, model):
-        BaseEditor.__init__(self, conn, model)
 
     def hide_price_fields(self):
         for widget in (self.price, self.price_label):

@@ -44,16 +44,13 @@ class SupplierEditor(BaseEditor):
     widgets = ('main_holder', )
     model_type = PersonAdaptToSupplier
     
-    def __init__(self, conn, model=None):
-        if not model:
-            # XXX: This is a hack, we don't can create a client without a
-            # person and an Individual/Company. This problem will be
-            # resolved when the bug #2043 is fixed.
-            person = Person(name="", connection=conn)
-            company = person.addFacet(ICompany, connection=conn)
-            model = person.addFacet(ISupplier, connection=conn)
-
-        BaseEditor.__init__(self, conn, model)
+    def create_model(self, conn):
+        # XXX: This is a hack, we don't can create a client without a
+        # person and an Individual/Company. This problem will be
+        # resolved when the bug #2043 is fixed.
+        person = Person(name="", connection=conn)
+        company = person.addFacet(ICompany, connection=conn)
+        return person.addFacet(ISupplier, connection=conn)
 
     def setup_slaves(self):
         company_facet = ICompany(self.model.get_adapted(),

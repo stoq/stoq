@@ -101,9 +101,6 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                bank_account_widgets + work_permit_widgets + voter_widgets + 
                military_widgets)
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
-
     def setup_widgets(self):
         self.right_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self.left_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
@@ -154,9 +151,6 @@ class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
     widgets = ('normal', 'away', 'vacation', 'off')
     model_type = PersonAdaptToEmployee
-
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)

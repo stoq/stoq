@@ -43,10 +43,6 @@ class ServiceEditor(BaseEditor):
     model_type = ServiceSellableItem
 
     def __init__(self, conn, model):
-        if not model:
-            raise TypeError('This Editor (%r) requires a valid (%s) object'
-                            % (self, self.model_type.__name__))
-
         BaseEditor.__init__(self, conn, model)
         self.service_name_label.set_bold(True)
 

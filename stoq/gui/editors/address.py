@@ -92,13 +92,6 @@ class AddressEditor(BaseEditor):
     proxy_widgets = ('is_main_address_checkbutton', )
     widgets = proxy_widgets + ('main_holder', )
 
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
-
-    #
-    # BaseEditor hooks
-    #
-
     def setup_slaves(self):
         self.address_slave = AddressSlave(self.conn, self.model, False)
         self.proxy.new_model(self.address_slave.model)

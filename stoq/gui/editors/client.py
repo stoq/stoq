@@ -39,18 +39,15 @@ class ClientEditor(BaseEditor):
     model_type = PersonAdaptToClient
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
-    
-    def __init__(self, conn, model=None):
-        if not model:
-            # XXX: Waiting fix for bug #2043.  We should create a Client
-            # object not persistent (in this way, we don't need create
-            # Person object and its Individual facet).
-            person = Person(name="", connection=conn)
-            individual = person.addFacet(IIndividual, connection=conn)
-            model = person.addFacet(IClient, connection=conn)
 
-        BaseEditor.__init__(self, conn, model)
-
+    def create_model(self, conn):
+        # XXX: Waiting fix for bug #2043.  We should create a Client
+        # object not persistent (in this way, we don't need create
+        # Person object and its Individual facet).
+        person = Person(name="", connection=conn)
+        individual = person.addFacet(IIndividual, connection=conn)
+        return person.addFacet(IClient, connection=conn)
+        
     def setup_slaves(self):
         individual = IIndividual(self.model.get_adapted(),
                                  connection=self.conn)
