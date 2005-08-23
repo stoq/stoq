@@ -30,6 +30,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.dialogs import run_dialog, confirm_dialog
 from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
 from stoqlib.gui.search import BaseListSlave
+from stoqlib.exceptions import SelectionError
 
 
 class AdditionListSlave(SlaveDelegate):
@@ -42,8 +43,9 @@ class AdditionListSlave(SlaveDelegate):
                       klist widget.
     editor_kwargs   = additional arguments for editor class constructor.
 
-    on_delete_items = a hook method that must be defined in parent instance
-                      to perform some tasks in database during deletions.
+    before_delete_items = a hook method that must be defined in parent 
+                            instance to perform some tasks in database 
+                            before deletions.
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
@@ -59,30 +61,33 @@ class AdditionListSlave(SlaveDelegate):
         self.editor_kwargs = editor_kwargs
         self.parent = parent
         self._setup_list()
-
         if klist_objects:
             self.klist.add_list(klist_objects)
-            
-        self.update_widgets()
+        self._update_widgets()
 
     def _setup_list(self):
         self.klist.set_columns(self.columns)
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
-    def update_widgets(self, *args):
-        widgets = (self.add_button, self.delete_button, self.edit_button)
-        for w in widgets:
-            w.set_sensitive(True)
-
+    def get_selection(self):
         if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            objs_selected = self.klist.get_selected_rows()
-        else:
-            objs_selected = self.klist.get_selected()
-        if not objs_selected:
-            self.delete_button.set_sensitive(False)
-            self.edit_button.set_sensitive(False)
-        elif len(objs_selected) > 1:
-            self.edit_button.set_sensitive(False)
+            return self.klist.get_selected_rows()
+        selection = self.klist.get_selected()
+        if not selection:
+            return []
+        return [selection]
+
+    def _update_widgets(self, *args):
+        delete = edit = True
+        objs = self.get_selection()
+        if not objs:
+            edit = delete = False
+        elif len(objs) > 1:
+            edit = False
+            
+        self.add_button.set_sensitive(True)
+        self.edit_button.set_sensitive(edit)
+        self.delete_button.set_sensitive(delete)
 
     def run(self, model=None):
         edit_mode = model
@@ -101,14 +106,16 @@ class AdditionListSlave(SlaveDelegate):
         # need to unselect everything before select the new instance.
         self.klist.unselect_all()
         self.klist.select_instance(model)
-        self.update_widgets()
+        self._update_widgets()
 
     def edit(self):
-        objs_selected = self.klist.get_selected()
-        assert len(objs_selected) == 1, ("Bug: You should have just one "
-                                         "item selected, found %s" 
-                                         % len(objs_selected))
-        model = objs_selected[0]
+        objs = self.get_selection()
+        qty = len(objs)
+        if qty != 1:
+            msg = ("You should have just one item selected, "
+                   "found %s")
+            raise SelectionError(msg % qty)
+        model = objs[0]
         self.run(model)
 
 
@@ -140,7 +147,7 @@ class AdditionListSlave(SlaveDelegate):
         self.edit()
 
     def on_klist__selection_changed(self, *args):
-        self.update_widgets()
+        self._update_widgets()
 
     def on_add_button__clicked(self, *args):
         self.run()
@@ -149,9 +156,11 @@ class AdditionListSlave(SlaveDelegate):
         self.edit()
 
     def on_delete_button__clicked(self, *args):
-        objs_selected = self.klist.get_selected()
-        assert objs_selected, 'Bug: there are no objects selected.'
-        qty = len(objs_selected)
+        objs = self.get_selection()
+        qty = len(objs)
+        if qty < 1:
+            raise SelectionError('There are no objects selected')
+
         if qty > 1:
             msg = _('Are you sure you want delete these items?')
         else:
@@ -160,17 +169,15 @@ class AdditionListSlave(SlaveDelegate):
         if not confirm_dialog(msg):
             return
 
-        self.parent.on_delete_items(objs_selected)
-
+        self.parent.before_delete_items(objs)
         if qty == len(self.klist):
             self.klist.clear()
 
         else:
-            for instance in objs_selected:
-                self.klist.remove_instance(instance)
-        
+            for obj in objs:
+                self.klist.remove_instance(obj)
         self.klist.unselect_all()
-        self.update_widgets()
+        self._update_widgets()
 
 
 class AdditionListDialog(BasicPluggableDialog):
@@ -225,7 +232,7 @@ class AdditionListDialog(BasicPluggableDialog):
     def on_add_item(self, obj):
         pass
 
-    def on_delete_items(self, *objs):
+    def before_delete_items(self, *objs):
         pass
 
     def on_edit_item(self, obj):
@@ -251,6 +258,6 @@ class SimpleListDialog(BasicDialog):
 
     # BasicDialog 'confirm' method override
     def confirm(self):
-        self.retval = self.list_slave.klist.get_selected()
+        self.retval = self.list_slave.klist.get_selected_rows()
         self.close()
 

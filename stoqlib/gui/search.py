@@ -168,7 +168,7 @@ class SearchBar(SlaveDelegate):
             else:
                 raise TypeError('Invalid column type %s' % type(k_column))
 
-            for column in table_type.sqlmeta._columns:
+            for column in table_type.sqlmeta.columns.values():
                 if not column.origName in attributes:
                     continue
                 value = (column.name, table_type)
@@ -468,7 +468,7 @@ class SearchDialog(BasicDialog):
             self.klist.select_instance(objs[0])
         self.update_widgets()
 
-    def on_delete_items(self, items):
+    def before_delete_items(self, items):
         """ This hook could be useful for AdditionListSlave instances. It 
         must be redefined by childs when it's necessary. """
 
