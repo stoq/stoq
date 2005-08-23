@@ -47,14 +47,14 @@ class BaseEditorSlave(SlaveDelegate):
                             type(model))
         self.conn = conn
         if model is None:
-            model = self.create_model()
+            model = self.create_model(conn)
         self.model = model 
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets)
         self.setup_proxies()
         self.setup_slaves()
 
-    def create_model(self):
+    def create_model(self, conn):
         """
         It is expected to return a new model, which will be used if a model
         wasn't sent to the object at instantiation time.
