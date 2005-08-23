@@ -30,10 +30,13 @@ stoq/gui/editors/contact.py:
 """
 
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.domain.person import Liaison
 
+_ = gettext.gettext
 
 class ContactEditor(BaseEditor):
     model_type = Liaison

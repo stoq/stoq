@@ -24,8 +24,6 @@ import os
 
 from kiwi.environ import environ
 
-from stoq.lib import i18n
-
 try:
     # We can't use from .. import ... as module until pyflakes
     # can handle it fixed

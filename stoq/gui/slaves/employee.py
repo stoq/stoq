@@ -30,7 +30,6 @@
 import gtk
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.lib.runtime import new_transaction
 from stoq.domain.person import (WorkPermitData, MilitaryData, VoterData,
                                 EmployeePosition, PersonAdaptToEmployee)
 from stoq.domain.account import BankAccount

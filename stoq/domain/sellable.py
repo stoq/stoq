@@ -29,6 +29,7 @@ stoq/domain/sellable.py:
    or a service, implemented in your own modules.
 """
 import datetime
+import gettext
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
@@ -41,6 +42,7 @@ from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_connection, new_transaction
 
 
+_ = gettext.gettext
 __connection__ = get_connection()
 
 

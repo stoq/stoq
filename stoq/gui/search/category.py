@@ -27,10 +27,10 @@ gui/search/category.py:
    creation and edition.
 """
 
+import gettext
 import sets
 
 from sqlobject.sqlbuilder import INNERJOINOn
-from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import ForeignKeyColumn
 
@@ -40,6 +40,7 @@ from stoq.domain.sellable import (AbstractSellableCategory,
 from stoq.gui.editors.category import (BaseSellableCategoryEditor,
                                        SellableCategoryEditor)
 
+_ = gettext.gettext
 
 class BaseSellableCatSearch(SearchEditor):
     size = (700, 500)

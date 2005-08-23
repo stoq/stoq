@@ -140,6 +140,8 @@ class AppWindow(BaseAppWindow):
             print "Module readline not available."
         else:
             import rlcompleter
+            # pyflakes
+            assert rlcompleter
             readline.parse_and_bind("tab: complete")
         print scope.keys()
         print "DR. WATSON v1.0"

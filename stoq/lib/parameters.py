@@ -98,6 +98,8 @@ Current System parameters:
                                     sale ?
 """
     
+import gettext
+
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import StringCol, IntCol
 
@@ -106,6 +108,7 @@ from stoq.domain.interfaces import ISupplier, IBranch, ICompany
 from stoq.lib.runtime import get_connection, new_transaction
 
 
+_ = gettext.gettext
 __connection__ = get_connection()
 
 

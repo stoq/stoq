@@ -26,6 +26,8 @@ stoq/gui/editors/category.py:
     Sellable category editors implementation.
 """
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.lib.parameters import sysparam
@@ -33,6 +35,7 @@ from stoq.domain.sellable import (AbstractSellableCategory,
                                   BaseSellableCategory,
                                   SellableCategory)
 
+_ = gettext.gettext
 
 
 class BaseSellableCategoryEditor(BaseEditor):

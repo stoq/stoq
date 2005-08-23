@@ -26,12 +26,14 @@ lib/configparser.py:
     Routines for parse the configuration file.
 """
     
+import gettext
 import os
 from ConfigParser import ConfigParser
 
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
 
+_ = gettext.gettext
 
 class StoqConfigParser:
     config_template = \

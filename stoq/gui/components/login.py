@@ -27,7 +27,7 @@ gui/components/login.py:
    Login dialog for users authentication.
 """
 
-import os
+import gettext
 
 import gtk
 import gobject
@@ -35,6 +35,7 @@ from kiwi.ui.delegates import Delegate
 from kiwi.environ import environ
 from stoqlib.gui.dialogs import RunnableView
 
+_ = gettext.gettext
 
 class LoginDialog(Delegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"

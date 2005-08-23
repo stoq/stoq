@@ -29,6 +29,7 @@ stoq/gui/search/sellable:
     Implementation of sellable search
 """
 
+import gettext
 import operator
 
 import gtk
@@ -37,17 +38,15 @@ from kiwi.ui.views import SlaveView
 from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.search import SearchDialog
 from stoqlib.gui.columns import AccessorColumn
-from stoqlib.exceptions import DatabaseInconsistency
-from sqlobject.sqlbuilder import IN, LEFTJOINOn
 
 from stoq.lib.defaults import ALL_BRANCHES
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable, get_formated_price
-from stoq.domain.stock import AbstractStockItem
 from stoq.domain.product import ProductAdaptToSellable
 from stoq.domain.person import PersonAdaptToBranch
-from stoq.domain.interfaces import IStorable, ISellable
+from stoq.domain.interfaces import IStorable
 
+_ = gettext.gettext
 
 
 #

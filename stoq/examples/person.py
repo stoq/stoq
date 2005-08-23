@@ -27,7 +27,6 @@ stoq/examples/person.py:
     Create person objects for an example database.
 """
 
-from stoq.lib import i18n
 from stoq.domain.person import Person, EmployeePosition
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 

@@ -26,14 +26,16 @@ stoq/domain/product.py:
     Base classes to manage product's informations
 """
 
-from stoqlib.exceptions import StockError, SellError, _warn
+import gettext
+import operator
+
+from stoqlib.exceptions import StockError, SellError
 from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 
 from stoq.domain.base_model import Domain, ModelAdapter
 from stoq.domain.sellable import (AbstractSellable, 
-                                  AbstractSellableItem,
-                                  get_formated_price)
+                                  AbstractSellableItem)
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
 from stoq.domain.interfaces import ISellable, IStorable, IContainer
@@ -42,6 +44,7 @@ from stoq.lib.runtime import get_connection
 
 
 
+_ = gettext.gettext
 __connection__ = get_connection()
 
 
@@ -144,7 +147,7 @@ class ProductSellableItem(AbstractSellableItem):
 
     
     def sell(self, conn, branch, order_product=False):
-        sparam = get_system_parameter(conn)
+        sparam = sysparam(conn)
         if not (branch and 
                 branch.id == sparam.CURRENT_BRANCH.id or 
                 branch.id == sparam.CURRENT_WAREHOUSE.id):
@@ -177,8 +180,8 @@ class ProductSellableItem(AbstractSellableItem):
         # The function get_balance returns the current amount of items in the
         # stock. If get_balance == 0 we have no more stock for this product
         # and we need to set it as sold.
-        logic_qty = storable.get_logic_balance()
-        balance = storable.get_full_balance() - logic_qty
+        logic_qty = storable_item.get_logic_balance()
+        balance = storable_item.get_full_balance() - logic_qty
         if not balance:
             sellable_item.set_sold()
 
@@ -347,7 +350,7 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         assert stocks.count() >= 1
         values = [stock_item.logic_quantity for stock_item in stocks]
-        return reduce(operator.add, value, 0.0)
+        return reduce(operator.add, values, 0.0)
 
     def get_average_stock_price(self):
         total_cost = 0.0

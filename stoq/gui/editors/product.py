@@ -29,6 +29,8 @@ stoq/gui/editors/product.py:
    Editors definitions for products.
 """
 
+import gettext
+
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.lists import SimpleListDialog
@@ -43,6 +45,7 @@ from stoq.domain.product import (ProductSupplierInfo, Product,
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.lib.parameters import sysparam
 
+_ = gettext.gettext
 
 
 #

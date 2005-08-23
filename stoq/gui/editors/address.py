@@ -29,6 +29,7 @@ stoq/gui/editors/address.py
     Person address editor implementation.
 """
 
+import gettext
 
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.lists import AdditionListDialog
@@ -37,6 +38,7 @@ from stoqlib.gui.editors import BaseEditor
 from stoq.gui.slaves.address import AddressSlave
 from stoq.domain.person import Address
 
+_ = gettext.gettext
 
 class AddressAdditionDialog(AdditionListDialog):
     title = _('Address List')

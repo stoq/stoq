@@ -30,15 +30,18 @@ gui/editors/person/employee.py
 """
 
 
+import gettext
+
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.gui.templates.person import IndividualEditorTemplate
 from stoq.domain.interfaces import IIndividual, IEmployee
-from stoq.domain.person import (Person, EmployeePosition,
-                                PersonAdaptToEmployee)
+from stoq.domain.person import (PersonAdaptToEmployee,
+                                Person)
 from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave)
 
+_ = gettext.gettext
 
 class EmployeeEditor(BaseEditor):
     title = _('Employee Editor')
