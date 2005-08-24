@@ -55,11 +55,12 @@ def safe_date(date):
     # Suportando strings "DD/MM/YY HH:MM:SS" 
     if len(date.split()) == 2 and date.split()[1] == "00:00:00":
         date = date.split()[0]
+        
     d = date.replace(" ", "")
-    if not d:
-        return None
-    if d == "__/__/____":
-        return None
+    if not d or d == "__/__/____":
+        # Shouldn't we raise an exception here?
+        return
+    
     try:
         # Raises ValueError
         parts = d.split("/")
@@ -74,7 +75,7 @@ def safe_date(date):
             year += 2000
 
         # Raises ValueError or OverflowError
-        return datetime.datetime(day=day, month=month, year=year)
+        return datetime.datetime(day, month, year)
     except ValueError, OverflowError:
         raise "Badly formatted date: %r" % d
 
