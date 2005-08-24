@@ -49,6 +49,9 @@ def safe_phone(p):
         return [p, None]
 
 def safe_date(date):
+    if not isinstance(date, str):
+        raise TypeError("date must be a string, not %s" % type(date))
+    
     # Suportando strings "DD/MM/YY HH:MM:SS" 
     if len(date.split()) == 2 and date.split()[1] == "00:00:00":
         date = date.split()[0]
@@ -58,19 +61,23 @@ def safe_date(date):
     if d == "__/__/____":
         return None
     try:
+        # Raises ValueError
         parts = d.split("/")
         if len(parts) != 3:
-            raise "Bad date %r" % d
-        day, month, year = parts
-        if len(year) == 2:
-            year = '20' + year
-        if len(year) != 4:
-            raise "Bad date %r" % d
-        
-        return datetime.datetime(day=int(day), month=int(month),
-                                 year=2000 + int(year))
-    except Exception, e:
-        raise "Bad date %r (%s)" % (d, str(e))
+            raise ValueError
+
+        # Raises ValueError
+        day, month, year = map(int, parts)
+        if year >= 70:
+            year += 1900
+        else:
+            year += 2000
+
+        # Raises ValueError or OverflowError
+        return datetime.datetime(day=day, month=month,
+                                 year=2000 + year)
+    except ValueError, OverflowError:
+        raise "Badly formatted date: %r" % d
 
 def safe_currency(text):
     if not text:
