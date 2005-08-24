@@ -35,7 +35,6 @@ import getpass
 import time
 import string
 
-from stoq.lib import i18n
 from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.lib.runtime import new_transaction
 from stoq.domain.person import EmployeePosition, PersonAdaptToUser
@@ -47,7 +46,7 @@ DOMAIN = 'stoq'
 APPNAME = 'init-database'
 
 def ensure_root_user(name, username, password):
-    print _("Creating root user..."), 
+    print "Creating root user...", 
     trans = new_transaction()
 
     # XXX Person for root user is the same of Current Branch. I'm not 
@@ -70,7 +69,7 @@ def ensure_root_user(name, username, password):
     assert ret[0].password == password
     trans.commit()
 
-    print _("done")
+    print "done"
     return user
 
 def setup_tables(delete_only=False):
@@ -79,31 +78,31 @@ def setup_tables(delete_only=False):
     for catalog in catalog_types:
         if trans.tableExists(catalog.get_db_table_name()):
             catalog.dropTable(ifExists=True, cascade=True, connection=trans)
-            print _('<removed>:  '), catalog
+            print '<removed>:  ', catalog
         if delete_only:
             continue
         catalog.createTable(connection=trans)
-        print _('<created>:  '), catalog
+        print '<created>:  ', catalog
 
     trans.commit()
-    print _('done')
+    print 'done'
     sys.stdout.flush()
 
 if __name__ == "__main__":
 
-    print _('Setting up database... ')
+    print 'Setting up database... '
     setup_tables(delete_only=True)
     if 'delete' in sys.argv:
         raise SystemExit
 
     name, username = "Superuser", "root"
-    password = getpass.getpass(_("Enter root password for database: "))
+    password = getpass.getpass("Enter root password for database: ")
 
     setup_tables()
 
-    print _("Ensuring system parameters ...")
+    print "Ensuring system parameters ..."
     ensure_system_parameters()
     
     ensure_root_user(name, username, password)
 
-    print _("done")
+    print "done"
