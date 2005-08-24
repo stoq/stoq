@@ -74,8 +74,7 @@ def safe_date(date):
             year += 2000
 
         # Raises ValueError or OverflowError
-        return datetime.datetime(day=day, month=month,
-                                 year=2000 + year)
+        return datetime.datetime(day=day, month=month, year=year)
     except ValueError, OverflowError:
         raise "Badly formatted date: %r" % d
 
