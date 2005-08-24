@@ -18,11 +18,12 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import string, re
+import datetime
+import string
+import re
 
 # from domain.states import states as states_dict
 
-from mx import DateTime
 
 #
 # Funções geralmente úteis para a importação
@@ -60,14 +61,16 @@ def safe_date(date):
         parts = d.split("/")
         if len(parts) != 3:
             raise "Bad date %r" % d
-        if len(parts[2]) == 2:
-            return DateTime.strptime(d, "%d/%m/%y")
-        elif len(parts[2]) == 4:
-            return DateTime.strptime(d, "%d/%m/%Y")
-        else:
+        day, month, year = parts
+        if len(year) == 2:
+            year = '20' + year
+        if len(year) != 4:
             raise "Bad date %r" % d
-    except DateTime.Error:
-        raise "Bad date %r" % d
+        
+        return datetime.datetime(day=int(day), month=int(month),
+                                 year=2000 + int(year))
+    except Exception, e:
+        raise "Bad date %r (%s)" % (d, str(e))
 
 def safe_currency(text):
     if not text:

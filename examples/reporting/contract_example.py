@@ -2,10 +2,11 @@
 from sys import path
 path.insert(0, '..')
 
-from stoqlib.reporting import ReportTemplate, build_report, print_preview
-from stoqlib.reporting.default_style import STYLE_SHEET
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
+
+from stoqlib.reporting import ReportTemplate, build_report, print_preview
+from stoqlib.reporting.default_style import STYLE_SHEET
 
 class ContractExample(ReportTemplate):
     def __init__(self, filename):

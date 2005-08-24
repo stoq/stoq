@@ -27,10 +27,8 @@ pode ser obtida através de, por exemplo, uma pesquisa em uma base de dados).
 
 """
 
-from printing import ReportTemplate
-
-import os, tempfile
-from types import TupleType, StringType
+import os
+import tempfile
 
 __name__ = "Stoqlib Reporting"
 __version__ = "0.1"
@@ -94,11 +92,11 @@ def print_preview(filename, keep_file=0):
 
     for program in PROGRAMS:
         args = []
-        if type(program) is TupleType:
+        if isinstance(program, tuple):
             # grab args and program from tuple
             args.extend(program[1:])
             program = program[0]
-        elif type(program) is not StringType:
+        elif not isinstance(program, str):
             raise AssertionError
         args.append(filename)
         for part in path:

@@ -25,6 +25,7 @@ gui/search.py:
 """
 
 import string
+import gettext
 
 import gtk
 import gobject
@@ -43,6 +44,7 @@ from stoqlib.common import is_integer, is_float
 from stoqlib.database import get_model_connection
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
+_ = gettext.gettext
 
 #
 # Slaves for search dialogs.
