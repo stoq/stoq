@@ -6,7 +6,7 @@ path.insert(0, "..")
 import operator
 
 from stoqlib.reporting import build_report, print_preview, \
-                              ReportTemplate, print_file
+                              ReportTemplate
 from stoqlib.reporting.flowables import RIGHT, CENTER
 from stoqlib.reporting.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.common import read_file, safe_float

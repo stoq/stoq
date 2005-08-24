@@ -28,8 +28,9 @@ from reportlab.lib import pagesizes
 from reportlab import platypus
 
 from stoqlib.reporting import tables, flowables
-# All UPPERCASE constants are from here:
-from stoqlib.reporting.default_style import *
+from stoqlib.reporting.default_style import (DOC_DEFAULTS, SPACING,
+                                             STYLE_SHEET, TABLE_STYLE,
+                                             DEFAULT_MARGIN, TABLE_LINE)
 
 class BaseReportTemplate(platypus.BaseDocTemplate):
     """ 

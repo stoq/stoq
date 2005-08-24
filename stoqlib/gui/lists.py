@@ -24,6 +24,8 @@ gui/lists.py:
     List management for common dialogs.
 """
 
+import gettext
+
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
 
@@ -32,6 +34,7 @@ from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
 from stoqlib.gui.search import BaseListSlave
 from stoqlib.exceptions import SelectionError
 
+_ = gettext.gettext
 
 class AdditionListSlave(SlaveDelegate):
     """ A slave that offers a simple list and its management. 

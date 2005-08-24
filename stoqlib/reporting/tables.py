@@ -23,14 +23,21 @@ Este módulo implementa as classes para inserção de todos os tipos de tabelas
 disponiblizados pelo Stoqlib Reporting. 
 """
 import operator
-from types import StringType
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import TableStyle, Paragraph, Table as RTable
 
-# All UPPERCASE constants (except LEFT, CENTER and RIGHT) are from here:
-from default_style import *
-from flowables import LEFT, CENTER, RIGHT
+from stoqlib.reporting.default_style import (TABLE_HEADER_FONT,
+                                             TABLE_HEADER_FONT_SIZE,
+                                             TABLE_HEADER_TEXT_COLOR,
+                                             TABLE_HEADER_BACKGROUND,
+                                             HIGHLIGHT_COLOR,
+                                             TABLE_LINE,
+                                             COL_PADDING,
+                                             SOFT_LINE_COLOR,
+                                             DEFAULT_FONTNAME,
+                                             DEFAULT_FONTSIZE)
+from stoqlib.reporting.flowables import LEFT, CENTER, RIGHT
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -651,7 +658,7 @@ class ObjectTableColumn(TableColumn):
         """
         if self.data_source is None:
             return ''
-        if type(self.data_source) is StringType:
+        if isinstance(self.data_source, str):
             locals().update(self.kwargs)
             # XXX Dangerous function = eval.
             data = eval(self.data_source)

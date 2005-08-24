@@ -23,13 +23,14 @@ Implementação de classe base para configuração da página e desenho de
 elementos fixos de cada página.
 """
 
-from mx.DateTime import now
+import datetime
 
 from reportlab.lib.units import mm
 
 # sibling imports
 from stoqlib.reporting.template import BaseReportTemplate
-from stoqlib.reporting.default_style import *
+from stoqlib.reporting.default_style import (HIGHLIGHT_COLOR, SPACING,
+                                             TEXT_COLOR)
 
 SMALL_FONT = ("Helvetica", 12)
 
@@ -87,10 +88,11 @@ class ReportTemplate(BaseReportTemplate):
         if not self.do_footer:
             return
 
+        ts = datetime.datetime.now()
         if self.timestamp:
-            datetime = now().strftime('%d/%m/%Y   %H:%M:%S')
+            date_string = ts.strftime('%d/%m/%Y   %H:%M:%S')
         else:
-            datetime = now().strftime('%d/%m/%Y')
+            date_string = ts.strftime('%d/%m/%Y')
 
         page_number = "Página: % 2d" % self.get_page_number()
 
@@ -104,7 +106,7 @@ class ReportTemplate(BaseReportTemplate):
         canvas.setFont(*SMALL_FONT)
         canvas.drawString(self.leftMargin + 0.5 * SPACING, text_y,
                           self.report_name)
-        canvas.drawRightString(self._rightMargin - 75, text_y, datetime)
+        canvas.drawRightString(self._rightMargin - 75, text_y, date_string)
         canvas.drawRightString(self._rightMargin - 0.5 * SPACING, text_y,
                                page_number)
 
