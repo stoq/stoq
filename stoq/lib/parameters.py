@@ -204,7 +204,7 @@ class ParameterAccess:
                               connection=self.conn)
         msg = 'Person object associated to this supplier not found.'
         assert person_obj and person_obj.count() == 1, msg
-        supplier = ISupplier(person_obj[0])
+        supplier = ISupplier(person_obj[0], connection=self.conn)
         assert supplier, 'Supplier rule for the selected person not found.'
         return supplier
 
@@ -224,7 +224,7 @@ class ParameterAccess:
                                   connection=self.conn)
         msg = 'Person object associated to this branch not found.'
         assert person_obj and person_obj.count() == 1, msg
-        branch = IBranch(person_obj[0])
+        branch = IBranch(person_obj[0], connection=self.conn)
         assert branch, 'Branch rule for the selected person not found.'
         return branch
 
@@ -260,7 +260,7 @@ class ParameterAccess:
                                   connection=self.conn)
         msg = 'Person object associated to this warehouse not found.'
         assert person_obj and person_obj.count() == 1, msg
-        warehouse = ICompany(person_obj[0])
+        warehouse = ICompany(person_obj[0], connection=self.conn)
         assert warehouse, 'Warehouse associated to the selected person not found.'
         return warehouse
 
