@@ -27,7 +27,8 @@ stoq/examples/person.py:
     Create person objects for an example database.
 """
 
-from stoq.domain.person import Person, EmployeePosition
+from stoq.domain.person import (Person, EmployeePosition, Address,
+                                CityLocation)
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
@@ -98,8 +99,13 @@ def create_persons():
 
     # Creating persons and facets
     index = 0
+    ctloc = CityLocation(city='BH', country='Brasil', state='MG',
+                         connection=trans)
     for person_args in person_data:
         person_obj = Person(connection=trans, **person_args)
+        address = Address(street='Rua 15 de novembro', number=23,
+                          district='Vila Matilde', is_main_address=True, 
+                          person=person_obj, city_location=ctloc, connection=trans)
         
         individual_args = individual_data[index]
         person_obj.addFacet(IIndividual, connection=trans, 
