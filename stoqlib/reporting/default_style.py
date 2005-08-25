@@ -57,6 +57,10 @@ STYLE_SHEET.add(ParagraphStyle(
     leading=12))
 
 STYLE_SHEET.add(ParagraphStyle(
+    'Raw',
+    fontName='Courier'))
+
+STYLE_SHEET.add(ParagraphStyle(
     'Normal-Bold',
     parent=STYLE_SHEET['Normal'],
     fontName='Helvetica-Bold'))
