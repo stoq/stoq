@@ -97,15 +97,30 @@ def create_persons():
                  dict(username='maddog', 
                       password='dog54')]
 
+    cityloc_data = [dict(city='Belo Horizonte', country='Brasil', 
+                         state='MG'),
+                    dict(city='Curitiba', country='Brasil', state='PR'),
+                    dict(city='Rio de Janeiro', country='Brasil', state='RJ'),
+                    dict(city='Salvador', country='Brasil', state='BA')]
+
+    address_data = [dict(street='Rua das flores', number=77, 
+                         district='Vila Matilde'),
+                    dict(street='Rua XV de Novembro', number=278, 
+                         district='Centro'),
+                    dict(street='Avenida Paulista', number=1533, 
+                         district='Brigadeiro'),
+                    dict(street='Avenida Andradas', number=876, 
+                         district='Pinheiros')]
+
     # Creating persons and facets
     index = 0
-    ctloc = CityLocation(city='BH', country='Brasil', state='MG',
-                         connection=trans)
     for person_args in person_data:
         person_obj = Person(connection=trans, **person_args)
-        address = Address(street='Rua 15 de novembro', number=23,
-                          district='Vila Matilde', is_main_address=True, 
-                          person=person_obj, city_location=ctloc, connection=trans)
+
+        ctloc = CityLocation(connection=trans, **cityloc_data[index])
+        address = Address(is_main_address=True, 
+                          person=person_obj, city_location=ctloc, 
+                          connection=trans, **address_data[index])
         
         individual_args = individual_data[index]
         person_obj.addFacet(IIndividual, connection=trans, 
