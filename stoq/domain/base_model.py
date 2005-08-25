@@ -48,14 +48,6 @@ from twisted.python.reflect import qual
 
 class AbstractModel:
 
-    def __init__(self):
-        self.sqlmeta.cacheValues = False
-        # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
-        # properly with parent tables for inherited tables. E.g:
-        # list(AbstractSellable.select()) = list of AbstractSellable objects
-        # instead child table objects.
-        #lazyUpdate = True
-
     def __ne__(self, other):
         return not self.__eq__(other)
 
@@ -156,11 +148,13 @@ class BaseDomain(SQLObject, AbstractModel):
     model_created = DateTimeCol(default=datetime.datetime.now())
     model_modified = DateTimeCol(default=datetime.datetime.now())
     # TODO add in the future a 'last_changed_by_user' attribute here
-
-    def __init__(self, *args, **kwargs):
-        SQLObject.__init__(self, *args, **kwargs)
-        AbstractModel.__init__(self)
-
+    class sqlmeta:
+        cacheValues = False
+        # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
+        # properly with parent tables for inherited tables. E.g:
+        # list(AbstractSellable.select()) = list of AbstractSellable objects
+        # instead child table objects.
+        #lazyUpdate = True
 
 class Domain(BaseDomain, Componentized):
 
@@ -292,11 +286,9 @@ class ModelAdapter(BaseDomain, Adapter):
 class InheritableModel(InheritableSQLObject, AbstractModel):
     model_created = DateTimeCol(default=datetime.datetime.now())
     model_modified = DateTimeCol(default=datetime.datetime.now())
-
-    def __init__(self, *args, **kwargs):
-        InheritableSQLObject.__init__(self, *args, **kwargs)
-        AbstractModel.__init__(self)
-
+    class sqlmeta:
+        cacheValues = False
+        #lazyUpdate = True
 
 class InheritableModelAdapter(InheritableModel, Adapter):
 
