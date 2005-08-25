@@ -251,6 +251,25 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         """
         self.add(flowables.Signature(labels, *args, **kwargs))
 
+    def add_preformatted_text(self, text, style='Raw', *args, **kwargs):
+        """
+        Adiciona um texto pré-formatado ao relatório. Parâmetros:
+
+            - text: o texto a ser inserido
+            - style: define o estilo a ser utilizado. Como padrão o estilo
+            'Raw' (consulte o módulo default_style para mais detalhes) é
+            utilizado.
+
+        Você pode utilizar esse método para inserção de textos com
+        espaçamento.
+
+        Note que parâmetros extras podem ser passados para essa
+        função, nesse caso eles serão repassados diretamente para a
+        classe Preformatted do ReportLab. 
+        """
+        style = STYLE_SHEET[style]
+        self.add(platypus.flowables.Preformatted(text, style, *args, **kwargs))
+
     def add_paragraph(self, text, style='Normal', **kwargs):
         """ 
         Adiciona um parágrafo. Parametros:
