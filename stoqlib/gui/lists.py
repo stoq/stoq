@@ -245,9 +245,10 @@ class AdditionListDialog(BasicPluggableDialog):
 class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
-    def __init__(self, columns, objects, parent=None, hide_cancel_btn=True):
+    def __init__(self, columns, objects, parent=None, hide_cancel_btn=True,
+                 title=''):
         BasicDialog.__init__(self)
-        BasicDialog._initialize(self, size=self.size)
+        BasicDialog._initialize(self, size=self.size, title=title)
 
         if hide_cancel_btn:
             self.cancel_button.hide()
