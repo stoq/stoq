@@ -83,7 +83,7 @@ class BaseEditorSlave(SlaveDelegate):
         action needs to be executed when cancelling in the dialog. """
         return False
 
-    def before_delete_items(self):
+    def before_delete_items(self, items):
         """Redefine this when you need to remove data on database
         table associated with a AdditionListSlave instance."""
 
