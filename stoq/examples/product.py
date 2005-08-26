@@ -105,7 +105,6 @@ def create_products():
                              **sellable_args)
 
         storable = product_obj.addFacet(IStorable, connection=trans)
-        storable.fill_stocks()
 
         # Setting a initial value for Stocks
         for stock_item in storable.get_stocks():

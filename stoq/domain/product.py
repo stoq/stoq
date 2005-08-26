@@ -85,6 +85,19 @@ class Product(Domain):
 
 
 
+    #
+    # Facet hooks
+    #
+
+
+    
+    def facet_IStorable_add(self, **kwargs):
+        storable = ProductAdaptToStorable(self, **kwargs)
+        storable.fill_stocks()
+        return storable
+    
+
+
     #   
     # Acessors
     #   
@@ -424,16 +437,6 @@ class ProductAdaptToStorable(ModelAdapter):
             query = AND(q1, q2, q3)
         return ProductStockItem.select(query, connection=conn)
 
-
-        
-    #
-    # Hooks
-    #
-
-
-        
-    def after_insert_model(self):
-        self.fill_stocks()
 
 Product.registerFacet(ProductAdaptToStorable)
 
