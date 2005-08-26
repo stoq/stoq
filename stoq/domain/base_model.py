@@ -131,19 +131,6 @@ class AbstractModel:
         self.__dict__['_original'] = _original
 
 
-
-    #
-    # Hooks
-    #
-
-
-
-    def after_insert_model(self, conn):
-        """ A hook which is called by ensure and new_method. 
-        Redefine it to execute some instructions *after* the object 
-        insertion on a table. """
-
-
 class BaseDomain(SQLObject, AbstractModel):
     model_created = DateTimeCol(default=datetime.datetime.now())
     model_modified = DateTimeCol(default=datetime.datetime.now())
