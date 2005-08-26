@@ -26,7 +26,7 @@ lib/runtime.py:
     Runtime methods for Stoq applications.
 """
 
-import sqlobject
+from sqlobject import connectionForURI
 from stoq.lib.configparser import StoqConfigParser
 
 _connection = None
@@ -37,7 +37,6 @@ _current_user = None
 #
 # Work with connections and transactions
 #
-
 
 
 def initialize_connection():
@@ -55,8 +54,8 @@ def initialize_connection():
 
     # Here we define a full address for database access like:
     # 'postgresql://username@localhost/dbname'
-    conn = sqlobject.connectionForURI('%s://%s@%s/%s' % (rdbms, 
-                                      dbusername, address, dbname))
+    conn = connectionForURI('%s://%s@%s/%s' % (rdbms, 
+                            dbusername, address, dbname))
     # Stoq applications always use transactions explicitly
     conn.autoCommit = False
     _connection = conn
