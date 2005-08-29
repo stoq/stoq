@@ -35,6 +35,7 @@ import operator
 from twisted.python.components import implements
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchBar, BaseListSlave
+from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
@@ -147,10 +148,12 @@ class POSApp(AppWindow):
             self.quantity.set_sensitive(True)
 
     def search_clients(self):
-        person = self.run_dialog(ClientSearch)
+        conn = new_transaction()
+        person = self.run_dialog(ClientSearch, parent_conn=conn)
         if person:
             self.person_proxy.new_model(person, relax_type=True)
         self.update_widgets()
+        rollback_and_begin(conn)
 
     def add_sellable_item(self, sellable):
         if not implements(sellable, ISellable):
@@ -213,7 +216,7 @@ class POSApp(AppWindow):
     def run_search(self):
         """Hook called by SearchDialog"""
         search_str = self.search_bar.get_search_string()
-        items = self.run_dialog(SellableSearch, search_str, conn=self.conn)
+        items = self.run_dialog(SellableSearch, self.conn, search_str)
         for item in items:
             self.add_sellable_item(item)
         self.select_first_item()
@@ -296,15 +299,16 @@ class POSApp(AppWindow):
         if model:
             conn.commit()
             return
-        conn.rollback()
+        rollback_and_begin(conn)
+        # XXX Waiting for SQLObject improvements. We need there a simple 
+        # method do this in a simple way.
+        conn._connection.close()
 
     def _on_sellable_category__clicked(self, *args):
-        dlg = BaseSellableCatSearch
-        self.run_dialog(dlg)
+        self.run_dialog(BaseSellableCatSearch)
 
     def _on_sellable_subcategory__clicked(self, *args):
-        dlg = SellableCatSearch
-        self.run_dialog(dlg)
+        self.run_dialog(SellableCatSearch)
 
     def on_edit_button__clicked(self, *args):
         sellable_item = self.order_list.get_selected()
@@ -322,4 +326,3 @@ class POSApp(AppWindow):
     def on_checkout_button__clicked(self, *args):
         #dialog not implemented yet
         pass
-

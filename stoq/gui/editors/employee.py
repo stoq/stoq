@@ -75,4 +75,3 @@ class EmployeeEditor(BaseEditor):
     def on_confirm(self):
         self.individual_slave.on_confirm()
         return self.model
-
