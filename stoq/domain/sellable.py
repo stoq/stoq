@@ -39,7 +39,7 @@ from stoq.domain.base_model import (Domain, InheritableModelAdapter,
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.lib.validators import is_date_in_interval
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import get_connection, new_transaction
+from stoq.lib.runtime import get_connection
 
 
 _ = gettext.gettext
@@ -228,7 +228,7 @@ class AbstractSellable(InheritableModelAdapter):
 
 
 def get_formated_price(float_value):
-    conn = new_transaction()
+    conn = get_connection()
     precision = sysparam(conn).SELLABLE_PRICE_PRECISION
     money = _('$')
     return '%s %.*f' % (money, int(precision), float_value)
