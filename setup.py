@@ -109,3 +109,4 @@ setup(name='stoq',
       data_files=data_files,
       cmdclass=dict(install_lib=InstallLib,
                     install_data=InstallData))
+
