@@ -35,3 +35,7 @@ def set_model_connection_func(func):
     global _model_connection_func
     assert func
     _model_connection_func = func
+
+def rollback_and_begin(conn):
+    conn.rollback()
+    conn.begin()
