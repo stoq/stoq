@@ -55,11 +55,13 @@ class BasePersonSearch(SearchEditor):
     interface = None
     editor_class = None
 
-    def __init__(self, title='', hide_footer=False):
+    def __init__(self, title='', hide_footer=False,
+                 parent_conn=None):
         self.title = title or self.title
         SearchEditor.__init__(self, self.table, 
                               self.editor_class,
                               interface=self.interface,
+                              parent_conn=parent_conn,
                               hide_footer=hide_footer)
 
 
