@@ -137,9 +137,7 @@ class AppConfig:
     def _lookup_user(self, username, password):
         # This function is really just a post-validation item. 
         table = PersonAdaptToUser
-        trans = new_transaction()
-        res = table.select(table.q.username == '%s' % username,
-                           connection=trans)
+        res = table.select(table.q.username == '%s' % username)
         msg = _("Invalid user or password")
         if not res.count():
             raise ValueError, msg
