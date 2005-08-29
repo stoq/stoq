@@ -112,7 +112,7 @@ class AbstractModel:
 
     def get_adapted_id(self):
         assert isinstance(self, Adapter)
-        return self._originalID
+        return self._original.id
 
 
 
