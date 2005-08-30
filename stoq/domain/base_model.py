@@ -41,12 +41,13 @@ from twisted.python.reflect import qual
 
 
 #
-# Base classes
+# Abstract classes
 #
 
 
 
 class AbstractModel:
+    """Generic methods for any domain classes."""
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -117,7 +118,7 @@ class AbstractModel:
 
 
     #
-    # Inheritable objects methods
+    # Inheritable object methods
     #
 
 
@@ -130,24 +131,9 @@ class AbstractModel:
         # HMMM!
         self.__dict__['_original'] = _original
 
-
-class BaseDomain(SQLObject, AbstractModel):
-    model_created = DateTimeCol(default=datetime.datetime.now())
-    model_modified = DateTimeCol(default=datetime.datetime.now())
-    # TODO add in the future a 'last_changed_by_user' attribute here
-    class sqlmeta:
-        cacheValues = False
-        # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
-        # properly with parent tables for inherited tables. E.g:
-        # list(AbstractSellable.select()) = list of AbstractSellable objects
-        # instead child table objects.
-        #lazyUpdate = True
-
-class Domain(BaseDomain, Componentized):
-
-    def __init__(self, *args, **kwargs):
-        BaseDomain.__init__(self, *args, **kwargs)
-        Componentized.__init__(self)
+ 
+class ComponentizedModel(Componentized):
+    """Methods for domain objects which can have one or more adapters."""
 
     @classmethod
     def getAdapterClass(cls, iface):
@@ -157,6 +143,9 @@ class Domain(BaseDomain, Componentized):
                 "%s doesn't have a facet for interface %s" %
                 (cls.__name__, iface.__name__))
         return cls._facets[iface_str]
+
+    def hasComponent(self, iface):
+        return qual(iface) in self._adapterCache
 
     def getComponent(self, iface, registry, default, connection=None):
         k = qual(iface)
@@ -175,8 +164,52 @@ class Domain(BaseDomain, Componentized):
             if results.count() == 1:
                 adapter = results[0]
                 self.setComponent(iface, adapter)
-            
         return adapter
+        
+    def addFacet(self, iface, *args, **kwargs):
+        if isinstance(self, Adapter):
+            raise TypeError("An adapter can not be adapted to another "
+                            "object.")
+        if not issubclass(iface, Interface):
+            raise TypeError('iface must be a ConnInterface subclass')
+
+        if self.hasComponent(iface):
+            raise TypeError('%s already  have a facet for interface %s' %
+                            (self.__class__.__name__, iface.__name__))
+
+        facets = self.__class__._facets
+
+        k = qual(iface)
+        
+        funcName = 'facet_%s_add' % iface.__name__
+        func = getattr(self, funcName, None)
+        if func:
+            adapter = func(*args, **kwargs)
+        elif facets.has_key(k):
+            adapterClass = facets[k]
+            adapter = adapterClass(self, *args, **kwargs)
+        else:
+            adapter = None
+        if adapter:
+            self.setComponent(iface, adapter)
+        return adapter 
+
+    def removeFacet(self, iface, *args, **kwargs):
+        if not issubclass(iface, Interface):
+            raise TypeError('iface must be a ConnInterface subclass')
+
+        if not self._facets.has_key(iface):
+            raise TypeError('%s does not have a facet for interface %s' %
+                            (self.__class__.__name__, iface.__name__))
+        
+        funcName = 'facet_%s_remove' % iface.__name__
+        func = getattr(self, funcName, None)
+        if func:
+            func(*args, **kwargs)
+
+        del self._facets[qual(iface)]
+        if self.hasComponent(iface):
+            self.unsetComponent(iface)
 
     @classmethod
     def registerFacet(cls, facet):
@@ -208,46 +241,27 @@ class Domain(BaseDomain, Componentized):
                                     name='_original',
                                     forceDBName=True))
 
-    def addFacet(self, iface, *args, **kwargs):
-        if not issubclass(iface, Interface):
-            raise TypeError('iface must be a ConnInterface subclass')
 
-        facets = self.__class__._facets
 
-        k = qual(iface)
-        
-        funcName = 'facet_%s_add' % iface.__name__
-        func = getattr(self, funcName, None)
-        if func:
-            adapter = func(*args, **kwargs)
-        elif facets.has_key(k):
-            adapterClass = facets[k]
-            adapter = adapterClass(self, *args, **kwargs)
-        else:
-            adapter = None
-            
-        if adapter:
-            self.setComponent(iface, adapter)
+#
+# Base classes
+#
 
-        return adapter 
-            
-    def removeFacet(self, iface, *args, **kwargs):
-        if not issubclass(iface, Interface):
-            raise TypeError('iface must be a ConnInterface subclass')
 
-        if not self._facets.has_key(iface):
-            raise TypeError('%s does not have a facet for interface %s' %
-                            (self.__name__, iface.__name__))
-        
-        funcName = 'facet_%s_remove' % iface.__name__
-        func = getattr(self, funcName, None)
-        if func:
-            func(*args, **kwargs)
 
-        k = qual(iface)
-        del self._facets[k]
-        if self._adapterCache.has_key(k):
-            self.unsetComponent(iface)
+class BaseDomain(SQLObject, AbstractModel):
+    pass
+
+class Domain(BaseDomain, ComponentizedModel):
+    def __init__(self, *args, **kwargs):
+        BaseDomain.__init__(self, *args, **kwargs)
+        ComponentizedModel.__init__(self)
+
+class InheritableModel(InheritableSQLObject, AbstractModel,
+                       ComponentizedModel):
+    def __init__(self, *args, **kwargs):
+        InheritableSQLObject.__init__(self, *args, **kwargs)
+        ComponentizedModel.__init__(self)
 
 
 
@@ -263,22 +277,21 @@ class ModelAdapter(BaseDomain, Adapter):
         BaseDomain.__init__(self, *args, **kwargs)
 
 
-
-#
-# Inheritance 
-#
-
-
-
-class InheritableModel(InheritableSQLObject, AbstractModel):
-    model_created = DateTimeCol(default=datetime.datetime.now())
-    model_modified = DateTimeCol(default=datetime.datetime.now())
-    class sqlmeta:
-        cacheValues = False
-        #lazyUpdate = True
-
 class InheritableModelAdapter(InheritableModel, Adapter):
 
     def __init__(self, _original=None, *args, **kwargs):
         self.set_original_references(_original, kwargs)
         InheritableModel.__init__(self, *args, **kwargs)
+
+
+for klass in (InheritableModel, BaseDomain):
+    klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
+                                        default=datetime.datetime.now()))
+    klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
+                                        default=datetime.datetime.now()))
+    klass.sqlmeta.cacheValues = False
+    # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
+    # properly with parent tables for inherited tables. E.g:
+    # list(AbstractSellable.select()) = list of AbstractSellable 
+    # objects instead child table objects.
+    # lazyUpdate = True
