@@ -130,7 +130,9 @@ class SellableSearch(SearchDialog):
     def __init__(self, conn, search_str=None):
         selection_mode = gtk.SELECTION_MULTIPLE
         SearchDialog.__init__(self, self.search_table, hide_footer=False,
-                              parent_conn=conn, selection_mode=selection_mode)
+                              parent_conn=conn,
+                              selection_mode=selection_mode,
+                              search_lbl_text=_('Find Sellables'))
         self.search_bar.set_search_string(search_str)
         self.search_bar.search_items()
 

@@ -50,7 +50,8 @@ class BaseSellableCatSearch(SearchEditor):
 
     def __init__(self, parent_conn=None):
         SearchEditor.__init__(self, self.table, self.editor_class,
-                              parent_conn=parent_conn, hide_footer=True)
+                              parent_conn=parent_conn, hide_footer=True,
+                              search_lbl_text=_('Find Base Categories'))
 
     def get_columns(self):
         return [ForeignKeyColumn(AbstractSellableCategory,
@@ -83,7 +84,8 @@ class SellableCatSearch(SearchEditor):
         SearchEditor.__init__(self, table, editor,
                               search_table=search_table, 
                               parent_conn=parent_conn,
-                              hide_footer=True)
+                              hide_footer=True,
+                              search_lbl_text=_('Find Categories'))
 
 
 
