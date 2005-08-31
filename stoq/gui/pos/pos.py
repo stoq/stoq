@@ -98,7 +98,8 @@ class POSApp(AppWindow):
         self.order_list = order_list_slave.klist
     
         self.search_bar = SearchBar(self, AbstractSellable,
-                                    search_callback=self.run_search) 
+                                    search_callback=self.run_search,
+                                    search_lbl_text=_('Find Sellables')) 
         self.attach_slave("search_bar_holder", self.search_bar)
 
     def _setup_proxies(self):
