@@ -246,22 +246,30 @@ class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
     def __init__(self, columns, objects, parent=None, hide_cancel_btn=True,
-                 title=''):
+                 title='', selection_mode=gtk.SELECTION_MULTIPLE):
         BasicDialog.__init__(self)
         BasicDialog._initialize(self, size=self.size, title=title)
 
         if hide_cancel_btn:
             self.cancel_button.hide()
 
-        self.setup_slave(columns, objects, parent)
+        self.setup_slave(columns, objects, parent, selection_mode)
 
-    def setup_slave(self, columns, objects, parent):
+    def setup_slave(self, columns, objects, parent, selection_mode):
         self.list_slave = BaseListSlave(parent, columns, objects)
-        self.list_slave.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.list_slave.klist.set_selection_mode(selection_mode)
         self.attach_slave('main', self.list_slave)
+
+    def get_selection(self):
+        mode = self.list_slave.klist.get_selection_mode() 
+        if mode == gtk.SELECTION_MULTIPLE:
+            return self.list_slave.klist.get_selected_rows()
+        selection = self.list_slave.klist.get_selected()
+        if not selection:
+            return []
+        return [selection]
 
     # BasicDialog 'confirm' method override
     def confirm(self):
-        self.retval = self.list_slave.klist.get_selected_rows()
+        self.retval = self.get_selection()
         self.close()
-
