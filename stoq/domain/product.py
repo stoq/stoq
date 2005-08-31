@@ -127,13 +127,12 @@ class ProductSellableItem(AbstractSellableItem):
 
     __implements__ = IContainer, 
 
-
+    delivery_data = ForeignKey('ServiceSellableItemAdaptToDelivery',
+                               default=None)
 
     #
     # IContainer implementation
     #
-
-
 
     def add_item(self, item):
         raise NotImplementedError('This method should be replaced by '

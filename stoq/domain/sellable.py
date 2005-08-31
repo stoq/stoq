@@ -56,6 +56,7 @@ __connection__ = get_connection()
 class AbstractSellableCategory(Domain):
     description = StringCol()
     suggested_markup = FloatCol(default=0.0)
+
     # A percentage comission suggested for all the sales which products
     # belongs to this category or base category
     salesperson_comission = FloatCol(default=0.0)

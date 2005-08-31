@@ -351,4 +351,9 @@ class ISalesPerson(ConnInterface):
                                'comission. This is a reference to another '
                                'object')
 
+class IDelivery(ConnInterface):
+    """ Specification of a Delivery interface for a sellable. """
 
+    address = Attribute('address',
+			'str',
+			'The delivery address.')

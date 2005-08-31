@@ -31,9 +31,10 @@ import gettext
 from stoqlib.exceptions import SellError
 from sqlobject import StringCol, DateTimeCol
 
-from stoq.domain.base_model import Domain
+from stoq.domain.base_model import Domain, ModelAdapter
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
-from stoq.domain.interfaces import ISellable
+from stoq.domain.interfaces import ISellable, IDelivery, IContainer
+from stoq.domain.product import ProductSellableItem
 from stoq.lib.runtime import get_connection
 
 
@@ -58,13 +59,13 @@ class Service(Domain):
 class ServiceSellableItem(AbstractSellableItem):
     """ A service implementation as a sellable item. """
 
-
+    notes = StringCol(default=None)
+    estimated_fix_date = DateTimeCol(default=None)
+    completion_date = DateTimeCol(default=None)
     
     #
     # Auxiliary methods
     #
-
-
 
     def sell(self):
         conn = self.get_connection()
@@ -74,11 +75,37 @@ class ServiceSellableItem(AbstractSellableItem):
             raise SellError(msg)
 
 
-
 #
 # Adapters
 #
 
+
+class ServiceSellableItemAdaptToDelivery(ModelAdapter):
+    """ A service implementation as a delivery facet. """
+
+    __implements__ = IDelivery, IContainer
+
+    address = StringCol(default='')
+
+    #
+    # IContainer implementation
+    #
+
+    def add_item(self, item):
+        if not isinstance(item, ProductSellableItem):
+            raise TypeError("Received a %s object, expected %s." 
+                            % (type(item), ProductSellableItem))
+        item.delivery_data = self
+
+    def get_items(self):
+        return ProductSellableItem.selectBy(connection=self.get_connection(),
+                                            delivery_dataID=self.id)
+
+    def remove_items(self, items):
+        for item in items:
+            item.delivery_data = None
+
+ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery)
 
 
 class ServiceAdaptToSellable(AbstractSellable):
@@ -86,18 +113,9 @@ class ServiceAdaptToSellable(AbstractSellable):
 
     sellable_table = ServiceSellableItem
 
-    delivery_address = StringCol(default='')
-    notes = StringCol(default=None)
-    estimated_fix_date = DateTimeCol(default=None)
-    completion_date = DateTimeCol(default=None)
-
-
-
     #
     # Auxiliary methods
     #
-
-
 
     def add_sellable_item(self, sale, quantity, base_price, price):
         conn = self.get_connection()

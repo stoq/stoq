@@ -53,6 +53,9 @@ Current System parameters:
                                                    get as a suggestion when
                                                    adding a new
                                                    SellableCategory object.
+
+    * DELIVERY_SERVICE(ServiceAdaptToSellable): The default delivery service
+                                                to the system.
                                                
 >> System constants:                                               
                                                
@@ -89,6 +92,9 @@ Current System parameters:
 
     * STOCK_BALANCE_PRECISION(integer): precision for stock balances.
 
+    * HAS_DELIVERY_MODE(integer): If this branch works with service
+                                  delivery.
+
     * HAS_STOCK_MODE(integer): Does this branch work with storable items ?
                                If the answer is negative, we will disable
                                stock operations in the system.
@@ -104,7 +110,8 @@ from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import StringCol, IntCol
 
 from stoq.domain.base_model import Domain
-from stoq.domain.interfaces import ISupplier, IBranch, ICompany
+from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
+from stoq.domain.interfaces import IDelivery
 from stoq.lib.runtime import get_connection, new_transaction
 
 
@@ -152,6 +159,7 @@ class ParameterAccess:
                      MAX_LATE_DAYS=30,
                      SELLABLE_PRICE_PRECISION=2,
                      HAS_STOCK_MODE=1,
+                     HAS_DELIVERY_MODE=1,
                      STOCK_BALANCE_PRECISION=2,
                      EDIT_SELLABLE_PRICE=1,
                      ACCEPT_ORDER_PRODUCTS=1)
@@ -207,6 +215,20 @@ class ParameterAccess:
         supplier = ISupplier(person_obj[0], connection=self.conn)
         assert supplier, 'Supplier rule for the selected person not found.'
         return supplier
+
+    @property
+    def DELIVERY_SERVICE(self):
+        from stoq.domain.service import Service
+        parameter = get_foreign_key_parameter('DELIVERY_SERVICE', self.conn)
+        result = Service.select(Service.q.id == parameter.foreign_key,
+                                connection=self.conn)
+        assert result and result.count() == 1, ("Default delivery "
+                                                "service not found")
+        return result[0]
+
+    @property
+    def HAS_DELIVERY_MODE(self):
+        return self.get_integer_parameter('HAS_DELIVERY_MODE')
 
     @property
     def CITY_LOCATION_STATES(self):
@@ -353,6 +375,15 @@ def ensure_supplier_suggested(conn):
     set_schema(conn, key, 'get_supplier_suggested', 
                foreign_key=person_obj.id)
 
+def ensure_delivery_service(conn):
+    from stoq.domain.service import Service
+    key = "DELIVERY_SERVICE"
+    if get_parameter_by_field(key, conn):
+        return
+    service = Service(connection=conn)
+    service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
+                     connection=conn)
+    set_schema(conn, key, 'get_delivery_service', foreign_key=service.id)
 
 def ensure_default_base_category(conn):
     from stoq.domain.sellable import (BaseSellableCategory,
@@ -438,5 +469,6 @@ def ensure_system_parameters():
     ensure_current_branch(trans)
     ensure_current_warehouse(trans)
     ensure_city_location(trans)
+    ensure_delivery_service(trans)
 
     trans.commit()
