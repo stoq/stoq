@@ -82,6 +82,7 @@ TABLES = [
      ('stoq.domain.service',     ("Service",
                                   "ServiceAdaptToSellable",
                                   "ServiceSellableItem",
+                                  "ServiceSellableItemAdaptToDelivery",
                                   )),
      ('stoq.domain.product',     ("Product",
                                   "ProductSupplierInfo", 

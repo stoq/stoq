@@ -28,10 +28,12 @@ stoq/domain/sale.py:
     Sale object and related objects implementation.
 """
 
+from sqlobject import ForeignKey
 from twisted.python.components import implements
 
 from stoq.domain.base_model import Domain
-from stoq.domain.interfaces import IContainer, ISellable
+from stoq.domain.interfaces import IContainer, ISellable, IClient
+from stoq.domain.person import Person
 from stoq.lib.runtime import get_connection
 from stoq.domain.sellable import AbstractSellableItem
 
@@ -52,15 +54,20 @@ class Sale(Domain):
     Nested imports are needed here because domain/sallable.py imports the
     current one.
     """
+
+    client = ForeignKey(Person.getAdapterClass(IClient).__name__)
     
     __implements__ = IContainer
 
-
+    def set_client(self, person):
+        client = IClient(person)
+        if not client:
+            raise TypeError("%s cannot be adapted to IClient." % person)
+        self.client = client
     
     #
     # IContainer methods
     #
-
 
     def add_item(self, item):
         raise NotImplementedError("You should call add_selabble_item "

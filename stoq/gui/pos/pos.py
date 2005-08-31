@@ -32,19 +32,24 @@ stoq/gui/pos/pos.py:
 import gettext
 import operator
 
+import gtk
 from twisted.python.components import implements
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchBar, BaseListSlave
 from stoqlib.database import rollback_and_begin
+from stoqlib.gui.dialogs import notify_dialog
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.validators import format_quantity
+from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable, get_formated_price
 from stoq.domain.sale import Sale
 from stoq.domain.product import ProductSellableItem
-from stoq.domain.interfaces import ISellable
+from stoq.domain.interfaces import ISellable, IClient
+from stoq.domain.service import ServiceSellableItem
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
@@ -116,6 +121,9 @@ class POSApp(AppWindow):
                                       get_current_user().username)
         self.UsersMenu.set_property('label', user_menu_label)
 
+        if not sysparam(self.conn).HAS_DELIVERY_MODE:
+            self.delivery_button.hide()
+
     def _update_order_lbls(self):
         if self.order_list:
             totals = [item.get_total() for item in self.order_list]
@@ -152,6 +160,8 @@ class POSApp(AppWindow):
         person = self.run_dialog(ClientSearch, parent_conn=conn)
         if person:
             self.person_proxy.new_model(person, relax_type=True)
+            self.sale.set_client(person)
+
         self.update_widgets()
         rollback_and_begin(conn)
 
@@ -176,7 +186,7 @@ class POSApp(AppWindow):
             self.order_list.select_instance(self.order_list[0])
 
     def reset_order(self):
-        self.sale = Sale(connection=self.conn)
+        self.sale = Sale(connection=self.conn, client=None)
         self.person_proxy.new_model(None, relax_type=True)
         self.product_proxy.new_model(None, relax_type=True)
         items = self.order_list[:]
@@ -204,6 +214,7 @@ class POSApp(AppWindow):
             self.client_name.set_color('red')
         else:
             self.client_name.set_color('black')
+        self.delivery_button.set_sensitive(has_client)
         model = self.order_list.get_selected()
         if model:
             sellable = model.sellable
@@ -229,11 +240,12 @@ class POSApp(AppWindow):
                 Column('sellable.description', title=_('Description'), 
                        data_type=str, expand=True),
                 Column('price', title=_('Price'), data_type=float, 
-                       width=90),
+                       width=90, justify=gtk.JUSTIFY_RIGHT),
                 Column('quantity', title=_('Quantity'), data_type=str,
-                       width=90, format_func=format_quantity),
+                       width=90, format_func=format_quantity,
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column('total', title=_('Total'), data_type=float,
-                       width=100)]
+                       width=100, justify=gtk.JUSTIFY_RIGHT)]
 
 
 
@@ -290,8 +302,25 @@ class POSApp(AppWindow):
         pass
                       
     def on_delivery_button__clicked(self, *args):
-        #dialog not implemented yet
-        pass
+        if not self.order_list:
+            notify_dialog(_("You don't have products to delivery."),
+                          _("Error"))
+            return
+        products = [obj for obj in self.order_list
+                        if isinstance(obj, ProductSellableItem)
+                           and obj.delivery_data is None]
+        if not products:
+            notify_dialog(_("All the products already have delivery "
+                            "instructions"), _("Error"))
+            return
+        service = self.run_dialog(DeliveryEditor, self.conn, None, 
+                                  self.sale, products)
+        if not service:
+            return
+        if service in self.order_list:
+            self.order_list.update_instance(service)
+        else:
+            self.order_list.add_instance(service)
     
     def _on_products_action__clicked(self, *args):
         conn = new_transaction()
@@ -312,14 +341,22 @@ class POSApp(AppWindow):
 
     def on_edit_button__clicked(self, *args):
         sellable_item = self.order_list.get_selected()
+
         if isinstance(sellable_item, ProductSellableItem):
-            model = self.run_dialog(ProductItemEditor, self.conn,
-                                    sellable_item)
+            editor = ProductItemEditor
+        elif (sellable_item.sellable.get_adapted() 
+              is sysparam(self.conn).DELIVERY_SERVICE):
+            editor = DeliveryEditor
+        elif isinstance(sellable_item, ServiceSellableItem):
+            editor = ServiceEditor
         else:
-            model = self.run_dialog(ServiceEditor, self.conn,
-                                    sellable_item)
+            raise AssertionError("Unknown sellable item selected: %s",
+                                 type(sellable_item))
+
+        model = self.run_dialog(editor, self.conn, sellable_item)
         if not model:
             return
+
         self.order_list.update_instance(model)
         self._update_order_lbls()
 
