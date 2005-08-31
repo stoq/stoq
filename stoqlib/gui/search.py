@@ -104,13 +104,14 @@ class SearchBar(SlaveDelegate):
     gladefile = 'SearchBar'
     
     widgets = ('search_button',
+               'search_label',
                "search_entry",
                "search_icon")
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, parent, table_type, columns=None, query_args=None,
-                 search_callback=None):
+                 search_callback=None, search_lbl_text=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
@@ -125,6 +126,10 @@ class SearchBar(SlaveDelegate):
         self.table_type = table_type
         self.query_args = query_args
         self._search_callback = search_callback
+        if not search_lbl_text:
+            self.search_label.set_text(_('Find Items'))
+        else:
+            self.search_label.set_text(search_lbl_text)
         self._split_field_types()
 
     def _update_widgets(self):
@@ -403,7 +408,8 @@ class SearchDialog(BasicDialog):
             
     def __init__(self, table, search_table=None, parent_conn=None,
                  hide_footer=True, title='', 
-                 selection_mode=gtk.SELECTION_BROWSE):
+                 selection_mode=gtk.SELECTION_BROWSE,
+                 search_lbl_text=None):
         BasicDialog.__init__(self)
         title = title or self.title
         avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
@@ -419,6 +425,7 @@ class SearchDialog(BasicDialog):
         self.parent_conn = parent_conn
         self.conn = get_model_connection()
         assert self.conn
+        self.search_lbl_text = search_lbl_text
         self.setup_slaves()
 
     def setup_slaves(self, **kwargs):
@@ -433,7 +440,8 @@ class SearchDialog(BasicDialog):
         columns = self.get_columns()
         query_args = self.get_query_args()
         self.search_bar = SearchBar(self, self.search_table, columns, 
-                                    query_args=query_args)
+                                    query_args=query_args,
+                                    search_lbl_text=self.search_lbl_text)
         self.attach_slave('header', self.search_bar)
 
     def get_selection(self):
@@ -557,10 +565,12 @@ class SearchEditor(SearchDialog):
 
     def __init__(self, table, editor_class, interface=None,
                  parent_conn=None, search_table=None, hide_footer=True,
-                 title='', selection_mode=gtk.SELECTION_BROWSE):
+                 title='', selection_mode=gtk.SELECTION_BROWSE,
+                 search_lbl_text=None):
         SearchDialog.__init__(self, table, search_table,
                               parent_conn, hide_footer=hide_footer, 
-                              title=title, selection_mode=selection_mode)
+                              title=title, selection_mode=selection_mode,
+                              search_lbl_text=search_lbl_text)
         self.interface = interface
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
