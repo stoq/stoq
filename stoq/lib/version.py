@@ -26,8 +26,8 @@ lib/version.py:
     Stoq version, authors and contributors list.
 """
 
-version      = (0,1,0)
-release_date = (2005, 07, 14)
+version      = (0,2,0)
+release_date = (2005, 08, 31)
 
 AUTHORS = """
 Christian Robotton Reis         <kiko@async.com.br>
