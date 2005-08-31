@@ -108,8 +108,11 @@ class DeliveryEditor(BaseEditor):
 
         addresses = self.model.sale.client.get_adapted().addresses
         result = run_dialog(SimpleListDialog, self, cols, 
-                            addresses, title=_('Client Addresses'))
+                            addresses, title=_('Client Addresses'),
+                            selection_mode=gtk.SELECTION_BROWSE)
         if result:
+            assert isinstance(result, list) and len(result) == 1
+            result = result[0]
             text = result.get_address_string()
             self.delivery_address.set_text(text)
 
