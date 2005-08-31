@@ -109,7 +109,7 @@ import gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import StringCol, IntCol
 
-from stoq.domain.base_model import Domain
+from stoq.domain.base import Domain
 from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
 from stoq.domain.interfaces import IDelivery
 from stoq.lib.runtime import get_connection, new_transaction
