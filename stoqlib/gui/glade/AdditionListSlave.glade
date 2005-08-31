@@ -55,38 +55,10 @@
                                                 <property name="events"></property>
                                                 <property name="can_focus">True</property>
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkAlignment" id="edit_button-alignment">
-                                                        <property name="visible">True</property>
-                                                        <property name="xalign">0.5</property>
-                                                        <property name="yalign">0.5</property>
-                                                        <property name="xscale">1.0</property>
-                                                        <property name="yscale">1.0</property>
-                                                        <child>
-                                                            <widget class="GtkHBox" id="edit_button-box">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkImage" id="edit_button-image">
-                                                                        <property name="visible">True</property>
-                                                                        <property name="file">/home/evandro/devel/stoqlib/gui/pixmaps/stock_edit.xpm</property>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="edit_button-label">
-                                                                        <property name="visible">True</property>
-                                                                        <property name="label">Edit</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                    </widget>
-                                                </child>
+                                                <property name="label">gtk-edit</property>
+                                                <property name="use_stock">True</property>
                                             </widget>
                                             <packing>
-                                                <property name="position">1</property>
                                                 <property name="expand">False</property>
                                             </packing>
                                         </child>
