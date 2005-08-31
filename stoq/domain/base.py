@@ -24,7 +24,7 @@
 ##                  Johan Dahlin                <jdahlin@async.com.br>
 ##              
 """
-stoq/domain/base_model.py:
+stoq/domain/base.py:
 
    Base routines for domain modules.
 """

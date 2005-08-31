@@ -34,7 +34,7 @@ from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.lib.runtime import get_connection
-from stoq.domain.base_model import Domain, ModelAdapter
+from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
                                     ISalesPerson)

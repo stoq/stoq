@@ -33,7 +33,7 @@ from stoqlib.exceptions import StockError, SellError
 from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 
-from stoq.domain.base_model import Domain, ModelAdapter
+from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.sellable import (AbstractSellable, 
                                   AbstractSellableItem)
 from stoq.domain.person import PersonAdaptToBranch

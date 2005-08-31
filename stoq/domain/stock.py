@@ -29,7 +29,7 @@ stoq/domain/stock.py:
 
 from sqlobject import FloatCol, ForeignKey
 
-from stoq.domain.base_model import InheritableModel
+from stoq.domain.base import InheritableModel
 from stoq.lib.runtime import get_connection
 
 

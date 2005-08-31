@@ -44,7 +44,7 @@ from stoq.lib.runtime import get_connection
 
 _ = gettext.gettext
 TABLES = [
-     ('stoq.domain.base_model',  ("InheritableModelAdapter",
+     ('stoq.domain.base',        ("InheritableModelAdapter",
                                   "InheritableModel",
                                   )),
      ('stoq.lib.parameters',     ("ParameterData",

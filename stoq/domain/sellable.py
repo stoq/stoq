@@ -34,7 +34,7 @@ import gettext
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
 
-from stoq.domain.base_model import (Domain, InheritableModelAdapter,
+from stoq.domain.base import (Domain, InheritableModelAdapter,
                                     InheritableModel)
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.lib.validators import is_date_in_interval

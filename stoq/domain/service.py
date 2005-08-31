@@ -31,7 +31,7 @@ import gettext
 from stoqlib.exceptions import SellError
 from sqlobject import StringCol, DateTimeCol
 
-from stoq.domain.base_model import Domain, ModelAdapter
+from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoq.domain.interfaces import ISellable, IDelivery, IContainer
 from stoq.domain.product import ProductSellableItem

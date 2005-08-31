@@ -31,7 +31,7 @@ stoq/domain/sale.py:
 from sqlobject import ForeignKey
 from twisted.python.components import implements
 
-from stoq.domain.base_model import Domain
+from stoq.domain.base import Domain
 from stoq.domain.interfaces import IContainer, ISellable, IClient
 from stoq.domain.person import Person
 from stoq.lib.runtime import get_connection
