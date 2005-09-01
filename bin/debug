@@ -42,7 +42,7 @@ else:
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 
-from stoq.domain.base_model import *
+from stoq.domain.base import *
 from stoq.domain.interfaces import *
 from stoq.domain.tables import get_table_types
 from stoq.lib.runtime import get_connection, new_transaction
