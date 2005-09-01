@@ -102,6 +102,9 @@ Current System parameters:
     * EDIT_SELLABLE_PRICE(integer): Can we change the price attribute
                                     of a SellableItem object during a
                                     sale ?
+
+    * MAX_SEARCH_RESULTS(integer): The maximum number of results we must
+                                   show after searching in a SearchBar.
 """
     
 import gettext
@@ -162,6 +165,7 @@ class ParameterAccess:
                      HAS_DELIVERY_MODE=1,
                      STOCK_BALANCE_PRECISION=2,
                      EDIT_SELLABLE_PRICE=1,
+                     MAX_SEARCH_RESULTS=600,
                      ACCEPT_ORDER_PRODUCTS=1)
 
     def __init__(self, conn):
@@ -325,6 +329,10 @@ class ParameterAccess:
     @property
     def EDIT_SELLABLE_PRICE(self):
         return self.get_integer_parameter('EDIT_SELLABLE_PRICE')
+
+    @property
+    def MAX_SEARCH_RESULTS(self):
+        return self.get_integer_parameter('MAX_SEARCH_RESULTS')
 
 
 def sysparam(conn):

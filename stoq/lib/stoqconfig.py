@@ -37,11 +37,14 @@ import gobject
 from stoqlib.exceptions import DatabaseError, _warn
 from stoqlib.database import set_model_connection_func
 from stoqlib.gui.dialogs import notify_dialog
+from stoqlib.gui.search import set_max_search_results
 from stoqlib.gui.gtkadds import register_iconsets
 
 from stoq.gui.components.login import LoginDialog
 from stoq.lib.configparser import StoqConfigParser
-from stoq.lib.runtime import new_transaction, set_current_user
+from stoq.lib.parameters import sysparam
+from stoq.lib.runtime import (new_transaction, set_current_user,
+                              get_connection)
 from stoq.domain.person import PersonAdaptToUser
 from stoq.domain.tables import check_tables
 
@@ -124,6 +127,10 @@ class AppConfig:
 
         # Registering some new important stock icons
         register_iconsets()
+
+        conn = get_connection()
+        max_search_results = sysparam(conn).MAX_SEARCH_RESULTS
+        set_max_search_results(max_search_results)
 
         set_model_connection_func(new_transaction)
         assert self.validate_user()
