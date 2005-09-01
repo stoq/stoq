@@ -157,5 +157,25 @@ class AppWindow(BaseAppWindow):
         # sync method.
         pass
 
+
+
+    #
+    # Hooks
+    #
+
+
+
+    def filter_results(self, objects):
+        """A hook method for stoqlib SearchBar"""
+        return objects
+
+    
+
+
+    #
+    # Callbacks
+    #
+
+
     def _on_quit_action__clicked(self, *args):
         self.app.shutdown()
