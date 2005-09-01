@@ -79,8 +79,7 @@ class POSApp(AppWindow):
                'remove_item_button',
                'product_details_button',
                'edit_button',
-               'SalesMenu',
-               'UsersMenu',) + product_widgets + client_widgets
+               'SalesMenu') + product_widgets + client_widgets
     
     def __init__(self, app):
         AppWindow.__init__(self, app)
@@ -117,11 +116,6 @@ class POSApp(AppWindow):
         self.product.set_bold(1)
         self.total.set_size('x-large')
         self.total.set_bold(1)
-
-        user_menu_label = "%s: %s" % (self.UsersMenu.get_property('label'),
-                                      get_current_user().username)
-        self.UsersMenu.set_property('label', user_menu_label)
-
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
 

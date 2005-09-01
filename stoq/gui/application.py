@@ -73,16 +73,20 @@ class AppWindow(BaseAppWindow):
 
     def __init__(self, app):
         self.app = app
-        #self.widgets = self.widgets[:] + ('clear_cookie_menuitem',
-                                          #'change_user_menuitem',
-                                          #'save_cookie_menuitem',
-                                          #'user_menu')
+        self.widgets = self.widgets[:] + ('users_menu',)
+
+
+
+
         self.keyactions = { gtk.keysyms.F10: self.inspect, 
                             gtk.keysyms.F9: self.reload_world }
         BaseAppWindow.__init__(self, app, keyactions=self.keyactions)
         if hasattr(self, 'about_menuitem'):
             self.about_menuitem.connect('activate', self.run_about)
-        #self._setup_user_menu()
+
+        user_menu_label = "%s: %s" % (self.users_menu.get_property('label'),
+                                      get_current_user().username)
+        self.users_menu.set_property('label', user_menu_label)
 
         self.toplevel.connect('map_event', hide_splash)
         
