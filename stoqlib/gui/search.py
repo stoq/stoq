@@ -17,6 +17,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
+# Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+#
 
 """
 gui/search.py:
@@ -106,7 +108,9 @@ class SearchBar(SlaveDelegate):
     widgets = ('search_button',
                'search_label',
                "search_entry",
+               "search_results_label",
                "search_icon")
+
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
@@ -117,7 +121,7 @@ class SearchBar(SlaveDelegate):
         self._animate_search_icon_id = -1
         self.search_icon.set_from_stock("searchtool-icon1", 
                                         self.SEARCH_ICON_SIZE)
-        self._update_widgets()
+        self.search_entry.grab_focus()
         self.parent = parent
         # Since we need to synchronize transactions each time we search for
         # objects we have to create a special transaction for the SearchBar
@@ -130,14 +134,10 @@ class SearchBar(SlaveDelegate):
             self.search_label.set_text(_('Find Items'))
         else:
             self.search_label.set_text(search_lbl_text)
+        self.search_results_label.set_size('small')
+        self.search_results_label.set_color('red')
+        self.search_results_label.set_text('')
         self._split_field_types()
-
-    def _update_widgets(self):
-        if self.search_entry.get_text() != '':
-            self.search_button.set_sensitive(True)
-        else:
-            self.search_button.set_sensitive(False)
-        self.search_entry.grab_focus()
 
     def get_search_string(self):
         return self.search_entry.get_text()
@@ -252,11 +252,11 @@ class SearchBar(SlaveDelegate):
 
     def _run_query(self):
         search_str = self.get_search_string()
-        if not search_str:
-            # Clear the kiwi list if we don't have a valid search string
-            self.parent.update_klist()
-            return
-        query = self._build_query(search_str)
+        if search_str:
+            query = self._build_query(search_str)
+        else:
+            # A default SQLObject query that means all the results
+            query = 1 == 1
 
         extra_query = self.parent.get_extra_query()
         if extra_query:
@@ -274,9 +274,24 @@ class SearchBar(SlaveDelegate):
         # Synchronizing transaction.
         # XXX Waiting for a SQLObject sync method
         rollback_and_begin(self.conn)
-        objs = self.table_type.select(query, **kwargs)
+
+        search_results = self.table_type.select(query, **kwargs)
+        max_search_results = get_max_search_results()
+        objs = search_results[:max_search_results]
+
+        total = search_results.count()
+        if total > max_search_results:
+            msg = _('Listing %d results of about %d.' % (max_search_results, 
+                                                         total))
+            self.search_results_label.set_text(msg)
+        else:
+            msg = _('Found %d results' % total)
+            self.search_results_label.set_text(msg)
+
         objs = self.parent.filter_results(objs)
-        self.parent.update_klist(objs)
+        # Since SQLObject doesn't support distinct-counting of sliced
+        # objects we need to send here a list instead of a SearchResults
+        self.parent.update_klist(list(objs))
 
     def close_connection(self):
         # XXX Waiting for SQLObject improvements. We need there a simple
@@ -338,9 +353,6 @@ class SearchBar(SlaveDelegate):
 
     def on_search_entry__activate(self, *args):
         self.search_items()
-
-    def on_search_entry__changed(self, *args):
-        self._update_widgets()
 
 
 class SearchEditorToolBar(SlaveDelegate):
@@ -638,3 +650,15 @@ class SearchEditor(SearchDialog):
 
     def new(self):
         self.run()
+
+
+max_search_results = None
+
+def set_max_search_results(max):
+    global max_search_results
+    assert max
+    max_search_results = max
+
+def get_max_search_results():
+    global max_search_results
+    return max_search_results
