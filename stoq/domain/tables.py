@@ -130,16 +130,16 @@ def get_table_type_by_name(table_name, path=None):
 
     try:
         module = __import__(path, globals(), locals(), table_name)
-    except ImportError:
-        msg = 'Cannot import module %s' % table_name
+    except ImportError, reason:
+        msg = 'Cannot import module %s: %s' % (table_name, reason)
         raise ImportError, msg
 
     try:
         klass = getattr(module, table_name)
-    except AttributeError:
+    except AttributeError, reason:
         raise ImportError, \
-              "Cannot import name %s from module %s" \
-              % (table_name, module.__name__)
+              "Cannot import name %s from module %s: %s" \
+              % (table_name, module.__name__, reason)
     return klass
 
 
