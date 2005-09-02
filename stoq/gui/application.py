@@ -84,8 +84,7 @@ class AppWindow(BaseAppWindow):
         if hasattr(self, 'about_menuitem'):
             self.about_menuitem.connect('activate', self.run_about)
 
-        user_menu_label = "%s: %s" % (self.users_menu.get_property('label'),
-                                      get_current_user().username)
+        user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
 
         self.toplevel.connect('map_event', hide_splash)

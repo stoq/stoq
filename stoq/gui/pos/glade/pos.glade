@@ -257,9 +257,7 @@ name="SellableSubcategory"/><separator/><menuitem action="Sales"
 name="Sales"/><menuitem action="Products"
 name="Products"/><separator/><menuitem action="Clients"
 name="Clients"/><menuitem action="Suppliers" name="Suppliers"/><menuitem
-action="Employees" name="Employees"/></menu><menu action="HelpMenu"
-name="HelpMenu"><menuitem action="About" name="About"/></menu><menu
-action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu></menubar></ui>]]></ui>
+action="Employees" name="Employees"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="HelpMenu" name="HelpMenu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
 
     </object>
     <widget class="GtkWindow" id="pos">

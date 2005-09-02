@@ -147,8 +147,7 @@ class ParameterData(Domain):
 class ParameterAccess:
     """A mechanism to tie specific instances to constants that can be
     made available cross-application. This class has a special hook that
-    allows the values to be looked up on-the-fly (which cuts down
-    the database root to only what is actually requested) and cached.
+    allows the values to be looked up on-the-fly and cached.
 
     Usage:
 
