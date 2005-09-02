@@ -64,3 +64,7 @@ class StockError(Exception):
 
 class SelectionError(Exception):
     """Invalid number of items selected in a list"""
+
+
+class TillError(Exception):
+    """ General Till movimentation errors """
