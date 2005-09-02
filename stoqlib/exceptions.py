@@ -68,3 +68,6 @@ class SelectionError(Exception):
 
 class TillError(Exception):
     """ General Till movimentation errors """
+
+class PaymentError(Exception):
+    """ General payments errors """
