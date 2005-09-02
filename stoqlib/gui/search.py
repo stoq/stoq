@@ -285,7 +285,7 @@ class SearchBar(SlaveDelegate):
                                                          total))
             self.search_results_label.set_text(msg)
         else:
-            msg = _('Found %d results' % total)
+            msg = _('%d results' % total)
             self.search_results_label.set_text(msg)
 
         objs = self.parent.filter_results(objs)
