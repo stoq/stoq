@@ -41,7 +41,7 @@ from stoqlib.gui.columns import AccessorColumn
 
 from stoq.lib.defaults import ALL_BRANCHES
 from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellable, get_formated_price
+from stoq.domain.sellable import AbstractSellable, get_formatted_price
 from stoq.domain.product import ProductAdaptToSellable
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.interfaces import IStorable
@@ -77,7 +77,7 @@ class SellableSearchHeaderSlave(SlaveView):
             desc = _('Multiple items selected')
             prices = [s.get_price() for s in sellables]
             total = reduce(operator.add, prices, 0.0)
-            total_str = get_formated_price(total)
+            total_str = get_formatted_price(total)
             price_desc = 'Total: %s' % total_str
         else:
             sellable = sellables[0]
