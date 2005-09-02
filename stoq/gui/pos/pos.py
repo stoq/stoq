@@ -43,7 +43,7 @@ from stoq.gui.application import AppWindow
 from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.lib.validators import format_quantity
 from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellable, get_formated_price
+from stoq.domain.sellable import AbstractSellable, get_formatted_price
 from stoq.domain.sale import Sale
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.interfaces import ISellable, IClient
@@ -123,7 +123,7 @@ class POSApp(AppWindow):
         if self.order_list:
             totals = [item.get_total() for item in self.order_list]
             total = reduce(operator.add, totals, 0.0) 
-            text = get_formated_price(total)
+            text = get_formatted_price(total)
         else:
             text = ''
         self.total.set_text(text)

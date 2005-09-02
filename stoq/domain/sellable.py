@@ -208,7 +208,7 @@ class AbstractSellable(InheritableModelAdapter):
 
 
     def get_price_string(self):
-        return get_formated_price(self.get_price())
+        return get_formatted_price(self.get_price())
 
 
 
@@ -229,7 +229,7 @@ class AbstractSellable(InheritableModelAdapter):
 
 
 
-def get_formated_price(float_value):
+def get_formatted_price(float_value):
     conn = get_connection()
     precision = sysparam(conn).SELLABLE_PRICE_PRECISION
     value = locale.format('%.*f', (int(precision), float_value), 1)
