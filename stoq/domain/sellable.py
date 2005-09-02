@@ -30,6 +30,7 @@ stoq/domain/sellable.py:
 """
 import datetime
 import gettext
+import locale
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
@@ -231,5 +232,6 @@ class AbstractSellable(InheritableModelAdapter):
 def get_formated_price(float_value):
     conn = get_connection()
     precision = sysparam(conn).SELLABLE_PRICE_PRECISION
-    money = _('$')
-    return '%s %.*f' % (money, int(precision), float_value)
+    value = locale.format('%.*f', (int(precision), float_value), 1)
+    return '%s %s' % (_('$'), value)
+
