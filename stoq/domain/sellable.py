@@ -75,6 +75,7 @@ class BaseSellableCategory(Domain):
     def get_description(self):
         return self.category_data.description
 
+
 class SellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
     base_category = ForeignKey('BaseSellableCategory')
@@ -225,6 +226,8 @@ class AbstractSellable(InheritableModelAdapter):
     def get_price_string(self):
         return get_formatted_price(self.get_price())
 
+    def get_comission(self):
+        return self.comission
 
 
     #
@@ -236,6 +239,13 @@ class AbstractSellable(InheritableModelAdapter):
     def get_suggested_markup(self):
         return self.category and self.category.get_markup() 
 
+    def set_default_comission(self):
+        if not self.category:
+            self.comission = 0.0
+        else:
+            self.comission = (self.category.get_comission() 
+                              or self.category.base_category.get_comission())
+        
 
 
 #

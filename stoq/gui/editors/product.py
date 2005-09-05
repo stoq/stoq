@@ -224,12 +224,9 @@ class ProductPriceEditor(BaseEditor):
         self.main_proxy.update('markup')
 
     def update_comission(self):
-        category = self.model.category
-        if self.model.comission or not category:
+        if self.model.get_comission():
             return
-        comission = (category.get_comission()
-                     or category.base_category.get_comission())
-        self.model.comission = comission
+        self.model.set_default_comission()
         self.main_proxy.update('comission')
 
     def update_price(self):
