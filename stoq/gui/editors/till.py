@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):        Henrique Romano <henrique@async.com.br>
+## Author(s):        Henrique Romano            <henrique@async.com.br>
+##                   Evandro Vale Miquelito     <evandro@async.com.br>
 ##
 """
 stoq/gui/editors:
@@ -38,11 +39,11 @@ from stoq.domain.payment import Till
 _ = gettext.gettext
 
 class TillOpeningEditor(BaseEditor):
+    model_name = _('Till Opening')
+    model_type = Till
     gladefile = 'TillOpening'
     widgets = ('open_date', 
                'initial_cash_amount')
-    model_type = Till
-    title = _('Till Opening')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -50,9 +51,16 @@ class TillOpeningEditor(BaseEditor):
     def _setup_widgets(self):
         self.initial_cash_amount.set_data_format('%.2f')
 
+
+
     #
     # BaseEditor hooks
     # 
+
+
+
+    def get_title_model_attribute(self, model):
+        return self.model_name
 
     def setup_proxies(self):
         self.model.open_till()
@@ -61,12 +69,12 @@ class TillOpeningEditor(BaseEditor):
 
 
 class TillClosingEditor(BaseEditor):
+    model_name = _('Till Closing')
+    model_type = Till
     gladefile = 'TillClosing'
     widgets = ('closing_date',
                'final_cash_amount',
                'balance_to_send')
-    model_type = Till
-    title = _('Till Closing')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -86,9 +94,16 @@ class TillClosingEditor(BaseEditor):
         self.model.balance_sent = self.total_balance - final_cash_amount 
         self.proxy.update('balance_sent')
 
+
+
     #
     # BaseEditor hooks
     # 
+
+
+
+    def get_title_model_attribute(self, model):
+        return self.model_name
 
     def setup_proxies(self):
         self.model.close_till()
@@ -96,9 +111,13 @@ class TillClosingEditor(BaseEditor):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.widgets)
 
+
+
     #
     # Kiwi handlers
     #
+
+
 
     def after_final_cash_amount__validate(self, widget, value):
         if value <= self.final_cash:
@@ -116,5 +135,4 @@ class TillClosingEditor(BaseEditor):
         self.handler_block(self.balance_to_send, 'changed')
         self.update_balance_to_send()
         self.handler_unblock(self.balance_to_send, 'changed')
-
 

@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s): Henrique Romano <henrique@async.com.br>
+## Author(s): Henrique Romano           <henrique@async.com.br>
+##            Evandro Vale Miquelito    <evandro@async.com.br>
 ##
 """
 stoq/gui/editors/delivery.py
@@ -48,6 +49,7 @@ from stoq.gui.editors.product import ProductItemEditor
 _ = gettext.gettext
 
 class DeliveryEditor(BaseEditor):
+    model_name = _('Delivery')
     model_type = ServiceSellableItem
     gladefile = 'DeliveryEditor'
     size = (600, 500)
@@ -76,6 +78,7 @@ class DeliveryEditor(BaseEditor):
 
         self.update_widgets()
 
+
     def set_widgets_format(self):
         self.price.set_data_format('%.02f')
 
@@ -85,9 +88,13 @@ class DeliveryEditor(BaseEditor):
         else:
             self.additional_info_label.hide()
 
+
+
     #
     # AdditionListSlave hooks
     #
+
+
 
     def before_delete_items(self, items):
         delivery = IDelivery(self.model, connection=self.conn)
@@ -96,9 +103,13 @@ class DeliveryEditor(BaseEditor):
     def on_edit_item(self, item):
         pass
 
+
+
     #
     # Kiwi handlers
     #
+
+
 
     def on_change_address_button__clicked(self, button):
         cols = [Column('address_string', title=_('Address'), data_type=str, 
@@ -121,9 +132,16 @@ class DeliveryEditor(BaseEditor):
                       title=_('Delivery Instructions')):
             self.update_widgets()
 
+
+
     # 
     # BaseEditor hooks
     #
+
+
+
+    def get_title_model_attribute(self, model):
+        return self.model_name
 
     def create_model(self, conn):
         if not self.products:

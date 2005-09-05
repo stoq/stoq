@@ -22,6 +22,7 @@
 ##
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 gui/editors/person/employee.py
@@ -44,10 +45,18 @@ from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
 _ = gettext.gettext
 
 class EmployeeEditor(BaseEditor):
-    title = _('Employee Editor')
+    model_name = _('Employee')
     model_type = PersonAdaptToEmployee
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
+
+
+    
+    #
+    # BaseEditor hooks
+    #
+
+
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043. We should create a Employee
@@ -57,6 +66,10 @@ class EmployeeEditor(BaseEditor):
         individual = person.addFacet(IIndividual, connection=conn)
         return person.addFacet(IEmployee, connection=conn,
                                position=None)
+
+    def get_title_model_attribute(self, model):
+        return model.get_adapted().name
+
     def setup_slaves(self):
         individual = IIndividual(self.model.get_adapted(),
                                  connection=self.conn)
