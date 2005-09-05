@@ -24,9 +24,14 @@ gui/editors.py:
     Base classes for editors
 """
 
+import gettext
+
 from kiwi.ui.delegates import SlaveDelegate
 
 from stoqlib.gui.dialogs import BasicWrappingDialog
+from stoqlib.exceptions import EditorError
+
+_ = gettext.gettext
 
 class BaseEditorSlave(SlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
@@ -53,6 +58,7 @@ class BaseEditorSlave(SlaveDelegate):
                                widgets=self.widgets)
         self.setup_proxies()
         self.setup_slaves()
+
 
     def create_model(self, conn):
         """
@@ -102,18 +108,41 @@ class BaseEditorSlave(SlaveDelegate):
 
 class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of
-    BaseEditorSlave, a windows title and OK/Cancel buttons. """
+    BaseEditorSlave, a windows title and OK/Cancel buttons. 
 
-    title = ''
+    model_name      =  the name that represents the model we are adding or
+                       editing. This value will be showed in the title of
+                       the editor.
+    get_title_model_attribute = a method which give us an attribute  value 
+                                of the current model. This will be used when
+                                creating the editor title in this format: 
+                               'Edit "title_model_attr" Details'
+    """
+
+    model_name = None
     header = ''
     size = ()
 
     def __init__(self, conn, model=None):
         BaseEditorSlave.__init__(self, conn, model)
-        self.main_dialog = BasicWrappingDialog(self, self.title, 
+        # We can not use self.model for get_title since we will create a new
+        # one in BaseEditorSlave if model is None.
+        self.main_dialog = BasicWrappingDialog(self,
+                                               self.get_title(model),
                                                self.header, self.size)
         self.register_validate_function(self.refresh_ok)
         self.force_validation()
+
+    def get_title(self, model):
+        if model:
+            model_attr = self.get_title_model_attribute(model)
+            return _('Edit "%s" Details' % model_attr)
+        if not self.model_name:
+            raise EditorError('A model_name attribute is required')
+        return 'Add %s Details' % self.model_name
+
+    def get_title_model_attribute(self, model):
+        raise NotImplementedError
 
     def refresh_ok(self, validation_value):
         """ Refreshes ok button sensitivity according to widget validators
