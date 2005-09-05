@@ -26,7 +26,7 @@
 """
 stoq/gui/editors:
 
-    Editors implementation for open/close operation on till movimentation.
+    Editors implementation for open/close operation on till operation.
 """
 
 import gettext

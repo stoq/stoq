@@ -41,7 +41,7 @@ from stoqlib.database import rollback_and_begin
 from stoq.gui.application import AppWindow
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person, PersonAdaptToClient
-from stoq.domain.payment import get_current_till_movimentation, Till
+from stoq.domain.payment import get_current_till_operation, Till
 from stoq.domain.sellable import get_formatted_price
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
@@ -53,7 +53,6 @@ class TillApp(AppWindow):
     gladefile = 'till'
     widgets = ('searchbar_holder',
                'klist_holder',
-               'total_label',
                'confirm_order_button',
                'TillMenu',
                'TillOpen',
@@ -69,16 +68,13 @@ class TillApp(AppWindow):
 
     def _setup_widgets(self):
         self._update_widgets()
-        self.total_label.set_size('x-large')
-        self.total_label.set_bold(True)
-        self.total_label.set_text(get_formatted_price(0.00))
         # TODO: Waiting for bug #1862
         self.confirm_order_button.set_sensitive(False)
-        # TODO: Implement Current Till movimentation dialog
+        # TODO: Implement Current Till Operation dialog
         self.CurrentTill.set_sensitive(False)
 
     def _update_widgets(self):
-        has_till = get_current_till_movimentation(self.conn) is not None
+        has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
 
@@ -97,14 +93,12 @@ class TillApp(AppWindow):
     #
 
     def get_columns(self):
-        return [Column('code', title=_('Code'), width=100, data_type=int,
+        return [Column('code', title=_('Order'), width=100, data_type=int,
                        sorted=True),
                 Column('open_date', title=_('Date'), width=120, 
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
                                  data_type=str, obj_field='client._original'),
-                Column('status_name', title=_('Status'), width=120, 
-                       data_type=str, justify=gtk.JUSTIFY_CENTER),
                 Column('total', title=_('Total'), width=150, data_type=float,
                        justify=gtk.JUSTIFY_RIGHT, format='%.2f')]
 
@@ -122,8 +116,6 @@ class TillApp(AppWindow):
             self.sale_list.add_instance(item)
             total_value += item.total
 
-        self.total_label.set_text(get_formatted_price(total_value))
-
     #
     # Kiwi callbacks
     #
@@ -131,13 +123,13 @@ class TillApp(AppWindow):
     def open_till(self, *args):
         rollback_and_begin(self.conn)
 
-        if get_current_till_movimentation(self.conn) is not None:
-            raise TillError("You already have a till movimentation opened. "
+        if get_current_till_operation(self.conn) is not None:
+            raise TillError("You already have a till operation opened. "
                             "Close the current Till and open another one.")
         
-        # Trying get the movimentation created by the last till
-        # movimentation closed.  This movimentation has all the sales
-        # not confirmed in the last movimentation.
+        # Trying get the operation created by the last till
+        # operation closed.  This operation has all the sales
+        # not confirmed in the last operation.
         result = Till.select(Till.q.status == Till.STATUS_PENDING,
                              connection=self.conn)
         if result.count() == 0:
@@ -156,7 +148,7 @@ class TillApp(AppWindow):
         rollback_and_begin(self.conn)
 
     def close_till(self, *args):
-        till = get_current_till_movimentation(self.conn)
+        till = get_current_till_operation(self.conn)
         if till is None:
             raise ValueError("You should have a till operation opened at "
                              "this point")

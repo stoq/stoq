@@ -47,7 +47,7 @@ from stoq.domain.sellable import AbstractSellable, get_formatted_price
 from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
-from stoq.domain.payment import get_current_till_movimentation
+from stoq.domain.payment import get_current_till_operation
 from stoq.domain.interfaces import ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.delivery import DeliveryEditor
@@ -85,9 +85,9 @@ class POSApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.conn = new_transaction()
-        if not get_current_till_movimentation(self.conn):
+        if not get_current_till_operation(self.conn):
             notify_dialog(_("You need to open the till before start doing "
-			    "sales."),
+                            "sales."),
                           _("Error"))
             self.app.shutdown()
 
@@ -189,8 +189,8 @@ class POSApp(AppWindow):
 
     def reset_order(self):
         self.sale = Sale(connection=self.conn, 
-			 till=get_current_till_movimentation(self.conn),
-			 client=None)
+                         till=get_current_till_operation(self.conn), 
+                         client=None)
         self.person_proxy.new_model(None, relax_type=True)
         self.product_proxy.new_model(None, relax_type=True)
         items = self.order_list[:]
