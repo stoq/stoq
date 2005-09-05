@@ -1,62 +1,150 @@
 <?xml version="1.0" ?>
 <glade-interface>
+    <requires lib="kiwi"/>
+    <requires lib="gtk+"/>
     <widget class="GtkWindow" id="BaseSellableCategoryDataSlave">
-        <property name="events"></property>
+        <property name="resize_mode">queue</property>
+        <property name="type">toplevel</property>
         <child>
-            <widget class="GtkHBox" id="hbox1">
-                <property name="events"></property>
-                <property name="spacing">5</property>
+            <widget class="GtkTable" id="table1">
+                <property name="column_spacing">3</property>
+                <property name="n_columns">2</property>
+                <property name="n_rows">3</property>
+                <property name="row_spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="yes">Description: </property>
-                        <property name="events"></property>
-                        <property name="xalign">1.0</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="description">
+                        <property name="can_focus">True</property>
+                        <property name="completion">False</property>
+                        <property name="data_type">str</property>
+                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">category_data.description</property>
-                        <property name="events"></property>
-                        <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
+                        <property name="left_attach">1</property>
+                        <property name="y_options">fill</property>
+                        <property name="right_attach">2</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="yes">Suggested Markup (%):</property>
-                        <property name="events"></property>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="justify">right</property>
+                        <property name="label" translatable="True">Suggested Markup:</property>
                         <property name="xalign">1.0</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="position">2</property>
-                        <property name="expand">False</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">2</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="markup">
-                        <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
-                        <property name="model_attribute">category_data.suggested_markup</property>
-                        <property name="text" context="True" translatable="yes">0.00</property>
-                        <property name="events"></property>
-                        <property name="digits">2</property>
-                        <property name="can_focus">True</property>
-                        <property name="data_type">float</property>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="justify">right</property>
+                        <property name="label" translatable="True">Salesperson Comission:</property>
+                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="position">3</property>
-                        <property name="expand">False</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" translatable="True">Description:</property>
+                        <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="y_options">fill</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox3">
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="markup">
+                                <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
+                                <property name="can_focus">True</property>
+                                <property name="data_type">float</property>
+                                <property name="digits">2</property>
+                                <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
+                                <property name="model_attribute">category_data.suggested_markup</property>
+                                <property name="text">0,00</property>
+                                <property name="width_chars">7</property>
+                                <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" translatable="True">%</property>
+                                <property name="xalign">0.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="y_options">fill</property>
+                        <property name="top_attach">2</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="hbox2">
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="comission">
+                                <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
+                                <property name="can_focus">True</property>
+                                <property name="data_type">float</property>
+                                <property name="digits">2</property>
+                                <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
+                                <property name="model_attribute">category_data.salesperson_comission</property>
+                                <property name="text">0,00</property>
+                                <property name="width_chars">7</property>
+                                <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="label" translatable="True">%</property>
+                                <property name="xalign">0.0</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="y_options">fill</property>
+                        <property name="top_attach">1</property>
+                        <property name="right_attach">2</property>
                     </packing>
                 </child>
             </widget>

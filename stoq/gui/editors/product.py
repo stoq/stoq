@@ -207,6 +207,7 @@ class ProductPriceEditor(BaseEditor):
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
         self.update_markup()
+        self.update_comission()
 
     def set_widget_formats(self):
         widgets = (self.markup, self.base_markup, self.max_discount,
@@ -221,6 +222,15 @@ class ProductPriceEditor(BaseEditor):
 
         self.model.markup = ((price / cost) - 1) * 100
         self.main_proxy.update('markup')
+
+    def update_comission(self):
+        category = self.model.category
+        if self.model.comission or not category:
+            return
+        comission = (category.get_comission()
+                     or category.base_category.get_comission())
+        self.model.comission = comission
+        self.main_proxy.update('comission')
 
     def update_price(self):
         cost = self.model.cost

@@ -62,10 +62,18 @@ class AbstractSellableCategory(Domain):
     # belongs to this category or base category
     salesperson_comission = FloatCol(default=0.0)
 
+    def get_comission(self):
+        return self.salesperson_comission
+
 
 class BaseSellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
 
+    def get_comission(self):
+        return self.category_data.get_comission()
+
+    def get_description(self):
+        return self.category_data.description
 
 class SellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
@@ -74,6 +82,13 @@ class SellableCategory(Domain):
     def get_markup(self):
         return self.category_data.suggested_markup or \
                self.base_category.category_data.suggested_markup
+
+    def get_comission(self):
+        return self.category_data.get_comission()
+
+    def get_description(self):
+        return "%s %s" % (self.base_category.get_description(),
+                          self.category_data.description)
 
 
 class AbstractSellableItem(InheritableModel):
