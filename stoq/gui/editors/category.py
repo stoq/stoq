@@ -39,29 +39,35 @@ _ = gettext.gettext
 
 
 class BaseSellableCategoryEditor(BaseEditor):
-    title = _('Sellable Base Category Editor')
     gladefile = 'BaseSellableCategoryDataSlave'
     model_type = BaseSellableCategory
+    model_name = _('Base Category')
     widgets = ('description',
-               'markup')
+               'markup',
+               'comission')
+    size = (400, 160)
 
     def create_model(self, conn):
         category_data = AbstractSellableCategory(description='',
                                                  connection=conn)
         return BaseSellableCategory(category_data=category_data,
                                     connection=conn)
-    
+
+    def get_title_model_attribute(self, model):
+        return model.get_description()
+
     def setup_proxies(self):
         self.add_proxy(model=self.model, widgets=self.widgets)
 
 
 class SellableCategoryEditor(BaseEditor):
-    title = _('Sellable Category Editor')
     gladefile = 'SellableCategoryDataSlave'
     model_type = SellableCategory
+    model_name = _('Category')
     widgets = ('description',
                'suggested_markup',
-               'base_category')
+               'base_category',
+               'comission')
 
     def create_model(self, conn):
         category_data = AbstractSellableCategory(description='',
@@ -71,6 +77,9 @@ class SellableCategoryEditor(BaseEditor):
         return SellableCategory(base_category=suggested_base_cat,
                                 category_data=category_data,
                                 connection=conn)
+
+    def get_title_model_attribute(self, model):
+        return model.get_description()
 
     def setup_combo(self):
         table = BaseSellableCategory
