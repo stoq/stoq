@@ -41,7 +41,7 @@ except ImportError:
 
 # A list of subdirectories in stoq/gui/
 for dir in ['editors', 'components', 'pos', 'search',
-            'slaves', 'templates']:
+            'slaves', 'templates', 'till']:
     path = os.path.join(module.basedir, "stoq", "gui", dir, "glade")
     if os.path.exists(path) and os.path.isdir(path):
         environ.add_resource("glade", path)

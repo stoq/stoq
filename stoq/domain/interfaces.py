@@ -351,6 +351,44 @@ class ISalesPerson(ConnInterface):
                                'comission. This is a reference to another '
                                'object')
 
+
+class IInPayment(ConnInterface):
+    """ Interface specification for InPayments. """
+
+    def receive(value=None, paid_date=None):
+        """ Confirm the payment. """
+
+
+class IOutPayment(ConnInterface):
+    """ Interface specification for OutPayments. """
+
+    def pay(value=None, paid_date=None):
+        """ Confirm the payment."""
+
+
+class IPaymentGroup(ConnInterface):
+    """ Interface specification for PaymentGroups. """
+
+    status = Attribute('status',
+                       'int',
+                       'The status of the payment group. ')
+    open_date = Attribute('open_date',
+                          'datetime',
+                          'The open date of the payment group.')
+    close_date = Attribute('close_date',
+                           'datetime',
+                           'The close date of the payment group.')
+    notes = Attribute('notes',
+                      'str',
+                      'Extra notes for the payment group.')
+    payments = Attribute('payments',
+                         'list',
+                         'A list of payments associated to this payment '
+                         'group') 
+    thirdparty = Attribute('thirdparty',
+                           'Person',
+                           'The thirdparty associated to this payment group.')
+
 class IDelivery(ConnInterface):
     """ Specification of a Delivery interface for a sellable. """
 

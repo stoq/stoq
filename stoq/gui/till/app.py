@@ -1,9 +1,8 @@
-#!/usr/bin/env python
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,23 +20,18 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):       Henrique Romano     <henrique@async.com.br>
+##
 """
-stoq/examples/createall.py:
+stoq/gui/till/app.py:
 
-    Create all objects for an example database used by Stoq applications.
+   Main callsite for Till application.
 """
 
-from stoq.examples.person import create_persons
-from stoq.examples.product import create_products
-from stoq.examples.service import create_services
-from stoq.examples.sale import create_sales
+from stoq.gui.till.till import TillApp
+from stoq.gui.application import App
 
-if __name__ == "__main__":
-    print 'Creating example database...'
-    create_persons()
-    create_products()
-    create_services()
-    create_sales()
-    print '-'*40
-    print 'done.'
+def main(config):
+    app = App(TillApp, config)
+    app.run()
 
