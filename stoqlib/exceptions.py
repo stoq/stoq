@@ -62,6 +62,9 @@ class DatabaseError(Exception):
 class StockError(Exception):
     """Exception for stock operations"""
 
+class EditorError(Exception):
+    """Exception for stoqlib editors"""
+
 class SelectionError(Exception):
     """Invalid number of items selected in a list"""
 
