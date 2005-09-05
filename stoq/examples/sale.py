@@ -35,7 +35,7 @@ from datetime import datetime, timedelta
 from stoqlib.exceptions import SellError
 
 from stoq.lib.runtime import new_transaction
-from stoq.domain.payment import get_current_till_movimentation
+from stoq.domain.payment import get_current_till_operation
 from stoq.domain.payment import Payment, Till
 from stoq.domain.sale import Sale
 from stoq.domain.product import Product
@@ -55,7 +55,7 @@ DEFAULT_PAYMENTS_INTERVAL = 30
 DEFAULT_SALE_NUMBER = 4
 
 def get_till(conn):
-    till = get_current_till_movimentation(conn)
+    till = get_current_till_operation(conn)
     if till is None:
         till = Till(connection=conn, 
                     branch=sysparam(conn).CURRENT_BRANCH)

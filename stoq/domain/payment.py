@@ -101,8 +101,8 @@ class Till(Domain):
     def get_balance(self):
         """ Return the total of all "extra" payments (like cash
         advance, till complement, ...) associated to this till
-        movimentation *plus* all the payments, which payment method is
-        money, of all the sales associated with this movimentation 
+        operation *plus* all the payments, which payment method is
+        money, of all the sales associated with this operation 
         *plus* the initial cash amount. """
 
         from stoq.domain.sale import Sale
@@ -117,8 +117,8 @@ class Till(Domain):
         for sale in result:
             sale_pg_facet = IPaymentGroup(sale)
             assert sale_pg_facet, ("The sale associated to this "
-                                   "till movimentation don't have "
-                                   "a PaymentGroup facet.")
+                                   "till operation don't have a "
+                                   "PaymentGroup facet.")
             payments.extend([p for p in sale_pg_facet.get_items() 
                                  if p.method == money_payment_method])
         pg_facet = IPaymentGroup(self, connection=conn)
@@ -130,7 +130,7 @@ class Till(Domain):
     
     def open_till(self, opening_date=datetime.now(), initial_cash_amount=0.0):
         if not initial_cash_amount:
-            last_till = get_last_till_movimentation(self.get_connection())
+            last_till = get_last_till_operation(self.get_connection())
             if last_till:
                 self.initial_cash_amount = last_till.final_cash_amount
         self.opening_date = opening_date
@@ -282,7 +282,7 @@ Till.registerFacet(TillAdaptToPaymentGroup)
 # Functions
 #
 
-def get_current_till_movimentation(conn):
+def get_current_till_operation(conn):
     result = Till.select(Till.q.status == Till.STATUS_OPEN, connection=conn)
     if result.count() > 1:
         raise TillError("You should have only one Till opened. Got %d "
@@ -293,10 +293,10 @@ def get_current_till_movimentation(conn):
     return result[0]
 
 
-def get_last_till_movimentation(conn):
-    """  The last till movimentation is used to get a initial cash amount
-    to a new till movimentation that will be created, this value is based
-    on the final_cash_amount attribute of the last till movimentation """
+def get_last_till_operation(conn):
+    """  The last till operation is used to get a initial cash amount
+    to a new till operation that will be created, this value is based
+    on the final_cash_amount attribute of the last till operation """
 
     query = AND(Till.q.status == Till.STATUS_CLOSED, 
                 Till.q.branchID == sysparam(conn).CURRENT_BRANCH.id)
