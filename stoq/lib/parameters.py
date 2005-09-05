@@ -54,9 +54,12 @@ Current System parameters:
                                                    adding a new
                                                    SellableCategory object.
 
+    * MONEY_PAYMENT_METHOD(PaymentMethod): Definition of the money payment 
+                                           method.
+
     * DELIVERY_SERVICE(ServiceAdaptToSellable): The default delivery service
                                                 to the system.
-                                               
+
 >> System constants:                                               
                                                
 
@@ -114,7 +117,6 @@ from sqlobject import StringCol, IntCol
 
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
-from stoq.domain.interfaces import IDelivery
 from stoq.lib.runtime import get_connection, new_transaction
 
 
@@ -252,6 +254,14 @@ class ParameterAccess:
         branch = IBranch(person_obj[0], connection=self.conn)
         assert branch, 'Branch rule for the selected person not found.'
         return branch
+
+    @property
+    def MONEY_PAYMENT_METHOD(self):
+        from stoq.domain.payment import PaymentMethod
+        parameter = get_foreign_key_parameter('MONEY_PAYMENT_METHOD',
+                                              self.conn)
+        return PaymentMethod.get(parameter.foreign_key, 
+				 connection=self.conn)
 
     @property
     def DEFAULT_BASE_CATEGORY(self):
@@ -458,6 +468,12 @@ def ensure_city_location(conn):
     for key, data in values:
         set_schema(conn, key, data)
 
+def ensure_default_payment_method(conn):
+    from stoq.domain.payment import PaymentMethod
+
+    pm = PaymentMethod(description=_('Money'), connection=conn)
+    set_schema(conn, 'MONEY_PAYMENT_METHOD', 'get_default_payment_method',
+               foreign_key=pm.id)
 
 
 #
@@ -476,6 +492,7 @@ def ensure_system_parameters():
     ensure_current_branch(trans)
     ensure_current_warehouse(trans)
     ensure_city_location(trans)
+    ensure_default_payment_method(trans)
     ensure_delivery_service(trans)
 
     trans.commit()
