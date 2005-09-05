@@ -22,6 +22,7 @@
 ##
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 stoq/gui/editors/contact.py:
@@ -39,10 +40,21 @@ from stoq.domain.person import Liaison
 _ = gettext.gettext
 
 class ContactEditor(BaseEditor):
+    model_name = _('Liaison')
     model_type = Liaison
     gladefile = 'ContactEditor'
     widgets = ('name', 'phone_number')
-    title = _('Liaison Editor')
+
+
+
+    #
+    # BaseEditor Hooks
+    #
+
+
+
+    def get_title_model_attribute(self, model):
+        return model.name
 
     def create_model(self, conn):
         return Liaison(person=None, connection=conn)

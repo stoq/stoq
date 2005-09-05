@@ -20,6 +20,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s): Henrique Romano           <henrique@async.com.br>
+##            Evandro Vale Miquelito    <evandro@async.com.br>
+##
 """
 stoq/gui/editors/category.py:
 
@@ -36,14 +39,14 @@ from stoq.domain.service import ServiceSellableItem
 _ = gettext.gettext
 
 class ServiceEditor(BaseEditor):
+    model_name = _('Service')
+    model_type = ServiceSellableItem
     gladefile = 'ServiceEditor'
     widgets = ('service_name_label', 
                'price', 
                'estimated_fix_date',
                'notes')
     size = (500, 250)
-    title = _('Service Details')
-    model_type = ServiceSellableItem
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -52,9 +55,15 @@ class ServiceEditor(BaseEditor):
     def set_widgets_format(self):
         self.price.set_data_format('%.2f')
 
+
+
     #
     # BaseEditor hooks
     # 
+
+
+    def get_title_model_attribute(self, model):
+        return model.sellable.description
 
     def setup_proxies(self):
         self.set_widgets_format()

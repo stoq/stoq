@@ -87,12 +87,22 @@ class AddressAdditionDialog(AdditionListDialog):
 
 
 class AddressEditor(BaseEditor):
+    model_name = _('Address')
     model_type = Address
-    title = _('Address Editor')
     gladefile = 'AddressEditor'
 
     proxy_widgets = ('is_main_address_checkbutton', )
     widgets = proxy_widgets + ('main_holder', )
+
+
+
+    #
+    # BaseEditor Hooks
+    #
+
+
+    def get_title_model_attribute(self, model):
+        return self.model_name
 
     def setup_slaves(self):
         self.address_slave = AddressSlave(self.conn, self.model, False)

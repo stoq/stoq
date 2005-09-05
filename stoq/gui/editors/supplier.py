@@ -22,6 +22,7 @@
 ##
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 stoq/gui/editors/supplier.py
@@ -42,11 +43,19 @@ from stoq.domain.person import Person, PersonAdaptToSupplier
 _ = gettext.gettext
 
 class SupplierEditor(BaseEditor):
-    title = _('Supplier Editor')
+    model_name = _('Supplier')
+    model_type = PersonAdaptToSupplier
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
-    model_type = PersonAdaptToSupplier
+
+
+
+    #
+    # BaseEditor hooks
+    #
     
+
+
     def create_model(self, conn):
         # XXX: This is a hack, we don't can create a client without a
         # person and an Individual/Company. This problem will be
@@ -54,6 +63,9 @@ class SupplierEditor(BaseEditor):
         person = Person(name="", connection=conn)
         company = person.addFacet(ICompany, connection=conn)
         return person.addFacet(ISupplier, connection=conn)
+
+    def get_title_model_attribute(self, model):
+        return model.get_adapted().name
 
     def setup_slaves(self):
         company_facet = ICompany(self.model.get_adapted(),
@@ -68,6 +80,4 @@ class SupplierEditor(BaseEditor):
     def on_confirm(self):
         self.company_slave.on_confirm()
         return self.model
-
-
 

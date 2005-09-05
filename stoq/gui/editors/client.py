@@ -20,6 +20,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s): Henrique Romano           <henrique@async.com.br>
+##            Evandro Vale Miquelito    <evandro@async.com.br>
+##
 """
 stoq/gui/editors/client.py
 
@@ -38,10 +41,18 @@ from stoq.domain.interfaces import IIndividual, IClient
 _ = gettext.gettext
 
 class ClientEditor(BaseEditor):
-    title = _("Client Editor")
+    model_name = _('Client')
     model_type = PersonAdaptToClient
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
+
+
+    
+    #
+    # BaseEditor hooks
+    #
+
+
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043.  We should create a Client
@@ -50,6 +61,9 @@ class ClientEditor(BaseEditor):
         person = Person(name="", connection=conn)
         individual = person.addFacet(IIndividual, connection=conn)
         return person.addFacet(IClient, connection=conn)
+
+    def get_title_model_attribute(self, model):
+        return model.get_adapted().name
         
     def setup_slaves(self):
         individual = IIndividual(self.model.get_adapted(),
@@ -64,4 +78,3 @@ class ClientEditor(BaseEditor):
     def on_confirm(self):
         self.individual_slave.on_confirm()
         return self.model
-

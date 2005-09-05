@@ -55,9 +55,9 @@ _ = gettext.gettext
 
 
 class ProductSupplierEditor(BaseEditor):
-    gladefile = 'ProductSupplierEditor'
+    model_name = _('Product Suppliers')
     model_type = Product
-    title = _('Costs Details')
+    gladefile = 'ProductSupplierEditor'
 
     proxy_widgets = ('supplier_combo',
                      'base_cost',
@@ -122,6 +122,9 @@ class ProductSupplierEditor(BaseEditor):
 
 
 
+    def get_title_model_attribute(self, model):
+        return self.model_name
+
     def setup_proxies(self):
         self.setup_combos()
 
@@ -184,9 +187,9 @@ class ProductSupplierEditor(BaseEditor):
 
 
 class ProductPriceEditor(BaseEditor):
-    gladefile = 'ProductPriceEditor'
+    model_name = 'Product Price'
     model_type = ProductAdaptToSellable
-    title = _('Price Details')
+    gladefile = 'ProductPriceEditor'
 
     proxy_widgets = ('cost',
                      'markup',
@@ -237,6 +240,9 @@ class ProductPriceEditor(BaseEditor):
 
 
 
+    def get_title_model_attribute(self, model):
+        return self.model_name
+
     def setup_proxies(self):
         self.set_widget_formats()
         self.main_proxy = self.add_proxy(self.model, self.proxy_widgets)
@@ -276,9 +282,9 @@ class ProductPriceEditor(BaseEditor):
 
 
 class ProductEditor(BaseEditor):
-    title = _('Product Editor')
-    gladefile = 'ProductEditor' 
+    model_name = _('Product')
     model_type = Product
+    gladefile = 'ProductEditor' 
 
 
     product_widgets = ('notes',
@@ -341,6 +347,9 @@ class ProductEditor(BaseEditor):
         model.addFacet(IStorable, connection=conn)
         return model
 
+    def get_title_model_attribute(self, model):
+        return ISellable(model).description
+
     def setup_combos(self):
         table = SellableCategory
         category_list = table.select(connection=self.conn)
@@ -377,11 +386,11 @@ class ProductEditor(BaseEditor):
 
 
 class ProductItemEditor(BaseEditor):
-    title = _('Editing Product')
-    size = (550, 100)
-
+    model_name = _('Product')
     model_type = ProductSellableItem
     gladefile = 'ProductItemEditor'
+    size = (550, 100)
+
     proxy_widgets = ('quantity', 'price')
     widgets = ('product_name', 'price_label') + proxy_widgets
 
@@ -396,6 +405,9 @@ class ProductItemEditor(BaseEditor):
     #
 
 
+
+    def get_title_model_attribute(self, model):
+        return model.sellable.description
 
     def setup_proxies(self):
         # We need to setup the widgets format before the proxy fill them
