@@ -168,12 +168,15 @@ class AppWindow(BaseAppWindow):
         """A hook method for stoqlib SearchBar"""
         return objects
 
+    def get_extra_query(self):
+        """A hook method for stoqlib SearchBar"""
     
 
 
     #
     # Callbacks
     #
+
 
 
     def _on_quit_action__clicked(self, *args):
