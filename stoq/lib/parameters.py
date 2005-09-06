@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
+##
+## Author(s):    Evandro Vale Miquelito     <evandro@async.com.br>
+##               Henrique Romano            <henrique@async.com.br>
 ##
 """
 lib/parameters.py:
@@ -44,7 +47,7 @@ Current System parameters:
                                                    suggested when we are
                                                    adding a new employee.
 
-    * SUPPLIER_SUGGESTED(PersonAdaptToSupplier): The supplier suggested 
+    * SUGGESTED_SUPPLIER(PersonAdaptToSupplier): The supplier suggested 
                                                  when we are adding a new
                                                  ProductSupplierInfo object.
 
@@ -57,8 +60,8 @@ Current System parameters:
     * MONEY_PAYMENT_METHOD(PaymentMethod): Definition of the money payment 
                                            method.
 
-    * DELIVERY_SERVICE(ServiceAdaptToSellable): The default delivery service
-                                                to the system.
+    * DELIVERY_SERVICE(Service): The default delivery service
+                                 to the system.
 
 >> System constants:                                               
                                                
@@ -86,10 +89,6 @@ Current System parameters:
     * COUNTRY_SUGGESTED(string): when adding a new address for a certain 
                                  person we will always suggest this country.
 
-    * CITY_LOCATION_STATES(list): when adding a new address for a certain 
-                                  person we will always show this list as
-                                  available state options.
-
     * SELLABLE_PRICE_PRECISION(integer): precision for the price attribute 
                                          of a sellable object.
 
@@ -114,10 +113,15 @@ import gettext
 
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import StringCol, IntCol
+from twisted.python.reflect import namedAny
+from kiwi.python import ClassInittableObject
 
-from stoq.domain.base import Domain
+from stoq.domain.base import Domain, AbstractModel
 from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
 from stoq.lib.runtime import get_connection, new_transaction
+
+
+
 
 
 _ = gettext.gettext
@@ -137,16 +141,19 @@ class ParameterData(Domain):
 
     field_name = the name of the parameter we want to query on
     field_value = the current result(or value) of this parameter
-    foreign_key = a reference to another object used by an acessor method
-                  sometimes.
     """
 
     field_name = StringCol(alternateID=True)
     field_value = StringCol()
-    foreign_key = IntCol(default=None)
+
+class ParameterAttr:
+    def __init__(self, key, type, initial=None):
+        self.key = key
+        self.type = type
+        self.initial = initial
 
 
-class ParameterAccess:
+class ParameterAccess(ClassInittableObject):
     """A mechanism to tie specific instances to constants that can be
     made available cross-application. This class has a special hook that
     allows the values to be looked up on-the-fly and cached.
@@ -156,192 +163,197 @@ class ParameterAccess:
         parameter = sysparam(conn).parameter_name
     """
 
-    # Add new general settings here instead of create a single method for each
-    # parameter. This is always useful when the parameter is not an object but
-    # just a single string, integer or float value.
-    constants = dict(USE_LOGIC_QUANTITY=1,
-                     MAX_LATE_DAYS=30,
-                     SELLABLE_PRICE_PRECISION=2,
-                     HAS_STOCK_MODE=1,
-                     HAS_DELIVERY_MODE=1,
-                     STOCK_BALANCE_PRECISION=2,
-                     EDIT_SELLABLE_PRICE=1,
-                     MAX_SEARCH_RESULTS=600,
-                     ACCEPT_ORDER_PRODUCTS=1)
+    # New parameters must always be defined here
+    constants = [# Adding constants
+                 ParameterAttr('USE_LOGIC_QUANTITY', int, 
+                               initial=1),
+                 ParameterAttr('MAX_LATE_DAYS', int, 
+                               initial=30),
+                 ParameterAttr('SELLABLE_PRICE_PRECISION', int, 
+                               initial=2),
+                 ParameterAttr('HAS_STOCK_MODE', int, 
+                               initial=1),
+                 ParameterAttr('HAS_DELIVERY_MODE', int, 
+                               initial=1),
+                 ParameterAttr('STOCK_BALANCE_PRECISION', int, 
+                               initial=2),
+                 ParameterAttr('EDIT_SELLABLE_PRICE', int, 
+                               initial=1),
+                 ParameterAttr('ACCEPT_ORDER_PRODUCTS', int, 
+                               initial=1),
+                 ParameterAttr('MAX_SEARCH_RESULTS', int, 
+                               initial=600),
+                 ParameterAttr('CITY_SUGGESTED', str, 
+                               initial='Belo Horizonte'),
+                 ParameterAttr('STATE_SUGGESTED', str, 
+                               initial='MG'),
+                 ParameterAttr('COUNTRY_SUGGESTED', str, 
+                               initial='Brasil'),
+
+                 # Adding objects
+                 ParameterAttr('SUGGESTED_SUPPLIER', 
+                               'person.PersonAdaptToSupplier'),
+                 ParameterAttr('CURRENT_BRANCH', 
+                               'person.PersonAdaptToBranch'),
+                 ParameterAttr('DEFAULT_BASE_CATEGORY', 
+                               'sellable.BaseSellableCategory'),
+                 ParameterAttr('DEFAULT_EMPLOYEE_POSITION', 
+                               'person.EmployeePosition'),
+                 ParameterAttr('MONEY_PAYMENT_METHOD', 
+                               'payment.PaymentMethod'),
+                 ParameterAttr('DELIVERY_SERVICE', 
+                               'service.Service'),
+                 ParameterAttr('CURRENT_WAREHOUSE', 
+                               'person.PersonAdaptToCompany')]
+    _cache = {}
 
     def __init__(self, conn):
         self.conn = conn
+    
+    @classmethod
+    def __class_init__(cls, namespace):
+        for obj in cls.constants:
+            prop = property(lambda self, n=obj.key, v=obj.type:
+                            self.get_parameter_by_field(n, v))
+            setattr(cls, obj.key, prop)
 
-    def _get_constant(self, key):
-        sparam = get_parameter_by_field(key, self.conn)
-        return sparam.field_value
+    def set_schema(self, field_name, field_value):
+        ParameterData(connection=self.conn, field_name=field_name, 
+                      field_value=field_value)
+        
+    def get_parameter_by_field(self, field_name, field_type): 
+        if self._cache.has_key(field_name):
+            param = self._cache[field_name]
 
-    def get_integer_parameter(self, key):
-        param = self._get_constant(key)
-        try:
-            param = int(param)
-        except ValueError, e:
-            msg = 'Parameter %s should be an integer.'
-            raise ValueError(msg % key)
+        values = ParameterData.select(ParameterData.q.field_name == field_name,
+                                      connection=self.conn)
+
+        if values.count() > 1:
+            msg = ('There is no unique correspondent parameter for this field '
+                   'name. Found %s items.' % values.count())
+            DatabaseInconsistency(msg)
+        elif not values.count():
+            return None
+
+        if type(field_type) == str:
+            field_type = namedAny('stoq.domain.' + field_type)
+            
+        value = values[0]
+        if issubclass(field_type, AbstractModel):
+            param = field_type.get(value.field_value, connection=self.conn)
+        else:
+            param = field_type(value.field_value)
+
+        self._cache[field_name] = param
         return param
 
 
-    
-    #
-    # Classmethods
-    #
-
-
-
-    @classmethod
-    def ensure_general_settings(cls, conn):
-        for constant, value in cls.constants.items():
-            if get_parameter_by_field(constant, conn):
-                continue
-            set_schema(conn, constant, value)
-
-
-
-    #
-    # Properties
-    #
-
-
-
-    @property
-    def SUPPLIER_SUGGESTED(self):
-        from stoq.domain.person import Person
-        parameter = get_foreign_key_parameter('SUPPLIER_SUGGESTED', self.conn)
-        table = Person
-        person_obj = table.select(table.q.id == parameter.foreign_key,
-                              connection=self.conn)
-        msg = 'Person object associated to this supplier not found.'
-        assert person_obj and person_obj.count() == 1, msg
-        supplier = ISupplier(person_obj[0], connection=self.conn)
-        assert supplier, 'Supplier rule for the selected person not found.'
-        return supplier
-
-    @property
-    def DELIVERY_SERVICE(self):
-        from stoq.domain.service import Service
-        parameter = get_foreign_key_parameter('DELIVERY_SERVICE', self.conn)
-        result = Service.select(Service.q.id == parameter.foreign_key,
-                                connection=self.conn)
-        assert result and result.count() == 1, ("Default delivery "
-                                                "service not found")
-        return result[0]
-
-    @property
-    def HAS_DELIVERY_MODE(self):
-        return self.get_integer_parameter('HAS_DELIVERY_MODE')
-
-    @property
-    def CITY_LOCATION_STATES(self):
-        return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
-                 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
-                 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
-
-    @property
-    def CURRENT_BRANCH(self):
-        from stoq.domain.person import Person
-        parameter = get_foreign_key_parameter('CURRENT_BRANCH', 
-                                              self.conn)
-        table = Person
-        person_obj = table.select(table.q.id == parameter.foreign_key,
-                                  connection=self.conn)
-        msg = 'Person object associated to this branch not found.'
-        assert person_obj and person_obj.count() == 1, msg
-        branch = IBranch(person_obj[0], connection=self.conn)
-        assert branch, 'Branch rule for the selected person not found.'
-        return branch
-
-    @property
-    def MONEY_PAYMENT_METHOD(self):
-        from stoq.domain.payment import PaymentMethod
-        parameter = get_foreign_key_parameter('MONEY_PAYMENT_METHOD',
-                                              self.conn)
-        return PaymentMethod.get(parameter.foreign_key, 
-				 connection=self.conn)
-
-    @property
-    def DEFAULT_BASE_CATEGORY(self):
-        from stoq.domain.sellable import BaseSellableCategory
-        parameter = get_foreign_key_parameter('DEFAULT_BASE_CATEGORY', 
-                                              self.conn)
-        table = BaseSellableCategory
-        base_cat = table.select(table.q.id == parameter.foreign_key,
-                                connection=self.conn)
-        assert base_cat.count() == 1, 'Base category not found.'
-        return base_cat[0]
-
-    @property
-    def DEFAULT_EMPLOYEE_POSITION(self):
-        from stoq.domain.person import EmployeePosition
-        parameter = get_foreign_key_parameter('DEFAULT_EMPLOYEE_POSITION', 
-                                              self.conn)
-        table = EmployeePosition
-        position = table.select(table.q.id == parameter.foreign_key,
-                                connection=self.conn)
-        assert position.count() == 1, 'Employee position not found.'
-        return position[0]
-
-    @property
-    def CURRENT_WAREHOUSE(self):
-        from stoq.domain.person import Person
-        parameter = get_foreign_key_parameter('CURRENT_WAREHOUSE', 
-                                              self.conn)
-        table = Person
-        person_obj = table.select(table.q.id == parameter.foreign_key,
-                                  connection=self.conn)
-        msg = 'Person object associated to this warehouse not found.'
-        assert person_obj and person_obj.count() == 1, msg
-        warehouse = ICompany(person_obj[0], connection=self.conn)
-        assert warehouse, 'Warehouse associated to the selected person not found.'
-        return warehouse
-
-    @property
-    def USE_LOGIC_QUANTITY(self):
-        return self.get_integer_parameter('USE_LOGIC_QUANTITY')
-
-    @property
-    def MAX_LATE_DAYS(self):
-        return self.get_integer_parameter('MAX_LATE_DAYS')
+    def set_defaults(self):
+        constants = [c for c in self.constants if c.initial]
         
-    @property
-    def ACCEPT_ORDER_PRODUCTS(self):
-        return self.get_integer_parameter('ACCEPT_ORDER_PRODUCTS')
+        # Creating constants
+        for obj in constants:
+            if self.get_parameter_by_field(obj.key, obj.type):
+                continue
+            self.set_schema(obj.key, obj.initial)
 
-    @property
-    def CITY_SUGGESTED(self):
-        return self._get_constant('CITY_SUGGESTED')
+        # Creating system objects
+        # When creating new methods for system objects creation add them 
+        # always here
+        self.ensure_suggested_supplier()
+        self.ensure_default_base_category()
+        self.ensure_default_employee_position()
+        self.ensure_current_branch()
+        self.ensure_current_warehouse()
+        self.ensure_default_payment_method()
+        self.ensure_delivery_service()
 
-    @property
-    def STATE_SUGGESTED(self):
-        return self._get_constant('STATE_SUGGESTED')
 
-    @property
-    def COUNTRY_SUGGESTED(self):
-        return self._get_constant('COUNTRY_SUGGESTED')
 
-    @property
-    def SELLABLE_PRICE_PRECISION(self):
-        return self.get_integer_parameter('SELLABLE_PRICE_PRECISION')
+    #
+    # Methods for system objects creation
+    #
 
-    @property
-    def HAS_STOCK_MODE(self):
-        return self.get_integer_parameter('HAS_STOCK_MODE')
 
-    @property
-    def STOCK_BALANCE_PRECISION(self):
-        return self.get_integer_parameter('STOCK_BALANCE_PRECISION')
 
-    @property
-    def EDIT_SELLABLE_PRICE(self):
-        return self.get_integer_parameter('EDIT_SELLABLE_PRICE')
+    def ensure_suggested_supplier(self):
+        from stoq.domain.person import Person, PersonAdaptToSupplier
+        key = "SUGGESTED_SUPPLIER"
+        if self.get_parameter_by_field(key, PersonAdaptToSupplier):
+            return
+        person_obj = Person(name=key, connection=self.conn)
+        person_obj.addFacet(ICompany, cnpj='supplier suggested', 
+                            connection=self.conn)
+        supplier = person_obj.addFacet(ISupplier, connection=self.conn)
+        self.set_schema(key, supplier.id)
 
-    @property
-    def MAX_SEARCH_RESULTS(self):
-        return self.get_integer_parameter('MAX_SEARCH_RESULTS')
+    def ensure_default_base_category(self):
+        from stoq.domain.sellable import (BaseSellableCategory,
+                                          AbstractSellableCategory)
+        key = "DEFAULT_BASE_CATEGORY"
+        if self.get_parameter_by_field(key, BaseSellableCategory):
+            return
+        abstract_cat = AbstractSellableCategory(connection=self.conn, 
+                                                description=key)
+        base_cat = BaseSellableCategory(connection=self.conn, 
+                                        category_data=abstract_cat)
+        self.set_schema(key, base_cat.id)
+
+    def ensure_default_employee_position(self):
+        from stoq.domain.person import EmployeePosition
+        key = "DEFAULT_EMPLOYEE_POSITION"
+        if self.get_parameter_by_field(key, EmployeePosition):
+            return
+        position = EmployeePosition(name='Sales Person', 
+                                    connection=self.conn)
+        self.set_schema(key, position.id)
+
+    def ensure_current_branch(self):
+        from stoq.domain.person import Person, PersonAdaptToBranch
+        key = "CURRENT_BRANCH"
+        if self.get_parameter_by_field(key, PersonAdaptToBranch):
+            return
+        person_obj = Person(name=key, connection=self.conn)
+        # XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
+        # what is the cnpj of this company I need to put something there because
+        # this is a mandatory field. I think use a simple string could help user
+        # to fix this field later.
+        person_obj.addFacet(ICompany, cnpj='current_branch', 
+                            connection=self.conn)
+        branch = person_obj.addFacet(IBranch, connection=self.conn)
+        self.set_schema(key, branch.id)               
+
+    def ensure_current_warehouse(self):
+        from stoq.domain.person import Person, PersonAdaptToCompany
+        key = "CURRENT_WAREHOUSE"
+        if self.get_parameter_by_field(key, PersonAdaptToCompany):
+            return
+        person_obj = Person(name=key, connection=self.conn)
+        # XXX See ensure_current_branch comment: we have the same problem with
+        # cnpj here.
+        person_obj.addFacet(ICompany, cnpj='current_warehouse', 
+                            connection=self.conn)
+        self.set_schema(key, person_obj.id)
+
+    def ensure_default_payment_method(self):
+        from stoq.domain.payment import PaymentMethod
+        key = "MONEY_PAYMENT_METHOD"
+        if self.get_parameter_by_field(key, PaymentMethod):
+            return
+
+        pm = PaymentMethod(description=_('Money'), connection=self.conn)
+        self.set_schema(key, pm.id)
+
+    def ensure_delivery_service(self):
+        from stoq.domain.service import Service
+        key = "DELIVERY_SERVICE"
+        if self.get_parameter_by_field(key, Service):
+            return
+        service = Service(connection=self.conn)
+        service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
+                         connection=self.conn)
+        self.set_schema(key, service.id)
+
 
 
 def sysparam(conn):
@@ -371,112 +383,6 @@ def get_foreign_key_parameter(field_name, conn):
 
 
 #
-# Creating system data
-#
-
-
-
-def set_schema(conn, field_name, field_value, foreign_key=None):
-    ParameterData(connection=conn, field_name=field_name, 
-                  field_value=field_value, foreign_key=foreign_key)
-
-
-def ensure_supplier_suggested(conn):
-    from stoq.domain.person import Person
-    key = "SUPPLIER_SUGGESTED"
-    if get_parameter_by_field(key, conn):
-        return
-    person_obj = Person(name=key, connection=conn)
-    person_obj.addFacet(ICompany, cnpj='supplier suggested', connection=conn)
-    person_obj.addFacet(ISupplier, connection=conn)
-    set_schema(conn, key, 'get_supplier_suggested', 
-               foreign_key=person_obj.id)
-
-def ensure_delivery_service(conn):
-    from stoq.domain.service import Service
-    key = "DELIVERY_SERVICE"
-    if get_parameter_by_field(key, conn):
-        return
-    service = Service(connection=conn)
-    service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
-                     connection=conn)
-    set_schema(conn, key, 'get_delivery_service', foreign_key=service.id)
-
-def ensure_default_base_category(conn):
-    from stoq.domain.sellable import (BaseSellableCategory,
-                                           AbstractSellableCategory)
-    key = "DEFAULT_BASE_CATEGORY"
-    if get_parameter_by_field(key, conn):
-        return
-    table = AbstractSellableCategory
-    abstract_cat = table(connection=conn, description=key)
-    table = BaseSellableCategory
-    base_cat = table(connection=conn, category_data=abstract_cat)
-    set_schema(conn, key, 'get_default_base_category', 
-               foreign_key=base_cat.id)
-
-
-def ensure_default_employee_position(conn):
-    from stoq.domain.person import EmployeePosition
-    key = "DEFAULT_EMPLOYEE_POSITION"
-    if get_parameter_by_field(key, conn):
-        return
-    position = EmployeePosition(name='Sales Person', connection=conn)
-    set_schema(conn, key, 'get_default_employee_position', 
-               foreign_key=position.id)
-
-
-def ensure_current_branch(conn):
-    from stoq.domain.person import Person
-    key = "CURRENT_BRANCH"
-    if get_parameter_by_field(key, conn):
-        return
-    person_obj = Person(name=key, connection=conn)
-    # XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
-    # what is the cnpj of this company I need to put something there because
-    # this is a mandatory field. I think use a simple string could help user
-    # to fix this field later.
-    person_obj.addFacet(ICompany, cnpj='current_branch', connection=conn)
-    person_obj.addFacet(IBranch, connection=conn)
-    set_schema(conn, key, 'get_current_branch', 
-               foreign_key=person_obj.id)               
-
-
-def ensure_current_warehouse(conn):
-    from stoq.domain.person import Person
-    key = "CURRENT_WAREHOUSE"
-    if get_parameter_by_field(key, conn):
-        return
-    person_obj = Person(name=key, connection=conn)
-    # XXX See ensure_current_branch comment: we have the same problem with
-    # cnpj here.
-    person_obj.addFacet(ICompany, cnpj='current_warehouse', connection=conn)
-    set_schema(conn, key, 'get_current_warehouse', 
-               foreign_key=person_obj.id)
-
-
-def ensure_city_location(conn):
-    city_data = ("CITY_SUGGESTED", 'Belo Horizonte')
-    state_data = ("STATE_SUGGESTED", 'MG')
-    country_data = ("COUNTRY_SUGGESTED", 'Brasil')
-
-    values = [city_data, state_data, country_data]
-    for key, data in values:
-        if get_parameter_by_field(key, conn):
-            return
-    
-    for key, data in values:
-        set_schema(conn, key, data)
-
-def ensure_default_payment_method(conn):
-    from stoq.domain.payment import PaymentMethod
-
-    pm = PaymentMethod(description=_('Money'), connection=conn)
-    set_schema(conn, 'MONEY_PAYMENT_METHOD', 'get_default_payment_method',
-               foreign_key=pm.id)
-
-
-#
 # Ensuring everything
 #
 
@@ -484,15 +390,8 @@ def ensure_default_payment_method(conn):
 
 def ensure_system_parameters():
     trans = new_transaction()
-
-    ParameterAccess.ensure_general_settings(trans)
-    ensure_default_employee_position(trans)
-    ensure_supplier_suggested(trans)
-    ensure_default_base_category(trans)
-    ensure_current_branch(trans)
-    ensure_current_warehouse(trans)
-    ensure_city_location(trans)
-    ensure_default_payment_method(trans)
-    ensure_delivery_service(trans)
+    
+    param = sysparam(trans)
+    param.set_defaults()
 
     trans.commit()

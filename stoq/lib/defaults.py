@@ -54,3 +54,16 @@ END_DATE = dtime_type.today() + datetime.timedelta(days=MONTH_PERIOD)
 
 ALL_BRANCHES = _('All branches'), None
 
+
+
+#
+# Common methods
+#
+
+
+
+def get_country_states():
+    # This is Brazil-specific information.
+    return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
+             'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
+             'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
