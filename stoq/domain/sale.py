@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@ stoq/domain/sale.py:
 """
 
 import gettext
-
 from datetime import datetime
 
 from twisted.python.components import implements
@@ -38,7 +37,6 @@ from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
 
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import IContainer, ISellable, IClient
-from stoq.domain.person import Person
 from stoq.lib.runtime import get_connection
 from stoq.domain.sellable import AbstractSellableItem
 from stoq.domain.payment import AbstractPaymentGroup
@@ -62,15 +60,8 @@ class Sale(Domain):
     current one.
     """
 
-    client = ForeignKey(Person.getAdapterClass(IClient).__name__)
-    
     __implements__ = IContainer
 
-    def set_client(self, person):
-        client = IClient(person)
-        if not client:
-            raise TypeError("%s cannot be adapted to IClient." % person)
-        self.client = client
     (STATUS_OPENED, 
      STATUS_CONFIRMED, 
      STATUS_CLOSED, 
@@ -86,17 +77,27 @@ class Sale(Domain):
     code = StringCol(default=None)
     open_date = DateTimeCol(default=datetime.today())
     close_date = DateTimeCol(default=None)
-    client = ForeignKey('PersonAdaptToClient')
     status = IntCol(default=STATUS_OPENED)
     total = FloatCol(default=0.0)
+    client = ForeignKey('PersonAdaptToClient')
     till = ForeignKey('Till')
 
     def get_status_name(self):
         return self.statuses_name[self.status]
 
+    def set_client(self, person):
+        client = IClient(person)
+        if not client:
+            raise TypeError("%s cannot be adapted to IClient." % person)
+        self.client = client
+
+
+
     #
     # IContainer methods
     #
+
+
 
     def add_item(self, item):
         raise NotImplementedError("You should call add_selabble_item "
@@ -114,14 +115,15 @@ class Sale(Domain):
         table = type(item)
         table.delete(item.id, connection=conn)
 
+
+
 #
 # Adapters
 #
+
 
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     pass
 
 Sale.registerFacet(SaleAdaptToPaymentGroup)
-
-
