@@ -130,7 +130,7 @@ class ProductSupplierEditor(BaseEditor):
 
         model = self.model.get_main_supplier_info()
         if not model:
-            supplier = sysparam(self.conn).SUPPLIER_SUGGESTED
+            supplier = sysparam(self.conn).SUGGESTED_SUPPLIER
             model = ProductSupplierInfo(connection=self.conn, product=None, 
                                         is_main_supplier=True,
                                         supplier=supplier)

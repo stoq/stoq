@@ -32,6 +32,7 @@ from stoqlib.gui.editors import BaseEditorSlave
 from stoq.lib.parameters import sysparam
 from stoq.domain.person import CityLocation, PersonAdaptToIndividual
 from stoq.lib.runtime import new_transaction
+from stoq.lib.defaults import get_country_states
 
 
 class IndividualDocuments(BaseEditorSlave):
@@ -67,7 +68,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]
-        states = sysparam(self.conn).CITY_LOCATION_STATES
+        states = get_country_states()
         countries = [sysparam(self.conn).COUNTRY_SUGGESTED]
 
         for city_loc in CityLocation.select(connection=self.conn):
