@@ -35,8 +35,8 @@ from datetime import datetime, timedelta
 from stoqlib.exceptions import SellError
 
 from stoq.lib.runtime import new_transaction
-from stoq.domain.payment import get_current_till_operation
-from stoq.domain.payment import Payment, Till
+from stoq.domain.till import get_current_till_operation, Till
+from stoq.domain.payment import Payment
 from stoq.domain.sale import Sale
 from stoq.domain.product import Product
 from stoq.domain.interfaces import ISellable, IClient, IPaymentGroup

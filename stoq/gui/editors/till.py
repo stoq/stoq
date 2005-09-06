@@ -34,7 +34,7 @@ import gettext
 from stoqlib.gui.editors import BaseEditor
 from kiwi.datatypes import ValidationError
 
-from stoq.domain.payment import Till
+from stoq.domain.till import Till
 
 _ = gettext.gettext
 
