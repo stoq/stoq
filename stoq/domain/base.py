@@ -38,6 +38,10 @@ from sqlobject.inheritance import InheritableSQLObject
 from twisted.python.components import Componentized, Interface, Adapter
 from twisted.python.reflect import qual
 
+from stoq.lib.runtime import get_connection
+
+
+__connection__ = get_connection()
 
 
 #

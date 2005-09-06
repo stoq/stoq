@@ -39,9 +39,7 @@ from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
                                     ISalesPerson)
 
-
 _ = gettext.gettext
-__connection__ = get_connection()
 
     
 

@@ -43,10 +43,10 @@ from stoq.lib.runtime import get_connection
 from stoq.domain.sellable import AbstractSellableItem
 from stoq.domain.payment import AbstractPaymentGroup
 
-__connection__ = get_connection()
-
 
 _ = gettext.gettext
+
+
 
 #
 # Base Domain Classes
