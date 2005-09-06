@@ -110,13 +110,20 @@ class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of
     BaseEditorSlave, a windows title and OK/Cancel buttons. 
 
-    model_name      =  the name that represents the model we are adding or
-                       editing. This value will be showed in the title of
-                       the editor.
-    get_title_model_attribute = a method which give us an attribute  value 
-                                of the current model. This will be used when
-                                creating the editor title in this format: 
-                               'Edit "title_model_attr" Details'
+    model_name      =  the model type name of the model we are editing. 
+                       This value will be showed in the title of
+                       the editor and can not be merely the attribute 
+                       __name__ of the object for usability reasons.
+                       Callsites will decide what could be the best name
+                       applicable in each situation.
+
+    get_title_model_attribute = get a certain model attribute value to
+                                allow creating customized editor titles.
+                                Subclasses will choose the right attribute
+                                acording to the editor features and
+                                with usability in mind.
+                                The editor title has this format: 
+                                'Edit "title_model_attr" Details'
     """
 
     model_name = None
