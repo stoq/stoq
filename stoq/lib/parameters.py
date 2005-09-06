@@ -121,11 +121,7 @@ from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
 from stoq.lib.runtime import get_connection, new_transaction
 
 
-
-
-
 _ = gettext.gettext
-__connection__ = get_connection()
 
 
 
