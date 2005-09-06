@@ -50,8 +50,13 @@ from stoq.domain.person import Person
 
 
 class Payment(Domain):
-    (STATUS_PREVIEW, STATUS_TO_PAY, STATUS_PAID, STATUS_REVIEWING,
-     STATUS_CONFIRMED, STATUS_CANCELLED) = range(6)
+
+    (STATUS_PREVIEW, 
+     STATUS_TO_PAY, 
+     STATUS_PAID, 
+     STATUS_REVIEWING,
+     STATUS_CONFIRMED, 
+     STATUS_CANCELLED) = range(6)
 
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
@@ -89,7 +94,11 @@ class PaymentMethod(Domain):
 
 
 class AbstractPaymentGroup(InheritableModelAdapter):
-    STATUS_PREVIEW, STATUS_OPEN, STATUS_CLOSED, STATUS_CANCELLED = range(4)
+
+    (STATUS_PREVIEW, 
+     STATUS_OPEN, 
+     STATUS_CLOSED, 
+     STATUS_CANCELLED) = range(4)
 
     __implements__ = IPaymentGroup, IContainer
 
