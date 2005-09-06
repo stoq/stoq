@@ -42,10 +42,7 @@ from stoq.domain.interfaces import ISellable, IStorable, IContainer
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_connection
 
-
-
 _ = gettext.gettext
-__connection__ = get_connection()
 
 
 

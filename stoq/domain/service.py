@@ -38,9 +38,7 @@ from stoq.domain.product import ProductSellableItem
 from stoq.lib.runtime import get_connection
 
 
-
 _ = gettext.gettext
-__connection__ = get_connection()
 
 
 

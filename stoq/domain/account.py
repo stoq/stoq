@@ -32,9 +32,6 @@ from stoq.domain.base import Domain
 from stoq.lib.runtime import get_connection
 
 
-__connection__ = get_connection()
-
-
 
 #
 # Base Domain Classes
