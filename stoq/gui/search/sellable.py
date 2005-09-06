@@ -180,7 +180,7 @@ class SellableSearch(SearchDialog):
         columns = [Column('code', title=_('Code'), sorted=True,
                           data_type=str, width=100),
                    Column('description', title=_('Description'),
-                          expand=True, data_type=str),
+                          expand=True, data_type=str, searchable=True),
                    Column('price', title=_('Price'), data_type=float,
                           width=90)]
         if self.has_stock_mode:
