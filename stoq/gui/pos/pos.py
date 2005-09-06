@@ -47,7 +47,7 @@ from stoq.domain.sellable import AbstractSellable, get_formatted_price
 from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
-from stoq.domain.payment import get_current_till_operation
+from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.delivery import DeliveryEditor

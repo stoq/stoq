@@ -20,6 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):    Evandro Vale Miquelito <evandro@async.com.br>
+##
 """
 stoq/domain/tables.py:
 
@@ -69,13 +71,14 @@ TABLES = [
                                   "PersonAdaptToBranch",
                                   "PersonAdaptToSalesPerson",
                                   )),
+     ('stoq.domain.till',       ("Till",
+                                 "TillAdaptToPaymentGroup",
+                                 )),
      ('stoq.domain.payment',    ("AbstractPaymentGroup",
                                  "PaymentMethod",
                                  "Payment",
-                                 "Till",
                                  "PaymentAdaptToInPayment",
                                  "PaymentAdaptToOutPayment",
-                                 "TillAdaptToPaymentGroup",
                                  )),
      ('stoq.domain.sale',       ("Sale",
                                  "SaleAdaptToPaymentGroup")),
