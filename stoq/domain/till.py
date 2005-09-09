@@ -38,7 +38,6 @@ from stoqlib.exceptions import TillError
 
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import IPaymentGroup, IBranch
-from stoq.domain.person import Person
 from stoq.domain.sale import Sale
 from stoq.domain.payment import AbstractPaymentGroup, Payment
 from stoq.lib.parameters import sysparam
@@ -61,7 +60,7 @@ class Till(Domain):
     opening_date = DateTimeCol(default=datetime.now())
     closing_date = DateTimeCol(default=None)
 
-    branch = ForeignKey(Person.getAdapterClass(IBranch).__name__)
+    branch = ForeignKey('PersonAdaptToBranch')
 
     def get_balance(self):
         """ Return the total of all "extra" payments (like cash
