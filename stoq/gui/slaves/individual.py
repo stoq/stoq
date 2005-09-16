@@ -59,12 +59,11 @@ class IndividualDetailsSlave(BaseEditorSlave):
                      'mother_name',
                      'father_name',
                      'occupation',
-                     # spouse, # XXX: depends on bug #2001 to work
+                     'spouse_name',
                      'marital_status',
                      'gender')
 
-    widgets = (proxy_widgets + birth_loc_widgets + 
-               ('new_spouse_button', 'spouse', 'spouse_lbl'))
+    widgets = (proxy_widgets + birth_loc_widgets) + ('spouse_lbl',)
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]
@@ -89,10 +88,6 @@ class IndividualDetailsSlave(BaseEditorSlave):
         self.gender.prefill(items, sort=True)
 
         self.marital_status.prefill(self.model.get_marital_statuses())
-
-        # XXX: spouse combo won't be filled until we get the proper support.
-        # see bug #2001
-        self.spouse.clear()
 
     def ensure_city_location(self):
         """ Search for the birth location fields in database, if found some
@@ -120,23 +115,27 @@ class IndividualDetailsSlave(BaseEditorSlave):
         self.model.birth_location = CityLocation.get(result[0].id)
         CityLocation.delete(birthloc.id, connection=self.conn)
 
+    def update_marital_status(self):
+        marital_status = self.marital_status.get_selected_data()
+        visible = marital_status == PersonAdaptToIndividual.STATUS_MARRIED
+        if visible:
+            self.spouse_lbl.show()
+            self.spouse_name.show()
+        else:
+            self.spouse_lbl.hide()
+            self.spouse_name.hide()    
+
+
     #
     # Kiwi handlers
     #
 
+
+
     def on_marital_status__changed(self, *args):
-        marital_status = self.marital_status.get_selected_data()
-        visible = (marital_status == PersonAdaptToIndividual.STATUS_MARRIED)
+        self.update_marital_status()
+       
 
-        widgets = (self.new_spouse_button, self.spouse, self.spouse_lbl)
-        for widget in widgets:
-            widget.set_property('visible', visible)
-
-    def on_new_spouse_button__clicked(self, *args):
-        # XXX: Waiting fix for bug #2001
-        #spouse = run_dialog(IndividualEditor, None, self.conn)
-        #self.model.spouse = spouse
-        pass
 
     #
     # BaseEditorSlave hooks
@@ -147,6 +146,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
         self.setup_combos()
 
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.update_marital_status()
 
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()

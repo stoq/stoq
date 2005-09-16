@@ -311,7 +311,7 @@ class PersonAdaptToIndividual(ModelAdapter):
     rg_expedition_local = StringCol(default='')
     gender = IntCol(default=None)
 
-    spouse = ForeignKey('PersonAdaptToIndividual', default=None)
+    spouse_name = StringCol(default='')
     birth_location = ForeignKey('CityLocation', default=None)
 
 
