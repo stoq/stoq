@@ -152,7 +152,7 @@ class AbstractSellable(InheritableModelAdapter):
     markup = FloatCol(default=0.0)
     cost = FloatCol(default=0.0)
     max_discount = FloatCol(default=0.0)
-    comission = FloatCol(default=0.0)
+    comission = FloatCol(default=None)
 
     on_sale_price = FloatCol(default=0.0)
     on_sale_start_date = DateTimeCol(default=None)
@@ -243,9 +243,10 @@ class AbstractSellable(InheritableModelAdapter):
         if not self.category:
             self.comission = 0.0
         else:
-            self.comission = (self.category.get_comission() 
-                              or self.category.base_category.get_comission())
-        
+            self.comission = self.category.get_comission()
+            if self.comission is not None:
+                return
+            self.comission = self.category.base_category.get_comission()
 
 
 #
