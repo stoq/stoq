@@ -38,10 +38,10 @@ from stoq.domain.service import ServiceSellableItem
 
 _ = gettext.gettext
 
-class ServiceEditor(BaseEditor):
+class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
     model_type = ServiceSellableItem
-    gladefile = 'ServiceEditor'
+    gladefile = 'ServiceItemEditor'
     widgets = ('service_name_label', 
                'price', 
                'estimated_fix_date',
