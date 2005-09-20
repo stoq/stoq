@@ -51,7 +51,7 @@ from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.delivery import DeliveryEditor
-from stoq.gui.editors.service import ServiceEditor
+from stoq.gui.editors.service import ServiceItemEditor
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -352,7 +352,7 @@ class POSApp(AppWindow):
               is sysparam(self.conn).DELIVERY_SERVICE):
             editor = DeliveryEditor
         elif isinstance(sellable_item, ServiceSellableItem):
-            editor = ServiceEditor
+            editor = ServiceItemEditor
         else:
             raise AssertionError("Unknown sellable item selected: %s",
                                  type(sellable_item))
