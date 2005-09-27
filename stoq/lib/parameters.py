@@ -245,7 +245,7 @@ class ParameterAccess(ClassInittableObject):
 
 
     def set_defaults(self):
-        constants = [c for c in self.constants if c.initial]
+        constants = [c for c in self.constants if c.initial is not None]
         
         # Creating constants
         for obj in constants:
