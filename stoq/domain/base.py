@@ -37,6 +37,7 @@ from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from twisted.python.components import Componentized, Interface, Adapter
 from twisted.python.reflect import qual
+from stoqlib.exceptions import AdapterError
 
 from stoq.lib.runtime import get_connection
 
@@ -193,7 +194,9 @@ class ComponentizedModel(Componentized):
             adapterClass = facets[k]
             adapter = adapterClass(self, *args, **kwargs)
         else:
-            adapter = None
+            raise AdapterError("The object type %s doesn't implement an "
+                               "adapter for interface %s" % (type(self),
+                               iface))
         if adapter:
             self.setComponent(iface, adapter)
         return adapter 
