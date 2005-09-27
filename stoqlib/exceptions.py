@@ -62,8 +62,10 @@ class DatabaseError(Exception):
 class StockError(Exception):
     """Exception for stock operations"""
 
+
 class EditorError(Exception):
     """Exception for stoqlib editors"""
+
 
 class SelectionError(Exception):
     """Invalid number of items selected in a list"""
@@ -72,5 +74,15 @@ class SelectionError(Exception):
 class TillError(Exception):
     """ General Till operation errors """
 
+
 class PaymentError(Exception):
     """ General payment errors """
+
+
+class PaymentMethodError(Exception):
+    """Error for payment methods"""
+
+
+class AdapterError(Exception):
+    """Raise this exception when an object try adding a facet but it doesn't
+    actually implements that interface"""
