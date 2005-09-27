@@ -365,7 +365,7 @@ class ProductAdaptToStorable(ModelAdapter):
         total_cost = 0.0
         total_qty = 0.0
         for stock_item in self.get_stocks():
-            total_cost += stock_item.total_cost
+            total_cost += stock_item.stock_cost
             total_qty += stock_item.quantity
 
         if total_cost and not total_qty:
