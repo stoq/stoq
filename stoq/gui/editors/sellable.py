@@ -32,19 +32,11 @@ stoq/gui/editors/sellable.py:
 
 import gettext
 
-from kiwi.datatypes import ValidationError
-from kiwi.ui.widgets.list import Column
-from stoqlib.gui.lists import SimpleListDialog
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.dialogs import run_dialog
 
-from stoq.domain.sellable import SellableCategory
-from stoq.domain.person import PersonAdaptToSupplier
-from stoq.domain.product import (ProductSupplierInfo, Product,
-                                 ProductAdaptToSellable,
-                                 ProductSellableItem)
+from stoq.domain.sellable import SellableCategory, AbstractSellable
 from stoq.domain.interfaces import ISellable, IStorable
-from stoq.lib.parameters import sysparam
 
 
 _ = gettext.gettext
@@ -57,7 +49,7 @@ _ = gettext.gettext
 
 class SellablePriceEditor(BaseEditor):
     model_name = 'Product Price'
-    model_type = ProductAdaptToSellable
+    model_type = AbstractSellable
     gladefile = 'SellablePriceEditor'
 
     proxy_widgets = ('cost',
@@ -172,16 +164,20 @@ class SellableEditor(BaseEditor):
                         'description',
                         'category_combo',
                         'cost',
-                        'price')
+                        'price',
+                        'notes_lbl')
 
-    storable_widgets = ('stock_price_lbl', )
+    storable_widgets = ('stock_total_lbl', 'stock_lbl')
 
-    widgets = (('sale_price_button',) + product_widgets + sellable_widgets +
-               storable_widgets + ('product_supplier_holder',))
+    widgets = (('sale_price_button', 'product_supplier_holder')
+                + product_widgets + sellable_widgets + storable_widgets)
 
-    
+    def __init__(self, conn, model=None):
+        BaseEditor.__init__(self, conn, model)
+        self.setup_widgets()
+
     def set_widget_formats(self):
-        for widget in (self.cost, self.stock_price_lbl, self.price):
+        for widget in (self.cost, self.stock_total_lbl, self.price):
             widget.set_data_format('%.02f')
 
     def edit_sale_price(self):
@@ -190,20 +186,14 @@ class SellableEditor(BaseEditor):
         if result:
             self.sellable_proxy.update('price')
 
-
+    def setup_widgets(self):
+        raise NotImplementederror
 
     #
     # BaseEditor hooks
     #
 
 
-
-    def create_model(self, conn):
-        model = Product(connection=conn)
-        model.addFacet(ISellable, code='', description='', price=0.0, 
-                       connection=conn)
-        model.addFacet(IStorable, connection=conn)
-        return model
 
     def get_title_model_attribute(self, model):
         return ISellable(model).description
