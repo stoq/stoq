@@ -526,7 +526,7 @@ class SearchDialog(BasicDialog):
             
         if count:
             self.klist.add_list(objs)
-            self.klist.select_instance(objs[0])
+            self.klist.select(objs[0])
         self.update_widgets()
 
     def before_delete_items(self, items):
@@ -625,7 +625,7 @@ class SearchEditor(SearchDialog):
             # that's why I need to get them back here.
             rv = rv.get_adapted()
         if rv in self.klist:
-            self.klist.select_instance(rv)
+            self.klist.select(rv)
 
     def edit(self, widget, obj=None):
         if obj is None:
