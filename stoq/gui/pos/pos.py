@@ -179,13 +179,13 @@ class POSApp(AppWindow):
         sellable_item = sellable.add_sellable_item(self.sale, quantity=1.0,
                                                    base_price=sellable.price,
                                                    price=sellable.price)
-        self.order_list.add_instance(sellable_item)
+        self.order_list.append(sellable_item)
 
     def select_first_item(self):
         if len(self.order_list):
             # XXX Probably kiwi should handle this for us. Waiting for
             # support
-            self.order_list.select_instance(self.order_list[0])
+            self.order_list.select(self.order_list[0])
 
     def reset_order(self):
         self.sale = Sale(connection=self.conn, 
@@ -195,7 +195,7 @@ class POSApp(AppWindow):
         self.product_proxy.new_model(None, relax_type=True)
         items = self.order_list[:]
         for item in items:
-            self.order_list.remove_instance(item)
+            self.order_list.remove(item)
             table = type(item)
             table.delete(item.id, connection=self.conn)
         self.update_widgets()
@@ -274,12 +274,12 @@ class POSApp(AppWindow):
         qty = self.quantity.get_text()
         if qty:
             self.product_model.quantity = float(qty)
-            self.order_list.update_instance(self.product_proxy.model)
+            self.order_list.update(self.product_proxy.model)
         self._update_order_lbls()
 
     def on_remove_item_button__clicked(self, *args):
         item = self.product_model
-        self.order_list.remove_instance(item)
+        self.order_list.remove(item)
         self.product_proxy.new_model(None, relax_type=True)
         self.select_first_item()
         self.update_widgets()
@@ -322,9 +322,9 @@ class POSApp(AppWindow):
         if not service:
             return
         if service in self.order_list:
-            self.order_list.update_instance(service)
+            self.order_list.update(service)
         else:
-            self.order_list.add_instance(service)
+            self.order_list.append(service)
     
     def _on_products_action__clicked(self, *args):
         conn = new_transaction()
@@ -361,7 +361,7 @@ class POSApp(AppWindow):
         if not model:
             return
 
-        self.order_list.update_instance(model)
+        self.order_list.update(model)
         self._update_order_lbls()
 
     def on_checkout_button__clicked(self, *args):
