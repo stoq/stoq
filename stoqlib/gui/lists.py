@@ -99,16 +99,16 @@ class AdditionListSlave(SlaveDelegate):
         if not model:
             return
         if edit_mode or model in self.klist:
-            self.klist.update_instance(model)
+            self.klist.update(model)
             self.parent.on_edit_item(model)
         else:
-            self.klist.add_instance(model)
+            self.klist.append(model)
             self.parent.on_add_item(model)
 
         # As we have a selection extended mode for kiwi list, we 
         # need to unselect everything before select the new instance.
         self.klist.unselect_all()
-        self.klist.select_instance(model)
+        self.klist.select(model)
         self._update_widgets()
 
     def edit(self):
@@ -178,7 +178,7 @@ class AdditionListSlave(SlaveDelegate):
 
         else:
             for obj in objs:
-                self.klist.remove_instance(obj)
+                self.klist.remove(obj)
         self.klist.unselect_all()
         self._update_widgets()
 
