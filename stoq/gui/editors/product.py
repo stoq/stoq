@@ -40,6 +40,7 @@ from stoqlib.gui.dialogs import run_dialog
 from stoq.domain.person import PersonAdaptToSupplier
 from stoq.domain.product import (ProductSupplierInfo, Product,                                 
                                  ProductSellableItem)
+from stoq.domain.interfaces import ISellable, IStorable
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.lib.parameters import sysparam
 
@@ -230,7 +231,10 @@ class ProductEditor(SellableEditor):
         supplier_slave = ProductSupplierSlave(self, self.conn, self.model)
         self.attach_slave('product_supplier_holder', supplier_slave)
 
-
+    def setup_widgets(self):
+        self.notes_lbl.set_text('Product details')
+        self.stock_total_lbl.show() 
+        self.stock_lbl.show()
 
     #
     # ProductSupplierSlave hooks
@@ -252,6 +256,12 @@ class ProductEditor(SellableEditor):
         self.sellable_proxy.model.price = cost + ((markup / 100) * cost)
         self.sellable_proxy.update('price')
 
+    def create_model(self, conn):
+        model = Product(connection=conn)
+        model.addFacet(ISellable, code='', description='', price=0.0, 
+                       connection=conn)
+        model.addFacet(IStorable, connection=conn)
+        return model
 
 
 class ProductItemEditor(BaseEditor):

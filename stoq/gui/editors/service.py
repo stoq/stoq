@@ -22,6 +22,7 @@
 ##
 ## Author(s): Henrique Romano           <henrique@async.com.br>
 ##            Evandro Vale Miquelito    <evandro@async.com.br>
+##            Bruno Rafael Garcia       <brg@async.com.br>
 ##
 """
 stoq/gui/editors/category.py:
@@ -33,10 +34,12 @@ stoq/gui/editors/category.py:
 import gettext
 
 from stoqlib.gui.editors import BaseEditor
-
-from stoq.domain.service import ServiceSellableItem
+from stoq.domain.service import ServiceSellableItem, Service
+from stoq.gui.editors.sellable import SellableEditor
+from stoq.domain.interfaces import ISellable, IStorable
 
 _ = gettext.gettext
+
 
 class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
@@ -56,7 +59,6 @@ class ServiceItemEditor(BaseEditor):
         self.price.set_data_format('%.2f')
 
 
-
     #
     # BaseEditor hooks
     # 
@@ -69,3 +71,28 @@ class ServiceItemEditor(BaseEditor):
         self.set_widgets_format()
         self.add_proxy(self.model, self.widgets)
 
+
+class ServiceEditor(SellableEditor):
+    model_name = 'Service'
+    model_type = Service
+
+    def setup_widgets(self):
+        self.notes_lbl.set_text('Service details')
+        self.stock_total_lbl.hide()
+        self.stock_lbl.hide()
+
+
+
+    #
+    #BaseEditor hooks
+    #
+
+
+
+    def create_model(self, conn):
+        model = Service(connection=conn)
+        model.addFacet(ISellable, code='', description='', price=0.0, 
+                       connection=conn)
+        return model
+
+    

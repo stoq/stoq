@@ -50,6 +50,7 @@ from stoq.domain.product import ProductSellableItem
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
 from stoq.gui.search.sellable import SellableSearch
@@ -321,7 +322,16 @@ class POSApp(AppWindow):
             self.order_list.update(service)
         else:
             self.order_list.append(service)
-    
+   
+    def _on_services_action__clicked(self, *args): 
+       conn = new_transaction()
+       model = self.run_dialog(ServiceEditor, conn)
+       if model:
+           conn.commit()
+           return
+       rollback_and_begin(conn)
+       conn._connection.close()
+  
     def _on_products_action__clicked(self, *args):
         conn = new_transaction()
         model = self.run_dialog(ProductEditor, conn)
