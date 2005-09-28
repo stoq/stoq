@@ -106,12 +106,13 @@ class AbstractSellableItem(InheritableModel):
         # connection argument is not set properly there. Waiting for
         # SQLObject improvements.
         if not 'kw' in kw:
-            if not 'price' in kw:
-                raise TypeError('You should provide a price argument.')
-            if not 'base_price' in kw:
-                kw['base_price'] = kw['price']
-            if not 'quantity' in kw:
-                kw['quantity'] = 1.0
+            if 'base_price' in kw:
+                raise TypeError('You should not provide a base_price '
+                                'argument since it is set automatically')
+            if not 'sellable' in kw:
+                raise TypeError('You must provide a sellable argument')
+            base_price = kw['sellable'].get_price()
+            kw['base_price'] = base_price
         InheritableModel._create(self, id, **kw)
 
     def sell(self):
@@ -133,13 +134,16 @@ class AbstractSellableItem(InheritableModel):
     def get_total(self):
         return self.price * self.quantity
 
+    def get_price_string(self):
+        return get_formatted_price(self.price)
+
 
 class AbstractSellable(InheritableModelAdapter):
     """ A sellable (a product or a service, for instance). """
 
     __implements__ = ISellable, IContainer
 
-    sellable_table = None
+    sellableitem_table = None
 
     STATE_AVALIABLE = 0
     STATE_SOLD = 1
@@ -174,23 +178,23 @@ class AbstractSellable(InheritableModelAdapter):
                                   "instead.")
 
     def get_items(self):
-        if not self.sellable_table:
-            raise TypeError("Subclasses must provide a sellable_table"
+        if not self.sellableitem_table:
+            raise TypeError("Subclasses must provide a sellableitem_table"
                             " attribute")
         conn = self.get_connection()
-        table, parent = self.sellable_table, AbstractSellableItem
+        table, parent = self.sellableitem_table, AbstractSellableItem
         query = table.q.id == parent.q.sellableID
-        return self.sellable_table.select(query, connection=conn)
+        return self.sellableitem_table.select(query, connection=conn)
 
     def remove_item(self, item):
-        if not self.sellable_table:
-            raise TypeError("Subclasses must provide a sellable_table"
+        if not self.sellableitem_table:
+            raise TypeError("Subclasses must provide a sellableitem_table"
                             " attribute")
         conn = self.get_connection()
-        if not isinstance(item, self.sellable_table):
+        if not isinstance(item, self.sellableitem_table):
             raise TypeError("Item should be of type %s, got "
-                            % (self.sellable_table, type(item)))
-        self.sellable_table.delete(item.id, connection=conn)
+                            % (self.sellableitem_table, type(item)))
+        self.sellableitem_table.delete(item.id, connection=conn)
 
 
 
@@ -215,6 +219,14 @@ class AbstractSellable(InheritableModelAdapter):
                 return self.on_sale_price
         return self.price
 
+    def add_sellable_item(self, sale, quantity=1.0, price=None):
+        if not self.sellableitem_table:
+            raise ValueError('Child classes must define a sellableitem_table '
+                             'attribute')
+        price = price or self.get_price()
+        conn = self.get_connection()
+        return self.sellableitem_table(connection=conn, quantity=quantity,
+                                       sale=sale, sellable=self, price=price)
 
 
     #

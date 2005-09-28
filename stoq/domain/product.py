@@ -227,21 +227,8 @@ class ProductStockItem(AbstractStockItem):
 class ProductAdaptToSellable(AbstractSellable):
     """ A product implementation as a sellable facet. """
 
-    sellable_table = ProductSellableItem
+    sellableitem_table = ProductSellableItem
 
-
-
-    #
-    # Auxiliary methods
-    #
-
-
-
-    def add_sellable_item(self, sale, quantity, base_price, price):
-        conn = self.get_connection()
-        return ProductSellableItem(connection=conn, quantity=quantity,
-                                   base_price=base_price, price=price,
-                                   sale=sale, sellable=self)
 
 Product.registerFacet(ProductAdaptToSellable)
 

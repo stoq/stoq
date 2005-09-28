@@ -175,10 +175,7 @@ class POSApp(AppWindow):
             return
         table = type(sellable)
         sellable = table.get(sellable.id, connection=self.conn)
-        
-        sellable_item = sellable.add_sellable_item(self.sale, quantity=1.0,
-                                                   base_price=sellable.price,
-                                                   price=sellable.price)
+        sellable_item = sellable.add_sellable_item(self.sale)
         self.order_list.append(sellable_item)
 
     def select_first_item(self):
@@ -221,9 +218,8 @@ class POSApp(AppWindow):
         self.delivery_button.set_sensitive(has_client)
         model = self.order_list.get_selected()
         if model:
-            sellable = model.sellable
             self._update_product_widgets(model)
-            self.price.set_text(sellable.get_price_string())
+            self.price.set_text(model.get_price_string())
         else:
             self._update_product_widgets(self.product_proxy.model)
         self._update_order_lbls()
@@ -362,7 +358,7 @@ class POSApp(AppWindow):
             return
 
         self.order_list.update(model)
-        self._update_order_lbls()
+        self.update_widgets()
 
     def on_checkout_button__clicked(self, *args):
         #dialog not implemented yet

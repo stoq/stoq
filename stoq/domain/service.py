@@ -109,16 +109,7 @@ ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery)
 class ServiceAdaptToSellable(AbstractSellable):
     """ A service implementation as a sellable facet. """
 
-    sellable_table = ServiceSellableItem
+    sellableitem_table = ServiceSellableItem
 
-    #
-    # Auxiliary methods
-    #
-
-    def add_sellable_item(self, sale, quantity, base_price, price):
-        conn = self.get_connection()
-        return ServiceSellableItem(connection=conn, quantity=quantity,
-                                   base_price=base_price, price=price,
-                                   sale=sale, sellable=self)
 
 Service.registerFacet(ServiceAdaptToSellable)
