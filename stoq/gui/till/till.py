@@ -113,7 +113,7 @@ class TillApp(AppWindow):
         total_value = 0.00
 
         for item in items:
-            self.sale_list.add_instance(item)
+            self.sale_list.append(item)
             total_value += item.total
 
     #
