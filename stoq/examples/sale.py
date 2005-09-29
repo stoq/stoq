@@ -104,9 +104,7 @@ def create_sales():
         sale = Sale(connection=conn, till=till, client=clients[i], 
                     code='#%03d' % (i + 1))
         sellable_facet = ISellable(product_list[i], connection=conn)
-        sellable_facet.add_sellable_item(sale=sale, quantity=1,
-                                         base_price=sellable_facet.price,
-                                         price=sellable_facet.price)
+        sellable_facet.add_sellable_item(sale=sale)
 
         sale.total = sellable_facet.price
 

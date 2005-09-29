@@ -54,13 +54,14 @@ class DeliveryEditor(BaseEditor):
     gladefile = 'DeliveryEditor'
     size = (600, 500)
 
-    widgets = ('delivery_date',
-               'price',
-               'delivery_address',
-               'change_address_button', 
-               'additional_info_button',
-               'additional_info_label',
-               'addition_list_holder')
+    delivery_widgets = ('delivery_address',)
+    sellableitem_widgets = ('price',
+                            'delivery_date')
+    widgets = (('change_address_button', 
+                'additional_info_button',
+                'additional_info_label',
+                'addition_list_holder') + sellableitem_widgets +
+                delivery_widgets)
 
     def __init__(self, conn, model, sale=None, products=None):
         if not model:
@@ -159,7 +160,7 @@ class DeliveryEditor(BaseEditor):
         service = sysparam(conn).DELIVERY_SERVICE
         sellable = ISellable(service, connection=conn)
 
-        model = sellable.add_sellable_item(sale, 1, 0.00, 0.00)
+        model = sellable.add_sellable_item(sale)
         delivery = model.addFacet(IDelivery, connection=conn)
         map(delivery.add_item, self.products)
 
@@ -174,9 +175,9 @@ class DeliveryEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widgets_format()
-        self.add_proxy(model=IDelivery(self.model, connection=self.conn),
-                       widgets=('delivery_date', 'delivery_address'))
-        self.add_proxy(model=self.model, widgets=('price', ))
+        delivery = IDelivery(self.model, connection=self.conn)
+        self.add_proxy(delivery, self.delivery_widgets)
+        self.add_proxy(self.model, self.sellableitem_widgets)
 
     def setup_slaves(self):
         columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 
