@@ -261,6 +261,11 @@ class ProductEditor(SellableEditor):
         model.addFacet(ISellable, code='', description='', price=0.0, 
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
+        supplier = sysparam(conn).SUGGESTED_SUPPLIER
+        supplier_info = ProductSupplierInfo(connection=conn,
+                                            is_main_supplier=True,
+                                            supplier=supplier,
+                                            product=model)
         return model
 
 
