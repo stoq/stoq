@@ -197,3 +197,6 @@ class NoteEditor(BaseEditor):
         proxy = self.add_proxy(model=self.model, widgets=self.widgets)
 
 
+    def get_title_model_attribute(self, model):
+        # This is for BaseEditor compatibility
+        return self.title
