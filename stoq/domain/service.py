@@ -20,6 +20,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s): Henrique Romano           <henrique@async.com.br>
+##            Evandro Vale Miquelito    <evandro@async.com.br>
+##
 """
 stoq/domain/service.py:
     
@@ -61,9 +64,13 @@ class ServiceSellableItem(AbstractSellableItem):
     estimated_fix_date = DateTimeCol(default=None)
     completion_date = DateTimeCol(default=None)
     
+
+    
     #
     # Auxiliary methods
     #
+
+
 
     def sell(self):
         conn = self.get_connection()
@@ -85,9 +92,13 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
 
     address = StringCol(default='')
 
+
+
     #
     # IContainer implementation
     #
+
+
 
     def add_item(self, item):
         if not isinstance(item, ProductSellableItem):
