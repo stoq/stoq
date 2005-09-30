@@ -20,8 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
-interface/pos/app.py:
+stoq/gui/pos/app.py:
 
     Main callsite for POS application    
 """
