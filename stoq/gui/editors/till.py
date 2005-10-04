@@ -24,7 +24,7 @@
 ##                   Evandro Vale Miquelito     <evandro@async.com.br>
 ##
 """
-stoq/gui/editors:
+stoq/gui/editors/till.py:
 
     Editors implementation for open/close operation on till operation.
 """
@@ -35,6 +35,7 @@ from stoqlib.gui.editors import BaseEditor
 from kiwi.datatypes import ValidationError
 
 from stoq.domain.till import Till
+from stoq.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 
@@ -49,7 +50,7 @@ class TillOpeningEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
 
     def _setup_widgets(self):
-        self.initial_cash_amount.set_data_format('%.2f')
+        self.initial_cash_amount.set_data_format(get_price_format_str())
 
 
 
@@ -82,7 +83,7 @@ class TillClosingEditor(BaseEditor):
 
     def _setup_widgets(self):
         for widget in (self.balance_to_send, self.final_cash_amount):
-            widget.set_data_format('%.2f')
+            widget.set_data_format(get_price_format_str())
 
     def update_final_cash_amount(self):
         balance_to_send = self.model.balance_sent or 0.0

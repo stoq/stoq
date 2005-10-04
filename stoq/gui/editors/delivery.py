@@ -39,7 +39,7 @@ from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs import run_dialog
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import format_quantity
+from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.sale import Sale
@@ -81,7 +81,7 @@ class DeliveryEditor(BaseEditor):
 
 
     def set_widgets_format(self):
-        self.price.set_data_format('%.02f')
+        self.price.set_data_format(get_price_format_str())
 
     def update_widgets(self):
         if self.model.notes:

@@ -25,7 +25,7 @@
 ##            Bruno Rafael Garcia       <brg@async.com.br>
 ##
 """
-stoq/gui/editors/category.py:
+stoq/gui/editors/service.py:
 
     Service item editor implementation
 """
@@ -34,9 +34,11 @@ stoq/gui/editors/category.py:
 import gettext
 
 from stoqlib.gui.editors import BaseEditor
+
 from stoq.domain.service import ServiceSellableItem, Service
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.domain.interfaces import ISellable, IStorable
+from stoq.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 
@@ -56,7 +58,7 @@ class ServiceItemEditor(BaseEditor):
         self.service_name_label.set_bold(True)
 
     def set_widgets_format(self):
-        self.price.set_data_format('%.2f')
+        self.price.set_data_format(get_price_format_str())
 
 
     #
@@ -84,7 +86,7 @@ class ServiceEditor(SellableEditor):
 
 
     #
-    #BaseEditor hooks
+    # BaseEditor hooks
     #
 
 
