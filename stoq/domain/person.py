@@ -30,6 +30,7 @@ import gettext
 
 from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol, 
                        ForeignKey, MultipleJoin, BoolCol)
+from sqlobject.sqlbuilder import AND
 from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 
@@ -37,7 +38,8 @@ from stoq.lib.runtime import get_connection
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
-                                    ISalesPerson)
+                                    ISalesPerson, IBankBranch,
+                                    ICreditProvider, IActive)
 
 _ = gettext.gettext
 
@@ -344,15 +346,59 @@ Person.registerFacet(PersonAdaptToCompany)
 class PersonAdaptToClient(ModelAdapter):
     """ A client facet of a person. """
     
-    __implements__ = IClient, 
+    __implements__ = IClient, IActive
 
     (STATUS_OK, 
      STATUS_INDEBTED, 
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
 
+    statuses = {STATUS_OK:          _('OK'),
+                STATUS_INDEBTED:    _('Indebted'),
+                STATUS_INSOLVENT:   _('Insolvent'),
+                STATUS_INACTIVE:    _('Inactive')}
+
     status = IntCol(default=STATUS_OK)
     days_late = IntCol(default=0)
+
+
+
+    #
+    # IActive implementation
+    #
+
+
+
+    @property
+    def is_active(self):
+        return self.status == self.STATUS_OK
+
+    def inactivate(self):
+        assert self.is_active, ('This client is already inactive')
+        self.status = self.STATUS_INACTIVE
+
+    def activate(self):
+        assert not self.is_active, ('This client is already active')
+        self.status = self.STATUS_OK
+
+
+
+    #
+    # Auxiliar methods
+    #
+
+
+
+    def get_status_string(self):
+        return self.statuses[self.status]
+
+    @classmethod
+    def get_active_clients(cls, conn):
+        """Return a list of active clients.
+        An active client is a person who are authorized to make new sales
+        """
+        query = cls.q.status == cls.STATUS_OK
+        return cls.select(query, connection=conn)
                     
 Person.registerFacet(PersonAdaptToClient)
 
@@ -433,6 +479,109 @@ class PersonAdaptToBranch(ModelAdapter):
     manager = ForeignKey('Person', default=None)
                     
 Person.registerFacet(PersonAdaptToBranch)
+
+
+class PersonAdaptToBankBranch(ModelAdapter):
+    """ A bank branch facet of a person. """
+    
+    __implements__ = IBankBranch, IActive
+
+    is_active= BoolCol(default=True)
+    bank = ForeignKey('Bank')
+
+
+
+    #
+    # IActive implementation
+    #
+
+
+
+    def inactivate(self):
+        assert self.is_active, ('This bank branch is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This bank branch is already active')
+        self.is_active = True
+
+
+Person.registerFacet(PersonAdaptToBankBranch)
+
+
+class PersonAdaptToCreditProvider(ModelAdapter):
+    """ A credit provider facet of a person. """
+    
+    __implements__ = ICreditProvider, IActive
+
+    (PROVIDER_CARD,
+     PROVIDER_FINANCE) = range(2)
+
+    provider_types = {PROVIDER_CARD:        _('Card Provider'),
+                      PROVIDER_FINANCE:   _('Finance Provider')}
+
+    is_active = BoolCol(default=True)
+    provider_type = IntCol(default=PROVIDER_CARD)
+    short_name = StringCol()
+    provider_id = StringCol(default='')
+    open_contract_date = DateTimeCol()
+
+
+
+    #
+    # ICreditProvider implementation
+    #
+
+
+
+    @classmethod
+    def get_card_providers(cls, conn):
+        return cls._get_providers(conn, cls.PROVIDER_CARD)
+        
+    @classmethod
+    def get_finance_companies(cls, conn):
+        return cls._get_providers(conn, cls.PROVIDER_FINANCE)
+    
+
+    
+    #
+    # IActive implementation
+    #
+
+
+
+    def inactivate(self):
+        assert self.is_active, ('This provider is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This bank branch is already active')
+        self.is_active = True
+
+
+    
+    #
+    # Auxiliar methods
+    #
+
+
+
+    @classmethod
+    def _get_providers(cls, conn, provider_type=None):
+        """Get a list of all credit providers.
+        If provider_type is provided, we will only search for this type.
+        Available types are these constants: PROVIDER_CARD and
+                                             PROVIDER_FINANCE
+        """
+        q1 = cls.q.is_active == True
+        if provider_type is not None:
+            q2 = cls.q.provider_type == provider_type
+            query = AND(q1, q2)
+        else:
+            query = q1
+        return cls.select(query, connection=conn)
+
+Person.registerFacet(PersonAdaptToCreditProvider)
 
 
 class PersonAdaptToSalesPerson(ModelAdapter):

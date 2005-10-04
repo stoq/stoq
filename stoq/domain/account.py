@@ -39,11 +39,27 @@ from stoq.lib.runtime import get_connection
 
 
 
+class Bank(Domain):
+    """A definition of a bank. A bank can have many branches associated with
+    it.
+    Notes:
+        name                = the name of the bank
+        short_name          = a short idenfier for the bank
+        compensation_code   = some financial operations require this code.
+                              It is specific for each bank.
+    """
+    name = StringCol()
+    short_name = StringCol()
+    compensation_code = StringCol()
+
+
 class BankAccount(Domain):
-    """ A bank account definition """
-
+    """ A bank account definition 
+    Notes:
+        name    = an identifier for this bank account
+        branch  = the bank branch where this account lives
+        account = an identifier of this account in the branch
+    """
     name = StringCol(default=None)
-    agency = StringCol(default=None)
+    branch = StringCol(default=None)
     account = StringCol(default=None)
-
-

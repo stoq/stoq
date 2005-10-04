@@ -394,9 +394,136 @@ class IPaymentGroup(ConnInterface):
                            'Person',
                            'The thirdparty associated to this payment group.')
 
+    def set_thirdparty(person):
+        """Define a new thirdparty. Must of times this is a person adpter
+        instance defined by IPaymentGroup adapters. Note that person also
+        must implement a facet defined in each adapter"""
+
+    def get_thirdparty():
+        """Return the thirdparty attached to the payment group"""
+
+    def get_balance():
+        """The total amount of all the payments this payment group holds"""
+
+    def add_payment():
+        """Add a new payment for this group"""
+
+
 class IDelivery(ConnInterface):
     """ Specification of a Delivery interface for a sellable. """
 
     address = Attribute('address',
 			'str',
 			'The delivery address.')
+
+
+class IMoneyPM(ConnInterface):
+    """Defines a money payment method"""
+
+    def get_change():
+        """Return the difference between the total amount paid and the total
+        sale value
+        """
+
+
+class ICheckPM(ConnInterface):
+    """Defines a check payment method"""
+
+    def get_check_data_by_payment(payment):
+        """Return a CheckData instance for a certain payment"""
+
+
+class IBillPM(ConnInterface):
+    """Defines a bill payment method"""
+
+    def get_available_bill_accounts():
+        """Get all the available bill accounts for the current Bill type"""
+
+
+class IFinancePM(ConnInterface):
+    """Defines a finance payment method"""
+
+    def get_finance_companies():
+        """Get all the finance companies for a certain method"""
+    
+
+class ICardPM(ConnInterface):
+    """Defines a card payment method"""
+
+    def get_credit_card_providers():
+        """Get all the credit providers for a certain method"""
+
+
+class ITillOperation(ConnInterface):
+    """Basic payment operation like adding a credit and a debit"""
+
+    def add_debit(value, reason, category, date=None):
+        """Add a payment which represents a debit"""
+
+    def add_credit(value, reason, category, date=None):
+        """Add a payment which represents a credit"""
+
+    def add_complement(value, reason, category, date=None):
+        """Add a cash value which is a till complement"""
+
+    def get_cash_advance(value, reason, category, employee, date=None):
+        """Get the total amount of cash advance"""
+
+    def cancel_payment(payment, reason, date=None):
+        """Cancel a payment in the current till"""
+
+
+class IPaymentDevolution(ConnInterface):
+    """A devolution payment operation"""
+
+    def get_devolution_date():
+        """Get the day when the payment was returned"""
+
+
+class IPaymentDeposit(ConnInterface):
+    """A deposit payment operation"""
+
+    def get_deposit_date():
+        """Get the day when the payment was paid"""
+
+
+class IBankBranch(ConnInterface):
+    branch = Attribute('branch','Bank',
+                       'A bank branch definition')
+
+
+class ICreditProvider(ConnInterface):
+
+    provider_type = Attribute('provider_type','int',
+                              'This attribute must be either'
+                              'provider card or provider '
+                              'finance')
+
+    short_name  = Attribute('short_name','str',
+                            'A short description of this provider')
+
+    provider_id = Attribute('provider_id','str',
+                            'An identification for this provider')
+
+    open_contract_date = Attribute('open_contract_date','date',
+                                   'The date when we start working with '
+                                   'this provider')
+
+    def get_card_providers(conn):
+        """Return a list of credit card providers"""
+
+    def get_finance_companies(conn):
+        """Return a list of finance companies"""
+
+
+class IActive(ConnInterface):
+    """It defines if a certain object can be active or not"""
+
+    is_active = Attribute('is_active', 'bool', 
+                          'This attribute defines if the object is active')
+
+    def inactivate():
+        """Inactivate an active object"""
+
+    def activate():
+        """Activate an inactive object"""
