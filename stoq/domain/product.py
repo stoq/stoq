@@ -186,8 +186,8 @@ class ProductSellableItem(AbstractSellableItem):
         # Update the stock
         storable_item.decrease_stock(self.quantity, branch)
 
-        # The function get_balance returns the current amount of items in the
-        # stock. If get_balance == 0 we have no more stock for this product
+        # The function get_full_balance returns the current amount of items in the
+        # stock. If get_full_balance == 0 we have no more stock for this product
         # and we need to set it as sold.
         logic_qty = storable_item.get_logic_balance()
         balance = storable_item.get_full_balance() - logic_qty
@@ -367,7 +367,7 @@ class ProductAdaptToStorable(ModelAdapter):
         logic_qty = self.get_logic_balance(branch)
         balance = self.get_full_balance(branch) - logic_qty
         qty_ok =  quantity <= balance
-        logic_qty_ok = quantity <= self.get_balance(branch)
+        logic_qty_ok = quantity <= self.get_full_balance(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
             msg = ('Quantity to sell is greater than the available '

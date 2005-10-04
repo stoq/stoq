@@ -36,11 +36,12 @@ from sqlobject import IntCol, DateTimeCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import TillError
 
-from stoq.domain.base import Domain
-from stoq.domain.interfaces import IPaymentGroup, IBranch
-from stoq.domain.sale import Sale
-from stoq.domain.payment import AbstractPaymentGroup, Payment
 from stoq.lib.parameters import sysparam
+from stoq.domain.base import Domain
+from stoq.domain.sale import Sale
+from stoq.domain.payment.base import AbstractPaymentGroup, Payment
+from stoq.domain.interfaces import (IPaymentGroup, IBranch,
+                                    ITillOperation)
 
 
 
@@ -51,7 +52,34 @@ from stoq.lib.parameters import sysparam
 
 
 class Till(Domain):
-    STATUS_PENDING, STATUS_OPEN, STATUS_CLOSED = range(3)
+    """A definition of till operation.
+    
+    Notes:
+
+        STATUS_PENDING      =   this till have some sales unconfirmed when
+                                closing the till of the last day but it's
+                                not opened yet.
+        STATUS_OPEN         =   this till is opened and we can make sales for
+                                it
+
+        STATUS_CLOSED       =   end of the day, the till is closed and no more
+                                financial operations can be done in this store
+
+        balance_sent        =   the amount total sent to the warehouse or main
+                                store after closing the till
+
+        initial_cash_amount =   the amount total we have in the moment we
+                                are opening the till. This value is very
+                                useful when change values are need
+
+        branch              =   a till operation is always associated with a
+                                a branch which can means a store or a
+                                warehouse
+    """
+
+    (STATUS_PENDING, 
+     STATUS_OPEN, 
+     STATUS_CLOSED) = range(3)
 
     status = IntCol(default=STATUS_PENDING)
     balance_sent = FloatCol(default=None)
@@ -74,7 +102,7 @@ class Till(Domain):
                     Sale.q.tillID == self.id)
         result = Sale.select(query, connection=conn)
         payments = []
-        money_payment_method = sysparam(conn).MONEY_PAYMENT_METHOD
+        money_payment_method = sysparam(conn).METHOD_MONEY
         for sale in result:
             sale_pg_facet = IPaymentGroup(sale)
             assert sale_pg_facet, ("The sale associated to this "
@@ -104,7 +132,7 @@ class Till(Domain):
         conn = self.get_connection()
         sales = Sale.selectBy(till=self, connection=conn)
 
-        money_payment_method = sysparam(conn).MONEY_PAYMENT_METHOD
+        money_payment_method = sysparam(conn).METHOD_MONEY
         for sale in sales:
             for payment in IPaymentGroup(sale).get_items():
                 if payment.method is money_payment_method:
@@ -130,19 +158,34 @@ class Till(Domain):
 
 
 class TillAdaptToPaymentGroup(AbstractPaymentGroup):
-    __implements__ = IPaymentGroup
+    __implements__ = IPaymentGroup, ITillOperation
+
+
+
+    #
+    # ITillOperation implementation
+    #
+
+
+
+    def add_debit(self, value, reason, category, date=None):
+        payment = self.add_payment(value, reason, category, date)
+
+        return payment.addFacet(IOutPayment)
+
+    def add_credit(self, value, reason, category, date=None):
+        payment = self.add_payment(value, reason, category, date)
+        
+        return payment.addFacet(IInPayment)
 
     def add_complement(self, value, reason, category, date=None):
-        # TODO: implement this method
-        pass
+        raise NotImplementedError
 
     def get_cash_advance(self, value, reason, category, employee, date=None):
-        # TODO: implement this method
-        pass
+        raise NotImplementedError
 
-    def get_cancel_payment(self, payment):
-        # TODO: implement this method
-        pass
+    def cancel_payment(self, payment, reason, date=None):
+        raise NotImplementedError
 
 Till.registerFacet(TillAdaptToPaymentGroup)
 
