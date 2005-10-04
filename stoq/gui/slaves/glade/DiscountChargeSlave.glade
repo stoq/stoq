@@ -1,0 +1,256 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="DiscountChargeSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkHBox" id="hbox6">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel9">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Discount:</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Charge:</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">5</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_perc_ck">
+                                <property name="data_type">str</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes"></property>
+                            </widget>
+                            <packing>
+                                <property name="x_options">shrink</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_value_ck">
+                                <property name="active">False</property>
+                                <property name="data_type">str</property>
+                                <property name="group">discount_perc_ck</property>
+                                <property name="is_focus">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill | shrink</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox2">
+                                <property name="spacing">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="discount_perc">
+                                        <property name="data_type">float</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">discount_percentage</property>
+                                        <property name="width_request">80</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                        <property name="data_type">str</property>
+                                        <property name="label" context="yes" translatable="yes">%</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox4">
+                                <property name="spacing">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel8">
+                                        <property name="data_type">str</property>
+                                        <property name="label" context="yes" translatable="yes">R$</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="discount_value">
+                                        <property name="data_type">float</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">discount_value</property>
+                                        <property name="width_request">80</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label4">
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">2</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_perc_ck">
+                                <property name="data_type">str</property>
+                                <property name="is_focus">True</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="x_options">shrink</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_value_ck">
+                                <property name="active">False</property>
+                                <property name="data_type">str</property>
+                                <property name="group">charge_perc_ck</property>
+                                <property name="is_focus">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">shrink</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox3">
+                                <property name="spacing">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="charge_perc">
+                                        <property name="data_type">float</property>
+                                        <property name="model_attribute">charge_percentage</property>
+                                        <property name="width_request">80</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
+                                        <property name="data_type">str</property>
+                                        <property name="label" context="yes" translatable="yes">%</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox5">
+                                <property name="spacing">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
+                                        <property name="data_type">str</property>
+                                        <property name="label" context="yes" translatable="yes">$</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="charge_value">
+                                        <property name="data_type">float</property>
+                                        <property name="model_attribute">charge_value</property>
+                                        <property name="width_request">80</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

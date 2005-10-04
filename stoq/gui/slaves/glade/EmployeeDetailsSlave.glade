@@ -699,8 +699,8 @@ Level:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="agency">
-                                        <property name="model_attribute">agency</property>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="branch">
+                                        <property name="model_attribute">branch</property>
                                         <property name="events"></property>
                                         <property name="can_focus">True</property>
                                         <property name="data_type">str</property>
@@ -728,7 +728,8 @@ Level:</property>
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="bank_agency_label">
-                                        <property name="label" context="True" translatable="yes">Agency:</property>
+                                        <property name="label"
+                                        context="True" translatable="yes">Branch:</property>
                                         <property name="events"></property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
