@@ -20,10 +20,12 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):       Henrique Romano     <henrique@async.com.br>
+## Author(s):       Henrique Romano             <henrique@async.com.br>
+##                  Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 stoq/gui/till/till.py:
+
     Implementation of till application.
 """
 
@@ -41,9 +43,9 @@ from stoqlib.database import rollback_and_begin
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
-from stoq.domain.sellable import get_formatted_price
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
+from stoq.lib.validators import get_formatted_price
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 
@@ -63,13 +65,11 @@ class TillApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.conn = new_transaction()
-        self._setup_widgets()
         self._setup_slaves()
+        self._setup_widgets()
 
     def _setup_widgets(self):
         self._update_widgets()
-        # TODO: Waiting for bug #1862
-        self.confirm_order_button.set_sensitive(False)
         # TODO: Implement Current Till Operation dialog
         self.CurrentTill.set_sensitive(False)
 
@@ -77,6 +77,8 @@ class TillApp(AppWindow):
         has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
+        has_sales = len(self.sale_list) > 0
+        self.confirm_order_button.set_sensitive(has_sales)
 
     def _setup_slaves(self):
         list_slave = BaseListSlave(columns=self.get_columns())
@@ -88,19 +90,24 @@ class TillApp(AppWindow):
         self.searchbar.search_items()
         self.attach_slave('searchbar_holder', self.searchbar)
 
+
+
     #
     # BaseListSlave hooks
     #
 
+
+
     def get_columns(self):
-        return [Column('code', title=_('Order'), width=100, data_type=int,
-                       sorted=True),
+        return [Column('order_number', title=_('Order'), width=100, 
+                       data_type=int, sorted=True),
                 Column('open_date', title=_('Date'), width=120, 
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
                                  data_type=str, obj_field='client._original'),
-                Column('total', title=_('Total'), width=150, data_type=float,
-                       justify=gtk.JUSTIFY_RIGHT, format='%.2f')]
+                Column('total_sale_amount', title=_('Total'), width=150, 
+                       data_type=float, justify=gtk.JUSTIFY_RIGHT, 
+                       format='%.2f')]
 
     def get_extra_query(self):
         q1 = Sale.q.clientID == PersonAdaptToClient.q.id
@@ -108,17 +115,23 @@ class TillApp(AppWindow):
         q3 = Sale.q.status == Sale.STATUS_OPENED
         return AND(q1, q2, q3)
 
-    def update_klist(self, items=[]):
+    def update_klist(self, sales=[]):
+        rollback_and_begin(self.conn)
         self.sale_list.clear()
-        total_value = 0.00
+        for sale in sales:
+            # Since search bar change the connection internally we must get
+            # the objects back in our main connection
+            obj = Sale.get(sale.id, connection=self.conn)
+            self.sale_list.append(obj)
+        self._update_widgets()
 
-        for item in items:
-            self.sale_list.append(item)
-            total_value += item.total
+
 
     #
     # Kiwi callbacks
     #
+
+
 
     def open_till(self, *args):
         rollback_and_begin(self.conn)
@@ -173,7 +186,12 @@ class TillApp(AppWindow):
                         branch=sysparam(self.conn).CURRENT_BRANCH)
         for sale in opened_sales:
             sale.till = new_till
-
         self.conn.commit()
 
-
+    def on_confirm_order_button__clicked(self, *args):
+        rollback_and_begin(self.conn)
+        # TODO Call SaleWizard dialog and let the user change the sale here
+        sale = self.sale_list.get_selected()
+        sale.confirm()
+        self.conn.commit()
+        self.searchbar.search_items()
