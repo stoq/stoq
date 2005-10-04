@@ -40,19 +40,20 @@ from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
 
 from stoq.gui.application import AppWindow
-from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import format_quantity
+from stoq.lib.runtime import new_transaction, get_current_user
+from stoq.lib.validators import format_quantity, get_formatted_price
 from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellable, get_formatted_price
+from stoq.domain.sellable import AbstractSellable
 from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.till import get_current_till_operation
-from stoq.domain.interfaces import ISellable
+from stoq.domain.interfaces import ISellable, ISalesPerson
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
+from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -91,13 +92,17 @@ class POSApp(AppWindow):
                             "sales."),
                           _("Error"))
             self.app.shutdown()
-
         self._setup_slaves()
         self._setup_signals()
         self._setup_proxies()
         self._setup_widgets()
         self.update_widgets()
         self.reset_order()
+
+    def _delete_sellable_item(self, item):
+        self.order_list.remove_instance(item)
+        table = type(item)
+        table.delete(item.id, connection=self.conn)
 
     def _setup_slaves(self):
         order_list_slave = BaseListSlave(parent=self)
@@ -146,9 +151,7 @@ class POSApp(AppWindow):
         if not has_model:
             self.product.set_text(_('No product selected'))
             self.product.set_color('DarkGray')
-            
             self.price.hide()
-
             self.quantity.set_text('0')
             self.quantity.set_sensitive(False)
         else:
@@ -163,8 +166,7 @@ class POSApp(AppWindow):
         person = self.run_dialog(ClientSearch, parent_conn=conn)
         if person:
             self.person_proxy.new_model(person, relax_type=True)
-            self.sale.set_client(person)
-
+            self.sale.update_client(person)
         self.update_widgets()
         rollback_and_begin(conn)
 
@@ -186,16 +188,15 @@ class POSApp(AppWindow):
             self.order_list.select(self.order_list[0])
 
     def reset_order(self):
-        self.sale = Sale(connection=self.conn, 
-                         till=get_current_till_operation(self.conn), 
-                         client=None)
+        rollback_and_begin(self.conn)
+        user = get_current_user()
+        till = get_current_till_operation(self.conn)
+        salesperson = ISalesPerson(user.get_adapted(), connection=self.conn)
+        self.sale = Sale(connection=self.conn, till=till, 
+                         salesperson=salesperson)
         self.person_proxy.new_model(None, relax_type=True)
         self.product_proxy.new_model(None, relax_type=True)
-        items = self.order_list[:]
-        for item in items:
-            self.order_list.remove(item)
-            table = type(item)
-            table.delete(item.id, connection=self.conn)
+        self.order_list.clear()
         self.update_widgets()
         self._update_order_lbls()
 
@@ -209,8 +210,10 @@ class POSApp(AppWindow):
 
     def update_widgets(self):
         """Hook called by BaseListSlave"""
+        has_sellables = len(self.order_list[:]) >= 1
         has_client = bool(self.person_proxy.model)
         self.client_details_button.set_sensitive(has_client)
+        self.checkout_button.set_sensitive(has_sellables)
         if not has_client:
             self.client_name.set_text('Not selected')
             self.client_name.set_color('red')
@@ -276,7 +279,7 @@ class POSApp(AppWindow):
 
     def on_remove_item_button__clicked(self, *args):
         item = self.product_model
-        self.order_list.remove(item)
+        self._delete_sellable_item(item)
         self.product_proxy.new_model(None, relax_type=True)
         self.select_first_item()
         self.update_widgets()
@@ -371,5 +374,6 @@ class POSApp(AppWindow):
         self.update_widgets()
 
     def on_checkout_button__clicked(self, *args):
-        #dialog not implemented yet
-        pass
+        if self.run_dialog(SaleWizard, self.conn, self.sale):
+            self.conn.commit()
+            self.reset_order()
