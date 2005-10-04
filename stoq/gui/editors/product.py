@@ -42,6 +42,7 @@ from stoq.domain.product import (ProductSupplierInfo, Product,
                                  ProductSellableItem)
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.gui.editors.sellable import SellableEditor
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.parameters import sysparam
 
 _ = gettext.gettext
@@ -108,7 +109,7 @@ class ProductSupplierEditor(BaseEditor):
         self.new_supplier_button.set_sensitive(False)
 
     def set_widget_formats(self):
-        self.base_cost.set_data_format('%.02f')
+        self.base_cost.set_data_format(get_price_format_str())
 
     def setup_combos(self):
         table = PersonAdaptToSupplier
@@ -307,7 +308,7 @@ class ProductItemEditor(BaseEditor):
         if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
             self.hide_price_fields()
             return
-        self.price.set_data_format('%.02f')
+        self.price.set_data_format(get_price_format_str())
 
     def on_confirm(self):
         # XXX: this editor must use non-persistent objects. In this method
