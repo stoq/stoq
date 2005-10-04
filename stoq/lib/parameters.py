@@ -56,9 +56,21 @@ Current System parameters:
                                                    get as a suggestion when
                                                    adding a new
                                                    SellableCategory object.
+                                                   
+    * DEFAULT_PAYMENT_DESTINATION(PaymentDestination): A default payment
+                                                       destination which
+                                                       will be used for all
+                                                       the created payments
+                                                       until the user change
+                                                       the destination of
+                                                       each payment method.
 
-    * MONEY_PAYMENT_METHOD(PaymentMethod): Definition of the money payment 
-                                           method.
+    * BASE_PAYMENT_METHOD(PaymentMethod): The base payment method which can
+                                          easily be converted to other methods 
+                                          like check and bill.
+
+    * METHOD_MONEY(PMAdaptToMoney): Definition of the money payment 
+                                    method.
 
     * DELIVERY_SERVICE(Service): The default delivery service
                                  to the system.
@@ -94,6 +106,8 @@ Current System parameters:
 
     * STOCK_BALANCE_PRECISION(integer): precision for stock balances.
 
+    * PAYMENT_PRECISION(integer): precision for payment values.
+
     * HAS_DELIVERY_MODE(integer): If this branch works with service
                                   delivery.
 
@@ -107,6 +121,21 @@ Current System parameters:
 
     * MAX_SEARCH_RESULTS(integer): The maximum number of results we must
                                    show after searching in a SearchBar.
+
+    * MANDATORY_INTEREST_CHARGE(integer): Once this paramter is set, the
+                                          charge of monthly interest is
+                                          mandatory for every payment
+
+    * COMPARISON_FLOAT_TOLERANCE(float): This is useful when performin 
+                                         comparison between two float 
+                                         numbers. 
+                                         If abs(numberA - numberB) = 
+                                         COMPARISON_FLOAT_TOLERANCE
+                                         the two numbers can be considerer
+
+    * CONFIRM_SALES_ON_TILL(integer): Once this parameter is set, the sales
+                                      confirmation are only made on till
+                                      application
 """
     
 import gettext
@@ -117,7 +146,9 @@ from twisted.python.reflect import namedAny
 from kiwi.python import ClassInittableObject
 
 from stoq.domain.base import Domain, AbstractModel
-from stoq.domain.interfaces import ISupplier, IBranch, ICompany, ISellable
+from stoq.domain.interfaces import (ISupplier, IBranch, ICompany, ISellable,
+                                    IMoneyPM, ICheckPM, IBillPM, ICardPM,
+                                    IFinancePM)
 from stoq.lib.runtime import get_connection, new_transaction
 
 
@@ -162,29 +193,37 @@ class ParameterAccess(ClassInittableObject):
     # New parameters must always be defined here
     constants = [# Adding constants
                  ParameterAttr('USE_LOGIC_QUANTITY', int, 
-                               initial=1),
+                               initial=True),
                  ParameterAttr('MAX_LATE_DAYS', int, 
                                initial=30),
                  ParameterAttr('SELLABLE_PRICE_PRECISION', int, 
                                initial=2),
                  ParameterAttr('HAS_STOCK_MODE', int, 
-                               initial=1),
+                               initial=True),
                  ParameterAttr('HAS_DELIVERY_MODE', int, 
-                               initial=1),
+                               initial=True),
                  ParameterAttr('STOCK_BALANCE_PRECISION', int, 
                                initial=2),
+                 ParameterAttr('PAYMENT_PRECISION', int, 
+                               initial=2),
                  ParameterAttr('EDIT_SELLABLE_PRICE', int, 
-                               initial=1),
+                               initial=True),
                  ParameterAttr('ACCEPT_ORDER_PRODUCTS', int, 
-                               initial=1),
+                               initial=True),
                  ParameterAttr('MAX_SEARCH_RESULTS', int, 
                                initial=600),
+                 ParameterAttr('COMPARISON_FLOAT_TOLERANCE', float, 
+                               initial=0.02),
                  ParameterAttr('CITY_SUGGESTED', str, 
                                initial='Belo Horizonte'),
                  ParameterAttr('STATE_SUGGESTED', str, 
                                initial='MG'),
                  ParameterAttr('COUNTRY_SUGGESTED', str, 
                                initial='Brasil'),
+                 ParameterAttr('CONFIRM_SALES_ON_TILL', int, 
+                               initial=False),
+                 ParameterAttr('MANDATORY_INTEREST_CHARGE', int, 
+                               initial=False),
 
                  # Adding objects
                  ParameterAttr('SUGGESTED_SUPPLIER', 
@@ -195,12 +234,17 @@ class ParameterAccess(ClassInittableObject):
                                'sellable.BaseSellableCategory'),
                  ParameterAttr('DEFAULT_EMPLOYEE_POSITION', 
                                'person.EmployeePosition'),
-                 ParameterAttr('MONEY_PAYMENT_METHOD', 
-                               'payment.PaymentMethod'),
+                 ParameterAttr('DEFAULT_PAYMENT_DESTINATION', 
+                               'payment.destination.PaymentDestination'),
+                 ParameterAttr('BASE_PAYMENT_METHOD', 
+                               'payment.methods.PaymentMethod'),
+                 ParameterAttr('METHOD_MONEY', 
+                               'payment.methods.PMAdaptToMoney'),
                  ParameterAttr('DELIVERY_SERVICE', 
                                'service.Service'),
                  ParameterAttr('CURRENT_WAREHOUSE', 
                                'person.PersonAdaptToCompany')]
+
     _cache = {}
 
     def __init__(self, conn):
@@ -251,7 +295,12 @@ class ParameterAccess(ClassInittableObject):
         for obj in constants:
             if self.get_parameter_by_field(obj.key, obj.type):
                 continue
-            self.set_schema(obj.key, obj.initial)
+            if obj.type is int:
+                # Convert Bool to int here
+                value = int(obj.initial)
+            else:
+                value = obj.initial
+            self.set_schema(obj.key, value)
 
         # Creating system objects
         # When creating new methods for system objects creation add them 
@@ -261,7 +310,8 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_employee_position()
         self.ensure_current_branch()
         self.ensure_current_warehouse()
-        self.ensure_default_payment_method()
+        self.ensure_payment_destination()
+        self.ensure_payment_methods()
         self.ensure_delivery_service()
 
 
@@ -331,14 +381,39 @@ class ParameterAccess(ClassInittableObject):
                             connection=self.conn)
         self.set_schema(key, person_obj.id)
 
-    def ensure_default_payment_method(self):
-        from stoq.domain.payment import PaymentMethod
-        key = "MONEY_PAYMENT_METHOD"
+    def ensure_payment_destination(self):
+        # Note that this method must always be called after
+        # ensure_current_branch
+        from stoq.domain.payment.destination import StoreDestination
+        key = "DEFAULT_PAYMENT_DESTINATION"
+        if self.get_parameter_by_field(key, StoreDestination):
+            return
+        branch = self.CURRENT_BRANCH
+        pm = StoreDestination(description=_('Default Store Destination'),
+                              branch=branch,
+                              connection=self.conn)
+        self.set_schema(key, pm.id)
+
+    def ensure_payment_methods(self):
+        from stoq.domain.payment.methods import PaymentMethod
+        key = "METHOD_MONEY"
         if self.get_parameter_by_field(key, PaymentMethod):
             return
+        destination = self.DEFAULT_PAYMENT_DESTINATION
+        pm = PaymentMethod(connection=self.conn)
+        for interface in [IMoneyPM, ICheckPM, IBillPM]:
+            pm.addFacet(interface, connection=self.conn,
+                        destination=destination)
+        pm.addFacet(ICardPM, connection=self.conn)
+        pm.addFacet(IFinancePM, connection=self.conn)
 
-        pm = PaymentMethod(description=_('Money'), connection=self.conn)
-        self.set_schema(key, pm.id)
+        # XXX A hack: this is just to help me during the development process
+        # remove this as soon as it's possible
+        ICheckPM(pm).max_installments_number = 12
+        IBillPM(pm).max_installments_number = 12
+        
+        self.set_schema('BASE_PAYMENT_METHOD', pm.id)
+        self.set_schema(key, IMoneyPM(pm, connection=self.conn).id)
 
     def ensure_delivery_service(self):
         from stoq.domain.service import Service

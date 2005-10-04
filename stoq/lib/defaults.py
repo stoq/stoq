@@ -33,21 +33,52 @@ _ = gettext.gettext
 
 
 #
-# Defaults for dates
+# Dates and time
 #
 
 
 
 MONTH_PERIOD = 30
+ONE_DAY = 1
 
 dtime_type = datetime.datetime
 START_DATE = dtime_type.today()
 END_DATE = dtime_type.today() + datetime.timedelta(days=MONTH_PERIOD)
 
 
+(INTERVALTYPE_DAY,
+ INTERVALTYPE_WEEK,
+ INTERVALTYPE_MONTH,
+ INTERVALTYPE_YEAR) = range(4)
+
+interval_types = {INTERVALTYPE_DAY:      _('Days'),
+                  INTERVALTYPE_WEEK:     _('Weeks'),
+                  INTERVALTYPE_MONTH:    _('Months'),
+                  INTERVALTYPE_YEAR:     _('Years')}
+
+interval_values = {INTERVALTYPE_DAY:        1, 
+                   INTERVALTYPE_WEEK:       7, 
+                   INTERVALTYPE_MONTH:      30,
+                   INTERVALTYPE_YEAR:       365}
+
+
+
+def calculate_interval(interval_type, intervals):
+    """Get the interval type value for a certain INTERVALTYPE_* constant.
+    Intervals are useful modes to calculate payment duedates.
+    """
+    if not interval_values.has_key(interval_type):
+        raise KeyError('Invalid interval_type argument for '
+                       'calculate_interval function.')
+    if not type(intervals) == int:
+        raise TypeError('Invalid type for intervals argument. It must be '
+                        'integer, got %s' % type(intervals))
+    return interval_values[interval_type] * intervals
+
+
 
 #
-# Defaults for Kiwi combobox
+# Kiwi combobox
 #
 
 
@@ -67,3 +98,4 @@ def get_country_states():
     return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
              'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
              'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
+
