@@ -32,7 +32,6 @@ stoq/tests/test_parameters.py:
 import gettext
 
 from twisted.trial.unittest import TestCase
-from twisted.python.components import implements
 
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import ParameterAccess, sysparam
@@ -42,7 +41,7 @@ from stoq.domain.person import (Person, PersonAdaptToSupplier,
                                 PersonAdaptToCompany,
                                 EmployeePosition)
 from stoq.domain.sellable import BaseSellableCategory
-from stoq.domain.payment import PaymentMethod
+from stoq.domain.payment.methods import PaymentMethod
 from stoq.domain.service import Service
 
 
@@ -105,7 +104,7 @@ class ParameterTest(TestCase):
         self.failUnless(isinstance(base_category, BaseSellableCategory))
 
     def testMoneyPaymentMethod(self):
-        method = self.sparam.MONEY_PAYMENT_METHOD
+        method = self.sparam.METHOD_MONEY
         self.failUnless(method != None)
         self.failUnless(isinstance(method, PaymentMethod))
 
