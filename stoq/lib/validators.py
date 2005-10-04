@@ -28,6 +28,11 @@ lib/validators.py:
 
 import datetime
 
+from kiwi.datatypes import format_price
+
+from stoq.lib.parameters import sysparam
+from stoq.lib.runtime import get_connection
+
 def is_date_in_interval(date, start_date, end_date):
     """Check if a certain date is in an interval. The function accepts 
     None values for start_date and end_date and, in this case, return True
@@ -42,11 +47,27 @@ def is_date_in_interval(date, start_date, end_date):
         q2 = date <= end_date
     return q1 and q2
 
-# XXX: This function must considerate the default precision registered in
-# the system. Waiting fix for bug 2100
+def compare_float_numbers(float_number1, float_number2):
+    difference = abs(float_number1 - float_number2)
+    conn = get_connection()
+    tolerance = sysparam(conn).COMPARISON_FLOAT_TOLERANCE
+    return difference <= tolerance
+
 def format_quantity(quantity):
+    conn = get_connection()
     if (quantity * 100 % 100) == 0:
         return '%.0f' % quantity
-    return '%.2f' % quantity
+    precision = sysparam(conn).STOCK_BALANCE_PRECISION
+    return '%. *f' % (precision, quantity)
+
+def get_price_format_str():
+    conn = get_connection()
+    precision = sysparam(conn).SELLABLE_PRICE_PRECISION
+    return '%%.%sf' % precision
+
+def get_formatted_price(float_value):
+    conn = get_connection()
+    precision = sysparam(conn).SELLABLE_PRICE_PRECISION
+    return format_price(float_value, precision=precision)
 
 
