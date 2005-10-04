@@ -80,7 +80,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
     bank_account_widgets = ('name',
                             'account',
-                            'agency')
+                            'branch')
 
     work_permit_widgets = ('workpermit_number',
                            'workpermit_serie',
