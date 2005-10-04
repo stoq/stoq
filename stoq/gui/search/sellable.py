@@ -41,7 +41,8 @@ from stoqlib.gui.columns import AccessorColumn
 
 from stoq.lib.defaults import ALL_BRANCHES
 from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellable, get_formatted_price
+from stoq.lib.validators import get_formatted_price
+from stoq.domain.sellable import AbstractSellable
 from stoq.domain.product import ProductAdaptToSellable
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.interfaces import IStorable
