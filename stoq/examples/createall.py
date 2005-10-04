@@ -31,6 +31,7 @@ from stoq.examples.person import create_persons
 from stoq.examples.product import create_products
 from stoq.examples.service import create_services
 from stoq.examples.sale import create_sales
+from stoq.examples.payment import create_payments
 
 if __name__ == "__main__":
     print 'Creating example database...'
@@ -38,6 +39,7 @@ if __name__ == "__main__":
     create_products()
     create_services()
     create_sales()
+    create_payments()
     print '-'*40
     print 'done.'
 

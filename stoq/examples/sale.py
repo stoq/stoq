@@ -36,7 +36,7 @@ from stoqlib.exceptions import SellError
 
 from stoq.lib.runtime import new_transaction
 from stoq.domain.till import get_current_till_operation, Till
-from stoq.domain.payment import Payment
+from stoq.domain.payment.base import Payment
 from stoq.domain.sale import Sale
 from stoq.domain.product import Product
 from stoq.domain.interfaces import ISellable, IClient, IPaymentGroup
@@ -83,7 +83,7 @@ def get_all_products(conn):
 
 def create_sales():
     conn = new_transaction()
-    print "Creating Sale... ",
+    print "Creating Sale... "
 
     till = get_till(conn)
 
@@ -95,30 +95,35 @@ def create_sales():
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
 
-    payment_method = sysparam(conn).MONEY_PAYMENT_METHOD
+    payment_method = sysparam(conn).METHOD_MONEY
+    destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
 
     for i in range(DEFAULT_SALE_NUMBER):
         #
         # Setting up the items
         #
         sale = Sale(connection=conn, till=till, client=clients[i], 
-                    code='#%03d' % (i + 1))
+                    order_number='#%03d' % (i + 1))
         sellable_facet = ISellable(product_list[i], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
 
-        sale.total = sellable_facet.price
+        sale_total = sellable_facet.price
 
         #
         # Setting up the payments
         #
         pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
-                                 thirdparty=clients[i].get_adapted())
-        each_payment = sale.total / DEFAULT_PAYMENTS_NUMBER
+                                 installments_number=DEFAULT_PAYMENTS_NUMBER)
+        each_payment = sale_total / DEFAULT_PAYMENTS_NUMBER
         due_date = datetime.now()
         for i in range(DEFAULT_PAYMENTS_NUMBER):
+            description = ('%s payment, %s of %s' %
+                           (payment_method.description, i + 1,
+                            DEFAULT_PAYMENTS_NUMBER))
             payment = Payment(due_date=due_date, value=each_payment,
                               connection=conn,method=payment_method,
-                              group=pg_facet)
+                              group=pg_facet, destination=destination,
+                              description=description)
             pg_facet.add_item(payment)
             due_date += timedelta(days=DEFAULT_PAYMENTS_INTERVAL)
 
