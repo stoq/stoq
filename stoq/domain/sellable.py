@@ -38,7 +38,7 @@ from stoqlib.exceptions import SellError
 from stoq.domain.base import (Domain, InheritableModelAdapter,
                                     InheritableModel)
 from stoq.domain.interfaces import ISellable, IContainer
-from stoq.lib.validators import is_date_in_interval
+from stoq.lib.validators import is_date_in_interval, get_formatted_price
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_connection
 
@@ -255,21 +255,5 @@ class AbstractSellable(InheritableModelAdapter):
         if not self.category:
             self.comission = 0.0
         else:
-            self.comission = self.category.get_comission()
-            if self.comission is not None:
-                return
-            self.comission = self.category.base_category.get_comission()
-
-
-#
-# Auxiliary functions
-#
-
-
-
-def get_formatted_price(float_value):
-    conn = get_connection()
-    precision = sysparam(conn).SELLABLE_PRICE_PRECISION
-    value = locale.format('%.*f', (int(precision), float_value), 1)
-    return '%s %s' % (_('$'), value)
-
+            self.comission = (self.category.get_comission() 
+                              or self.category.base_category.get_comission())
