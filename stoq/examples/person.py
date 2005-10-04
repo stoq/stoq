@@ -27,12 +27,14 @@ stoq/examples/person.py:
     Create person objects for an example database.
 """
 
+from datetime import datetime
+
 from stoq.domain.person import (Person, EmployeePosition, Address,
                                 CityLocation)
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
-                                    IUser)
+                                    IUser, ICreditProvider)
 from stoq.lib.runtime import new_transaction
 
 def create_persons():
@@ -111,10 +113,19 @@ def create_persons():
                          district='Brigadeiro'),
                     dict(street='Avenida Andradas', number=876, 
                          district='Pinheiros')]
+                         
+    finance_table = Person.getAdapterClass(ICreditProvider)
+    finance_type = finance_table.PROVIDER_FINANCE
+
+    credit_provider_data = [dict(short_name='Visa'), 
+                            dict(short_name='MasterCard'), 
+                            dict(short_name='Losango', 
+                                 provider_type=finance_type),
+                            dict(short_name='Fininvest', 
+                                 provider_type=finance_type)]
 
     # Creating persons and facets
-    index = 0
-    for person_args in person_data:
+    for index, person_args in enumerate(person_data):
         person_obj = Person(connection=trans, **person_args)
 
         ctloc = CityLocation(connection=trans, **cityloc_data[index])
@@ -134,6 +145,11 @@ def create_persons():
         person_obj.addFacet(ISupplier, connection=trans)
         person_obj.addFacet(IBranch, connection=trans)
 
+        credit_provider = credit_provider_data[index]
+        person_obj.addFacet(ICreditProvider, connection=trans,
+                            open_contract_date=datetime.today(),
+                            **credit_provider)
+
         position_args = position_data[index]
         position = EmployeePosition(connection=trans,
                                     **position_args)
@@ -147,7 +163,6 @@ def create_persons():
         user_args = user_data[index]
         person_obj.addFacet(IUser, connection=trans, 
                             **user_args)
-        index += 1
         
     trans.commit()
     print 'done.'
