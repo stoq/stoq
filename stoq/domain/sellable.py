@@ -30,7 +30,6 @@ stoq/domain/sellable.py:
 """
 import datetime
 import gettext
-import locale
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
