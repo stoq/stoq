@@ -42,7 +42,7 @@ except ImportError:
         raise SystemExit("FATAL ERROR: Internal error, could not load"
                          "Stoq.\n"
                          "Tried to start Stoq but critical configuration "
-                         "were are missing.\n")
+                         "is missing.\n")
 
 
 def get_docs_dir():
