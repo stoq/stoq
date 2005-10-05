@@ -107,7 +107,6 @@ class AppWindow(BaseAppWindow):
 
         about = gtk.AboutDialog()
         about.set_name(__program_name__)
-        #about.set_comments()
         about.set_version(__version__)
 
         authorsfile = file(os.path.join(docs, 'AUTHORS'))
