@@ -221,7 +221,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('COUNTRY_SUGGESTED', str, 
                                initial='Brasil'),
                  ParameterAttr('CONFIRM_SALES_ON_TILL', int, 
-                               initial=False),
+                               initial=True),
                  ParameterAttr('MANDATORY_INTEREST_CHARGE', int, 
                                initial=False),
 
