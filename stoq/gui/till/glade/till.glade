@@ -53,19 +53,6 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="HelpAbout">
-                        <property name="name">HelpAbout</property>
-                        <property name="label" translatable="yes">About</property>
-                        <property name="stock_id">gtk-about</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkAction" id="HelpMenu">
-                        <property name="name">HelpMenu</property>
-                        <property name="label" translatable="yes">Help</property>
-                    </object>
-                </child>
-                <child>
                     <object class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip">Create a new file</property>
@@ -138,6 +125,20 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="about_menu">
+                        <property name="name">about_menu</property>
+                        <property name="label" translatable="yes">About</property>
+                        <property name="stock_id">gtk-about</property>
+                        <signal handler="_run_about" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="help_menu">
+                        <property name="name">help_menu</property>
+                        <property name="label" translatable="yes">Help</property>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="quit_action">
                         <property name="name">quit_action</property>
                         <property name="tooltip">Quit the program</property>
@@ -156,7 +157,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="HelpMenu" name="HelpMenu"><menuitem action="HelpAbout" name="HelpAbout"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -219,6 +220,8 @@
                             <widget class="GtkTable" id="table1">
                                 <property name="border_width">5</property>
                                 <property name="column_spacing">5</property>
+                                <property name="n_columns">4</property>
+                                <property name="n_rows">1</property>
                                 <property name="row_spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
@@ -246,7 +249,7 @@
                                     <packing>
                                         <property name="left_attach">2</property>
                                         <property name="right_attach">3</property>
-                                        <property name="y_options">&lt;flags GTK_FILL of type GtkAttachOptions&gt;</property>
+                                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -254,8 +257,8 @@
                                     <packing>
                                         <property name="left_attach">3</property>
                                         <property name="right_attach">4</property>
-                                        <property name="x_options">&lt;flags GTK_FILL of type GtkAttachOptions&gt;</property>
-                                        <property name="y_options">&lt;flags GTK_FILL of type GtkAttachOptions&gt;</property>
+                                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                     </packing>
                                 </child>
                             </widget>
