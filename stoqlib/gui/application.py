@@ -39,11 +39,10 @@ from stoqlib.gui.dialogs import get_dialog, run_dialog
 
 class BaseApp:
     """ Base class for application control. """
-    def __init__(self, main_window_class, sync_time=10000):
+    def __init__(self, main_window_class):
         # The self should be passed to main_window to let it access
         # shutdown and do_sync methods.
         self.main_window = main_window_class(self)
-        gobject.timeout_add(sync_time, self.do_sync)
 
     def run(self):
         self.main_window.show()
@@ -51,10 +50,6 @@ class BaseApp:
     def shutdown(self, *args):
         gtk.main_quit()
 
-    def do_sync(self, *args):
-        if hasattr(self.main_window, 'sync'):
-            self.main_window.sync()
-        return True
 
 
 #
