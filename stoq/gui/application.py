@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,31 +20,37 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):      Evandro Vale Miquelito  <evandro@async.com.br>
+##
 """
 gui/application.py:
 
     Base classes for application's GUI
 """
-import gtk
 
+import os
+import datetime
+
+import gtk
 from stoqlib.gui.application import BaseApp, BaseAppWindow
 
-# TODO To be implemented
-# from components.registry import About
 from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user
+from stoq.lib.environ import get_docs_dir, get_pixmaps_dir
 
-SYNC_TIME = 60000
 
+__program_name__    = "Stoq"
+__website__         = 'http://www.stoq.com.br'
+__version__         = "0.2.0"
+__release_date__    = (2005, 8, 31)
+    
 
 class App(BaseApp):
+
     def __init__(self, window_class, appconfig):
         self.config = appconfig
         self.window_class = window_class
-        BaseApp.__init__(self, window_class, SYNC_TIME)
-
-    def reinit(self):
-        BaseApp.__init__(self, self.window_class, SYNC_TIME)
+        BaseApp.__init__(self, window_class)
 
     def shutdown(self, *args):
         BaseApp.shutdown(self, *args)
@@ -62,15 +68,10 @@ class AppWindow(BaseAppWindow):
 
     def __init__(self, app):
         self.app = app
-        self.widgets = self.widgets[:] + ('users_menu',)
-
+        self.widgets = self.widgets[:] + ('users_menu', 'help_menu')
         BaseAppWindow.__init__(self, app)
-        if hasattr(self, 'about_menuitem'):
-            self.about_menuitem.connect('activate', self.run_about)
-
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
-
         self.toplevel.connect('map_event', hide_splash)
         
     def _store_cookie(self, *args):
@@ -100,12 +101,37 @@ class AppWindow(BaseAppWindow):
 #             self.save_cookie_menuitem.set_sensitive(1)
 #         label.set_text("user: %s%s" % (username, star))
 
+    def _run_about(self, *args):
+        docs = get_docs_dir()
+        pixmaps = get_pixmaps_dir()
 
-    def run_about(self, *args):
-        """ Open the window about. """
-        # TODO To be implemented
-        # self.run_dialog(About)
-    
+        about = gtk.AboutDialog()
+        about.set_name(__program_name__)
+        #about.set_comments()
+        about.set_version(__version__)
+
+        authorsfile = file(os.path.join(docs, 'AUTHORS'))
+        authors = [a.strip() for a in authorsfile.readlines()]
+        # separate authors from contributors
+        authors.append('') 
+        contributorsfile = file(os.path.join(docs, 'CONTRIBUTORS'))
+        contributors = [c.strip() for c in contributorsfile.readlines()[:-2]]
+        authors.extend(contributors)
+        about.set_authors(authors)
+
+        icon_file = os.path.join(pixmaps, 'stoq_logo.png')
+        logo = gtk.gdk.pixbuf_new_from_file(icon_file)
+        about.set_logo(logo)
+            
+        license = file(os.path.join(docs, 'COPYING')).read()
+        about.set_license(license)
+        about.set_website(__website__)
+        release_date = datetime.datetime(*__release_date__).strftime('%x')
+        about.set_comments('Release Date: %s' % release_date)
+        about.run()
+        about.destroy()
+
+
 
     #
     # Hooks
