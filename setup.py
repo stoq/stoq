@@ -44,6 +44,7 @@ basedir = r"%(basedir)s"
 pixmap_dir = os.path.join(prefix, 'share', 'stoq', 'pixmaps')
 glade_dir = os.path.join(prefix, 'share', 'stoq', 'glade')
 locale_dir = os.path.join(prefix, 'share', 'locale')
+docs_dir = os.path.join(prefix, 'share', 'doc', 'stoq')
 '''
         filename = os.path.join(self.build_dir, 'stoq', 
                                 '__installed__.py')
@@ -63,8 +64,9 @@ locale_dir = os.path.join(prefix, 'share', 'locale')
         basedir = os.path.join(install.prefix, 'lib',
                                'python%d.%d' % sys.version_info[:2],
                                'site-packages')
-        fp.write(installed_template % dict(prefix=install.prefix,
-                                           basedir=basedir))
+        prefix = os.path.expanduser(install.prefix)
+        basedir = os.path.expanduser(basedir)
+        fp.write(installed_template % dict(prefix=prefix, basedir=basedir))
         fp.close()
 	return install_lib.install(self) + [filename]
 
