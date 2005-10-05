@@ -28,7 +28,6 @@ gui/application.py:
 import gtk
 
 from stoqlib.gui.application import BaseApp, BaseAppWindow
-from stoqlib.gui.reload import reload_world
 
 # TODO To be implemented
 # from components.registry import About
@@ -37,16 +36,6 @@ from stoq.lib.runtime import get_current_user
 
 SYNC_TIME = 60000
 
-
-# TODO we need to find a better way(the right way) about how to this
-# kiwi.ui.views.set_decimal_separator(",")
-
-# TODO waiting for kiwi suport
-# kiwi.ui.views.enable_sane_editables()
-
-
-#TODO: To be implemented
-# kiwi.basic.set_autocombo_min_char(5)
 
 class App(BaseApp):
     def __init__(self, window_class, appconfig):
@@ -75,12 +64,7 @@ class AppWindow(BaseAppWindow):
         self.app = app
         self.widgets = self.widgets[:] + ('users_menu',)
 
-
-
-
-        self.keyactions = { gtk.keysyms.F10: self.inspect, 
-                            gtk.keysyms.F9: self.reload_world }
-        BaseAppWindow.__init__(self, app, keyactions=self.keyactions)
+        BaseAppWindow.__init__(self, app)
         if hasattr(self, 'about_menuitem'):
             self.about_menuitem.connect('activate', self.run_about)
 
@@ -122,41 +106,6 @@ class AppWindow(BaseAppWindow):
         # TODO To be implemented
         # self.run_dialog(About)
     
-    def reload_world(self, *args, **kwargs):
-        reload_world()
-        # If the application has a sync(), it's time to call it
-        if hasattr(self, "sync"):
-            print "Syncing database connection..."
-            self.sync()
-            print "done"
-
-    def inspect(self, *args, **kwargs):
-        scope = globals().copy()
-        scope.update(locals())
-        if kwargs.has_key('scope'):
-            scope.update(kwargs['scope'])
-
-        import code
-        try:
-            import readline
-        except ImportError:
-            print "Module readline not available."
-        else:
-            import rlcompleter
-            # pyflakes
-            assert rlcompleter
-            readline.parse_and_bind("tab: complete")
-        print scope.keys()
-        print "DR. WATSON v1.0"
-
-        code.interact(local=scope)
-
-    def sync(self):
-        # Applications that want to synchronize periodically must define a
-        # sync method.
-        pass
-
-
 
     #
     # Hooks
