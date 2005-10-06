@@ -91,7 +91,8 @@ TABLES = [
     # XXX Unfortunately we must add 'methods.py' module in two places 
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
-     ('stoq.domain.payment.methods',       ("PaymentMethodAdapter",
+     ('stoq.domain.payment.methods',       ("PaymentMethod",
+                                            "PaymentMethodAdapter",
                                             )),
      ('stoq.domain.payment.base',          ("AbstractPaymentGroup",
                                             "Payment",
