@@ -115,7 +115,8 @@ class SearchBar(SlaveDelegate):
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, parent, table_type, columns=None, query_args=None,
-                 search_callback=None, search_lbl_text=None):
+                 search_callback=None, search_lbl_text=None,
+                 filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
@@ -134,6 +135,8 @@ class SearchBar(SlaveDelegate):
             self.search_label.set_text(_('Find Items'))
         else:
             self.search_label.set_text(search_lbl_text)
+        if filter_slave:
+            self.attach_slave('filter_area', filter_slave)
         self.search_results_label.set_size('small')
         self.search_results_label.set_color('red')
         self.search_results_label.set_text('')
