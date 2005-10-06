@@ -239,6 +239,16 @@ class SearchBar(SlaveDelegate):
             pass
         self._set_query_str(search_str, query)
 
+        if not query:
+            if self.columns:
+                columns = [c.attribute for c in self.columns]
+            else:
+                columns = '(not defined)'
+            msg = ("There is no query for the search bar. Probably the "
+                   "object type you are query on doesn't have attributes "
+                   "matching with the columns argument. Got table %s and "
+                   "column attributes %s" % (self.table_type, columns))
+            raise ValueError(msg)
         query = OR(*query)
         return query
 
