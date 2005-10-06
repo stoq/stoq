@@ -28,8 +28,9 @@ stoq/domain/interfaces.py:
 
 from twisted.python.components import (MetaInterface, Interface,
                                        _Nothing, CannotAdapt,
-                                       _NoImplementor, getRegistry)
+                                       getRegistry)
 
+_NoImplementor = object()
 
 #
 # Infrastructure
