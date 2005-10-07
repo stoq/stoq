@@ -150,6 +150,7 @@ class Liaison(Domain):
 
     person = ForeignKey('Person')
 
+
 class Calls(Domain):
     """ 
     Person's calls information.
@@ -165,6 +166,7 @@ class Calls(Domain):
 
     person = ForeignKey('Person')
     attendant = ForeignKey('PersonAdaptToUser')
+
 
 class Person(Domain):
     """ 
@@ -467,9 +469,7 @@ class PersonAdaptToUser(ModelAdapter):
 
     username = StringCol(alternateID=True)
     password = StringCol()
-
-# TODO To be implemented: see bug 2024
-#   profile  = ForeignKey('UserProfile')
+    profile  = ForeignKey('UserProfile')
                     
 Person.registerFacet(PersonAdaptToUser)
 

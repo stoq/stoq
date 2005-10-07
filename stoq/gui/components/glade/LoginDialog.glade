@@ -1,131 +1,121 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
     <widget class="GtkWindow" id="LoginDialog">
+        <property name="allow_grow">False</property>
         <property name="resizable">False</property>
-        <property name="title" context="True" translatable="yes">Access Control</property>
         <property name="role"></property>
-        <property name="events"></property>
+        <property name="title" context="yes" translatable="yes">Access Control</property>
         <property name="window_position">center-always</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
-                <property name="events"></property>
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkEventBox" id="logo_container">
-                        <property name="events"></property>
                         <property name="visible">True</property>
                         <child>
                             <placeholder/>
                         </child>
                     </widget>
-                    <packing/>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="notification_label">
+                        <property name="data_type">str</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
                 </child>
                 <child>
                     <widget class="GtkHBox" id="hbox1">
-                        <property name="events"></property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkVBox" id="vbox2">
-                                <property name="events"></property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkTable" id="table1">
-                                        <property name="row_spacing">9</property>
-                                        <property name="column_spacing">4</property>
                                         <property name="border_width">5</property>
-                                        <property name="events"></property>
-                                        <property name="n_rows">2</property>
+                                        <property name="column_spacing">4</property>
                                         <property name="n_columns">2</property>
+                                        <property name="n_rows">2</property>
+                                        <property name="row_spacing">9</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkEntry" id="password">
-                                                <property name="events"></property>
-                                                <property name="visibility">False</property>
-                                                <property name="can_focus">True</property>
+                                            <widget class="GtkLabel" id="label1">
+                                                <property name="label" context="yes" translatable="yes">_Username:</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
+                                                <property name="xalign">1.0</property>
                                             </widget>
                                             <packing>
-                                                <property name="left_attach">1</property>
-                                                <property name="bottom_attach">2</property>
-                                                <property name="top_attach">1</property>
-                                                <property name="right_attach">2</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkEntry" id="username">
-                                                <property name="events"></property>
-                                                <property name="can_focus">True</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="left_attach">1</property>
-                                                <property name="right_attach">2</property>
+                                                <property name="x_options">fill</property>
+                                                <property name="y_options">fill</property>
                                             </packing>
                                         </child>
                                         <child>
                                             <widget class="GtkLabel" id="label2">
-                                                <property name="label" context="True" translatable="yes">_Password:</property>
+                                                <property name="label" context="yes" translatable="yes">_Password:</property>
                                                 <property name="use_underline">True</property>
-                                                <property name="events"></property>
+                                                <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="top_attach">1</property>
+                                                <property name="x_options">fill</property>
+                                                <property name="y_options">fill</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkEntry" id="username">
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkEntry" id="password">
+                                                <property name="visibility">False</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
                                                 <property name="bottom_attach">2</property>
-                                                <property name="y_options">fill</property>
-                                                <property name="x_options">fill</property>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
                                                 <property name="top_attach">1</property>
                                             </packing>
                                         </child>
-                                        <child>
-                                            <widget class="GtkLabel" id="label1">
-                                                <property name="label" context="True" translatable="yes">_Username:</property>
-                                                <property name="use_underline">True</property>
-                                                <property name="events"></property>
-                                                <property name="xalign">1.0</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="y_options">fill</property>
-                                                <property name="x_options">fill</property>
-                                            </packing>
-                                        </child>
                                     </widget>
-                                    <packing/>
                                 </child>
                                 <child>
                                     <widget class="GtkAlignment" id="alignment2">
-                                        <property name="yscale">0.0</property>
                                         <property name="border_width">5</property>
-                                        <property name="xscale">0.0</property>
-                                        <property name="events"></property>
-                                        <property name="xalign">1.0</property>
-                                        <property name="yalign">0.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="xscale">0.0</property>
+                                        <property name="yalign">0.0</property>
+                                        <property name="yscale">0.0</property>
                                         <child>
                                             <widget class="GtkHButtonBox" id="hbuttonbox1">
-                                                <property name="events"></property>
                                                 <property name="spacing">5</property>
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkButton" id="cancel_button">
-                                                        <property name="receives_default">True</property>
-                                                        <property name="events"></property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="visible">True</property>
                                                         <property name="label">gtk-cancel</property>
                                                         <property name="use_stock">True</property>
+                                                        <property name="visible">True</property>
                                                     </widget>
-                                                    <packing/>
                                                 </child>
                                                 <child>
                                                     <widget class="GtkButton" id="ok_button">
-                                                        <property name="receives_default">True</property>
-                                                        <property name="events"></property>
-                                                        <property name="can_focus">True</property>
-                                                        <property name="visible">True</property>
                                                         <property name="label">gtk-ok</property>
                                                         <property name="use_stock">True</property>
+                                                        <property name="visible">True</property>
                                                     </widget>
                                                     <packing>
                                                         <property name="position">1</property>
@@ -139,23 +129,10 @@
                                     </packing>
                                 </child>
                             </widget>
-                            <packing/>
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
-                        <property name="expand">False</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkStatusbar" id="statusbar">
-                        <property name="events"></property>
-                        <property name="spacing">2</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
                         <property name="position">2</property>
-                        <property name="expand">False</property>
                     </packing>
                 </child>
             </widget>

@@ -44,7 +44,7 @@ class LoginDialog(Delegate, RunnableView):
                'password',
                'ok_button',
                'cancel_button',
-               'statusbar')
+               'notification_label')
     
     def __init__(self, title=None):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
@@ -54,10 +54,11 @@ class LoginDialog(Delegate, RunnableView):
                           delete_handler=self.close)
         if title:
             self.set_title(title)
-
         self.setup_widgets()
 
     def setup_widgets(self):
+        self.notification_label.set_text('')
+        self.notification_label.set_color('black')
         # Interestingly enough, loading an XPM is slower than a JPG here
         filename = environ.find_resource("pixmap", "logo.xpm")
         
@@ -101,7 +102,9 @@ class LoginDialog(Delegate, RunnableView):
         password = self.password.get_text().strip()
         self.retval = username, password
         self.set_field_sensitivity(False)
-        self.statusbar.push(1, _(" Authenticating user..."))
+        self.notification_label.set_color('black')
+        msg = _(" Authenticating user...")
+        self.notification_label.set_text(msg)
         while gtk.events_pending():
              gtk.main_iteration()
         gtk.main_quit()
@@ -109,8 +112,8 @@ class LoginDialog(Delegate, RunnableView):
 
     def run(self, username=None, password=None, msg=None):
         if msg:
-            # Give us some fake pre-text border
-            self.statusbar.push(1, "  %s" % msg)
+            self.notification_label.set_color('red')
+            self.notification_label.set_text(msg)
         self._initialize(username, password)
         self.show()
         if username and password:

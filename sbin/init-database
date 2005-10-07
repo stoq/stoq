@@ -38,6 +38,7 @@ import string
 from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.lib.runtime import new_transaction
 from stoq.domain.person import EmployeePosition, PersonAdaptToUser
+from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
 from stoq.domain.interfaces import (IIndividual, IEmployee, IUser,
                                     ISalesPerson)
@@ -64,9 +65,12 @@ def ensure_admin_user(name, username, password):
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.
     person_obj.addFacet(ISalesPerson, connection=trans)
+
+    profile = UserProfile.create_profile_template(trans, 'Administrator',
+                                                  has_full_permission=True)
     
     user = person_obj.addFacet(IUser, username=username, password=password,
-                               connection=trans)
+                               profile=profile, connection=trans)
     catalog = PersonAdaptToUser
     ret = catalog.select(catalog.q.username == 'administrator', connection=trans)
     assert ret, ret.count() == 1

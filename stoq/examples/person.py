@@ -31,6 +31,7 @@ from datetime import datetime
 
 from stoq.domain.person import (Person, EmployeePosition, Address,
                                 CityLocation)
+from stoq.domain.profile import UserProfile
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
@@ -124,6 +125,8 @@ def create_persons():
                             dict(short_name='Fininvest', 
                                  provider_type=finance_type)]
 
+    profile_names = ['Salesperson', 'Manager', 'Secretary', 'Trainee']
+
     # Creating persons and facets
     for index, person_args in enumerate(person_data):
         person_obj = Person(connection=trans, **person_args)
@@ -160,8 +163,13 @@ def create_persons():
         # SalesPerson facet requires an employee facet.
         person_obj.addFacet(ISalesPerson, connection=trans)
 
+        prof_name = profile_names[index]
+        # The True argument here means full permition for this profile. 
+        # This is useful when testing all the fetuares of Stoq applications
+        profile = UserProfile.create_profile_template(trans, prof_name, 
+                                                      True)
         user_args = user_data[index]
-        person_obj.addFacet(IUser, connection=trans, 
+        person_obj.addFacet(IUser, connection=trans, profile=profile,
                             **user_args)
         
     trans.commit()
