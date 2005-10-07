@@ -46,14 +46,9 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
                'provider_id', 
                'open_contract_date')
 
-    def _setup_combo(self):
+    def setup_proxies(self):
         provider_types = self.model_type.provider_types
         items = [(description, value) for value, description 
                         in provider_types.items()]
         self.provider_type_combo.prefill(items)
-
-    def setup_proxies(self):
-        self._setup_combo()
         self.proxy = self.add_proxy(self.model, self.widgets)
-
-
