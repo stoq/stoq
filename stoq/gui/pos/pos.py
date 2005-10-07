@@ -331,8 +331,8 @@ class POSApp(AppWindow):
        model = self.run_dialog(ServiceEditor, conn)
        if model:
            conn.commit()
-           return
-       rollback_and_begin(conn)
+       else:
+           rollback_and_begin(conn)
        conn._connection.close()
   
     def _on_products_action__clicked(self, *args):
@@ -340,8 +340,8 @@ class POSApp(AppWindow):
         model = self.run_dialog(ProductEditor, conn)
         if model:
             conn.commit()
-            return
-        rollback_and_begin(conn)
+        else:
+            rollback_and_begin(conn)
         # XXX Waiting for SQLObject improvements. We need there a simple 
         # method do this in a simple way.
         conn._connection.close()
