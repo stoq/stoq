@@ -65,7 +65,7 @@ _ = gettext.gettext
 
 class POSApp(AppWindow):
    
-    toplevel_name = gladefile = "pos"
+    gladefile = "pos"
     
     product_widgets = ('product',
                        'quantity')
