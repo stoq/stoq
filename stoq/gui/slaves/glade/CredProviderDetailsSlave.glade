@@ -1,0 +1,167 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="CredProviderDetailsSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="status">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Status:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="active_radio">
+                                <property name="data_type">bool</property>
+                                <property name="data_value" context="yes" translatable="yes">True</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Active</property>
+                                <property name="model_attribute">is_active</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="inactive_radio">
+                                <property name="active">False</property>
+                                <property name="data_type">bool</property>
+                                <property name="data_value" context="yes" translatable="yes">False</property>
+                                <property name="group">active_radio</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Inactive</property>
+                                <property name="model_attribute">is_active</property>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">5</property>
+                        <property name="n_columns">4</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Provider Type:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Short Name:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="provider_type_combo">
+                                <property name="data_type">int</property>
+                                <property name="model_attribute">provider_type</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+entry+Entry" id="short_name">
+                                <property name="data_type">str</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">short_name</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Provider Id:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Open Contract Date:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+entry+Entry" id="provider_id">
+                                <property name="data_type">str</property>
+                                <property name="model_attribute">provider_id</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+entry+Entry" id="open_contract_date">
+                                <property name="data_type">date</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">open_contract_date</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

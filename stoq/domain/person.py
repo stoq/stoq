@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2004 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -235,6 +235,10 @@ class Person(Domain):
     def facet_ISupplier_add(self, **kwargs):
         self.check_individual_or_company_facets()
         return PersonAdaptToSupplier(self, **kwargs)
+
+    def facet_ICreditProvider_add(self, **kwargs):
+        self.check_individual_or_company_facets()
+        return PersonAdaptToCreditProvider(self, **kwargs)
     
     def facet_IEmployee_add(self, **kwargs):
         individual = IIndividual(self)
@@ -517,7 +521,7 @@ class PersonAdaptToCreditProvider(ModelAdapter):
      PROVIDER_FINANCE) = range(2)
 
     provider_types = {PROVIDER_CARD:        _('Card Provider'),
-                      PROVIDER_FINANCE:   _('Finance Provider')}
+                      PROVIDER_FINANCE:     _('Finance Provider')}
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
