@@ -29,7 +29,6 @@ stoq/gui/wizards/sale.py:
 """
 
 import gettext
-from types import NoneType
 
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 from stoqlib.gui.editors import BaseEditorSlave
@@ -39,13 +38,11 @@ from stoq.gui.search.person import ClientSearch
 from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave, 
                                      CardMethodSlave, 
-                                     FinanceMethodSlave, 
-                                     MultipleMethodSlave)
+                                     FinanceMethodSlave)
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
-from stoq.domain.payment.methods import PaymentMethod
 from stoq.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
                                     ICheckPM, ICardPM, IBillPM, 
                                     IFinancePM)

@@ -38,8 +38,6 @@ from stoq.domain.base import (Domain, InheritableModelAdapter,
                                     InheritableModel)
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.lib.validators import is_date_in_interval, get_formatted_price
-from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import get_connection
 
 
 

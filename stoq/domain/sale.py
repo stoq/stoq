@@ -32,20 +32,16 @@ stoq/domain/sale.py:
 import gettext
 from datetime import datetime
 
-from twisted.python.components import implements
 from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
-from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import SellError
 
-from stoq.lib.runtime import get_connection
 from stoq.domain.base import Domain
 from stoq.domain.sellable import AbstractSellableItem
-from stoq.domain.payment.methods import PaymentMethodAdapter
-from stoq.domain.payment.base import AbstractPaymentGroup, Payment
+from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.service import ServiceSellableItem
-from stoq.domain.interfaces import (IContainer, ISellable, IClient,
-                                    IStorable, IPaymentGroup)
+from stoq.domain.interfaces import (IContainer, IClient, IStorable, 
+                                    IPaymentGroup)
 
 
 _ = gettext.gettext

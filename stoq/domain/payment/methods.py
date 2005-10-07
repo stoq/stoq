@@ -32,7 +32,6 @@ import gettext
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
-from twisted.python.components import implements
 from kiwi.argcheck import argcheck
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
@@ -40,7 +39,7 @@ from sqlobject.sqlbuilder import AND
 from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol, 
                        ForeignKey, BoolCol)
 
-from stoq.lib.defaults import calculate_interval, ONE_DAY
+from stoq.lib.defaults import calculate_interval
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import compare_float_numbers
 from stoq.domain.account import BankAccount

@@ -45,7 +45,6 @@ from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_formatted_price
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 

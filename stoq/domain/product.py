@@ -40,7 +40,6 @@ from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
 from stoq.domain.interfaces import ISellable, IStorable, IContainer
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import get_connection
 
 _ = gettext.gettext
 
