@@ -30,6 +30,7 @@ gui/application.py:
 
 import os
 import datetime
+import gettext
 
 import gtk
 from stoqlib.gui.application import BaseApp, BaseAppWindow
@@ -38,6 +39,7 @@ from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user
 from stoq.lib.environ import get_docs_dir, get_pixmaps_dir
 
+_ = gettext.gettext
 
 __program_name__    = "Stoq"
 __website__         = 'http://www.stoq.com.br'
@@ -66,6 +68,12 @@ class App(BaseApp):
 class AppWindow(BaseAppWindow):
     """ Base class for the main window of applications."""
 
+    # This attribute is used when generating titles for applications. 
+    # It's also useful if we get a list of available applications with the
+    # application names translated. This list is going to be used when
+    # creating new user profiles.
+    app_name = None
+
     def __init__(self, app):
         self.app = app
         self.widgets = self.widgets[:] + ('users_menu', 'help_menu')
@@ -73,6 +81,11 @@ class AppWindow(BaseAppWindow):
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
         self.toplevel.connect('map_event', hide_splash)
+        if not self.app_name:
+            raise ValueError('Child classes must define an app_name '
+                             'attribute')
+        title = _('Stoq - %s Application') % self.app_name
+        self.toplevel.set_title(title)
         
     def _store_cookie(self, *args):
         u = get_current_user()

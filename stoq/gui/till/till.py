@@ -51,6 +51,8 @@ from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 _ = gettext.gettext
 
 class TillApp(AppWindow):
+
+    app_name = _('Till')
     gladefile = 'till'
     widgets = ('searchbar_holder',
                'klist_holder',
