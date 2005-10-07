@@ -86,3 +86,11 @@ class PaymentMethodError(Exception):
 class AdapterError(Exception):
     """Raise this exception when an object try adding a facet but it doesn't
     actually implements that interface"""
+
+
+class UserProfileError(Exception):
+    """Raise when a certain user lacks credentials for an application"""
+
+
+class UserError(Exception):
+    """Raise when an username or password is invalid"""
