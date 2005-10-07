@@ -623,6 +623,12 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         max = selected.get_max_installments_number()
         self.installments_number.set_range(1, max)
 
+    def update_view(self):
+        # This is for PaymentMethodStep compatibility.
+        # FIXME We need to change PaymentMethodDetails to use signals
+        # instead of calling methods of parents and slaves directly
+        pass
+
     def _get_credit_providers(self):
         raise NotImplementedError
 
