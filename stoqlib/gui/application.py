@@ -25,7 +25,6 @@ gui/application.py:
 """
 
 import gtk
-import gobject
 from kiwi.ui.delegates import Delegate
 
 from stoqlib.gui.dialogs import get_dialog, run_dialog
