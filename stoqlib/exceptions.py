@@ -92,5 +92,5 @@ class UserProfileError(Exception):
     """Raise when a certain user lacks credentials for an application"""
 
 
-class UserError(Exception):
+class LoginError(Exception):
     """Raise when an username or password is invalid"""
