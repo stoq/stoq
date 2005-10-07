@@ -50,6 +50,7 @@ _ = gettext.gettext
 
 class WarehouseApp(AppWindow):
    
+    app_name = _('Warehouse')
     gladefile = "warehouse"
     
     widgets = ('total',
