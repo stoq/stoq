@@ -30,13 +30,16 @@ stoq/examples/products.py:
     examples/person.py, oterwise the stocks won't be created properly.
 """
 
-from stoq.domain.product import Product
-from stoq.domain.interfaces import ISellable, IStorable
+from stoq.domain.product import Product, ProductSupplierInfo
+from stoq.domain.person import Person
+from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
                                   AbstractSellableCategory)
 from stoq.lib.runtime import new_transaction
 
+
+MAX_PRODUCTS_NUMBER = 4
     
 def create_products():
     print 'Creating products...'
@@ -81,11 +84,24 @@ def create_products():
                           description='Processor AMD Durom 1.2Ghz', 
                           price=877.22)]
 
+    supplier_table = Person.getAdapterClass(ISupplier)
+    suppliers = supplier_table.select(connection=trans)
+    if suppliers.count() < MAX_PRODUCTS_NUMBER:
+        raise ValueError('You must have at least four suppliers on your '
+                         'database at this point.')
+
 
     # Creating products and facets
     value = 10.0
-    for index in range(4):
+    for index in range(MAX_PRODUCTS_NUMBER):
         product_obj = Product(connection=trans)
+
+        # Adding a main supplier for the product recently created
+        supplier = suppliers[index]
+        supplier_info = ProductSupplierInfo(connection=trans,
+                                            supplier=supplier,
+                                            is_main_supplier=True, 
+                                            product=product_obj)
         
         base_cat_args = base_category_data[index]
         abstract_data = AbstractSellableCategory(connection=trans,

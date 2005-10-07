@@ -126,9 +126,13 @@ class ProductSellableItem(AbstractSellableItem):
     delivery_data = ForeignKey('ServiceSellableItemAdaptToDelivery',
                                default=None)
 
+
+
     #
     # IContainer implementation
     #
+
+
 
     def add_item(self, item):
         raise NotImplementedError('This method should be replaced by '
@@ -382,8 +386,9 @@ class ProductAdaptToStorable(ModelAdapter):
 
 
 
-    def get_full_balance_string(self, branch=None):
-        return '%.*f' % (int(self.precision), self.get_full_balance(branch))
+    def get_full_balance_string(self, branch=None, full_balance=None):
+        full_balance = full_balance or self.get_full_balance(branch)
+        return '%.*f' % (int(self.precision), full_balance)
 
 
 
