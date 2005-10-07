@@ -34,7 +34,8 @@ import time
 
 import gtk
 import gobject
-from stoqlib.exceptions import DatabaseError, _warn
+from stoqlib.exceptions import (DatabaseError, _warn, UserProfileError,
+                                LoginError)
 from stoqlib.database import set_model_connection_func
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import set_max_search_results
@@ -135,6 +136,8 @@ class AppConfig:
         set_model_connection_func(new_transaction)
         assert self.validate_user()
 
+
+
     #
     # User validation and AppHelper setup
     #
@@ -145,15 +148,27 @@ class AppConfig:
         # This function is really just a post-validation item. 
         table = PersonAdaptToUser
         res = table.select(table.q.username == '%s' % username)
+
         msg = _("Invalid user or password")
         if not res.count():
-            raise ValueError, msg
-        assert res.count() == 1
+            raise LoginError(msg)
+            
+        if res.count() != 1:
+            raise DatabaseInconsistency("It should exists only one instance "
+                                        "in database for this username, got "
+                                        "%d instead" % res.count())
         user = res[0]
         if not user.password == password:
-            raise ValueError, msg
+            raise LoginError(msg)
+
+        if not user.profile.check_app_permission(self.appname):
+            msg = _("This user lacks credentials \nfor application %s")
+            raise UserProfileError(msg % self.appname)
         return user
     
+    def check_user(self, username, password):
+        user = self._lookup_user(username, password) 
+        set_current_user(user)
 
     def validate_user(self):
         # Loop for logins
@@ -186,7 +201,7 @@ class AppConfig:
                 
             try:
                 self.check_user(username, password)
-            except ValueError, e:
+            except (LoginError, UserProfileError), e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
                 self.clear_cookie()
@@ -207,11 +222,6 @@ class AppConfig:
         self.abort_mission("Depleted attempts of authentication")
         return False
         
-    def check_user(self, username, password):
-        user = self._lookup_user(username, password) 
-        set_current_user(user)
-
-
 
     #
     # Cookie handling
