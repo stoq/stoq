@@ -141,7 +141,7 @@ Current System parameters:
 import gettext
 
 from stoqlib.exceptions import DatabaseInconsistency
-from sqlobject import StringCol, IntCol
+from sqlobject import StringCol
 from twisted.python.reflect import namedAny
 from kiwi.python import ClassInittableObject
 
@@ -149,7 +149,7 @@ from stoq.domain.base import Domain, AbstractModel
 from stoq.domain.interfaces import (ISupplier, IBranch, ICompany, ISellable,
                                     IMoneyPM, ICheckPM, IBillPM, ICardPM,
                                     IFinancePM)
-from stoq.lib.runtime import get_connection, new_transaction
+from stoq.lib.runtime import new_transaction
 
 
 _ = gettext.gettext

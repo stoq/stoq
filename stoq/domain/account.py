@@ -29,7 +29,6 @@ stoq/domain/account.py:
 from sqlobject import StringCol 
 
 from stoq.domain.base import Domain
-from stoq.lib.runtime import get_connection
 
 
 

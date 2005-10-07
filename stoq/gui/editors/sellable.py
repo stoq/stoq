@@ -187,7 +187,7 @@ class SellableEditor(BaseEditor):
             self.sellable_proxy.update('price')
 
     def setup_widgets(self):
-        raise NotImplementederror
+        raise NotImplementedError
 
     #
     # BaseEditor hooks

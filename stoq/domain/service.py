@@ -38,7 +38,6 @@ from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoq.domain.interfaces import ISellable, IDelivery, IContainer
 from stoq.domain.product import ProductSellableItem
-from stoq.lib.runtime import get_connection
 
 
 _ = gettext.gettext

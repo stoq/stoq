@@ -40,8 +40,8 @@ from stoq.lib.parameters import sysparam
 from stoq.domain.base import Domain
 from stoq.domain.sale import Sale
 from stoq.domain.payment.base import AbstractPaymentGroup, Payment
-from stoq.domain.interfaces import (IPaymentGroup, IBranch,
-                                    ITillOperation)
+from stoq.domain.interfaces import (IPaymentGroup, ITillOperation,
+                                    IOutPayment, IInPayment)
 
 
 
