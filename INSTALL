@@ -1,0 +1,15 @@
+Installing Stoq
+===================
+
+To install stoqlib, just type:
+
+  python setup.py install
+
+This will install Stoq in the same directory as you have Python 
+installed in. On most Unix systems this means /usr. However, if you
+don't have write access to this directory or if you simply want to
+install Stoq in another directory, type the following:
+
+  python setup.py install --prefix DIRECTORY
+
+Where DIRECTORY is the directory you want to install it to.
