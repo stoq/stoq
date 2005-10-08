@@ -43,8 +43,8 @@ _ = gettext.gettext
 
 __program_name__    = "Stoq"
 __website__         = 'http://www.stoq.com.br'
-__version__         = "0.2.0"
-__release_date__    = (2005, 8, 31)
+__version__         = "0.3.0"
+__release_date__    = (2005, 10, 7)
     
 
 class App(BaseApp):
