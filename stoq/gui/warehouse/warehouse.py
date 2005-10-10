@@ -23,7 +23,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-stoq/gui/pos/warehouse.py:
+stoq/gui/warehouse/warehouse.py:
 
     Main gui definition for warehouse application.
 """
