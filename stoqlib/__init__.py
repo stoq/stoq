@@ -22,7 +22,11 @@ __all__ = ['library']
 
 library = Library('stoqlib', root='..')
 if library.uninstalled:
-    library.add_resources(locale='locale')
+    # XXX: Move this to enable_translation()
+    try:
+        library.add_resources(locale='locale')
+    except EnvironmentError:
+        pass
     library.add_global_resources(pixmaps='stoqlib/gui/pixmaps',
                                  glade='stoqlib/gui/glade')
 library.enable_translation()
