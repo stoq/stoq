@@ -197,15 +197,6 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkHSeparator" id="top_separator">
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
                             <widget class="GtkEventBox" id="search_bar_holder">
                                 <property name="visible">True</property>
                                 <child>
@@ -214,16 +205,7 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">2</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkHSeparator" id="mid_separator">
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                                <property name="position">3</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
@@ -231,7 +213,7 @@
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
-                                <property name="position">4</property>
+                                <property name="position">2</property>
                             </packing>
                         </child>
                         <child>
@@ -296,7 +278,7 @@
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">5</property>
+                                <property name="position">3</property>
                             </packing>
                         </child>
                     </widget>
