@@ -1,46 +1,44 @@
 #!/usr/bin/env python
+#
+# Copyright (C) 2005 Async Open Source
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+
 from distutils.command.install_data import install_data
 from distutils.core import setup
-from distutils.dep_util import newer
-from distutils.log import info
-from fnmatch import fnmatch
-import os
 
-class InstallData(install_data):
+from kiwi.dist import TemplateInstallLib, compile_po_files, listfiles
+
+from stoqlib.__version__ import version
+
+PACKAGE = 'stoqlib'
+
+class StoqLibInstallData(install_data):
     def run(self):
-        self.data_files.extend(self._compile_po_files())
-        
+        self.data_files.extend(compile_po_files(PACKAGE))
         install_data.run(self)
 
-    def _compile_po_files(self):
-        data_files = []
-        for po in listfiles('po', '*.po'):
-            lang = os.path.basename(po[:-3])
-            mo = os.path.join('locale', lang,
-                              'LC_MESSAGES', 'stoqlib.mo')
-
-            if not os.path.exists(mo) or newer(po, mo):
-                directory = os.path.dirname(mo)
-                if not os.path.exists(directory):
-                    info("creating %s" % directory)
-                    os.makedirs(directory)
-                cmd = 'msgfmt -o %s %s' % (mo, po)
-                info('compiling %s -> %s' % (po, mo))
-                if os.system(cmd) != 0:
-                    raise SystemExit("Error while running msgfmt")
-            dest = os.path.dirname(os.path.join('share', mo))
-            data_files.append((dest, [mo]))
-            
-        return data_files
-
-def listfiles(*dirs):
-    dir, pattern = os.path.split(os.path.join(*dirs))
-    return [os.path.join(dir, filename)
-            for filename in os.listdir(os.path.abspath(dir))
-                if filename[0] != '.' and fnmatch(filename, pattern)]
-
-setup(name="stoqlib",
-      version="0.1.0",
+class StoqLibInstallLib(TemplateInstallLib):
+    name = PACKAGE
+    resources = dict(locale='$prefix/share/locale')
+    global_resources = dict(pixmaps='$datadir/pixmaps',
+                            glade='$datadir/glade')
+    
+setup(name=PACKAGE,
+      version='.'.join(version),
       author="Async Open Source",
       author_email="evandro@async.com.br",
       url="http://www.async.com.br/projects/",
@@ -55,6 +53,7 @@ setup(name="stoqlib",
     packages=['stoqlib',
               'stoqlib.gui',
               'stoqlib.reporting'],
-    cmdclass={'install_data': InstallData },
+    cmdclass=dict(install_data=StoqLibInstallData,
+                  install_lib=StoqLibInstallLib),
     )
 
