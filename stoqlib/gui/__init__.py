@@ -17,13 +17,3 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
-
-import os
-
-from kiwi.environ import environ
-
-import stoqlib
-
-glade_dir = os.path.join(stoqlib.__path__[0], "gui", "glade")
-environ.add_resource("glade", glade_dir)
-
