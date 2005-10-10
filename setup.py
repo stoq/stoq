@@ -38,7 +38,7 @@ class StoqLibInstallLib(TemplateInstallLib):
                             glade='$datadir/glade')
     
 setup(name=PACKAGE,
-      version='.'.join(version),
+      version='.'.join(map(str, version)),
       author="Async Open Source",
       author_email="evandro@async.com.br",
       url="http://www.async.com.br/projects/",
