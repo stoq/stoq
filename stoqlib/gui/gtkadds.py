@@ -27,8 +27,7 @@ gui/gtkadds.py:
 import os
 
 import gtk
-import stoqlib
-
+from kiwi.environ import environ
 
 # register stoq stock icons
 def register_iconsets():
@@ -41,12 +40,11 @@ def register_iconsets():
                  ('stoq-sales', "sales.xpm")]
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
-    dir = os.path.join(stoqlib.__path__[0], 'gui', 'pixmaps')
-    for stock_id, file_name in icon_info:
+    for stock_id, filename in icon_info:
         # only load image files when our stock_id is not present
-        file = os.path.join(dir, file_name)
         if stock_id not in stock_ids:
-            pixbuf = gtk.gdk.pixbuf_new_from_file(file)
+            filename = environ.find_resource('pixmaps', filename)
+            pixbuf = gtk.gdk.pixbuf_new_from_file(filename)
             iconset = gtk.IconSet(pixbuf)
             iconfactory.add(stock_id, iconset)
     iconfactory.add_default()
