@@ -241,7 +241,7 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         conn = self.get_connection()
         return payment.addFacet(IInPayment, connection=conn)
 
-    @argcheck(object, PaymentAdaptToInPayment)
+    @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
         """Deletes the inpayment and its associated payment. 
         Missing a cascade argument in SQLObject ?"""
@@ -461,7 +461,7 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
                   payment=payment)
         return payment
 
-    @argcheck(object, PaymentAdaptToInPayment)
+    @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
         """Deletes the inpayment, its associated payment and also the
         check_data object. Missing a cascade argument in SQLObject ?"""
@@ -638,7 +638,7 @@ class PaymentMethodDetails(InheritableModel):
         return payment_method.create_inpayment(payment_group, due_date,
                                                value, self, description)
 
-    @argcheck(object, AbstractPaymentGroup, int, datetime, float)
+    @argcheck(AbstractPaymentGroup, int, datetime, float)
     def create_inpayments(self, payment_group, installments_number,
                          first_duedate, total_value):
         """Return a list of newly created inpayments and its total

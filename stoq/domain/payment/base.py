@@ -244,11 +244,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
 
     
-    @argcheck(object, Payment)
+    @argcheck(Payment)
     def add_item(self, payment):
         payment.group = self
 
-    @argcheck(object, Payment)
+    @argcheck(Payment)
     def remove_item(self, payment):
         Payment.delete(payment.id, connection=self.get_connection())
 
