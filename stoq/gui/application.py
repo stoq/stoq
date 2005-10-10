@@ -84,9 +84,9 @@ class AppWindow(BaseAppWindow):
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
-        self.toplevel.set_title(self.get_title_str())
+        self.toplevel.set_title(self.get_title())
 
-    def get_title_str(self):
+    def get_title(self):
         # This method must be redefined in child when it's needed
         return _('Stoq - %s') % self.app_name
         

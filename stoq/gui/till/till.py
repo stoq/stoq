@@ -68,10 +68,10 @@ class TillApp(AppWindow):
         self._setup_slaves()
         self._setup_widgets()
 
-    def get_title_str(self):
-        today = date.today()
-        today_str = today.strftime('%d of %B')
-        return _('Stoq - %s, %s') % (self.app_name, today_str)
+    def get_title(self):
+        today_format = _('%d of %B')
+        today_str = date.today().strftime(today_format)
+        return _('Stoq - %s of %s') % (self.app_name, today_str)
 
     def _setup_widgets(self):
         self._update_widgets()
