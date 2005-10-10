@@ -60,7 +60,6 @@ class TillApp(AppWindow):
                'TillMenu',
                'TillOpen',
                'TillClose',
-               'CurrentTill',
                'quit_action')
 
     def __init__(self, app):
@@ -69,10 +68,13 @@ class TillApp(AppWindow):
         self._setup_slaves()
         self._setup_widgets()
 
+    def get_title_str(self):
+        today = date.today()
+        today_str = today.strftime('%d of %B')
+        return _('Stoq - %s, %s') % (self.app_name, today_str)
+
     def _setup_widgets(self):
         self._update_widgets()
-        # TODO: Implement Current Till Operation dialog
-        self.CurrentTill.set_sensitive(False)
 
     def _update_widgets(self):
         has_till = get_current_till_operation(self.conn) is not None

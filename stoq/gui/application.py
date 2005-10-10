@@ -84,8 +84,11 @@ class AppWindow(BaseAppWindow):
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
-        title = _('Stoq - %s Application') % self.app_name
-        self.toplevel.set_title(title)
+        self.toplevel.set_title(self.get_title_str())
+
+    def get_title_str(self):
+        # This method must be redefined in child when it's needed
+        return _('Stoq - %s') % self.app_name
         
     def _store_cookie(self, *args):
         u = get_current_user()
