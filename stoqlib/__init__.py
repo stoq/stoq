@@ -1,5 +1,3 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
-# vi:si:et:sw=4:sts=4:ts=4
 #
 # Copyright (C) 2005 Async Open Source
 #
@@ -18,23 +16,14 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 
-import gettext
-import os.path
+from kiwi.environ import Library
 
-# This sort of sucks, but it's the cheapest solution for now.
+__all__ = ['library']
 
-# prefix = $DIR/..
-# if a locale directoy exists in directory, be happy
-# otherwise, check ../../../share/locale
-# if any of them exist, pass in the path to gettext.bindtextdomain
+library = Library('stoqlib', root='..')
+if library.uninstalled:
+    library.add_resources(locale='locale')
+    library.add_global_resources(pixmaps='stoqlib/gui/pixmaps',
+                                 glade='stoqlib/gui/glade')
+library.enable_translation()
 
-prefix = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-locale = os.path.join(prefix, 'locale')
-if not os.path.exists(locale):
-    locale = os.path.abspath(os.path.join(prefix,
-                                          '..', '..', '..',
-                                          'share', 'locale'))
-
-if os.path.exists(locale):
-    gettext.bindtextdomain('stoqlib', locale)
-    gettext.bind_textdomain_codeset('stoqlib', 'utf-8')
