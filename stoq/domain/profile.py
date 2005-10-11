@@ -77,7 +77,7 @@ class UserProfile(Domain):
             raise DatabaseInconsistency("You should have only one "
                                         "ProfileSettings instance for "
                                         "directory name %s, got %d" %
-                                        (dir_name, len(settings)))
+                                        (app_name, len(settings)))
         return True
 
 
