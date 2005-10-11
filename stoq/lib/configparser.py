@@ -41,7 +41,7 @@ class StoqConfigParser:
 [General]
 # Default file where status and errors are appended to. Comment this out
 # to allow output to be sent to stderr/stdout
-logfile=~/.%(DOMAIN)s/application.log
+#logfile=~/.%(DOMAIN)s/application.log
 
 [Database]
 # Choose here the relational database management system you would like to
