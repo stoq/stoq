@@ -35,7 +35,7 @@ import time
 import gtk
 import gobject
 from stoqlib.exceptions import (DatabaseError, _warn, UserProfileError,
-                                LoginError)
+                                LoginError, DatabaseInconsistency)
 from stoqlib.database import set_model_connection_func
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import set_max_search_results
