@@ -31,6 +31,9 @@ from stoq.domain.service import Service
 from stoq.domain.interfaces import ISellable
 from stoq.lib.runtime import new_transaction
 
+
+MAX_SERVICES_NUMBER = 4
+
 def create_services():
     print 'creating services...'
     trans = new_transaction()
@@ -51,7 +54,7 @@ def create_services():
 
 
     # Creating services and facets
-    for index in range(4):
+    for index in range(MAX_SERVICES_NUMBER):
         service_obj = Service(connection=trans)
         
         sellable_args = sellable_data[index]
