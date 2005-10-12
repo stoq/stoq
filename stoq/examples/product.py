@@ -30,6 +30,9 @@ stoq/examples/products.py:
     examples/person.py, oterwise the stocks won't be created properly.
 """
 
+
+import random
+
 from stoq.domain.product import Product, ProductSupplierInfo
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISellable, IStorable, ISupplier
@@ -39,61 +42,53 @@ from stoq.domain.sellable import (BaseSellableCategory,
 from stoq.lib.runtime import new_transaction
 
 
-MAX_PRODUCTS_NUMBER = 4
+MAX_PRODUCT_NUMBER = 4
+
+PRICE_RANGE = 100, 200
+QUANTITY_RANGE = 1, 50
+COST_RANGE = 1, 99
+    
+MARKUP_RANGE = 30, 80
+COMMISION_RANGE = 1, 40
+    
+
+def get_commission_and_markup():
+    commission = round(random.uniform(*COMMISION_RANGE), 2)
+    markup = round(random.uniform(*MARKUP_RANGE), 2)
+    return commission, markup
     
 def create_products():
     print 'Creating products...'
     trans = new_transaction()
 
-    base_category_data= [dict(description='Keyboard', 
-                              suggested_markup=25.5,
-                              salesperson_comission=31.7),
-                         dict(description='Mouse', 
-                              suggested_markup=15.5,
-                              salesperson_comission=32.7),
-                         dict(description='Monitor', 
-                              suggested_markup=26.5,
-                              salesperson_comission=33.7),
-                         dict(description='Processor', 
-                              suggested_markup=29.5,
-                              salesperson_comission=39.7)]
+    base_category_data= ['Keyboard', 
+                         'Mouse', 
+                         'Monitor', 
+                         'Processor']
 
-    category_data = [dict(description='Generic', 
-                          suggested_markup=1.4,
-                          salesperson_comission=30.9),
-                     dict(description='Optical', 
-                          suggested_markup=2.4,
-                          salesperson_comission=31.9),
-                     dict(description='LCD', 
-                          suggested_markup=3.4,
-                          salesperson_comission=32.9),
-                     dict(description='AMD Durom', 
-                          suggested_markup=7.4,
-                          salesperson_comission=36.9)]
+    category_data = ['Generic', 
+                     'Optical', 
+                     'LCD', 
+                     'AMD Durom']
 
     sellable_data = [dict(code='K15',
-                          description='Keyboard AXDR', 
-                          price=99.9),
+                          description='Keyboard AXDR'), 
                      dict(code='M73',
-                          description='Optical Mouse 45FG', 
-                          price=39.5),
+                          description='Optical Mouse 45FG'), 
                      dict(code='MO25',
-                          description='Monitor LCD SXDF', 
-                          price=435.7),
+                          description='Monitor LCD SXDF'), 
                      dict(code='P83',
-                          description='Processor AMD Durom 1.2Ghz', 
-                          price=877.22)]
+                          description='Processor AMD Durom 1.2Ghz')]
 
     supplier_table = Person.getAdapterClass(ISupplier)
     suppliers = supplier_table.select(connection=trans)
-    if suppliers.count() < MAX_PRODUCTS_NUMBER:
+    if suppliers.count() < MAX_PRODUCT_NUMBER:
         raise ValueError('You must have at least four suppliers on your '
                          'database at this point.')
 
 
     # Creating products and facets
-    value = 10.0
-    for index in range(MAX_PRODUCTS_NUMBER):
+    for index in range(MAX_PRODUCT_NUMBER):
         product_obj = Product(connection=trans)
 
         # Adding a main supplier for the product recently created
@@ -103,31 +98,40 @@ def create_products():
                                             is_main_supplier=True, 
                                             product=product_obj)
         
-        base_cat_args = base_category_data[index]
-        abstract_data = AbstractSellableCategory(connection=trans,
-                                                 **base_cat_args)
+        base_cat_desc = base_category_data[index]
+        commission, markup = get_commission_and_markup()
+        table = AbstractSellableCategory
+        abstract_data = table(connection=trans, suggested_markup=markup,
+                              salesperson_comission=commission,
+                              description=base_cat_desc)
+
         base_cat = BaseSellableCategory(connection=trans,
                                         category_data=abstract_data)
-        cat_args = category_data[index] 
-        abstract_data = AbstractSellableCategory(connection=trans,
-                                                 **cat_args)
+
+        cat_desc = category_data[index] 
+        commission, markup = get_commission_and_markup()
+        table = AbstractSellableCategory
+        abstract_data = table(connection=trans, description=cat_desc,
+                              salesperson_comission=commission,
+                              suggested_markup=markup)
+
         cat = SellableCategory(connection=trans,
                                base_category=base_cat,
                                category_data=abstract_data)
 
         sellable_args = sellable_data[index]
-        product_obj.addFacet(ISellable, connection=trans,
-                             category=cat,
-                             **sellable_args)
+        price = random.randrange(*PRICE_RANGE)
+        cost = random.randrange(*COST_RANGE)
+        product_obj.addFacet(ISellable, connection=trans, category=cat, 
+                             price=price, cost=cost, **sellable_args)
 
         storable = product_obj.addFacet(IStorable, connection=trans)
 
         # Setting a initial value for Stocks
         for stock_item in storable.get_stocks():
-            stock_item.quantity = value
-            stock_item.stock_cost = value * 5
-            stock_item.logic_quantity = value * 2
-            value += 3
+            stock_item.quantity = random.randint(*QUANTITY_RANGE)
+            stock_item.stock_cost = random.randrange(*COST_RANGE)
+            stock_item.logic_quantity = stock_item.quantity * 2
         
     trans.commit()
     print 'done.'
