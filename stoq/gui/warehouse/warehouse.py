@@ -75,10 +75,12 @@ class WarehouseApp(AppWindow):
         self.sellable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def _setup_slaves(self):
-        search_label_text = _('Find products matching')
+        search_label_text = _('Products Matching')
+        results_text = _('product(s)')
         self.search_bar = SearchBar(self, AbstractSellable,
                                     self._get_columns(), 
                                     search_lbl_text=search_label_text,
+                                    search_results_text=results_text,
                                     filter_slave=self.filterstock_slave) 
         self.attach_slave("search_bar_holder", self.search_bar)
 

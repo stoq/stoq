@@ -88,8 +88,11 @@ class TillApp(AppWindow):
         self.attach_slave('klist_holder', list_slave)
         self.sale_list = list_slave.klist
 
+        search_text = _('Sales Matching')
+        results_text = _('sale(s)')
         self.searchbar = SearchBar(self, Sale, self.get_columns(),
-                                   search_lbl_text=_('Find Sales'))
+                                   search_lbl_text=search_text,
+                                   search_results_text=results_text)
         self.searchbar.search_items()
         self.attach_slave('searchbar_holder', self.searchbar)
 

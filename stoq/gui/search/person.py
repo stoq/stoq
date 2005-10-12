@@ -64,14 +64,16 @@ class BasePersonSearch(SearchEditor):
                               interface=self.interface,
                               parent_conn=parent_conn,
                               hide_footer=hide_footer,
-                              search_lbl_text=self.search_lbl_text)
+                              search_lbl_text=self.search_lbl_text,
+                              search_results_text=self.results_text)
 
 
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
     table = PersonAdaptToEmployee
-    search_lbl_text = _('Find Employees')
+    search_lbl_text = _('Employees Matching')
+    results_text = _('employee(s)')
     
 
 
@@ -104,7 +106,8 @@ class SupplierSearch(BasePersonSearch):
     editor_class = SupplierEditor
     table = Person
     interface = ISupplier
-    search_lbl_text = _('Find Suppliers')
+    search_lbl_text = _('Suppliers Matching')
+    results_text = _('supplier(s)')
     
 
 
@@ -132,7 +135,8 @@ class ClientSearch(BasePersonSearch):
     editor_class = ClientEditor
     table = Person
     interface = IClient
-    search_lbl_text = _('Find Clients')
+    search_lbl_text = _('Clients Matching')
+    results_text = _('client(s)')
     
 
 
