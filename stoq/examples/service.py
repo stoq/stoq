@@ -27,12 +27,16 @@ stoq/examples/service.py:
     Create service objects for an example database.
 """
 
+import random
+
 from stoq.domain.service import Service
 from stoq.domain.interfaces import ISellable
 from stoq.lib.runtime import new_transaction
 
 
 MAX_SERVICES_NUMBER = 4
+PRICE_RANGE = 100, 200 
+COST_RANGE = 1, 99
 
 def create_services():
     print 'creating services...'
@@ -40,17 +44,13 @@ def create_services():
     
 
     sellable_data = [dict(code='General89',
-                          description='General Service',
-                          price=87.9),
+                          description='General Service'),
                      dict(code='C762',
-                          description='Cleanness',
-                          price=119.5),
+                          description='Cleanness'),
                      dict(code='872626',
-                          description='Computer Maintenance',
-                          price=555.7),
+                          description='Computer Maintenance'),
                      dict(code='S123',
-                          description='Computer Components Switch',
-                          price=856.22)]
+                          description='Computer Components Switch')]
 
 
     # Creating services and facets
@@ -58,7 +58,10 @@ def create_services():
         service_obj = Service(connection=trans)
         
         sellable_args = sellable_data[index]
+        price = round(random.uniform(*PRICE_RANGE))
+        cost = round(random.uniform(*COST_RANGE))
         service_obj.addFacet(ISellable, connection=trans,
+                             price=price, cost=cost,
                              **sellable_args)
 
     trans.commit()
