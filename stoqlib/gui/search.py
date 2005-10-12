@@ -116,7 +116,7 @@ class SearchBar(SlaveDelegate):
 
     def __init__(self, parent, table_type, columns=None, query_args=None,
                  search_callback=None, search_lbl_text=None,
-                 filter_slave=None):
+                 search_results_text=None, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
@@ -131,15 +131,18 @@ class SearchBar(SlaveDelegate):
         self.table_type = table_type
         self.query_args = query_args
         self._search_callback = search_callback
+
         if not search_lbl_text:
             self.search_label.set_text(_('Find Items'))
         else:
             self.search_label.set_text(search_lbl_text)
+
         if filter_slave:
             self.attach_slave('filter_area', filter_slave)
-        self.search_results_label.set_size('small')
-        self.search_results_label.set_color('red')
+        self.search_results_text = search_results_text or 'results'
         self.search_results_label.set_text('')
+        self.search_results_label.set_size('small')
+        self.search_icon.hide()
         self._split_field_types()
 
     def get_search_string(self):
@@ -147,6 +150,7 @@ class SearchBar(SlaveDelegate):
 
     def set_search_string(self, search_str):
         return self.search_entry.set_text(search_str)
+
 
 
     #
@@ -294,12 +298,14 @@ class SearchBar(SlaveDelegate):
 
         total = search_results.count()
         if total > max_search_results:
-            msg = _('Listing %d results of about %d.' % (max_search_results, 
-                                                         total))
+            msg = _('%d of %d %s shown') % (max_search_results, total,
+                                            search_results_text)
+            self.search_results_label.set_text(msg)
+        elif total > 0:
+            msg = '%d %s' % (total, self.search_results_text)
             self.search_results_label.set_text(msg)
         else:
-            msg = _('%d results' % total)
-            self.search_results_label.set_text(msg)
+            self.search_results_label.set_text('')
 
         objs = self.parent.filter_results(objs)
         # Since SQLObject doesn't support distinct-counting of sliced
@@ -343,15 +349,19 @@ class SearchBar(SlaveDelegate):
         yield False
 
     def start_animate_search_icon(self):
+        self.search_button.hide()
+        self.search_icon.show()
         self._animate_search_icon_id = \
             gobject.timeout_add(self.ANIMATE_TIMEOUT, 
                                 self._animate_search_icon().next)
     
     def stop_animate_search_icon(self):
+        self.search_button.show()
         if self._animate_search_icon_id == -1:
             # TODO: it's wierd that _warn method is private. Need some refactoring
             _warn("Search icon animation hasn't started")
         gobject.source_remove(self._animate_search_icon_id)
+        self.search_icon.hide()
     
 
     
@@ -432,8 +442,8 @@ class SearchDialog(BasicDialog):
     size = ()
             
     def __init__(self, table, search_table=None, parent_conn=None,
-                 hide_footer=True, title='', 
-                 selection_mode=gtk.SELECTION_BROWSE,
+                 hide_footer=True, title='', search_results_text=None,
+                 selection_mode=gtk.SELECTION_BROWSE, 
                  search_lbl_text=None):
         BasicDialog.__init__(self)
         title = title or self.title
@@ -451,6 +461,7 @@ class SearchDialog(BasicDialog):
         self.conn = get_model_connection()
         assert self.conn
         self.search_lbl_text = search_lbl_text
+        self.search_results_text = search_results_text
         self.setup_slaves()
 
     def setup_slaves(self, **kwargs):
@@ -464,9 +475,11 @@ class SearchDialog(BasicDialog):
 
         columns = self.get_columns()
         query_args = self.get_query_args()
+        results_text = self.search_results_text
         self.search_bar = SearchBar(self, self.search_table, columns, 
                                     query_args=query_args,
-                                    search_lbl_text=self.search_lbl_text)
+                                    search_lbl_text=self.search_lbl_text,
+                                    search_results_text=results_text)
         self.attach_slave('header', self.search_bar)
 
     def get_selection(self):
@@ -591,11 +604,12 @@ class SearchEditor(SearchDialog):
     def __init__(self, table, editor_class, interface=None,
                  parent_conn=None, search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 search_lbl_text=None):
+                 search_lbl_text=None, search_results_text=None):
         SearchDialog.__init__(self, table, search_table,
                               parent_conn, hide_footer=hide_footer, 
                               title=title, selection_mode=selection_mode,
-                              search_lbl_text=search_lbl_text)
+                              search_lbl_text=search_lbl_text,
+                              search_results_text=search_results_text)
         self.interface = interface
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
