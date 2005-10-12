@@ -170,6 +170,12 @@ class SearchBar(SlaveDelegate):
             return
 
         attributes = [c.attribute for c in self.columns]
+
+        # We need this check since the id field is not actually an
+        # SQLObject column 
+        if 'id' in attributes:
+            self.int_fields.append(('id', self.table_type))
+        
         for k_column in self.columns:
             if isinstance(k_column, FacetColumn):
                 if issubclass(self.table_type, Adapter):
