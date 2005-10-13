@@ -547,6 +547,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
 
     def after_installments_number__value_changed(self, *args):
+        # Call this callback *after* the value changed because we need to
+        # have the same value for the length of the payments list 
         inst_number = self.model.installments_number
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
