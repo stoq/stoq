@@ -225,7 +225,7 @@ class SalesPersonStep(BaseEditorSlave, WizardStep):
                      'subtotal_lbl',
                      'salesperson_combo')
     widgets = proxy_widgets + ('cash_check', 
-                               'subtotal_expander'
+                               'subtotal_expander',
                                'othermethods_check')
 
     def __init__(self, previous, conn, model):
