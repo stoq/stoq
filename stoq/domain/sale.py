@@ -198,7 +198,7 @@ class Sale(Domain):
         return self.till.branch
 
     def get_sale_subtotal(self):
-        return sum([item.price for item in self.get_items()]) or 0.0
+        return sum([item.price for item in self.get_items()], 0.0)
 
     def get_total_sale_amount(self):
         """Return the total value paid by the client. This can be 
