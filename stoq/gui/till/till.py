@@ -45,6 +45,7 @@ from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
+from stoq.lib.validators import get_formatted_price
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 
@@ -112,8 +113,9 @@ class TillApp(AppWindow):
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
                                  data_type=str, obj_field='client._original'),
                 Column('total_sale_amount', title=_('Total'), width=150, 
-                       data_type=float, justify=gtk.JUSTIFY_RIGHT, 
-                       format='%.2f')]
+                       data_type=float, justify=gtk.JUSTIFY_RIGHT,
+                       format_func=get_formatted_price)]
+                       
 
     def get_extra_query(self):
         q1 = Sale.q.clientID == PersonAdaptToClient.q.id

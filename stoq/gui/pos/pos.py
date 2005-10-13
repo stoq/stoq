@@ -248,11 +248,13 @@ class POSApp(AppWindow):
                 Column('sellable.description', title=_('Description'), 
                        data_type=str, expand=True),
                 Column('price', title=_('Price'), data_type=float, 
+                       format_func=get_formatted_price,
                        width=90, justify=gtk.JUSTIFY_RIGHT),
                 Column('quantity', title=_('Quantity'), data_type=str,
                        width=90, format_func=format_quantity,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('total', title=_('Total'), data_type=float,
+                       format_func=get_formatted_price,
                        width=100, justify=gtk.JUSTIFY_RIGHT)]
 
 
