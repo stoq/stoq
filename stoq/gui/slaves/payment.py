@@ -33,6 +33,7 @@ from datetime import datetime
 
 import gobject
 from kiwi.utils import gsignal
+from kiwi.ui.views import signal_block
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.editors import BaseEditorSlave
 
@@ -82,12 +83,13 @@ class PaymentListSlave(BaseEditorSlave):
                'status_label',
                'total_label')
 
-    def __init__(self, parent, conn, payment_method, sale_total,
-                 update_widget_handler=None):
+    gsignal('remove-slave')
+    gsignal('add-slave')
+
+    def __init__(self, parent, conn, payment_method, sale_total):
         self.parent = parent
         self.payment_method = payment_method
         self.sale_total = sale_total
-        self.update_widget_handler = update_widget_handler
         self.max_installments_number = None
         # This dict stores a reference of each toplevel widget with its own
         # kiwi object, the slave.
@@ -109,7 +111,6 @@ class PaymentListSlave(BaseEditorSlave):
         del self.payment_slaves[widget]
         self.list_vbox.remove(widget)
         self._update_view()
-        self.update_widget_handler()
         self.parent.on_remove_item(slave)
 
     def get_total_difference(self):
@@ -184,7 +185,6 @@ class PaymentListSlave(BaseEditorSlave):
         vadj.set_value(vadj.upper)
         widget.show()
         self._update_view()
-        self.update_widget_handler()
 
     def remove_last_payment_slave(self):
         vbox_children = self.list_vbox.get_children()
@@ -203,10 +203,13 @@ class PaymentListSlave(BaseEditorSlave):
 
     def on_add_button__clicked(self, *args):
         self.add_slave()
+        self.emit('add-slave')
 
     def on_remove_button__clicked(self, *args):
         self.remove_last_payment_slave()
+        self.emit('remove-slave')
 
+gobject.type_register(PaymentListSlave)
 
 class BankDataSlave(BaseEditorSlave):
     gladefile = 'BankDataSlave'
@@ -392,8 +395,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
         total = self.sale.get_total_sale_amount()
         self.payment_list = PaymentListSlave(self, self.conn, 
-                                             self.method, total,
-                                             self.update_installments_number)
+                                             self.method, total)
+        self.payment_list.connect('add-slave',
+                                  self.update_installments_number)
+        self.payment_list.connect('remove-slave',
+                                  self.update_installments_number)
         self.payment_list.register_max_installments_number(max)
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
@@ -479,7 +485,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.update_view()
         self.payment_list.update_total_label()
 
-    def update_installments_number(self):
+    def update_installments_number(self, *args):
         inst_number = self.payment_list.get_children_number()
         self.model.installments_number = inst_number
         self.proxy.update('installments_number')
@@ -540,7 +546,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
 
 
-    def on_installments_number__value_changed(self, *args):
+    def after_installments_number__value_changed(self, *args):
         inst_number = self.model.installments_number
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
