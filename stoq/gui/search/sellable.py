@@ -186,6 +186,7 @@ class SellableSearch(SearchDialog):
                    Column('description', title=_('Description'),
                           expand=True, data_type=str, searchable=True),
                    Column('price', title=_('Price'), data_type=float,
+                          format_func=get_formatted_price,
                           width=90)]
         if self.has_stock_mode:
             column = AccessorColumn('stock', self.get_stock_balance, 
