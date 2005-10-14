@@ -55,6 +55,7 @@ class BasePersonSearch(SearchEditor):
     interface = None
     editor_class = None
     search_lbl_text = None
+    result_strings = None
 
     def __init__(self, title='', hide_footer=False,
                  parent_conn=None):
@@ -64,8 +65,9 @@ class BasePersonSearch(SearchEditor):
                               interface=self.interface,
                               parent_conn=parent_conn,
                               hide_footer=hide_footer,
-                              search_lbl_text=self.search_lbl_text,
-                              search_results_text=self.results_text)
+                              search_lbl_text=self.search_lbl_text)
+        self.set_result_strings(*self.result_strings)
+                
 
 
 class EmployeeSearch(BasePersonSearch):
@@ -73,7 +75,7 @@ class EmployeeSearch(BasePersonSearch):
     editor_class = EmployeeEditor
     table = PersonAdaptToEmployee
     search_lbl_text = _('Employees Matching')
-    results_text = _('employee(s)')
+    result_strings = _('employee'), _('employees')
     
 
 
@@ -107,7 +109,7 @@ class SupplierSearch(BasePersonSearch):
     table = Person
     interface = ISupplier
     search_lbl_text = _('Suppliers Matching')
-    results_text = _('supplier(s)')
+    result_strings = _('supplier'), _('suppliers')
     
 
 
@@ -136,7 +138,7 @@ class ClientSearch(BasePersonSearch):
     table = Person
     interface = IClient
     search_lbl_text = _('Clients Matching')
-    results_text = _('client(s)')
+    result_strings = _('client'), _('clients')
     
 
 

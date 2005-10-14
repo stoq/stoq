@@ -110,12 +110,12 @@ class POSApp(AppWindow):
         self.attach_slave('orderlist_holder', order_list_slave)
         self.order_list = order_list_slave.klist
     
-        results_text = _('product(s)/service(s)')
         search_text = _('Products/Services Matching')
         self.search_bar = SearchBar(self, AbstractSellable,
                                     search_callback=self.run_search,
-                                    search_lbl_text=search_text,
-                                    search_results_text=results_text) 
+                                    search_lbl_text=search_text)
+        singular, plural  = _('product/service'), _('products/services')
+        self.search_bar.set_result_strings(singular, plural)
         self.attach_slave("search_bar_holder", self.search_bar)
 
     def _setup_proxies(self):
