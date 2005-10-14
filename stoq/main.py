@@ -39,18 +39,6 @@ except ImportError:
                          "Tried to start stoq but critical configuration "
                          "were are missing.\n")
 
-# A list of subdirectories in stoq/gui/
-for dir in ['editors', 'components', 'pos', 'search',
-            'slaves', 'templates', 'till', 'wizards', 'warehouse']:
-    path = os.path.join(module.basedir, "stoq", "gui", dir, "glade")
-    if os.path.exists(path) and os.path.isdir(path):
-        environ.add_resource("glade", path)
-
-if os.path.exists(module.glade_dir) and os.path.isdir(module.glade_dir):
-    environ.add_resource("glade", module.glade_dir)
-
-environ.add_resource("pixmap", module.pixmap_dir)
-
 appdir = os.path.join(module.basedir, "stoq", "gui")
 
 # Tell gettext that translations (.mo files) for the translation
@@ -77,6 +65,20 @@ def get_app_list():
             applications.append(sub_dir)
     applications.sort()
     return applications
+
+# A list of subdirectories in stoq/gui/
+glade_dirs = ['editors', 'components', 'search', 'slaves', 'templates', 
+              'wizards'] + get_app_list()
+
+for dir in glade_dirs:
+    path = os.path.join(module.basedir, "stoq", "gui", dir, "glade")
+    if os.path.exists(path) and os.path.isdir(path):
+        environ.add_resource("glade", path)
+
+if os.path.exists(module.glade_dir) and os.path.isdir(module.glade_dir):
+    environ.add_resource("glade", module.glade_dir)
+
+environ.add_resource("pixmap", module.pixmap_dir)
 
 def main(args):
     apps = get_app_list()
