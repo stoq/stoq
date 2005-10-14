@@ -93,7 +93,7 @@ class BaseListSlave(SlaveDelegate):
         self.update_widgets()
 
 
-class DatePeriod:
+class DateInterval:
     """A basic class for a range of dates used by DateSearchSlave as the
     model object
     """
@@ -120,7 +120,7 @@ class DateSearchSlave(SlaveDelegate):
                                widgets=self.widgets)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
-        self.model = DatePeriod()
+        self.model = DateInterval()
         self.add_proxy(self.model, self.proxy_widgets)
         self._slave = SearchEntry(search_lbl_text, search_results_text,
                                   filter_slave)
