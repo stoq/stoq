@@ -143,6 +143,8 @@ class AppWindow(BaseAppWindow):
         about.set_website(__website__)
         release_date = datetime.datetime(*__release_date__).strftime('%x')
         about.set_comments('Release Date: %s' % release_date)
+        copyright = 'Copyright (C) 2005 Async Open Source'
+        about.set_copyright(copyright)
         about.run()
         about.destroy()
 
