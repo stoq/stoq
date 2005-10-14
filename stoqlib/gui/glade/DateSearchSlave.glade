@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <widget class="GtkWindow" id="SearchBar">
+    <widget class="GtkWindow" id="DateSearchSlave">
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
@@ -18,18 +18,18 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="search_results_label">
+                                    <widget class="kiwi+ui+widgets+label+Label" id="search_label">
                                         <property name="data_type">str</property>
                                         <property name="justify">right</property>
-                                        <property name="label" context="yes" translatable="yes">Found %s items</property>
-                                        <property name="xalign">0.0</property>
+                                        <property name="label" context="yes" translatable="yes">Find Items From:</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="search_label">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Search Item</property>
-                                        <property name="xalign">1.0</property>
+                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="anytime_check">
+                                        <property name="data_type">bool</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Any time</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -37,11 +37,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                        <property name="data_type">str</property>
-                                        <property name="justify">right</property>
-                                        <property name="label" context="yes" translatable="yes">:</property>
-                                        <property name="xalign">1.0</property>
+                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="date_check">
+                                        <property name="active">False</property>
+                                        <property name="data_type">bool</property>
+                                        <property name="group">anytime_check</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -49,9 +48,11 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkEntry" id="search_entry">
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="start_date">
+                                        <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
-                                        <property name="visible">True</property>
+                                        <property name="model_attribute">start_date</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -59,11 +60,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkEventBox" id="filter_area">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                                        <property name="data_type">str</property>
+                                        <property name="ellipsize">end</property>
+                                        <property name="label" context="yes" translatable="yes">to</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -71,31 +71,32 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkImage" id="search_icon">
-                                        <property name="stock">gtk-missing-image</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">5</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkButton" id="search_button">
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="end_date">
+                                        <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Search</property>
-                                        <property name="visible">True</property>
+                                        <property name="model_attribute">end_date</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
                                         <property name="fill">False</property>
-                                        <property name="position">6</property>
+                                        <property name="position">5</property>
                                     </packing>
                                 </child>
                             </widget>
                         </child>
                     </widget>
+                </child>
+                <child>
+                    <widget class="GtkEventBox" id="searchentry_holder">
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
                 </child>
             </widget>
         </child>

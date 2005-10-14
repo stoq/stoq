@@ -28,16 +28,19 @@ gui/search.py:
 
 import string
 import gettext
+import datetime
 
 import gtk
 import gobject
 from twisted.python.components import Adapter
+from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
+from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
-                           SODateTimeCol)
+                           SODateTimeCol, SODateCol)
 
 import stoqlib
 from stoqlib.gui.dialogs import BasicDialog, run_dialog
@@ -90,6 +93,202 @@ class BaseListSlave(SlaveDelegate):
         self.update_widgets()
 
 
+class DatePeriod:
+    """A basic class for a range of dates used by DateSearchSlave as the
+    model object
+    """
+    start_date = None
+    end_date = None
+
+
+class DateSearchSlave(SlaveDelegate):
+    gladefile = 'DateSearchSlave'
+    
+    proxy_widgets = ('start_date',
+                     'end_date')
+
+    widgets = ('search_label',
+               "anytime_check",
+               "date_check") + proxy_widgets
+
+    gsignal('startdate-activate')
+    gsignal('enddate-activate')
+
+    def __init__(self, search_lbl_text=None, search_results_text=None, 
+                 filter_slave=None):
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+                               widgets=self.widgets)
+        # As we want to use kiwi validators with date fields we need to set
+        # proxies here.
+        self.model = DatePeriod()
+        self.add_proxy(self.model, self.proxy_widgets)
+        self._slave = SearchEntry(search_lbl_text, search_results_text,
+                                  filter_slave)
+        self.attach_slave('searchentry_holder', self._slave)
+        self._update_view()
+
+    def _update_view(self):
+        enable_dates = not self.anytime_check.get_active()
+        self.start_date.set_sensitive(enable_dates)
+        self.end_date.set_sensitive(enable_dates)
+
+    def get_slave(self):
+        return self._slave
+
+    def get_search_string(self):
+        return self._slave.get_search_string()
+
+    def set_search_string(self, search_str):
+        return self._slave.set_search_string(search_str)
+
+    def get_search_dates(self):
+        if self.anytime_check.get_active():
+            return
+        start_date = self.model.start_date
+        # We need datetime.datetime instances in SearchBar and here we 
+        # must convert them since kiwi doesn't have support for datetime 
+        # widgets, only instances of type datetime.date
+        if start_date:
+            start_date = datetime.datetime(start_date.year,
+                                           start_date.month, 
+                                           start_date.day)
+        end_date = self.model.end_date 
+        if end_date:
+            end_date = datetime.datetime(end_date.year,
+                                         end_date.month, 
+                                         end_date.day)
+        return start_date, end_date 
+
+    def update_results_label(self, text):
+        self._slave.update_results_label(text)
+
+    def start_animate_search_icon(self):
+        self._slave.start_animate_search_icon()
+
+    def stop_animate_search_icon(self):
+        self._slave.stop_animate_search_icon()
+
+
+    
+    #
+    # Kiwi callbacks
+    #
+
+
+
+    def on_anytime_check__toggled(self, *args):
+        self._update_view()
+
+    def on_date_check__toggled(self, *args):
+        self._update_view()
+
+    def on_start_date__activate(self, *args):
+        self.emit('startdate-activate')
+
+    def on_end_date__activate(self, *args):
+        self.emit('enddate-activate')
+
+gobject.type_register(DateSearchSlave)        
+
+
+class SearchEntry(SlaveDelegate):
+    gladefile = 'SearchEntry'
+    
+    widgets = ('search_button',
+               'search_label',
+               "search_entry",
+               "search_results_label",
+               "search_icon")
+
+    gsignal('searchbutton-clicked')
+    gsignal('searchentry-activate')
+
+    SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+    ANIMATE_TIMEOUT = 200
+
+    def __init__(self, search_lbl_text=None, search_results_text=None, 
+                 filter_slave=None):
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+                               widgets=self.widgets)
+        self.search_icon.set_from_stock("searchtool-icon1", 
+                                        self.SEARCH_ICON_SIZE)
+
+        if filter_slave:
+            self.attach_slave('filter_area', filter_slave)
+
+        if not search_lbl_text:
+            self.search_label.set_text(_('Find Items'))
+        else:
+            self.search_label.set_text(search_lbl_text)
+                
+        self.search_results_label.set_text('')
+        self.search_results_label.set_size('small')
+        self.search_icon.hide()
+        self.search_entry.grab_focus()
+
+    def get_search_string(self):
+        return self.search_entry.get_text()
+
+    def set_search_string(self, search_str):
+        return self.search_entry.set_text(search_str)
+
+    def update_results_label(self, text):
+        self.search_results_label.set_text(text)
+
+
+
+    #
+    # Kiwi callbacks
+    #
+
+
+
+    def on_search_button__clicked(self, *args):
+        self.emit('searchbutton-clicked')
+
+    def on_search_entry__activate(self, *args):
+        self.emit('searchentry-activate')
+
+
+
+    #
+    # Animation
+    #
+
+
+
+    def _animate_search_icon(self):
+        dir = stoqlib.__path__[0] + '/gui/pixmaps'
+        stocklist = ["searchtool-icon2",
+                     "searchtool-icon3",
+                     "searchtool-icon4",
+                     "searchtool-icon1"]
+        
+        while True:
+            for stock in stocklist:
+                self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
+                yield True
+        
+        yield False
+
+    def start_animate_search_icon(self):
+        self.search_button.hide()
+        self.search_icon.show()
+        self._animate_search_icon_id = \
+            gobject.timeout_add(self.ANIMATE_TIMEOUT, 
+                                self._animate_search_icon().next)
+    
+    def stop_animate_search_icon(self):
+        self.search_button.show()
+        if self._animate_search_icon_id == -1:
+            # TODO: it's wierd that _warn method is private. Need some refactoring
+            _warn("Search icon animation hasn't started")
+        gobject.source_remove(self._animate_search_icon_id)
+        self.search_icon.hide()
+
+gobject.type_register(SearchEntry)        
+
+
 class SearchBar(SlaveDelegate):
     """ A portable search bar slave for dialogs.
 
@@ -103,53 +302,42 @@ class SearchBar(SlaveDelegate):
     Each parent must define a hook 'update_klist(objs)' which will be 
     called after the search.
     """
-    gladefile = 'SearchBar'
+    gladefile = 'HolderTemplate'
     
-    widgets = ('search_button',
-               'search_label',
-               "search_entry",
-               "search_results_label",
-               "search_icon")
-
-    SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
-    ANIMATE_TIMEOUT = 200
 
     def __init__(self, parent, table_type, columns=None, query_args=None,
                  search_callback=None, search_lbl_text=None,
-                 search_results_text=None, filter_slave=None):
+                 search_results_text=None, filter_slave=None,
+                 searching_by_date=False):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
-        self.search_icon.set_from_stock("searchtool-icon1", 
-                                        self.SEARCH_ICON_SIZE)
-        self.search_entry.grab_focus()
         self.parent = parent
+        if searching_by_date:
+            self._slave = DateSearchSlave(search_lbl_text, 
+                                          search_results_text,
+                                          filter_slave)
+            entry_slave = self._slave.get_slave()
+            self._slave.connect('startdate-activate', self.search_items)
+            self._slave.connect('enddate-activate', self.search_items)
+        else:
+            self._slave = SearchEntry(search_lbl_text, search_results_text,
+                                      filter_slave)
+            entry_slave = self._slave
+
+        entry_slave.connect('searchbutton-clicked', self.search_items)
+        entry_slave.connect('searchentry-activate', self.search_items)
+        self.attach_slave('place_holder', self._slave)
+        self.searching_by_date = searching_by_date
+        self.search_results_text = search_results_text or 'results'
         # Since we need to synchronize transactions each time we search for
         # objects we have to create a special transaction for the SearchBar
         self.conn = get_model_connection()
         self.columns = columns
         self.table_type = table_type
         self.query_args = query_args
-        self._search_callback = search_callback
-
-        if not search_lbl_text:
-            self.search_label.set_text(_('Find Items'))
-        else:
-            self.search_label.set_text(search_lbl_text)
-
-        if filter_slave:
-            self.attach_slave('filter_area', filter_slave)
-        self.search_results_text = search_results_text or 'results'
-        self.search_results_label.set_text('')
-        self.search_results_label.set_size('small')
-        self.search_icon.hide()
+        self._slave_callback = search_callback
         self._split_field_types()
-
-    def get_search_string(self):
-        return self.search_entry.get_text()
-
-    def set_search_string(self, search_str):
-        return self.search_entry.set_text(search_str)
 
 
 
@@ -163,8 +351,6 @@ class SearchBar(SlaveDelegate):
         self.int_fields = []
         self.float_fields = []
         self.str_fields = []
-        # TODO Just a beginnig for a date time suport. We will implement 
-        # this part soon and when we add a slave area for DateTime widgets.
         self.dtime_fields = []
         if not self.columns:
             return
@@ -204,7 +390,7 @@ class SearchBar(SlaveDelegate):
                 elif (isinstance(column, SOFloatCol)
                       and value not in self.float_fields):
                      self.float_fields.append(value)
-                elif (isinstance(column, SODateTimeCol)
+                elif (isinstance(column, (SODateTimeCol, SODateCol))
                       and value not in self.dtime_fields):
                      self.dtime_fields.append(value)
 
@@ -229,6 +415,32 @@ class SearchBar(SlaveDelegate):
             q = table_field == search_str
             query.append(q)
 
+    # FIXME waiting for bug fix in kiwi, we must check the two last
+    # arguments for datetime.date instead of object. This fails when setting
+    # None as default value
+    @argcheck(list, object, object)
+    def _set_query_dates(self, query, start_date=None, end_date=None):
+        values = start_date, end_date
+        for value in values:
+            # XXX Remove this check after kiwi bug fix in argcheck
+            if value and not isinstance(value, datetime.date):
+                raise ValueError('Argument for date search must be date '
+                                 'or datetime, got %s instead' % 
+                                 type(value))
+        for field_name, table_type in self.dtime_fields:
+            table_field = getattr(table_type.q, field_name) 
+            q1 = q2 = None
+            if start_date:
+                q1 = table_field >= str(start_date)
+            if end_date:
+                end_date = end_date + datetime.timedelta(1)
+                q2 = table_field < str(end_date)
+
+            if q1 and q2:
+                q = AND(q1, q2)
+            else:
+                q = q1 or q2
+            query.append(q)
 
 
     #
@@ -237,20 +449,32 @@ class SearchBar(SlaveDelegate):
 
 
 
-    def _build_query(self, search_str):
+    # FIXME waiting for bug fix in kiwi. argcheck should accept None for
+    # search_dates argument.
+    @argcheck(str, object)
+    def _build_query(self, search_str, search_dates=None):
         """Here we build queries after check the search string type. 
         Queries are always optimized for field types to avoid database 
         input syntax errors and also make smart searches."""
         query = []
-        if is_integer(search_str):
-            self._set_query_int(search_str, query)
-        elif is_float(search_str):
-            self._set_query_float(search_str, query)
-        else:
-            # Instead of checking for another type, perform later a 
-            # query for string fields and for any search string.
-            pass
-        self._set_query_str(search_str, query)
+        if search_str:
+            if is_integer(search_str):
+                self._set_query_int(search_str, query)
+            elif is_float(search_str):
+                self._set_query_float(search_str, query)
+            else:
+                # Instead of checking for another type, perform later a 
+                # query for string fields and for any search string.
+                pass
+            self._set_query_str(search_str, query)
+
+        if search_dates:
+            arg_len = len(search_dates)
+            if not arg_len == 2:
+                raise ValueError('Argument search_date must have only two '
+                                 'elements, got %s instead' % arg_len)
+            start_date, end_date = search_dates
+            self._set_query_dates(query, start_date, end_date)
 
         if not query:
             if self.columns:
@@ -274,16 +498,25 @@ class SearchBar(SlaveDelegate):
 
 
     def _run_query(self):
-        search_str = self.get_search_string()
-        if search_str:
-            query = self._build_query(search_str)
+        search_str = self._slave.get_search_string()
+        if isinstance(self._slave, DateSearchSlave):
+            search_dates = self._slave.get_search_dates()
         else:
-            # A default SQLObject query that means all the results
-            query = 1 == 1
+            search_dates = None
 
+        if search_str or search_dates:
+            query = self._build_query(search_str, search_dates)
+        else:
+            # This means all the results
+            query = None
+        
         extra_query = self.parent.get_extra_query()
         if extra_query:
-            query = AND(query, extra_query) 
+            if query:
+                query = AND(query, extra_query) 
+            else:
+                query = extra_query
+
         kwargs = {'connection': self.conn}
         if self.query_args:
             keys = ['connection', 'clauseTables', 'distinct']
@@ -298,7 +531,11 @@ class SearchBar(SlaveDelegate):
         # XXX Waiting for a SQLObject sync method
         rollback_and_begin(self.conn)
 
-        search_results = self.table_type.select(query, **kwargs)
+        if query:
+            search_results = self.table_type.select(query, **kwargs)
+        else:
+            search_results = self.table_type.select(**kwargs)
+
         max_search_results = get_max_search_results()
         objs = search_results[:max_search_results]
 
@@ -306,12 +543,12 @@ class SearchBar(SlaveDelegate):
         if total > max_search_results:
             msg = _('%d of %d %s shown') % (max_search_results, total,
                                             search_results_text)
-            self.search_results_label.set_text(msg)
+            self._slave.update_results_label(msg)
         elif total > 0:
             msg = '%d %s' % (total, self.search_results_text)
-            self.search_results_label.set_text(msg)
+            self._slave.update_results_label(msg)
         else:
-            self.search_results_label.set_text('')
+            self._slave.update_results_label('')
 
         objs = self.parent.filter_results(objs)
         # Since SQLObject doesn't support distinct-counting of sliced
@@ -323,65 +560,20 @@ class SearchBar(SlaveDelegate):
         # method do this in a simple way.
         self.conn._connection.close()
 
-    def search_items(self):
-        self.start_animate_search_icon()
-        if self._search_callback:
+    def search_items(self, *args):
+        self._slave.start_animate_search_icon()
+        if self._slave_callback:
             # Perform an alternative search as desired
-            self._search_callback()
+            self._slave_callback()
         else:
             self._run_query()
-        self.stop_animate_search_icon()
+        self._slave.stop_animate_search_icon()
 
+    def get_search_string(self):
+        return self._slave.get_search_string()
 
-
-    #
-    # Animation
-    #
-
-
-
-    def _animate_search_icon(self):
-        dir = stoqlib.__path__[0] + '/gui/pixmaps'
-        stocklist = ["searchtool-icon2",
-                     "searchtool-icon3",
-                     "searchtool-icon4",
-                     "searchtool-icon1"]
-        
-        while True:
-            for stock in stocklist:
-                self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
-                yield True
-        
-        yield False
-
-    def start_animate_search_icon(self):
-        self.search_button.hide()
-        self.search_icon.show()
-        self._animate_search_icon_id = \
-            gobject.timeout_add(self.ANIMATE_TIMEOUT, 
-                                self._animate_search_icon().next)
-    
-    def stop_animate_search_icon(self):
-        self.search_button.show()
-        if self._animate_search_icon_id == -1:
-            # TODO: it's wierd that _warn method is private. Need some refactoring
-            _warn("Search icon animation hasn't started")
-        gobject.source_remove(self._animate_search_icon_id)
-        self.search_icon.hide()
-    
-
-    
-    #
-    # Callbacks
-    # 
-    
-
-
-    def on_search_button__clicked(self, *args):
-        self.search_items()
-
-    def on_search_entry__activate(self, *args):
-        self.search_items()
+    def set_search_string(self, value):
+        self._slave.set_search_string(value)
 
 
 class SearchEditorToolBar(SlaveDelegate):
@@ -450,7 +642,7 @@ class SearchDialog(BasicDialog):
     def __init__(self, table, search_table=None, parent_conn=None,
                  hide_footer=True, title='', search_results_text=None,
                  selection_mode=gtk.SELECTION_BROWSE, 
-                 search_lbl_text=None):
+                 search_lbl_text=None, searching_by_date=False):
         BasicDialog.__init__(self)
         title = title or self.title
         avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
@@ -468,6 +660,7 @@ class SearchDialog(BasicDialog):
         assert self.conn
         self.search_lbl_text = search_lbl_text
         self.search_results_text = search_results_text
+        self.searching_by_date = searching_by_date
         self.setup_slaves()
 
     def setup_slaves(self, **kwargs):
@@ -482,10 +675,12 @@ class SearchDialog(BasicDialog):
         columns = self.get_columns()
         query_args = self.get_query_args()
         results_text = self.search_results_text
+        use_dates = self.searching_by_date
         self.search_bar = SearchBar(self, self.search_table, columns, 
                                     query_args=query_args,
                                     search_lbl_text=self.search_lbl_text,
-                                    search_results_text=results_text)
+                                    search_results_text=results_text,
+                                    searching_by_date=use_dates)
         self.attach_slave('header', self.search_bar)
 
     def get_selection(self):
@@ -610,12 +805,14 @@ class SearchEditor(SearchDialog):
     def __init__(self, table, editor_class, interface=None,
                  parent_conn=None, search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 search_lbl_text=None, search_results_text=None):
+                 search_lbl_text=None, search_results_text=None,
+                 searching_by_date=False):
         SearchDialog.__init__(self, table, search_table,
                               parent_conn, hide_footer=hide_footer, 
                               title=title, selection_mode=selection_mode,
                               search_lbl_text=search_lbl_text,
-                              search_results_text=search_results_text)
+                              search_results_text=search_results_text,
+                              searching_by_date=searching_by_date)
         self.interface = interface
         self.editor_class = editor_class
         self.klist.connect('double_click', self.edit)
