@@ -29,6 +29,7 @@ gui/search.py:
 import string
 import gettext
 import datetime
+import warnings
 
 import gtk
 import gobject
@@ -114,16 +115,14 @@ class DateSearchSlave(SlaveDelegate):
     gsignal('startdate-activate')
     gsignal('enddate-activate')
 
-    def __init__(self, search_lbl_text=None, search_results_text=None, 
-                 filter_slave=None):
+    def __init__(self, search_lbl_text=None, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
         self.model = DateInterval()
         self.add_proxy(self.model, self.proxy_widgets)
-        self._slave = SearchEntry(search_lbl_text, search_results_text,
-                                  filter_slave)
+        self._slave = SearchEntry(search_lbl_text, filter_slave)
         self.attach_slave('searchentry_holder', self._slave)
         self._update_view()
 
@@ -206,8 +205,7 @@ class SearchEntry(SlaveDelegate):
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
 
-    def __init__(self, search_lbl_text=None, search_results_text=None, 
-                 filter_slave=None):
+    def __init__(self, search_lbl_text=None, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self.search_icon.set_from_stock("searchtool-icon1", 
@@ -304,40 +302,41 @@ class SearchBar(SlaveDelegate):
     """
     gladefile = 'HolderTemplate'
     
-
-    def __init__(self, parent, table_type, columns=None, query_args=None,
-                 search_callback=None, search_lbl_text=None,
-                 search_results_text=None, filter_slave=None,
-                 searching_by_date=False):
+    def __init__(self, parent, table_type, columns=None, query_args=None, 
+                 search_callback=None, search_lbl_text=None, 
+                 filter_slave=None, searching_by_date=False):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
         self.parent = parent
         if searching_by_date:
-            self._slave = DateSearchSlave(search_lbl_text, 
-                                          search_results_text,
-                                          filter_slave)
+            self._slave = DateSearchSlave(search_lbl_text, filter_slave)
             entry_slave = self._slave.get_slave()
             self._slave.connect('startdate-activate', self.search_items)
             self._slave.connect('enddate-activate', self.search_items)
         else:
-            self._slave = SearchEntry(search_lbl_text, search_results_text,
-                                      filter_slave)
+            self._slave = SearchEntry(search_lbl_text, filter_slave)
             entry_slave = self._slave
 
         entry_slave.connect('searchbutton-clicked', self.search_items)
         entry_slave.connect('searchentry-activate', self.search_items)
         self.attach_slave('place_holder', self._slave)
         self.searching_by_date = searching_by_date
-        self.search_results_text = search_results_text or 'results'
         # Since we need to synchronize transactions each time we search for
         # objects we have to create a special transaction for the SearchBar
         self.conn = get_model_connection()
+        self._result_strings = None
         self.columns = columns
         self.table_type = table_type
         self.query_args = query_args
         self._slave_callback = search_callback
         self._split_field_types()
+
+    def set_result_strings(self, singular_form, plural_form):
+        """This method defines strings to be used in the
+        search_results_label of SearchEntry class.
+        """
+        self._result_strings = singular_form, plural_form
 
 
 
@@ -540,16 +539,22 @@ class SearchBar(SlaveDelegate):
         objs = search_results[:max_search_results]
 
         total = search_results.count()
-        if total > max_search_results:
+        if not self._result_strings:
+            self._result_strings = _('result'), _('results')
+            warnings.warn('You must define result strings before performing '
+                          'searches in the SearchBar')
+        singular_str, plural_str = self._result_strings
+        if total == 1:
+            msg = '%d %s' % (total, singular_str)
+        elif total > max_search_results:
             msg = _('%d of %d %s shown') % (max_search_results, total,
-                                            search_results_text)
-            self._slave.update_results_label(msg)
-        elif total > 0:
-            msg = '%d %s' % (total, self.search_results_text)
-            self._slave.update_results_label(msg)
+                                            plural_str)
+        elif total > 1:
+            msg = '%d %s' % (total, plural_str)
         else:
-            self._slave.update_results_label('')
+            msg = ''
 
+        self._slave.update_results_label(msg)
         objs = self.parent.filter_results(objs)
         # Since SQLObject doesn't support distinct-counting of sliced
         # objects we need to send here a list instead of a SearchResults
@@ -640,7 +645,7 @@ class SearchDialog(BasicDialog):
     size = ()
             
     def __init__(self, table, search_table=None, parent_conn=None,
-                 hide_footer=True, title='', search_results_text=None,
+                 hide_footer=True, title='', 
                  selection_mode=gtk.SELECTION_BROWSE, 
                  search_lbl_text=None, searching_by_date=False):
         BasicDialog.__init__(self)
@@ -659,7 +664,6 @@ class SearchDialog(BasicDialog):
         self.conn = get_model_connection()
         assert self.conn
         self.search_lbl_text = search_lbl_text
-        self.search_results_text = search_results_text
         self.searching_by_date = searching_by_date
         self.setup_slaves()
 
@@ -674,14 +678,18 @@ class SearchDialog(BasicDialog):
 
         columns = self.get_columns()
         query_args = self.get_query_args()
-        results_text = self.search_results_text
         use_dates = self.searching_by_date
         self.search_bar = SearchBar(self, self.search_table, columns, 
                                     query_args=query_args,
                                     search_lbl_text=self.search_lbl_text,
-                                    search_results_text=results_text,
                                     searching_by_date=use_dates)
         self.attach_slave('header', self.search_bar)
+
+    def set_result_strings(self, singular_form, plural_form):
+        """This method defines strings to be used in the
+        search_results_label for SearchBar class.
+        """
+        self.search_bar.set_result_strings(singular_form, plural_form)
 
     def get_selection(self):
         mode = self.klist.get_selection_mode()
@@ -805,13 +813,11 @@ class SearchEditor(SearchDialog):
     def __init__(self, table, editor_class, interface=None,
                  parent_conn=None, search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 search_lbl_text=None, search_results_text=None,
-                 searching_by_date=False):
+                 search_lbl_text=None, searching_by_date=False):
         SearchDialog.__init__(self, table, search_table,
                               parent_conn, hide_footer=hide_footer, 
                               title=title, selection_mode=selection_mode,
                               search_lbl_text=search_lbl_text,
-                              search_results_text=search_results_text,
                               searching_by_date=searching_by_date)
         self.interface = interface
         self.editor_class = editor_class
