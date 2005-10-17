@@ -49,7 +49,7 @@ class BaseSellableCatSearch(SearchEditor):
     editor_class = BaseSellableCategoryEditor
 
     def __init__(self, parent_conn=None):
-        results_text = _('base category/ies')
+        search_text = _('Find Base Categories')
         SearchEditor.__init__(self, self.table, self.editor_class,
                               parent_conn=parent_conn, hide_footer=True,
                               search_lbl_text=search_text)
