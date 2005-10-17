@@ -124,6 +124,11 @@ class Till(Domain):
                 self.initial_cash_amount = last_till.final_cash_amount
         self.opening_date = opening_date
         self.status = self.STATUS_OPEN
+        conn = self.get_connection()
+        if not IPaymentGroup(self, connection=conn):
+            # Add a IPaymentGroup facet for the new till and make it easily
+            # available to receive new payments
+            self.addFacet(IPaymentGroup, connection=conn)
 
     def close_till(self, balance_to_send=0.0, closing_date=datetime.now()):
         if self.status != Till.STATUS_OPEN:
