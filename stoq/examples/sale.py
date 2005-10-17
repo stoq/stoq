@@ -30,7 +30,7 @@ stoq/examples/sale.py
 
 import gettext
 import sys
-from datetime import datetime, timedelta
+import datetime
 
 from stoqlib.exceptions import SellError
 
@@ -39,7 +39,8 @@ from stoq.domain.till import get_current_till_operation, Till
 from stoq.domain.payment.base import Payment
 from stoq.domain.sale import Sale
 from stoq.domain.product import Product
-from stoq.domain.interfaces import ISellable, IClient, IPaymentGroup
+from stoq.domain.interfaces import (ISellable, IClient, IPaymentGroup,
+                                    ISalesPerson)
 from stoq.domain.person import Person
 from stoq.lib.parameters import sysparam
 
@@ -97,14 +98,33 @@ def create_sales():
 
     payment_method = sysparam(conn).METHOD_MONEY
     destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
+    salesperson_table = Person.getAdapterClass(ISalesPerson)
+    salespersons = salesperson_table.select(connection=conn)
+    qty = salespersons.count()
+    if qty < DEFAULT_SALE_NUMBER:
+        raise ValueError('You should have at last %d salespersons defined '
+                         'in database at this point, got %d instead' % 
+                         (DEFAULT_SALE_NUMBER, qty))
 
-    for i in range(DEFAULT_SALE_NUMBER):
+    open_dates = [datetime.datetime.today(),
+                  datetime.datetime.today() + datetime.timedelta(10),
+                  datetime.datetime.today() + datetime.timedelta(15),
+                  datetime.datetime.today() + datetime.timedelta(23)]
+
+    statuses = Sale.statuses.keys()
+                 
+
+    for index in range(DEFAULT_SALE_NUMBER):
         #
         # Setting up the items
         #
-        sale = Sale(connection=conn, till=till, client=clients[i], 
-                    order_number='#%03d' % (i + 1))
-        sellable_facet = ISellable(product_list[i], connection=conn)
+        open_date = open_dates[index]
+        status = statuses[index]
+        salesperson = salespersons[index]
+        sale = Sale(connection=conn, till=till, client=clients[index], 
+                    order_number='#%03d' % (index + 1), status=status,
+                    open_date=open_date, salesperson=salesperson)
+        sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
 
         sale_total = sellable_facet.price
@@ -115,17 +135,17 @@ def create_sales():
         pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
                                  installments_number=DEFAULT_PAYMENTS_NUMBER)
         each_payment = sale_total / DEFAULT_PAYMENTS_NUMBER
-        due_date = datetime.now()
-        for i in range(DEFAULT_PAYMENTS_NUMBER):
+        due_date = datetime.datetime.now()
+        for payment_index in range(DEFAULT_PAYMENTS_NUMBER):
             description = ('%s payment, %s of %s' %
-                           (payment_method.description, i + 1,
+                           (payment_method.description, payment_index + 1,
                             DEFAULT_PAYMENTS_NUMBER))
             payment = Payment(due_date=due_date, value=each_payment,
                               connection=conn,method=payment_method,
                               group=pg_facet, destination=destination,
                               description=description)
             pg_facet.add_item(payment)
-            due_date += timedelta(days=DEFAULT_PAYMENTS_INTERVAL)
+            due_date += datetime.timedelta(days=DEFAULT_PAYMENTS_INTERVAL)
 
     conn.commit()
 

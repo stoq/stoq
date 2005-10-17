@@ -96,7 +96,7 @@ class Sale(Domain):
     
     client = ForeignKey('PersonAdaptToClient', default=None)
     till = ForeignKey('Till')
-    salesperson = ForeignKey('PersonAdaptToSalesPerson', default=None)
+    salesperson = ForeignKey('PersonAdaptToSalesPerson')
 
 
     def get_status_name(self):
