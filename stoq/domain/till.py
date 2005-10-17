@@ -198,7 +198,9 @@ Till.registerFacet(TillAdaptToPaymentGroup)
 
 
 def get_current_till_operation(conn):
-    result = Till.select(Till.q.status == Till.STATUS_OPEN, connection=conn)
+    query = AND(Till.q.status == Till.STATUS_OPEN, 
+                Till.q.branchID == sysparam(conn).CURRENT_BRANCH.id)
+    result = Till.select(query, connection=conn)
     if result.count() > 1:
         raise TillError("You should have only one Till opened. Got %d "
                         "instead." % result.count())
