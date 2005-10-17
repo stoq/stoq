@@ -85,6 +85,8 @@ def calculate_interval(interval_type, intervals):
 
 ALL_BRANCHES = _('All branches'), None
 
+ALL_ITEMS_INDEX = None
+
 
 
 #

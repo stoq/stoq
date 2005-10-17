@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##              Daniel Saran R. da Cunha    <daniel@async.com.br>
+##
 """
 stoq/domain/person.py:
 
@@ -465,11 +469,39 @@ Person.registerFacet(PersonAdaptToEmployee)
 class PersonAdaptToUser(ModelAdapter):
     """ An user facet of a person. """
     
-    __implements__ = IUser, 
+    __implements__ = IUser, IActive
+
+    (STATUS_ACTIVE,
+     STATUS_INACTIVE) = range(2)
+
+    statuses = {STATUS_ACTIVE:      _('Active'),
+                STATUS_INACTIVE:    _('Inactive')}
 
     username = StringCol(alternateID=True)
     password = StringCol()
+    is_active= BoolCol(default=True)
     profile  = ForeignKey('UserProfile')
+
+
+
+    #
+    # IActive implementation
+    #
+
+
+
+    def inactivate(self):
+        assert self.is_active, ('This user is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This user is already active')
+        self.is_active = True
+
+    def get_status_str(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
                     
 Person.registerFacet(PersonAdaptToUser)
 
