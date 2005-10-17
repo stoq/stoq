@@ -34,10 +34,10 @@ Current System parameters:
            
 >> System instances:
            
-    * CURRENT_BRANCH(BranchCompany): a BranchCompany instance that
-                                     represents the current branch 
-                                     associated with the current system 
-                                     installation.
+    * CURRENT_BRANCH(PersonAdaptToBranch): a BranchCompany instance that
+                                           represents the current branch
+                                           associated with the current 
+                                           system installation.
 
     * CURRENT_WAREHOUSE(PersonAdaptToCompany): a PersonAdaptToCompany
                                                instance that represents
