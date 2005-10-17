@@ -31,6 +31,7 @@ stoq/gui/slaves/sale.py
 import gobject
 from kiwi.utils import gsignal
 from kiwi.ui.views import signal_block
+from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.lib.validators import get_price_format_str
@@ -138,3 +139,36 @@ class DiscountChargeSlave(BaseEditorSlave):
 
 # Only for PyGTK 2.6
 gobject.type_register(DiscountChargeSlave)
+
+
+class SaleStatusSlave(SlaveDelegate):
+    gladefile = 'SaleStatusSlave'
+    
+    widgets = ('statuses_combo',)
+    gsignal('status-changed')
+
+    def __init__(self):
+        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+                               widgets=self.widgets)
+        items = [(value, key) for key, value in Sale.statuses.items()]
+        items.append(('All sales', None))
+        self.statuses_combo.prefill(items)
+        # None here means: select all sales
+        self.statuses_combo.select_item_by_data(None)
+
+    def get_selected_status(self):
+        return self.statuses_combo.get_selected_data()
+
+
+
+    #
+    # Kiwi callbacks
+    #
+
+
+
+    def on_statuses_combo__content_changed(self, *args):
+        self.emit('status-changed')
+
+gobject.type_register(SaleStatusSlave)
+
