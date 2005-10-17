@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     setup_tables()
 
-    print "Ensuring system parameters ..."
+    print "Creating default system parameters..."
     ensure_system_parameters()
     
     ensure_admin_user(name, username, password)
