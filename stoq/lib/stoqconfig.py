@@ -158,6 +158,9 @@ class AppConfig:
                                         "in database for this username, got "
                                         "%d instead" % res.count())
         user = res[0]
+        if not user.is_active:
+            raise LoginError(_('This user is inactive'))
+
         if not user.password == password:
             raise LoginError(msg)
 
