@@ -23,9 +23,9 @@
 ##  Author(s): Evandro Vale Miquelito   <evandro@async.com.br>
 ##
 """
-stoq/gui/slaves/status.py:
+stoq/gui/slaves/filter.py:
 
-    Slaves for status management
+    Useful slaves for filtering data in SearchBar
 """
 
 import gettext
@@ -37,7 +37,7 @@ from kiwi.utils import gsignal
 _ = gettext.gettext
 
 
-class StatusSlave(SlaveDelegate):
+class FilterSlave(SlaveDelegate):
     """A generic slave for statuses management useful when combined with
     SearchBar as a filter_slave.
     
@@ -48,16 +48,16 @@ class StatusSlave(SlaveDelegate):
                   must be one of the elements in the position 1 (one) of
                   statuses tuple argument.
     """
-
-    gladefile = 'StatusSlave'
-    
-    widgets = ('statuses_combo',)
+    gladefile = 'FilterSlave'
+    widgets = ('filter_combo',
+               'filter_label')
     gsignal('status-changed')
+
 
     def __init__(self, statuses, selected=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
-        self.statuses_combo.prefill(statuses)
+        self.filter_combo.prefill(statuses)
         if not isinstance(statuses, (tuple, list)):
             raise TypeError('Argument statuses must be of typle list or '
                             'tuple, got %s instead' % type(statuses))
@@ -65,20 +65,20 @@ class StatusSlave(SlaveDelegate):
             raise ValueError('Argument statuses must have at least one '
                              'item, found zero.')
         selected = selected or statuses[0]
-        self.statuses_combo.select_item_by_data(selected)
+        self.filter_combo.select_item_by_data(selected)
 
     def get_selected_status(self):
-        return self.statuses_combo.get_selected_data()
+        return self.filter_combo.get_selected_data()
 
+    def set_filter_label(self, text):
+        self.filter_label.set_text(text)
 
 
     #
     # Kiwi callbacks
     #
 
-
-
-    def on_statuses_combo__content_changed(self, *args):
+    def on_filter_combo__content_changed(self, *args):
         self.emit('status-changed')
 
-gobject.type_register(StatusSlave)
+gobject.type_register(FilterSlave)

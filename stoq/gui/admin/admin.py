@@ -37,7 +37,7 @@ from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
-from stoq.gui.slaves.user import UserStatusSlave
+from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.person import Person
@@ -66,7 +66,10 @@ class AdminApp(AppWindow):
 
 
     def _setup_slaves(self):
-        self.filter_slave = UserStatusSlave()
+        table = Person.getAdapterClass(IUser)
+        items = [(value, key) for key, value in table.statuses.items()]
+        items.append((_('All Users'), ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
         self.search_bar = SearchBar(self, self.table,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave)
@@ -91,13 +94,9 @@ class AdminApp(AppWindow):
                                  width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
 
-
-
     #
     # Hooks
     #
-
-
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
@@ -129,13 +128,9 @@ class AdminApp(AppWindow):
             raise ValueError('Invalid status for User table. got %s'
                              % status)
 
-
-
     #
     # Callbacks
     #
-
-    
 
     def on_users_list__selection_changed(self, *args):
         self._update_view()

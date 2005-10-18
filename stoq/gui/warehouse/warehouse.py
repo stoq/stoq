@@ -38,21 +38,21 @@ from stoqlib.gui.columns import AccessorColumn
 from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
-from stoq.gui.slaves.stock import FilterStockSlave
+from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.validators import get_formatted_price
 from stoq.lib.runtime import new_transaction
+from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
+from stoq.domain.person import Person
 from stoq.domain.product import Product
 from stoq.domain.sellable import AbstractSellable
-from stoq.domain.interfaces import ISellable, IStorable
+from stoq.domain.interfaces import ISellable, IStorable, IBranch
 
 _ = gettext.gettext
 
 
 class WarehouseApp(AppWindow):
-   
     app_name = _('Warehouse')
     gladefile = "warehouse"
-    
     widgets = ('total',
                'sellable_list', 
                'retention_button',
@@ -60,9 +60,9 @@ class WarehouseApp(AppWindow):
                'receive_action',
                'transfer_action')
     
+
     def __init__(self, app):
         self.conn = new_transaction()
-        self.filterstock_slave = FilterStockSlave(self.conn)
         AppWindow.__init__(self, app)
         self._setup_widgets()
         self._setup_slaves()
@@ -75,9 +75,21 @@ class WarehouseApp(AppWindow):
         self.sellable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
 
     def _setup_slaves(self):
+        table = Person.getAdapterClass(IBranch)
+        items = [(o.get_adapted().name, o) 
+                  for o in table.select(connection=self.conn)]
+        if not items:
+            raise DatabaseInconsistency('You should have at least one '
+                                        'branch on your database.'
+                                        'Found zero')
+        items.append(ALL_BRANCHES)
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('At:'))
         self.search_bar = SearchBar(self, AbstractSellable,
                                     self._get_columns(), 
-                                    filter_slave=self.filterstock_slave) 
+                                    filter_slave=self.filter_slave) 
+        self.filter_slave.connect('status-changed',
+                                  self._on_filter_slave_changed)
         self.search_bar.set_searchbar_labels(_('Products Matching:'))
         self.search_bar.set_result_strings(_('product'), _('products'))
         self.attach_slave("search_bar_holder", self.search_bar)
@@ -98,13 +110,9 @@ class WarehouseApp(AppWindow):
                 AccessorColumn('quantity', self._get_stock_balance_str, 
                                title=_('Quantity'), data_type=float,
                                justify=gtk.JUSTIFY_RIGHT)]
-
-
     #
     # Accessor
     #
-
-
 
     def _get_supplier(self, instance):
         """Accessor called by AccessorColumn"""
@@ -124,7 +132,9 @@ class WarehouseApp(AppWindow):
         return IStorable(adapted)
 
     def _get_stock_balance(self, instance):
-        branch = self.filterstock_slave.get_selected_branch()
+        branch = self.filter_slave.get_selected_status()
+        if branch == ALL_ITEMS_INDEX:
+            branch = None
         storable = self._get_storable(instance)
         return storable.get_full_balance(branch)
 
@@ -147,13 +157,9 @@ class WarehouseApp(AppWindow):
         total_str = get_formatted_price(stock_total)
         self.total.set_text(total_str)
 
-
-
     #
     # Hooks
     #
-
-
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
@@ -178,15 +184,11 @@ class WarehouseApp(AppWindow):
         return [sellable for sellable in sellables 
                         if isinstance(sellable, table)]
         
-
-
     #
     # Callbacks
     #
 
-    
-
-    def on_filterstock_slave__branchcombo_changed(self, slave):
+    def _on_filter_slave_changed(self, slave):
         self.sellable_list.refresh()
         self._update_stock_total()
 

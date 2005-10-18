@@ -43,9 +43,10 @@ from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
 from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_formatted_price
+from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.search.person import ClientSearch
-from stoq.gui.slaves.sale import SaleStatusSlave
+from stoq.gui.slaves.filter import FilterSlave
 
 _ = gettext.gettext
 
@@ -92,7 +93,9 @@ class SalesApp(AppWindow):
 
 
     def _setup_slaves(self):
-        self.filter_slave = SaleStatusSlave()
+        items = [(value, key) for key, value in Sale.statuses.items()]
+        items.append(('All sales', ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
         self.searchbar = SearchBar(self, Sale, self._get_columns(),
                                    query_args=self._get_query_args(),
                                    filter_slave=self.filter_slave,
@@ -112,13 +115,9 @@ class SalesApp(AppWindow):
         return dict(join=LEFTJOINOn(Sale, client_table,
                                     Sale.q.clientID == client_table.q.id))
 
-
-
     #
     # SearchBar hooks
     #
-
-
 
     def _get_columns(self):
         return [Column('order_number', title=_('Number'), width=100, 
@@ -142,7 +141,7 @@ class SalesApp(AppWindow):
         q1 = Sale.q.salespersonID == salesperson_table.q.id
         q2 = salesperson_table.q._originalID == Person.q.id
         status = self.filter_slave.get_selected_status()
-        if status is not None:
+        if status != ALL_ITEMS_INDEX:
             q3 = Sale.q.status == status
             return AND(q1, q2, q3)
         return AND(q1, q2)
@@ -157,13 +156,9 @@ class SalesApp(AppWindow):
             self.sales_list.append(obj)
         self._update_widgets()
 
-
-
     #
     # Kiwi callbacks
     #
-
-
 
     def _on_clients_action__clicked(self, *args):
         self.run_dialog(ClientSearch)

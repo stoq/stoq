@@ -31,12 +31,9 @@ import datetime
 
 _ = gettext.gettext
 
-
 #
 # Dates and time
 #
-
-
 
 MONTH_PERIOD = 30
 ONE_DAY = 1
@@ -61,8 +58,6 @@ interval_values = {INTERVALTYPE_DAY:        1,
                    INTERVALTYPE_MONTH:      30,
                    INTERVALTYPE_YEAR:       365}
 
-
-
 def calculate_interval(interval_type, intervals):
     """Get the interval type value for a certain INTERVALTYPE_* constant.
     Intervals are useful modes to calculate payment duedates.
@@ -75,25 +70,17 @@ def calculate_interval(interval_type, intervals):
                         'integer, got %s' % type(intervals))
     return interval_values[interval_type] * intervals
 
-
-
 #
 # Kiwi combobox
 #
 
-
-
-ALL_BRANCHES = _('All branches'), None
-
 ALL_ITEMS_INDEX = -1
 
-
+ALL_BRANCHES = _('All branches'), ALL_ITEMS_INDEX
 
 #
 # Common methods
 #
-
-
 
 def get_country_states():
     # This is Brazil-specific information.
