@@ -59,8 +59,7 @@ from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
 from stoq.gui.search.person import (ClientSearch, 
-                                    EmployeeSearch,
-                                    SupplierSearch)
+                                    EmployeeSearch)
 
 _ = gettext.gettext
 
@@ -301,9 +300,6 @@ class POSApp(AppWindow):
 
     def _on_clients_action__clicked(self, *args):
         self.search_clients()
-
-    def _on_suppliers_action__clicked(self, *args):
-        self.run_dialog(SupplierSearch, hide_footer=True)
 
     def _on_employees_action__clicked(self, *args):
         self.run_dialog(EmployeeSearch, hide_footer=True)

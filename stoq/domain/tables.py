@@ -142,6 +142,9 @@ TABLES = [
                                             "ProductAdaptToStorable",
                                             "ProductStockItem",
                                             )),
+     ('stoq.domain.purchase',              ("PurchaseOrder",
+                                            "PurchaseItem",
+                                            )),
 ]
 
 
