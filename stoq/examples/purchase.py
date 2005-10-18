@@ -33,7 +33,7 @@ import datetime
 
 from stoq.domain.purchase import PurchaseOrder, PurchaseItem
 from stoq.domain.person import Person
-from stoq.domain.interfaces import ISellable, IStorable, ISupplier
+from stoq.domain.interfaces import ISupplier
 from stoq.domain.sellable import AbstractSellable
 from stoq.lib.runtime import new_transaction
 
