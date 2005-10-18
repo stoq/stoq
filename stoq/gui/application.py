@@ -125,12 +125,12 @@ class AppWindow(BaseAppWindow):
         about.set_name(__program_name__)
         about.set_version(__version__)
 
-        authorsfile = file(os.path.join(docs, 'AUTHORS'))
-        authors = [a.strip() for a in authorsfile.readlines()]
+        author_lines = file(os.path.join(docs, 'AUTHORS')).readlines()
+        authors = [a.strip() for a in author_lines]
         # separate authors from contributors
         authors.append('') 
-        contributorsfile = file(os.path.join(docs, 'CONTRIBUTORS'))
-        contributors = [c.strip() for c in contributorsfile.readlines()[:-2]]
+        contr_lines = file(os.path.join(docs, 'CONTRIBUTORS')).readlines()
+        contributors = [c.strip() for c in contr_lines]
         authors.extend(contributors)
         about.set_authors(authors)
 
