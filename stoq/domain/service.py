@@ -43,11 +43,9 @@ from stoq.domain.product import ProductSellableItem
 _ = gettext.gettext
 
 
-
 #
 # Base Domain Classes
 #
-
 
 
 class Service(Domain):
@@ -63,13 +61,10 @@ class ServiceSellableItem(AbstractSellableItem):
     estimated_fix_date = DateTimeCol(default=None)
     completion_date = DateTimeCol(default=None)
     
-
     
     #
     # Auxiliary methods
     #
-
-
 
     def sell(self):
         conn = self.get_connection()
@@ -91,13 +86,9 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
 
     address = StringCol(default='')
 
-
-
     #
     # IContainer implementation
     #
-
-
 
     def add_item(self, item):
         if not isinstance(item, ProductSellableItem):
@@ -120,6 +111,5 @@ class ServiceAdaptToSellable(AbstractSellable):
     """ A service implementation as a sellable facet. """
 
     sellableitem_table = ServiceSellableItem
-
 
 Service.registerFacet(ServiceAdaptToSellable)

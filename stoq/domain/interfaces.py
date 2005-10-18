@@ -32,6 +32,7 @@ from twisted.python.components import (MetaInterface, Interface,
 
 _NoImplementor = object()
 
+
 #
 # Infrastructure
 #
@@ -73,20 +74,18 @@ class ConnMetaInterface(MetaInterface):
                               (adaptable, self))
         return adapter
 
+
 class ConnInterface(Interface):
     __metaclass__ = ConnMetaInterface
     
-
     
 #
 # ConnInterfaces
 #
 
 
-
 class IContainer(ConnInterface):
     """An objects that holds other objects or items"""
-
 
     def add_item(item):
         """Add a persistent or non-persistent item associated with this
@@ -105,7 +104,7 @@ class ISellable(ConnInterface):
     or a service. Note that sellable is not actually a concrete item but
     only its reference as a sellable. Concrete items are defined by
     IContainer routines."""
-
+    
     state = Attribute('state', 
                       'enum',
                       'state the sellable is in')
@@ -205,7 +204,7 @@ class IStorable(ConnInterface):
 class IIndividual(ConnInterface):
     """Being or characteristic of a single person, concerning one
     person exclusively"""
-
+    
     cpf = Attribute('cpf', 
                     'str',
                     'A Brazilian government register number which allow to '

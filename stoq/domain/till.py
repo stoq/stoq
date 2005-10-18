@@ -44,11 +44,9 @@ from stoq.domain.interfaces import (IPaymentGroup, ITillOperation,
                                     IOutPayment, IInPayment)
 
 
-
 #
 # Domain Classes
 # 
-
 
 
 class Till(Domain):
@@ -155,23 +153,17 @@ class Till(Domain):
         self.balance_sent = balance_to_send
 
 
-
 #
 # Adapters
 #
 
 
-
 class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     __implements__ = IPaymentGroup, ITillOperation
-
-
 
     #
     # ITillOperation implementation
     #
-
-
 
     def add_debit(self, value, reason, category, date=None):
         payment = self.add_payment(value, reason, category, date)
@@ -195,11 +187,9 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
 Till.registerFacet(TillAdaptToPaymentGroup)
 
 
-
 #
 # Functions
 #
-
 
 
 def get_current_till_operation(conn):
