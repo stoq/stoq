@@ -66,13 +66,12 @@ class AdminApp(AppWindow):
 
 
     def _setup_slaves(self):
-        search_label_text = _('Users Matching')
         self.filter_slave = UserStatusSlave()
         self.search_bar = SearchBar(self, self.table,
                                     self._get_columns(), 
-                                    search_lbl_text=search_label_text,
                                     filter_slave=self.filter_slave)
         self.search_bar.set_result_strings('user', 'users')
+        self.search_bar.set_searchbar_labels(_('Users Matching:'))
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
         self.attach_slave("search_bar_holder", self.search_bar)
