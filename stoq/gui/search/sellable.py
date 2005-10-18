@@ -39,7 +39,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.search import SearchDialog
 from stoqlib.gui.columns import AccessorColumn
 
-from stoq.lib.defaults import ALL_BRANCHES
+from stoq.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_formatted_price
 from stoq.domain.sellable import AbstractSellable
@@ -163,7 +163,8 @@ class SellableSearch(SearchDialog):
             return 'No stock'
         assert self.footer_slave
         branch = self.footer_slave.get_selected_branch()
-    
+        if branch == ALL_ITEMS_INDEX:
+            branch = None
         adapted = instance.get_adapted()
         storable = IStorable(adapted)
         return storable.get_full_balance_string(branch)
