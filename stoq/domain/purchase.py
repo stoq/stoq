@@ -33,8 +33,7 @@ from datetime import datetime
 
 from kiwi.argcheck import argcheck
 from stoqlib.exceptions import DatabaseInconsistency
-from sqlobject import (ForeignKey, IntCol, DateTimeCol,
-                       FloatCol, StringCol, MultipleJoin)
+from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
 
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import IContainer
