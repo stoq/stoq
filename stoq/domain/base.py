@@ -50,7 +50,6 @@ __connection__ = get_connection()
 #
 
 
-
 class AbstractModel:
     """Generic methods for any domain classes."""
 
@@ -64,13 +63,9 @@ class AbstractModel:
             return self.id == other.id
         return self.get_adapted_id() == other.get_adapted_id()
 
-
-
     #
     # Classmethods
     #
-
-
 
     @classmethod
     def get_db_table_name(cls):
@@ -78,13 +73,9 @@ class AbstractModel:
         className = cls.__name__
         return (className[0].lower() + mixedToUnder(className[1:]))
 
-
-
     #
     # Auxiliar methods
     #
-
-    
 
     def clone(self):
         # Get a persistent copy of an existent object. Remember that we can
@@ -120,13 +111,9 @@ class AbstractModel:
         assert isinstance(self, Adapter)
         return self._original.id
 
-
-
     #
     # Inheritable object methods
     #
-
-
 
     def set_original_references(self, _original, kwargs):
         assert isinstance(self, Adapter)
@@ -249,20 +236,20 @@ class ComponentizedModel(Componentized):
                                     forceDBName=True))
 
 
-
 #
 # Base classes
 #
 
 
-
 class BaseDomain(SQLObject, AbstractModel):
     pass
+
 
 class Domain(BaseDomain, ComponentizedModel):
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
         ComponentizedModel.__init__(self)
+
 
 class InheritableModel(InheritableSQLObject, AbstractModel,
                        ComponentizedModel):
@@ -271,11 +258,9 @@ class InheritableModel(InheritableSQLObject, AbstractModel,
         ComponentizedModel.__init__(self)
 
 
-
 #
 # Adapters
 #
-
 
 
 class ModelAdapter(BaseDomain, Adapter):

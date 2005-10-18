@@ -46,19 +46,17 @@ from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
 
 _ = gettext.gettext
 
-    
 
 # 
 # Base Domain Classes 
 #
 
 
-
 class EmployeePosition(Domain):
     """ 
     Base class to store the employee positions 
     """
-
+    
     name = StringCol(alternateID=True)
     
 
@@ -68,7 +66,7 @@ class WorkPermitData(Domain):
     Work permit data for employees. pis_* is a reference to PIS ("Programa
     de Integração Social"), that is a Brazil-specific information.
     """
-
+    
     number = StringCol(default=None)
     series_number = StringCol(default=None)
     pis_number = StringCol(default=None)
@@ -76,12 +74,11 @@ class WorkPermitData(Domain):
     pis_registry_date = DateTimeCol(default=None)
 
 
-
 class MilitaryData(Domain):
     """ 
     Military data for employees. This is Brazil-specific information.
     """
-
+    
     number = StringCol(default=None)
     series_number = StringCol(default=None)
     category = StringCol(default=None)
@@ -91,7 +88,7 @@ class VoterData(Domain):
     """ 
     Voter data for employees. This is Brazil-specific information.
     """
-
+    
     number = StringCol(default=None)
     section = StringCol(default=None)
     zone = StringCol(default=None)
@@ -115,14 +112,13 @@ class Address(Domain):
     """ 
     Class to store person's addresses 
     """
-
+    
     street = StringCol(default='')
     number = IntCol(default=None)
     district = StringCol(default='')
     postal_code = StringCol(default='')
     complement = StringCol(default='')
     is_main_address = BoolCol(default=False)
-
     person = ForeignKey('Person')
     city_location = ForeignKey('CityLocation')
 
@@ -151,7 +147,6 @@ class Liaison(Domain):
     
     name = StringCol(default='')
     phone_number = StringCol(default='')
-
     person = ForeignKey('Person')
 
 
@@ -167,7 +162,6 @@ class Calls(Domain):
     
     date = DateTimeCol()
     message = StringCol()
-
     person = ForeignKey('Person')
     attendant = ForeignKey('PersonAdaptToUser')
 
@@ -177,23 +171,20 @@ class Person(Domain):
     Base class to register persons in the system. This class should never 
     be instantiated directly. 
     """
-
+    
     name = StringCol()
     phone_number = StringCol(default='')
     mobile_number = StringCol(default='')
     fax_number = StringCol(default='')
     email = StringCol(default='')
     notes = StringCol(default='')
-
     liaisons = MultipleJoin('Liaison')
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
 
-
     #
     # Acessors
     #
-
 
     def get_main_address(self):
         if not self.addresses:
@@ -210,13 +201,9 @@ class Person(Domain):
             raise DatabaseInconsistency, msg
         return address[0]
 
-
-
     #
     # Auxiliary methods
     #
-
-
 
     def check_individual_or_company_facets(self):
         individual = IIndividual(self)
@@ -226,13 +213,9 @@ class Person(Domain):
                        'least an individual or a company facet')
                 raise CannotAdapt(msg)
 
-
-
     #
     # Facet hooks
     #
-
-
 
     def facet_IClient_add(self, **kwargs):
         self.check_individual_or_company_facets()
@@ -283,13 +266,9 @@ class Person(Domain):
                 raise CannotAdapt(msg)
         return PersonAdaptToSalesPerson(self, **kwargs)
 
-
-
 # 
 # Adapters
 #
-
-
 
 class PersonAdaptToIndividual(ModelAdapter):
     """ An individual facet of a person. """
@@ -321,15 +300,12 @@ class PersonAdaptToIndividual(ModelAdapter):
     rg_expedition_date = DateTimeCol(default=None)
     rg_expedition_local = StringCol(default='')
     gender = IntCol(default=None)
-
     spouse_name = StringCol(default='')
     birth_location = ForeignKey('CityLocation', default=None)
-
 
     #
     # Acessors
     #
-
 
     def get_marital_statuses(self):
         return [(self.marital_statuses[i], i) 
@@ -370,13 +346,9 @@ class PersonAdaptToClient(ModelAdapter):
     status = IntCol(default=STATUS_OK)
     days_late = IntCol(default=0)
 
-
-
     #
     # IActive implementation
     #
-
-
 
     @property
     def is_active(self):
@@ -390,13 +362,9 @@ class PersonAdaptToClient(ModelAdapter):
         assert not self.is_active, ('This client is already active')
         self.status = self.STATUS_OK
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def get_status_string(self):
         return self.statuses[self.status]
@@ -449,19 +417,17 @@ class PersonAdaptToEmployee(ModelAdapter):
     registry_number = StringCol(default=None)
     education_level = StringCol(default=None)
     dependent_person_number = IntCol(default=None)
-    
+    position = ForeignKey('EmployeePosition')
+
     # This is Brazil-specific information
     workpermit_data = ForeignKey('WorkPermitData', default=None)
     military_data = ForeignKey('MilitaryData', default=None)
     voter_data = ForeignKey('VoterData', default=None)
     bank_account = ForeignKey('BankAccount', default=None)
 
-    position = ForeignKey('EmployeePosition')
-
     def get_status_string(self):
         assert self.status in self._statuses
         return self._statuses[self.status]
-    
                     
 Person.registerFacet(PersonAdaptToEmployee)
 
@@ -482,13 +448,9 @@ class PersonAdaptToUser(ModelAdapter):
     is_active= BoolCol(default=True)
     profile  = ForeignKey('UserProfile')
 
-
-
     #
     # IActive implementation
     #
-
-
 
     def inactivate(self):
         assert self.is_active, ('This user is already inactive')
@@ -524,13 +486,9 @@ class PersonAdaptToBankBranch(ModelAdapter):
     is_active= BoolCol(default=True)
     bank = ForeignKey('Bank')
 
-
-
     #
     # IActive implementation
     #
-
-
 
     def inactivate(self):
         assert self.is_active, ('This bank branch is already inactive')
@@ -539,7 +497,6 @@ class PersonAdaptToBankBranch(ModelAdapter):
     def activate(self):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
-
 
 Person.registerFacet(PersonAdaptToBankBranch)
 
@@ -561,13 +518,9 @@ class PersonAdaptToCreditProvider(ModelAdapter):
     provider_id = StringCol(default='')
     open_contract_date = DateTimeCol()
 
-
-
     #
     # ICreditProvider implementation
     #
-
-
 
     @classmethod
     def get_card_providers(cls, conn):
@@ -577,13 +530,9 @@ class PersonAdaptToCreditProvider(ModelAdapter):
     def get_finance_companies(cls, conn):
         return cls._get_providers(conn, cls.PROVIDER_FINANCE)
     
-
-    
     #
     # IActive implementation
     #
-
-
 
     def inactivate(self):
         assert self.is_active, ('This provider is already inactive')
@@ -593,13 +542,9 @@ class PersonAdaptToCreditProvider(ModelAdapter):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
 
-
-    
     #
     # Auxiliar methods
     #
-
-
 
     @classmethod
     def _get_providers(cls, conn, provider_type=None):
@@ -621,7 +566,7 @@ Person.registerFacet(PersonAdaptToCreditProvider)
 
 class PersonAdaptToSalesPerson(ModelAdapter):
     """ A sales person facet of a person. """
-    
+
     __implements__ = ISalesPerson, 
 
     (COMISSION_GLOBAL, 

@@ -44,11 +44,9 @@ from stoq.lib.parameters import sysparam
 _ = gettext.gettext
 
 
-
 #
 # Base Domain Classes
 #
-
 
 
 class ProductSupplierInfo(Domain):
@@ -61,13 +59,9 @@ class ProductSupplierInfo(Domain):
     supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 
-
-
     #
     # Auxiliary methods
     #
-
-
 
     def get_name(self):
         return self.supplier.get_adapted().name
@@ -79,27 +73,19 @@ class Product(Domain):
     notes = StringCol(default='')
     suppliers = MultipleJoin('ProductSupplierInfo')
 
-
-
     #
     # Facet hooks
     #
-
-
     
     def facet_IStorable_add(self, **kwargs):
         storable = ProductAdaptToStorable(self, **kwargs)
         storable.fill_stocks()
         return storable
-    
-
 
     #   
     # Acessors
     #   
         
-
-
     def get_main_supplier_info(self):
         if not self.suppliers:
             return
@@ -126,13 +112,9 @@ class ProductSellableItem(AbstractSellableItem):
     delivery_data = ForeignKey('ServiceSellableItemAdaptToDelivery',
                                default=None)
 
-
-
     #
     # IContainer implementation
     #
-
-
 
     def add_item(self, item):
         raise NotImplementedError('This method should be replaced by '
@@ -150,13 +132,9 @@ class ProductSellableItem(AbstractSellableItem):
                             " got " % type(item))
         ProductStockItem.delete(item.id, connection=conn)
 
-
-
     #
     # Basic methods
     #
-
-
     
     def sell(self, conn, branch, order_product=False):
         sparam = sysparam(conn)
@@ -197,13 +175,9 @@ class ProductSellableItem(AbstractSellableItem):
         if not balance:
             sellable_item.set_sold()
 
-            
-            
     #
     # Auxiliary methods
     #            
-
-
 
     def add_stock_reference(self, branch, quantity=0.0, 
                             logic_quantity=0.0):
@@ -220,11 +194,9 @@ class ProductStockItem(AbstractStockItem):
     storable = ForeignKey('ProductAdaptToStorable')
 
 
-
 #
 # Adapters
 #
-
 
 
 class ProductAdaptToSellable(AbstractSellable):
@@ -246,13 +218,9 @@ class ProductAdaptToStorable(ModelAdapter):
         conn = self.get_connection()
         self.precision = sysparam(conn).STOCK_BALANCE_PRECISION
 
-
-
     #
     # IContainer implementation
     #
-
-    
 
     def add_item(self, item):
         raise NotImplementedError('This method should be replaced '
@@ -270,13 +238,9 @@ class ProductAdaptToStorable(ModelAdapter):
                             % type(item))
         ProductStockItem.delete(item.id, connection=conn)
 
-
-
     #
     # IStorable implementation
     #
-
-
 
     def fill_stocks(self):
         conn = self.get_connection()
@@ -378,25 +342,17 @@ class ProductAdaptToStorable(ModelAdapter):
             raise StockError(msg)
         return qty_ok
 
-
-
     #
     # Accessors
     #
-
-
 
     def get_full_balance_string(self, branch=None, full_balance=None):
         full_balance = full_balance or self.get_full_balance(branch)
         return '%.*f' % (int(self.precision), full_balance)
 
-
-
     #
     # Auxiliary methods
     #            
-
-
 
     def _check_logic_quantity(self):
         if not sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
@@ -428,11 +384,9 @@ class ProductAdaptToStorable(ModelAdapter):
 Product.registerFacet(ProductAdaptToStorable)
 
 
-
 #
 # Auxiliary functions
 #
-
 
 
 def storables_set_branch(conn, branch):

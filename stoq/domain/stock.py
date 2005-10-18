@@ -32,11 +32,9 @@ from sqlobject import FloatCol, ForeignKey
 from stoq.domain.base import InheritableModel
 
 
-
 #
 # Adapters
 #
-
 
 
 class AbstractStockItem(InheritableModel):

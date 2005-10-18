@@ -58,13 +58,9 @@ class PurchaseItem(Domain):
         kw['base_cost'] = kw['sellable'].cost
         Domain._create(self, id, **kw)
 
-
-
     #
     # SQLObject callbacks
     #
-
-
 
     def _set_quantity_received(self, value):
         # When adding a new PurchaseItem instance we need this check since 
@@ -79,7 +75,6 @@ class PurchaseItem(Domain):
 
 class PurchaseOrder(Domain):
     """Purchase and order definition"""
-
 
     __implements__ = IContainer
 
@@ -116,7 +111,6 @@ class PurchaseOrder(Domain):
     discount_value = FloatCol(default=0.0)
     supplier = ForeignKey('PersonAdaptToSupplier')
 
-    
     def get_purchase_total(self):
         return sum([item.cost for item in self.get_items()])
 
@@ -133,13 +127,9 @@ class PurchaseOrder(Domain):
                                         '%s' % self.status)
         return self.statuses[self.status]
 
-
-
     #
     # IContainer implementation
     #
-
-
 
     def get_items(self):
         return PurchaseItem.selectBy(order=self,
@@ -157,5 +147,3 @@ class PurchaseOrder(Domain):
             raise ValueError('Argument item must have an order attribute '
                              'associated with the current purchase instance')
         PurchaseItem.delete(item.id, connection=conn)
-        
-

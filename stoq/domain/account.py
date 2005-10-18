@@ -31,11 +31,9 @@ from sqlobject import StringCol
 from stoq.domain.base import Domain
 
 
-
 #
 # Base Domain Classes
 #
-
 
 
 class Bank(Domain):
