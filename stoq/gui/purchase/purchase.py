@@ -40,7 +40,7 @@ from sqlobject.sqlbuilder import AND
 
 from stoq.gui.application import AppWindow
 from stoq.gui.search.person import SupplierSearch
-from stoq.gui.slaves.status import StatusSlave
+from stoq.gui.slaves.filter import FilterSlave
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
@@ -87,7 +87,7 @@ class PurchaseApp(AppWindow):
                         for value, text in PurchaseOrder.statuses.items()]
         first_item = (_('All Orders'), ALL_ITEMS_INDEX)
         combo_items.append(first_item)
-        self.filter_slave = StatusSlave(combo_items,
+        self.filter_slave = FilterSlave(combo_items,
                                         selected=ALL_ITEMS_INDEX)
 
         self.search_bar = SearchBar(self, PurchaseOrder,
