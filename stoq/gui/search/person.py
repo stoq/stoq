@@ -64,8 +64,8 @@ class BasePersonSearch(SearchEditor):
                               self.editor_class,
                               interface=self.interface,
                               parent_conn=parent_conn,
-                              hide_footer=hide_footer,
-                              search_lbl_text=self.search_lbl_text)
+                              hide_footer=hide_footer)
+        self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
                 
 
@@ -74,7 +74,7 @@ class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
     table = PersonAdaptToEmployee
-    search_lbl_text = _('Employees Matching')
+    search_lbl_text = _('Employees Matching:')
     result_strings = _('employee'), _('employees')
     
 
@@ -108,7 +108,7 @@ class SupplierSearch(BasePersonSearch):
     editor_class = SupplierEditor
     table = Person
     interface = ISupplier
-    search_lbl_text = _('Suppliers Matching')
+    search_lbl_text = _('Suppliers Matching:')
     result_strings = _('supplier'), _('suppliers')
     
 
@@ -137,7 +137,7 @@ class ClientSearch(BasePersonSearch):
     editor_class = ClientEditor
     table = Person
     interface = IClient
-    search_lbl_text = _('Clients Matching')
+    search_lbl_text = _('Clients Matching:')
     result_strings = _('client'), _('clients')
     
 
@@ -161,5 +161,3 @@ class ClientSearch(BasePersonSearch):
         q1 = Person.q.id == PersonAdaptToIndividual.q._originalID
         q2 = Person.q.id == PersonAdaptToClient.q._originalID
         return AND(q1, q2)
-
-
