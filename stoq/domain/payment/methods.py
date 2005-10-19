@@ -54,13 +54,9 @@ from stoq.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
 
 _ = gettext.gettext
 
-
-
 #
 # Domain Classes
 # 
-
-
 
 class CheckData(Domain):
     """Stores check informations and also a history of possible 
@@ -114,13 +110,9 @@ class CardInstallmentSettings(Domain):
     payment_day = IntCol()
     closing_day = IntCol()
 
-
-
     #
     # SQLObject callbacks
     #
-
-
 
     def _set_payment_day(self, value):
         self._check_max_day_number(value)
@@ -130,13 +122,9 @@ class CardInstallmentSettings(Domain):
         self._check_max_day_number(value)
         self._SO_set_closing_day(value)
 
-
-
     #
     # Auxiliar methods
     # 
-
-
 
     def _check_max_day_number(self, value):
         if value > self.MAX_DAY_NUMBER:
@@ -159,12 +147,9 @@ class PaymentMethod(Domain):
         raise NotImplementedError
 
 
-
 #
 # Adapters for PaymentMethod class
 #
-
-
 
 
 class PaymentMethodAdapter(InheritableModelAdapter):
@@ -174,25 +159,17 @@ class PaymentMethodAdapter(InheritableModelAdapter):
 
     is_active = BoolCol(default=True)
 
-
-
     #
     # IActive implementation
     #
-
-
 
     def inactivate(self):
         assert self.is_active, ('This provider is already inactive')
         self.is_active = False
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def _check_installments_number(self, installments_number, max=None):
         max = max or self.get_max_installments_number()
@@ -264,24 +241,16 @@ class PMAdaptToMoney(PaymentMethodAdapter):
     description = _('Money')
     destination = ForeignKey('PaymentDestination')
 
-
-
     #
     # IMoneyPM implementation
     #
         
-
-
     def get_change(self):
         raise NotImplementedError
-
-
 
     #
     # Auxiliar method
     #
-
-
 
     def get_max_installments_number(self):
         # Money method supports only one payment
@@ -417,13 +386,9 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
 
     description = _('Check')
 
-
-
     #
     # ICheckPM implementation
     #
-
-
 
     def get_check_data_by_payment(self, payment):
         """Get an existent CheckData instance from a payment object."""
@@ -438,13 +403,9 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
                    'got %d' % count)
             raise DatabaseInconsistency(msg)
 
-
-    
     #
     # Auxiliar methods
     #
-
-
 
     def add_payment(self, payment_group, due_date, value,
                     method_info=None, description=None):
@@ -482,13 +443,9 @@ class PMAdaptToBill(AbstractCheckBillAdapter):
 
     description = _('Bill')
 
-
-
     #
     # IBillPM implementation
     #
-
-
 
     def get_available_bill_accounts(self):
         raise NotImplementedError
@@ -501,26 +458,18 @@ class PMAdaptToCard(PaymentMethodAdapter):
 
     description = _('Card')
 
-
-
     #
     # ICardPM implementation
     #
-
-
 
     def get_credit_card_providers(self):
         table = Person.getAdapterClass(ICreditProvider)
         conn = self.get_connection()
         return table.get_card_providers(conn)
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def get_max_installments_number(self):
         raise NotImplementedError('This method must be implemented in '
@@ -538,13 +487,9 @@ class PMAdaptToFinance(PaymentMethodAdapter):
     def get_max_installments_number(self):
         raise NotImplementedError('This method mus be implemented in '
                                   'BasePMProviderInfo classes')
-
-
     #
     # IFinancePM implementation
     #
-
-
 
     def get_finance_companies(self):
         table = Person.getAdapterClass(ICreditProvider)
@@ -554,11 +499,9 @@ class PMAdaptToFinance(PaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToFinance)
 
 
-
 #
 # Payment method details
 #
-
 
 
 class PaymentMethodDetails(InheritableModel):
@@ -583,25 +526,17 @@ class PaymentMethodDetails(InheritableModel):
     provider = ForeignKey('PersonAdaptToCreditProvider')
     destination = ForeignKey('PaymentDestination')
 
-
-
     #
     # IActive implementation
     #
-
-
 
     def inactivate(self):
         assert self.is_active, ('This provider is already inactive')
         self.is_active = False
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def _get_payment_method_by_interface(self, iface):
         conn = self.get_connection()
