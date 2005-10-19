@@ -654,11 +654,15 @@ class SearchDialog(BasicDialog):
         self.setup_filter_slave_signals()
 
     def get_filter_slave(self):
-        # This method must be redefined in child when it's needed
-        return
+        """Returns a slave which will be used as filter by SearchBar.
+        By default it returns None which means that no filter will be
+        attached. Redefine this method in child when it's needed"""
+        return None
 
     def setup_filter_slave_signals(self):
-        # This method must be redefined in child when it's needed
+        """Setup signals for SearchBar filter slave. This method will be
+        called after creating the SearchBar instance.  Redefine this method 
+        in child when it's needed"""
         pass
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
