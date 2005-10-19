@@ -648,8 +648,18 @@ class SearchDialog(BasicDialog):
         use_dates = self.searching_by_date
         self.search_bar = SearchBar(self, self.search_table, columns, 
                                     query_args=query_args,
+                                    filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
         self.attach_slave('header', self.search_bar)
+        self.setup_filter_slave_signals()
+
+    def get_filter_slave(self):
+        # This method must be redefined in child when it's needed
+        return
+
+    def setup_filter_slave_signals(self):
+        # This method must be redefined in child when it's needed
+        pass
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
         self.search_bar.set_searchbar_labels(search_entry_lbl,
