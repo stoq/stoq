@@ -52,10 +52,10 @@ from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
 _ = gettext.gettext
 
+
 #
 # Slaves for search dialogs.
 #
-
 
 
 class BaseListSlave(SlaveDelegate):
@@ -104,14 +104,11 @@ class DateInterval:
 
 class DateSearchSlave(SlaveDelegate):
     gladefile = 'DateSearchSlave'
-    
     proxy_widgets = ('start_date',
                      'end_date')
-
     widgets = ('search_label',
                "anytime_check",
                "date_check") + proxy_widgets
-
     gsignal('startdate-activate')
     gsignal('enddate-activate')
 
@@ -140,10 +137,11 @@ class DateSearchSlave(SlaveDelegate):
     def set_search_string(self, search_str):
         return self._slave.set_search_string(search_str)
 
-    def set_search_label(self, search_entry_lbl, date_search_lbl):
+    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
         self._slave.set_search_label(search_entry_lbl)
-        if date_search_lbl is not None:
-            self.search_label.set_text(date_search_lbl)
+        if date_search_lbl is None:
+            date_search_lbl = ''
+        self.search_label.set_text(date_search_lbl)
 
     def get_search_dates(self):
         if self.anytime_check.get_active():
@@ -163,22 +161,15 @@ class DateSearchSlave(SlaveDelegate):
                                          end_date.day)
         return start_date, end_date 
 
-    def update_results_label(self, text):
-        self._slave.update_results_label(text)
-
     def start_animate_search_icon(self):
         self._slave.start_animate_search_icon()
 
     def stop_animate_search_icon(self):
         self._slave.stop_animate_search_icon()
 
-
-    
     #
     # Kiwi callbacks
     #
-
-
 
     def on_anytime_check__toggled(self, *args):
         self._update_view()
@@ -197,13 +188,10 @@ gobject.type_register(DateSearchSlave)
 
 class SearchEntry(SlaveDelegate):
     gladefile = 'SearchEntry'
-    
     widgets = ('search_button',
                'search_label',
                "search_entry",
-               "search_results_label",
                "search_icon")
-
     gsignal('searchbutton-clicked')
     gsignal('searchentry-activate')
 
@@ -217,8 +205,6 @@ class SearchEntry(SlaveDelegate):
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
             self.attach_slave('filter_area', filter_slave)
-        self.search_results_label.set_text('')
-        self.search_results_label.set_size('small')
         self.search_icon.hide()
         self.search_entry.grab_focus()
 
@@ -231,16 +217,9 @@ class SearchEntry(SlaveDelegate):
     def set_search_string(self, search_str):
         return self.search_entry.set_text(search_str)
 
-    def update_results_label(self, text):
-        self.search_results_label.set_text(text)
-
-
-
     #
     # Kiwi callbacks
     #
-
-
 
     def on_search_button__clicked(self, *args):
         self.emit('searchbutton-clicked')
@@ -248,13 +227,9 @@ class SearchEntry(SlaveDelegate):
     def on_search_entry__activate(self, *args):
         self.emit('searchentry-activate')
 
-
-
     #
     # Animation
     #
-
-
 
     def _animate_search_icon(self):
         dir = stoqlib.__path__[0] + '/gui/pixmaps'
@@ -301,7 +276,8 @@ class SearchBar(SlaveDelegate):
     Each parent must define a hook 'update_klist(objs)' which will be 
     called after the search.
     """
-    gladefile = 'HolderTemplate'
+    gladefile = 'SearchBarHolder'
+    widgets = ('search_results_label',)
     
     def __init__(self, parent, table_type, columns=None, query_args=None, 
                  search_callback=None, filter_slave=None, 
@@ -310,6 +286,8 @@ class SearchBar(SlaveDelegate):
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
         self.parent = parent
+        self.search_results_label.set_text('')
+        self.search_results_label.set_size('small')
         if searching_by_date:
             self._slave = DateSearchSlave(filter_slave)
             entry_slave = self._slave.get_slave()
@@ -345,13 +323,9 @@ class SearchBar(SlaveDelegate):
         else:
             self._slave.set_search_label(search_entry_lbl)
 
-
-
     #
     # Preparing query fields and groups
     #
-
-
 
     def _split_field_types(self):
         self.int_fields = []
@@ -448,12 +422,9 @@ class SearchBar(SlaveDelegate):
                 q = q1 or q2
             query.append(q)
 
-
     #
     # Building query
     #
-
-
 
     # FIXME waiting for bug fix in kiwi. argcheck should accept None for
     # search_dates argument.
@@ -495,13 +466,9 @@ class SearchBar(SlaveDelegate):
         query = OR(*query)
         return query
 
-
-
     #
     # Performing search
     #
-
-
 
     def _run_query(self):
         search_str = self._slave.get_search_string()
@@ -561,7 +528,7 @@ class SearchBar(SlaveDelegate):
         else:
             msg = ''
 
-        self._slave.update_results_label(msg)
+        self.search_results_label.set_text(msg)
         objs = self.parent.filter_results(objs)
         # Since SQLObject doesn't support distinct-counting of sliced
         # objects we need to send here a list instead of a SearchResults
@@ -602,13 +569,9 @@ class SearchEditorToolBar(SlaveDelegate):
                                widgets=self.widgets)
         self.parent = parent
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def on_edit_button__clicked(self, widget):
         self.parent.edit(widget)
@@ -617,11 +580,9 @@ class SearchEditorToolBar(SlaveDelegate):
         self.parent.new()
 
 
-
 #
 # Base dialogs for search.
 #
-
 
 
 class SearchDialog(BasicDialog):
@@ -745,12 +706,9 @@ class SearchDialog(BasicDialog):
         self.retval = []
         self.close()
 
-
     #
     # Hooks
     #
-
-
 
     def update_klist(self, objs=None):
         """A hook called by SearchBar and BaseListSlave instances."""
@@ -782,13 +740,9 @@ class SearchDialog(BasicDialog):
         called when a signal is emitted by 'Filter' or 'Clear' buttons and 
         also when a list item is selected. """
 
-
-
     #
     # Specification of methods that all subclasses *must* to implement
     #
-
-
 
     def get_columns(self):
         raise NotImplementedError
@@ -884,13 +838,9 @@ class SearchEditor(SearchDialog):
                 assert obj, msg % 0
         self.run(obj) 
     
-
-    
     #
     # Hooks
     #
-
-
 
     def new(self):
         self.run()

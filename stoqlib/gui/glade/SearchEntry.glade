@@ -3,86 +3,75 @@
 <glade-interface>
     <widget class="GtkWindow" id="SearchEntry">
         <child>
-            <widget class="GtkVBox" id="vbox1">
+            <widget class="GtkHBox" id="hbox1">
+                <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkAlignment" id="alignment1">
-                        <property name="border_width">5</property>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                        <property name="data_type">str</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkEventBox" id="filter_area">
                         <property name="visible">True</property>
-                        <property name="xalign">0.00999999977648</property>
-                        <property name="xscale">0.509999990463</property>
-                        <property name="yalign">0.0</property>
-                        <property name="yscale">0.0</property>
                         <child>
-                            <widget class="GtkHBox" id="hbox1">
-                                <property name="spacing">5</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="search_results_label">
-                                        <property name="data_type">str</property>
-                                        <property name="justify">right</property>
-                                        <property name="label" context="yes" translatable="yes">Found %s items</property>
-                                        <property name="xalign">0.0</property>
-                                    </widget>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="search_label">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Find Items</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkEntry" id="search_entry">
-                                        <property name="is_focus">True</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkEventBox" id="filter_area">
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">3</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkImage" id="search_icon">
-                                        <property name="stock">gtk-missing-image</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">4</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkButton" id="search_button">
-                                        <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Search</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">5</property>
-                                    </packing>
-                                </child>
-                            </widget>
+                            <placeholder/>
                         </child>
                     </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="search_label">
+                        <property name="data_type">str</property>
+                        <property name="label" context="yes" translatable="yes">matching:</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkEntry" id="search_entry">
+                        <property name="is_focus">True</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkImage" id="search_icon">
+                        <property name="stock">gtk-missing-image</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkButton" id="search_button">
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">Search</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">5</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                        <property name="data_type">str</property>
+                    </widget>
+                    <packing>
+                        <property name="position">6</property>
+                    </packing>
                 </child>
             </widget>
         </child>
