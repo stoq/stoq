@@ -78,7 +78,7 @@
                 <child>
                     <object class="GtkAction" id="Purchase">
                         <property name="name">Purchase</property>
-                        <property name="label" translatable="yes">Order</property>
+                        <property name="label" translatable="yes">Add Order</property>
                         <property name="stock_id">gtk-indent</property>
                         <signal handler="_on_order_action__clicked" name="activate"/>
                     </object>
@@ -86,7 +86,7 @@
                 <child>
                     <object class="GtkAction" id="PurchaseMenu">
                         <property name="name">PurchaseMenu</property>
-                        <property name="label" translatable="yes">_Purchase</property>
+                        <property name="label" translatable="yes">_Order</property>
                     </object>
                 </child>
                 <child>
@@ -116,6 +116,13 @@
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">_Actions</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="SendToSupplier">
+                        <property name="name">SendToSupplier</property>
+                        <property name="label" translatable="yes">Send to Supplier...</property>
+                        <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -164,7 +171,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="Quit" name="Quit"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -232,32 +239,39 @@
                                 <property name="spacing">3</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkHBox" id="hbox2">
-                                        <property name="border_width">5</property>
+                                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                        <property name="layout_style">start</property>
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkButton" id="edit_button">
-                                                <property name="label" context="yes" translatable="yes">Edit</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkButton" id="confirm_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Send to Supplier</property>
+                                                <property name="label" context="yes" translatable="yes">Edit...</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
+                                                <property name="expand">False</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="details_button">
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
                                                 <property name="position">1</property>
                                             </packing>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="print_button">
+                                                <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">Print Order</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
+                                                <property name="expand">False</property>
                                                 <property name="position">2</property>
                                             </packing>
                                         </child>

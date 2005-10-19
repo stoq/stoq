@@ -62,7 +62,7 @@ class PurchaseApp(AppWindow):
                'total_received_lbl',
                'purchase_list',
                'edit_button',
-               'confirm_button',
+               'details_button',
                'print_button')
                
     
@@ -85,17 +85,17 @@ class PurchaseApp(AppWindow):
     def _setup_slaves(self):
         combo_items = [(text, value) 
                         for value, text in PurchaseOrder.statuses.items()]
-        first_item = (_('All Orders'), ALL_ITEMS_INDEX)
+        first_item = (_('Any'), ALL_ITEMS_INDEX)
         combo_items.append(first_item)
         self.filter_slave = FilterSlave(combo_items,
                                         selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show:'))
 
         self.search_bar = SearchBar(self, PurchaseOrder,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave,
                                     searching_by_date=True)
-        self.search_bar.set_searchbar_labels(_('Containing:'),
-                                             _('Find orders from:')) 
+        self.search_bar.set_searchbar_labels(_('orders matching:'))
         self.search_bar.set_result_strings(_('order'), _('orders'))
 
         self.filter_slave.connect('status-changed',
@@ -104,11 +104,15 @@ class PurchaseApp(AppWindow):
 
     def _update_view(self):
         has_purchases = len(self.purchase_list) > 0
-        widgets = [self.edit_button, self.confirm_button, self.print_button]
+        widgets = [self.edit_button, self.details_button, self.print_button]
         for widget in widgets:
             widget.set_sensitive(has_purchases)
-        one_selected = len(self.purchase_list.get_selected_rows()) == 1
+        selection = self.purchase_list.get_selected_rows()
+        one_selected = len(selection) == 1
         self.edit_button.set_sensitive(one_selected)
+        self.details_button.set_sensitive(one_selected)
+        has_item_selected = len(selection) > 0
+        self.print_button.set_sensitive(has_item_selected)
         self._update_totals()
 
     def _update_totals(self):
@@ -189,4 +193,8 @@ class PurchaseApp(AppWindow):
 
     def _on_order_action__clicked(self, *args):
         # TODO bug 2211
+        pass
+
+    def _on_send_to_supplier_action_clicked(self, *args):
+        # TODO bug 2213
         pass

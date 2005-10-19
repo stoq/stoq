@@ -94,15 +94,15 @@ class SalesApp(AppWindow):
 
     def _setup_slaves(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
-        items.append(('All sales', ALL_ITEMS_INDEX))
+        items.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show:'))
         self.searchbar = SearchBar(self, Sale, self._get_columns(),
                                    query_args=self._get_query_args(),
                                    filter_slave=self.filter_slave,
                                    searching_by_date=True)
         self.searchbar.set_result_strings(_('sale'), _('sales'))
-        self.searchbar.set_searchbar_labels(_('Containing:'),
-                                            _('Find sales from:'))
+        self.searchbar.set_searchbar_labels(_('sales matching:'))
         self.filter_slave.connect('status-changed', 
                                   self.searchbar.search_items)
         self.attach_slave('searchbar_holder', self.searchbar)
