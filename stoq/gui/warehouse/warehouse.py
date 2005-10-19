@@ -84,13 +84,13 @@ class WarehouseApp(AppWindow):
                                         'Found zero')
         items.append(ALL_BRANCHES)
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('At:'))
+        self.filter_slave.set_filter_label(_('Show products at:'))
         self.search_bar = SearchBar(self, AbstractSellable,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave) 
         self.filter_slave.connect('status-changed',
                                   self._on_filter_slave_changed)
-        self.search_bar.set_searchbar_labels(_('Products Matching:'))
+        self.search_bar.set_searchbar_labels(_('Matching:'))
         self.search_bar.set_result_strings(_('product'), _('products'))
         self.attach_slave("search_bar_holder", self.search_bar)
 

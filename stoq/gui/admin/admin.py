@@ -68,13 +68,14 @@ class AdminApp(AppWindow):
     def _setup_slaves(self):
         table = Person.getAdapterClass(IUser)
         items = [(value, key) for key, value in table.statuses.items()]
-        items.append((_('All Users'), ALL_ITEMS_INDEX))
+        items.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show:'))
         self.search_bar = SearchBar(self, self.table,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave)
         self.search_bar.set_result_strings('user', 'users')
-        self.search_bar.set_searchbar_labels(_('Users Matching:'))
+        self.search_bar.set_searchbar_labels(_('users Matching:'))
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
         self.attach_slave("search_bar_holder", self.search_bar)
