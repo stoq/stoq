@@ -112,7 +112,8 @@
                                 <property name="events"></property>
                                 <property name="can_focus">True</property>
                                 <property name="visible">True</property>
-                                <property name="label">Cancel</property>
+                                <property name="label">gtk-cancel</property>
+                                <property name="use_stock">True</property>
                             </widget>
                             <packing/>
                         </child>
@@ -123,7 +124,8 @@
                                 <property name="xalign">0.490000009537</property>
                                 <property name="can_focus">True</property>
                                 <property name="visible">True</property>
-                                <property name="label">OK</property>
+                                <property name="label">gtk-ok</property>
+                                <property name="use_stock">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
