@@ -23,27 +23,16 @@ import gettext
 import os
 
 from kiwi.environ import environ
+from stoqlib.environ import get_pixmaps_dir as get_stoqlib_pixmaps
 
-try:
-    # We can't use from .. import ... as module until pyflakes
-    # can handle it fixed
-    from stoq import __installed__
-    module = __installed__
-except ImportError:
-    try:
-        from stoq import __uninstalled__
-        module = __uninstalled__
-    except ImportError:
-        raise SystemExit("FATAL ERROR: Internal error, could not load"
-                         "stoq.\n"
-                         "Tried to start stoq but critical configuration "
-                         "were are missing.\n")
+from stoq.lib.environ import (get_base_dir, get_locale_dir, get_glade_dir,
+                              get_pixmaps_dir)
 
-appdir = os.path.join(module.basedir, "stoq", "gui")
+appdir = os.path.join(get_base_dir(), "stoq", "gui")
 
 # Tell gettext that translations (.mo files) for the translation
 # domain stoq can be found in locale_dir, 
-gettext.bindtextdomain('stoq', module.locale_dir)
+gettext.bindtextdomain('stoq', get_locale_dir())
 
 # We always want to load in utf-8 charset, makes everything
 # a lot easier when using pygtk
@@ -71,14 +60,16 @@ glade_dirs = ['editors', 'components', 'search', 'slaves', 'templates',
               'wizards'] + get_app_list()
 
 for dir in glade_dirs:
-    path = os.path.join(module.basedir, "stoq", "gui", dir, "glade")
+    path = os.path.join(get_base_dir(), "stoq", "gui", dir, "glade")
     if os.path.exists(path) and os.path.isdir(path):
         environ.add_resource("glade", path)
 
-if os.path.exists(module.glade_dir) and os.path.isdir(module.glade_dir):
-    environ.add_resource("glade", module.glade_dir)
+glade_dir = get_glade_dir()
+if os.path.exists(glade_dir) and os.path.isdir(glade_dir):
+    environ.add_resource("glade", glade_dir)
 
-environ.add_resource("pixmap", module.pixmap_dir)
+environ.add_resource("pixmap", get_pixmaps_dir())
+environ.add_resource("pixmap", get_stoqlib_pixmaps())
 
 def main(args):
     apps = get_app_list()
