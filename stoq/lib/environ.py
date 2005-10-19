@@ -53,3 +53,12 @@ def get_docs_dir():
 
 def get_pixmaps_dir():
     return getattr(config_module, 'pixmap_dir', None)
+
+def get_base_dir():
+    return getattr(config_module, 'basedir')
+
+def get_locale_dir():
+    return getattr(config_module, 'locale_dir')
+
+def get_glade_dir():
+    return getattr(config_module, 'glade_dir')
