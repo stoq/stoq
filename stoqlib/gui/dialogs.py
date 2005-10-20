@@ -225,7 +225,8 @@ class BasicPluggableDialog(BasicDialog):
     """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
     warnbox = None
     slave = None
-    def _initialize(self, slave, title=" ", header_text="", size=None):
+    def _initialize(self, slave, title=" ", header_text="", size=None,
+                    hide_footer=False):
         """May be called by refresh by subdialogs, as necessary"""
         if self.slave:
             _warn("%s had self.slave set to %s!" % (self, self.slave))
@@ -235,7 +236,7 @@ class BasicPluggableDialog(BasicDialog):
             self.clear_notices()
             self.warnbox = None
         BasicDialog._initialize(self, title=title, header_text=header_text,
-                                size=size)
+                                size=size, hide_footer=hide_footer)
     
     def enable_notices(self):
         """Enables display of notice messages with icons using alert()
@@ -286,10 +287,11 @@ class BasicPluggableDialog(BasicDialog):
 class BasicWrappingDialog(BasicPluggableDialog):
     """ Abstract class for Wrapping*Dialog; run and set_transient_for to
     the wrapped slave and ok_button sensitivity control """
-    def __init__(self, slave, title=" ", header_text="", size=None):
+    def __init__(self, slave, title=" ", header_text="", size=None,
+                 hide_footer=False):
         BasicPluggableDialog.__init__(self)
         BasicPluggableDialog._initialize(self, slave, title, header_text, 
-                                         size)
+                                         size, hide_footer=hide_footer)
         slave.run = self.run
         slave.set_transient_for = self.set_transient_for
 
