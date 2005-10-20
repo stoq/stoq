@@ -32,12 +32,14 @@ from sqlobject.sqlbuilder import LEFTJOINOn, AND
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
+from stoq.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.client import ClientEditor
 from stoq.gui.editors.supplier import SupplierEditor
 from stoq.gui.editors.employee import EmployeeEditor
-from stoq.domain.interfaces import (ICompany, IIndividual, 
-                                    ISupplier, IClient)
+from stoq.gui.slaves.filter import FilterSlave
+from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
+                                    IEmployee, IClient)
 from stoq.domain.person import (Person, EmployeePosition,
                                 PersonAdaptToIndividual,
                                 PersonAdaptToClient,
@@ -67,23 +69,35 @@ class BasePersonSearch(SearchEditor):
                               hide_footer=hide_footer)
         self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
-                
-
+ 
 
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
     table = PersonAdaptToEmployee
-    search_lbl_text = _('Employees Matching:')
+    search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
+    filter_label = _('Show employees with status:')
+               
+
+
+    #
+    # SearchDialog Hooks
+    #
+
     
 
+    def get_filter_slave(self):        
+        employees = [(value, key) for key, value in
+                     PersonAdaptToEmployee._statuses.items()]
+        employees.append((_('Any'), ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(employees, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(self.filter_label)
+        return self.filter_slave
 
-    #
-    # Hooks
-    #
-
-
+    def after_search_bar_created(self): 
+        self.filter_slave.connect('status-changed', 
+                                   self.search_bar.search_items)        
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str, 
@@ -95,7 +109,13 @@ class EmployeeSearch(BasePersonSearch):
                 Column('status_string', _('Status'), str)]
 
     def get_extra_query(self):
-        return PersonAdaptToEmployee.q._originalID == Person.q.id
+        employee_table = Person.getAdapterClass(IEmployee)
+        q1 = employee_table.q._originalID == Person.q.id
+        status = self.filter_slave.get_selected_status()
+        if status != ALL_ITEMS_INDEX:
+            q2 = employee_table.q.status == status
+            return AND(q1, q2)
+        return q1
 
     def get_query_args(self):
         return dict(join = LEFTJOINOn(PersonAdaptToEmployee, 
