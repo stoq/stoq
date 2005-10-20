@@ -80,6 +80,7 @@ class Payment(Domain):
                 STATUS_CONFIRMED:   _('Confirmed'),
                 STATUS_CANCELLED:   _('Cancelled')}
 
+    payment_id = IntCol(alternateID=True)
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)

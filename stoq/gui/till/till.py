@@ -48,7 +48,7 @@ from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_formatted_price
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
-
+from stoq.gui.till.operation import TillOperationDialog
 _ = gettext.gettext
 
 class TillApp(AppWindow):
@@ -61,6 +61,8 @@ class TillApp(AppWindow):
                'TillMenu',
                'TillOpen',
                'TillClose',
+               'TillOperations',
+               'CurrentTill',
                'quit_action')
 
     def __init__(self, app):
@@ -81,6 +83,7 @@ class TillApp(AppWindow):
         has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
+        self.TillOperations.set_sensitive(has_till)
         has_sales = len(self.sale_list) > 0
         self.confirm_order_button.set_sensitive(has_sales)
 
@@ -130,15 +133,7 @@ class TillApp(AppWindow):
             self.sale_list.append(obj)
         self._update_widgets()
 
-
-
-    #
-    # Kiwi callbacks
-    #
-
-
-
-    def open_till(self, *args):
+    def open_till(self):
         rollback_and_begin(self.conn)
 
         if get_current_till_operation(self.conn) is not None:
@@ -193,6 +188,14 @@ class TillApp(AppWindow):
             sale.till = new_till
         self.conn.commit()
 
+
+
+    #
+    # Kiwi callbacks
+    #
+   
+
+
     def on_confirm_order_button__clicked(self, *args):
         rollback_and_begin(self.conn)
         # TODO Call SaleWizard dialog and let the user change the sale here
@@ -200,3 +203,14 @@ class TillApp(AppWindow):
         sale.confirm()
         self.conn.commit()
         self.searchbar.search_items()
+
+    def _on_close_till_action__clicked(self, *args):
+        self.close_till()
+
+    def _on_open_till_action__clicked(self, *args):
+        self.open_till()
+
+    def _on_operations_action__clicked(self, *args):
+        dialog = TillOperationDialog(self.conn)
+        dialog.connect('close-till', self.close_till)
+        self.run_dialog(dialog, self.conn)

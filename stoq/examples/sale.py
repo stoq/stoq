@@ -113,7 +113,9 @@ def create_sales():
 
     statuses = Sale.statuses.keys()
                  
-
+    # We need to increment payment_id attribute automatically. Waiting
+    # for SQLObject support
+    payment_id = 1
     for index in range(DEFAULT_SALE_NUMBER):
         #
         # Setting up the items
@@ -140,12 +142,14 @@ def create_sales():
             description = ('%s payment, %s of %s' %
                            (payment_method.description, payment_index + 1,
                             DEFAULT_PAYMENTS_NUMBER))
-            payment = Payment(due_date=due_date, value=each_payment,
+            payment = Payment(payment_id=payment_id, due_date=due_date, 
+                              value=each_payment,
                               connection=conn,method=payment_method,
                               group=pg_facet, destination=destination,
                               description=description)
             pg_facet.add_item(payment)
             due_date += datetime.timedelta(days=DEFAULT_PAYMENTS_INTERVAL)
+            payment_id += 1
 
     conn.commit()
 
