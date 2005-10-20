@@ -5,6 +5,12 @@
         <child>
             <object class="GtkActionGroup" id="DefaultActions">
                 <child>
+                    <object class="GtkAction" id="Actions">
+                        <property name="name">Actions</property>
+                        <property name="label" translatable="yes">Actions</property>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User</property>
@@ -107,7 +113,7 @@
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till</property>
                         <property name="stock_id">gtk-close</property>
-                        <signal handler="close_till" name="activate"/>
+                        <signal handler="_on_close_till_action__clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -121,7 +127,15 @@
                         <property name="name">TillOpen</property>
                         <property name="label" translatable="yes">Open Till</property>
                         <property name="stock_id">gtk-open</property>
-                        <signal handler="open_till" name="activate"/>
+                        <signal handler="_on_open_till_action__clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="TillOperations">
+                        <property name="name">TillOperations</property>
+                        <property name="label" translatable="yes">Operations</property>
+                        <property name="stock_id">gtk-find-and-replace</property>
+                        <signal handler="_on_operations_action__clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -157,7 +171,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="Actions" name="Actions"><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="till">
         <property name="height_request">570</property>
@@ -223,8 +237,6 @@
                                     <packing>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
-                                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -232,7 +244,6 @@
                                     <packing>
                                         <property name="left_attach">2</property>
                                         <property name="right_attach">3</property>
-                                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -240,8 +251,6 @@
                                     <packing>
                                         <property name="left_attach">3</property>
                                         <property name="right_attach">4</property>
-                                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                     </packing>
                                 </child>
                             </widget>

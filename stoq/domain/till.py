@@ -34,9 +34,9 @@ import operator
 
 from sqlobject import IntCol, DateTimeCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND
-from stoqlib.exceptions import TillError
-
+from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoq.lib.parameters import sysparam
+
 from stoq.domain.base import Domain
 from stoq.domain.sale import Sale
 from stoq.domain.payment.base import AbstractPaymentGroup, Payment
@@ -93,9 +93,12 @@ class Till(Domain):
         advance, till complement, ...) associated to this till
         operation *plus* all the payments, which payment method is
         money, of all the sales associated with this operation 
-        *plus* the initial cash amount. """
+        *plus* the initial cash amount. 
+        """
 
         conn = self.get_connection()
+        result = Sale.selectBy(till=self, connection=conn)
+
         query = AND(Sale.q.status == Sale.STATUS_CONFIRMED,
                     Sale.q.tillID == self.id)
         result = Sale.select(query, connection=conn)
@@ -107,7 +110,7 @@ class Till(Domain):
                                    "till operation don't have a "
                                    "PaymentGroup facet.")
             payments.extend([p for p in sale_pg_facet.get_items() 
-                                 if p.method == money_payment_method])
+                                 if p.status == Payment.STATUS_PAID])
         pg_facet = IPaymentGroup(self, connection=conn)
         if pg_facet:
             payments.extend(pg_facet.get_items())
@@ -129,20 +132,37 @@ class Till(Domain):
             self.addFacet(IPaymentGroup, connection=conn)
 
     def close_till(self, balance_to_send=0.0, closing_date=datetime.now()):
+        """ This method close the current till operation with the confirmed
+        sales associated. If there is a sale with a differente status than
+        SALE_CONFIRMED, a new 'pending' till operation is created and 
+        these sales are associated with the current one. 
+        """
+
         if self.status != Till.STATUS_OPEN:
             raise ValueError("This till is already closed. Open a new till "
                              "before close it.")
         conn = self.get_connection()
         sales = Sale.selectBy(till=self, connection=conn)
+       
+        opened_sales = []
 
         money_payment_method = sysparam(conn).METHOD_MONEY
+        
         for sale in sales:
-            for payment in IPaymentGroup(sale).get_items():
+            if sale.status != Sale.STATUS_CONFIRMED:
+                opened_sales.append(sale)
+                continue
+            
+            group = IPaymentGroup(sale, connection=conn)
+            if not group:
+                raise DatabaseInconsistency("Sale must have a" 
+                                            "IPaymentGroup facet")
+            for payment in group.get_items():
                 if payment.method is money_payment_method:
-                    payment.status = Payment.STATUS_REVIEWING
+                    payment.status = Payment.STATUS_PAID
                 else:
                     payment.status = Payment.STATUS_TO_PAY
-
+                   
         current_balance = self.get_balance()
         if balance_to_send and balance_to_send > current_balance:
             raise ValueError("The cash amount that you want to send is "
@@ -178,6 +198,9 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     def add_complement(self, value, reason, category, date=None):
         raise NotImplementedError
 
+    def add_expenditure(self, value, reason, category, date=None):
+        raise NotImplementedError
+        
     def get_cash_advance(self, value, reason, category, employee, date=None):
         raise NotImplementedError
 
@@ -208,7 +231,8 @@ def get_current_till_operation(conn):
 def get_last_till_operation(conn):
     """  The last till operation is used to get a initial cash amount
     to a new till operation that will be created, this value is based
-    on the final_cash_amount attribute of the last till operation """
+    on the final_cash_amount attribute of the last till operation 
+    """
 
     query = AND(Till.q.status == Till.STATUS_CLOSED, 
                 Till.q.branchID == sysparam(conn).CURRENT_BRANCH.id)
