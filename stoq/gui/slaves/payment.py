@@ -33,7 +33,6 @@ from datetime import datetime
 
 import gobject
 from kiwi.utils import gsignal
-from kiwi.ui.views import signal_block
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.editors import BaseEditorSlave
 
