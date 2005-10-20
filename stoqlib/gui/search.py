@@ -650,20 +650,20 @@ class SearchDialog(BasicDialog):
                                     query_args=query_args,
                                     filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
+        self.after_search_bar_created()
         self.attach_slave('header', self.search_bar)
-        self.setup_filter_slave_signals()
 
     def get_filter_slave(self):
         """Returns a slave which will be used as filter by SearchBar.
         By default it returns None which means that no filter will be
-        attached. Redefine this method in child when it's needed"""
+        attached. Redefine this method in child when it's needed
+        """
         return None
 
-    def setup_filter_slave_signals(self):
-        """Setup signals for SearchBar filter slave. This method will be
-        called after creating the SearchBar instance.  Redefine this method 
-        in child when it's needed"""
-        pass
+    def after_search_bar_created(self):
+        """This method will be called after creating the SearchBar 
+        instance.  Redefine this method in child when it's needed
+        """
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
         self.search_bar.set_searchbar_labels(search_entry_lbl,
