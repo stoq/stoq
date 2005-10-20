@@ -326,25 +326,29 @@ offers a single OK button."""
 
 
 
-def get_dialog(parent, dialog_class, *args, **kwargs):
+def get_dialog(parent, dialog, *args, **kwargs):
     """ Returns a dialog.
     - parent: the window which is opening the dialog;
-    - dialog_class: the dialog class;
-    - *args, **kwargs: the arguments which should be used on dialog_class
+    - dialog: the dialog class or instance;
+    - *args, **kwargs: the arguments which should be used on dialog
       instantiation;
     """    
-    d = dialog_class(*args, **kwargs)
+    if callable(dialog):
+        dialog = dialog(*args, **kwargs)
     
     # If parent is a BaseView, use GTK+ calls to get the toplevel
     # window. This is a bit of a hack :-/
     if isinstance(parent, BaseView):     
         parent = parent.toplevel.get_toplevel()
         if parent:
-            d.set_transient_for(parent)
-    return d
+            dialog.set_transient_for(parent)
+    return dialog
         
-def run_dialog(dialog_class, parent, *args, **kwargs):
-    dialog = get_dialog(parent, dialog_class, *args, **kwargs)
+def run_dialog(dialog, parent, *args, **kwargs):
+    """Run a gtk DialogBox. If  dialog is a class, the dialog will be
+    instantiated before runing the dialog.
+    """
+    dialog = get_dialog(parent, dialog, *args, **kwargs)
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
 
