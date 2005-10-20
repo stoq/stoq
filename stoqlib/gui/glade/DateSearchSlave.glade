@@ -19,12 +19,20 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                <property name="data_type">str</property>
+                            </widget>
+                        </child>
+                        <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="search_label">
                                 <property name="data_type">str</property>
                                 <property name="justify">right</property>
                                 <property name="label" context="yes" translatable="yes">Placed:</property>
                                 <property name="xalign">1.0</property>
                             </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="anytime_check">
@@ -34,7 +42,7 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">1</property>
+                                <property name="position">2</property>
                             </packing>
                         </child>
                         <child>
@@ -47,7 +55,7 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                             </packing>
                         </child>
                         <child>
@@ -55,11 +63,11 @@
                                 <property name="data_type">date</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">start_date</property>
-                                <property name="width_request">80</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">3</property>
+                                <property name="fill">False</property>
+                                <property name="position">4</property>
                             </packing>
                         </child>
                         <child>
@@ -70,7 +78,7 @@
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="position">4</property>
+                                <property name="position">5</property>
                             </packing>
                         </child>
                         <child>
@@ -78,12 +86,11 @@
                                 <property name="data_type">date</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">end_date</property>
-                                <property name="width_request">80</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">5</property>
+                                <property name="position">6</property>
                             </packing>
                         </child>
                         <child>
@@ -91,7 +98,15 @@
                                 <property name="data_type">str</property>
                             </widget>
                             <packing>
-                                <property name="position">6</property>
+                                <property name="position">7</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                <property name="data_type">str</property>
+                            </widget>
+                            <packing>
+                                <property name="position">8</property>
                             </packing>
                         </child>
                     </widget>
