@@ -29,8 +29,9 @@ stoq/domain/payment.py:
    Implementation of classes related to Payment management.
 """
 
-from datetime import datetime
 import operator
+import datetime
+import gettext
 
 from sqlobject import IntCol, DateTimeCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND
@@ -43,6 +44,7 @@ from stoq.domain.payment.base import AbstractPaymentGroup, Payment
 from stoq.domain.interfaces import (IPaymentGroup, ITillOperation,
                                     IOutPayment, IInPayment)
 
+_ = gettext.gettext
 
 #
 # Domain Classes
@@ -83,7 +85,7 @@ class Till(Domain):
     balance_sent = FloatCol(default=None)
     initial_cash_amount = FloatCol(default=0.0)
     final_cash_amount = FloatCol(default=None)
-    opening_date = DateTimeCol(default=datetime.now())
+    opening_date = DateTimeCol(default=datetime.datetime.now())
     closing_date = DateTimeCol(default=None)
 
     branch = ForeignKey('PersonAdaptToBranch')
@@ -118,7 +120,7 @@ class Till(Domain):
         total = reduce(operator.add, [p.value for p in payments], 0.0)
         return total + self.initial_cash_amount
     
-    def open_till(self, opening_date=datetime.now(), initial_cash_amount=0.0):
+    def open_till(self, opening_date=datetime.datetime.now(), initial_cash_amount=0.0):
         if not initial_cash_amount:
             last_till = get_last_till_operation(self.get_connection())
             if last_till:
@@ -131,7 +133,8 @@ class Till(Domain):
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
 
-    def close_till(self, balance_to_send=0.0, closing_date=datetime.now()):
+    def close_till(self, balance_to_send=0.0, 
+                   closing_date=datetime.datetime.now()):
         """ This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and 
@@ -206,6 +209,23 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def cancel_payment(self, payment, reason, date=None):
         raise NotImplementedError
+
+    #
+    # IPaymentGroup implementation
+    #
+
+    def get_thirdparty(self):
+        branch = self.get_adapted().branch
+        return branch.get_adapted()
+
+    def set_thirdparty(self):
+        raise NotImplementedError
+
+    def get_group_description(self):
+        till = self.get_adapted()
+        date_format = _('%d of %B')
+        today_str = till.opening_date.strftime(date_format)
+        return _('till of %s') % today_str
 
 Till.registerFacet(TillAdaptToPaymentGroup)
 

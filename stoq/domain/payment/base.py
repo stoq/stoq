@@ -30,10 +30,10 @@ stoq/domain/payment/base.py:
 """
 
 import gettext
-from datetime import datetime
+import datetime
 
 from kiwi.argcheck import argcheck
-from stoqlib.exceptions import PaymentError
+from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from sqlobject.sqlbuilder import AND
 from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol, 
                        ForeignKey)
@@ -49,11 +49,9 @@ from stoq.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
 _ = gettext.gettext
 
 
-
 #
 # Domain Classes
 # 
-
 
 
 class Payment(Domain):
@@ -86,7 +84,7 @@ class Payment(Domain):
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
-    paid_value = FloatCol(default=None)
+    paid_value = FloatCol(default=0.0)
     value = FloatCol()
     interest = FloatCol(default=0.0)
     discount = FloatCol(default=0.0)
@@ -94,9 +92,16 @@ class Payment(Domain):
     payment_number = StringCol(default=None)
 
     method = ForeignKey('PaymentMethodAdapter')
+    method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
     destination = ForeignKey('PaymentDestination')
     
+    def get_status_str(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for Payment '
+                                        'instance, got %d' % self.status)
+        return self.statuses[self.status]
+
     def is_to_pay(self):
         return self.status == self.STATUS_TO_PAY
 
@@ -115,7 +120,7 @@ class Payment(Domain):
                                "the payment")
 
         self.paid_value = self.value - self.discount + self.interest
-        self.paid_date = paid_date or datetime.now()
+        self.paid_date = paid_date or datetime.datetime.now()
         self.status = self.STATUS_PAID
 
     def _check_status(self, status, operation_name):
@@ -123,8 +128,8 @@ class Payment(Domain):
                                        'operation: %s' % (operation_name, 
                                        self.statuses[self.status])) 
 
-    def _register_payment_operation(self, operation_date=None):
-        operation_date = operation_date or datetime.now()
+    def _register_payment_operation(self,
+                                    operation_date=datetime.datetime.now()):
         conn = self.get_connection()
         operation = PaymentOperation(connection=conn, 
                                      operation_date=operation_date)
@@ -151,8 +156,43 @@ class Payment(Domain):
                            reason=reason)
         self.status = self.STATUS_PAID
 
+    def get_payable_value(self, paid_date=None):
+        """ Returns the calculated payment value with the daily penalty.
+            Note that the payment group daily_penalty must be 
+            between 0 and 100.
+        """ 
+        if self.status in [self.STATUS_PREVIEW, self.STATUS_CANCELLED]:
+            return self.value
+        if self.status in [self.STATUS_PAID, self.STATUS_REVIEWING,
+                           self.STATUS_CONFIRMED]:
+            return self.paid_value
+        if paid_date and not isinstance(paid_date, datetime.datetime.date):
+            raise TypeError('Argument paid_date must be of type '
+                            'datetime.date, got %s instead' % 
+                            type(paid_date))
+        paid_date = paid_date or datetime.datetime.now()
+        days = (paid_date - self.due_date).days
+        if days <= 0:
+            return self.value
+        daily_penalty = self.group.daily_penalty / 100.0
+        return self.value + days * (daily_penalty * self.value)
+
+    def get_thirdparty(self):
+        if self.method_details:
+            return self.method_details.get_thirdparty()
+        return self.method.get_thirdparty(self.group)
+
+    def get_thirdparty_name(self):
+        return self.get_thirdparty().name
+                    
 
 class AbstractPaymentGroup(InheritableModelAdapter):
+    """A base class for payment group adapters.
+    
+       daily_penalty    =   represents the percentage amount which will be
+                            charged sometimes in payment acquitance. This
+                            value must be between 0 and 100.
+    """
 
     (STATUS_PREVIEW, 
      STATUS_OPEN, 
@@ -169,21 +209,32 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     __implements__ = IPaymentGroup, IContainer
 
     status = IntCol(default=STATUS_OPEN)
-    open_date = DateTimeCol(default=datetime.now())
+    open_date = DateTimeCol(default=datetime.datetime.now())
     close_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
     installments_number = IntCol(default=1)
+    daily_penalty = FloatCol(default=0.0)
         
-
-
+    #
+    # SQLObject callbacks
+    #
+            
+    def _set_daily_penalty(self, value):
+        if not 0.0 <= value <= 100.0:
+            raise ValueError('Attribute daily_penalty must be between '
+                             'zero and one hundred')
+        self._SO_set_daily_penalty(value)
 
     #
     # IPaymentGroup implementation
     #
 
-
-
     def get_thirdparty(self):
+        raise NotImplementedError
+
+    def get_group_description(self):
+        """Returns a small description for the payment group which will be
+        used in payment descriptions"""
         raise NotImplementedError
 
     def update_thirdparty_status(self):
@@ -193,11 +244,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return sum([s.value for s in self.get_items()])
 
     def add_payment(self, value, description, method, destination, 
-                    due_date=None):
+                    due_date=datetime.datetime.now()):
         """Add a new payment sending correct arguments to Payment 
         class
         """
-        due_date = due_date or datetime.now()
         conn = self.get_connection()
         payment = Payment(due_date=due_date, value=value,
                           description=description, group=self, 
@@ -240,12 +290,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         for payment in self.get_items():
             payment.set_to_pay()
 
-
     #
     # IContainer implementation
     #
-
-
     
     @argcheck(Payment)
     def add_item(self, payment):
@@ -259,13 +306,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return Payment.selectBy(group=self, 
                                 connection=self.get_connection())
             
-
-
     #
     # Auxiliar method
     #
-
-
 
     def clear_preview_payments(self, ignore_method_iface=None):
         """Delete payments of preview status associated to the current
@@ -293,11 +336,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             payment.method.delete_inpayment(inpayment)
 
 
-
 #
 # Adapters for Payment class
 #
-
 
 
 class PaymentAdaptToInPayment(ModelAdapter):

@@ -33,7 +33,8 @@ from  random import randint
 
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.domain.interfaces import ICreditProvider
+from stoq.domain.interfaces import (ICreditProvider, ICheckPM, ICardPM,
+                                    IBillPM)
 from stoq.domain.person import Person
 from stoq.domain.payment.methods import (CardInstallmentSettings,
                                          DebitCardDetails, 
@@ -59,7 +60,7 @@ DEFAULT_C0MMISION_RANGE = 1, 10
 
 DEFAULT_RECEIVE_DAY = 5
 
-MAX_INSTALLMENTS_NUMBER = 10
+MAX_INSTALLMENTS_NUMBER = 12
 
 
 def get_percentage_commission():
@@ -104,6 +105,12 @@ def create_payments():
                             connection=conn, provider=provider)
         FinanceDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
 
+
+    pm = sysparam(conn).BASE_PAYMENT_METHOD
+    for iface in [ICheckPM, IBillPM]:
+        method = iface(pm, connection=conn)
+        method.max_installments_number = MAX_INSTALLMENTS_NUMBER
+        
     conn.commit()
 
     print "done."

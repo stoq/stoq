@@ -187,12 +187,12 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         return count
 
     def add_payment(self, payment_group, due_date, value,
-                    method_info=None, description=None):
+                    method_details=None, description=None):
         conn = self.get_connection()
         created_number = self.get_payment_number_by_group(payment_group)
-        if method_info:
-            max = method_info.get_max_installments_number()
-            destination = method_info.destination
+        if method_details:
+            max = method_details.get_max_installments_number()
+            destination = method_details.destination
         else:
             destination = self.destination
             max = self.get_max_installments_number()
@@ -205,16 +205,20 @@ class PaymentMethodAdapter(InheritableModelAdapter):
             raise DatabaseInconsistency('You have more inpayments in '
                                         'database than the maximum '
                                         'allowed for this payment method')
-        description = description or '%s payment, 1 of 1' % self.description
+        if not description:
+            group_desc = payment_group.get_group_description()
+            description = '%s (1 of 1) from %s' % (self.description,
+                                                   group_desc)
         return Payment(connection=conn, group=payment_group,
                        method=self, destination=destination,
+                       method_details=method_details,
                        due_date=due_date, value=value,
                        description=description)
 
     def create_inpayment(self, payment_group, due_date, value,
-                         method_info=None, description=None):
+                         method_details=None, description=None):
         payment = self.add_payment(payment_group, due_date, value,
-                                   method_info, description)
+                                   method_details, description)
         conn = self.get_connection()
         return payment.addFacet(IInPayment, connection=conn)
 
@@ -233,6 +237,14 @@ class PaymentMethodAdapter(InheritableModelAdapter):
 
     def setup_payments(self, total, group, installments_number):
         raise NotImplementedError
+
+    @argcheck(AbstractPaymentGroup)
+    def get_thirdparty(self, payment_group):
+        """Returns the thirdparty associated with this payment method. If
+        the method doesn't have it's own thirdparty the payment_group
+        thirdparty will be returned.
+        """
+        return payment_group.get_thirdparty()
 
 
 class PMAdaptToMoney(PaymentMethodAdapter):
@@ -259,7 +271,9 @@ class PMAdaptToMoney(PaymentMethodAdapter):
     def setup_payments(self, total, group, installments_number):
         self._check_installments_number(installments_number)
         due_date = datetime.today()
-        description = '%s payment, 1 of 1' % self.description
+        group_desc = group.get_group_description()
+        description = '%s (1 of 1) from %s' % (self.description,
+                                               group_desc)
         payment = group.add_payment(total, description, self, 
                                     self.destination, due_date)
         conn = self.get_connection()
@@ -281,7 +295,6 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
     max_installments_number = IntCol(default=1)
     monthly_interest = FloatCol(default=0.0)
     daily_penalty = FloatCol(default=0.0)
-
 
     def _check_interest_value(self, interest):
         interest = interest or 0.0
@@ -325,8 +338,8 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
     # @argcheck(object, AbstractPaymentGroup, int, datetime, int, int, 
     #           float)
     def create_inpayments(self, payment_group, installments_number,
-                         first_duedate, interval_type, intervals,
-                         total_value, interest=None):
+                          first_duedate, interval_type, intervals,
+                          total_value, interest=None):
         """Return a list of newly created inpayments and its total
         interest. The result value is a tuple where the first item is the
         payment list and the second one is the interest total value
@@ -356,10 +369,13 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
         conn = self.get_connection()
         payments = []
         calc_interval = calculate_interval(interval_type, intervals)
+        group_desc = payment_group.get_group_description()
         for i in range(installments_number):
             due_date = first_duedate + timedelta((i * calc_interval))
-            description = '%s, %s of %s' % (self.description,
-                                            i, installments_number)
+            description = '%s (%s of %s) from %s' % (self.description,
+                                                     i + 1, 
+                                                     installments_number,
+                                                     group_desc)
             payment = self.create_inpayment(payment_group, due_date, 
                                             value, self, description)
             payments.append(payment)
@@ -408,13 +424,14 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
     #
 
     def add_payment(self, payment_group, due_date, value,
-                    method_info=None, description=None):
-        # The method_info argument exists only for API compatibility
+                    method_details=None, description=None):
+        # The method_details argument exists only for
+        # AbstractCheckBillAdapter compatibility
+        desc = description
         payment = AbstractCheckBillAdapter.add_payment(self, 
                                                        payment_group, 
                                                        due_date, value,
-                                                       self,
-                                                       description)
+                                                       description=desc)
         conn = self.get_connection()
         bank_data = BankAccount(connection=conn)
         # Every check must have a check data reference
@@ -471,6 +488,11 @@ class PMAdaptToCard(PaymentMethodAdapter):
     # Auxiliar methods
     #
 
+    def get_thirdparty(self):
+        raise NotImplementedError('You should call get_thirdparty method '
+                                  'of PaymentMethodDetails instance for '
+                                  'this payment method')
+
     def get_max_installments_number(self):
         raise NotImplementedError('This method must be implemented in '
                                   'BasePMProviderInfo classes')
@@ -483,6 +505,11 @@ class PMAdaptToFinance(PaymentMethodAdapter):
 
     description = _('Finance')
 
+
+    def get_thirdparty(self):
+        raise NotImplementedError('You should call get_thirdparty method '
+                                  'of PaymentMethodDetails instance for '
+                                  'this payment method')
 
     def get_max_installments_number(self):
         raise NotImplementedError('This method mus be implemented in '
@@ -538,6 +565,9 @@ class PaymentMethodDetails(InheritableModel):
     # Auxiliar methods
     #
 
+    def get_thirdparty(self):
+        return self.provider.get_adapted()
+
     def _get_payment_method_by_interface(self, iface):
         conn = self.get_connection()
         method = sysparam(conn).BASE_PAYMENT_METHOD
@@ -575,7 +605,7 @@ class PaymentMethodDetails(InheritableModel):
 
     @argcheck(AbstractPaymentGroup, int, datetime, float)
     def create_inpayments(self, payment_group, installments_number,
-                         first_duedate, total_value):
+                          first_duedate, total_value):
         """Return a list of newly created inpayments and its total
         payment list and the second one is the interest total value
         
@@ -599,11 +629,13 @@ class PaymentMethodDetails(InheritableModel):
 
         payments = []
         due_date = first_duedate
+        group_desc = payment_group.get_group_description()
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
-            description = '%s payment, %s of %s' % (self.description,
-                                                    number,
-                                                    installments_number)
+            description = '%s (%s of %s) from %s' % (self.description,
+                                                     number, 
+                                                     installments_number,
+                                                     group_desc)
             payment = self.create_inpayment(payment_group, due_date, 
                                             payment_value, method,
                                             description)
