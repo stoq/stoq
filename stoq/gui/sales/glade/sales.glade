@@ -202,6 +202,8 @@
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="sales_list">
                                 <property name="border_width">5</property>
+                                <property name="is_focus">True</property>
+                                <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
