@@ -96,6 +96,7 @@ TABLES = [
     # be fixed in bug 2036.
      ('stoq.domain.payment.methods',       ("PaymentMethod",
                                             "PaymentMethodAdapter",
+                                            "PaymentMethodDetails",
                                             )),
      ('stoq.domain.payment.base',          ("AbstractPaymentGroup",
                                             "Payment",
@@ -110,7 +111,6 @@ TABLES = [
                                             "PMAdaptToCard",
                                             "PMAdaptToFinance",
                                             "CardInstallmentSettings",
-                                            "PaymentMethodDetails",
                                             "DebitCardDetails",
                                             "CreditCardDetails",
                                             "CardInstallmentsStoreDetails",

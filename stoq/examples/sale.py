@@ -35,14 +35,15 @@ import datetime
 from stoqlib.exceptions import SellError
 
 from stoq.lib.runtime import new_transaction
+from stoq.lib.parameters import sysparam
+from stoq.lib.defaults import INTERVALTYPE_MONTH
+from stoq.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoq.domain.till import get_current_till_operation, Till
-from stoq.domain.payment.base import Payment
 from stoq.domain.sale import Sale
 from stoq.domain.product import Product
-from stoq.domain.interfaces import (ISellable, IClient, IPaymentGroup,
-                                    ISalesPerson)
 from stoq.domain.person import Person
-from stoq.lib.parameters import sysparam
+from stoq.domain.interfaces import (ISellable, IClient, IPaymentGroup,
+                                    ISalesPerson, ICheckPM)
 
 _ = gettext.gettext
 
@@ -54,6 +55,9 @@ DEFAULT_PAYMENTS_INTERVAL = 30
 
 # Number of sales to be created
 DEFAULT_SALE_NUMBER = 4
+
+DEFAULT_PAYMENT_INTERVAL_TYPE = INTERVALTYPE_MONTH
+DEFAULT_PAYMENT_INTERVALS = 1
 
 def get_till(conn):
     till = get_current_till_operation(conn)
@@ -96,7 +100,6 @@ def create_sales():
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
 
-    payment_method = sysparam(conn).METHOD_MONEY
     destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
     salesperson_table = Person.getAdapterClass(ISalesPerson)
     salespersons = salesperson_table.select(connection=conn)
@@ -111,15 +114,22 @@ def create_sales():
                   datetime.datetime.today() + datetime.timedelta(15),
                   datetime.datetime.today() + datetime.timedelta(23)]
 
+    installments_numbers = [i * 2 for i in range(1, 
+                                                 DEFAULT_SALE_NUMBER + 1)]
+    
     statuses = Sale.statuses.keys()
+    method = sysparam(conn).BASE_PAYMENT_METHOD
+    check_method = ICheckPM(method, connection=conn)
                  
     # We need to increment payment_id attribute automatically. Waiting
     # for SQLObject support
     payment_id = 1
     for index in range(DEFAULT_SALE_NUMBER):
+        
         #
-        # Setting up the items
+        # Setting up the sale
         #
+        
         open_date = open_dates[index]
         status = statuses[index]
         salesperson = salespersons[index]
@@ -128,28 +138,23 @@ def create_sales():
                     open_date=open_date, salesperson=salesperson)
         sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
-
         sale_total = sellable_facet.price
 
         #
         # Setting up the payments
         #
+
         pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
                                  installments_number=DEFAULT_PAYMENTS_NUMBER)
-        each_payment = sale_total / DEFAULT_PAYMENTS_NUMBER
-        due_date = datetime.datetime.now()
-        for payment_index in range(DEFAULT_PAYMENTS_NUMBER):
-            description = ('%s payment, %s of %s' %
-                           (payment_method.description, payment_index + 1,
-                            DEFAULT_PAYMENTS_NUMBER))
-            payment = Payment(payment_id=payment_id, due_date=due_date, 
-                              value=each_payment,
-                              connection=conn,method=payment_method,
-                              group=pg_facet, destination=destination,
-                              description=description)
-            pg_facet.add_item(payment)
-            due_date += datetime.timedelta(days=DEFAULT_PAYMENTS_INTERVAL)
-            payment_id += 1
+        installments = installments_numbers[index]
+        if installments > MAX_INSTALLMENTS_NUMBER:
+            raise ValueError('Number of installments for this payment '
+                             'method can not be greater than %d, got %d' 
+                             % (installments, MAX_INSTALLMENTS_NUMBER))
+        check_method.create_inpayments(pg_facet, installments, open_date,
+                                       DEFAULT_PAYMENT_INTERVAL_TYPE,
+                                       DEFAULT_PAYMENTS_INTERVAL, 
+                                       sale_total)
 
     conn.commit()
 

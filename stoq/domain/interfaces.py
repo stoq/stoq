@@ -400,7 +400,12 @@ class IPaymentGroup(ConnInterface):
         must implement a facet defined in each adapter"""
 
     def get_thirdparty():
-        """Return the thirdparty attached to the payment group"""
+        """Return the thirdparty attached to the payment group. It must be
+        always a Person instance"""
+
+    def get_group_description():
+        """Returns a group description which will be used when building
+        descriptions for payments"""
 
     def get_balance():
         """The total amount of all the payments this payment group holds"""

@@ -406,12 +406,6 @@ class ParameterAccess(ClassInittableObject):
                         destination=destination)
         pm.addFacet(ICardPM, connection=self.conn)
         pm.addFacet(IFinancePM, connection=self.conn)
-
-        # XXX A hack: this is just to help me during the development process
-        # remove this as soon as it's possible
-        ICheckPM(pm).max_installments_number = 12
-        IBillPM(pm).max_installments_number = 12
-        
         self.set_schema('BASE_PAYMENT_METHOD', pm.id)
         self.set_schema(key, IMoneyPM(pm, connection=self.conn).id)
 

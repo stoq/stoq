@@ -266,11 +266,14 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_thirdparty(self):
         sale = self.get_adapted()
-        return sale.client
+        return sale.client.get_adapted()
 
-    def update_thirdparty_status(self):
+    def set_thirdparty(self):
         raise NotImplementedError
 
+    def get_group_description(self):
+        sale = self.get_adapted()
+        return _('sale %s') % sale.order_number
 
 
     #

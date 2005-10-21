@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
@@ -21,27 +20,17 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):       Evandro Vale Miquelito  <evandro@async.com.br>
+##
 """
-stoq/examples/createall.py:
+stoq/gui/receivable/receivable.py:
 
-    Create all objects for an example database used by Stoq applications.
+   Main callsite for receivable application.
 """
 
-from stoq.examples.person import create_persons
-from stoq.examples.product import create_products
-from stoq.examples.service import create_services
-from stoq.examples.sale import create_sales
-from stoq.examples.payment import create_payments
-from stoq.examples.purchase import create_purchases
+from stoq.gui.receivable.receivable import ReceivableApp
+from stoq.gui.application import App
 
-if __name__ == "__main__":
-    print 'Creating example database...'
-    create_persons()
-    create_products()
-    create_services()
-    create_payments()
-    create_sales()
-    create_purchases()
-    print '-'*40
-    print 'done.'
-
+def main(config):
+    app = App(ReceivableApp, config)
+    app.run()
