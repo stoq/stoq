@@ -210,6 +210,8 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="sellable_list">
+                                <property name="is_focus">True</property>
+                                <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
