@@ -36,6 +36,7 @@ from kiwi.datatypes import ValidationError
 
 from stoq.domain.till import Till
 from stoq.lib.validators import get_price_format_str
+from stoq.domain.sellable import get_formatted_price
 
 _ = gettext.gettext
 
@@ -52,13 +53,9 @@ class TillOpeningEditor(BaseEditor):
     def _setup_widgets(self):
         self.initial_cash_amount.set_data_format(get_price_format_str())
 
-
-
     #
     # BaseEditor hooks
     # 
-
-
 
     def get_title_model_attribute(self, model):
         return self.model_name
@@ -73,18 +70,27 @@ class TillClosingEditor(BaseEditor):
     model_name = _('Till Closing')
     model_type = Till
     gladefile = 'TillClosing'
-    widgets = ('closing_date',
+    widgets = ('closing_date_lbl',
                'final_cash_amount',
-               'balance_to_send')
+               'balance_to_send',
+               'total_balance_lbl')
+    size = (350, 210)
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
         self.total_balance = model.get_balance()
+        self._update_widgets()
 
     def _setup_widgets(self):
         for widget in (self.balance_to_send, self.final_cash_amount):
             widget.set_data_format(get_price_format_str())
 
+    def _update_widgets(self):
+        closing_date = self.model.closing_date.strftime('%x') 
+        self.closing_date_lbl.set_text(closing_date)
+        total_balance = get_formatted_price(self.total_balance)
+        self.total_balance_lbl.set_text(total_balance)
+  
     def update_final_cash_amount(self):
         balance_to_send = self.model.balance_sent or 0.0
         self.model.final_cash_amount = self.total_balance - balance_to_send
@@ -95,16 +101,12 @@ class TillClosingEditor(BaseEditor):
         self.model.balance_sent = self.total_balance - final_cash_amount 
         self.proxy.update('balance_sent')
 
-
-
     #
     # BaseEditor hooks
     # 
 
-
-
-    def get_title_model_attribute(self, model):
-        return self.model_name
+    def get_title(self, *args):
+        return _('Closing current till')
 
     def setup_proxies(self):
         self.model.close_till()
@@ -112,13 +114,9 @@ class TillClosingEditor(BaseEditor):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.widgets)
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def after_final_cash_amount__validate(self, widget, value):
         if value <= self.final_cash:
