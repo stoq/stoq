@@ -46,7 +46,6 @@ _ = gettext.gettext
 # Slaves
 #
 
-
 class SellablePriceEditor(BaseEditor):
     model_name = 'Product Price'
     model_type = AbstractSellable
@@ -100,16 +99,12 @@ class SellablePriceEditor(BaseEditor):
         self.model.price = cost + ((markup / 100) * cost)
         self.main_proxy.update('price')
 
-
-
     #
     # BaseEditor hooks
     #
 
-
-
-    def get_title_model_attribute(self, model):
-        return self.model_name
+    def get_title(self, *args):
+        return _('Price settings')
 
     def setup_proxies(self):
         self.set_widget_formats()
@@ -123,13 +118,9 @@ class SellablePriceEditor(BaseEditor):
         self.model.markup = sellable.get_suggested_markup()
         self.main_proxy.update('markup')
 
-
-
     #
     # Kiwi handlers
     # 
-
-
 
     def after_price__changed(self, entry_box):
         self.handler_block(self.markup, 'changed')
@@ -142,11 +133,9 @@ class SellablePriceEditor(BaseEditor):
         self.handler_unblock(self.price, 'changed')
 
 
-
 #
 # Editors
 #
-
 
 
 class SellableEditor(BaseEditor):
@@ -193,8 +182,6 @@ class SellableEditor(BaseEditor):
     # BaseEditor hooks
     #
 
-
-
     def get_title_model_attribute(self, model):
         return ISellable(model).description
 
@@ -218,13 +205,9 @@ class SellableEditor(BaseEditor):
         storable = IStorable(self.model)
         self.storable_proxy = self.add_proxy(storable, self.storable_widgets)
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()

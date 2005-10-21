@@ -53,8 +53,6 @@ _ = gettext.gettext
 #
 
 
-
-
 class ProductSupplierSlave(BaseEditorSlave):
     """ A basic slave for suppliers selection.
     Parents which use this slave must implement a hook method called
@@ -82,13 +80,9 @@ class ProductSupplierSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-
-
 #
 # Editors
 #
-
-
 
 
 class ProductSupplierEditor(BaseEditor):
@@ -151,17 +145,12 @@ class ProductSupplierEditor(BaseEditor):
         # updating the field for the widget validation works fine
         self.prod_supplier_proxy.update('base_cost')
 
-
-
     #
     # BaseEditor hooks
     #
 
-
-
-       
-    def get_title_model_attribute(self, model):
-        return self.model_name
+    def get_title(self, *args):
+        return _('Add supplier information')
 
     def setup_proxies(self):
         self.setup_combos()
@@ -205,13 +194,9 @@ class ProductSupplierEditor(BaseEditor):
         self.update_main_supplier_references(current_supplier)
         return current_supplier
 
-
-
     #
     # Kiwi handlers
     # 
-
-
 
     def on_supplier_list_button__clicked(self, button):
         self.list_suppliers()
@@ -240,8 +225,6 @@ class ProductEditor(SellableEditor):
     #
     # ProductSupplierSlave hooks
     #
-
-
 
     def update_prices(self):
         if not self.sellable_proxy.model.cost and self.model.suppliers:
@@ -283,13 +266,9 @@ class ProductItemEditor(BaseEditor):
         for widget in (self.price, self.price_label):
             widget.hide()
 
-
-
     #
     # BaseEditor hooks
     #
-
-
 
     def get_title_model_attribute(self, model):
         return model.sellable.description
