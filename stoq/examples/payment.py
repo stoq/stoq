@@ -33,8 +33,7 @@ from  random import randint
 
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.domain.interfaces import (ICreditProvider, ICheckPM, ICardPM,
-                                    IBillPM)
+from stoq.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
 from stoq.domain.person import Person
 from stoq.domain.payment.methods import (CardInstallmentSettings,
                                          DebitCardDetails, 
