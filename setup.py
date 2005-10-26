@@ -45,6 +45,7 @@ pixmap_dir = os.path.join(prefix, 'share', 'stoq', 'pixmaps')
 glade_dir = os.path.join(prefix, 'share', 'stoq', 'glade')
 locale_dir = os.path.join(prefix, 'share', 'locale')
 docs_dir = os.path.join(prefix, 'share', 'doc', 'stoq')
+sbin_dir = os.path.join(prefix, 'share', 'stoq', 'sbin')
 '''
         filename = os.path.join(self.build_dir, 'stoq', 
                                 '__installed__.py')
@@ -72,9 +73,10 @@ docs_dir = os.path.join(prefix, 'share', 'doc', 'stoq')
 
 def listfiles(*dirs):
     dir, pattern = os.path.split(os.path.join(*dirs))
-    return [os.path.join(dir, filename)
-            for filename in os.listdir(os.path.abspath(dir))
-                if filename[0] != '.' and fnmatch(filename, pattern)]
+    files = [os.path.join(dir, filename)
+                for filename in os.listdir(os.path.abspath(dir))
+                    if filename[0] != '.' and fnmatch(filename, pattern)]
+    return tuple(files)
 
 def listgladefiles(*dirs):
     retval = []
@@ -87,8 +89,9 @@ data_files = [
      listfiles('pixmaps', '*.xpm') +
      listfiles('pixmaps', '*.jpg'),
      listfiles('pixmaps', '*.png')),
-    ('share/doc/stoq', ('AUTHORS', 'CONTRIBUTORS', 'COPYING',
-                        'README')),
+    ('share/stoq/sbin', ('sbin/init-database', 'sbin/update-database')),
+    ('share/doc/stoq', listfiles('docs/domain', '*.txt') +
+     ('docs/AUTHORS', 'docs/CONTRIBUTORS', 'docs/COPYING', 'docs/README')),
     ('share/stoq/glade',
      listgladefiles('components', 'editors', 'search', 'slaves',
                     'pos', 'templates')),
@@ -101,6 +104,7 @@ setup(name='stoq',
       url='http://www.async.com.br/projects/stoq/wiki',
       license='GPL',
       packages=['stoq',
+                'stoq.examples',
                 'stoq.domain',
                 'stoq.domain.payment',
                 'stoq.gui',

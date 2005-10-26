@@ -37,7 +37,7 @@ from stoqlib.gui.application import BaseApp, BaseAppWindow
 
 from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user
-from stoq.lib.environ import get_docs_dir, get_pixmaps_dir
+from stoq.environ import get_docs_dir, get_pixmap_file_path
 
 _ = gettext.gettext
 
@@ -118,13 +118,11 @@ class AppWindow(BaseAppWindow):
 #         label.set_text("user: %s%s" % (username, star))
 
     def _run_about(self, *args):
-        docs = get_docs_dir()
-        pixmaps = get_pixmaps_dir()
-
         about = gtk.AboutDialog()
         about.set_name(__program_name__)
         about.set_version(__version__)
 
+        docs = get_docs_dir()
         author_lines = file(os.path.join(docs, 'AUTHORS')).readlines()
         authors = [a.strip() for a in author_lines]
         # separate authors from contributors
@@ -134,7 +132,7 @@ class AppWindow(BaseAppWindow):
         authors.extend(contributors)
         about.set_authors(authors)
 
-        icon_file = os.path.join(pixmaps, 'stoq_logo.png')
+        icon_file = get_pixmap_file_path('stoq_logo.png')
         logo = gtk.gdk.pixbuf_new_from_file(icon_file)
         about.set_logo(logo)
             

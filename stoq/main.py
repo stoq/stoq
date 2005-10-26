@@ -23,10 +23,8 @@ import gettext
 import os
 
 from kiwi.environ import environ
-from stoqlib.environ import get_pixmaps_dir as get_stoqlib_pixmaps
 
-from stoq.lib.environ import (get_base_dir, get_locale_dir, get_glade_dir,
-                              get_pixmaps_dir)
+from stoq.environ import get_base_dir, get_locale_dir, get_glade_dir
 
 appdir = os.path.join(get_base_dir(), "stoq", "gui")
 
@@ -67,9 +65,6 @@ for dir in glade_dirs:
 glade_dir = get_glade_dir()
 if os.path.exists(glade_dir) and os.path.isdir(glade_dir):
     environ.add_resource("glade", glade_dir)
-
-environ.add_resource("pixmap", get_pixmaps_dir())
-environ.add_resource("pixmap", get_stoqlib_pixmaps())
 
 def main(args):
     apps = get_app_list()

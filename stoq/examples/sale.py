@@ -34,7 +34,7 @@ import datetime
 
 from stoqlib.exceptions import SellError
 
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam
 from stoq.lib.defaults import INTERVALTYPE_MONTH
 from stoq.examples.payment import MAX_INSTALLMENTS_NUMBER
@@ -88,7 +88,7 @@ def get_all_products(conn):
 
 def create_sales():
     conn = new_transaction()
-    print "Creating Sale... "
+    print_msg("Creating Sale... ", break_line=False)
 
     till = get_till(conn)
 
@@ -157,9 +157,7 @@ def create_sales():
                                        sale_total)
 
     conn.commit()
-
-    print "done."
-
+    print_msg("done.")
 
 if __name__ == '__main__':
     create_sales()

@@ -149,7 +149,7 @@ from stoq.domain.base import Domain, AbstractModel
 from stoq.domain.interfaces import (ISupplier, IBranch, ICompany, ISellable,
                                     IMoneyPM, ICheckPM, IBillPM, ICardPM,
                                     IFinancePM)
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 
 
 _ = gettext.gettext
@@ -454,9 +454,9 @@ def get_foreign_key_parameter(field_name, conn):
 
 
 def ensure_system_parameters():
+    print_msg("Creating default system parameters...", break_line=False)
     trans = new_transaction()
-    
     param = sysparam(trans)
     param.set_defaults()
-
     trans.commit()
+    print_msg('done')

@@ -26,11 +26,16 @@ lib/runtime.py:
     Runtime methods for Stoq applications.
 """
 
+import sys
+
 from sqlobject import connectionForURI
+
 from stoq.lib.configparser import StoqConfigParser
 
 _connection = None
 _current_user = None
+_verbose = False
+_test_mode = False
 
 
 
@@ -49,7 +54,12 @@ def initialize_connection():
 
     address = config.get_database_address()
     rdbms = config.get_rdbms_name()
-    dbname = config.get_dbname()
+    sys.stdout.flush()
+    if get_test_mode():
+        dbname = config.get_testdb()
+        sys.stdout.flush()
+    else:
+        dbname = config.get_dbname()
     dbusername = config.get_dbusername()
 
     # Here we define a full address for database access like:
@@ -76,12 +86,28 @@ def new_transaction():
     assert _transaction is not None
     return _transaction
 
-
-
 #
 # User methods
 #
 
+def set_verbose(verbose_value):
+    global _verbose
+    _verbose = verbose_value
+
+
+def print_immediately(message, break_line=True):
+    if break_line:
+        print message
+    else:
+        print message,
+    sys.stdout.flush()
+
+
+def print_msg(message, break_line=True):
+    global _verbose
+    if not _verbose:
+        return
+    print_immediately(message, break_line)
 
 
 def get_current_user():
@@ -94,3 +120,11 @@ def set_current_user(user):
     assert user
     # He we store a PersonAdaptToUser object.
     _current_user = user
+
+def set_test_mode(value):
+    global _test_mode
+    _test_mode = value
+
+def get_test_mode():
+    global _test_mode
+    return _test_mode

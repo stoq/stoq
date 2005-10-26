@@ -30,7 +30,6 @@ import os
 # All of these are relative to the root directory of the parent
 prefix      = os.path.dirname(os.path.dirname(__file__))
 basedir     = prefix
-pixmap_dir  = os.path.abspath(os.path.join(prefix, "pixmaps"))
 glade_dir   = os.path.abspath(os.path.join(prefix, "glade"))
 locale_dir  = os.path.abspath(os.path.join(prefix, "locale"))
-docs_dir    = basedir
+docs_dir    = os.path.abspath(os.path.join(prefix, "docs"))

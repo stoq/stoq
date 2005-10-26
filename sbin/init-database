@@ -32,23 +32,38 @@ sbin/init-database:
 import os
 import sys
 import getpass
+import gettext
 import time
 import string
 
+from stoq.lib.runtime import (new_transaction, set_verbose, print_msg,
+                              set_test_mode)
+TEST_MODE = '-t' in sys.argv
+# XXX This function must be called right before any other stoq domain 
+# module since initialize_connection has been called after
+# importing these modules
+set_test_mode(TEST_MODE)
 from stoq.lib.parameters import sysparam, ensure_system_parameters
-from stoq.lib.runtime import new_transaction
+from stoq.examples import createall as examples
+from stoq.environ import get_sbin_file_path
 from stoq.domain.person import EmployeePosition, PersonAdaptToUser
 from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
 from stoq.domain.interfaces import (IIndividual, IEmployee, IUser,
                                     ISalesPerson)
 
+_ = gettext.gettext
     
 DOMAIN = 'stoq'
 APPNAME = 'init-database'
 
+CREATE_EXAMPLES = '-e' in sys.argv
+LIST_TABLES = '-vl' in sys.argv
+VERBOSE = LIST_TABLES or '-v' in sys.argv
+
+
 def ensure_admin_user(name, username, password):
-    print "Creating administrator user...", 
+    print_msg("Creating administrator user...", break_line=False)
     trans = new_transaction()
 
     # XXX Person for administrator user is the same of Current Branch. I'm not 
@@ -76,8 +91,7 @@ def ensure_admin_user(name, username, password):
     assert ret, ret.count() == 1
     assert ret[0].password == password
     trans.commit()
-
-    print "done"
+    print_msg('done')
     return user
 
 def setup_tables(delete_only=False):
@@ -86,31 +100,39 @@ def setup_tables(delete_only=False):
     for catalog in catalog_types:
         if trans.tableExists(catalog.get_db_table_name()):
             catalog.dropTable(ifExists=True, cascade=True, connection=trans)
-            print '<removed>:  ', catalog
+            if LIST_TABLES:
+                print_msg('<removed>:  %s' % catalog)
         if delete_only:
             continue
         catalog.createTable(connection=trans)
-        print '<created>:  ', catalog
+        if LIST_TABLES:
+            print_msg('<created>:  %s' % catalog)
 
     trans.commit()
-    print 'done'
     sys.stdout.flush()
 
 if __name__ == "__main__":
-
-    print 'Setting up database... '
+    set_verbose(VERBOSE)
+    if not LIST_TABLES and TEST_MODE:
+        print_msg('Setting up tables... ', break_line=False)
+    else:
+        print_msg('Setting up tables... ')
     setup_tables(delete_only=True)
     if 'delete' in sys.argv:
         raise SystemExit
 
     name, username = "Superuser", "administrator"
-    password = getpass.getpass("Enter administrator user password for database: ")
+    if not TEST_MODE:
+        msg = _("Enter administrator user password for database: ")
+        password = getpass.getpass(msg)
+    else:
+        password = ''
 
     setup_tables()
+    print_msg('done')
 
-    print "Creating default system parameters..."
     ensure_system_parameters()
-    
     ensure_admin_user(name, username, password)
 
-    print "done"
+    if CREATE_EXAMPLES:
+        examples.create()
