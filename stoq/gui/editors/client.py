@@ -31,28 +31,22 @@ stoq/gui/editors/client.py
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
-
-from stoq.gui.templates.person import IndividualEditorTemplate
+from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.slaves.client import ClientStatusSlave
-from stoq.domain.person import Person, PersonAdaptToClient
+from stoq.domain.person import Person
 from stoq.domain.interfaces import IIndividual, IClient
 
 _ = gettext.gettext
 
-class ClientEditor(BaseEditor):
+class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
-    model_type = PersonAdaptToClient
+    model_type = Person.getAdapterClass(IClient)
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
-
-    
     #
     # BaseEditor hooks
     #
-
-
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043.  We should create a Client
@@ -62,19 +56,7 @@ class ClientEditor(BaseEditor):
         individual = person.addFacet(IIndividual, connection=conn)
         return person.addFacet(IClient, connection=conn)
 
-    def get_title_model_attribute(self, model):
-        return model.get_adapted().name
-        
     def setup_slaves(self):
-        individual = IIndividual(self.model.get_adapted(),
-                                 connection=self.conn)
-        self.individual_slave = IndividualEditorTemplate(self.conn,
-                                                         individual)
-        self.attach_slave('main_holder', self.individual_slave)
-
+        BasePersonRoleEditor.setup_slaves(self)
         self.status_slave = ClientStatusSlave(self.conn, self.model)
-        self.individual_slave.attach_person_slave(self.status_slave)
-
-    def on_confirm(self):
-        self.individual_slave.on_confirm()
-        return self.model
+        self.main_slave.attach_person_slave(self.status_slave)

@@ -1,51 +1,166 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <requires lib="gtk+"/>
-    <requires lib="kiwi"/>
     <widget class="GtkWindow" id="PersonEditorTemplate">
         <property name="border_width">3</property>
-        <property name="resize_mode">queue</property>
         <property name="role"></property>
-        <property name="title" context="True" translatable="yes"></property>
-        <property name="type">toplevel</property>
+        <property name="title" context="yes" translatable="yes"></property>
         <child>
-            <widget class="GtkNotebook" id="notebook">
+            <widget class="GtkNotebook" id="person_notebook">
                 <property name="border_width">5</property>
-                <property name="can_focus">True</property>
+                <property name="is_focus">True</property>
                 <property name="tab_hborder">5</property>
                 <property name="tab_vborder">3</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkVBox" id="vbox1">
+                    <widget class="GtkVBox" id="identification_tab">
                         <property name="border_width">5</property>
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkHBox" id="hbox1">
-                                <property name="spacing">5</property>
+                            <widget class="GtkTable" id="table1">
+                                <property name="border_width">5</property>
+                                <property name="column_spacing">5</property>
+                                <property name="n_columns">4</property>
+                                <property name="n_rows">3</property>
+                                <property name="row_spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkLabel" id="label1">
-                                        <property name="label" context="True" translatable="yes">Name</property>
-                                        <property name="xalign">1.0</property>
+                                    <widget class="GtkLabel" id="name_lbl">
+                                        <property name="label" context="yes" translatable="yes">Name:</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="phone_number_lbl">
+                                        <property name="label" context="yes" translatable="yes">Phone Number:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="xpad">2</property>
                                     </widget>
                                     <packing>
-                                        <property name="expand">False</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="fax_lbl">
+                                        <property name="label" context="yes" translatable="yes">Fax: </property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="xpad">2</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="top_attach">2</property>
                                     </packing>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="name">
-                                        <property name="can_focus">True</property>
-                                        <property name="completion">False</property>
                                         <property name="data_type">str</property>
-                                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
+                                        <property name="exact_completion">False</property>
+                                        <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">name</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
+                                        <property name="data_type">str</property>
+                                        <property name="exact_completion">False</property>
+                                        <property name="model_attribute">phone_number</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="fax_number">
+                                        <property name="data_type">str</property>
+                                        <property name="exact_completion">False</property>
+                                        <property name="model_attribute">fax_number</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="email_lbl">
+                                        <property name="label" context="yes" translatable="yes">E-mail:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="xpad">2</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="mobile_lbl">
+                                        <property name="label" context="yes" translatable="yes">Mobile:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                        <property name="xpad">2</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="email">
+                                        <property name="data_type">str</property>
+                                        <property name="exact_completion">False</property>
+                                        <property name="model_attribute">email</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="mobile_number">
+                                        <property name="data_type">str</property>
+                                        <property name="exact_completion">False</property>
+                                        <property name="model_attribute">mobile_number</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">2</property>
                                     </packing>
                                 </child>
                             </widget>
@@ -55,23 +170,27 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkFrame" id="id_frame">
-                                <property name="label" context="True" translatable="yes">Identification</property>
-                                <property name="label_xalign">0.0</property>
+                            <widget class="GtkHBox" id="hbox2">
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkEventBox" id="id_holder">
-                                        <property name="border_width">5</property>
-                                        <property name="visible">True</property>
-                                        <child>
-                                            <placeholder/>
-                                        </child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                        <property name="data_type">str</property>
                                     </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="contacts_button">
+                                        <property name="label" context="yes" translatable="yes">Contacts...</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
                                 <property name="expand">False</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
@@ -82,8 +201,7 @@
                         </child>
                         <child>
                             <widget class="GtkFrame" id="address_frame">
-                                <property name="label" context="True" translatable="yes">Main Address</property>
-                                <property name="label_xalign">0.0</property>
+                                <property name="label" context="yes" translatable="yes">Main Address</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkVBox" id="vbox3">
@@ -97,179 +215,57 @@
                                                     <placeholder/>
                                                 </child>
                                             </widget>
-                                            <packing/>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkHButtonBox" id="hbuttonbox1">
-                                                <property name="layout_style">end</property>
-                                                <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkButton" id="address_button">
-                                                        <property name="can_focus">True</property>
-                                                        <property name="label">More Addresses...</property>
-                                                        <property name="receives_default">True</property>
-                                                        <property name="visible">True</property>
-                                                    </widget>
-                                                    <packing/>
-                                                </child>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">1</property>
-                                                <property name="expand">False</property>
-                                                <property name="fill">False</property>
-                                            </packing>
                                         </child>
                                     </widget>
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">3</property>
                                 <property name="expand">False</property>
+                                <property name="position">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                        <property name="data_type">str</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkButton" id="address_button">
+                                        <property name="label" context="yes" translatable="yes">More Addresses...</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">4</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="yes"></property>
-                        <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="yes">Identification</property>
+                        <property name="menu_label" context="yes" translatable="yes"></property>
+                        <property name="tab_label" context="yes" translatable="yes">Identification</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkVBox" id="vbox2">
+                    <widget class="GtkVBox" id="person_data_tab">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkTable" id="table2">
+                            <widget class="GtkFrame" id="individual_frame">
                                 <property name="border_width">5</property>
-                                <property name="column_spacing">5</property>
-                                <property name="n_columns">4</property>
-                                <property name="n_rows">2</property>
-                                <property name="row_spacing">5</property>
+                                <property name="label" context="yes" translatable="yes">Individual Data</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="email">
-                                        <property name="can_focus">True</property>
-                                        <property name="completion">False</property>
-                                        <property name="data_type">str</property>
-                                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
-                                        <property name="model_attribute">email</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">3</property>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="right_attach">4</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="email_lbl">
-                                        <property name="label" context="True" translatable="yes">E-mail:</property>
-                                        <property name="xalign">1.0</property>
-                                        <property name="xpad">2</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="x_options">fill</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="right_attach">3</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="fax_number">
-                                        <property name="can_focus">True</property>
-                                        <property name="completion">False</property>
-                                        <property name="data_type">str</property>
-                                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
-                                        <property name="model_attribute">fax_number</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="fax_lbl">
-                                        <property name="label" context="True" translatable="yes">Fax: </property>
-                                        <property name="xalign">1.0</property>
-                                        <property name="xpad">2</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="x_options">fill</property>
-                                        <property name="top_attach">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="mobile_number">
-                                        <property name="can_focus">True</property>
-                                        <property name="completion">False</property>
-                                        <property name="data_type">str</property>
-                                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
-                                        <property name="model_attribute">mobile_number</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">3</property>
-                                        <property name="right_attach">4</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="mobile_lbl">
-                                        <property name="label" context="True" translatable="yes">Mobile:</property>
-                                        <property name="xalign">1.0</property>
-                                        <property name="xpad">2</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">2</property>
-                                        <property name="x_options">fill</property>
-                                        <property name="right_attach">3</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
-                                        <property name="can_focus">True</property>
-                                        <property name="completion">False</property>
-                                        <property name="data_type">str</property>
-                                        <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
-                                        <property name="model_attribute">phone_number</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="phone_number_lbl">
-                                        <property name="label" context="True" translatable="yes">Phone Number:</property>
-                                        <property name="xalign">1.0</property>
-                                        <property name="xpad">2</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="x_options">fill</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkFrame" id="frame1">
-                                <property name="border_width">5</property>
-                                <property name="label" context="True" translatable="yes">More Contacts</property>
-                                <property name="label_xalign">0.0</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkEventBox" id="contact_list_holder">
+                                    <widget class="GtkEventBox" id="individual_holder">
                                         <property name="border_width">5</property>
                                         <property name="visible">True</property>
                                         <child>
@@ -279,18 +275,39 @@
                                 </child>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkFrame" id="company_frame">
+                                <property name="border_width">5</property>
+                                <property name="label" context="yes" translatable="yes">Company Data</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkEventBox" id="company_holder">
+                                        <property name="border_width">5</property>
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <placeholder/>
+                                        </child>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
                         <property name="position">1</property>
-                        <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="yes">Contact</property>
+                        <property name="tab_label" context="yes" translatable="yes">Individual/Company Data</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkVBox" id="vbox4">
+                    <widget class="GtkVBox" id="details_tab">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkEventBox" id="person_status_holder">
@@ -311,8 +328,8 @@
                                 </child>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
                                 <property name="expand">False</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
@@ -328,24 +345,27 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="yes"></property>
+                        <property name="menu_label" context="yes" translatable="yes"></property>
                         <property name="position">2</property>
-                        <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="yes">Details</property>
+                        <property name="tab_label" context="yes" translatable="yes">General Details</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkEventBox" id="custom_holder">
-                        <property name="no_show_all">True</property>
+                    <widget class="GtkVBox" id="custom_tab">
+                        <property name="border_width">5</property>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkEventBox" id="custom_holder">
+                                <property name="border_width">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
                         </child>
                     </widget>
                     <packing>
-                        <property name="menu_label" translatable="yes"></property>
                         <property name="position">3</property>
-                        <property name="tab_expand">False</property>
-                        <property name="tab_label" translatable="yes">Customizable</property>
+                        <property name="tab_label" context="yes" translatable="yes">Custom</property>
                     </packing>
                 </child>
             </widget>

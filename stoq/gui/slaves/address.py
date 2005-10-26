@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):      Daniel Saran R. da Cunha    <daniel@async.com.br>
+##                  Henrique Romano             <henrique@async.com.br>
+##                  Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 stoq/gui/slaves/address.py:
 
@@ -39,20 +43,33 @@ class AddressSlave(BaseEditorSlave):
     model_type = Address
     gladefile = 'AddressSlave'
     
+    left_widgets = ('street',
+                    'address_lbl',
+                    'complement',
+                    'complement_lbl',
+                    'postal_code',
+                    'postal_code_lbl',
+                    'state_lbl',
+                    'state')
+    
     widgets = ('street',
                'number',
-               'complement',
                'district',
-               'postal_code',
                'country',
-               'city',
-               'state')
+               'city') + left_widgets
 
     def __init__(self, conn, model=None, is_main_address=True):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
         BaseEditorSlave.__init__(self, conn, model)
+
+    def get_left_widgets(self):
+        widgets = []
+        for widget_name in self.left_widgets:
+            widget = getattr(self, widget_name)
+            widgets.append(widget)
+        return widgets
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043. We should create Address and

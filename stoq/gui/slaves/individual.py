@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 stoq/gui/slaves/individual.py
 
@@ -29,14 +33,15 @@ stoq/gui/slaves/individual.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
+from stoq.domain.person import CityLocation, Person
+from stoq.domain.interfaces import IIndividual
 from stoq.lib.parameters import sysparam
-from stoq.domain.person import CityLocation, PersonAdaptToIndividual
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import get_country_states
 
 
 class IndividualDocuments(BaseEditorSlave):
-    model_type = PersonAdaptToIndividual
+    model_type = Person.getAdapterClass(IIndividual)
     gladefile = 'IndividualDocuments'
 
     widgets = ('cpf',
@@ -48,7 +53,7 @@ class IndividualDocuments(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model, self.widgets)
 
 class IndividualDetailsSlave(BaseEditorSlave):
-    model_type = PersonAdaptToIndividual
+    model_type = Person.getAdapterClass(IIndividual)
     gladefile = 'IndividualDetailsSlave'
 
     birth_loc_widgets = ('birth_loc_city',
@@ -61,7 +66,8 @@ class IndividualDetailsSlave(BaseEditorSlave):
                      'occupation',
                      'spouse_name',
                      'marital_status',
-                     'gender')
+                     'male_check',
+                     'female_check')
 
     widgets = (proxy_widgets + birth_loc_widgets) + ('spouse_lbl',)
 
@@ -82,11 +88,12 @@ class IndividualDetailsSlave(BaseEditorSlave):
         self.birth_loc_country.set_completion_strings(countries)
         self.birth_loc_state.set_completion_strings(states)
 
-    def setup_combos(self):
-        genders = self.model.genders
-        items = [(genders[k], k) for k in genders.keys()]
-        self.gender.prefill(items, sort=True)
-
+    def _setup_widgets(self):
+        is_male = self.model.gender == self.model_type.GENDER_MALE    
+        is_female = self.model.gender == self.model_type.GENDER_FEMALE
+        self.male_check.set_active(is_male)
+        self.female_check.set_active(is_female)
+        self.setup_entries_completion()
         self.marital_status.prefill(self.model.get_marital_statuses())
 
     def ensure_city_location(self):
@@ -117,7 +124,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
     def update_marital_status(self):
         marital_status = self.marital_status.get_selected_data()
-        visible = marital_status == PersonAdaptToIndividual.STATUS_MARRIED
+        visible = marital_status == self.model_type.STATUS_MARRIED
         if visible:
             self.spouse_lbl.show()
             self.spouse_name.show()
@@ -125,39 +132,34 @@ class IndividualDetailsSlave(BaseEditorSlave):
             self.spouse_lbl.hide()
             self.spouse_name.hide()    
 
-
     #
     # Kiwi handlers
     #
 
-
-
     def on_marital_status__changed(self, *args):
         self.update_marital_status()
        
-
-
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
-        self.setup_entries_completion()
-        self.setup_combos()
-
+        self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
         self.update_marital_status()
-
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()
         else:
             c = CityLocation(connection=self.conn)
             self.model.birth_location = c
-
         self.birth_loc_proxy = self.add_proxy(self.model.birth_location,
                                               self.birth_loc_widgets)
 
     def on_confirm(self):
+        if self.male_check.get_active():
+            self.model.gender = self.model_type.GENDER_MALE
+        else:
+            self.model.gender = self.model_type.GENDER_FEMALE
         self.ensure_city_location()
         return self.model
 
