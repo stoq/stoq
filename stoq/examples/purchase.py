@@ -35,14 +35,14 @@ from stoq.domain.purchase import PurchaseOrder, PurchaseItem
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 from stoq.domain.sellable import AbstractSellable
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 
 
 MAX_PURCHASES_NUMBER = 4
 SELLABLES_PER_PURCHASE = 2
 
 def create_purchases():
-    print 'Creating purchases...'
+    print_msg('Creating purchases...', break_line=False)
     conn = new_transaction()
 
     supplier_table = Person.getAdapterClass(ISupplier)
@@ -112,7 +112,7 @@ def create_purchases():
                          **item_args)
         
     conn.commit()
-    print 'done.'
+    print_msg('done.')
 
 
 if __name__ == "__main__":

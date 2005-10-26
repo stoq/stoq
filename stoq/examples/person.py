@@ -29,17 +29,17 @@ stoq/examples/person.py:
 
 from datetime import datetime
 
+from stoq.lib.runtime import new_transaction, print_msg
+from stoq.domain.profile import UserProfile
 from stoq.domain.person import (Person, EmployeePosition, Address,
                                 CityLocation)
-from stoq.domain.profile import UserProfile
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
                                     IUser, ICreditProvider)
-from stoq.lib.runtime import new_transaction
 
 def create_persons():
-    print 'Creating persons...'
+    print_msg('Creating persons...', break_line=False)
     trans = new_transaction()
 
     person_data = [dict(name='John Wayne', 
@@ -173,7 +173,7 @@ def create_persons():
                             **user_args)
         
     trans.commit()
-    print 'done.'
+    print_msg('done.')
 
 
 if __name__ == "__main__":

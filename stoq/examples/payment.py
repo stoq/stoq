@@ -31,7 +31,7 @@ stoq/examples/payment.py
 import gettext
 from  random import randint
 
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam
 from stoq.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
 from stoq.domain.person import Person
@@ -69,7 +69,7 @@ def get_percentage_commission():
 
 def create_payments():
     conn = new_transaction()
-    print "Creating Payments... "
+    print_msg("Creating Payments... ", break_line=False)
 
     table = Person.getAdapterClass(ICreditProvider) 
     
@@ -111,9 +111,7 @@ def create_payments():
         method.max_installments_number = MAX_INSTALLMENTS_NUMBER
         
     conn.commit()
-
-    print "done."
-
+    print_msg("done.")
 
 if __name__ == '__main__':
     create_payments()

@@ -27,6 +27,9 @@ stoq/examples/createall.py:
     Create all objects for an example database used by Stoq applications.
 """
 
+import sys
+
+from stoq.lib.runtime import print_msg, set_verbose
 from stoq.examples.person import create_persons
 from stoq.examples.product import create_products
 from stoq.examples.service import create_services
@@ -34,14 +37,20 @@ from stoq.examples.sale import create_sales
 from stoq.examples.payment import create_payments
 from stoq.examples.purchase import create_purchases
 
-if __name__ == "__main__":
-    print 'Creating example database...'
+VERBOSE = '-v' in sys.argv
+
+
+def create():
+    print_msg('Creating example database...')
     create_persons()
     create_products()
     create_services()
     create_payments()
     create_sales()
     create_purchases()
-    print '-'*40
-    print 'done.'
+    print_msg('done.')
+
+if __name__ == "__main__":
+    set_verbose(VERBOSE)
+    create()
 

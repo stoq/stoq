@@ -31,7 +31,7 @@ import random
 
 from stoq.domain.service import Service
 from stoq.domain.interfaces import ISellable
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 
 
 MAX_SERVICES_NUMBER = 4
@@ -39,7 +39,7 @@ PRICE_RANGE = 100, 200
 COST_RANGE = 1, 99
 
 def create_services():
-    print 'creating services...'
+    print_msg('creating services...', break_line=False)
     trans = new_transaction()
     
 
@@ -65,7 +65,7 @@ def create_services():
                              **sellable_args)
 
     trans.commit()
-    print 'done.'
+    print_msg('done.')
     
 if __name__ == "__main__":
     create_services()

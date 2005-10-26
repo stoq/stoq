@@ -55,6 +55,9 @@ address=%(ADDRESS)s
 # The name of Stoq database in rdbms.
 dbname=%(DBNAME)s
 
+# the test database name
+testdb=%(TESTDB)s
+
 # The database username in rdbms.
 dbusername=%(DBUSERNAME)s"""
 
@@ -145,14 +148,18 @@ dbusername=%(DBUSERNAME)s"""
         msg = _("What is the database name in the database system ? "
                 "default is 'stoq'\ndatabase> ")
         dbname = raw_input(msg) or 'stoq'
+        # XXX Users don't care about tests and that's why by default 
+        # the test database is the same of dbname and we don't ask them for
+        # the test database name. Developers must set manually in the
+        # stoq.conf file the desired dbtest name.
+        testdb = dbname
 
         msg = _("What is the database username in the database system ? "
                 "default is 'stoq'\nusername> ")
         dbusername = raw_input(msg) or 'stoq'
-
         return dict(DOMAIN=self.domain, RDBMS=rdbms,
                     ADDRESS=address, DBNAME=dbname,
-                    DBUSERNAME=dbusername)
+                    TESTDB=testdb, DBUSERNAME=dbusername)
 
     def install_default(self, path):
         if not os.path.exists(path):
@@ -195,14 +202,10 @@ dbusername=%(DBUSERNAME)s"""
             raise ConfigError, 'Invalid section: %s' % section
 
         self.config.set(section, name)
-
-
         
     #
     # Database config accessors
     #
-
-
 
     def get_database_address(self):
         return self.get_option('address', section='Database')
@@ -212,6 +215,9 @@ dbusername=%(DBUSERNAME)s"""
 
     def get_dbname(self):
         return self.get_option('dbname', section='Database')
+
+    def get_testdb(self):
+        return self.get_option('testdb', section='Database')
 
     def get_dbusername(self):
         return self.get_option('dbusername', section='Database')

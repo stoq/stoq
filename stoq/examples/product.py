@@ -39,7 +39,7 @@ from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
                                   AbstractSellableCategory)
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import new_transaction, print_msg
 
 
 MAX_PRODUCT_NUMBER = 4
@@ -58,7 +58,7 @@ def get_commission_and_markup():
     return commission, markup
     
 def create_products():
-    print 'Creating products...'
+    print_msg('Creating products...', break_line=False)
     trans = new_transaction()
 
     base_category_data= ['Keyboard', 
@@ -134,7 +134,7 @@ def create_products():
             stock_item.logic_quantity = stock_item.quantity * 2
         
     trans.commit()
-    print 'done.'
+    print_msg('done.')
 
 
 if __name__ == "__main__":

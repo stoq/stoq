@@ -29,6 +29,10 @@ Kiwi 1.9.1
 stoqlib 0.3.0
 dateutil (http://labix.org/python-dateutil)
 
+If you are a developer, the following packages are for you:
+
+docutils(http://docutils.sourceforge.net)
+
 
 Running Stoq
 ================

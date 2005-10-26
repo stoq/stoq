@@ -23,11 +23,14 @@
 ##  Author(s):      Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 """
-stoq/lib/environ.py
+stoq/environ.py
 
     Environ variables for Stoq applications
 """
 
+import os
+
+from kiwi.environ import Library, environ
 
 try:
     # We can't use from .. import ... as module until pyflakes
@@ -44,21 +47,48 @@ except ImportError:
                          "Tried to start Stoq but critical configuration "
                          "is missing.\n")
 
+__all__ = ['library']
 
-def get_docs_dir():
-    docs = getattr(config_module, 'docs_dir', None)
-    if not docs:
-        raise ValueError('Configuration option docs_dir was not found')
-    return docs
+library = Library('stoq', root='..')
+if library.uninstalled:
+    # XXX We need this since to work properly with symbolic links 
+    # for stoq directories
+    library.add_global_resources(sbin_dir='sbin',
+                                 docs_dir='docs',
+                                 pixmaps_dir='pixmaps')
 
-def get_pixmaps_dir():
-    return getattr(config_module, 'pixmap_dir', None)
+def _get_dir(session_name):
+    dir = getattr(config_module, session_name, None)
+    if not dir:
+        raise ValueError('Configuration option %s was not found' %
+                         session_name)
+    return dir
+
+def _get_file_path(resource_name, file_name):
+    if library.uninstalled:
+        return environ.find_resource(resource_name, file_name)
+    return os.path.join(_get_dir(resource_name), file_name)
 
 def get_base_dir():
-    return getattr(config_module, 'basedir')
+    return _get_dir('basedir')
 
 def get_locale_dir():
-    return getattr(config_module, 'locale_dir')
+    return _get_dir('locale_dir')
 
 def get_glade_dir():
-    return getattr(config_module, 'glade_dir')
+    return _get_dir('glade_dir')
+
+def get_sbin_file_path(file_name):
+    return _get_file_path('sbin_dir', file_name)
+
+def get_pixmap_file_path(file_name):
+    return _get_file_path('pixmaps_dir', file_name)
+
+def get_docs_dir():
+    if library.uninstalled:
+        paths = environ.get_resource_paths('docs_dir')
+        if len(paths) != 1:
+            raise ValueError('It should have only one path for docs '
+                             'directory, got %d instead' % len(paths))
+        return paths[0]
+    return os.path.join(_get_dir('docs_dir'))
