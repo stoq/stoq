@@ -33,28 +33,22 @@ stoq/gui/editors/supplier.py
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
-
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
-from stoq.gui.templates.person import CompanyEditorTemplate
+from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.domain.interfaces import ISupplier, ICompany
-from stoq.domain.person import Person, PersonAdaptToSupplier
+from stoq.domain.person import Person
 
 _ = gettext.gettext
 
-class SupplierEditor(BaseEditor):
+class SupplierEditor(BasePersonRoleEditor):
     model_name = _('Supplier')
-    model_type = PersonAdaptToSupplier
+    model_type = Person.getAdapterClass(ISupplier)
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
-
-
 
     #
     # BaseEditor hooks
     #
-    
-
 
     def create_model(self, conn):
         # XXX: This is a hack, we don't can create a client without a
@@ -64,20 +58,8 @@ class SupplierEditor(BaseEditor):
         company = person.addFacet(ICompany, connection=conn)
         return person.addFacet(ISupplier, connection=conn)
 
-    def get_title_model_attribute(self, model):
-        return model.get_adapted().name
-
     def setup_slaves(self):
-        company_facet = ICompany(self.model.get_adapted(),
-                                 connection=self.conn)
-        self.company_slave = CompanyEditorTemplate(self.conn, company_facet)
-        self.attach_slave('main_holder', self.company_slave)
-
+        BasePersonRoleEditor.setup_slaves(self)
         self.details_slave = SupplierDetailsSlave(self.conn, self.model)
-        self.company_slave.person_slave.attach_slave('person_status_holder',
-                                                     self.details_slave)
-
-    def on_confirm(self):
-        self.company_slave.on_confirm()
-        return self.model
-
+        slave = self.main_slave.get_person_slave()
+        slave.attach_slave('person_status_holder', self.details_slave)

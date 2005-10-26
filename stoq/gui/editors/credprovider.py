@@ -33,30 +33,24 @@ stoq/gui/editors/credprovider.py
 from datetime import datetime
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
-
 from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
-from stoq.gui.templates.person import CompanyEditorTemplate
+from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.domain.interfaces import ICompany, ICreditProvider
-from stoq.domain.person import Person, PersonAdaptToCreditProvider
+from stoq.domain.person import Person
 
 _ = gettext.gettext
 
-class CreditProviderEditor(BaseEditor):
+class CreditProviderEditor(BasePersonRoleEditor):
 
     model_name = _('Credit Provider')
-    model_type = PersonAdaptToCreditProvider
+    model_type = Person.getAdapterClass(ICreditProvider)
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
-
-
 
     #
     # BaseEditor hooks
     #
     
-
-
     def create_model(self, conn):
         # XXX: It will be much better creating a client without a
         # person and an Individual/Company. Waiting for bug 2043
@@ -66,21 +60,9 @@ class CreditProviderEditor(BaseEditor):
                                open_contract_date=datetime.today(),  
                                connection=conn)
 
-    def get_title_model_attribute(self, model):
-        return model.get_adapted().name
-
     def setup_slaves(self):
-        company_facet = ICompany(self.model.get_adapted(),
-                                 connection=self.conn)
-        self.company_slave = CompanyEditorTemplate(self.conn, company_facet)
-        self.attach_slave('main_holder', self.company_slave)
-
-        self.details_slave = CreditProviderDetailsSlave(self.conn, self.model)
-        self.company_slave.person_slave.attach_slave('person_status_holder',
-                                                     self.details_slave)
-
-    def on_confirm(self):
-        self.company_slave.on_confirm()
-        return self.model
-
-
+        BasePersonRoleEditor.setup_slaves(self)
+        self.details_slave = CreditProviderDetailsSlave(self.conn, 
+                                                        self.model)
+        slave = self.main_slave.get_person_slave()
+        slave.attach_slave('person_status_holder', self.details_slave)

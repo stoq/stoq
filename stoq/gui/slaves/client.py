@@ -20,6 +20,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):  Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 stoq/gui/slaves/client.py
 
@@ -29,22 +32,24 @@ stoq/gui/slaves/client.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import PersonAdaptToClient
+from stoq.domain.interfaces import IClient
+from stoq.domain.person import Person
 
 class ClientStatusSlave(BaseEditorSlave):
-    model_type = PersonAdaptToClient
+    model_type = Person.getAdapterClass(IClient)
     gladefile = 'ClientStatusSlave'
 
-    widgets = ('ok',
-               'indebted',
-               'insolvent',
-               'inactive')
+    widgets = ('statuses_combo',)
 
     # 
     # BaseEditorSlave hooks
     # 
 
     def setup_proxies(self):
+        table = self.model_type
+        items = [(value, constant) 
+                    for constant, value in table.statuses.items()]
+        self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model, self.widgets)
 
 

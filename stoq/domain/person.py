@@ -333,17 +333,17 @@ class PersonAdaptToClient(ModelAdapter):
     
     __implements__ = IClient, IActive
 
-    (STATUS_OK, 
+    (STATUS_SOLVENT, 
      STATUS_INDEBTED, 
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
 
-    statuses = {STATUS_OK:          _('OK'),
+    statuses = {STATUS_SOLVENT:     _('Solvent'),
                 STATUS_INDEBTED:    _('Indebted'),
                 STATUS_INSOLVENT:   _('Insolvent'),
                 STATUS_INACTIVE:    _('Inactive')}
 
-    status = IntCol(default=STATUS_OK)
+    status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
 
     #
@@ -352,7 +352,7 @@ class PersonAdaptToClient(ModelAdapter):
 
     @property
     def is_active(self):
-        return self.status == self.STATUS_OK
+        return self.status == self.STATUS_SOLVENT
 
     def inactivate(self):
         assert self.is_active, ('This client is already inactive')
@@ -360,13 +360,16 @@ class PersonAdaptToClient(ModelAdapter):
 
     def activate(self):
         assert not self.is_active, ('This client is already active')
-        self.status = self.STATUS_OK
+        self.status = self.STATUS_SOLVENT
 
     #
     # Auxiliar methods
     #
 
     def get_status_string(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for client, '
+                                        'got %d' % self.status)
         return self.statuses[self.status]
 
     @classmethod
@@ -374,7 +377,7 @@ class PersonAdaptToClient(ModelAdapter):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
-        query = cls.q.status == cls.STATUS_OK
+        query = cls.q.status == cls.STATUS_SOLVENT
         return cls.select(query, connection=conn)
                     
 Person.registerFacet(PersonAdaptToClient)
@@ -388,6 +391,10 @@ class PersonAdaptToSupplier(ModelAdapter):
     (STATUS_ACTIVE, 
      STATUS_INACTIVE, 
      STATUS_BLOCKED) = range(3)
+    
+    statuses = {STATUS_ACTIVE:      _('Active'),
+                STATUS_INACTIVE:    _('Inactive'),
+                STATUS_BLOCKED:     _('Blocked')}
     
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = StringCol(default='')
@@ -405,10 +412,10 @@ class PersonAdaptToEmployee(ModelAdapter):
      STATUS_VACATION, 
      STATUS_OFF) = range(4)      
 
-    _statuses = {STATUS_NORMAL: _('Normal'),
-                 STATUS_AWAY: _('Away'),
-                 STATUS_VACATION: _('Vacation'),
-                 STATUS_OFF: _('Off')}
+    statuses = {STATUS_NORMAL: _('Normal'),
+                STATUS_AWAY: _('Away'),
+                STATUS_VACATION: _('Vacation'),
+                STATUS_OFF: _('Off')}
 
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
@@ -426,8 +433,10 @@ class PersonAdaptToEmployee(ModelAdapter):
     bank_account = ForeignKey('BankAccount', default=None)
 
     def get_status_string(self):
-        assert self.status in self._statuses
-        return self._statuses[self.status]
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for employee, '
+                                        'got %d' % self.status)
+        return self.statuses[self.status]
                     
 Person.registerFacet(PersonAdaptToEmployee)
 

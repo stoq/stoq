@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 stoq/gui/slaves/supplier.py
 
@@ -29,15 +33,19 @@ stoq/gui/slaves/supplier.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import PersonAdaptToSupplier
+from stoq.domain.person import Person
+from stoq.domain.interfaces import ISupplier
 
 
 class SupplierDetailsSlave(BaseEditorSlave):
-    model_type = PersonAdaptToSupplier
+    model_type = Person.getAdapterClass(ISupplier)
     gladefile = 'SupplierDetailsSlave'
-    widgets = ('active', 'inactive', 'blocked', 'product_desc')
+    widgets = ('statuses_combo', 'product_desc')
 
     def setup_proxies(self):
+        items = [(value, constant) 
+                    for constant, value in self.model_type.statuses.items()]
+        self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model, self.widgets)
 
 

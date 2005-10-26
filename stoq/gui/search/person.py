@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##
+##
 """
 gui/search/person.py
 
@@ -89,7 +93,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def get_filter_slave(self):        
         employees = [(value, key) for key, value in
-                     PersonAdaptToEmployee._statuses.items()]
+                     PersonAdaptToEmployee.statuses.items()]
         employees.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(employees, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(self.filter_label)

@@ -45,13 +45,9 @@ class ContactEditor(BaseEditor):
     gladefile = 'ContactEditor'
     widgets = ('name', 'phone_number')
 
-
-
     #
     # BaseEditor Hooks
     #
-
-
 
     def get_title_model_attribute(self, model):
         return model.name
@@ -61,5 +57,3 @@ class ContactEditor(BaseEditor):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
-
-

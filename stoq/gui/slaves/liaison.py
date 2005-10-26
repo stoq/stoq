@@ -22,6 +22,7 @@
 ##
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 gui/slaves/liaison.py:
@@ -32,7 +33,7 @@ gui/slaves/liaison.py:
 import gettext
 
 
-from stoqlib.gui.lists import AdditionListSlave
+from stoqlib.gui.lists import AdditionListDialog
 from kiwi.ui.widgets.list import Column
 
 from stoq.gui.editors.contact import ContactEditor
@@ -40,11 +41,13 @@ from stoq.domain.person import Liaison
 
 _ = gettext.gettext
 
-class LiaisonListSlave(AdditionListSlave):
+class LiaisonListDialog(AdditionListDialog):
 
-    def __init__(self, conn, liaison_list=None):
-        AdditionListSlave.__init__(self, conn, self, ContactEditor,
-                                   self.get_columns(), liaison_list)
+    def __init__(self, conn, person, liaison_list=None):
+        self.person = person
+        AdditionListDialog.__init__(self, conn, self, ContactEditor,
+                                    self.get_columns(), liaison_list,
+                                    _('Additional Contacts'))
 
     def get_columns(self):
         return [Column('name', title=_('Name'),
@@ -58,7 +61,7 @@ class LiaisonListSlave(AdditionListSlave):
 
 
     #
-    # AdditionListSlave hooks
+    # AdditionListDialog hooks
     # 
 
 
@@ -68,6 +71,6 @@ class LiaisonListSlave(AdditionListSlave):
             Liaison.delete(item.id, connection=self.conn)
 
     def on_add_item(self, item):
-        pass
+        item.person = self.person
 
 

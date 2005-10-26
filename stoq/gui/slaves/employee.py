@@ -20,6 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):      Daniel Saran R. da Cunha    <daniel@async.com.br>
+##                  Henrique Romano             <henrique@async.com.br>
+##                  Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 /stoq/gui/slaves/employee.py
 
@@ -30,14 +34,15 @@
 import gtk
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import (WorkPermitData, MilitaryData, VoterData,
-                                EmployeePosition, PersonAdaptToEmployee)
+from stoq.domain.person import (Person, WorkPermitData, MilitaryData, 
+                                VoterData, EmployeePosition)
+from stoq.domain.interfaces import IEmployee
 from stoq.domain.account import BankAccount
 
 
 class EmployeeDetailsSlave(BaseEditorSlave):
-    model_type = PersonAdaptToEmployee
     gladefile = 'EmployeeDetailsSlave'
+    model_type = Person.getAdapterClass(IEmployee)
 
     # 
     # Widgets specification for size groups.
@@ -148,10 +153,13 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
 class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
-    widgets = ('normal', 'away', 'vacation', 'off')
-    model_type = PersonAdaptToEmployee
+    model_type = Person.getAdapterClass(IEmployee)
+    widgets = ('statuses_combo',)
 
     def setup_proxies(self):
+        items = [(value, constant) 
+                    for constant, value in self.model_type.statuses.items()]
+        self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model, self.widgets)
 
     

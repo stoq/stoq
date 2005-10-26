@@ -22,6 +22,7 @@
 ##
 ## Author(s):   Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
 stoq/gui/editors/address.py
@@ -36,12 +37,12 @@ from stoqlib.gui.lists import AdditionListDialog
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.gui.slaves.address import AddressSlave
-from stoq.domain.person import Address
+from stoq.domain.person import Address, CityLocation
 
 _ = gettext.gettext
 
 class AddressAdditionDialog(AdditionListDialog):
-    title = _('Address List')
+    title = _('Additional Addresses')
 
     def __init__(self, conn, klist_objects, **editor_kwargs):
         cols = self.get_columns()
@@ -94,12 +95,19 @@ class AddressEditor(BaseEditor):
     proxy_widgets = ('is_main_address_checkbutton', )
     widgets = proxy_widgets + ('main_holder', )
 
-
+    def __init__(self, conn, model=None, person=None):
+        self.person = person
+        BaseEditor.__init__(self, conn, model)
 
     #
     # BaseEditor Hooks
     #
 
+    def create_model(self, conn):
+        ct_location = CityLocation(connection=self.conn)
+        return Address(connection=self.conn, person=self.person,
+                       city_location=ct_location)
+        
 
     def get_title_model_attribute(self, model):
         return self.model_name
