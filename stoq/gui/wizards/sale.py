@@ -30,9 +30,8 @@ stoq/gui/wizards/sale.py:
 
 import gettext
 
-from kiwi.ui.wizard import PluggableWizard, WizardStep
-from stoqlib.gui.editors import BaseEditorSlave
-from stoqlib.gui.dialogs import AbstractDialog, run_dialog
+from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 
 from stoq.gui.search.person import ClientSearch
 from stoq.gui.slaves.sale import DiscountChargeSlave
@@ -56,7 +55,7 @@ _ = gettext.gettext
 
 
 
-class PaymentMethodStep(BaseEditorSlave, WizardStep):
+class PaymentMethodStep(BaseWizardStep):
     gladefile = 'PaymentMethodStep'
     model_type = Sale
     slave_holder = 'method_holder'
@@ -70,9 +69,7 @@ class PaymentMethodStep(BaseEditorSlave, WizardStep):
         self.method_dict = {}
         # A cache for instantiated slaves
         self.slaves_dict = {}
-        WizardStep.__init__(self, previous)
-        BaseEditorSlave.__init__(self, conn, model)
-        self.wizard = wizard
+        BaseWizardStep.__init__(self, conn, model, wizard, previous)
         self.method_slave = None
         self.setup_combo()
         self._update_payment_method_slave()
@@ -131,19 +128,15 @@ class PaymentMethodStep(BaseEditorSlave, WizardStep):
         if self.method_slave:
             self.method_slave.update_view()
 
-
-
     #
     # Kiwi callbacks
     #
-
-
 
     def on_method_combo__changed(self, *args):
         self._update_payment_method_slave()
 
 
-class CustomerStep(BaseEditorSlave, WizardStep):
+class CustomerStep(BaseWizardStep):
     gladefile = 'CustomerStep'
     model_type = Sale
     proxy_widgets = ('client', 
@@ -153,9 +146,7 @@ class CustomerStep(BaseEditorSlave, WizardStep):
     widgets = ('add_button',) + proxy_widgets
 
     def __init__(self, wizard, previous, conn, model):
-        WizardStep.__init__(self, previous)
-        BaseEditorSlave.__init__(self, conn, model)
-        self.wizard = wizard
+        BaseWizardStep.__init__(self, conn, model, wizard, previous)
         self.register_validate_function(self.wizard.refresh_next)
 
     def setup_entry_completion(self):
@@ -173,25 +164,17 @@ class CustomerStep(BaseEditorSlave, WizardStep):
         self.setup_entry_completion()
         self.order_total_lbl.set_data_format(get_price_format_str())
     
-
-
     #
     # BaseEditorSlave hooks
     #
-
-
 
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
-
-
     #
     # WizardStep hooks
     #
-
-
 
     def post_init(self):
         self.update_view()
@@ -199,13 +182,9 @@ class CustomerStep(BaseEditorSlave, WizardStep):
     def has_next_step(self):
         return False
 
-
-
     #
     # Kiwi callbacks
     #
-
-
 
     def on_add_button__clicked(self, *args):
         # XXX Ops, we can commit self.conn if we send it to ClientSearch. 
@@ -217,7 +196,7 @@ class CustomerStep(BaseEditorSlave, WizardStep):
             self.model.update_client(person)
 
 
-class SalesPersonStep(BaseEditorSlave, WizardStep):
+class SalesPersonStep(BaseWizardStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
     slave_holder = 'discount_charge_slave'
@@ -230,8 +209,7 @@ class SalesPersonStep(BaseEditorSlave, WizardStep):
 
     def __init__(self, previous, conn, model):
         self.discount_charge_slave = DiscountChargeSlave(conn, model)
-        WizardStep.__init__(self, previous)
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseWizardStep.__init__(self, conn, model, previous)
         self.register_validate_function(self.previous.refresh_next)
         changed_handler = self.update_totals
         if self.get_slave(self.slave_holder):
@@ -264,13 +242,9 @@ class SalesPersonStep(BaseEditorSlave, WizardStep):
         self.total_lbl.set_data_format(get_price_format_str())
         self.subtotal_lbl.set_data_format(get_price_format_str())
 
-
-
     #
     # WizardStep hooks
     #
-
-
 
     def next_step(self):
         if self.cash_check.get_active():
@@ -283,18 +257,13 @@ class SalesPersonStep(BaseEditorSlave, WizardStep):
     def has_previous_step(self):
         return False
 
-
-
     #
     # BaseEditorSlave hooks
     #
 
-
-
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
-
 
 
 #
@@ -302,38 +271,19 @@ class SalesPersonStep(BaseEditorSlave, WizardStep):
 #
 
 
-
-class SaleWizard(PluggableWizard, AbstractDialog):
+class SaleWizard(BaseWizard):
     title = _('Sale Checkout')
     size = (600, 400)
     
     def __init__(self, conn, model):
-        self.first_step = SalesPersonStep(self, conn, model)
-        PluggableWizard.__init__(self, title=self.title,
-                                 first_step=self.first_step, 
-                                 size=self.size)
-        self.conn = conn
-        self.model = model
+        first_step = SalesPersonStep(self, conn, model)
+        BaseWizard.__init__(self, conn, model, first_step)
         group = self.get_payment_group()
         group.clear_preview_payments()
-
-    def refresh_next(self, validation_value):
-        if validation_value:
-            self.enable_next()
-        else:
-            self.disable_next()
-
-    
 
     #
     # WizardStep hooks
     #
-
-
-
-    def cancel(self):
-        PluggableWizard.cancel(self)
-        self.close()
 
     def finish(self):
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
@@ -345,13 +295,9 @@ class SaleWizard(PluggableWizard, AbstractDialog):
         self.retval = True
         self.close()
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def get_payment_group(self):
         group = IPaymentGroup(self.model, connection=self.conn)
