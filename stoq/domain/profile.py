@@ -62,9 +62,10 @@ class UserProfile(Domain):
                             user_profile=profile)
         return profile
 
-    def add_application_reference(self, app_name):
+    def add_application_reference(self, app_name, has_permission=False):
         conn = self.get_connection()
         ProfileSettings(connection=conn, app_dir_name=app_name,
+                        has_permission=has_permission,
                         user_profile=self)
 
     def check_app_permission(self, app_name):
@@ -86,11 +87,12 @@ def update_profile_applications(conn):
     comparision with the application names stored in user profiles. If a
     certain application is not there it is added.
     """
-    stored_apps = [p.app_dir_name for p 
-                        in ProfileSettings.select(connection=conn)]
-    app_list = [app_name for app_name in get_app_list()
-                    if app_name not in stored_apps]
+    app_list = [app_name for app_name in get_app_list()]
     profiles = UserProfile.select(connection=conn)
     for app_name in app_list:
         for profile in profiles:
+            settings = profile.profile_settings
+            app_names = [s.app_dir_name for s in settings]
+            if app_name in app_names:
+                continue
             profile.add_application_reference(app_name)
