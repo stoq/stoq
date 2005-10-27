@@ -40,6 +40,8 @@ class FacetColumn(Column):
             original = instance.get_adapted()
             conn = instance.get_connection()
             obj = self._facet(original, connection=conn)
+        if not obj:
+            return
         return kgetattr(obj, name, default)
 
     def get_facet(self):
