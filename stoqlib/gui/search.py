@@ -606,7 +606,6 @@ class SearchDialog(BasicDialog):
 
     Some important parameters:
     table = the table type which we will query on to get the objects.
-        ...
     """
     main_label_text = ''
     title = ''
@@ -818,7 +817,7 @@ class SearchEditor(SearchDialog):
                 obj = self.interface(adapted, connection=self.conn)
             else:
                 obj = self.table.get(id=obj.id, connection=self.conn)
-        rv = run_dialog(self.editor_class, self, self.conn, obj)
+        rv = self.run_editor(obj)
         if not rv:
             self.conn.rollback()
             self.conn.begin()
@@ -838,6 +837,9 @@ class SearchEditor(SearchDialog):
             rv = rv.get_adapted()
         if rv in self.klist:
             self.klist.select(rv)
+
+    def run_editor(self, obj):
+        return run_dialog(self.editor_class, self, self.conn, obj)
 
     def edit(self, widget, obj=None):
         if obj is None:
