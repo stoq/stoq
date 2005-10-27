@@ -36,7 +36,7 @@ from stoqlib.gui.dialogs import AbstractDialog
 class BaseWizardStep(BaseEditorSlave, WizardStep):
     """A wizard step base class definition"""
 
-    def __init__(self, conn, model, wizard, previous=None):
+    def __init__(self, conn, wizard, model=None, previous=None):
         self.wizard = wizard
         previous = previous or self.wizard
         WizardStep.__init__(self, previous)
@@ -47,7 +47,8 @@ class BaseWizard(PluggableWizard, AbstractDialog):
     title = None
     size = ()
 
-    def __init__(self, conn, model, first_step, title=None, size=None):
+    def __init__(self, conn, first_step, model=None, title=None, 
+                 size=None):
         self.conn = conn
         self.model = model
         size = size or self.size
