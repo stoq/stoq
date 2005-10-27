@@ -69,7 +69,7 @@ class PaymentMethodStep(BaseWizardStep):
         self.method_dict = {}
         # A cache for instantiated slaves
         self.slaves_dict = {}
-        BaseWizardStep.__init__(self, conn, model, wizard, previous)
+        BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.method_slave = None
         self.setup_combo()
         self._update_payment_method_slave()
@@ -146,7 +146,7 @@ class CustomerStep(BaseWizardStep):
     widgets = ('add_button',) + proxy_widgets
 
     def __init__(self, wizard, previous, conn, model):
-        BaseWizardStep.__init__(self, conn, model, wizard, previous)
+        BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.register_validate_function(self.wizard.refresh_next)
 
     def setup_entry_completion(self):
@@ -207,9 +207,9 @@ class SalesPersonStep(BaseWizardStep):
                                'subtotal_expander',
                                'othermethods_check')
 
-    def __init__(self, previous, conn, model):
+    def __init__(self, wizard, conn, model):
         self.discount_charge_slave = DiscountChargeSlave(conn, model)
-        BaseWizardStep.__init__(self, conn, model, previous)
+        BaseWizardStep.__init__(self, conn, wizard, model)
         self.register_validate_function(self.previous.refresh_next)
         changed_handler = self.update_totals
         if self.get_slave(self.slave_holder):
@@ -277,7 +277,7 @@ class SaleWizard(BaseWizard):
     
     def __init__(self, conn, model):
         first_step = SalesPersonStep(self, conn, model)
-        BaseWizard.__init__(self, conn, model, first_step)
+        BaseWizard.__init__(self, conn, first_step, model)
         group = self.get_payment_group()
         group.clear_preview_payments()
 
