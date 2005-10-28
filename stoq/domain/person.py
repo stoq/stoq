@@ -20,9 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
-##              Henrique Romano             <henrique@async.com.br>
+##  Author(s):  Evandro Vale Miquelito   <evandro@async.com.br>
+##              Henrique Romano          <henrique@async.com.br>
 ##              Daniel Saran R. da Cunha    <daniel@async.com.br>
+##              Ariqueli Tejada Fonseca  <aritf@async.com.br>
 ##
 """
 stoq/domain/person.py:
@@ -573,6 +574,13 @@ class PersonAdaptToCreditProvider(ModelAdapter):
     #
     # Auxiliar methods
     #
+
+    def get_provider_type_str(self):
+        try:
+            return self.provider_types[self.provider_type]
+        except KeyError:
+            raise DatabaseIncosistency('Invalid provider_type, got %s' %
+                                       self.provider_type)
 
     @classmethod
     def _get_providers(cls, conn, provider_type=None):

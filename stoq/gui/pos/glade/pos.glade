@@ -50,13 +50,6 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="CreditProvider">
-                        <property name="name">CreditProvider</property>
-                        <property name="label" translatable="yes">C_redit Provider</property>
-                        <signal handler="_on_credit_provider_action__clicked" name="activate"/>
-                    </object>
-                </child>
-                <child>
                     <object class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="label" translatable="yes">C_ut</property>
@@ -216,7 +209,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separator name="sep1"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sellable Category" name="Sellable Category"/><menuitem action="SellableSubcategory" name="SellableSubcategory"/><separator/><menuitem action="Sales" name="Sales"/><menuitem action="Products" name="Products"/><separator name="sep2"/><menuitem action="Clients" name="Clients"/><menuitem action="Employees" name="Employees"/><menuitem action="Services" name="Services"/><menuitem action="CreditProvider" name="CreditProvider"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="SelectClient" name="SelectClient"/><separator name="sep1"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sellable Category" name="Sellable Category"/><menuitem action="SellableSubcategory" name="SellableSubcategory"/><separator/><menuitem action="Sales" name="Sales"/><menuitem action="Products" name="Products"/><separator name="sep2"/><menuitem action="Clients" name="Clients"/><menuitem action="Employees" name="Employees"/><menuitem action="Services" name="Services"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>

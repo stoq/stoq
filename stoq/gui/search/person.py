@@ -22,7 +22,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
-##
+##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##
 """
 gui/search/person.py
@@ -41,11 +41,12 @@ from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.editors.client import ClientEditor
 from stoq.gui.editors.supplier import SupplierEditor
 from stoq.gui.editors.employee import EmployeeEditor
+from stoq.gui.editors.credprovider import CreditProviderEditor
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
-                                    IEmployee, IClient)
+                                    IEmployee, IClient, ICreditProvider)
 from stoq.domain.person import Person, EmployeePosition
 
 _ = gettext.gettext
@@ -74,6 +75,7 @@ class BasePersonSearch(SearchEditor):
     def run_editor(self, obj):
         return run_person_role_dialog(self.editor_class, self, 
                                       self.conn, obj)
+
 
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
@@ -153,6 +155,49 @@ class SupplierSearch(BasePersonSearch):
         return dict(join=LEFTJOINOn(Person, company_table,
                                     Person.q.id == 
                                     company_table.q._originalID))
+
+
+class CreditProviderSearch(BasePersonSearch):
+    title = _('Credit Provider Search')
+    editor_class = CreditProviderEditor
+    table = Person
+    interface = ICreditProvider
+    search_lbl_text = _('matching:')
+    result_strings = _('provider'), _('providers')
+
+    def get_filter_slave(self):
+        provider_table = Person.getAdapterClass(ICreditProvider)
+        items = [(value, key) for key, value in provider_table.provider_types.items()]
+        items.append((_('Any provider'), ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show:'))
+        return self.filter_slave
+
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)
+
+    def get_columns(self):
+        return [Column('name', title=_('Name'), 
+                       data_type=str, sorted=True, width=250),
+                Column('phone_number', _('Phone Number'), str,
+                       format_func=format_phone_number, width=130),
+                FacetColumn(ICreditProvider, 'short_name', 
+                            title=_('Short Name'), data_type=str, 
+                            width=150),
+                FacetColumn(ICreditProvider, 'provider_type_str', 
+                            title=_('Provider Type'), data_type=str, 
+                            width=200)]
+
+    def get_extra_query(self):
+        provider_table = self.table.getAdapterClass(ICreditProvider)
+        q1 = self.table.q.id == provider_table.q._originalID
+        status = self.filter_slave.get_selected_status()
+        if status == ALL_ITEMS_INDEX:
+            return q1
+        q2 = provider_table.q.provider_type == status
+        return AND(q1, q2)
+    
 
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
