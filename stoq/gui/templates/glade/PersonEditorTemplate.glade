@@ -46,7 +46,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="fax_lbl">
-                                        <property name="label" context="yes" translatable="yes">Fax: </property>
+                                        <property name="label" context="yes" translatable="yes">Fax:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                         <property name="xpad">2</property>
@@ -353,6 +353,7 @@
                 <child>
                     <widget class="GtkVBox" id="custom_tab">
                         <property name="border_width">5</property>
+                        <property name="visible">True</property>
                         <child>
                             <widget class="GtkEventBox" id="custom_holder">
                                 <property name="border_width">5</property>

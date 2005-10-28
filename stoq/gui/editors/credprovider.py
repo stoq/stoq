@@ -35,7 +35,7 @@ import gettext
 
 from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.domain.interfaces import ICompany, ICreditProvider
+from stoq.domain.interfaces import ICreditProvider
 from stoq.domain.person import Person
 
 _ = gettext.gettext
@@ -52,10 +52,10 @@ class CreditProviderEditor(BasePersonRoleEditor):
     #
     
     def create_model(self, conn):
-        # XXX: It will be much better creating a client without a
-        # person and an Individual/Company. Waiting for bug 2043
-        person = Person(name="", connection=conn)
-        company = person.addFacet(ICompany, connection=conn)
+        person = BasePersonRoleEditor.create_model(self, conn)
+        credprovider = ICreditProvider(person, connection=conn)
+        if credprovider:
+            return credprovider
         return person.addFacet(ICreditProvider, short_name='',
                                open_contract_date=datetime.today(),  
                                connection=conn)

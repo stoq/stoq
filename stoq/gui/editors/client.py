@@ -34,7 +34,7 @@ import gettext
 from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.domain.person import Person
-from stoq.domain.interfaces import IIndividual, IClient
+from stoq.domain.interfaces import IClient
 
 _ = gettext.gettext
 
@@ -49,12 +49,9 @@ class ClientEditor(BasePersonRoleEditor):
     #
 
     def create_model(self, conn):
-        # XXX: Waiting fix for bug #2043.  We should create a Client
-        # object not persistent (in this way, we don't need create
-        # Person object and its Individual facet).
-        person = Person(name="", connection=conn)
-        individual = person.addFacet(IIndividual, connection=conn)
-        return person.addFacet(IClient, connection=conn)
+        person = BasePersonRoleEditor.create_model(self, conn)
+        client = IClient(person, connection=conn)
+        return client or person.addFacet(IClient, connection=conn)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)

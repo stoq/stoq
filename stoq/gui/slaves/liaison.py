@@ -37,6 +37,7 @@ from stoqlib.gui.lists import AdditionListDialog
 from kiwi.ui.widgets.list import Column
 
 from stoq.gui.editors.contact import ContactEditor
+from stoq.lib.validators import format_phone_number
 from stoq.domain.person import Liaison
 
 _ = gettext.gettext
@@ -53,6 +54,7 @@ class LiaisonListDialog(AdditionListDialog):
         return [Column('name', title=_('Name'),
                        data_type=str, expand=True),
                 Column('phone_number', title=_('Phone Number'),
+                       format_func=format_phone_number,
                        data_type=str, width=200)]
 
     def get_liaisons(self):

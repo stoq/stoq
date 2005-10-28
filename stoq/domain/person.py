@@ -38,6 +38,7 @@ from sqlobject.sqlbuilder import AND
 from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 
+from stoq.lib.validators import raw_phone_number
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
@@ -171,6 +172,8 @@ class Person(Domain):
     Base class to register persons in the system. This class should never 
     be instantiated directly. 
     """
+    (ROLE_INDIVIDUAL,
+     ROLE_COMPANY) = range(2)
     
     name = StringCol()
     phone_number = StringCol(default='')
@@ -182,6 +185,22 @@ class Person(Domain):
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
 
+    #
+    # SQLObject callbacks
+    #
+
+    def _set_phone_number(self, value):
+        if value is None:
+            value = ''
+        value = raw_phone_number(value)
+        self._SO_set_phone_number(value)
+
+    def _set_mobile_number(self, value):
+        if value is None:
+            value = ''
+        value = raw_phone_number(value)
+        self._SO_set_mobile_number(value)
+    
     #
     # Acessors
     #

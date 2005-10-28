@@ -1,103 +1,88 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <requires lib="kiwi"/>
     <widget class="GtkWindow" id="CompanyDocumentsSlave">
-        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
-        <property name="events"></property>
+        <property name="title" context="yes" translatable="yes"></property>
         <child>
             <widget class="GtkTable" id="table1">
-                <property name="row_spacing">5</property>
                 <property name="column_spacing">5</property>
-                <property name="events"></property>
-                <property name="n_rows">2</property>
                 <property name="n_columns">4</property>
+                <property name="n_rows">2</property>
+                <property name="row_spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="state_registry">
-                        <property name="model_attribute">state_registry</property>
-                        <property name="events"></property>
-                        <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Fancy Name:</property>
                         <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="y_options">fill</property>
-                        <property name="top_attach">1</property>
-                        <property name="right_attach">4</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="cnpj">
-                        <property name="model_attribute">cnpj</property>
-                        <property name="events"></property>
-                        <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                        <property name="y_options">fill</property>
-                        <property name="top_attach">1</property>
-                        <property name="right_attach">2</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="fancy_name">
-                        <property name="model_attribute">fancy_name</property>
-                        <property name="events"></property>
-                        <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
-                        <property name="visible">True</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="y_options">fill</property>
-                        <property name="right_attach">4</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkLabel" id="label3">
-                        <property name="label" context="True" translatable="yes">State Registry:</property>
-                        <property name="events"></property>
                         <property name="xalign">1.0</property>
-                        <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="left_attach">2</property>
-                        <property name="bottom_attach">2</property>
                         <property name="y_options">fill</property>
-                        <property name="x_options"></property>
-                        <property name="top_attach">1</property>
-                        <property name="right_attach">3</property>
                     </packing>
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label2">
-                        <property name="label" context="True" translatable="yes">CNPJ</property>
-                        <property name="events"></property>
+                        <property name="label" context="yes" translatable="yes">CNPJ:</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
-                        <property name="y_options">fill</property>
-                        <property name="x_options"></property>
                         <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label1">
-                        <property name="label" context="True" translatable="yes">Fancy Name:</property>
-                        <property name="events"></property>
-                        <property name="xalign">1.0</property>
-                        <property name="visible">True</property>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="fancy_name">
+                        <property name="data_type">str</property>
+                        <property name="is_focus">True</property>
+                        <property name="model_attribute">fancy_name</property>
                     </widget>
                     <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">4</property>
                         <property name="y_options">fill</property>
-                        <property name="x_options"></property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="cnpj">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">cnpj</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="yes" translatable="yes">State Registry:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="state_registry">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">state_registry</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
                     </packing>
                 </child>
             </widget>

@@ -27,6 +27,7 @@ lib/validators.py:
 """
 
 import datetime
+import re
 
 from kiwi.datatypes import format_price
 
@@ -70,4 +71,36 @@ def get_formatted_price(float_value):
     precision = sysparam(conn).SELLABLE_PRICE_PRECISION
     return format_price(float_value, precision=precision)
 
+#
+# Phone number validators
+#
 
+def validate_phone_number(phone_number):
+    phone_number = raw_phone_number(phone_number)
+    digits = len(phone_number)
+    if digits == 11:
+        return phone_number[:1] == '0'
+    return digits in range(7,11)
+
+def raw_phone_number(phone_number):
+    return re.sub('[^0-9]', '', phone_number)
+
+def _format_phone_number(digits, phone):
+    if digits == 11 and phone[:1] == '0':
+        phone = phone[1:]
+        digits -= 1
+    if digits == 7:
+        return '%s-%s' % (phone[:3], phone[3:7])
+    if digits == 8:
+        return '%s-%s' % (phone[:4], phone[4:8])
+    if digits == 9:
+        return '(%s) %s-%s' % (phone[:2], phone[2:5], phone[5:9])
+    if digits == 10:
+        return '(%s) %s-%s' % (phone[:2], phone[2:6], phone[6:10])
+    return phone
+
+def format_phone_number(phone_number):
+    if validate_phone_number(phone_number):
+        phone_number = raw_phone_number(phone_number)
+        return _format_phone_number(len(phone_number), phone_number)
+    return phone_number

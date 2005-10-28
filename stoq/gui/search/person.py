@@ -42,14 +42,11 @@ from stoq.gui.editors.client import ClientEditor
 from stoq.gui.editors.supplier import SupplierEditor
 from stoq.gui.editors.employee import EmployeeEditor
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.wizards.person import run_person_role_dialog
+from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
                                     IEmployee, IClient)
-from stoq.domain.person import (Person, EmployeePosition,
-                                PersonAdaptToIndividual,
-                                PersonAdaptToClient,
-                                PersonAdaptToCompany,
-                                PersonAdaptToSupplier,
-                                PersonAdaptToEmployee)
+from stoq.domain.person import Person, EmployeePosition
 
 _ = gettext.gettext
 
@@ -74,26 +71,25 @@ class BasePersonSearch(SearchEditor):
         self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
  
+    def run_editor(self, obj):
+        return run_person_role_dialog(self.editor_class, self, 
+                                      self.conn, obj)
 
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
-    table = PersonAdaptToEmployee
+    table = Person.getAdapterClass(IEmployee)
     search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
     filter_label = _('Show employees with status:')
                
-
-
     #
     # SearchDialog Hooks
     #
 
-    
-
     def get_filter_slave(self):        
         employees = [(value, key) for key, value in
-                     PersonAdaptToEmployee.statuses.items()]
+                     self.table.statuses.items()]
         employees.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(employees, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(self.filter_label)
@@ -107,7 +103,7 @@ class EmployeeSearch(BasePersonSearch):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str, 
                                  width=250, obj_field='_original'),
                 ForeignKeyColumn(EmployeePosition, 'name', _('Position'), 
-                                 str, width=250, obj_field='position'),
+                                 str, width=220, obj_field='position'),
                 Column('registry_number', _('Registry Number'), str,
                        width=150),
                 Column('status_string', _('Status'), str)]
@@ -122,9 +118,9 @@ class EmployeeSearch(BasePersonSearch):
         return q1
 
     def get_query_args(self):
-        return dict(join = LEFTJOINOn(PersonAdaptToEmployee, 
-                                      EmployeePosition,
-                    PersonAdaptToEmployee.q.positionID == EmployeePosition.q.id))
+        return dict(join=LEFTJOINOn(self.table, EmployeePosition,
+                                    self.table.q.positionID == 
+                                    EmployeePosition.q.id))
 
 
 class SupplierSearch(BasePersonSearch):
@@ -134,27 +130,29 @@ class SupplierSearch(BasePersonSearch):
     interface = ISupplier
     search_lbl_text = _('Suppliers Matching:')
     result_strings = _('supplier'), _('suppliers')
-    
-
 
     #
     # Hooks
     #
 
-
-
     def get_columns(self):
         return [Column('name', _('Name'), str, 
                        sorted=True, width=250), 
+                Column('phone_number', _('Phone Number'), str, 
+                       format_func=format_phone_number, width=130),
                 FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
-                            width=250),
+                            width=180),
                 FacetColumn(ICompany, 'cnpj', _('CNPJ'), str)]
 
     def get_extra_query(self):
-        q1 = Person.q.id == PersonAdaptToCompany.q._originalID
-        q2 = Person.q.id == PersonAdaptToSupplier.q._originalID
-        return AND(q1, q2)
+        supplier_table = Person.getAdapterClass(ISupplier)
+        return Person.q.id == supplier_table.q._originalID
         
+    def get_query_args(self):
+        company_table = Person.getAdapterClass(ICompany)
+        return dict(join=LEFTJOINOn(Person, company_table,
+                                    Person.q.id == 
+                                    company_table.q._originalID))
 
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
@@ -164,24 +162,25 @@ class ClientSearch(BasePersonSearch):
     search_lbl_text = _('Clients Matching:')
     result_strings = _('client'), _('clients')
     
-
-
     #
     # Hooks
     #
-
-
 
     def get_columns(self):
         return [Column('name', _('Name'), str, 
                          sorted=True, width=250), 
                 Column('phone_number', _('Phone Number'), str,
-                       width=130),
+                       format_func=format_phone_number, width=130),
                 FacetColumn(IIndividual, 'cpf', _('CPF'), str,
                             width=130),
                 FacetColumn(IIndividual, 'rg_number', _('RG'), str)]
 
     def get_extra_query(self):
-        q1 = Person.q.id == PersonAdaptToIndividual.q._originalID
-        q2 = Person.q.id == PersonAdaptToClient.q._originalID
-        return AND(q1, q2)
+        client_table = Person.getAdapterClass(IClient)
+        return Person.q.id == client_table.q._originalID
+
+    def get_query_args(self):
+        individual_table = Person.getAdapterClass(IIndividual)
+        return dict(join=LEFTJOINOn(Person, individual_table,
+                                    Person.q.id == 
+                                    individual_table.q._originalID))
