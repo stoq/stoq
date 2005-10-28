@@ -45,7 +45,7 @@ from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_formatted_price
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
-from stoq.gui.search.person import ClientSearch
+from stoq.gui.search.person import ClientSearch, CreditProviderSearch
 from stoq.gui.slaves.filter import FilterSlave
 
 _ = gettext.gettext
@@ -166,3 +166,7 @@ class SalesApp(AppWindow):
     def _on_products_action__clicked(self, *args):
         # TODO It will be implemented on bug 2206
         pass
+
+    def _on_credit_provider_action__clicked(self, *args):
+        self.run_dialog(CreditProviderSearch, hide_footer=True)
+

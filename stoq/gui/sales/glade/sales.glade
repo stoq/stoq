@@ -35,6 +35,13 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="CreditProvider">
+                        <property name="name">CreditProvider</property>
+                        <property name="label" translatable="yes">Find Credit Providers...</property>
+                        <signal handler="_on_credit_provider_action__clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="tooltip">Cut selected object into the clipboard</property>
@@ -104,6 +111,12 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="SearchMenu">
+                        <property name="name">SearchMenu</property>
+                        <property name="label" translatable="yes">S_earch</property>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Cookie</property>
@@ -150,7 +163,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="CreditProvider" name="CreditProvider"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
