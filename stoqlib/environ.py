@@ -28,8 +28,6 @@ stoq/lib/environ.py
     Environ variables
 """
 
-from kiwi.environ import environ
-
 try:
     # We can't use from .. import ... as module until pyflakes
     # can handle it properly
