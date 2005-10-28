@@ -30,7 +30,6 @@ stoq/gui/slaves/filter.py:
 
 import gettext
 
-import gobject
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 
