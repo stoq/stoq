@@ -20,7 +20,7 @@ Requirements
 Stoq has the following dependencies:
 
 Python 2.4 or higher
-PyGTK 2.6.0 or higher
+PyGTK 2.8.1 or higher
 Twisted 2.0
 PostgresSQL 7.4.7
 SQLObject 0.7
@@ -47,7 +47,7 @@ Note that bin/stoq gives a list of available applications. You must also
 type the application name to run it properly like: bin/stoq pos
 
 You will probably need to set your PYTHONPATH if your system does not
-have pygtk 2.4.0 in the default python site-packages directory.
+have pygtk 2.8.1 in the default python site-packages directory.
 
 If you want to install Stoq just follow the instructions in the INSTALL
 file.
