@@ -24,8 +24,6 @@ gui/gtkadds.py:
     Some extra methods to deal with gtk/kiwi widgets
 """
 
-import os
-
 import gtk
 from kiwi.environ import environ
 
