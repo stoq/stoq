@@ -217,5 +217,3 @@ class TillOperationDialog(SlaveDelegate):
         self.emit('close-till')
         if get_current_till_operation(self.conn) is None:
             self.main_dialog.close()
-
-gobject.type_register(TillOperationDialog)

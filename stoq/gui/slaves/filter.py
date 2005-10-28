@@ -80,5 +80,3 @@ class FilterSlave(SlaveDelegate):
 
     def on_filter_combo__content_changed(self, *args):
         self.emit('status-changed')
-
-gobject.type_register(FilterSlave)

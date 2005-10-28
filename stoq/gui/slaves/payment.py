@@ -208,7 +208,6 @@ class PaymentListSlave(BaseEditorSlave):
         self.remove_last_payment_slave()
         self.emit('remove-slave')
 
-gobject.type_register(PaymentListSlave)
 
 class BankDataSlave(BaseEditorSlave):
     gladefile = 'BankDataSlave'
@@ -287,8 +286,6 @@ class BillDataSlave(BaseEditorSlave):
 
     def after_value__changed(self, *args):
         self.emit('paymentvalue-changed')
-
-gobject.type_register(BillDataSlave)
 
 
 class CheckDataSlave(BillDataSlave):
@@ -774,4 +771,3 @@ class MultipleMethodSlave:
     # XXX We must clean all the payments created for this payment group when
     # creating this slave since there is no way to filter them by payment
     # method after create payments here.
-
