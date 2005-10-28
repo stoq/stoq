@@ -37,9 +37,9 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.lists import SimpleListDialog
 from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.dialogs import run_dialog
+
 from stoq.domain.person import PersonAdaptToSupplier
-from stoq.domain.product import (ProductSupplierInfo, Product,                                 
-                                 ProductSellableItem)
+from stoq.domain.product import (ProductSupplierInfo, Product,                                                            ProductSellableItem)
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.lib.validators import get_price_format_str
