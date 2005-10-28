@@ -183,8 +183,6 @@ class DateSearchSlave(SlaveDelegate):
     def on_end_date__activate(self, *args):
         self.emit('enddate-activate')
 
-gobject.type_register(DateSearchSlave)        
-
 
 class SearchEntry(SlaveDelegate):
     gladefile = 'SearchEntry'
@@ -259,8 +257,6 @@ class SearchEntry(SlaveDelegate):
             _warn("Search icon animation hasn't started")
         gobject.source_remove(self._animate_search_icon_id)
         self.search_icon.hide()
-
-gobject.type_register(SearchEntry)        
 
 
 class SearchBar(SlaveDelegate):
