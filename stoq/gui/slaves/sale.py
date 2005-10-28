@@ -128,6 +128,3 @@ class DiscountChargeSlave(BaseEditorSlave):
 
     def on_discount_value_ck__toggled(self, *args):
         self.update_widget_status()
-
-# Only for PyGTK 2.6
-gobject.type_register(DiscountChargeSlave)
