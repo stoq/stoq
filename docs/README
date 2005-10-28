@@ -26,7 +26,7 @@ PostgresSQL 7.4.7
 SQLObject 0.7
 Gazpacho 0.6.2 
 Kiwi 1.9.1
-stoqlib 0.3.0
+stoqlib 0.4.0
 dateutil (http://labix.org/python-dateutil)
 
 If you are a developer, the following packages are for you:
