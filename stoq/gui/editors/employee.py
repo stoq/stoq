@@ -34,7 +34,7 @@ gui/editors/person/employee.py
 import gettext
 
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.domain.interfaces import IIndividual, IEmployee
+from stoq.domain.interfaces import IEmployee
 from stoq.domain.person import Person
 from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave)
@@ -52,13 +52,10 @@ class EmployeeEditor(BasePersonRoleEditor):
     #
 
     def create_model(self, conn):
-        # XXX: Waiting fix for bug #2043. We should create a Employee
-        # object not persistent (int this way, we don't need create a
-        # Person object and its dependencies).
-        person = Person(name='', connection=conn)
-        individual = person.addFacet(IIndividual, connection=conn)
-        return person.addFacet(IEmployee, connection=conn,
-                               position=None)
+        person = BasePersonRoleEditor.create_model(self, conn)
+        employee = IEmployee(person, connection=conn)
+        return employee or person.addFacet(IEmployee, connection=conn,
+                                           position=None)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)

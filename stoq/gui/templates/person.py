@@ -73,7 +73,7 @@ class PersonEditorTemplate(BaseEditorSlave):
                'address_button') + proxy_widgets
 
     def create_model(self, conn):
-        # XXX: Waiting fix for bug #2043
+        # XXX: Waiting fix for bug 2163
         return Person(name="", connection=conn)
     
     def attach_model_slave(self, name, slave_type, slave_model):
@@ -259,6 +259,9 @@ class CompanyEditorTemplate(BaseEditorSlave):
     def get_person_slave(self):
         return self._person_slave
 
+    def attach_person_slave(self, slave):
+        self._person_slave.attach_slave('person_status_holder', slave)
+
     def setup_slaves(self):
         if not self._person_slave:
             self._person_slave = PersonEditorTemplate(self.conn, 
@@ -279,10 +282,45 @@ class CompanyEditorTemplate(BaseEditorSlave):
 class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be 
     instantiated directly.
+    Notes:
+        role_type   = This argument represents one of the following
+                      constants of Person domain class: ROLE_INDIVIDUAL
+                      or ROLE_COMPANY
     """
+
+    def __init__(self, conn, model=None, role_type=None, person=None):
+        if not (model or role_type is not None):
+            raise ValueError('A role_type attribute is required')
+        self.role_type = role_type
+        self.person = person
+        BaseEditor.__init__(self, conn, model)
 
     def get_title_model_attribute(self, model):
         return model.get_adapted().name
+
+    def get_person_slave(self):
+        return self.main_slave.get_person_slave()
+
+    def _check_role_type(self):
+        available_types = Person.ROLE_INDIVIDUAL, Person.ROLE_COMPANY
+        if not self.role_type in available_types:
+            raise ValueError('Invalid value for role_type attribute')
+
+    def create_model(self, conn):
+        # XXX: Waiting fix for bug 2163. We should not need anymore to 
+        # provide empty values for mandatory attributes
+        if not self.person:
+            self.person = Person(name="", connection=conn)
+        self._check_role_type()
+        if (self.role_type == Person.ROLE_INDIVIDUAL and not
+            IIndividual(self.person, connection=conn)):
+            self.person.addFacet(IIndividual, connection=conn)
+        elif (self.role_type == Person.ROLE_COMPANY and not
+              ICompany(self.person, connection=conn)):
+            self.person.addFacet(ICompany, connection=conn)
+        else:
+            pass
+        return self.person
         
     def setup_slaves(self):
         individual = IIndividual(self.model.get_adapted(),

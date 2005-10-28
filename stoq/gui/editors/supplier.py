@@ -35,7 +35,7 @@ import gettext
 
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.domain.interfaces import ISupplier, ICompany
+from stoq.domain.interfaces import ISupplier
 from stoq.domain.person import Person
 
 _ = gettext.gettext
@@ -51,12 +51,9 @@ class SupplierEditor(BasePersonRoleEditor):
     #
 
     def create_model(self, conn):
-        # XXX: This is a hack, we don't can create a client without a
-        # person and an Individual/Company. This problem will be
-        # resolved when the bug #2043 is fixed.
-        person = Person(name="", connection=conn)
-        company = person.addFacet(ICompany, connection=conn)
-        return person.addFacet(ISupplier, connection=conn)
+        person = BasePersonRoleEditor.create_model(self, conn)
+        supplier = ISupplier(person, connection=conn)
+        return supplier or person.addFacet(ISupplier, connection=conn)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)

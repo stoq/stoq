@@ -49,6 +49,7 @@ from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson
+from stoq.domain.person import Person
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.editors.delivery import DeliveryEditor
@@ -350,7 +351,9 @@ class POSApp(AppWindow):
 
     def _on_credit_provider_action__clicked(self, *args):
         conn = new_transaction()
-        model = self.run_dialog(CreditProviderEditor, conn)
+        role_type = Person.ROLE_COMPANY
+        model = self.run_dialog(CreditProviderEditor, conn,
+                                role_type=role_type)
         if model:
             conn.commit()
         else:
