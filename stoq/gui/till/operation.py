@@ -154,8 +154,9 @@ class TillOperationDialog(SlaveDelegate):
 
     def _get_columns(self, *args):
         return [Column('payment_id', _('Number'), data_type=int, width=100,
-                       justify=gtk.JUSTIFY_RIGHT, sorted=True,
-                       format='%03d'),
+                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                       # XXX Waiting for bug 2214
+                       # format='%03d'),
                 Column('due_date', _('Due Date'), 
                        data_type=datetime.date, width=120, 
                        justify=gtk.JUSTIFY_RIGHT),
