@@ -34,7 +34,6 @@ import gettext
 import datetime
 
 import gtk
-import gobject
 from kiwi.utils import gsignal
 from sqlobject.sqlbuilder import AND, IN
 from kiwi.ui.delegates import SlaveDelegate

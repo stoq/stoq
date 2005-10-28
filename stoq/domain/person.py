@@ -579,8 +579,8 @@ class PersonAdaptToCreditProvider(ModelAdapter):
         try:
             return self.provider_types[self.provider_type]
         except KeyError:
-            raise DatabaseIncosistency('Invalid provider_type, got %s' %
-                                       self.provider_type)
+            raise DatabaseInconsistency('Invalid provider_type, got %s' %
+                                        self.provider_type)
 
     @classmethod
     def _get_providers(cls, conn, provider_type=None):

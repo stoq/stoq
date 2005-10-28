@@ -39,7 +39,6 @@ from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
-from stoq.domain.interfaces import ISupplier
 from stoq.domain.person import Person
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                     ISupplier)

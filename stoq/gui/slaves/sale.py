@@ -28,7 +28,6 @@ stoq/gui/slaves/sale.py
     Slaves for sale management
 """
 
-import gobject
 from kiwi.utils import gsignal
 from kiwi.ui.views import signal_block
 from stoqlib.gui.editors import BaseEditorSlave

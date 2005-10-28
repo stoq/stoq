@@ -31,7 +31,6 @@ stoq/gui/slaves/payment.py
 import gettext
 from datetime import datetime
 
-import gobject
 from kiwi.utils import gsignal
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.editors import BaseEditorSlave
