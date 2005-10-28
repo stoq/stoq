@@ -38,14 +38,12 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.dialogs import run_dialog
 
-from stoq.gui.editors.client import ClientEditor
-from stoq.gui.editors.supplier import SupplierEditor
-from stoq.gui.editors.employee import EmployeeEditor
-from stoq.gui.editors.credprovider import CreditProviderEditor
+from stoq.domain.person import Person
 from stoq.gui.templates.person import BasePersonRoleEditor
+from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
+                                     EmployeeEditor, CreditProviderEditor)
 from stoq.lib.validators import (validate_phone_number, format_phone_number,
                                  raw_phone_number)
-from stoq.domain.person import Person
 
 
 _ = gettext.gettext
