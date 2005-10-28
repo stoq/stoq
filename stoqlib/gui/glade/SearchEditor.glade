@@ -1,12 +1,11 @@
-<?xml version="1.0" ?>
-<glade-interface domain="stoqlib">
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
     <widget class="GtkWindow" id="ToolBar">
-        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
-        <property name="events"></property>
+        <property name="title" context="yes" translatable="yes"></property>
         <child>
             <widget class="GtkHBox" id="hbox1">
-                <property name="events"></property>
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
@@ -15,25 +14,18 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkButton" id="new_button">
-                                <property name="receives_default">True</property>
-                                <property name="events"></property>
-                                <property name="yalign">1.0</property>
-                                <property name="can_focus">True</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">New...</property>
                                 <property name="visible">True</property>
-                                <property name="label">gtk-new</property>
-                                <property name="use_stock">True</property>
+                                <property name="yalign">1.0</property>
                             </widget>
-                            <packing/>
                         </child>
                         <child>
                             <widget class="GtkButton" id="edit_button">
-                                <property name="receives_default">True</property>
-                                <property name="events"></property>
-                                <property name="yalign">1.0</property>
-                                <property name="can_focus">True</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Edit...</property>
                                 <property name="visible">True</property>
-                                <property name="label">gtk-edit</property>
-                                <property name="use_stock">True</property>
+                                <property name="yalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -46,14 +38,13 @@
                 </child>
                 <child>
                     <widget class="GtkEventBox" id="toolbar_holder">
-                        <property name="events"></property>
                         <property name="visible">True</property>
                         <child>
                             <placeholder/>
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
             </widget>
