@@ -1,4 +1,19 @@
 
+Release 0.4.0,  28-October-2005
+    - Bug Fixes: 2071, 2083, 2111, 2118, 2119, 2123, 2128, 2134, 2137,
+                 2160, 2183, 2184, 2187, 2188, 2197, 2218, 2223
+
+    - Infrastructure for doctests (Evandro Miquelito)
+    - Searching for status in EmployeeSearch dialog (Bruno Garcia)
+    - Dialog for till operations (Bruno Garcia, Henrique Romano)
+    - Many improvements in person role editors (Evandro Miquelito)
+    - Admin application (Evandro Miquelito)
+    - Sales application (Evandro Miquelito)
+    - Receivable application (Evandro Miquelito)
+    - Purchase application (Evandro Miquelito)
+    - Some fixes in the installation process (Johan Dahlin)
+    - CreditProviderSearch (Ariqueli Fonseca, Evandro Miquelito)
+
 Release 0.3.0,  7-October-2005
     - Bug Fixes: 1862, 1964, 2003, 2024, 2031, 2051, 2056, 2081, 2100,
                  2116, 2130, 2141, 2144, 2146, 2147, 2150, 2152, 2162,
