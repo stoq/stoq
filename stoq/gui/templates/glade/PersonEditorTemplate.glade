@@ -353,7 +353,6 @@
                 <child>
                     <widget class="GtkVBox" id="custom_tab">
                         <property name="border_width">5</property>
-                        <property name="visible">True</property>
                         <child>
                             <widget class="GtkEventBox" id="custom_holder">
                                 <property name="border_width">5</property>
