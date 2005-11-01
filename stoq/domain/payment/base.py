@@ -37,6 +37,7 @@ from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from sqlobject.sqlbuilder import AND
 from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol, 
                        ForeignKey)
+from zope.interface import implements
 
 from stoq.lib.parameters import sysparam
 from stoq.domain.base import Domain, ModelAdapter, InheritableModelAdapter
@@ -206,7 +207,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      METHOD_FINANCIER,
      METHOD_MULTIPLE) = range(6)
 
-    __implements__ = IPaymentGroup, IContainer
+    implements(IPaymentGroup, IContainer)
 
     status = IntCol(default=STATUS_OPEN)
     open_date = DateTimeCol(default=datetime.datetime.now())
@@ -343,7 +344,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
 class PaymentAdaptToInPayment(ModelAdapter):
 
-    __implements__ = IInPayment
+    implements(IInPayment)
 
     def receive(self):
         payment = self.get_adapted()
@@ -357,7 +358,7 @@ Payment.registerFacet(PaymentAdaptToInPayment)
 
 class PaymentAdaptToOutPayment(ModelAdapter):
 
-    __implements__ = IOutPayment
+    implements(IOutPayment)
 
     def pay(self):
         payment = self.get_adapted()

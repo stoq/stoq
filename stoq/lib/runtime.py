@@ -51,7 +51,11 @@ def initialize_connection():
 
     domain = 'stoq'
     config = StoqConfigParser(domain, extra_sections=['Database'])
-
+    # HACK: This is needed by epydoc for reasons which are not certain,
+    #       it needs to be investigated futher.
+    if not config:
+        return
+    
     address = config.get_database_address()
     rdbms = config.get_rdbms_name()
     sys.stdout.flush()

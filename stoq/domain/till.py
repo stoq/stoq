@@ -36,13 +36,14 @@ import gettext
 from sqlobject import IntCol, DateTimeCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import TillError, DatabaseInconsistency
-from stoq.lib.parameters import sysparam
+from zope.interface import implements
 
 from stoq.domain.base import Domain
 from stoq.domain.sale import Sale
 from stoq.domain.payment.base import AbstractPaymentGroup, Payment
 from stoq.domain.interfaces import (IPaymentGroup, ITillOperation,
                                     IOutPayment, IInPayment)
+from stoq.lib.parameters import sysparam
 
 _ = gettext.gettext
 
@@ -182,7 +183,7 @@ class Till(Domain):
 
 
 class TillAdaptToPaymentGroup(AbstractPaymentGroup):
-    __implements__ = IPaymentGroup, ITillOperation
+    implements(IPaymentGroup, ITillOperation)
 
     #
     # ITillOperation implementation

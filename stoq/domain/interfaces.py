@@ -26,59 +26,11 @@ stoq/domain/interfaces.py:
     Interfaces definition for all domain classes.
 """
 
-from twisted.python.components import (MetaInterface, Interface,
-                                       _Nothing, CannotAdapt,
-                                       getRegistry)
+from twisted.python.components import Interface
+from zope.interface import Attribute
 
-_NoImplementor = object()
+from stoq.domain.base import ConnInterface
 
-
-#
-# Infrastructure
-#
-
-
-class Attribute:
-    def __init__(self, __name__, __type__, __doc__=''):
-        self.__name__=__name__
-        self.__doc__=__doc__
-        self.__type__ = __type__
-
-
-class ConnMetaInterface(MetaInterface):
-    def __call__(self, adaptable, default=_Nothing,
-                 persist=None, registry=None, connection=None):
-        """
-        Try to adapt `adaptable' to self; return `default' if it was passed, otherwise
-        raise L{CannotAdapt}.
-        """
-        adapter = default
-        registry = getRegistry(registry)
-        # should this be `implements' of some kind?
-        if (persist is None or persist) and hasattr(adaptable, 'getComponent'):
-            adapter = adaptable.getComponent(self, registry,
-                                             default=_NoImplementor,
-                                             connection=connection)
-        else:
-            adapter = registry.getAdapter(adaptable, self,
-                                          _NoImplementor,
-                                          persist=persist)
-        if adapter is _NoImplementor:
-            if hasattr(self, '__adapt__'):
-                adapter = self.__adapt__.im_func(adaptable, default)
-            else:
-                adapter = default
-
-        if adapter is _Nothing:
-            raise CannotAdapt("%s cannot be adapted to %s." %
-                              (adaptable, self))
-        return adapter
-
-
-class ConnInterface(Interface):
-    __metaclass__ = ConnMetaInterface
-    
-    
 #
 # ConnInterfaces
 #
@@ -103,43 +55,32 @@ class ISellable(ConnInterface):
     """ Represents the sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
     only its reference as a sellable. Concrete items are defined by
-    IContainer routines."""
+    IContainer routines.
+    @itype state enum
+    @itype price float
+    @itype description string
+    @itype markup float
+    @itype cost float
+    @itype mas_discount float
+    @itype comission float
+    @itype on_sale_price float
+    """
     
-    state = Attribute('state', 
-                      'enum',
-                      'state the sellable is in')
-    price = Attribute('price',
-                      'float',
-                      'price of sellable')
-    description = Attribute('description',
-                            'str',
-                            'full description of sallable')
-    category = Attribute('category', 
-                         'SellableCategory', 
-                         'a reference to category table')
-    markup = Attribute('markup',
-                       'float',
-                       '((cost/price)-1)*100')
-    cost = Attribute('cost',
-                     'float',
-                     'final cost of sellable')
-    max_discount = Attribute('max_discount',
-                             'float', 
-                             'maximum discount allowed')
-    comission = Attribute('comission',
-                          'float', 
-                          'comission to pay after selling this sellable')
+    state = Attribute('state the sellable is in')
+    price = Attribute('price of sellable')
+    description = Attribute('full description of sallable')
+    category = Attribute('a reference to category table')
+    markup = Attribute('((cost/price)-1)*100')
+    cost = Attribute('final cost of sellable')
+    max_discount = Attribute('maximum discount allowed')
+    comission = Attribute('comission to pay after selling this sellable')
 
     # If the sellable is on sale, here we have settings for that
-    on_sale_price = Attribute('on_sale_price', 
-                              'float',
-                              'A special price used when we have a '
+    on_sale_price = Attribute('A special price used when we have a '
                               '"on sale" state')
     # Define here the period that this sellabe will be on sale
-    on_sale_start_date = Attribute('on_sale_start_date',
-                                   'datetime')
-    on_sale_end_date = Attribute('on_sale_end_date',
-                                 'datetime')
+    on_sale_start_date = Attribute('datetime')
+    on_sale_end_date = Attribute('datetime')
 
     def can_be_sold():
         pass
@@ -203,87 +144,59 @@ class IStorable(ConnInterface):
         
 class IIndividual(ConnInterface):
     """Being or characteristic of a single person, concerning one
-    person exclusively"""
+    person exclusively
+
+    @itype cpf string
+    @itype birth_location integer
+    @itype occupation string
+    @itype martial_status enum
+    @itype spouse Individual
+    @itype father_name string
+    @itype mother_name string
+    @itype rg_expedition_local string
+    """
     
-    cpf = Attribute('cpf', 
-                    'str',
-                    'A Brazilian government register number which allow to '
+    cpf = Attribute('A Brazilian government register number which allow to '
                     'store credit informations')
-    rg_number = Attribute('rg_number',
-                          'str',
-                          'A Brazilian government register which identify an '
+    rg_number = Attribute('A Brazilian government register which identify an '
                           'individual')
-    birth_location = Attribute('birth_location',
-                               'integer',
-                               'An object which has city, state and country')
-    birth_date = Attribute('birth_date', 
-                           'datetime',
-                           'The date which this individual was born')
-    occupation = Attribute('occupation', 
-                           'str',
-                           'The current job of this individual')
-    marital_status = Attribute('marital_status',
-                               'enum',
-                               'single, married, divorced, widowed')
-    spouse = Attribute('spouse', 
-                       'Individual',
-                       'An individual\'s partner in marriage - also a '
+    birth_location = Attribute('An object which has city, state and country')
+    birth_date = Attribute('The date which this individual was born')
+    occupation = Attribute('The current job of this individual')
+    marital_status = Attribute('single, married, divorced, widowed')
+    spouse = Attribute('An individual\'s partner in marriage - also a '
                        'reference to another individual')
-    father_name = Attribute('father_name',
-                            'str',
-                            'The father of this individual')
-    mother_name = Attribute('mother_name', 
-                            'str',
-                            'The mother of this individual')
-    rg_expedition_date = Attribute('rg_expedition_date', 
-                                   'datetime',
-                                   'Expedition date for the Brazilian '
+    father_name = Attribute('The father of this individual')
+    mother_name = Attribute('The mother of this individual')
+    rg_expedition_date = Attribute('Expedition date for the Brazilian '
                                    'document')
-    rg_expedition_local = Attribute('rg_expedition_local', 
-                                    'str',
-                                    'The local which the Brazilian was made')
-    gender = Attribute('gender', 
-                       'enum',
-                       'gender_male, gender_female')
+    rg_expedition_local = Attribute('The local which the Brazilian was made')
+    gender = Attribute('gender_male, gender_female')
 
 
 class ICompany(ConnInterface):
     """An institution created to conduct business"""
 
-    cnpj = Attribute('cnpj', 
-                     'str',
-                     'A Brazilian government register number for companies')
-    fancy_name = Attribute('fancy_name', 
-                           'str',
-                           'The secondary company name')
-    state_registry = Attribute('state_registry', 
-                               'str',
-                               'A Brazilian register number associated with '
+    cnpj = Attribute('A Brazilian government register number for companies')
+    fancy_name = Attribute('The secondary company name')
+    state_registry = Attribute('A Brazilian register number associated with '
                                'a certain state')
 
 
 class IClient(ConnInterface):
     """An individual or a company who pays for goods or services"""
 
-    status = Attribute('status',
-                       'enum',
-                       'ok, indebted, insolvent, inactive')
-    days_late = Attribute('days_late', 
-                          'int',
-                          'How many days is this client indebted')
+    status = Attribute('ok, indebted, insolvent, inactive')
+    days_late = Attribute('How many days is this client indebted')
 
 
 class ISupplier(ConnInterface):
     """A company or an individual that produces, provides, or furnishes 
     an item or service"""
 
-    product_desc = Attribute('product_desc',
-                             'str',
-                             'A short description telling which products '
+    product_desc = Attribute('A short description telling which products '
                              'this supplier produces')
-    status = Attribute('status', 
-                       'enum',
-                       'active, inactive, blocked')
+    status = Attribute('active, inactive, blocked')
 
 
 class IEmployee(ConnInterface):
@@ -297,9 +210,7 @@ class IEmployee(ConnInterface):
                                 'datetime')
     salary = Attribute('salary',
                        'float')
-    status = Attribute('status',
-                       'enum',
-                       'normal, away, vacation, off')
+    status = Attribute('normal, away, vacation, off')
     registry_number = Attribute('registry_number',
                                 'str')
     education_level = Attribute('education_level',
@@ -316,83 +227,59 @@ class IEmployee(ConnInterface):
                            'VoterData')
     bank_account  = Attribute('bank_account',
                               'BankAccount')
-    position = Attribute('position',
-                         'EmployeePosition',
-                         'A reference to an employee position object')
+    position = Attribute('A reference to an employee position object')
 
 
 class IUser(ConnInterface):
     """An employee which have access to one or more Stoq applications"""
 
-    username = Attribute('username',
-                         'str')
-    profile = Attribute('profile',
-                        'UserProfile',
-                        'A profile represents a colection of information '
+    username = Attribute('Username')
+    profile = Attribute('A profile represents a colection of information '
                         'which represents what this user can do in the '
                         'system')
-    password = Attribute('password', 
-                         'str')
+    password = Attribute('Password')
 
 
 class IBranch(ConnInterface):
     """An administrative division of some larger or more complex
     organization"""
 
-    manager = Attribute('manager', 
-                        'Employee',
-                        'An employee which is in charge of this branch')
+    manager = Attribute('An employee which is in charge of this branch')
     
 class ISalesPerson(ConnInterface):
     """An employee in charge of make sales"""
 
-    comission = Attribute('commission', 
-                          'float', 
-                          'The percentege of comission the company must pay '
+    comission = Attribute('The percentege of comission the company must pay '
                           'for this salesman')
-    comission_type = Attribute('comission_type', 
-                               'int',
-                               'A rule used to calculate the amount of '
+    comission_type = Attribute('A rule used to calculate the amount of '
                                'comission. This is a reference to another '
                                'object')
 
 
 class IInPayment(ConnInterface):
-    """ Interface specification for InPayments. """
+    """ ConnInterface specification for InPayments. """
 
     def receive(value=None, paid_date=None):
         """ Confirm the payment. """
 
 
 class IOutPayment(ConnInterface):
-    """ Interface specification for OutPayments. """
+    """ ConnInterface specification for OutPayments. """
 
     def pay(value=None, paid_date=None):
         """ Confirm the payment."""
 
 
 class IPaymentGroup(ConnInterface):
-    """ Interface specification for PaymentGroups. """
+    """ ConnInterface specification for PaymentGroups. """
 
-    status = Attribute('status',
-                       'int',
-                       'The status of the payment group. ')
-    open_date = Attribute('open_date',
-                          'datetime',
-                          'The open date of the payment group.')
-    close_date = Attribute('close_date',
-                           'datetime',
-                           'The close date of the payment group.')
-    notes = Attribute('notes',
-                      'str',
-                      'Extra notes for the payment group.')
-    payments = Attribute('payments',
-                         'list',
-                         'A list of payments associated to this payment '
+    status = Attribute('The status of the payment group. ')
+    open_date = Attribute('The open date of the payment group.')
+    close_date = Attribute('The close date of the payment group.')
+    notes = Attribute('Extra notes for the payment group.')
+    payments = Attribute('A list of payments associated to this payment '
                          'group') 
-    thirdparty = Attribute('thirdparty',
-                           'Person',
-                           'The thirdparty associated to this payment group.')
+    thirdparty = Attribute('The thirdparty associated to this payment group.')
 
     def set_thirdparty(person):
         """Define a new thirdparty. Must of times this is a person adpter
@@ -417,9 +304,7 @@ class IPaymentGroup(ConnInterface):
 class IDelivery(ConnInterface):
     """ Specification of a Delivery interface for a sellable. """
 
-    address = Attribute('address',
-			'str',
-			'The delivery address.')
+    address = Attribute('The delivery address.')
 
 
 class IMoneyPM(ConnInterface):
@@ -493,25 +378,20 @@ class IPaymentDeposit(ConnInterface):
 
 
 class IBankBranch(ConnInterface):
-    branch = Attribute('branch','Bank',
-                       'A bank branch definition')
+    branch = Attribute('A bank branch definition')
 
 
 class ICreditProvider(ConnInterface):
 
-    provider_type = Attribute('provider_type','int',
-                              'This attribute must be either'
+    provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
                               'finance')
 
-    short_name  = Attribute('short_name','str',
-                            'A short description of this provider')
+    short_name  = Attribute('A short description of this provider')
 
-    provider_id = Attribute('provider_id','str',
-                            'An identification for this provider')
+    provider_id = Attribute('An identification for this provider')
 
-    open_contract_date = Attribute('open_contract_date','date',
-                                   'The date when we start working with '
+    open_contract_date = Attribute('The date when we start working with '
                                    'this provider')
 
     def get_card_providers(conn):
@@ -524,8 +404,7 @@ class ICreditProvider(ConnInterface):
 class IActive(ConnInterface):
     """It defines if a certain object can be active or not"""
 
-    is_active = Attribute('is_active', 'bool', 
-                          'This attribute defines if the object is active')
+    is_active = Attribute('This attribute defines if the object is active')
 
     def inactivate():
         """Inactivate an active object"""

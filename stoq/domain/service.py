@@ -33,6 +33,7 @@ import gettext
 
 from stoqlib.exceptions import SellError
 from sqlobject import StringCol, DateTimeCol
+from zope.interface import implements
 
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.sellable import AbstractSellable, AbstractSellableItem
@@ -82,7 +83,7 @@ class ServiceSellableItem(AbstractSellableItem):
 class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     """ A service implementation as a delivery facet. """
 
-    __implements__ = IDelivery, IContainer
+    implements(IDelivery, IContainer)
 
     address = StringCol(default='')
 
