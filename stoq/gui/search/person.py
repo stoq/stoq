@@ -58,7 +58,7 @@ class BasePersonSearch(SearchEditor):
     editor_class = None
     search_lbl_text = None
     result_strings = None
-
+   
     def __init__(self, title='', hide_footer=False,
                  parent_conn=None):
         self.title = title or self.title
@@ -202,25 +202,46 @@ class ClientSearch(BasePersonSearch):
     editor_class = ClientEditor
     table = Person
     interface = IClient
-    search_lbl_text = _('Clients Matching:')
+    search_lbl_text = _('matching:')
     result_strings = _('client'), _('clients')
     
     #
-    # Hooks
+    # SearchDialog Hooks
     #
+
+    def get_filter_slave(self):
+        client_table = Person.getAdapterClass(IClient)
+        statuses = [(value, key) for key, value in
+                    client_table.statuses.items()]
+        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
+        filter_label = _('Show clients with status:')
+        self.filter_slave.set_filter_label(filter_label)
+        return self.filter_slave
+
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)
 
     def get_columns(self):
         return [Column('name', _('Name'), str, 
-                         sorted=True, width=250), 
+                       sorted=True, width=250), 
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=130),
                 FacetColumn(IIndividual, 'cpf', _('CPF'), str,
                             width=130),
-                FacetColumn(IIndividual, 'rg_number', _('RG'), str)]
+                FacetColumn(IIndividual, 'rg_number', _('RG'), str,
+                            width=130),
+                FacetColumn(IClient, 'status_string', _('Status'), str)]
 
     def get_extra_query(self):
         client_table = Person.getAdapterClass(IClient)
-        return Person.q.id == client_table.q._originalID
+        q1 = Person.q.id == client_table.q._originalID
+        status = self.filter_slave.get_selected_status()
+        if status != ALL_ITEMS_INDEX:
+            q2 = client_table.q.status == status
+            return AND(q1, q2)
+        return q1
 
     def get_query_args(self):
         individual_table = Person.getAdapterClass(IIndividual)
