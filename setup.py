@@ -20,7 +20,8 @@
 from distutils.command.install_data import install_data
 from distutils.core import setup
 
-from kiwi.dist import TemplateInstallLib, compile_po_files, listfiles
+from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
+     listpackages)
 
 from stoqlib.__version__ import version
 
@@ -50,9 +51,7 @@ setup(name=PACKAGE,
         ('share/stoqlib/glade',
          listfiles('stoqlib/gui/glade', '*.glade')),
         ],
-    packages=['stoqlib',
-              'stoqlib.gui',
-              'stoqlib.reporting'],
+    packages=listpackages('stoqlib'),
     cmdclass=dict(install_data=StoqLibInstallData,
                   install_lib=StoqLibInstallLib),
     )
