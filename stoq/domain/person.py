@@ -38,6 +38,7 @@ from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol,
 from sqlobject.sqlbuilder import AND
 from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
+from zope.interface import implements
 
 from stoq.lib.validators import raw_phone_number
 from stoq.domain.base import Domain, ModelAdapter
@@ -293,7 +294,7 @@ class Person(Domain):
 class PersonAdaptToIndividual(ModelAdapter):
     """ An individual facet of a person. """
     
-    __implements__ = IIndividual,
+    implements(IIndividual)
 
     (STATUS_SINGLE,
      STATUS_MARRIED,
@@ -337,7 +338,7 @@ Person.registerFacet(PersonAdaptToIndividual)
 class PersonAdaptToCompany(ModelAdapter):
     """ A company facet of a person. """
     
-    __implements__ = ICompany,
+    implements(ICompany)
 
     # Cnpj and state_registry are
     # Brazil-specific information.
@@ -351,8 +352,8 @@ Person.registerFacet(PersonAdaptToCompany)
 class PersonAdaptToClient(ModelAdapter):
     """ A client facet of a person. """
     
-    __implements__ = IClient, IActive
-
+    implements(IClient, IActive)
+    
     (STATUS_SOLVENT, 
      STATUS_INDEBTED, 
      STATUS_INSOLVENT,
@@ -406,7 +407,7 @@ Person.registerFacet(PersonAdaptToClient)
 class PersonAdaptToSupplier(ModelAdapter):
     """ A supplier facet of a person. """
     
-    __implements__ = ISupplier, 
+    implements(ISupplier)
 
     (STATUS_ACTIVE, 
      STATUS_INACTIVE, 
@@ -425,7 +426,7 @@ Person.registerFacet(PersonAdaptToSupplier)
 class PersonAdaptToEmployee(ModelAdapter):
     """ An employee facet of a person. """
     
-    __implements__ = IEmployee,
+    implements(IEmployee)
 
     (STATUS_NORMAL, 
      STATUS_AWAY, 
@@ -464,7 +465,7 @@ Person.registerFacet(PersonAdaptToEmployee)
 class PersonAdaptToUser(ModelAdapter):
     """ An user facet of a person. """
     
-    __implements__ = IUser, IActive
+    implements(IUser, IActive)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -500,7 +501,7 @@ Person.registerFacet(PersonAdaptToUser)
 class PersonAdaptToBranch(ModelAdapter):
     """ A branch facet of a person. """
     
-    __implements__ = IBranch, 
+    implements(IBranch)
 
     manager = ForeignKey('Person', default=None)
                     
@@ -510,7 +511,7 @@ Person.registerFacet(PersonAdaptToBranch)
 class PersonAdaptToBankBranch(ModelAdapter):
     """ A bank branch facet of a person. """
     
-    __implements__ = IBankBranch, IActive
+    implements(IBankBranch, IActive)
 
     is_active= BoolCol(default=True)
     bank = ForeignKey('Bank')
@@ -533,7 +534,7 @@ Person.registerFacet(PersonAdaptToBankBranch)
 class PersonAdaptToCreditProvider(ModelAdapter):
     """ A credit provider facet of a person. """
     
-    __implements__ = ICreditProvider, IActive
+    implements(ICreditProvider, IActive)
 
     (PROVIDER_CARD,
      PROVIDER_FINANCE) = range(2)
@@ -603,7 +604,7 @@ Person.registerFacet(PersonAdaptToCreditProvider)
 class PersonAdaptToSalesPerson(ModelAdapter):
     """ A sales person facet of a person. """
 
-    __implements__ = ISalesPerson, 
+    implements(ISalesPerson)
 
     (COMISSION_GLOBAL, 
      COMISSION_BY_SALESPERSON, 

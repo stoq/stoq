@@ -34,6 +34,7 @@ from datetime import datetime
 
 from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
 from stoqlib.exceptions import SellError
+from zope.interface import implements
 
 from stoq.domain.base import Domain
 from stoq.domain.sellable import AbstractSellableItem
@@ -72,7 +73,7 @@ class Sale(Domain):
                             history of a store.
     """
 
-    __implements__ = IContainer
+    implements(IContainer)
 
     (STATUS_OPENED, 
      STATUS_CONFIRMED, 

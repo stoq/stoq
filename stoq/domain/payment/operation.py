@@ -29,6 +29,7 @@ stoq/domain/payment/operation.py:
 """
 
 from sqlobject import DateTimeCol, StringCol
+from zope.interface import implements
 
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import IPaymentDevolution, IPaymentDeposit
@@ -57,7 +58,7 @@ class PaymentOperation(Domain):
 
 class POAdaptToPaymentDevolution(ModelAdapter):
     """Stores information for payment devolutions"""
-    __implements__ = IPaymentDevolution
+    implements(IPaymentDevolution)
 
     reason = StringCol(default='')
 
@@ -69,7 +70,7 @@ PaymentOperation.registerFacet(POAdaptToPaymentDevolution)
 
 class POAdaptToPaymentDeposit(ModelAdapter):
     """Stores information for payment deposits"""
-    __implements__ = IPaymentDeposit
+    implements(IPaymentDeposit)
 
     def get_deposit_date(self):
         return self.get_adapted().operation_date

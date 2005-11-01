@@ -34,6 +34,7 @@ from datetime import datetime
 from kiwi.argcheck import argcheck
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
+from zope.interface import implements
 
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import IContainer
@@ -76,7 +77,7 @@ class PurchaseItem(Domain):
 class PurchaseOrder(Domain):
     """Purchase and order definition"""
 
-    __implements__ = IContainer
+    implements(IContainer)
 
     (ORDER_CANCELLED,
      ORDER_QUOTING,

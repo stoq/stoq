@@ -35,9 +35,11 @@ from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
-from twisted.python.components import Componentized, Interface, Adapter
+from twisted.python.components import (Adapter, Componentized, MetaInterface,
+     Interface, _Nothing, CannotAdapt, getRegistry)
 from twisted.python.reflect import qual
 from stoqlib.exceptions import AdapterError
+from zope.interface import implementedBy
 
 from stoq.lib.runtime import get_connection
 
@@ -162,7 +164,7 @@ class ComponentizedModel(Componentized):
         if isinstance(self, Adapter):
             raise TypeError("An adapter can not be adapted to another "
                             "object.")
-        if not issubclass(iface, Interface):
+        if not isinstance(iface, ConnMetaInterface):
             raise TypeError('iface must be a ConnInterface subclass')
 
         if self.hasComponent(iface):
@@ -215,10 +217,8 @@ class ComponentizedModel(Componentized):
         a foreign key with the name '_original' will be assigned.
         The assigned key will have the name of the class cls.
         """
-        
-        ifaces = getattr(facet, '__implements__', ())
-        if not isinstance(ifaces, (tuple, list)):
-            ifaces = (ifaces,)
+
+        ifaces = list(implementedBy(facet))
 
         if not hasattr(cls, '_facets'):
             cls._facets = {}
@@ -235,6 +235,45 @@ class ComponentizedModel(Componentized):
                                     name='_original',
                                     forceDBName=True))
 
+
+
+#
+# Interfaces
+#
+
+_NoImplementor = object()
+
+class ConnMetaInterface(MetaInterface):
+    def __call__(self, adaptable, default=_Nothing,
+                 persist=None, registry=None, connection=None):
+        """
+        Try to adapt `adaptable' to self; return `default' if it was passed, otherwise
+        raise L{CannotAdapt}.
+        """
+        adapter = default
+        registry = getRegistry(registry)
+        # should this be `implements' of some kind?
+        if (persist is None or persist) and hasattr(adaptable, 'getComponent'):
+            adapter = adaptable.getComponent(self, registry,
+                                             default=_NoImplementor,
+                                             connection=connection)
+        else:
+            adapter = registry.getAdapter(adaptable, self,
+                                          _NoImplementor,
+                                          persist=persist)
+        if adapter is _NoImplementor:
+            if hasattr(self, '__adapt__'):
+                adapter = self.__adapt__.im_func(adaptable, default)
+            else:
+                adapter = default
+
+        if adapter is _Nothing:
+            raise CannotAdapt("%s cannot be adapted to %s." %
+                              (adaptable, self))
+        return adapter
+
+ConnInterface = ConnMetaInterface('ConnInterface',
+                                  __module__='stoq.domain.base')
 
 #
 # Base classes

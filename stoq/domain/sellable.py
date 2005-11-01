@@ -33,6 +33,7 @@ import gettext
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from stoqlib.exceptions import SellError
+from zope.interface import implements
 
 from stoq.domain.base import (Domain, InheritableModelAdapter,
                                     InheritableModel)
@@ -138,7 +139,7 @@ class AbstractSellableItem(InheritableModel):
 class AbstractSellable(InheritableModelAdapter):
     """ A sellable (a product or a service, for instance). """
 
-    __implements__ = ISellable, IContainer
+    implements(ISellable, IContainer)
 
     sellableitem_table = None
 

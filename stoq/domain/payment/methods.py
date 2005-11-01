@@ -38,6 +38,7 @@ from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
 from sqlobject.sqlbuilder import AND
 from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol, 
                        ForeignKey, BoolCol)
+from zope.interface import implements
 
 from stoq.lib.defaults import calculate_interval
 from stoq.lib.parameters import sysparam
@@ -153,7 +154,7 @@ class PaymentMethod(Domain):
 
 
 class PaymentMethodAdapter(InheritableModelAdapter):
-    __implements__ = IActive,
+    implements(IActive)
 
     description = None
 
@@ -248,7 +249,7 @@ class PaymentMethodAdapter(InheritableModelAdapter):
 
 
 class PMAdaptToMoney(PaymentMethodAdapter):
-    __implements__ = IMoneyPM, IActive
+    implements(IMoneyPM, IActive)
 
     description = _('Money')
     destination = ForeignKey('PaymentDestination')
@@ -398,7 +399,7 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
 
 
 class PMAdaptToCheck(AbstractCheckBillAdapter):
-    __implements__ = ICheckPM, IActive
+    implements(ICheckPM, IActive)
 
     description = _('Check')
 
@@ -456,7 +457,7 @@ PaymentMethod.registerFacet(PMAdaptToCheck)
 
 
 class PMAdaptToBill(AbstractCheckBillAdapter):
-    __implements__ = IBillPM, IActive
+    implements(IBillPM, IActive)
 
     description = _('Bill')
 
@@ -471,7 +472,7 @@ PaymentMethod.registerFacet(PMAdaptToBill)
 
 
 class PMAdaptToCard(PaymentMethodAdapter):
-    __implements__ = ICardPM, IActive
+    implements(ICardPM, IActive)
 
     description = _('Card')
 
@@ -501,7 +502,7 @@ PaymentMethod.registerFacet(PMAdaptToCard)
 
 
 class PMAdaptToFinance(PaymentMethodAdapter):
-    __implements__ = IFinancePM, IActive
+    implements(IFinancePM, IActive)
 
     description = _('Finance')
 
@@ -542,7 +543,7 @@ class PaymentMethodDetails(InheritableModel):
     destination     = the suggested destination for the payment when it is
                       paid.
     """
-    __implements__ = IActive,
+    implements(IActive)
                                 
     payment_type_name = None
     interface_method = None

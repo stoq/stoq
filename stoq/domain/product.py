@@ -32,6 +32,7 @@ import operator
 from stoqlib.exceptions import StockError, SellError
 from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
+from zope.interface import implements
 
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.sellable import (AbstractSellable, 
@@ -107,7 +108,7 @@ class ProductStockReference(Domain):
 class ProductSellableItem(AbstractSellableItem):
     """ Class responsible to store basic products informations """
 
-    __implements__ = IContainer, 
+    implements(IContainer)
 
     delivery_data = ForeignKey('ServiceSellableItemAdaptToDelivery',
                                default=None)
@@ -211,7 +212,7 @@ Product.registerFacet(ProductAdaptToSellable)
 class ProductAdaptToStorable(ModelAdapter):
     """ A product implementation as a storable facet. """
     
-    __implements__ = IStorable, IContainer
+    implements(IStorable, IContainer)
 
     def __init__(self, _original=None, *args, **kwargs):
         ModelAdapter.__init__(self, _original, *args, **kwargs)
