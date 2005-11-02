@@ -39,88 +39,16 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.search import SearchDialog
 from stoqlib.gui.columns import AccessorColumn
 
+from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_formatted_price
 from stoq.domain.sellable import AbstractSellable
-from stoq.domain.product import ProductAdaptToSellable
-from stoq.domain.person import PersonAdaptToBranch
-from stoq.domain.interfaces import IStorable
+from stoq.domain.product import Product
+from stoq.domain.person import Person
+from stoq.domain.interfaces import IStorable, IBranch, ISellable
 
 _ = gettext.gettext
-
-
-#
-# Slaves
-#
-
-
-
-class SellableSearchHeaderSlave(SlaveView):
-    gladefile = 'SellableSearchHeader'
-    widgets = ('sellable_description', 'price')
-
-    def __init__(self, parent):
-        SlaveView.__init__(self, gladefile=self.gladefile, 
-                           widgets=self.widgets)
-        self.parent = parent
-        self.sellable_description.set_size('x-large')
-        self.price.set_size('x-large')
-        self.update_widgets()
-                    
-    def update_widgets(self, sellables=None):
-        color = 'black'
-        if not sellables:
-            desc = _('No item selected ')
-            price_desc = ''
-            color = 'DarkGray'
-        elif len(sellables) > 1:
-            desc = _('Multiple items selected')
-            prices = [s.get_price() for s in sellables]
-            total = reduce(operator.add, prices, 0.0)
-            total_str = get_formatted_price(total)
-            price_desc = 'Total: %s' % total_str
-        else:
-            sellable = sellables[0]
-            price_desc = sellable.get_price_string()
-            desc = sellable.description
-            
-        self.sellable_description.set_color(color)
-        self.price.set_text(price_desc)
-        self.sellable_description.set_text(desc)
-
-
-class SellableSearchFooter(SlaveDelegate):
-    gladefile = 'SellableSearchFooter'
-    widgets = ('branch_combo',)
-
-    def __init__(self, parent, conn):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)
-        self.parent = parent
-        self.conn = conn
-        self.setup_branch_combo()
-
-    def setup_branch_combo(self):
-        table = PersonAdaptToBranch
-
-        branch_list = table.select(connection=self.conn)
-        items = [(o.get_adapted().name, o) for o in branch_list]
-        items.append(ALL_BRANCHES)
-
-        assert items
-        if len(items) == 1:
-            for widget in (self.branch_combo, self.update_button):
-                widget.set_sensitive(False)
-        else:
-            self.branch_combo.prefill(items)
-            self.branch_combo.select_item_by_data(ALL_BRANCHES[1])
-
-    def get_selected_branch(self):
-        return self.branch_combo.get_selected_data()
-
-    def on_branch_combo__content_changed(self, *args):
-        self.parent.search_bar.search_items()
 
 
 class SellableSearch(SearchDialog):
@@ -133,50 +61,30 @@ class SellableSearch(SearchDialog):
         SearchDialog.__init__(self, self.search_table, hide_footer=False,
                               parent_conn=conn, 
                               selection_mode=selection_mode)
-        self.set_searchbar_labels(_('Products/Services Matching:'))
+        self.set_searchbar_labels(_('matching:'))
         self.search_bar.search_items()
-
-    def setup_slaves(self, **kwargs):
-        SearchDialog.setup_slaves(self, **kwargs)
-        singular, plural = _('product/service'), _('products/services')
-        self.set_result_strings(singular, plural)
-        self.header_slave = SellableSearchHeaderSlave(self)
-        self.attach_slave('extra_header', self.header_slave)
-
-        if self.has_stock_mode:
-            self.footer_slave = SellableSearchFooter(self, self.conn)
-            self.attach_slave('extra_holder', self.footer_slave)
-        else:
-            self.footer_slave = None
-
-
-    
+        self.set_ok_label(_('Add product/service'))
+                
     #
     # Accessors
     #
     
-
-    
     def get_stock_balance(self, instance):
         """Accessor called by AccessorColumn"""
-        if not isinstance(instance, ProductAdaptToSellable):
-            return 'No stock'
-        assert self.footer_slave
-        branch = self.footer_slave.get_selected_branch()
+        table = Product.getAdapterClass(ISellable)
+        if not isinstance(instance, table):
+            return
+        branch = self.filter_slave.get_selected_status()
         if branch == ALL_ITEMS_INDEX:
             branch = None
         adapted = instance.get_adapted()
         storable = IStorable(adapted)
         return storable.get_full_balance_string(branch)
-
-
     
     #
     # Hooks
     #
     
-
-
     def get_columns(self):
         """Hook called by SearchDialog"""
         self.has_stock_mode = sysparam(self.conn).HAS_STOCK_MODE
@@ -193,7 +101,26 @@ class SellableSearch(SearchDialog):
             columns.append(column) 
         return columns
 
-    def update_widgets(self, *args):
-        """Hook called by BaseListSlave"""
-        items = self.klist.get_selected_rows()
-        self.header_slave.update_widgets(items)
+    def setup_slaves(self, **kwargs):
+        SearchDialog.setup_slaves(self, **kwargs)
+        singular, plural = _('product/service'), _('products/services')
+        self.set_result_strings(singular, plural)
+
+    def get_filter_slave(self):
+        if not self.has_stock_mode:
+            return
+        table = Person.getAdapterClass(IBranch)
+        branch_list = table.select(connection=self.conn)
+        items = [(branch.get_adapted().name, branch) 
+                    for branch in branch_list]
+        if not items:
+            raise ValueError('You should have at least one branch at '
+                             'this point')
+        items.append(ALL_BRANCHES)
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show products/services at:'))
+        return self.filter_slave
+
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)
