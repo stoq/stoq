@@ -126,7 +126,7 @@
                                         <child>
                                             <widget class="GtkButton" id="cash_in_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Cash in...</property>
+                                                <property name="label" context="yes" translatable="yes">Cash In...</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -136,7 +136,7 @@
                                         <child>
                                             <widget class="GtkButton" id="cash_out_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Cash out...</property>
+                                                <property name="label" context="yes" translatable="yes">Cash Out...</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -146,7 +146,7 @@
                                         <child>
                                             <widget class="GtkButton" id="reverse_selection_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Reverse selection</property>
+                                                <property name="label" context="yes" translatable="yes">Reverse Selection</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
