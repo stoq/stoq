@@ -34,7 +34,6 @@ import gettext
 import operator
 
 import gtk
-from twisted.python.components import implements
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchBar, BaseListSlave
 from stoqlib.database import rollback_and_begin
@@ -170,12 +169,12 @@ class POSApp(AppWindow):
         rollback_and_begin(conn)
 
     def add_sellable_item(self, sellable):
-        if not implements(sellable, ISellable):
+        table = type(sellable)
+        if not ISellable.implementedBy(table):
             raise TypeError("The object must implement a sellable facet.")
         sellables = [s.sellable for s in self.order_list]
         if sellable in sellables:
             return
-        table = type(sellable)
         sellable = table.get(sellable.id, connection=self.conn)
         sellable_item = sellable.add_sellable_item(self.sale)
         self.order_list.append(sellable_item)
