@@ -50,16 +50,12 @@ from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson
-from stoq.gui.editors.product import ProductEditor, ProductItemEditor
-from stoq.gui.editors.service import ServiceEditor
+from stoq.gui.editors.product import ProductItemEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
 from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.search.sellable import SellableSearch
-from stoq.gui.search.category import (BaseSellableCatSearch,
-                                      SellableCatSearch)
-from stoq.gui.search.person import (ClientSearch, 
-                                    EmployeeSearch)
+from stoq.gui.search.person import ClientSearch
 
 _ = gettext.gettext
 
@@ -301,9 +297,6 @@ class POSApp(AppWindow):
     def _on_clients_action__clicked(self, *args):
         self.search_clients()
 
-    def _on_employees_action__clicked(self, *args):
-        self.run_dialog(EmployeeSearch, hide_footer=True)
-
     def _on_sales_action__clicked(self, *args):
         pass
                       
@@ -328,32 +321,6 @@ class POSApp(AppWindow):
         else:
             self.order_list.append(service)
    
-    def _on_services_action__clicked(self, *args): 
-       conn = new_transaction()
-       model = self.run_dialog(ServiceEditor, conn)
-       if model:
-           conn.commit()
-       else:
-           rollback_and_begin(conn)
-       conn._connection.close()
-  
-    def _on_products_action__clicked(self, *args):
-        conn = new_transaction()
-        model = self.run_dialog(ProductEditor, conn)
-        if model:
-            conn.commit()
-        else:
-            rollback_and_begin(conn)
-        # XXX Waiting for SQLObject improvements. We need there a simple 
-        # method do this in a simple way.
-        conn._connection.close()
-
-    def _on_sellable_category__clicked(self, *args):
-        self.run_dialog(BaseSellableCatSearch)
-
-    def _on_sellable_subcategory__clicked(self, *args):
-        self.run_dialog(SellableCatSearch)
-
     def on_edit_button__clicked(self, *args):
         sellable_item = self.order_list.get_selected()
 

@@ -33,20 +33,24 @@ import datetime
 
 import gtk
 from kiwi.ui.widgets.list import Column
+from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.database import rollback_and_begin
-from sqlobject.sqlbuilder import AND
+from stoqlib.database import rollback_and_begin, finish_transaction
 
-from stoq.gui.application import AppWindow
-from stoq.gui.search.person import SupplierSearch
-from stoq.gui.slaves.filter import FilterSlave
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_formatted_price
 from stoq.lib.defaults import ALL_ITEMS_INDEX
+from stoq.gui.application import AppWindow
+from stoq.gui.editors.product import ProductEditor
+from stoq.gui.editors.service import ServiceEditor
+from stoq.gui.search.person import SupplierSearch
+from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.search.category import (BaseSellableCatSearch,
+                                      SellableCatSearch)
 
 _ = gettext.gettext
 
@@ -184,17 +188,30 @@ class PurchaseApp(AppWindow):
     def on_purchase_list__selection_changed(self, *args):
         self._update_view()
 
-    def _on_suppliers_action__clicked(self, *args):
+    def _on_suppliers_action_clicked(self, *args):
         self.run_dialog(SupplierSearch, hide_footer=True)
             
-    def _on_products_action__clicked(self, *args):
+    def _on_products_action_clicked(self, *args):
         # TODO bug 2206
-        pass
+        conn = new_transaction()
+        model = self.run_dialog(ProductEditor, conn)
+        finish_transaction(conn, model)
 
-    def _on_order_action__clicked(self, *args):
+    def _on_order_action_clicked(self, *args):
         # TODO bug 2211
         pass
 
     def _on_send_to_supplier_action_clicked(self, *args):
         # TODO bug 2213
         pass
+
+    def _on_base_categories_action_clicked(self, *args):
+        self.run_dialog(BaseSellableCatSearch)
+
+    def _on_categories_action_clicked(self, *args):
+        self.run_dialog(SellableCatSearch)
+
+    def _on_services_action_clicked(self, *args): 
+        conn = new_transaction()
+        model = self.run_dialog(ServiceEditor, conn)
+        finish_transaction(conn, model)

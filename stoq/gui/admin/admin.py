@@ -38,6 +38,7 @@ from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.search.person import EmployeeSearch
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.person import Person
@@ -135,3 +136,6 @@ class AdminApp(AppWindow):
 
     def on_users_list__selection_changed(self, *args):
         self._update_view()
+
+    def _on_employees_action_clicked(self, *args):
+        self.run_dialog(EmployeeSearch, hide_footer=True)
