@@ -26,7 +26,6 @@ stoq/domain/interfaces.py:
     Interfaces definition for all domain classes.
 """
 
-from twisted.python.components import Interface
 from zope.interface import Attribute
 
 from stoq.domain.base import ConnInterface
