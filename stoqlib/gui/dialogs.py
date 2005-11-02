@@ -32,6 +32,7 @@ from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
 
 from stoqlib.exceptions import _warn, ModelDataError
+from stoqlib.gui.gtkadds import change_button_appearance
 
 
 
@@ -187,8 +188,10 @@ be subclassed and customized."""
     def disable_ok(self):
         self.ok_button.set_sensitive(False)
 
-    def set_ok_label(self, text):
-        self.ok_button.set_label(text)
+    def set_ok_label(self, text, icon=None):
+        if not icon:
+            icon = gtk.STOCK_OK
+        change_button_appearance(self.ok_button, icon, text)
 
     def set_cancel_label(self, text):
         self.cancel_button.set_label(text)
