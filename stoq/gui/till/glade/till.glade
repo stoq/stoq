@@ -203,11 +203,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkEventBox" id="klist_holder">
-                                <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
+                            <widget class="kiwi+ui+widgets+list+List" id="sales_list">
+                                <property name="border_width">5</property>
+                                <property name="shadow_type">in</property>
+                                <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -224,32 +223,8 @@
                                 <child>
                                     <widget class="GtkButton" id="confirm_order_button">
                                         <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes"> Confirm Order...</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkAlignment" id="GtkAlignment1">
-                                                <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkHBox" id="GtkHBox1">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkImage" id="GtkImage1">
-                                                                <property name="file">confirm16px.png</property>
-                                                                <property name="visible">True</property>
-                                                            </widget>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes"> Confirm Order...</property>
-                                                                <property name="visible">True</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">1</property>
-                                                            </packing>
-                                                        </child>
-                                                    </widget>
-                                                </child>
-                                            </widget>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="x_options">fill</property>

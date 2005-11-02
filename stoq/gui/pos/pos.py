@@ -35,7 +35,7 @@ import operator
 
 import gtk
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.search import SearchBar, BaseListSlave
+from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
 
@@ -69,6 +69,7 @@ class POSApp(AppWindow):
     client_widgets =  ('client_name',)
     
     widgets = ('total',
+               'order_list',
                'price',
                'client_select_button',
                'client_details_button',
@@ -88,7 +89,6 @@ class POSApp(AppWindow):
                             "sales."), _("Error"))
             self.app.shutdown()
         self._setup_slaves()
-        self._setup_signals()
         self._setup_proxies()
         self._setup_widgets()
         self.update_widgets()
@@ -100,10 +100,7 @@ class POSApp(AppWindow):
         table.delete(item.id, connection=self.conn)
 
     def _setup_slaves(self):
-        order_list_slave = BaseListSlave(parent=self)
-        self.attach_slave('orderlist_holder', order_list_slave)
-        self.order_list = order_list_slave.klist
-    
+        self.order_list.set_columns(self._get_columns())
         self.search_bar = SearchBar(self, AbstractSellable,
                                     search_callback=self.run_search)
         singular, plural  = _('product/service'), _('products/services')
@@ -115,10 +112,6 @@ class POSApp(AppWindow):
     def _setup_proxies(self):
         self.product_proxy = self.add_proxy(widgets=self.product_widgets)
         self.person_proxy = self.add_proxy(widgets=self.client_widgets)
-
-    def _setup_signals(self):
-        self.order_list.connect("selection-changed", 
-                                self._on_order_list_selection_changed)
 
     def _setup_widgets(self):
         self.price.set_size('large')
@@ -199,16 +192,7 @@ class POSApp(AppWindow):
         self.update_widgets()
         self._update_order_lbls()
 
-
-
-    #
-    # Hooks
-    #
-
-
-
     def update_widgets(self):
-        """Hook called by BaseListSlave"""
         has_sellables = len(self.order_list[:]) >= 1
         has_client = bool(self.person_proxy.model)
         self.client_details_button.set_sensitive(has_client)
@@ -227,17 +211,7 @@ class POSApp(AppWindow):
             self._update_product_widgets(self.product_proxy.model)
         self._update_order_lbls()
 
-    def run_search(self):
-        """Hook called by SearchDialog"""
-        search_str = self.search_bar.get_search_string()
-        items = self.run_dialog(SellableSearch, self.conn, search_str)
-        for item in items:
-            self.add_sellable_item(item)
-        self.select_first_item()
-        self._update_order_lbls()
-
-    def get_columns(self):
-        """Hook called by BaseListSlave"""
+    def _get_columns(self):
         return [Column('sellable.code', title=_('Code'), sorted=True, 
                        data_type=str, width=90),
                 Column('sellable.description', title=_('Description'), 
@@ -252,15 +226,25 @@ class POSApp(AppWindow):
                        format_func=get_formatted_price,
                        width=100, justify=gtk.JUSTIFY_RIGHT)]
 
+    #
+    # Hooks
+    #
+
+    def run_search(self):
+        """Hook called by SearchDialog"""
+        search_str = self.search_bar.get_search_string()
+        items = self.run_dialog(SellableSearch, self.conn, search_str)
+        for item in items:
+            self.add_sellable_item(item)
+        self.select_first_item()
+        self._update_order_lbls()
 
 
     #
     # Callbacks
     #
 
-    
-
-    def _on_order_list_selection_changed(self, *args):
+    def on_order_list__selection_changed(self, *args):
         self.update_widgets()
 
     def on_client_select_button__clicked(self, *args):
