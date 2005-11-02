@@ -5,6 +5,20 @@
         <child>
             <object class="GtkActionGroup" id="DefaultActions">
                 <child>
+                    <object class="GtkAction" id="BaseCategories">
+                        <property name="name">BaseCategories</property>
+                        <property name="label" translatable="yes">Find Base Categories...</property>
+                        <signal handler="_on_base_categories_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="Categories">
+                        <property name="name">Categories</property>
+                        <property name="label" translatable="yes">Find Categories...</property>
+                        <signal handler="_on_categories_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
@@ -68,11 +82,18 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Products">
-                        <property name="name">Products</property>
+                    <object class="GtkAction" id="ProductButton">
+                        <property name="name">ProductButton</property>
                         <property name="label" translatable="yes">Products</property>
                         <property name="stock_id">gtk-convert</property>
-                        <signal handler="_on_products_action__clicked" name="activate"/>
+                        <signal handler="_on_products_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="Products">
+                        <property name="name">Products</property>
+                        <property name="label" translatable="yes">Find Products...</property>
+                        <signal handler="_on_products_action_clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -80,7 +101,7 @@
                         <property name="name">Purchase</property>
                         <property name="label" translatable="yes">Add Order</property>
                         <property name="stock_id">gtk-indent</property>
-                        <signal handler="_on_order_action__clicked" name="activate"/>
+                        <signal handler="_on_order_action_clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -115,7 +136,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">_Actions</property>
+                        <property name="label" translatable="yes">Search</property>
                     </object>
                 </child>
                 <child>
@@ -123,6 +144,13 @@
                         <property name="name">SendToSupplier</property>
                         <property name="label" translatable="yes">Send to Supplier...</property>
                         <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="Services">
+                        <property name="name">Services</property>
+                        <property name="label" translatable="yes">Find Services...</property>
+                        <signal handler="_on_services_action_clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -136,9 +164,16 @@
                 <child>
                     <object class="GtkAction" id="Suppliers">
                         <property name="name">Suppliers</property>
+                        <property name="label" translatable="yes">Find Suppliers...</property>
+                        <signal handler="_on_suppliers_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="SuppliersButton">
+                        <property name="name">SuppliersButton</property>
                         <property name="label" translatable="yes">Suppliers</property>
                         <property name="stock_id">gtk-sort-ascending</property>
-                        <signal handler="_on_suppliers_action__clicked" name="activate"/>
+                        <signal handler="_on_suppliers_action_clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
@@ -171,7 +206,13 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem
+ action="SendToSupplier" name="SendToSupplier"/><separator
+ name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu
+ action="SearchMenu"><menuitem action="BaseCategories"
+ name="BaseCategories"/><menuitem action="Categories"
+ name="Categories"/><menuitem action="Products" name="Products"/><menuitem
+ action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -179,7 +220,7 @@
   
   
   
-<toolitem action="Purchase" name="Purchase"/><toolitem action="Products" name="Products"/><toolitem action="Suppliers" name="Suppliers"/></toolbar></ui>]]></ui>
+<toolitem action="Purchase" name="Purchase"/><toolitem action="ProductButton" name="ProductButton"/><toolitem action="SuppliersButton" name="SuppliersButton"/></toolbar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="purchase">
         <property name="destroy_with_parent">True</property>
@@ -228,6 +269,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="purchase_list">
                                 <property name="is_focus">True</property>
+                                <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
@@ -240,6 +282,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                        <property name="border_width">5</property>
                                         <property name="layout_style">start</property>
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
@@ -247,31 +290,6 @@
                                             <widget class="GtkButton" id="edit_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkAlignment" id="GtkAlignment1">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkHBox" id="GtkHBox1">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">edit16px.png</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Edit...</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                    </widget>
-                                                </child>
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>

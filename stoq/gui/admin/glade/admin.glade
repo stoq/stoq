@@ -41,6 +41,13 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="Employees">
+                        <property name="name">Employees</property>
+                        <property name="label" translatable="yes">Find Employees...</property>
+                        <signal handler="_on_employees_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
@@ -99,7 +106,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">_Actions</property>
+                        <property name="label" translatable="yes">Search</property>
                     </object>
                 </child>
                 <child>
@@ -140,7 +147,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="Employees" name="Employees"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="admin">
         <property name="destroy_with_parent">True</property>
@@ -194,76 +201,81 @@
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkButton" id="add_button">
-                                                <property name="is_focus">True</property>
+                                            <widget class="GtkLabel" id="label1">
+                                                <property name="visible">True</property>
+                                            </widget>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkHButtonBox" id="hbuttonbox1">
+                                                <property name="spacing">5</property>
                                                 <property name="visible">True</property>
                                                 <child>
-                                                    <widget class="GtkAlignment" id="GtkAlignment1">
+                                                    <widget class="GtkButton" id="add_button">
+                                                        <property name="is_focus">True</property>
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <widget class="GtkHBox" id="GtkHBox1">
+                                                            <widget class="GtkAlignment" id="GtkAlignment1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">add16px.png</property>
+                                                                    <widget class="GtkHBox" id="GtkHBox1">
                                                                         <property name="visible">True</property>
+                                                                        <child>
+                                                                            <widget class="GtkImage" id="GtkImage1">
+                                                                                <property name="file">add16px.png</property>
+                                                                                <property name="visible">True</property>
+                                                                            </widget>
+                                                                        </child>
+                                                                        <child>
+                                                                            <widget class="GtkLabel" id="GtkLabel1">
+                                                                                <property name="label" context="yes" translatable="yes">Add...</property>
+                                                                                <property name="visible">True</property>
+                                                                            </widget>
+                                                                            <packing>
+                                                                                <property name="position">1</property>
+                                                                            </packing>
+                                                                        </child>
                                                                     </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes"> Add...</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
                                                                 </child>
                                                             </widget>
                                                         </child>
                                                     </widget>
                                                 </child>
-                                            </widget>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkButton" id="edit_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="visible">True</property>
                                                 <child>
-                                                    <widget class="GtkAlignment" id="GtkAlignment1">
+                                                    <widget class="GtkButton" id="edit_button">
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <widget class="GtkHBox" id="GtkHBox1">
+                                                            <widget class="GtkAlignment" id="GtkAlignment1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">edit16px.png</property>
+                                                                    <widget class="GtkHBox" id="GtkHBox1">
                                                                         <property name="visible">True</property>
+                                                                        <child>
+                                                                            <widget class="GtkImage" id="GtkImage1">
+                                                                                <property name="file">edit16px.png</property>
+                                                                                <property name="visible">True</property>
+                                                                            </widget>
+                                                                        </child>
+                                                                        <child>
+                                                                            <widget class="GtkLabel" id="GtkLabel1">
+                                                                                <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                                <property name="visible">True</property>
+                                                                            </widget>
+                                                                            <packing>
+                                                                                <property name="position">1</property>
+                                                                            </packing>
+                                                                        </child>
                                                                     </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes"> Edit...</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
                                                                 </child>
                                                             </widget>
                                                         </child>
                                                     </widget>
+                                                    <packing>
+                                                        <property name="position">1</property>
+                                                    </packing>
                                                 </child>
                                             </widget>
                                             <packing>
                                                 <property name="position">1</property>
-                                            </packing>
-                                        </child>
-                                        <child>
-                                            <widget class="GtkLabel" id="label1">
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                     </widget>
