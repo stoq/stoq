@@ -1,78 +1,54 @@
-<?xml version="1.0" ?>
-<glade-interface domain="stoqlib">
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
     <widget class="GtkWindow" id="SearchSlave">
-        <property name="title" context="True" translatable="yes"></property>
         <property name="role"></property>
-        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
+        <property name="title" context="yes" translatable="yes"></property>
         <child>
             <widget class="GtkHBox" id="hbox1">
-                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkEventBox" id="searchbar_holder">
-                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                         <property name="visible">True</property>
                         <child>
                             <placeholder/>
                         </child>
                     </widget>
-                    <packing/>
                 </child>
                 <child>
                     <widget class="GtkVBox" id="vbox1">
-                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkHBox" id="hbox2">
-                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkButton" id="search_button">
-                                        <property name="receives_default">True</property>
-                                        <property name="label" context="True" translatable="yes">Search</property>
-                                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                        <property name="width_request">80</property>
-                                        <property name="xalign">0.49</property>
-                                        <property name="can_focus">True</property>
+                                        <property name="is_focus">True</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">80</property>
+                                        <property name="xalign">0.490000009537</property>
                                         <child>
-                                            <widget class="GtkAlignment" id="search_button_alignment">
-                                                <property name="yscale">0.0</property>
-                                                <property name="xscale">0.0</property>
-                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                <property name="xalign">0.0</property>
-                                                <property name="yalign">0.0</property>
+                                            <widget class="GtkAlignment" id="GtkAlignment1">
                                                 <property name="visible">True</property>
+                                                <property name="xalign">0.490000009537</property>
                                                 <child>
-                                                    <widget class="GtkHBox" id="search_button_hbox">
-                                                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                        <property name="spacing">2</property>
+                                                    <widget class="GtkHBox" id="GtkHBox1">
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <widget class="GtkImage" id="search_button_image">
-                                                                <property name="file"></property>
-                                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                                <property name="stock">gtk-find</property>
+                                                            <widget class="GtkImage" id="GtkImage1">
+                                                                <property name="file">search16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
-                                                            <packing>
-                                                                <property name="expand">False</property>
-                                                                <property name="fill">False</property>
-                                                            </packing>
                                                         </child>
                                                         <child>
-                                                            <widget class="GtkLabel" id="search_button_label">
-                                                                <property name="pattern" context="True" translatable="yes"></property>
-                                                                <property name="label" context="True" translatable="yes">Search</property>
-                                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
+                                                            <widget class="GtkLabel" id="GtkLabel1">
+                                                                <property name="label" context="yes" translatable="yes">Search</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
                                                                 <property name="position">1</property>
-                                                                <property name="expand">False</property>
-                                                                <property name="fill">False</property>
                                                             </packing>
                                                         </child>
                                                     </widget>
@@ -86,56 +62,12 @@
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="erase_button">
-                                        <property name="receives_default">True</property>
-                                        <property name="label" context="True" translatable="yes"></property>
-                                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                        <property name="can_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes"></property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkAlignment" id="erase_button_alignment">
-                                                <property name="yscale">0.0</property>
-                                                <property name="xscale">0.0</property>
-                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                <property name="xalign">0.0</property>
-                                                <property name="yalign">0.0</property>
-                                                <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkHBox" id="erase_button_hbox">
-                                                        <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                        <property name="spacing">2</property>
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkImage" id="erase_button_image">
-                                                                <property name="file">/home/henrique/devel/stoqlib/stoqlib/stoqlib/gui/pixmaps/reset.xpm</property>
-                                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                                <property name="visible">True</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="expand">False</property>
-                                                                <property name="fill">False</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="GtkLabel" id="erase_button_label">
-                                                                <property name="pattern" context="True" translatable="yes"></property>
-                                                                <property name="label" context="True" translatable="yes"></property>
-                                                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
-                                                                <property name="visible">True</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">1</property>
-                                                                <property name="expand">False</property>
-                                                                <property name="fill">False</property>
-                                                            </packing>
-                                                        </child>
-                                                    </widget>
-                                                </child>
-                                            </widget>
-                                        </child>
                                     </widget>
                                     <packing>
-                                        <property name="position">1</property>
                                         <property name="expand">False</property>
+                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
@@ -145,20 +77,17 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label1">
-                                <property name="pattern" context="True" translatable="yes"></property>
-                                <property name="label" context="True" translatable="yes"></property>
-                                <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
                                 <property name="expand">False</property>
+                                <property name="position">1</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
                         <property name="expand">False</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
