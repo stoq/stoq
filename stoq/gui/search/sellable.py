@@ -30,12 +30,9 @@ stoq/gui/search/sellable:
 """
 
 import gettext
-import operator
 
 import gtk
 from kiwi.ui.widgets.list import Column
-from kiwi.ui.views import SlaveView
-from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.search import SearchDialog
 from stoqlib.gui.columns import AccessorColumn
 
