@@ -56,13 +56,15 @@ class FilterSlave(SlaveDelegate):
     def __init__(self, statuses, selected=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
-        self.filter_combo.prefill(statuses)
         if not isinstance(statuses, (tuple, list)):
             raise TypeError('Argument statuses must be of typle list or '
                             'tuple, got %s instead' % type(statuses))
         if not len(statuses):
             raise ValueError('Argument statuses must have at least one '
                              'item, found zero.')
+        self.filter_combo.prefill(statuses)
+        if len(statuses) == 1:
+            self.filter_combo.set_sensitive(False)
         selected = selected or statuses[0]
         self.filter_combo.select_item_by_data(selected)
 
