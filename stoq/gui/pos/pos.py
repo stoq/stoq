@@ -159,9 +159,10 @@ class POSApp(AppWindow):
             self.product.set_text(sellable.description)
             self.quantity.set_sensitive(True)
 
-    def search_clients(self):
+    def search_clients(self, hide_footer=False):
         conn = new_transaction()
-        person = self.run_dialog(ClientSearch, parent_conn=conn)
+        person = self.run_dialog(ClientSearch, parent_conn=conn,
+                                 hide_footer=hide_footer)
         if person:
             self.person_proxy.new_model(person, relax_type=True)
             self.sale.update_client(person)
@@ -265,8 +266,8 @@ class POSApp(AppWindow):
     def on_client_select_button__clicked(self, *args):
         self.search_clients()
 
-    def _on_selectclient_action__clicked(self, *args):
-        self.search_clients()
+    def _on_clients_action__clicked(self, *args):
+        self.search_clients(hide_footer=True)
 
     def on_quantity__changed(self, kiwispin):
         if self.product_proxy.model is None:
@@ -292,9 +293,6 @@ class POSApp(AppWindow):
 
     def _on_resetorder_action__clicked(self, *args):
         self.reset_order()
-
-    def _on_clients_action__clicked(self, *args):
-        self.search_clients()
 
     def _on_sales_action__clicked(self, *args):
         pass
