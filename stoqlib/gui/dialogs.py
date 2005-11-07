@@ -303,11 +303,11 @@ class ConfirmDialog(BasicDialog):
     It prints text in a label and offers OK/Cancel buttons."""
 
     title = 'Confirmation'
-    def __init__(self, text, title=None):
+    def __init__(self, text, title=None, size=None):
         BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
         title = title or self.title
-        BasicDialog._initialize(self, text, title=title)
+        BasicDialog._initialize(self, text, title=title, size=size)
 
     def setup_keyactions(self):
         self.keyactions = { gtk.keysyms.Escape: self.cancel,
@@ -382,5 +382,5 @@ def notify_if_raises(win, check_func, exceptions=ModelDataError,
 def notify_dialog(msg, title=None):
     run_dialog(NotifyDialog, None, text=msg, title=title)
 
-def confirm_dialog(msg, title=None):
-    return run_dialog(ConfirmDialog, None, text=msg, title=title)
+def confirm_dialog(msg, title=None, size=None):
+    return run_dialog(ConfirmDialog, None, text=msg, title=title, size=size)
