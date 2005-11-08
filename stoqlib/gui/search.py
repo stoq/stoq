@@ -473,18 +473,13 @@ class SearchBar(SlaveDelegate):
         else:
             search_dates = None
 
+        query = self.table_type.q._is_active == True
         if search_str or search_dates:
-            query = self._build_query(search_str, search_dates)
-        else:
-            # This means all the results
-            query = None
+            query = AND(query, self._build_query(search_str, search_dates))
         
         extra_query = self.parent.get_extra_query()
         if extra_query:
-            if query:
-                query = AND(query, extra_query) 
-            else:
-                query = extra_query
+            query = AND(query, extra_query) 
 
         kwargs = {'connection': self.conn}
         if self.query_args:
@@ -493,7 +488,6 @@ class SearchBar(SlaveDelegate):
                 msg = 'Invalid query argument %s' % query_arg
                 assert not query_arg in self.query_args, msg
             kwargs.update(self.query_args)
-
         kwargs['distinct'] = True
         
         # Synchronizing transaction.
