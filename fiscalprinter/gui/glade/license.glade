@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="license">
+        <property name="default_height">350</property>
+        <property name="default_width">500</property>
+        <property name="title" context="yes" translatable="yes">Fiscal Printer License</property>
+        <property name="window_position">center</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">6</property>
+                <child>
+                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+textview+TextView" id="license_text">
+                                <property name="data_type">str</property>
+                                <property name="model_attribute">license_text</property>
+                            </widget>
+                        </child>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="border_width">5</property>
+                        <property name="layout_style">end</property>
+                        <property name="spacing">6</property>
+                        <child>
+                            <widget class="GtkButton" id="close">
+                                <property name="label">gtk-close</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

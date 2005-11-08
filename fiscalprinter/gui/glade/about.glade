@@ -1,0 +1,82 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="about">
+        <property name="title" context="yes" translatable="yes">About Fiscal Printer</property>
+        <property name="window_position">center</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">6</property>
+                <child>
+                    <widget class="GtkImage" id="logo">
+                        <property name="icon_name" context="yes" translatable="yes">logo.png</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                        <property name="data_type">str</property>
+                        <property name="label" context="yes" translatable="yes">&lt;span size='16000' weight='heavy'&gt;Fiscal Printer&lt;/span&gt;</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                        <property name="data_type">str</property>
+                        <property name="justify">fill</property>
+                        <property name="label" context="yes" translatable="yes">Fiscal Printer is a set of drivers and an
+ API to control fiscal printers.</property>
+                        <property name="wrap">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                        <property name="can_focus">True</property>
+                        <property name="data_type">str</property>
+                        <property name="label" context="yes" translatable="yes">&lt;span color='blue'&gt;http://www.stoq.com.br&lt;/span&gt;</property>
+                        <property name="selectable">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="border_width">5</property>
+                        <property name="spacing">6</property>
+                        <child>
+                            <widget class="GtkButton" id="credits">
+                                <property name="label" context="yes" translatable="yes">Credits</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="license">
+                                <property name="label" context="yes" translatable="yes">License</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="close">
+                                <property name="label">gtk-close</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">4</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

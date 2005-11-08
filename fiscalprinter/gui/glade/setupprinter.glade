@@ -1,0 +1,118 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="setupprinter">
+        <property name="title" context="yes" translatable="yes">Setup Printer</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                        <property name="data_type">str</property>
+                        <property name="label" context="yes" translatable="yes">&lt;b&gt;Setup printer properties:&lt;/b&gt;</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="border_width">5</property>
+                        <property name="column_spacing">12</property>
+                        <property name="n_columns">2</property>
+                        <property name="n_rows">3</property>
+                        <property name="row_spacing">6</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                <property name="data_type">str</property>
+                                <property name="label" context="yes" translatable="yes">Device Type:</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="device_host_label">
+                                <property name="data_type">str</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="baudrate_port_label">
+                                <property name="data_type">str</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="device_type">
+                                <property name="data_type">str</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="device_host">
+                                <property name="data_type">str</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="baudrate_port">
+                                <property name="data_type">str</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="border_width">5</property>
+                        <property name="layout_style">end</property>
+                        <property name="spacing">6</property>
+                        <child>
+                            <widget class="GtkButton" id="cancel">
+                                <property name="label">gtk-cancel</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkButton" id="ok">
+                                <property name="label">gtk-ok</property>
+                                <property name="use_stock">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
