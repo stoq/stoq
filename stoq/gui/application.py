@@ -33,11 +33,11 @@ import datetime
 import gettext
 
 import gtk
+from kiwi.environ import app, environ
 from stoqlib.gui.application import BaseApp, BaseAppWindow
 
 from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user
-from stoq.environ import get_docs_dir, get_pixmap_file_path
 
 _ = gettext.gettext
 
@@ -121,28 +121,28 @@ class AppWindow(BaseAppWindow):
         about = gtk.AboutDialog()
         about.set_name(__program_name__)
         about.set_version(__version__)
+        about.set_website(__website__)
+        about.set_comments('Release Date: %s' %
+                           datetime.datetime(*__release_date__).strftime('%x'))
+        about.set_copyright('Copyright (C) 2005 Async Open Source')
 
-        docs = get_docs_dir()
-        author_lines = file(os.path.join(docs, 'AUTHORS')).readlines()
-        authors = [a.strip() for a in author_lines]
-        # separate authors from contributors
-        authors.append('') 
-        contr_lines = file(os.path.join(docs, 'CONTRIBUTORS')).readlines()
-        contributors = [c.strip() for c in contr_lines]
-        authors.extend(contributors)
-        about.set_authors(authors)
-
-        icon_file = get_pixmap_file_path('stoq_logo.png')
+        # Logo
+        icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')
         logo = gtk.gdk.pixbuf_new_from_file(icon_file)
         about.set_logo(logo)
-            
-        license = file(os.path.join(docs, 'COPYING')).read()
-        about.set_license(license)
-        about.set_website(__website__)
-        release_date = datetime.datetime(*__release_date__).strftime('%x')
-        about.set_comments('Release Date: %s' % release_date)
-        copyright = 'Copyright (C) 2005 Async Open Source'
-        about.set_copyright(copyright)
+
+        # License
+        license = app.find_resource('docs', 'COPYING')
+        about.set_license(file(license).read())
+        
+        # Authors & Contributors
+        authors = app.find_resource('docs', 'AUTHORS')
+        lines = [a.strip() for a in file(authors).readlines()]
+        lines.append('') # separate authors from contributors
+        contributors = app.find_resource('docs', 'AUTHORS')
+        lines.extend([c.strip() for c in file(contributors).readlines()])
+        about.set_authors(lines)
+
         about.run()
         about.destroy()
 

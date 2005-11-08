@@ -34,6 +34,8 @@ import sys
 # Required version of Python
 REQUIRED_VERSION = (2, 4)
 
+KIWI_REQUIRED = '1.9.2'
+
 # Directory name, defaults to name of binary, it is relative to ..
 # a, __init__.py and main.py is expected to be found there.
 DIRNAME = None
@@ -53,40 +55,29 @@ if majmin < REQUIRED_VERSION:
                                    appname,
                                    version_string))
 
-# Figure out the directy which is the prefix
-# path-of-current-file/..
-currentdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-basedir = os.path.abspath(os.path.join(currentdir, '..'))
-
-# Add the base directory where the application is installed in to sys.path
-if os.path.exists(os.path.join(basedir, 'lib')):
-    pythondir = os.path.join(basedir, 'lib',
-                             'python%d.%d' % sys.version_info[:2],
-                             'site-packages')
-    if not os.path.exists(pythondir):
-        raise SystemExit("ERROR: Could not find required directory: %s" %
-                         pythondir)
-elif not os.path.exists(os.path.join(basedir, dirname)):
-    raise SystemExit("ERROR: Could not find required directory: %s" %
-                     os.path.join(basedir, dirname))
-else:
-    pythondir = basedir
-    
-sys.path.insert(0, pythondir)
-
 main_module = dirname + '.main'
 try:
-    module = __import__(main_module, globals(), locals(), 'main')
-except Exception, e:
-    raise SystemExit("ERROR: Failed to import required module %s\n\n"
-                     "Exception raised during import:\n %s: %s\n" %
-                     (main_module, e.__class__.__name__, e))
+    from kiwi.environ import Application
+except ImportError:
+    raise SystemExit("Could not find kiwi, is a recent version %s installed?"
+                      % KIWI_REQUIRED)
 
-main = getattr(module, 'main', None)
-if not main or not callable(main):
-    raise SystemExit("ERROR: Could not find callable 'main' in module %s" %
-                     main_module)
-
+app = Application('stoq', path='stoq.main')
+if app.uninstalled:
+    app.add_global_resource('pixmaps', 'pixmaps')
+    
+    # Add stoq/gui/*/glade, perhaps we should move this into environ itself
+    root = os.path.join(app.get_root(), 'stoq', 'gui')
+    for name in os.listdir(root):
+        dir = os.path.join(root, name, 'glade')
+        if not os.path.isdir(dir):
+            continue
+        app.add_global_resource('glade', dir)
+        
+    app.add_resources(locale='locale',
+                      basedir='.',
+                      docs='docs')
+app.run()
 try:
     sys.exit(main(sys.argv))
 except KeyboardInterrupt:
