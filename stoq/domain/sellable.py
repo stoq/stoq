@@ -32,25 +32,23 @@ import datetime
 import gettext
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
-from stoqlib.exceptions import SellError
+from sqlobject.sqlbuilder import AND
 from zope.interface import implements
+from stoqlib.exceptions import SellError
 
+from stoq.lib.validators import is_date_in_interval, get_formatted_price
+from stoq.lib.parameters import sysparam
+from stoq.domain.interfaces import ISellable, IContainer
 from stoq.domain.base import (Domain, InheritableModelAdapter,
                                     InheritableModel)
-from stoq.domain.interfaces import ISellable, IContainer
-from stoq.lib.validators import is_date_in_interval, get_formatted_price
 
 
 
 _ = gettext.gettext
 
-
-
 #
 # Base Domain Classes
 #
-
-
 
 class AbstractSellableCategory(Domain):
     description = StringCol()
@@ -121,13 +119,9 @@ class AbstractSellableItem(InheritableModel):
             raise SellError(msg)
         sellable.set_sold()
 
-
-    
     #
     # Accessors
     #
-
-
 
     def get_total(self):
         return self.price * self.quantity
@@ -140,9 +134,7 @@ class AbstractSellable(InheritableModelAdapter):
     """ A sellable (a product or a service, for instance). """
 
     implements(ISellable, IContainer)
-
     sellableitem_table = None
-
     STATE_AVALIABLE = 0
     STATE_SOLD = 1
     STATE_BLOCKED = 2
@@ -155,22 +147,15 @@ class AbstractSellable(InheritableModelAdapter):
     cost = FloatCol(default=0.0)
     max_discount = FloatCol(default=0.0)
     comission = FloatCol(default=None)
-
     on_sale_price = FloatCol(default=0.0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
-
     category = ForeignKey('SellableCategory', default=None)
-
-
 
     #
     # IContainer methods
     #
 
-
-
-    
     def add_item(self, item):
         raise NotImplementedError("You should call add_selabble_item "
                                   "instead.")
@@ -194,13 +179,9 @@ class AbstractSellable(InheritableModelAdapter):
                             % (self.sellableitem_table, type(item)))
         self.sellableitem_table.delete(item.id, connection=conn)
 
-
-
     #
     # ISellable methods
     #
-
-
 
     def can_be_sold(self):
         return self.state == self.STATE_AVALIABLE
@@ -225,13 +206,9 @@ class AbstractSellable(InheritableModelAdapter):
         conn = self.get_connection()
         return self.sellableitem_table(connection=conn, quantity=quantity,
                                        sale=sale, sellable=self, price=price)
-
-
     #
     # Accessors
     #
-
-
 
     def get_price_string(self):
         return get_formatted_price(self.get_price())
@@ -239,12 +216,26 @@ class AbstractSellable(InheritableModelAdapter):
     def get_comission(self):
         return self.comission
 
-
     #
     # Auxiliary methods
     #
 
+    @classmethod
+    def get_available_sellables_query(cls, conn):
+        service = sysparam(conn).DELIVERY_SERVICE
+        delivery = ISellable(service, connection=conn)
+        q1 = cls.q.id != delivery.id
+        q2 = cls.q.state == cls.STATE_AVALIABLE
+        return AND(q1, q2)
 
+    @classmethod
+    def get_available_sellables(cls, conn):
+        """Returns sellable objects which can be added in a sale. By 
+        default a delivery sellable can not be added manually by users 
+        since a separated dialog is responsible for that.
+        """
+        query = cls.get_available_sellables_query(conn)
+        return cls.select(query, connection=conn)
 
     def get_suggested_markup(self):
         return self.category and self.category.get_markup() 

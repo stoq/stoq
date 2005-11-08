@@ -53,13 +53,12 @@ class SellableSearch(SearchDialog):
     size = (800, 500)
     search_table = AbstractSellable
  
-    def __init__(self, conn, search_str=None):
+    def __init__(self, conn):
         selection_mode = gtk.SELECTION_MULTIPLE
         SearchDialog.__init__(self, self.search_table, hide_footer=False,
                               parent_conn=conn, 
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching:'))
-        self.search_bar.search_items()
         self.set_ok_label(_('Add product/service'))
                 
     #
@@ -97,6 +96,10 @@ class SellableSearch(SearchDialog):
                                     title=_('Stock'), data_type=float)
             columns.append(column) 
         return columns
+
+    def get_extra_query(self):
+        """Hook called by SearchBar"""
+        return AbstractSellable.get_available_sellables_query(self.conn)
 
     def setup_slaves(self, **kwargs):
         SearchDialog.setup_slaves(self, **kwargs)

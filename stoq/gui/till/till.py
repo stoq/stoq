@@ -187,7 +187,7 @@ class TillApp(AppWindow):
         rollback_and_begin(self.conn)
         # TODO Call SaleWizard dialog and let the user change the sale here
         sale = self.sales_list.get_selected()
-        sale.confirm()
+        sale.confirm_sale()
         self.conn.commit()
         self.searchbar.search_items()
 

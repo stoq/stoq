@@ -68,15 +68,11 @@ class DeliveryEditor(BaseEditor):
             self.title = _('New Delivery ')
         else:
             self.title = _('Edit Delivery')
-
         self.products = products
         self.sale = sale
-
         BaseEditor.__init__(self, conn, model)
-
         self.additional_info_label.set_size('small')
         self.additional_info_label.set_color('Red')
-
         self.update_widgets()
 
 
@@ -89,13 +85,9 @@ class DeliveryEditor(BaseEditor):
         else:
             self.additional_info_label.hide()
 
-
-
     #
     # AdditionListSlave hooks
     #
-
-
 
     def before_delete_items(self, items):
         delivery = IDelivery(self.model, connection=self.conn)
@@ -104,13 +96,9 @@ class DeliveryEditor(BaseEditor):
     def on_edit_item(self, item):
         pass
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def on_change_address_button__clicked(self, button):
         cols = [Column('address_string', title=_('Address'), data_type=str, 
@@ -133,13 +121,9 @@ class DeliveryEditor(BaseEditor):
                       title=_('Delivery Instructions')):
             self.update_widgets()
 
-
-
     # 
     # BaseEditor hooks
     #
-
-
 
     def get_title_model_attribute(self, model):
         return self.model_name
@@ -201,3 +185,12 @@ class DeliveryEditor(BaseEditor):
         self.attach_slave('addition_list_holder', 
                           self.addition_list_slave)
 
+    def on_cancel(self):
+        if not self.edit_mode:
+            delivery = IDelivery(self.model, connection=self.conn)
+            for item in delivery.get_items():
+                item.unset_delivery_data()
+            table = type(delivery)
+            table.delete(delivery.id, connection=self.conn)
+            self.model_type.delete(self.model.id, connection=self.conn)
+        return BaseEditor.on_cancel(self)
