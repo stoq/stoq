@@ -53,3 +53,4 @@ def finish_transaction(conn, model, keep_transaction=False):
         # XXX Waiting for SQLObject improvements. We need there a
         # simple method do this in a simple way.
         conn._connection.close()
+    return model
