@@ -19,18 +19,14 @@
 # USA.
 #
 
-import gettext
 import glob
 import os
 
-from kiwi.environ import environ
-
 def get_app_list():
-    # Collects the application names from the gui/ directory and
-    # sets a list member. 
-
+    """Collects the application names from the gui/ directory and
+    sets a list member
+    """
     import stoq
-    
 
     # Find out what applications we have available
     applications = []
