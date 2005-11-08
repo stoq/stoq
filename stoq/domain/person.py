@@ -394,11 +394,13 @@ class PersonAdaptToClient(ModelAdapter):
         return self.statuses[self.status]
 
     @classmethod
-    def get_active_clients(cls, conn):
+    def get_active_clients(cls, conn, extra_query=None):
         """Return a list of active clients.
         An active client is a person who are authorized to make new sales
         """
         query = cls.q.status == cls.STATUS_SOLVENT
+        if extra_query:
+            query = AND(query, extra_query)
         return cls.select(query, connection=conn)
                     
 Person.registerFacet(PersonAdaptToClient)

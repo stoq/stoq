@@ -187,6 +187,8 @@ class ProductSellableItem(AbstractSellableItem):
                                      logic_quantity=logic_quantity, 
                                      branch=branch, product_item=self)
 
+    def unset_delivery_data(self):
+        self.delivery_data = None
 
 class ProductStockItem(AbstractStockItem):
     """ Class that makes a reference to the product stock of a 

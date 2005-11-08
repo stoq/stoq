@@ -287,11 +287,11 @@ class SaleWizard(BaseWizard):
 
     def finish(self):
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.model.confirm()
+            self.model.confirm_sale()
         else:
-            # We should here update the stocks and mark them as reserved for
-            # this sale. Lets do it in another bug
-            pass
+            self.model.validate()
+            # TODO We should here update the stocks and mark them as 
+            # reserved for this sale. Lets do it in another bug
         self.retval = True
         self.close()
 

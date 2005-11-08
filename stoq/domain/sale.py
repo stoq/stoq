@@ -47,13 +47,9 @@ from stoq.domain.interfaces import (IContainer, IClient, IStorable,
 
 _ = gettext.gettext
 
-
-
 #
 # Base Domain Classes
 #
-
-
 
 class Sale(Domain):
     """Sale object implementation.
@@ -99,6 +95,14 @@ class Sale(Domain):
     till = ForeignKey('Till')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
 
+    #
+    # SQLObject hooks
+    #
+    
+    def _create(self, id, **kw):
+        # Sales objects must be set as active explicitly
+        kw['_is_active'] = False
+        Domain._create(self, id, **kw)
 
     def get_status_name(self):
         return self.statuses[self.status]
@@ -163,13 +167,9 @@ class Sale(Domain):
     charge_percentage = property(_get_charge_by_percentage,
                                  _set_charge_by_percentage)
 
-
-
     #
     # IContainer methods
     #
-
-
 
     def add_item(self, item):
         raise NotImplementedError("You should call add_selabble_item "
@@ -187,13 +187,9 @@ class Sale(Domain):
         table = type(item)
         table.delete(item.id, connection=conn)
 
-
-
     #
     # Auxiliar methods
     #
-
-
 
     def get_till_branch(self):
         return self.till.branch
@@ -230,40 +226,40 @@ class Sale(Domain):
                                  connection=conn)
             storable.decrease_stock(product.quantity, branch)
 
-    def confirm(self):
+    def validate(self):
+        if not self.get_items().count():
+            raise SellError('The sale must have sellable items')
+        if self.client and not self.client.is_active:
+            raise SellError('Unable to make sales for clients with status '
+                            '%s' % self.client.get_status_string())
         if not self.status == self.STATUS_OPENED:
             raise SellError('The sale must have STATUS_OPENED for this '
                             'operation, got status %s instead' %
                             self.statuses[self.status])
-        if self.client and not self.client.is_active:
-            raise SellError('Unable to make sales for clients with status '
-                            '%s' % self.client.get_status_string())
         conn = self.get_connection()
         group = IPaymentGroup(self, connection=conn)
         if not group:
             raise ValueError("Sale %s doesn't have an IPaymentGroup "
                              "facet at this point" % self)
+        if not self.get_active():
+            self.set_active()
+
+    def confirm_sale(self):
+        self.validate()
         group.setup_payments()
         self.update_stocks()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
         
-
-
 #
 # Adapters
 #
 
-
-
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
-
 
     #
     # IPaymentGroup implementation
     #
-
-
 
     def get_thirdparty(self):
         sale = self.get_adapted()
@@ -276,12 +272,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         sale = self.get_adapted()
         return _('sale %s') % sale.order_number
 
-
     #
     # Auxiliar methods
     #
-
-
 
     def get_pm_commission_total(self):
         """Return the payment method comission total. Usually credit 

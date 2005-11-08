@@ -32,7 +32,7 @@ stoq/domain/base.py:
 import datetime
 
 from sqlobject import SQLObject
-from sqlobject import DateTimeCol, ForeignKey
+from sqlobject import DateTimeCol, ForeignKey, BoolCol
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from twisted.python.components import (Adapter, Componentized, MetaInterface,
@@ -78,6 +78,19 @@ class AbstractModel:
     #
     # Auxiliar methods
     #
+
+    def set_active(self):
+        if self._is_active:
+            raise ValueError('This model is already active.')
+        self._is_active = True
+
+    def set_inactive(self):
+        if not self._is_active:
+            raise ValueError('This model is already inactive.')
+        self._is_active = False
+
+    def get_active(self):
+        return self._is_active
 
     def clone(self):
         # Get a persistent copy of an existent object. Remember that we can
@@ -315,11 +328,12 @@ class InheritableModelAdapter(InheritableModel, Adapter):
         InheritableModel.__init__(self, *args, **kwargs)
 
 
-for klass in (InheritableModel, BaseDomain):
+for klass in (InheritableModel, Domain):
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
                                         default=datetime.datetime.now()))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
                                         default=datetime.datetime.now()))
+    klass.sqlmeta.addColumn(BoolCol(name='_is_active', default=True))
     klass.sqlmeta.cacheValues = False
     # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
     # properly with parent tables for inherited tables. E.g:
