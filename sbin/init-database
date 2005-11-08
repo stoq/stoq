@@ -45,7 +45,6 @@ TEST_MODE = '-t' in sys.argv
 set_test_mode(TEST_MODE)
 from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.examples import createall as examples
-from stoq.environ import get_sbin_file_path
 from stoq.domain.person import EmployeePosition, PersonAdaptToUser
 from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
