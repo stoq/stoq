@@ -20,55 +20,37 @@
 #
 
 import gettext
+import glob
 import os
 
 from kiwi.environ import environ
-
-from stoq.environ import get_base_dir, get_locale_dir, get_glade_dir
-
-appdir = os.path.join(get_base_dir(), "stoq", "gui")
-
-# Tell gettext that translations (.mo files) for the translation
-# domain stoq can be found in locale_dir, 
-gettext.bindtextdomain('stoq', get_locale_dir())
-
-# We always want to load in utf-8 charset, makes everything
-# a lot easier when using pygtk
-gettext.bind_textdomain_codeset('stoq', 'utf-8')
-
-# Set the default domain to stoq, so we don't need to explicitly
-# specify the domain each time we want to do a translation lookup 
-gettext.textdomain('stoq')
 
 def get_app_list():
     # Collects the application names from the gui/ directory and
     # sets a list member. 
 
+    import stoq
+    
+
     # Find out what applications we have available
     applications = []
-    for sub_dir in os.listdir(appdir):
-        dir = os.path.join(appdir, sub_dir)
-        if os.path.isfile(os.path.join(dir, 'app.py')):
-            applications.append(sub_dir)
+    expr = os.path.join(os.path.split(stoq.__file__)[0],
+                        'gui', '*', 'app.py')
+    for sub_dir in glob.glob(expr):
+        # sub_dir is stoq/gui/foobar/app.py
+        # dirname is stoq/gui/foobar
+        # appname is foobar
+        
+        dirname = os.path.split(sub_dir)[0]
+        appname = os.path.split(dirname)[1]
+        applications.append(appname)
+        
     applications.sort()
     return applications
 
-# A list of subdirectories in stoq/gui/
-glade_dirs = ['editors', 'components', 'search', 'slaves', 'templates', 
-              'wizards'] + get_app_list()
-
-for dir in glade_dirs:
-    path = os.path.join(get_base_dir(), "stoq", "gui", dir, "glade")
-    if os.path.exists(path) and os.path.isdir(path):
-        environ.add_resource("glade", path)
-
-glade_dir = get_glade_dir()
-if os.path.exists(glade_dir) and os.path.isdir(glade_dir):
-    environ.add_resource("glade", glade_dir)
-
 def main(args):
     apps = get_app_list()
-
+    
     if len(args) < 2:
        raise SystemExit("Usage: stoq <application>. "
                         "Valid applications are: %s""" % apps)

@@ -31,10 +31,9 @@ import gettext
 
 import gtk
 import gobject
+from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
 from stoqlib.gui.dialogs import RunnableView
-
-from stoq.environ import get_pixmap_file_path
 
 _ = gettext.gettext
 
@@ -61,7 +60,7 @@ class LoginDialog(Delegate, RunnableView):
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
         # Interestingly enough, loading an XPM is slower than a JPG here
-        filename = get_pixmap_file_path("logo.xpm")
+        filename = environ.find_resource("pixmaps", "logo.xpm")
         
         gtkimage = gtk.Image()
         gtkimage.set_from_file(filename)
