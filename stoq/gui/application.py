@@ -28,7 +28,6 @@ gui/application.py:
     Base classes for application's GUI
 """
 
-import os
 import datetime
 import gettext
 
