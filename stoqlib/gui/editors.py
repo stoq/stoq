@@ -46,6 +46,7 @@ class BaseEditorSlave(SlaveDelegate):
         # edited by an interface. It will be always the object the is sent
         # from a kiwi list to an editor.
         self.conn = conn
+        self.edit_mode = model is not None
         if self.model_type:
             model = model or self.create_model(self.conn)
             if model and not isinstance(model, self.model_type):
