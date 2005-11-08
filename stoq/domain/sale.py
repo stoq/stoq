@@ -246,6 +246,8 @@ class Sale(Domain):
 
     def confirm_sale(self):
         self.validate()
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
         group.setup_payments()
         self.update_stocks()
         self.status = self.STATUS_CONFIRMED
