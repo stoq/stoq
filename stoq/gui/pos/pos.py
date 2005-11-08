@@ -34,7 +34,6 @@ import gettext
 
 import gtk
 from kiwi.ui.widgets.list import Column
-from sqlobject.sqlbuilder import AND, LIKE, func
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
