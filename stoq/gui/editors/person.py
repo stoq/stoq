@@ -39,11 +39,13 @@ from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
+from stoq.gui.slaves.transporter import TransporterDataSlave
 from stoq.domain.person import Person
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
-                                    ISupplier)
+                                    ISupplier, ITransporter)
 
 _ = gettext.gettext
+
 
 class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
@@ -144,3 +146,27 @@ class SupplierEditor(BasePersonRoleEditor):
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
 
+
+class TransporterEditor(BasePersonRoleEditor):
+    model_name = _('Transporter')
+    model_type = Person.getAdapterClass(ITransporter)
+    gladefile = 'BaseTemplate'
+    widgets = ('main_holder', )
+
+    #
+    # BaseEditor hooks
+    #
+    
+    def create_model(self, conn):
+        person = BasePersonRoleEditor.create_model(self, conn)
+        transporter = ITransporter(person, connection=conn)
+        if transporter:
+            return transporter
+        return person.addFacet(ITransporter, connection=conn)
+
+    def setup_slaves(self):
+        BasePersonRoleEditor.setup_slaves(self)
+        self.details_slave = TransporterDataSlave(self.conn, 
+                                                  self.model)
+        slave = self.main_slave.get_person_slave()
+        slave.attach_slave('person_status_holder', self.details_slave)

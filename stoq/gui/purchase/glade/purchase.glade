@@ -177,6 +177,13 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="Transporter">
+                        <property name="name">Transporter</property>
+                        <property name="label" translatable="yes">Find Transporters...</property>
+                        <signal handler="_on_transporters_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="stock_id">gtk-about</property>
@@ -206,13 +213,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem
- action="SendToSupplier" name="SendToSupplier"/><separator
- name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu
- action="SearchMenu"><menuitem action="BaseCategories"
- name="BaseCategories"/><menuitem action="Categories"
- name="Categories"/><menuitem action="Products" name="Products"/><menuitem
- action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -290,6 +291,31 @@
                                             <widget class="GtkButton" id="edit_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="GtkAlignment" id="GtkAlignment1">
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <widget class="GtkHBox" id="GtkHBox1">
+                                                                <property name="visible">True</property>
+                                                                <child>
+                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                        <property name="file">edit16px.png</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                </child>
+                                                                <child>
+                                                                    <widget class="GtkLabel" id="GtkLabel1">
+                                                                        <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                        <property name="visible">True</property>
+                                                                    </widget>
+                                                                    <packing>
+                                                                        <property name="position">1</property>
+                                                                    </packing>
+                                                                </child>
+                                                            </widget>
+                                                        </child>
+                                                    </widget>
+                                                </child>
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>
