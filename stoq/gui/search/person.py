@@ -32,6 +32,7 @@ gui/search/person.py
 
 import gettext
 
+import gtk
 from sqlobject.sqlbuilder import LEFTJOINOn, AND
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
@@ -39,12 +40,14 @@ from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
-                                     EmployeeEditor, CreditProviderEditor)
+                                     EmployeeEditor, CreditProviderEditor,
+                                     TransporterEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
-                                    IEmployee, IClient, ICreditProvider)
+                                    IEmployee, IClient, ICreditProvider,
+                                    ITransporter)
 from stoq.domain.person import Person, EmployeePosition
 
 _ = gettext.gettext
@@ -248,3 +251,44 @@ class ClientSearch(BasePersonSearch):
         return dict(join=LEFTJOINOn(Person, individual_table,
                                     Person.q.id == 
                                     individual_table.q._originalID))
+
+
+class TransporterSearch(BasePersonSearch):
+    title = _('Transporter Search')
+    editor_class = TransporterEditor
+    table = Person
+    interface = ITransporter
+    search_lbl_text = _('matching:')
+    result_strings = _('transporter'), _('transporters')
+
+    def get_filter_slave(self):
+        items = [(_('Active Transporters'), True), 
+                 (_('Inactive Transporters'), False)]
+        items.append((_('Any Transporters'), ALL_ITEMS_INDEX))
+        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(_('Show:'))
+        return self.filter_slave
+
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)
+
+    def get_columns(self):
+        return [Column('name', title=_('Name'), 
+                       data_type=str, sorted=True, width=350),
+                Column('phone_number', _('Phone Number'), str,
+                       format_func=format_phone_number, width=180),
+                FacetColumn(ITransporter, 'freight_percentage', 
+                            title=_('Freight (%)'), data_type=float, 
+                            width=150, justify=gtk.JUSTIFY_RIGHT),
+                FacetColumn(ITransporter, 'status_string', 
+                            title=_('Status'), data_type=str)]
+
+    def get_extra_query(self):
+        transporter_table = self.table.getAdapterClass(ITransporter)
+        q1 = self.table.q.id == transporter_table.q._originalID
+        status = self.filter_slave.get_selected_status()
+        if status == ALL_ITEMS_INDEX:
+            return q1
+        q2 = transporter_table.q.is_active == status
+        return AND(q1, q2)
