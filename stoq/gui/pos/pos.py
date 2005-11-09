@@ -273,10 +273,28 @@ class POSApp(AppWindow):
         self.order_list.update(model)
         self._update_widgets()
 
+    def _search_clients(self):
+        self.run_dialog(ClientSearch, hide_footer=True)
+
     #
     # Callbacks
     #
 
+    def key_control_r(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        self.reset_order()
+
+    def key_control_l(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        # Implement a search dialog for sales
+        pass
+        
+    def key_control_p(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        self._search_clients()
 
     def on_edit_button__clicked(self, *args):
         self._edit_item()
@@ -318,7 +336,7 @@ class POSApp(AppWindow):
             self._setup_client_entry()
             
     def _on_clients_action__clicked(self, *args):
-        self.run_dialog(ClientSearch, hide_footer=True)
+        self._search_clients()
 
     def after_client__changed(self, *args):
         # FIXME A bug in kiwi or gtk doesn't allow us to call this 

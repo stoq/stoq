@@ -9,6 +9,7 @@
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
+                        <property name="accelerator">&lt;control&gt;h</property>
                     </object>
                 </child>
                 <child>
@@ -17,6 +18,7 @@
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -108,6 +110,7 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
