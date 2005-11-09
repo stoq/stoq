@@ -119,14 +119,16 @@
                                         <child>
                                             <widget class="GtkButton" id="cash_advance_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Cash Advance...</property>
+                                                <property name="label" context="yes" translatable="yes">Cash _Advance...</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="cash_in_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Cash In...</property>
+                                                <property name="label" context="yes" translatable="yes">Cash _In...</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -136,7 +138,8 @@
                                         <child>
                                             <widget class="GtkButton" id="cash_out_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Cash Out...</property>
+                                                <property name="label" context="yes" translatable="yes">Cash _Out...</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -146,7 +149,8 @@
                                         <child>
                                             <widget class="GtkButton" id="reverse_selection_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Reverse Selection</property>
+                                                <property name="label" context="yes" translatable="yes">_Reverse Selection</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -163,7 +167,8 @@
                                         <child>
                                             <widget class="GtkButton" id="close_till_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Close Till...</property>
+                                                <property name="label" context="yes" translatable="yes">_Close Till...</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
