@@ -79,6 +79,7 @@ TABLES = [
                                             "PersonAdaptToSalesPerson",
                                             "PersonAdaptToBankBranch",
                                             "PersonAdaptToCreditProvider",
+                                            "PersonAdaptToTransporter",
                                             )),
      ('stoq.domain.till',                  ("Till",
                                             "TillAdaptToPaymentGroup",

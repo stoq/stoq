@@ -20,10 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-##  Author(s):  Evandro Vale Miquelito   <evandro@async.com.br>
-##              Henrique Romano          <henrique@async.com.br>
+##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
 ##              Daniel Saran R. da Cunha    <daniel@async.com.br>
-##              Ariqueli Tejada Fonseca  <aritf@async.com.br>
+##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##
 """
 stoq/domain/person.py:
@@ -32,6 +32,7 @@ stoq/domain/person.py:
 """
 
 import gettext
+import datetime
 
 from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol, 
                        ForeignKey, MultipleJoin, BoolCol)
@@ -45,7 +46,7 @@ from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
                                     ISalesPerson, IBankBranch,
-                                    ICreditProvider, IActive)
+                                    ICreditProvider, IActive, ITransporter)
 
 _ = gettext.gettext
 
@@ -241,6 +242,10 @@ class Person(Domain):
     def facet_IClient_add(self, **kwargs):
         self.check_individual_or_company_facets()
         return PersonAdaptToClient(self, **kwargs)
+
+    def facet_ITransporter_add(self, **kwargs):
+        self.check_individual_or_company_facets()
+        return PersonAdaptToTransporter(self, **kwargs)
 
     def facet_ISupplier_add(self, **kwargs):
         self.check_individual_or_company_facets()
@@ -620,3 +625,33 @@ class PersonAdaptToSalesPerson(ModelAdapter):
     comission_type = IntCol(default=COMISSION_BY_SALESPERSON)
                     
 Person.registerFacet(PersonAdaptToSalesPerson)
+
+
+class PersonAdaptToTransporter(ModelAdapter):
+    """ A transporter facet of a person. """
+    
+    implements(ITransporter, IActive)
+
+    is_active = BoolCol(default=True)
+    open_contract_date = DateTimeCol(default=datetime.datetime.now())
+    freight_percentage = FloatCol(default=None)
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This provider is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This bank branch is already active')
+        self.is_active = True
+
+    @classmethod
+    def get_active_transporters(cls, conn):
+        """Get a list of all available transporters"""
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
+
+Person.registerFacet(PersonAdaptToTransporter)

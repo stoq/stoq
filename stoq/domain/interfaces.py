@@ -385,11 +385,8 @@ class ICreditProvider(ConnInterface):
     provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
                               'finance')
-
     short_name  = Attribute('A short description of this provider')
-
     provider_id = Attribute('An identification for this provider')
-
     open_contract_date = Attribute('The date when we start working with '
                                    'this provider')
 
@@ -410,3 +407,12 @@ class IActive(ConnInterface):
 
     def activate():
         """Activate an inactive object"""
+
+
+class ITransporter(ConnInterface):
+    """An individual or company engaged in the transportation"""
+
+    open_contract_date = Attribute('The date when we start working with '
+                                   'this transporter')
+    freight_percentage = Attribute('The percentage amount of freight '
+                                   'charged by this transporter')

@@ -21,13 +21,16 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##
 """
 stoq/examples/person.py:
 
     Create person objects for an example database.
 """
 
-from datetime import datetime
+import datetime
 
 from stoq.lib.runtime import new_transaction, print_msg
 from stoq.domain.profile import UserProfile
@@ -36,7 +39,7 @@ from stoq.domain.person import (Person, EmployeePosition, Address,
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
-                                    IUser, ICreditProvider)
+                                    IUser, ICreditProvider, ITransporter)
 
 def create_persons():
     print_msg('Creating persons...', break_line=False)
@@ -90,6 +93,16 @@ def create_persons():
                      dict(registry_number='7777'),
                      dict(registry_number='6666'),
                      dict(registry_number='5555')]
+
+    now = datetime.datetime.now()
+    transporter_data = [dict(open_contract_date=now, is_active=False,
+                             freight_percentage=2.5),
+                        dict(open_contract_date=now + datetime.timedelta(5),
+                             freight_percentage=7.0),
+                        dict(open_contract_date=now + datetime.timedelta(10),
+                             freight_percentage=10.5),
+                        dict(open_contract_date=now + datetime.timedelta(15),
+                             freight_percentage=12.3)]
 
     user_data = [dict(username='john',
                       password='john243'),
@@ -150,7 +163,7 @@ def create_persons():
 
         credit_provider = credit_provider_data[index]
         person_obj.addFacet(ICreditProvider, connection=trans,
-                            open_contract_date=datetime.today(),
+                            open_contract_date=datetime.datetime.today(),
                             **credit_provider)
 
         position_args = position_data[index]
@@ -171,6 +184,9 @@ def create_persons():
         user_args = user_data[index]
         person_obj.addFacet(IUser, connection=trans, profile=profile,
                             **user_args)
+        transporter_args = transporter_data[index]
+        person_obj.addFacet(ITransporter, connection=trans,
+                            **transporter_args)
         
     trans.commit()
     print_msg('done.')
