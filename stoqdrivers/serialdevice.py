@@ -25,15 +25,15 @@
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/serialdevice.py:
+stoqdrivers/serialdevice.py:
     
     Base routines for serial devices
 """
 
 import serial
 
-from fiscalprinter.basedevice import BaseSerialDevice
-from fiscalprinter.exceptions import CommError
+from stoqdrivers.basedevice import BaseSerialDevice
+from stoqdrivers.exceptions import CommError
 
 
 class SerialDevice(BaseSerialDevice):

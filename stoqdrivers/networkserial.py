@@ -25,15 +25,15 @@
 ##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/networkserial.py:
+stoqdrivers/networkserial.py:
     
     Network serial routines
 """
 
 import socket
 
-from fiscalprinter.basedevice import BaseSerialDevice
-from fiscalprinter.exceptions import CommError
+from stoqdrivers.basedevice import BaseSerialDevice
+from stoqdrivers.exceptions import CommError
 
 
 class NetworkSerialDevice(BaseSerialDevice):

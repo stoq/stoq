@@ -24,7 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/drivers/sweda/IFS9000I.py:
+stoqdrivers/drivers/sweda/IFS9000I.py:
     
     Sweda IFS9000I printer driver implementation. 
 """
@@ -32,17 +32,16 @@ fiscalprinter/drivers/sweda/IFS9000I.py:
 import string
 import datetime
 
-from fiscalprinter.common import is_float
-from fiscalprinter.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT,
-                                     UNIT_METERS, UNIT_LITERS, 
-                                     UNIT_EMPTY)
-from fiscalprinter.exceptions import (PrinterError, CloseCouponError,
+from stoqdrivers.common import is_float
+from stoqdrivers.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT, UNIT_METERS,
+                                   UNIT_LITERS, UNIT_EMPTY)
+from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
      PendingReadX, CommandError, CouponOpenError, CommandParametersError,
      CouponNotOpenError, ReduceZError, HardwareFailure, DriverError,
      OutofPaperError)
-from fiscalprinter.drivers.interface import IFiscalPrinterDriver
-from fiscalprinter.drivers.serialbase import SerialBase
-from fiscalprinter.constants import MONEY_PM, CHEQUE_PM
+from stoqdrivers.drivers.interface import IFiscalPrinterDriver
+from stoqdrivers.drivers.serialbase import SerialBase
+from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 
 payment_methods = {
     MONEY_PM : "01",

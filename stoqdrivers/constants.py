@@ -24,9 +24,9 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/constants.py:
+stoqdrivers/constants.py:
     
-    Fiscal Printer constants
+    StoqDrivers constants
 """
 
 

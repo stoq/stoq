@@ -23,7 +23,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/configparser.py:
+stoqdrivers/configparser.py:
 
     Useful routines when parsing the configuration file
 """
@@ -32,7 +32,7 @@ import os
 import gettext
 from ConfigParser import ConfigParser
 
-from fiscalprinter.exceptions import ConfigError
+from stoqdrivers.exceptions import ConfigError
 
 _ = gettext.gettext
 

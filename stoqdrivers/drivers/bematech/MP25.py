@@ -24,18 +24,18 @@
 ## Author(s):   Cleber Rodrigues      <cleber@globalred.com.br>
 ##
 """
-fiscalprinter/drivers/bematech/MP25.py:
+stoqdrivers/drivers/bematech/MP25.py:
     
     Drivers implementation for Bematech printers.
 """
 import struct
 
-from fiscalprinter.log import Log
-from fiscalprinter.drivers.serialbase import SerialBase
-from fiscalprinter.exceptions import (DriverError, OutofPaperError,
+from stoqdrivers.log import Log
+from stoqdrivers.drivers.serialbase import SerialBase
+from stoqdrivers.exceptions import (DriverError, OutofPaperError,
      PrinterError, CommandError, CouponOpenError, HardwareFailure,
      AlmostOutofPaper)
-from fiscalprinter.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
+from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
      TAX_EXEMPTION, TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
 
 logger = Log()

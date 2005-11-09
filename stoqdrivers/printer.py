@@ -26,17 +26,17 @@
 
 from kiwi.argcheck import argcheck, number, percent
 
-from fiscalprinter.exceptions import CriticalError
-from fiscalprinter.exceptions import CloseCouponError, PaymentAdditionError
-from fiscalprinter.exceptions import (PendingReadX, PendingReduceZ,
-                                      CouponOpenError)
-from fiscalprinter.configparser import FiscalPrinterConfig
-from fiscalprinter.constants import (TAX_NONE,TAX_IOF, TAX_ICMS,
-                                     TAX_SUBSTITUTION, TAX_EXEMPTION)
-from fiscalprinter.constants import (UNIT_EMPTY, UNIT_LITERS,
-                                     UNIT_WEIGHT, UNIT_METERS)
-from fiscalprinter.constants import MONEY_PM, CHEQUE_PM
-from fiscalprinter.log import Logger
+from stoqdrivers.exceptions import CriticalError
+from stoqdrivers.exceptions import CloseCouponError, PaymentAdditionError
+from stoqdrivers.exceptions import (PendingReadX, PendingReduceZ,
+                                    CouponOpenError)
+from stoqdrivers.configparser import FiscalPrinterConfig
+from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS,
+                                   TAX_SUBSTITUTION, TAX_EXEMPTION)
+from stoqdrivers.constants import (UNIT_EMPTY, UNIT_LITERS,
+                                   UNIT_WEIGHT, UNIT_METERS)
+from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
+from stoqdrivers.log import Logger
 
 #
 # Extra data types to argcheck

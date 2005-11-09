@@ -27,7 +27,7 @@
 ##
 ##
 """
-fiscalprinter/drivers/interface.py:
+stoqdrivers/drivers/interface.py:
     
     Driver API
 """

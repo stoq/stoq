@@ -24,12 +24,12 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/drivers/skeleton.py:
+stoqdrivers/drivers/skeleton.py:
     
     A skeleton for all Fiscal Printer drivers.
 """
 
-from fiscalprinter.drivers.interface import IFiscalPrinterDriver
+from stoqdrivers.drivers.interface import IFiscalPrinterDriver
 
 
 class Driver:

@@ -24,17 +24,17 @@
 ## Author(s):   Johan Dahlin     <jdahlin@async.com.br>
 ##
 """
-    fiscalprinter/drivers/daruma/FS345.py:
+stoqdrivers/drivers/daruma/FS345.py:
 
     Daruma printer drivers implementation
 """
 
 import time
 
-from fiscalprinter.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
-                                     TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
-from fiscalprinter.drivers.serialbase import SerialBase
-from fiscalprinter.exceptions import (DriverError, PendingReduceZ,
+from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
+                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
+from stoqdrivers.drivers.serialbase import SerialBase
+from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
      HardwareFailure, AuthenticationFailure, CommError, PendingReadX, 
      CouponNotOpenError, OutofPaperError, PrinterOfflineError,
      CouponOpenError)

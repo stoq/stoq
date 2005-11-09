@@ -24,12 +24,12 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-fiscalprinter/drivers/daruma/FS600MFD.py:
+stoqdrivers/drivers/daruma/FS600MFD.py:
 
   Driver implementation for Daruma FS600MFD
 """
 
-from fiscalprinter.drivers.daruma.FS345 import FS345Printer
+from stoqdrivers.drivers.daruma.FS345 import FS345Printer
 
 class FS600MFDPrinter(FS345Printer):
     pass

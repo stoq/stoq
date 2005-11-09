@@ -24,7 +24,7 @@
 ## Author(s):   Adriano Monteiro        <adriano@globalret.com.br>
 ##
 """
-fiscalprinter/log.py
+stoqdrivers/log.py
 
     Base logging module
 """

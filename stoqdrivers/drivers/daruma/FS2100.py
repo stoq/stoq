@@ -24,15 +24,15 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-fiscalprinter/drivers/daruma/FS2100.py:
+stoqdrivers/drivers/daruma/FS2100.py:
 
   Driver implementation for Daruma FS2100
 """
 
 import operator
 
-from fiscalprinter.drivers.daruma.FS345 import FS345Printer
-from fiscalprinter.constants import TAX_NONE, TAX_SUBSTITUTION
+from stoqdrivers.drivers.daruma.FS345 import FS345Printer
+from stoqdrivers.constants import TAX_NONE, TAX_SUBSTITUTION
 
 CMD_ADD_ITEM = 201
 

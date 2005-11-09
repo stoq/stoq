@@ -24,7 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/exceptions.py:
+stoqdrivers/exceptions.py:
     
     Fiscal Printer exceptions definition
 """

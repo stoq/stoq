@@ -26,7 +26,7 @@
 
 from serial import Serial, EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 
-from fiscalprinter.log import Logger
+from stoqdrivers.log import Logger
 
 class SerialBase(Serial, Logger):
     log_domain = 'serial'

@@ -24,7 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-fiscalprinter/common.py:
+stoqdrivers/common.py:
 
     Common routines for general purpose.
 """

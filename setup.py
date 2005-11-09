@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Setup file for Fiscalprinter 
+# Setup file for StoqDrivers
 # Code by Async Open Source <http://www.async.com.br>
 
 from distutils.core import setup
@@ -14,27 +14,22 @@ def listfiles(*dirs):
                 if filename[0] != '.' and fnmatch(filename, pattern)]
 
 version = ''
-execfile("fiscalprinter/__version__.py")
+execfile("stoqdrivers/__version__.py")
 assert version
 
 setup(
-    name = "FiscalPrinter",
+    name = "Stoqdrivers",
     version =  ".".join(map(str, version)),
-    description = "Drivers for Fiscal Printer",
+    description = "Useful drivers for Stoq and retail systems",
     long_description = """ """,
 
     author = "Async Open Source",
     author_email = "kiko@async.com.br",
     url = "http://www.async.com.br/projects/",
     license = "GNU LGPL 2.1 (see COPYING)",
-    data_files = [
-        ('share/fiscalprinter/glade', 
-         listfiles('fiscalprinter', 'gui', 'glade', '*.glade'))
-        ],
-    packages = ['fiscalprinter',
-                'fiscalprinter.gui',
-                'fiscalprinter.drivers',
-                'fiscalprinter.drivers.daruma',
-                'fiscalprinter.drivers.sweda',
-                'fiscalprinter.drivers.bematech'],
+    packages = ['stoqdrivers',
+                'stoqdrivers.drivers',
+                'stoqdrivers.drivers.daruma',
+                'stoqdrivers.drivers.sweda',
+                'stoqdrivers.drivers.bematech'],
     )
