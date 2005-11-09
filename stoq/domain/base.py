@@ -333,7 +333,8 @@ for klass in (InheritableModel, Domain):
                                         default=datetime.datetime.now()))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
                                         default=datetime.datetime.now()))
-    klass.sqlmeta.addColumn(BoolCol(name='_is_active', default=True))
+    klass.sqlmeta.addColumn(BoolCol(name='_is_active', default=True,
+                                    forceDBName=True))
     klass.sqlmeta.cacheValues = False
     # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
     # properly with parent tables for inherited tables. E.g:
