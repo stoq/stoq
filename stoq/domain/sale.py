@@ -104,6 +104,30 @@ class Sale(Domain):
         kw['_is_active'] = False
         Domain._create(self, id, **kw)
 
+    #
+    # IContainer methods
+    #
+
+    def add_item(self, item):
+        raise NotImplementedError("You should call add_selabble_item "
+                                  "SellableItem method instead.")
+
+    def get_items(self):
+        conn = self.get_connection()
+        return AbstractSellableItem.selectBy(connection=conn, saleID=self.id)
+
+    def remove_item(self, item):
+        if not isinstance(item, AbstractSellableItem):
+            raise TypeError("Item should be of type AbstractSellableItem "
+                            "got %s instead" % item)
+        conn = self.get_connection()
+        table = type(item)
+        table.delete(item.id, connection=conn)
+
+    #
+    # Auxiliar methods
+    #
+
     def get_status_name(self):
         return self.statuses[self.status]
 
@@ -167,30 +191,6 @@ class Sale(Domain):
     charge_percentage = property(_get_charge_by_percentage,
                                  _set_charge_by_percentage)
 
-    #
-    # IContainer methods
-    #
-
-    def add_item(self, item):
-        raise NotImplementedError("You should call add_selabble_item "
-                                  "SellableItem method instead.")
-
-    def get_items(self):
-        conn = self.get_connection()
-        return AbstractSellableItem.selectBy(connection=conn, saleID=self.id)
-
-    def remove_item(self, item):
-        if not isinstance(item, AbstractSellableItem):
-            raise TypeError("Item should be of type AbstractSellableItem "
-                            "got %s instead" % item)
-        conn = self.get_connection()
-        table = type(item)
-        table.delete(item.id, connection=conn)
-
-    #
-    # Auxiliar methods
-    #
-
     def get_till_branch(self):
         return self.till.branch
 
@@ -253,9 +253,11 @@ class Sale(Domain):
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
         
+        
 #
 # Adapters
 #
+
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
