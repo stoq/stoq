@@ -125,7 +125,7 @@ class Payment(Domain):
         self.status = self.STATUS_PAID
 
     def _check_status(self, status, operation_name):
-        assert self.status == status, ('Invalid status for %s'
+        assert self.status == status, ('Invalid status for %s '
                                        'operation: %s' % (operation_name, 
                                        self.statuses[self.status])) 
 
@@ -156,6 +156,18 @@ class Payment(Domain):
         operation.addFacet(IPaymentDevolution, connection=conn,
                            reason=reason)
         self.status = self.STATUS_PAID
+
+    def cancel_payment(self):
+        if self.status != Payment.STATUS_CANCELLED:
+            self._check_status(self.STATUS_TO_PAY, 'reverse selection')
+            self.status = self.STATUS_CANCELLED
+            payment = self.clone()
+            # payment_id should be incremented automatically.
+            # Waiting for bug 2214.
+            description = "Cancellation of payment number %s" % self.payment_id
+            payment.description = description
+            payment.value *= -1
+            payment.due_date = datetime.datetime.now()
 
     def get_payable_value(self, paid_date=None):
         """ Returns the calculated payment value with the daily penalty.
@@ -367,3 +379,9 @@ class PaymentAdaptToOutPayment(ModelAdapter):
         payment.pay()
 
 Payment.registerFacet(PaymentAdaptToOutPayment)
+
+class CashAdvanceInfo(Domain):
+    employee = ForeignKey("PersonAdaptToEmployee")
+    payment = ForeignKey("Payment")
+    open_date = DateTimeCol(default=datetime.datetime.now())
+                

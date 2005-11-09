@@ -103,6 +103,7 @@ TABLES = [
                                             "Payment",
                                             "PaymentAdaptToInPayment",
                                             "PaymentAdaptToOutPayment",
+                                            "CashAdvanceInfo",
                                             )),
      ('stoq.domain.payment.methods',       ("BillCheckGroupData",
                                             "PMAdaptToMoney",
