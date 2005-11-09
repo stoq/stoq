@@ -24,7 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-stoqdrivers/drivers/sweda/IFS9000I.py:
+stoqdrivers/devices/printers/sweda/IFS9000I.py:
     
     Sweda IFS9000I printer driver implementation. 
 """
@@ -32,15 +32,18 @@ stoqdrivers/drivers/sweda/IFS9000I.py:
 import string
 import datetime
 
+from zope.interface import implements
+
 from stoqdrivers.common import is_float
 from stoqdrivers.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT, UNIT_METERS,
                                    UNIT_LITERS, UNIT_EMPTY)
 from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
-     PendingReadX, CommandError, CouponOpenError, CommandParametersError,
-     CouponNotOpenError, ReduceZError, HardwareFailure, DriverError,
-     OutofPaperError)
-from stoqdrivers.drivers.interface import IFiscalPrinterDriver
-from stoqdrivers.drivers.serialbase import SerialBase
+                                    PendingReadX, CommandError, CouponOpenError,
+                                    CommandParametersError, CouponNotOpenError,
+                                    ReduceZError, HardwareFailure, DriverError,
+                                    OutofPaperError)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 
 payment_methods = {
@@ -50,7 +53,7 @@ payment_methods = {
 
 class IFS9000IPrinter(SerialBase):
 
-    __implements__ = IFiscalPrinterDriver
+    implements(ICouponPrinter)
 
     CMD_PREFIX = "."
     CMD_SUFFIX = EOL_DELIMIT = '}'
@@ -382,7 +385,7 @@ class IFS9000IPrinter(SerialBase):
         return rv
 
     #
-    # IFiscalPrinterDriver implementation
+    # ICouponPrinter implementation
     #
 
 

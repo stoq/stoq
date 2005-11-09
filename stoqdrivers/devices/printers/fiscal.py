@@ -22,21 +22,18 @@
 ## USA.
 ##
 ## Author(s):   Johan Dahlin     <jdahlin@async.com.br>
+##              Henrique Romano  <henrique@async.com.br>
 ##
 
 from kiwi.argcheck import argcheck, number, percent
 
-from stoqdrivers.exceptions import CriticalError
-from stoqdrivers.exceptions import CloseCouponError, PaymentAdditionError
-from stoqdrivers.exceptions import (PendingReadX, PendingReduceZ,
+from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
+                                    PendingReadX, PendingReduceZ,
                                     CouponOpenError)
-from stoqdrivers.configparser import FiscalPrinterConfig
-from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS,
-                                   TAX_SUBSTITUTION, TAX_EXEMPTION)
-from stoqdrivers.constants import (UNIT_EMPTY, UNIT_LITERS,
-                                   UNIT_WEIGHT, UNIT_METERS)
-from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
-from stoqdrivers.log import Logger
+from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+                                   TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
+                                   UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM)
+from stoqdrivers.devices.printers.base import BasePrinter
 
 #
 # Extra data types to argcheck
@@ -66,77 +63,11 @@ class payment_method(number):
 # FiscalPrinter interface
 #
 
-class FiscalPrinter(Logger):
+class FiscalPrinter(BasePrinter):
     log_domain = 'fp'
     def __init__(self, config_file=None):
-        """On printer __init__ time, BaseDriver.__init__ gets called. This
-        has the affect of setting up a self.device.
-
-        The following device backends exist:
-        - serial: uses pySerial
-        - network: implemented in NetworkSerialDevice.py 
-                    (usable with ser2net or something like it, 
-                     not stable though...)
-
-        To choose which device to use, add a key named 'device-type' to 
-        the config dictionary that is passed to this constructor. Set its 
-        value to either one of the backend names.
-
-        The methods which actually transmit and receive data 
-        (through a 'self.device') are:
-                                        - self._write
-                                        - self._read
-        """
-        Logger.__init__(self)
-        
-        self._load_configuration(config_file)
+        BasePrinter.__init__(self, config_file)
         self.has_been_totalized = False
-
-    def _load_configuration(self, config_file):
-        config = FiscalPrinterConfig(config_file)
-
-        # Log printer/driver configuration 
-        c = []
-        device_type = config.get_devicetype()
-        brand = config.get_brand()
-        model = config.get_model()
-        c.append(('model', model))
-        c.append(('brand', brand))
-        c.append(('devicetype', device_type))
-        c.append(('device', config.get_device()))
-        c.append(('baudrate', config.get_baudrate()))
-        c.append(('port', config.get_port()))
-        c.append(('host', config.get_host()))
-        self.debug('Config data: %s\n' % ','.join(['='.join(i) for i in c]))
-
-        name = 'fiscalprinter.drivers.%s.%s' % (brand, model)
-        try:
-            module = __import__(name, None, None, 'fiscalprinter')
-        except ImportError, reason:
-            raise CriticalError("Could not load driver %s: %s"
-                                % (model, reason))
-
-        class_name = model + 'Printer'
-
-        driver_class = getattr(module, class_name, None)
-        if driver_class is None:
-            raise CriticalError("Printer driver %s needs a class "
-                                "called %s" % (name, class_name))
-
-        # Default is SerialDevice (pySerial)
-        if device_type == 'serial':
-            self._driver = driver_class(device=config.get_device(),
-                                        baudrate=config.get_baudrate())
-        # If the user is really nuts, he can try the NetworkSerialDevice
-        #elif device_type == 'network':
-        #    self._driver = NetworkSerialDevice(host=config.get_host(),
-        #                                       port=config.get_port())
-        else:
-            raise CriticalError("Unknown 'device-type': check your "
-                                "configuration file or supplied "
-                                "'config' parameter and supply a "
-                                "'device-type' of either 'serial', "
-                                "'posixserial' or 'network'")
 
     @argcheck(str, str, str)
     def open(self, customer, address, document):

@@ -26,7 +26,7 @@
 """
 stoqdrivers/exceptions.py:
     
-    Fiscal Printer exceptions definition
+    StoqDrivers exceptions definition
 """
 
 class CriticalError(Exception):

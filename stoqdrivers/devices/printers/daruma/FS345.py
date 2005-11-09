@@ -24,21 +24,24 @@
 ## Author(s):   Johan Dahlin     <jdahlin@async.com.br>
 ##
 """
-stoqdrivers/drivers/daruma/FS345.py:
-
+stoqdrivers/devices/printers/daruma/FS345.py:
+    
     Daruma printer drivers implementation
 """
 
 import time
 
+from zope.interface import implements
+
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
-from stoqdrivers.drivers.serialbase import SerialBase
-from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
-     HardwareFailure, AuthenticationFailure, CommError, PendingReadX, 
-     CouponNotOpenError, OutofPaperError, PrinterOfflineError,
-     CouponOpenError)
-
+from stoqdrivers.devices.serialbase import SerialBase
+from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure,
+                                    AuthenticationFailure, CommError,
+                                    PendingReadX, CouponNotOpenError,
+                                    OutofPaperError, PrinterOfflineError,
+                                    CouponOpenError)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
 
 CMD_STATUS = '\x1d\xff'
 
@@ -115,6 +118,8 @@ payment_methods = {
 
 class FS345Printer(SerialBase):
     log_domain = 'fs345'
+
+    implements(ICouponPrinter)
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra

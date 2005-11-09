@@ -27,12 +27,14 @@
 ##
 ##
 """
-stoqdrivers/drivers/interface.py:
+stoqdrivers/devices/printers/interface.py:
     
-    Driver API
+    Printer Driver API
 """
 
-class IFiscalPrinterDriver:
+from zope.interface import Interface
+
+class ICouponPrinter(Interface):
     """
     Describes coupon related tasks for a printer.
 
@@ -51,13 +53,9 @@ class IFiscalPrinterDriver:
           defined in BaseDriver class.
     """
 
-
-
     #
     # Common API
     #
-
-
 
     def coupon_open(customer, address, document):
         """
@@ -147,13 +145,10 @@ class IFiscalPrinterDriver:
         @param message:      promotional message
         @type message:       string
         """
-    
 
     #
     # Base admin operations
     #
-
-
 
     def summarize():
         """
@@ -168,12 +163,9 @@ class IFiscalPrinterDriver:
         In Brazil this is 'reduce Z' operation
         """
 
-
     #
     # Getting printer status
     #
-
-
 
     def get_status():
         """

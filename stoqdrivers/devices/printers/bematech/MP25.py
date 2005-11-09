@@ -30,13 +30,18 @@ stoqdrivers/drivers/bematech/MP25.py:
 """
 import struct
 
+from zope.interface import implements
+
 from stoqdrivers.log import Log
-from stoqdrivers.drivers.serialbase import SerialBase
+from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.exceptions import (DriverError, OutofPaperError,
-     PrinterError, CommandError, CouponOpenError, HardwareFailure,
-     AlmostOutofPaper)
+                                    PrinterError, CommandError,
+                                    CouponOpenError, HardwareFailure,
+                                    AlmostOutofPaper)
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
-     TAX_EXEMPTION, TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
+                                   TAX_EXEMPTION, TAX_SUBSTITUTION,
+                                   MONEY_PM, CHEQUE_PM)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
 
 logger = Log()
 
@@ -542,6 +547,8 @@ payment_methods = {
 
 class MP25Printer(SerialBase):
 
+    implements(ICouponPrinter)
+
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
         self.remainder_value = 0.00
@@ -574,7 +581,7 @@ class MP25Printer(SerialBase):
         return float(''.join(['%x' % ord(i) for i in subtotal])) / 1e4
 
     #
-    # This implements the IFiscalPrinterDriver Interface
+    # This implements the ICouponPrinter Interface
     #
 
     def summarize(self):
@@ -683,6 +690,6 @@ class MP25Printer(SerialBase):
         
 
     #
-    # Here ends the implementation of the IFiscalPrinterDriver Interface
+    # Here ends the implementation of the ICouponPrinter Driver Interface
     #
 
