@@ -85,6 +85,22 @@ class AppWindow(BaseAppWindow):
                              'attribute')
         self.toplevel.set_title(self.get_title())
 
+    def key_control_k(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        self._store_cookie()
+
+    def key_control_e(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        self._clear_cookie()
+
+    def key_control_h(self, *args):
+        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
+        # for menuitems
+        # Implement a change user dialog here
+        pass 
+
     def get_title(self):
         # This method must be redefined in child when it's needed
         return _('Stoq - %s') % self.app_name

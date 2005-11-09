@@ -16,6 +16,7 @@
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
+                        <property name="accelerator">&lt;Control&gt;h</property>
                     </object>
                 </child>
                 <child>
@@ -24,6 +25,7 @@
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -31,6 +33,7 @@
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Find Clients...</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -103,12 +106,13 @@
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Find Sales...</property>
                         <signal handler="_on_sales_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;l</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
-                        <property name="label" translatable="yes">_Sales</property>
+                        <property name="label" translatable="yes">Sales</property>
                     </object>
                 </child>
                 <child>
@@ -129,15 +133,16 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">S_earch</property>
+                        <property name="label" translatable="yes">Search</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
-                        <property name="label" translatable="yes">_Store Cookie</property>
+                        <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -149,7 +154,7 @@
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
-                        <property name="label" translatable="yes">_User</property>
+                        <property name="label" translatable="yes">User</property>
                     </object>
                 </child>
             </object>
@@ -308,17 +313,14 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage6">
                                                                         <property name="file">add16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property
-                                                                        name="label"
-                                                                        context="yes"
-                                                                        translatable="yes">_Add to Order</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Add to Order</property>
                                                                         <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -346,14 +348,14 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage8">
                                                                         <property name="file">search16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Adva_nced Search</property>
+                                                                        <property name="label" context="yes" translatable="yes">Advanced _Search</property>
                                                                         <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -386,6 +388,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="order_list">
                                 <property name="border_width">5</property>
+                                <property name="is_focus">True</property>
                                 <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
@@ -413,17 +416,14 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage2">
                                                                         <property name="file">remove16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property
-                                                                        name="label"
-                                                                        context="yes"
-                                                                        translatable="yes">_Remove</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Remove</property>
                                                                         <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -448,7 +448,7 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage3">
                                                                         <property name="file">edit16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -483,7 +483,7 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage4">
                                                                         <property name="file">delivery16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -518,7 +518,7 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage5">
                                                                         <property name="file">confirm16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
