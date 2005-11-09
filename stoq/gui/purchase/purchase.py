@@ -49,7 +49,7 @@ from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.product import ProductEditor
 from stoq.gui.editors.service import ServiceEditor
-from stoq.gui.search.person import SupplierSearch
+from stoq.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -219,6 +219,4 @@ class PurchaseApp(AppWindow):
         finish_transaction(conn, model)
 
     def _on_transporters_action_clicked(self, *args): 
-        conn = new_transaction()
-        model = run_person_role_dialog(TransporterEditor, self, conn)
-        finish_transaction(conn, model)
+        self.run_dialog(TransporterSearch, hide_footer=True)

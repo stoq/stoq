@@ -641,17 +641,26 @@ class PersonAdaptToTransporter(ModelAdapter):
     #
 
     def inactivate(self):
-        assert self.is_active, ('This provider is already inactive')
+        assert self.is_active, ('This transporter is already inactive')
         self.is_active = False
 
     def activate(self):
-        assert not self.is_active, ('This bank branch is already active')
+        assert not self.is_active, ('This transporter is already active')
         self.is_active = True
+
+    #
+    # Auxiliar methods
+    #
 
     @classmethod
     def get_active_transporters(cls, conn):
         """Get a list of all available transporters"""
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
 
 Person.registerFacet(PersonAdaptToTransporter)
