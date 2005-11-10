@@ -48,6 +48,7 @@ from stoq.gui.editors.product import ProductItemEditor
 
 _ = gettext.gettext
 
+
 class DeliveryEditor(BaseEditor):
     model_name = _('Delivery')
     model_type = ServiceSellableItem
@@ -86,19 +87,12 @@ class DeliveryEditor(BaseEditor):
             self.additional_info_label.hide()
 
     #
-    # AdditionListSlave hooks
+    # Callbacks
     #
 
-    def before_delete_items(self, items):
+    def before_delete_items(self, slave, items):
         delivery = IDelivery(self.model, connection=self.conn)
         delivery.remove_items(items)
-
-    def on_edit_item(self, item):
-        pass
-
-    #
-    # Kiwi handlers
-    #
 
     def on_change_address_button__clicked(self, button):
         cols = [Column('address_string', title=_('Address'), data_type=str, 
@@ -177,13 +171,11 @@ class DeliveryEditor(BaseEditor):
 
         delivery = IDelivery(self.model, connection=self.conn)
         items = delivery.get_items()
-        self.addition_list_slave = AdditionListSlave(self.conn, self, 
-                                                     ProductItemEditor,
-                                                     columns, items)
-        self.addition_list_slave.hide_add_button()
-
-        self.attach_slave('addition_list_holder', 
-                          self.addition_list_slave)
+        self.slave = AdditionListSlave(self.conn, ProductItemEditor, 
+                                       columns, items)
+        self.slave.hide_add_button()
+        self.slave.connect('before-delete-items', self.before_delete_items)
+        self.attach_slave('addition_list_holder', self.slave)
 
     def on_cancel(self):
         if not self.edit_mode:

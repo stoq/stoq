@@ -41,14 +41,18 @@ from stoq.domain.person import Address, CityLocation
 
 _ = gettext.gettext
 
+
 class AddressAdditionDialog(AdditionListDialog):
     title = _('Additional Addresses')
 
     def __init__(self, conn, klist_objects, **editor_kwargs):
         cols = self.get_columns()
-        AdditionListDialog.__init__(self, conn, self, AddressEditor,
-                                    cols, klist_objects, self.title,
-                                    **editor_kwargs)
+        AdditionListDialog.__init__(self, conn, AddressEditor,
+                                    cols, klist_objects, self.title)
+        self.register_editor_kwargs(**editor_kwargs)
+        self.set_before_delete_items(self.before_delete_items)
+        self.set_on_add_item(self.on_add_item)
+        self.set_on_edit_item(self.on_edit_item)
         self.main_address = None
 
     def get_columns(self):
@@ -64,25 +68,20 @@ class AddressAdditionDialog(AdditionListDialog):
             self.main_address.is_main_address = False
         self.main_address = main_address
 
-
-
     #
-    # AdditionListDialog hooks
+    # Callbacks
     #
 
-
-
-    def before_delete_items(self, items):
+    def before_delete_items(self, slave, items):
         assert len(items) >= 1
-
         for item in items:
             Address.delete(item.id, connection=self.conn)
 
-    def on_add_item(self, model):
+    def on_add_item(self, slave, model):
         if model.is_main_address:
             self.set_main_address(model)
 
-    def on_edit_item(self, model):
+    def on_edit_item(self, slave, model):
         if model.is_main_address:
             self.set_main_address(model)
 
@@ -123,5 +122,3 @@ class AddressEditor(BaseEditor):
 
     def on_confirm(self):
         return self.address_slave.on_confirm()
-
-
