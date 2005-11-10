@@ -154,7 +154,7 @@ class AppWindow(BaseAppWindow):
         authors = app.find_resource('docs', 'AUTHORS')
         lines = [a.strip() for a in file(authors).readlines()]
         lines.append('') # separate authors from contributors
-        contributors = app.find_resource('docs', 'AUTHORS')
+        contributors = app.find_resource('docs', 'CONTRIBUTORS')
         lines.extend([c.strip() for c in file(contributors).readlines()])
         about.set_authors(lines)
 
