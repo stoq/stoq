@@ -32,7 +32,6 @@ gui/slaves/liaison.py:
 
 import gettext
 
-
 from stoqlib.gui.lists import AdditionListDialog
 from kiwi.ui.widgets.list import Column
 
@@ -42,13 +41,16 @@ from stoq.domain.person import Liaison
 
 _ = gettext.gettext
 
+
 class LiaisonListDialog(AdditionListDialog):
 
     def __init__(self, conn, person, liaison_list=None):
         self.person = person
-        AdditionListDialog.__init__(self, conn, self, ContactEditor,
+        AdditionListDialog.__init__(self, conn, ContactEditor,
                                     self.get_columns(), liaison_list,
                                     _('Additional Contacts'))
+        self.set_before_delete_items(self.before_delete_items)
+        self.set_on_add_item(self.on_add_item)
 
     def get_columns(self):
         return [Column('name', title=_('Name'),
@@ -60,19 +62,13 @@ class LiaisonListDialog(AdditionListDialog):
     def get_liaisons(self):
         return self.klist
 
-
-
     #
-    # AdditionListDialog hooks
+    # Callbacks
     # 
 
-
-
-    def before_delete_items(self, items):
+    def before_delete_items(self, slave, items):
         for item in items:
             Liaison.delete(item.id, connection=self.conn)
 
-    def on_add_item(self, item):
+    def on_add_item(self, slave, item):
         item.person = self.person
-
-
