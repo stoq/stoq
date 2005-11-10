@@ -32,29 +32,37 @@ stoq/tests/domain/runtests.py:
 import os
 import sys
 import doctest
-import subprocess
 
-from stoq.lib.runtime import print_immediately, set_test_mode
-from stoq.environ import get_sbin_file_path, get_docs_dir
+from kiwi.environ import app
 
+from stoq.examples.createall import create
+from stoq.lib.admin import setup_tables, ensure_admin_user
+from stoq.lib.parameters import ensure_system_parameters
+from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
 
 VERBOSE = '-v' in sys.argv
-IGNORE_EXAMPLES = '-i' in sys.argv
+WITH_EXAMPLES = '-e' in sys.argv
 
-print_immediately('Initializing test database... ')
-initdb_file = get_sbin_file_path('init-database')
-initdb_args = [initdb_file, '-t', '-v']
-if not IGNORE_EXAMPLES:
-    initdb_args.append('-e')
-subprocess.call(initdb_args)
+set_verbose(False)
+setup_tables(delete_only=True, list_tables=True, verbose=True)
+set_verbose(VERBOSE)
+setup_tables(verbose=True)
+ensure_system_parameters()
+ensure_admin_user("Superuser", "administrator", "")
 
-print_immediately('Performing domain module tests... ')
-domain_tests_dir = os.path.join(get_docs_dir(), 'domain')
+if WITH_EXAMPLES:
+    create()
+
+if VERBOSE:
+    print_immediately('Performing domain module tests... ')
+domain_tests_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
+                                                '..', '..', 'docs', 'domain'))
 doc_files = [filename for filename in os.listdir(domain_tests_dir)
-                    if filename.endswith('.txt')]
-                        
+                          if filename.endswith('.txt')]
+
 set_test_mode(True)
 for doc_file in doc_files:
     doc_file = os.path.join(domain_tests_dir, doc_file)
     doctest.testfile(doc_file, verbose=VERBOSE, module_relative=False)
-print_immediately('done')
+if VERBOSE:
+    print_immediately('done')
