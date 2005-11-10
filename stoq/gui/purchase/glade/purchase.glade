@@ -5,6 +5,14 @@
         <child>
             <object class="GtkActionGroup" id="DefaultActions">
                 <child>
+                    <object class="GtkAction" id="AddOrder">
+                        <property name="name">AddOrder</property>
+                        <property name="label" translatable="yes">Add Order...</property>
+                        <signal handler="_on_order_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;a</property>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="BaseCategories">
                         <property name="name">BaseCategories</property>
                         <property name="label" translatable="yes">Find Base Categories...</property>
@@ -161,7 +169,6 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -216,7 +223,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="SendToSupplier" name="SendToSupplier"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="SendToSupplier" name="SendToSupplier"/><menuitem action="AddOrder" name="AddOrder"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   

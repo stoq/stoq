@@ -426,6 +426,15 @@ class PersonAdaptToSupplier(ModelAdapter):
     
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = StringCol(default='')
+
+    #
+    # Auxiliar methods
+    #
+    
+    @classmethod
+    def get_active_suppliers(cls, conn):
+        query = cls.q.status == cls.STATUS_ACTIVE
+        return cls.select(query, connection=conn)
                     
 Person.registerFacet(PersonAdaptToSupplier)
 
@@ -473,10 +482,8 @@ class PersonAdaptToUser(ModelAdapter):
     """ An user facet of a person. """
     
     implements(IUser, IActive)
-
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
-
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive')}
 
@@ -508,9 +515,41 @@ Person.registerFacet(PersonAdaptToUser)
 class PersonAdaptToBranch(ModelAdapter):
     """ A branch facet of a person. """
     
-    implements(IBranch)
+    implements(IBranch, IActive)
+
+    (STATUS_ACTIVE,
+     STATUS_INACTIVE) = range(2)
+    statuses = {STATUS_ACTIVE:      _('Active'),
+                STATUS_INACTIVE:    _('Inactive')}
 
     manager = ForeignKey('Person', default=None)
+    is_active= BoolCol(default=True)
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This user is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This user is already active')
+        self.is_active = True
+
+    def get_status_str(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
+    #
+    # Auxiliar methods
+    #
+    
+    @classmethod
+    def get_active_branches(cls, conn):
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
                     
 Person.registerFacet(PersonAdaptToBranch)
 
@@ -611,7 +650,7 @@ Person.registerFacet(PersonAdaptToCreditProvider)
 class PersonAdaptToSalesPerson(ModelAdapter):
     """ A sales person facet of a person. """
 
-    implements(ISalesPerson)
+    implements(ISalesPerson, IActive)
 
     (COMISSION_GLOBAL, 
      COMISSION_BY_SALESPERSON, 
@@ -623,6 +662,34 @@ class PersonAdaptToSalesPerson(ModelAdapter):
 
     comission = FloatCol(default=0.0)
     comission_type = IntCol(default=COMISSION_BY_SALESPERSON)
+    is_active = BoolCol(default=True)
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This salesperson is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This salesperson is already active')
+        self.is_active = True
+
+    #
+    # Auxiliar methods
+    #
+
+    @classmethod
+    def get_active_salespersons(cls, conn):
+        """Get a list of all active salespersons"""
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
                     
 Person.registerFacet(PersonAdaptToSalesPerson)
 
@@ -648,6 +715,11 @@ class PersonAdaptToTransporter(ModelAdapter):
         assert not self.is_active, ('This transporter is already active')
         self.is_active = True
 
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
+
     #
     # Auxiliar methods
     #
@@ -657,10 +729,5 @@ class PersonAdaptToTransporter(ModelAdapter):
         """Get a list of all available transporters"""
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
-
-    def get_status_string(self):
-        if self.is_active:
-            return _('Active')
-        return _('Inactive')
 
 Person.registerFacet(PersonAdaptToTransporter)
