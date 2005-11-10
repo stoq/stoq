@@ -90,10 +90,6 @@ class BaseEditorSlave(SlaveDelegate):
         action needs to be executed when cancelling in the dialog. """
         return False
 
-    def before_delete_items(self, items):
-        """Redefine this when you need to remove data on database
-        table associated with a AdditionListSlave instance."""
-
     def on_confirm(self):
         """ This is a hook method which must be redefined when some
         action needs to be executed when confirming in the dialog. """

@@ -1,25 +1,29 @@
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
-#
-# Copyright (C) 2005 Async Open Source
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
 
+##
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+##  Author(s): Evandro Vale Miquelito   <evandro@async.com.br>
+##
 """
-gui/lists.py:
+stoqlib/gui/lists.py:
 
     List management for common dialogs.
 """
@@ -28,6 +32,7 @@ import gettext
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.utils import gsignal
 
 from stoqlib.gui.dialogs import run_dialog, confirm_dialog
 from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
@@ -44,29 +49,31 @@ class AdditionListSlave(SlaveDelegate):
     columns         = columns definition for AdditionListSlave klist widget.
     klist_objects   = list of inicial objects to sendo to AdditionListSlave
                       klist widget.
-    editor_kwargs   = additional arguments for editor class constructor.
-
-    before_delete_items = a hook method that may be defined by parent. For
-                          instance, use this hook to do some interesting 
-                          tasks before delete items from a list.
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
-    widgets = ('add_button', 'delete_button', 'klist', 'edit_button')
+    widgets = ('add_button', 
+               'delete_button', 
+               'klist', 
+               'edit_button')
+    gsignal('on-edit-item', object)
+    gsignal('on-add-item', object)
+    gsignal('before-delete-items', object)
 
-    def __init__(self, conn, parent, editor_class, columns, klist_objects=None,
-                 **editor_kwargs):
+    def __init__(self, conn, editor_class, columns, klist_objects=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self.conn = conn
         self.editor_class = editor_class
+        self._editor_kwargs = dict()
         self.columns = columns
-        self.editor_kwargs = editor_kwargs
-        self.parent = parent
         self._setup_list()
         if klist_objects:
             self.klist.add_list(klist_objects)
         self._update_widgets()
+
+    def register_editor_kwargs(self, **kwargs):
+        self._editor_kwargs = kwargs
 
     def _setup_list(self):
         self.klist.set_columns(self.columns)
@@ -95,15 +102,15 @@ class AdditionListSlave(SlaveDelegate):
     def run(self, model=None):
         edit_mode = model
         model = run_dialog(self.editor_class, None, conn=self.conn,
-                           model=model, **self.editor_kwargs)
+                           model=model, **self._editor_kwargs)
         if not model:
             return
         if edit_mode or model in self.klist:
             self.klist.update(model)
-            self.parent.on_edit_item(model)
+            self.emit('on-edit-item', model)
         else:
             self.klist.append(model)
-            self.parent.on_add_item(model)
+            self.emit('on-add-item', model)
 
         # As we have a selection extended mode for kiwi list, we 
         # need to unselect everything before select the new instance.
@@ -121,13 +128,9 @@ class AdditionListSlave(SlaveDelegate):
         model = objs[0]
         self.run(model)
 
-
-
     #
     # Public API
     #
-
-
 
     def hide_add_button(self):
         self.add_button.hide()
@@ -138,13 +141,9 @@ class AdditionListSlave(SlaveDelegate):
     def hide_del_button(self):
         self.del_button.hide()
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def on_klist__double_click(self, *args):
         self.edit()
@@ -172,7 +171,7 @@ class AdditionListSlave(SlaveDelegate):
         if not confirm_dialog(msg):
             return
 
-        self.parent.before_delete_items(objs)
+        self.emit('before-delete-items', objs)
         if qty == len(self.klist):
             self.klist.clear()
 
@@ -186,34 +185,37 @@ class AdditionListSlave(SlaveDelegate):
 class AdditionListDialog(BasicPluggableDialog):
     size = (500, 500)
 
-    def __init__(self, conn, parent, editor_class, columns, klist_objects,
-                 title='', **editor_kwargs):
+    def __init__(self, conn, editor_class, columns, klist_objects, 
+                 title=''):
         self.title = title
         BasicPluggableDialog.__init__(self)
         self.conn = conn
-        self._initialize(editor_class, columns, klist_objects, **editor_kwargs)
+        self._initialize(editor_class, columns, klist_objects)
 
-    def _initialize(self, editor_class, columns, klist_objects,
-                    **editor_kwargs):
-        self.addition_list = AdditionListSlave(self.conn, self, 
-                                               editor_class, columns,
-                                               klist_objects, 
-                                               **editor_kwargs)
-
+    def _initialize(self, editor_class, columns, klist_objects):
+        self.addition_list = AdditionListSlave(self.conn, editor_class, 
+                                               columns, klist_objects)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm
-
         BasicPluggableDialog._initialize(self, self.addition_list,
                                          size=self.size, title=self.title)
 
+    def register_editor_kwargs(self, **kwargs):
+        self.addition_list.register_editor_kwargs(**kwargs)
 
+    def set_before_delete_items(self, callback):
+        self.addition_list.connect('before-delete-items', callback)
+
+    def set_on_add_item(self, callback):
+        self.addition_list.connect('on-add-item', callback)
+
+    def set_on_edit_item(self, callback):
+        self.addition_list.connect('on-edit-item', callback)
 
     #
     # BasicPluggableDialog callbacks
     #
-
-
 
     def on_cancel(self):
         return
@@ -223,23 +225,6 @@ class AdditionListDialog(BasicPluggableDialog):
 
     def validate_confirm(self):
         return True    
-
-
-
-    #
-    # AdditionListSlave callbacks
-    #
-
-
-
-    def on_add_item(self, obj):
-        pass
-
-    def before_delete_items(self, *objs):
-        pass
-
-    def on_edit_item(self, obj):
-        pass
 
 
 class SimpleListDialog(BasicDialog):
