@@ -44,8 +44,6 @@ from stoq.domain.interfaces import ISupplier
 from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_formatted_price
 from stoq.lib.defaults import ALL_ITEMS_INDEX
-from stoq.gui.editors.person import TransporterEditor
-from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.product import ProductEditor
 from stoq.gui.editors.service import ServiceEditor
