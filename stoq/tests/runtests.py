@@ -33,8 +33,6 @@ import os
 import sys
 import doctest
 
-from kiwi.environ import app
-
 from stoq.examples.createall import create
 from stoq.lib.admin import setup_tables, ensure_admin_user
 from stoq.lib.parameters import ensure_system_parameters
