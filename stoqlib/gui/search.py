@@ -734,10 +734,6 @@ class SearchDialog(BasicDialog):
             self.klist.select(objs[0])
         self.update_widgets()
 
-    def before_delete_items(self, items):
-        """ This hook could be useful for AdditionListSlave instances. It 
-        must be redefined by childs when it's necessary. """
-
     def update_widgets(self, *args):
         """ Subclass can have an 'update_widgets', and this method will be
         called when a signal is emitted by 'Filter' or 'Clear' buttons and 
