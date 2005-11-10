@@ -33,7 +33,7 @@ import datetime
 
 from stoq.domain.purchase import PurchaseOrder, PurchaseItem
 from stoq.domain.person import Person
-from stoq.domain.interfaces import ISupplier
+from stoq.domain.interfaces import ISupplier, IBranch
 from stoq.domain.sellable import AbstractSellable
 from stoq.lib.runtime import new_transaction, print_msg
 
@@ -46,9 +46,15 @@ def create_purchases():
     conn = new_transaction()
 
     supplier_table = Person.getAdapterClass(ISupplier)
-    suppliers = supplier_table.select(connection=conn)
+    suppliers = supplier_table.get_active_suppliers(conn)
     if suppliers.count() < MAX_PURCHASES_NUMBER:
         raise ValueError('You must have at least %d suppliers in your '
+                         'database at this point.' % MAX_PURCHASES_NUMBER)
+
+    branch_table = Person.getAdapterClass(IBranch)
+    branches = branch_table.get_active_branches(conn)
+    if branches.count() < MAX_PURCHASES_NUMBER:
+        raise ValueError('You must have at least %d branches in your '
                          'database at this point.' % MAX_PURCHASES_NUMBER)
 
     sellables = AbstractSellable.select(connection=conn)
@@ -93,9 +99,11 @@ def create_purchases():
     for index in range(MAX_PURCHASES_NUMBER):
 
         supplier = suppliers[index]
+        branch = branches[index]
         
         purchase_args = purchase_data[index]
         order = PurchaseOrder(connection=conn, supplier=supplier,
+                              branch=branch,
                               order_number=index + 1,
                               **purchase_args)
 

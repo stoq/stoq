@@ -98,7 +98,8 @@ class PurchaseOrder(Domain):
                      FREIGHT_CIF    : _('CIF')}
     
     status = IntCol(default=ORDER_QUOTING)
-    order_number = IntCol(unique=True)
+    # Field order_number must be unique. Waiting for bug 2214
+    order_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.now())
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=None)
@@ -108,9 +109,25 @@ class PurchaseOrder(Domain):
     notes = StringCol(default='')
     salesperson_name = StringCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
+    freight = FloatCol(default=0.0)
     charge_value = FloatCol(default=0.0)
     discount_value = FloatCol(default=0.0)
     supplier = ForeignKey('PersonAdaptToSupplier')
+    branch = ForeignKey('PersonAdaptToBranch')
+    transporter = ForeignKey('PersonAdaptToTransporter', default=None)
+
+    #
+    # SQLObject hooks
+    #
+
+    def _create(self, id, **kw):
+        # Purchase objects must be set as active explicitly
+        kw['_is_active'] = False
+        Domain._create(self, id, **kw)
+
+    #
+    # Auxiliar methods
+    #
 
     def get_purchase_total(self):
         return sum([item.cost for item in self.get_items()])
@@ -127,6 +144,10 @@ class PurchaseOrder(Domain):
             raise DatabaseInconsistency('Got an unexpected status value: '
                                         '%s' % self.status)
         return self.statuses[self.status]
+
+    def validate(self):
+        if not self.get_active():
+            self.set_active()
 
     #
     # IContainer implementation

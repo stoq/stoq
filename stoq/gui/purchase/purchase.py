@@ -49,6 +49,7 @@ from stoq.gui.editors.product import ProductEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.wizards.purchase import PurchaseWizard
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
 
@@ -147,13 +148,9 @@ class PurchaseApp(AppWindow):
                        format_func=get_formatted_price,
                        data_type=float, justify=gtk.JUSTIFY_RIGHT)]
 
-
-
     #
     # Hooks
     #
-
-
 
     def update_klist(self, purchases=None):
         """Hook called by SearchBar"""
@@ -166,7 +163,6 @@ class PurchaseApp(AppWindow):
             self.purchase_list.append(obj)
         self._update_view()
 
-
     def get_extra_query(self):
         supplier_table = Person.getAdapterClass(ISupplier)
         q1 = PurchaseOrder.q.supplierID == supplier_table.q.id
@@ -176,17 +172,36 @@ class PurchaseApp(AppWindow):
             q3 = PurchaseOrder.q.status == status
             return AND(q1, q2, q3)
         return AND(q1, q2)
-
-
+    
+    def _open_order(self, order=None):
+        order = self.run_dialog(PurchaseWizard, self.conn, order)
+        if not order:
+            return
+        self.conn.commit()
+        return order
+        
+    def _edit_order(self):
+        order = self.purchase_list.get_selected_rows()
+        qty = len(order)
+        if qty != 1:
+            raise ValueError('You should have only one order selected, '
+                             'got %d instead' % qty )
+        self._open_order(order[0])
+        self.search_bar.search_items()
 
     #
     # Callbacks
     #
 
-    
+    def key_control_a(self, *args):
+        # FIXME Remove this method after gazpacho bug fix.
+        self._open_order()
 
     def on_purchase_list__selection_changed(self, *args):
         self._update_view()
+
+    def on_purchase_list__double_click(self, *args):
+        self._edit_order()
 
     def _on_suppliers_action_clicked(self, *args):
         self.run_dialog(SupplierSearch, hide_footer=True)
@@ -198,8 +213,10 @@ class PurchaseApp(AppWindow):
         finish_transaction(conn, model)
 
     def _on_order_action_clicked(self, *args):
-        # TODO bug 2211
-        pass
+        self._open_order()
+
+    def on_edit_button__clicked(self, *args):
+        self._edit_order()
 
     def _on_send_to_supplier_action_clicked(self, *args):
         # TODO bug 2213
