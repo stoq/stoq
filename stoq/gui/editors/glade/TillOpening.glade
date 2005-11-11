@@ -8,6 +8,8 @@
         <child>
             <widget class="GtkTable" id="table1">
                 <property name="column_spacing">5</property>
+                <property name="n_columns">4</property>
+                <property name="n_rows">1</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
@@ -15,6 +17,22 @@
                         <property name="visible">True</property>
                     </widget>
                     <packing>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="open_date">
+                        <property name="data_type">date</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">opening_date</property>
+                        <property name="width_chars">10</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
                         <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
@@ -34,25 +52,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="open_date">
-                        <property name="data_type">date</property>
-                        <property name="has_focus">True</property>
-                        <property name="is_focus">True</property>
-                        <property name="mandatory">True</property>
-                        <property name="model_attribute">opening_date</property>
-                        <property name="width_chars">10</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="initial_cash_amount">
                         <property name="data_type">float</property>
+                        <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">initial_cash_amount</property>
                         <property name="width_chars">12</property>

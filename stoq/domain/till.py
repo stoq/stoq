@@ -119,7 +119,7 @@ class Till(Domain):
             payments.extend(pg_facet.get_items())
 
         total = reduce(operator.add, [p.value for p in payments], 0.0)
-        return total + self.initial_cash_amount
+        return total
     
     def open_till(self, opening_date=datetime.datetime.now(), initial_cash_amount=0.0):
         if not initial_cash_amount:

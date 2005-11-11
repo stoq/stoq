@@ -40,7 +40,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.dialogs import (BasicWrappingDialog, run_dialog,
-                                 confirm_dialog)
+                                 confirm_dialog, notify_dialog)
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 
@@ -65,9 +65,7 @@ class TillOperationDialog(SlaveDelegate):
                'reverse_selection_button',
                'close_till_button', 
                'total_balance_label',
-               'debit_total_label',
-               'klist',
-               'credit_total_label',)
+               'klist')
 
     title = _('Current Till Operation')
     size = (800, 500)
@@ -84,10 +82,10 @@ class TillOperationDialog(SlaveDelegate):
         self._setup_widgets()
         self._setup_slaves()
         self._update_widgets()
-        self._update_totals()
         self.main_dialog.set_title(self._get_title())
         self.search_bar.search_items()
         self._select_first_item(self.klist)
+        self._check_initial_cash_amount()
     
     def on_cancel(self):
         # XXX We need a proper base class in stoqlib to avoid redefining this
@@ -123,6 +121,7 @@ class TillOperationDialog(SlaveDelegate):
     def _setup_widgets(self):      
         self.klist.set_columns(self._get_columns())
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self._update_total()
 
     def _run_editor(self, editor_class):
         conn = new_transaction()
@@ -141,22 +140,16 @@ class TillOperationDialog(SlaveDelegate):
             # support
             list.select(list[0])
     
-    def _update_totals(self):    
-        credit_total = 0.0
-        debit_total = 0.0
-        self.balance_total = 0.0
+    def _update_total(self):    
+        total_balance = 0.0
         for item in self.klist: 
-            if item.value > 0.00:
-                credit_total += item.value
-            else:
-                debit_total += item.value
-            self.balance_total += item.value
-
-        for widget, value in ((self.debit_total_label, debit_total),
-                              (self.credit_total_label, credit_total)):
-            widget.set_text(get_formatted_price(value))
-        total_balance_str = get_formatted_price(self.balance_total)
-        self.total_balance_label.set_text('Balance: %s' % total_balance_str)
+            total_balance += item.value
+        total_balance_str = get_formatted_price(total_balance)
+        self.total_balance_label.set_text(total_balance_str)
+        if total_balance < 0:
+            self.total_balance_label.set_color('red')
+        else:
+            self.total_balance_label.set_color('black')
 
     def _get_payment_id(self, value):
         # Attribute payment_id will be mandatory soon. 
@@ -196,13 +189,29 @@ class TillOperationDialog(SlaveDelegate):
         if self.canceled_items > 0:
             text += ('\nWarning: It has %d cancelled %s in your ' 
                      'selection.' % (self.canceled_items, item_string))
+        is_initial_cash = self._check_initial_cash_amount()
+        if is_initial_cash:
+            text = ("Your selection contains the initial cash amount payment"
+                   "\nIt's not possible to cancel the initial cash amount!")
+            size = (380, 150)
+            notify_dialog(text, size=size)
+            return
         if confirm_dialog(text, title=title, size=size):
             for item in self.selected_item:
                 item.cancel_payment()
             self.conn.commit()
         self.search_bar.search_items()
         self._select_last_item()
-    
+
+    def _check_initial_cash_amount(self):
+        # This method is wrong.
+        # A good way to get the initial cash amount payment would be to 
+        # use the payment_id.
+        # Waiting for bug 2214.
+        for item in self.selected_item:
+            if item.description == 'Initial cash amount':
+                return True
+        return False
     #
     # Searchbar callbacks
     # 
@@ -236,7 +245,7 @@ class TillOperationDialog(SlaveDelegate):
         for item in items: 
             item = Payment.get(item.id, connection=self.conn)
             self.klist.append(item)
-        self._update_totals()
+        self._update_total()
 
     #
     # Kiwi handlers
