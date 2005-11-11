@@ -35,7 +35,7 @@ import gtk
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.domain.person import (Person, WorkPermitData, MilitaryData, 
-                                VoterData, EmployeePosition)
+                                VoterData, EmployeeRole)
 from stoq.domain.interfaces import IEmployee
 from stoq.domain.account import BankAccount
 
@@ -50,7 +50,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
     left_widgets_group =  ('admission_date_label',
                            'registry_number_label',
-                           'position_label',
+                           'role_label',
                            'military_cert_serie_label',
                            'military_cert_category_label',
                            'military_cert_number_label',
@@ -81,7 +81,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                            'salary',
                            'dependent_person_number',
                            'education_level',
-                           'position')
+                           'role')
 
     bank_account_widgets = ('name',
                             'account',
@@ -120,10 +120,10 @@ class EmployeeDetailsSlave(BaseEditorSlave):
         self.salary.set_data_format('%.2f')
 
     def setup_combos(self):
-        positions = EmployeePosition.select(connection=self.conn)
-        items = [(p.name, p) for p in positions]
+        roles = EmployeeRole.select(connection=self.conn)
+        items = [(role.name, role) for role in roles]
 
-        self.position.prefill(items)
+        self.role.prefill(items)
 
     #
     # BaseEditorSlave hooks

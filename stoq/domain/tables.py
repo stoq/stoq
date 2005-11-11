@@ -61,7 +61,7 @@ TABLES = [
                                             "ProfileSettings",
                                             )),
      ('stoq.domain.person',                ("CityLocation", 
-                                            "EmployeePosition",
+                                            "EmployeeRole",
                                             "WorkPermitData",
                                             "MilitaryData",
                                             "VoterData",

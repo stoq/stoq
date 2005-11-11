@@ -40,8 +40,10 @@ from sqlobject.sqlbuilder import AND
 from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
+from kiwi.datatypes import ValidationError
 
 from stoq.lib.validators import raw_phone_number
+from stoq.lib.runtime import get_connection
 from stoq.domain.base import Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
@@ -56,13 +58,25 @@ _ = gettext.gettext
 #
 
 
-class EmployeePosition(Domain):
+class EmployeeRole(Domain):
     """ 
-    Base class to store the employee positions 
+    Base class to store the employee roles 
     """
     
     name = StringCol(alternateID=True)
-    
+
+    #
+    # SQLObject callbacks
+    #
+
+    def _set_name(self, value):
+        conn = get_connection()
+        query = EmployeeRole.q.name == value
+        # FIXME We should raise a proper stoqlib exception here if we find
+        # an existent role. Waiting for kiwi support 
+        if not EmployeeRole.select(query, connection=conn).count():
+            self._SO_set_name(value)
+
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
@@ -461,7 +475,7 @@ class PersonAdaptToEmployee(ModelAdapter):
     registry_number = StringCol(default=None)
     education_level = StringCol(default=None)
     dependent_person_number = IntCol(default=None)
-    position = ForeignKey('EmployeePosition')
+    role = ForeignKey('EmployeeRole')
 
     # This is Brazil-specific information
     workpermit_data = ForeignKey('WorkPermitData', default=None)
