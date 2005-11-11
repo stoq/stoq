@@ -73,7 +73,7 @@ class Warnbox(SlaveDelegate):
         self.alert_icon.hide()
         self.error_icon.hide()
         # Use a \n to allow for 2 vertical spaces of text, ugly :)
-        self.label.set_text("\n")
+        self.label.set_text("")
 
 class RunnableView:
     """A mixin class for any View or Delegate that offers run/close"""
