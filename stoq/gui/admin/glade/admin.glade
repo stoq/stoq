@@ -9,7 +9,7 @@
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
-                        <property name="accelerator">&lt;Control&gt;h</property>
+                        <property name="accelerator">&lt;control&gt;h</property>
                     </object>
                 </child>
                 <child>
@@ -18,7 +18,7 @@
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;e</property>
+                        <property name="accelerator">&lt;control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -43,9 +43,9 @@
                     </object>
                 </child>
                 <child>
-                    <object class="GtkAction" id="EmployeePosition">
-                        <property name="name">EmployeePosition</property>
-                        <property name="label" translatable="yes">Employee Position</property>
+                    <object class="GtkAction" id="EmployeeRole">
+                        <property name="name">EmployeeRole</property>
+                        <property name="label" translatable="yes">Employee Role</property>
                         <signal handler="_on_employee_role__action_clicked" name="activate"/>
                     </object>
                 </child>
@@ -117,7 +117,6 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -150,7 +149,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeePosition" name="EmployeePosition"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="admin">
         <property name="destroy_with_parent">True</property>
@@ -188,6 +187,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="users_list">
+                                <property name="is_focus">True</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
