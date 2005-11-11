@@ -473,7 +473,7 @@ class SearchBar(SlaveDelegate):
         else:
             search_dates = None
 
-        query = self.table_type.q._is_active == True
+        query = self.table_type.q._is_valid_model == True
         if search_str or search_dates:
             query = AND(query, self._build_query(search_str, search_dates))
         
