@@ -259,12 +259,21 @@ class ProductItemEditor(BaseEditor):
     gladefile = 'ProductItemEditor'
     size = (550, 100)
 
-    proxy_widgets = ('quantity', 'price')
-    widgets = ('product_name', 'price_label') + proxy_widgets
+    proxy_widgets = ('quantity', 
+                     'value',
+                     'total_label')
+    widgets = ('product_name', 
+               'price_label') + proxy_widgets
 
-    def hide_price_fields(self):
-        for widget in (self.price, self.price_label):
-            widget.hide()
+    def __init__(self, conn, model=None, model_type=None, 
+                 value_attr=None):
+        self.model_type = model_type or self.model_type
+        self.value_attr = value_attr
+        BaseEditor.__init__(self, conn, model)
+
+    def disable_price_fields(self):
+        for widget in (self.value, self.price_label):
+            widget.set_sensitive(False)
 
     #
     # BaseEditor hooks
@@ -277,21 +286,28 @@ class ProductItemEditor(BaseEditor):
         # We need to setup the widgets format before the proxy fill them
         # with the values.
         self.setup_widgets()
-
+        if self.value_attr:
+            self.value.set_property('model-attribute', self.value_attr)
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def setup_widgets(self):
         sellable = self.model.sellable
         self.product_name.set_text(sellable.description)
-
         if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
-            self.hide_price_fields()
+            self.disable_price_fields()
             return
-        self.price.set_data_format(get_price_format_str())
+        self.value.set_data_format(get_price_format_str())
+        self.total_label.set_data_format(get_price_format_str())
 
-    def on_confirm(self):
-        # XXX: this editor must use non-persistent objects. In this method
-        # we will only ensure the non-persistent copy .
-        # Waiting fix for bug #2043
-        return self.model
+    #
+    # Callbacks
+    #
 
+    def on_quantity__value_changed(self, *args):
+        self.proxy.update('total')
+
+    def after_quantity__value_changed(self, *args):
+        self.proxy.update('total')
+
+    def after_value__changed(self, *args):
+        self.proxy.update('total')

@@ -30,14 +30,23 @@ stoq/gui/wizards/purchase.py:
 
 import gettext
 
+import gtk
+from kiwi.ui.widgets.list import Column
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.lists import AdditionListSlave
+from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.lib.validators import get_price_format_str
-from stoq.domain.person import Person
-from stoq.domain.purchase import PurchaseOrder
-from stoq.domain.interfaces import ISupplier, IBranch, ITransporter
+from stoq.lib.validators import (get_price_format_str, format_quantity, 
+                                 get_formatted_price)
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import SupplierEditor, TransporterEditor
+from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.domain.product import Product, FancyProduct
+from stoq.domain.person import Person
+from stoq.domain.purchase import PurchaseOrder, PurchaseItem
+from stoq.domain.interfaces import (ISupplier, IBranch, ITransporter,
+                                    ISellable)
 
 _ = gettext.gettext
 
@@ -76,10 +85,6 @@ class FinishPurchaseStep(BaseWizardStep):
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
-    #
-    # BaseEditorSlave hooks
-    #
-
     def setup_proxies(self):
         self._setup_transporter_entry()
         self.proxy = self.add_proxy(self.model, self.widgets)
@@ -93,6 +98,137 @@ class FinishPurchaseStep(BaseWizardStep):
                                   self.model.transporter):
             self.conn.commit()
             self._setup_transporter_entry()
+
+
+class PurchaseProductStep(BaseWizardStep):
+    gladefile = 'PurchaseProductStep'
+    model_type = PurchaseOrder
+    proxy_widgets = ('product',)
+    widgets = ('add_item_button',
+               'product_button') + proxy_widgets
+
+    def __init__(self, wizard, previous, conn, model):
+        self.table = Product.getAdapterClass(ISellable)
+        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        self._update_widgets()
+
+    def _setup_product_entry(self):
+        products = self.table.get_available_sellables(self.conn)
+        descriptions = [p.description for p in products]
+        self.product.set_completion_strings(descriptions, list(products))
+
+    def _get_columns(self):
+        return [Column('sellable.description', title=_('Description'), 
+                       data_type=str, expand=True, searchable=True),
+                Column('quantity', title=_('Quantity'), data_type=float,
+                       width=90, format_func=format_quantity,
+                       editable=True, justify=gtk.JUSTIFY_RIGHT),
+                Column('sellable.unit', title=_('Unit'), data_type=str, 
+                       width=90),
+                Column('cost', title=_('Cost'), data_type=float, 
+                       format_func=get_formatted_price, editable=True,
+                       width=90, justify=gtk.JUSTIFY_RIGHT),
+                Column('total', title=_('Total'), data_type=float,
+                       format_func=get_formatted_price,
+                       width=100, justify=gtk.JUSTIFY_RIGHT)]
+
+    def _update_widgets(self):
+        has_product_str = self.product.get_text() != ''
+        self.add_item_button.set_sensitive(has_product_str)
+
+    def _get_product_by_code(self, code):
+        product = self.table.selectBy(code=code, connection=self.conn)
+        qty = product.count()
+        if not qty:
+            msg = _("The product with code '%s' doesn't exists" % code)
+            self.product.set_invalid(msg)
+            return
+        if qty != 1:
+            raise DatabaseInconsistency('You should have only one '
+                                        'product with code %s' 
+                                        % code)
+        return product[0]
+
+    def _add_item(self):
+        if (self.proxy.model and self.proxy.model.product):
+            product = self.proxy.model.product
+        else:
+            product = None
+        self.add_item_button.set_sensitive(False)
+        if not product:
+            code = self.product.get_text()
+            product = self._get_product_by_code(code)
+        if not product:
+            return
+        products = [s.sellable for s in self.slave.klist]
+        if product in products:
+            msg = _("The product '%s' was already added to the order" 
+                    % product.description)
+            self.product.set_invalid(msg)
+            return
+        purchase_item = PurchaseItem(connection=self.conn,
+                                     sellable=product, order=self.model,
+                                     cost=product.cost)
+        self.slave.klist.append(purchase_item)
+        self.product.set_text('')
+
+    #
+    # WizardStep hooks
+    #
+
+    def next_step(self):
+        return FinishPurchaseStep(self.wizard, self, self.conn, 
+                                  self.model)
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_product_entry()
+        self.product_model = FancyProduct()
+        self.proxy = self.add_proxy(self.product_model, self.proxy_widgets)
+
+    def setup_slaves(self):
+        products = list(self.model.get_items())
+        self.slave = AdditionListSlave(self.conn, ProductItemEditor,
+                                       self._get_columns(), products)
+        self.slave.hide_add_button()
+        self.slave.register_editor_kwargs(model_type=PurchaseItem,
+                                          value_attr='cost')
+        self.slave.connect('before-delete-items', self._before_delete_items)
+        self.attach_slave('list_holder', self.slave)
+
+    #
+    # callbacks
+    #
+
+    def _before_delete_items(self, slave, items):
+        for item in items:
+            PurchaseItem.delete(item.id, connection=self.conn)
+
+    def on_product_button__clicked(self, *args):
+        if self.proxy.model and self.proxy.model.product:
+            product = self.proxy.model.product.get_adapted()
+        else:
+            product = None
+        if run_dialog(ProductEditor, self, self.conn, product):
+            self.conn.commit()
+            self._setup_product_entry()
+
+    def on_add_item_button__clicked(self, *args):
+        self._add_item()
+
+    def on_product__activate(self, *args):
+        if not self.add_item_button.get_property('sensitive'):
+            return
+        self._add_item()
+
+    def on_product__changed(self, *args):
+        self.product.set_valid()
+
+    def after_product__changed(self, *args):
+        self._update_widgets()
 
 
 class StartPurchaseStep(BaseWizardStep):
@@ -142,15 +278,11 @@ class StartPurchaseStep(BaseWizardStep):
             self.model.freight_type = self.model_type.FREIGHT_CIF
         else:
             self.model.freight_type = self.model_type.FREIGHT_FOB
-        return FinishPurchaseStep(self.wizard, self, self.conn, 
-                                  self.model)
+        return PurchaseProductStep(self.wizard, self, self.conn, 
+                                   self.model)
 
     def has_previous_step(self):
         return False
-
-    #
-    # BaseEditorSlave hooks
-    #
 
     def setup_proxies(self):
         self._setup_widgets()

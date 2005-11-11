@@ -50,6 +50,13 @@ _ = gettext.gettext
 #
 
 
+class FancyProduct:
+    """A fancy class used by some kiwi entries."""
+    # XXX Probably we could avoid this class with some kiwi improvements
+    # waiting for support
+    product = None
+
+
 class ProductSupplierInfo(Domain):
     """ This class store information of the suppliers of a product. Each
     product can has more than one supplier.  """

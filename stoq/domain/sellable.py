@@ -147,6 +147,8 @@ class AbstractSellable(InheritableModelAdapter):
     cost = FloatCol(default=0.0)
     max_discount = FloatCol(default=0.0)
     comission = FloatCol(default=None)
+    # This field must be mandatory, waiting for bug 2247
+    unit = StringCol(default=None)
     on_sale_price = FloatCol(default=0.0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
