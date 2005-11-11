@@ -33,6 +33,7 @@ import gtk
 import gettext
 import datetime
 
+from sqlobject.sqlbuilder import AND, IN
 from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
 from kiwi.datatypes import ValidationError
 
@@ -60,6 +61,26 @@ class TillOpeningEditor(BaseEditor):
     def _setup_widgets(self):
         self.initial_cash_amount.set_data_format(get_price_format_str())
 
+    def _initialize_till_operation(self):
+        if self.model.initial_cash_amount > 0:
+            status = Payment.STATUS_TO_PAY
+            now = datetime.datetime.now()
+            value = self.model.initial_cash_amount
+            method = sysparam(self.conn).METHOD_MONEY
+            current_till = get_current_till_operation(self.conn)
+            group = IPaymentGroup(current_till, connection=self.conn)
+            if not group:
+                raise ValueError('Till object must have a IPaymentGroup facet' 
+                                 'defined at this point')
+            destination= sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
+            description = _('Initial cash amount')
+            payment = Payment(status=status, due_date=now, value=value, 
+                              method=method, group=group, 
+                              destination=destination, 
+                              description=description,
+                              connection=self.conn)
+            self.conn.commit()
+
     #
     # BaseEditor hooks
     # 
@@ -70,6 +91,7 @@ class TillOpeningEditor(BaseEditor):
     def setup_proxies(self):
         self.model.open_till()
         self._setup_widgets()
+        self._initialize_till_operation()
         self.add_proxy(self.model, self.widgets)
 
 
@@ -77,11 +99,14 @@ class TillClosingEditor(BaseEditor):
     model_name = _('Till Closing')
     model_type = Till
     gladefile = 'TillClosing'
+    proxy_widgets = ('final_cash_amount',
+                     'balance_to_send')
     widgets = ('closing_date_lbl',
-               'final_cash_amount',
-               'balance_to_send',
-               'total_balance_lbl')
-    size = (350, 210)
+               'total_balance_lbl',
+               'initial_cash_amount_lbl',
+               'debits_lbl',
+               'credits_lbl') + proxy_widgets
+    size = (350, 290)
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -91,19 +116,48 @@ class TillClosingEditor(BaseEditor):
     def _setup_widgets(self):
         for widget in (self.balance_to_send, self.final_cash_amount):
             widget.set_data_format(get_price_format_str())
-
+    
+    def _payment_query(self): 
+        current_till = get_current_till_operation(self.conn)
+        group = IPaymentGroup(current_till, connection=self.conn)
+        statuses = [Payment.STATUS_TO_PAY, Payment.STATUS_CANCELLED]
+        query = AND(IN(Payment.q.status, statuses), 
+                    Payment.q.groupID == group.id)
+        payments = Payment.select(query, connection=self.conn)
+        self.debits = 0
+        self.credits = 0
+        for payment in payments:
+            if payment.value < 0:
+                self.debits += payment.value
+            else:
+                self.credits += payment.value
+        if current_till.initial_cash_amount < 0:
+            raise ValueError(_('Initial cash amount cannot be lesser than ' 
+                               'zero'))
+        self.credits -= current_till.initial_cash_amount
+         
     def _update_widgets(self):
         closing_date = self.model.closing_date.strftime('%x') 
         self.closing_date_lbl.set_text(closing_date)
+        initial_cash = self.model.initial_cash_amount
+        initial_cash_str = get_formatted_price(initial_cash)
+        self.initial_cash_amount_lbl.set_text(initial_cash_str)
+        debits = get_formatted_price(self.debits)
+        self.debits_lbl.set_text(debits)
+        self.debits_lbl.set_color('red')
+        credits = get_formatted_price(self.credits)
+        self.credits_lbl.set_text(credits)
         total_balance = get_formatted_price(self.total_balance)
         self.total_balance_lbl.set_text(total_balance)
+        if self.total_balance < 0:
+            self.total_balance_lbl.set_color('red')
   
-    def update_final_cash_amount(self):
+    def _update_final_cash_amount(self):
         balance_to_send = self.model.balance_sent or 0.0
         self.model.final_cash_amount = self.total_balance - balance_to_send
         self.proxy.update('final_cash_amount')
 
-    def update_balance_to_send(self):
+    def _update_balance_to_send(self):
         final_cash_amount = self.model.final_cash_amount or 0.0
         self.model.balance_sent = self.total_balance - final_cash_amount 
         self.proxy.update('balance_sent')
@@ -116,16 +170,19 @@ class TillClosingEditor(BaseEditor):
         return _('Closing current till')
 
     def setup_proxies(self):
+        self._payment_query()
         self.model.close_till()
         self.final_cash = self.model.final_cash_amount
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi handlers
     #
 
     def after_final_cash_amount__validate(self, widget, value):
+        if value < 0.0:
+            return ValidationError(_("Value cannot be lesser that zero"))
         if value <= self.final_cash:
             return
         return ValidationError(_("You can not specifiy a final"
@@ -134,12 +191,12 @@ class TillClosingEditor(BaseEditor):
 
     def after_balance_to_send__changed(self, *args):
         self.handler_block(self.final_cash_amount, 'changed')
-        self.update_final_cash_amount()
+        self._update_final_cash_amount()
         self.handler_unblock(self.final_cash_amount, 'changed')
 
     def after_final_cash_amount__changed(self, *args):
         self.handler_block(self.balance_to_send, 'changed')
-        self.update_balance_to_send()
+        self._update_balance_to_send()
         self.handler_unblock(self.balance_to_send, 'changed')
 
 
@@ -192,7 +249,7 @@ class BaseCashSlave(BaseEditorSlave):
     #
     
     def on_cash_amount__validate(self, entry, value):
-        if value <= 0.0:
+        if value < 0.0:
             return ValidationError(_("Value Must be greater than zero"))
 
 
@@ -324,7 +381,10 @@ class CashOutEditor(BaseEditor):
         self._setup_widgets()
 
     def on_confirm(self):
-        payment_description = self.reason.get_text()
+        reason = self.reason.get_text()
+        if reason == '':
+            reason = _('no description.')
+        payment_description = _('Cash Out: %s' % reason)
         self.cash_slave.model.description = payment_description
         value = self.cash_slave.model.value
         value *= -1
