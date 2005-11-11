@@ -41,7 +41,7 @@ from stoq.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor,
-                                     TransporterEditor)
+                                     TransporterEditor, EmployeeRoleEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.validators import format_phone_number
@@ -126,6 +126,25 @@ class EmployeeSearch(BasePersonSearch):
                                     self.table.q.roleID == 
                                     EmployeeRole.q.id))
 
+class EmployeeRoleSearch(SearchEditor):
+    title = _('Employee Role Search')
+    editor_class = EmployeeRoleEditor
+    table = EmployeeRole
+    size = (425, 390)
+
+    def __init__(self):
+        SearchEditor.__init__(self, self.table, self.editor_class)
+        self.set_searchbar_labels(_('Role Matching'))
+        self.set_result_strings(_('role'), _('roles'))
+        
+    
+    #
+    # SearchEditor Hooks
+    #
+    
+    def get_columns(self):
+        return [Column('name', _('Role'), str, sorted=True)] 
+    
 
 class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
