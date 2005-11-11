@@ -72,7 +72,6 @@ class Warnbox(SlaveDelegate):
         # Don't hide warnbox or the vbox collapses it
         self.alert_icon.hide()
         self.error_icon.hide()
-        # Use a \n to allow for 2 vertical spaces of text, ugly :)
         self.label.set_text("")
 
 class RunnableView:
