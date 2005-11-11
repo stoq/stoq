@@ -39,7 +39,7 @@ from stoq.domain.interfaces import ICompany, ISupplier, IBranch
 from stoq.domain.person import (Person, PersonAdaptToSupplier,
                                 PersonAdaptToBranch, 
                                 PersonAdaptToCompany,
-                                EmployeePosition)
+                                EmployeeRole)
 from stoq.domain.sellable import BaseSellableCategory
 from stoq.domain.payment.methods import PaymentMethod
 from stoq.domain.service import Service
@@ -93,10 +93,10 @@ class ParameterTest(TestCase):
         supplier = ISupplier(person)
         self.failUnless(supplier != None)
         
-    def testDefaultEmployeePosition(self):
-        employee_position = self.sparam.DEFAULT_EMPLOYEE_POSITION
-        self.failUnless(employee_position != None)
-        self.failUnless(isinstance(employee_position, EmployeePosition))
+    def testDefaultEmployeeRole(self):
+        employee_role = self.sparam.DEFAULT_EMPLOYEE_ROLE
+        self.failUnless(employee_role != None)
+        self.failUnless(isinstance(employee_role, EmployeeRole))
 
     def testDefaultBaseCategory(self):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY

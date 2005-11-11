@@ -34,7 +34,7 @@ import datetime
 
 from stoq.lib.runtime import new_transaction, print_msg
 from stoq.domain.profile import UserProfile
-from stoq.domain.person import (Person, EmployeePosition, Address,
+from stoq.domain.person import (Person, EmployeeRole, Address,
                                 CityLocation)
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
@@ -167,11 +167,9 @@ def create_persons():
                             **credit_provider)
 
         position_args = position_data[index]
-        position = EmployeePosition(connection=trans,
-                                    **position_args)
+        role = EmployeeRole(connection=trans, **position_args)
         employee_args = employee_data[index]
-        person_obj.addFacet(IEmployee, connection=trans,
-                            position=position,
+        person_obj.addFacet(IEmployee, connection=trans, role=role,
                             **employee_args)
         # SalesPerson facet requires an employee facet.
         person_obj.addFacet(ISalesPerson, connection=trans)

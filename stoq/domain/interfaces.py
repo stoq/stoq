@@ -226,7 +226,7 @@ class IEmployee(ConnInterface):
                            'VoterData')
     bank_account  = Attribute('bank_account',
                               'BankAccount')
-    position = Attribute('A reference to an employee position object')
+    role = Attribute('A reference to an employee role object')
 
 
 class IUser(ConnInterface):

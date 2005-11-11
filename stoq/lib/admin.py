@@ -32,7 +32,7 @@ import sys
 
 from stoq.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam
-from stoq.domain.person import EmployeePosition, PersonAdaptToUser
+from stoq.domain.person import EmployeeRole, PersonAdaptToUser
 from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
 from stoq.domain.interfaces import (IIndividual, IEmployee, IUser,
@@ -49,9 +49,9 @@ def ensure_admin_user(name, username, password):
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
-    position = EmployeePosition(name='Administrator position', connection=trans)
+    role = EmployeeRole(name='Administrator role', connection=trans)
     user = person_obj.addFacet(IIndividual, connection=trans)
-    user = person_obj.addFacet(IEmployee, position=position,
+    user = person_obj.addFacet(IEmployee, role=role,
                                connection=trans)
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.

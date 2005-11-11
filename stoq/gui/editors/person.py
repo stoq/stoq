@@ -32,7 +32,11 @@ stoq/gui/editors/person.py
 
 import gettext
 import datetime
+from sqlobject.sqlbuilder import func
 
+from stoqlib.gui.editors import SimpleEntryEditor
+
+from stoq.lib.runtime import new_transaction
 from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
@@ -40,7 +44,7 @@ from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.slaves.transporter import TransporterDataSlave
-from stoq.domain.person import Person
+from stoq.domain.person import Person, EmployeeRole
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                     ISupplier, ITransporter)
 
@@ -109,7 +113,7 @@ class EmployeeEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         employee = IEmployee(person, connection=conn)
         return employee or person.addFacet(IEmployee, connection=conn,
-                                           position=None)
+                                           role=None)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
@@ -123,6 +127,55 @@ class EmployeeEditor(BasePersonRoleEditor):
 
         self.status_slave = EmployeeStatusSlave(self.conn, self.model)
         self.individual_slave.attach_person_slave(self.status_slave)
+
+
+class EmployeeRoleEditor(SimpleEntryEditor):
+    model_type = EmployeeRole
+    model_name = _('Employee Role')
+    size = (330, 130)
+  
+    def __init__(self, conn, model):
+        SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
+                                   name_entry_label='Role Name:')
+        self.main_dialog.enable_notices()
+
+    #
+    # BaseEditor Hooks
+    #
+
+    def get_title_model_attribute(self, model):
+        return model.name
+
+    # 
+    # BaseEditorSlave Hooks 
+    #
+    
+    def create_model(self, conn):
+        return EmployeeRole(connection=conn, name='')
+
+    #     
+    # BasicPluggableDialog Hooks
+    #         
+
+    def after_name_entry__changed(self, *args):
+        self.main_dialog.clear_notices()
+        role_name = self.name_entry.get_text()
+        conn = new_transaction() 
+        self.main_dialog.enable_ok()
+        for role in EmployeeRole.select(connection=conn):
+            query = func.UPPER(EmployeeRole.q.name) == role_name.upper()
+            if EmployeeRole.select(query, connection=conn).count():       
+                msg = _('This role already exists!')
+                # FIXME enable this line after a bug fix in kiwi
+                # self.name_entry.set_invalid(msg)
+                self.main_dialog.disable_ok()
+                # XXX We will not need this line when kiwi provide 
+                # support for validation when changing the model 
+                # attribute dynamically
+                self.main_dialog.alert(msg)
+                return False
+        self.model.name = role_name
+        return self.model
 
 
 class SupplierEditor(BasePersonRoleEditor):

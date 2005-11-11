@@ -48,9 +48,10 @@ from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
                                     IEmployee, IClient, ICreditProvider,
                                     ITransporter)
-from stoq.domain.person import Person, EmployeePosition
+from stoq.domain.person import (Person, EmployeeRole)
 
 _ = gettext.gettext
+
 
 class BasePersonSearch(SearchEditor):
     size = (800,500)
@@ -105,8 +106,8 @@ class EmployeeSearch(BasePersonSearch):
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str, 
                                  width=250, obj_field='_original'),
-                ForeignKeyColumn(EmployeePosition, 'name', _('Position'), 
-                                 str, width=220, obj_field='position'),
+                ForeignKeyColumn(EmployeeRole, 'name', _('Role'), 
+                                 str, width=250, obj_field='role'),
                 Column('registry_number', _('Registry Number'), str,
                        width=150),
                 Column('status_string', _('Status'), str)]
@@ -121,9 +122,9 @@ class EmployeeSearch(BasePersonSearch):
         return q1
 
     def get_query_args(self):
-        return dict(join=LEFTJOINOn(self.table, EmployeePosition,
-                                    self.table.q.positionID == 
-                                    EmployeePosition.q.id))
+        return dict(join=LEFTJOINOn(self.table, EmployeeRole,
+                                    self.table.q.roleID == 
+                                    EmployeeRole.q.id))
 
 
 class SupplierSearch(BasePersonSearch):

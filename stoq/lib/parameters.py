@@ -43,7 +43,7 @@ Current System parameters:
                                                instance that represents
                                                the company's warehouse.
 
-    * DEFAULT_EMPLOYEE_POSITION(EmployeePosition): The employee position
+    * DEFAULT_EMPLOYEE_ROLE(EmployeeRole): The employee role
                                                    suggested when we are
                                                    adding a new employee.
 
@@ -232,8 +232,8 @@ class ParameterAccess(ClassInittableObject):
                                'person.PersonAdaptToBranch'),
                  ParameterAttr('DEFAULT_BASE_CATEGORY', 
                                'sellable.BaseSellableCategory'),
-                 ParameterAttr('DEFAULT_EMPLOYEE_POSITION', 
-                               'person.EmployeePosition'),
+                 ParameterAttr('DEFAULT_EMPLOYEE_ROLE', 
+                               'person.EmployeeRole'),
                  ParameterAttr('DEFAULT_PAYMENT_DESTINATION', 
                                'payment.destination.PaymentDestination'),
                  ParameterAttr('BASE_PAYMENT_METHOD', 
@@ -307,7 +307,7 @@ class ParameterAccess(ClassInittableObject):
         # always here
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
-        self.ensure_default_employee_position()
+        self.ensure_default_employee_role()
         self.ensure_current_branch()
         self.ensure_current_warehouse()
         self.ensure_payment_destination()
@@ -345,14 +345,14 @@ class ParameterAccess(ClassInittableObject):
                                         category_data=abstract_cat)
         self.set_schema(key, base_cat.id)
 
-    def ensure_default_employee_position(self):
-        from stoq.domain.person import EmployeePosition
-        key = "DEFAULT_EMPLOYEE_POSITION"
-        if self.get_parameter_by_field(key, EmployeePosition):
+    def ensure_default_employee_role(self):
+        from stoq.domain.person import EmployeeRole
+        key = "DEFAULT_EMPLOYEE_ROLE"
+        if self.get_parameter_by_field(key, EmployeeRole):
             return
-        position = EmployeePosition(name='Sales Person', 
+        role = EmployeeRole(name='Sales Person', 
                                     connection=self.conn)
-        self.set_schema(key, position.id)
+        self.set_schema(key, role.id)
 
     def ensure_current_branch(self):
         from stoq.domain.person import Person, PersonAdaptToBranch
