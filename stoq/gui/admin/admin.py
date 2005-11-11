@@ -34,10 +34,11 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.database import rollback_and_begin
+from stoqlib.database import rollback_and_begin, finish_transaction
 
 from stoq.gui.search.person import EmployeeRoleSearch
 from stoq.gui.application import AppWindow
+from stoq.gui.editors.profile import UserProfileEditor
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX
@@ -136,6 +137,13 @@ class AdminApp(AppWindow):
 
     def on_users_list__selection_changed(self, *args):
         self._update_view()
+
+    def _on_employees_action_clicked(self, *args):
+        self.run_dialog(EmployeeSearch, hide_footer=True)
+
+    def _on_user_profiles_action_clicked(self, *args):
+        model = self.run_dialog(UserProfileEditor, self.conn)
+        finish_transaction(self.conn, model, keep_transaction=True)
     
     def _on_employee_role__action_clicked(self, *args):
         self.run_dialog(EmployeeRoleSearch) 
