@@ -46,7 +46,7 @@ from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
-from stoq.domain.product import ProductSellableItem
+from stoq.domain.product import ProductSellableItem, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson, IClient
@@ -61,12 +61,6 @@ from stoq.gui.search.person import ClientSearch
 
 _ = gettext.gettext
 
-
-class POSProduct:
-    """A fancy class used by POSApp product widget."""
-    # XXX Probably we could avoid this class with some kiwi improvements
-    # waiting for support
-    product = None
 
 class POSApp(AppWindow):
    
@@ -110,7 +104,7 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=self.client_widgets)
-        self.product_proxy = self.add_proxy(POSProduct(),
+        self.product_proxy = self.add_proxy(FancyProduct(),
                                             self.product_widgets)
 
     def _setup_client_entry(self):

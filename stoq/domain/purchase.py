@@ -43,7 +43,7 @@ _ = gettext.gettext
 
 
 class PurchaseItem(Domain):
-    quantity = IntCol()
+    quantity = FloatCol(default=1.0)
     quantity_received = FloatCol(default=0.0)
     base_cost = FloatCol()
     cost = FloatCol()
@@ -58,6 +58,13 @@ class PurchaseItem(Domain):
             raise TypeError('You must provide a sellable argument')
         kw['base_cost'] = kw['sellable'].cost
         Domain._create(self, id, **kw)
+
+    #
+    # Accessors
+    #
+
+    def get_total(self):
+        return self.quantity * self.cost
 
     #
     # SQLObject callbacks
