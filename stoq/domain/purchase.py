@@ -121,8 +121,8 @@ class PurchaseOrder(Domain):
     #
 
     def _create(self, id, **kw):
-        # Purchase objects must be set as active explicitly
-        kw['_is_active'] = False
+        # Purchase objects must be set as valid explicitly
+        kw['_is_valid_model'] = False
         Domain._create(self, id, **kw)
 
     #
@@ -147,7 +147,7 @@ class PurchaseOrder(Domain):
 
     def validate(self):
         if not self.get_active():
-            self.set_active()
+            self.set_valid()
 
     #
     # IContainer implementation

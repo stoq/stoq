@@ -100,8 +100,8 @@ class Sale(Domain):
     #
     
     def _create(self, id, **kw):
-        # Sales objects must be set as active explicitly
-        kw['_is_active'] = False
+        # Sales objects must be set as valid explicitly
+        kw['_is_valid_model'] = False
         Domain._create(self, id, **kw)
 
     #
@@ -242,7 +242,7 @@ class Sale(Domain):
             raise ValueError("Sale %s doesn't have an IPaymentGroup "
                              "facet at this point" % self)
         if not self.get_active():
-            self.set_active()
+            self.set_valid()
 
     def confirm_sale(self):
         self.validate()
