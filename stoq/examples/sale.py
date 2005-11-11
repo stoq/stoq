@@ -155,7 +155,7 @@ def create_sales():
                                        DEFAULT_PAYMENT_INTERVAL_TYPE,
                                        DEFAULT_PAYMENTS_INTERVAL, 
                                        sale_total)
-        sale.set_active()
+        sale.set_valid()
 
     conn.commit()
     print_msg("done.")

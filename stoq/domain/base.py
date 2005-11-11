@@ -79,18 +79,18 @@ class AbstractModel:
     # Auxiliar methods
     #
 
-    def set_active(self):
-        if self._is_active:
-            raise ValueError('This model is already active.')
-        self._is_active = True
+    def set_valid(self):
+        if self._is_valid_model:
+            raise ValueError('This model is already valid.')
+        self._is_valid_model = True
 
-    def set_inactive(self):
-        if not self._is_active:
-            raise ValueError('This model is already inactive.')
-        self._is_active = False
+    def set_invalid(self):
+        if not self._is_valid_model:
+            raise ValueError('This model is already invalid.')
+        self._is_valid_model = False
 
-    def get_active(self):
-        return self._is_active
+    def get_valid(self):
+        return self._is_valid_model
 
     def clone(self):
         # Get a persistent copy of an existent object. Remember that we can
@@ -328,12 +328,12 @@ class InheritableModelAdapter(InheritableModel, Adapter):
         InheritableModel.__init__(self, *args, **kwargs)
 
 
-for klass in (InheritableModel, Domain):
+for klass in (InheritableModel, Domain, ModelAdapter):
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
                                         default=datetime.datetime.now()))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
                                         default=datetime.datetime.now()))
-    klass.sqlmeta.addColumn(BoolCol(name='_is_active', default=True,
+    klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                                     forceDBName=True))
     klass.sqlmeta.cacheValues = False
     # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
