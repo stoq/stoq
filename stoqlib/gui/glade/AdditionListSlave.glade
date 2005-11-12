@@ -9,9 +9,14 @@
                 <property name="spacing">4</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+list+List" id="klist">
-                        <property name="shadow_type">in</property>
-                        <property name="vscrollbar_policy">automatic</property>
+                    <widget class="GtkVBox" id="list_vbox">
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+list+List" id="klist">
+                                <property name="shadow_type">in</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                            </widget>
+                        </child>
                     </widget>
                 </child>
                 <child>
@@ -46,8 +51,7 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">_Add...</property>
-                                                                        <property name="use_underline">True</property>
+                                                                        <property name="label" context="yes" translatable="yes">Add...</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -81,8 +85,7 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">_Delete</property>
-                                                                        <property name="use_underline">True</property>
+                                                                        <property name="label" context="yes" translatable="yes">Delete</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>

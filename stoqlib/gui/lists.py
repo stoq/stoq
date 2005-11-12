@@ -55,10 +55,12 @@ class AdditionListSlave(SlaveDelegate):
     widgets = ('add_button', 
                'delete_button', 
                'klist', 
+               'list_vbox',
                'edit_button')
     gsignal('on-edit-item', object)
     gsignal('on-add-item', object)
     gsignal('before-delete-items', object)
+    gsignal('after-delete-items')
 
     def __init__(self, conn, editor_class, columns, klist_objects=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
@@ -180,6 +182,7 @@ class AdditionListSlave(SlaveDelegate):
                 self.klist.remove(obj)
         self.klist.unselect_all()
         self._update_widgets()
+        self.emit('after-delete-items')
 
 
 class AdditionListDialog(BasicPluggableDialog):
