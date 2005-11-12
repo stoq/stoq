@@ -153,7 +153,7 @@ class PurchaseOrder(Domain):
         return self.statuses[self.status]
 
     def validate(self):
-        if not self.get_active():
+        if not self.get_valid():
             self.set_valid()
 
     #
