@@ -60,7 +60,7 @@ class ProductSearch(SearchEditor):
         self.search_bar.set_searchbar_labels(_('products matching'))
 
     #
-    # SearchDailog Hooks
+    # SearchDialog Hooks
     #
     
     def get_filter_slave(self):
