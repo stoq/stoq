@@ -50,6 +50,13 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="EmployeeSearch">
+                        <property name="name">EmployeeSearch</property>
+                        <property name="label" translatable="yes">Find Employees...</property>
+                        <signal handler="_on_employees_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
@@ -156,7 +163,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="UserProfile" name="UserProfile"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="admin">
         <property name="destroy_with_parent">True</property>
