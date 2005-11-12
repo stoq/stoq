@@ -36,7 +36,7 @@ from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin, finish_transaction
 
-from stoq.gui.search.person import EmployeeRoleSearch
+from stoq.gui.search.person import EmployeeRoleSearch, EmployeeSearch
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.profile import UserProfileEditor
 from stoq.gui.slaves.filter import FilterSlave
