@@ -101,7 +101,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">_Actions</property>
+                        <property name="label" translatable="yes">Search</property>
                     </object>
                 </child>
                 <child>
@@ -110,7 +110,6 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -212,10 +211,22 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="sellable_list">
-                                <property name="is_focus">True</property>
-                                <property name="shadow_type">in</property>
-                                <property name="vscrollbar_policy">automatic</property>
+                            <widget class="GtkVBox" id="list_vbox">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+list+List" id="sellable_list">
+                                        <property name="is_focus">True</property>
+                                        <property name="shadow_type">in</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -226,57 +237,27 @@
                                 <property name="spacing">3</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkHBox" id="hbox2">
-                                        <property name="border_width">5</property>
+                                    <widget class="GtkHButtonBox" id="hbuttonbox1">
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkButton" id="history_button">
-                                                <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">History</property>
                                                 <property name="visible">True</property>
-                                                <property name="width_request">80</property>
                                             </widget>
-                                            <packing>
-                                                <property name="expand">False</property>
-                                            </packing>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="retention_button">
-                                                <property name="label" context="yes" translatable="yes">Retention</property>
+                                                <property name="label" context="yes" translatable="yes">Retention...</property>
                                                 <property name="visible">True</property>
-                                                <property name="width_request">80</property>
                                             </widget>
                                             <packing>
-                                                <property name="expand">False</property>
                                                 <property name="position">1</property>
                                             </packing>
                                         </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="total_lbl">
-                                        <property name="label" context="yes" translatable="yes">&lt;span size='x-large'&gt;&lt;b&gt;Stock Quantity: &lt;/b&gt;&lt;/span&gt;</property>
-                                        <property name="use_markup">True</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total">
-                                        <property name="data_type">float</property>
-                                        <property name="label" context="yes" translatable="yes">&lt;span size='x-large'&gt;&lt;b&gt;0.00&lt;/b&gt;&lt;/span&gt;</property>
-                                        <property name="xalign">0.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                             </widget>

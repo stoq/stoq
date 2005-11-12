@@ -31,7 +31,7 @@ stoq/gui/warehouse/warehouse.py:
 import gettext
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import AccessorColumn
@@ -39,7 +39,7 @@ from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
 from stoq.gui.slaves.filter import FilterSlave
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.domain.person import Person
@@ -53,8 +53,8 @@ _ = gettext.gettext
 class WarehouseApp(AppWindow):
     app_name = _('Warehouse')
     gladefile = "warehouse"
-    widgets = ('total',
-               'sellable_list', 
+    widgets = ('sellable_list', 
+               'list_vbox',
                'retention_button',
                'history_button',
                'receive_action',
@@ -69,10 +69,14 @@ class WarehouseApp(AppWindow):
         self._update_view()
 
     def _setup_widgets(self):
-        self.total.set_size('x-large')
-        self.total.set_bold(True)
         self.sellable_list.set_columns(self._get_columns())
         self.sellable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_label = SummaryLabel(klist=self.sellable_list,
+                                          column='quantity',
+                                          label='<b>Stock Total:</b>',
+                                          value_format=value_format)
+        self.list_vbox.pack_start(self.summary_label, False)
 
     def _setup_slaves(self):
         table = Person.getAdapterClass(IBranch)
@@ -145,17 +149,9 @@ class WarehouseApp(AppWindow):
         return storable.get_full_balance_string(full_balance=balance)
 
     def _update_stock_total(self):
-        # FIXME We must implement a cache for stock total, which should be
-        # updated when the accessor _get_stock_balance_str is called,  
-        # after bug fix in kiwi.
-        # Right now the accessors are called even when moving
-        # the cursor over the list. In this case the stock total will be
-        # completely wrong
-        stock_total = 0.0
-        for sellable in self.sellable_list:
-            stock_total += self._get_stock_balance(sellable)
-        total_str = get_formatted_price(stock_total)
-        self.total.set_text(total_str)
+        # FIXME Waiting for a bug fix in kiwi
+        # self.summary_label.update_total()
+        pass
 
     #
     # Hooks

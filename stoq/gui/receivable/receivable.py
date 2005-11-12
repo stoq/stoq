@@ -32,13 +32,13 @@ import gtk
 import gettext
 import datetime
 
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
 
 from stoq.domain.payment.base import Payment
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.slaves.filter import FilterSlave
@@ -50,12 +50,11 @@ class ReceivableApp(AppWindow):
     app_name = _('Receivable')
     gladefile = 'receivable'
     widgets = ('receivable_list',
+               'list_vbox',
                'cancel_button',
                'edit_button',
                'add_button',
-               'details_button',
-               'total_value',
-               'total_label')
+               'details_button')
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
@@ -65,12 +64,15 @@ class ReceivableApp(AppWindow):
         self._update_widgets()
 
     def _setup_widgets(self):
-        widgets = [self.total_label, self.total_value]
-        for widget in widgets:
-            widget.set_size('large')
-            widget.set_bold(True)
         self.receivable_list.set_columns(self._get_columns())
         self.receivable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_label = SummaryLabel(klist=self.receivable_list,
+                                          column='value',
+                                          label='<b>Total:</b>',
+                                          value_format=value_format)
+        self.list_vbox.pack_start(self.summary_label, False)
+
 
     def _update_widgets(self):
         has_sales = len(self.receivable_list) > 0
@@ -81,10 +83,7 @@ class ReceivableApp(AppWindow):
         self._update_total_label()
 
     def _update_total_label(self):
-        total_amount = sum([payment.get_payable_value() 
-                            for payment in self.receivable_list], 0.0)
-        total_str = get_formatted_price(total_amount)
-        self.total_value.set_text(total_str)
+        self.summary_label.update_total()
 
     def _setup_slaves(self):
         items = [(value, key) for key, value in Payment.statuses.items()]

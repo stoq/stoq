@@ -33,7 +33,7 @@ import gettext
 from datetime import date
 
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
@@ -42,7 +42,7 @@ from stoq.domain.sale import Sale
 from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch
@@ -55,11 +55,10 @@ class SalesApp(AppWindow):
     app_name = _('Sales')
     gladefile = 'sales'
     widgets = ('sales_list',
+               'list_vbox',
                'cancel_button',
                'installments_button',
-               'details_button',
-               'total_value',
-               'total_label')
+               'details_button')
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
@@ -69,12 +68,14 @@ class SalesApp(AppWindow):
         self._update_widgets()
 
     def _setup_widgets(self):
-        widgets = [self.total_label, self.total_value]
-        for widget in widgets:
-            widget.set_size('large')
-            widget.set_bold(True)
         self.sales_list.set_columns(self._get_columns())
         self.sales_list.set_selection_mode(gtk.SELECTION_BROWSE)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_label = SummaryLabel(klist=self.sales_list,
+                                          column='total_sale_amount',
+                                          label='<b>Total:</b>',
+                                          value_format=value_format)
+        self.list_vbox.pack_start(self.summary_label, False)
 
     def _update_widgets(self):
         has_sales = len(self.sales_list) > 0
@@ -85,12 +86,7 @@ class SalesApp(AppWindow):
         self._update_total_label()
 
     def _update_total_label(self):
-        total_amount = sum([sale.get_total_sale_amount() 
-                            for sale in self.sales_list], 0.0)
-        total_str = get_formatted_price(total_amount)
-        self.total_value.set_text(total_str)
-
-
+        self.summary_label.update_total()
 
     def _setup_slaves(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
