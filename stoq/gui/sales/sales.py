@@ -158,7 +158,7 @@ class SalesApp(AppWindow):
     #
 
     def _on_clients_action__clicked(self, *args):
-        self.run_dialog(ClientSearch)
+        self.run_dialog(ClientSearch, hide_footer=True)
 
     def _on_products_action__clicked(self, *args):
         self.run_dialog(SellableSearch, self.conn, hide_footer=True)
