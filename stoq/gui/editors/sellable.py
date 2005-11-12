@@ -200,9 +200,9 @@ class SellableEditor(BaseEditor):
 
         self.main_proxy = self.add_proxy(self.model, self.product_widgets)
 
-        sellable = ISellable(self.model)
+        sellable = ISellable(self.model, connection=self.conn)
         self.sellable_proxy = self.add_proxy(sellable, self.sellable_widgets)
-        storable = IStorable(self.model)
+        storable = IStorable(self.model, connection=self.conn)
         self.storable_proxy = self.add_proxy(storable, self.storable_widgets)
 
     #

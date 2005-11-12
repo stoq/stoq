@@ -34,7 +34,7 @@ import gettext
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
-from stoqlib.exceptions import SellError
+from stoqlib.exceptions import SellError, DatabaseInconsistency
 
 from stoq.lib.validators import is_date_in_interval, get_formatted_price
 from stoq.lib.parameters import sysparam
@@ -134,13 +134,19 @@ class AbstractSellable(InheritableModelAdapter):
     """ A sellable (a product or a service, for instance). """
 
     implements(ISellable, IContainer)
+
     sellableitem_table = None
-    STATE_AVALIABLE = 0
-    STATE_SOLD = 1
-    STATE_BLOCKED = 2
+    (STATE_AVAILABLE,
+     STATE_SOLD,
+     STATE_BLOCKED) = range(3)
+    
+
+    states = {STATE_AVAILABLE: _("Available"),
+              STATE_SOLD: _("Sold"),
+              STATE_BLOCKED: _("Blocked")}
 
     code = StringCol(alternateID=True)
-    state = IntCol(default=STATE_AVALIABLE)
+    state = IntCol(default=STATE_AVAILABLE)
     price = FloatCol()
     description = StringCol()
     markup = FloatCol(default=0.0)
@@ -186,7 +192,7 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def can_be_sold(self):
-        return self.state == self.STATE_AVALIABLE
+        return self.state == self.STATE_AVAILABLE
 
     def set_sold(self):
         assert self.can_be_sold()
@@ -222,12 +228,18 @@ class AbstractSellable(InheritableModelAdapter):
     # Auxiliary methods
     #
 
+    def get_states_string(self):
+        if not self.states.has_key(self.state):
+            raise DatabaseInconsistency('Invalid state for product got '
+                                        '%d' % self.state)
+        return self.states[self.state]
+
     @classmethod
     def get_available_sellables_query(cls, conn):
         service = sysparam(conn).DELIVERY_SERVICE
         delivery = ISellable(service, connection=conn)
         q1 = cls.q.id != delivery.id
-        q2 = cls.q.state == cls.STATE_AVALIABLE
+        q2 = cls.q.state == cls.STATE_AVAILABLE
         return AND(q1, q2)
 
     @classmethod

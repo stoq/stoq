@@ -72,6 +72,9 @@ class ProductSupplierInfo(Domain):
     #
 
     def get_name(self):
+        if not self.supplier:
+            raise ValueError('This object must have a valid supplier '
+                             'attribute')
         return self.supplier.get_adapted().name
 
 
@@ -93,6 +96,10 @@ class Product(Domain):
     #   
     # Acessors
     #   
+        
+    def get_main_supplier_name(self):
+        supplier_info = self.get_main_supplier_info()
+        return supplier_info.get_name()
         
     def get_main_supplier_info(self):
         if not self.suppliers:

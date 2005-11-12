@@ -45,13 +45,13 @@ from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
-from stoq.gui.editors.product import ProductEditor
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.purchase import PurchaseWizard
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
+from stoq.gui.search.product import ProductSearch
 
 _ = gettext.gettext
 
@@ -202,7 +202,7 @@ class PurchaseApp(AppWindow):
     def _on_products_action_clicked(self, *args):
         # TODO bug 2206
         conn = new_transaction()
-        model = self.run_dialog(ProductEditor, conn)
+        model = self.run_dialog(ProductSearch, conn)
         finish_transaction(conn, model)
 
     def _on_order_action_clicked(self, *args):
