@@ -87,7 +87,7 @@
                 <child>
                     <object class="GtkAction" id="Products">
                         <property name="name">Products</property>
-                        <property name="label" translatable="yes">_Products</property>
+                        <property name="label" translatable="yes">Sellables</property>
                         <property name="stock_id">gtk-convert</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
                     </object>

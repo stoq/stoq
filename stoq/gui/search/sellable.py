@@ -49,13 +49,14 @@ _ = gettext.gettext
 
 
 class SellableSearch(SearchDialog):
-    title = _('Search for sellable items') 
+    title = _('Search for products/services') 
     size = (800, 500)
     search_table = AbstractSellable
  
-    def __init__(self, conn):
+    def __init__(self, conn, hide_footer=False):
         selection_mode = gtk.SELECTION_MULTIPLE
-        SearchDialog.__init__(self, self.search_table, hide_footer=False,
+        SearchDialog.__init__(self, self.search_table, 
+                              hide_footer=hide_footer,
                               parent_conn=conn, 
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching:'))
