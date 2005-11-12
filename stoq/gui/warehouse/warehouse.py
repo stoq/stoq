@@ -39,7 +39,7 @@ from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import AppWindow
 from stoq.gui.slaves.filter import FilterSlave
-from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.domain.person import Person

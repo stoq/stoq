@@ -40,7 +40,6 @@ from sqlobject.sqlbuilder import AND
 from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
-from kiwi.datatypes import ValidationError
 
 from stoq.lib.validators import raw_phone_number
 from stoq.lib.runtime import get_connection
