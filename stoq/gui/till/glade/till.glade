@@ -7,7 +7,7 @@
                 <child>
                     <object class="GtkAction" id="Actions">
                         <property name="name">Actions</property>
-                        <property name="label" translatable="yes">Actions</property>
+                        <property name="label" translatable="yes">Search</property>
                     </object>
                 </child>
                 <child>
@@ -15,7 +15,7 @@
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User</property>
                         <property name="stock_id">gtk-refresh</property>
-                        <property name="accelerator">&lt;Control&gt;h</property>
+                        <property name="accelerator">&lt;control&gt;h</property>
                     </object>
                 </child>
                 <child>
@@ -24,7 +24,7 @@
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;e</property>
+                        <property name="accelerator">&lt;control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -108,14 +108,12 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="TillClose">
                         <property name="name">TillClose</property>
-                        <property name="label" translatable="yes">Close Till</property>
-                        <property name="stock_id">gtk-close</property>
+                        <property name="label" translatable="yes">Close Till...</property>
                         <signal handler="_on_close_till_action__clicked" name="activate"/>
                     </object>
                 </child>
@@ -128,16 +126,14 @@
                 <child>
                     <object class="GtkAction" id="TillOpen">
                         <property name="name">TillOpen</property>
-                        <property name="label" translatable="yes">Open Till</property>
-                        <property name="stock_id">gtk-open</property>
+                        <property name="label" translatable="yes">Open Till...</property>
                         <signal handler="_on_open_till_action__clicked" name="activate"/>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="TillOperations">
                         <property name="name">TillOperations</property>
-                        <property name="label" translatable="yes">Operations</property>
-                        <property name="stock_id">gtk-find-and-replace</property>
+                        <property name="label" translatable="yes">Find Till Operations...</property>
                         <signal handler="_on_operations_action__clicked" name="activate"/>
                     </object>
                 </child>
@@ -174,7 +170,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="Actions" name="Actions"><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="till">
         <property name="height_request">570</property>
@@ -206,10 +202,22 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="sales_list">
-                                <property name="border_width">5</property>
-                                <property name="shadow_type">in</property>
-                                <property name="vscrollbar_policy">automatic</property>
+                            <widget class="GtkVBox" id="list_vbox">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+list+List" id="sales_list">
+                                        <property name="border_width">5</property>
+                                        <property name="shadow_type">in</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

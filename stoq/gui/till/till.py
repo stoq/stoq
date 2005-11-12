@@ -34,7 +34,7 @@ import datetime
 
 import gtk
 from sqlobject.sqlbuilder import AND
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.exceptions import TillError
@@ -45,7 +45,7 @@ from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoq.gui.till.operation import TillOperationDialog
@@ -59,6 +59,7 @@ class TillApp(AppWindow):
     gladefile = 'till'
     widgets = ('searchbar_holder',
                'sales_list',
+               'list_vbox',
                'confirm_order_button',
                'TillMenu',
                'TillOpen',
@@ -72,14 +73,24 @@ class TillApp(AppWindow):
         self.conn = new_transaction()
         self._setup_slaves()
         self._setup_widgets()
+        self.searchbar.search_items()
+        self._update_widgets()
 
     def get_title(self):
         today_format = _('%d of %B')
         today_str = datetime.datetime.today().strftime(today_format)
         return _('Stoq - %s of %s') % (self.app_name, today_str)
 
+    def _update_total(self, *args):
+        self.summary_label.update_total()
+
     def _setup_widgets(self):
-        self._update_widgets()
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_label = SummaryLabel(klist=self.sales_list,
+                                          column='total_sale_amount',
+                                          label='<b>Total:</b>',
+                                          value_format=value_format)
+        self.list_vbox.pack_start(self.summary_label, False)
 
     def _update_widgets(self):
         has_till = get_current_till_operation(self.conn) is not None
@@ -88,13 +99,13 @@ class TillApp(AppWindow):
         self.TillOperations.set_sensitive(has_till)
         has_sales = len(self.sales_list) > 0
         self.confirm_order_button.set_sensitive(has_sales)
+        self._update_total()
 
     def _setup_slaves(self):
         self.sales_list.set_columns(self._get_columns())
         self.searchbar = SearchBar(self, Sale, self._get_columns())
         self.searchbar.set_result_strings(_('sale'), _('sales'))
         self.searchbar.set_searchbar_labels(_('Sales Matching:'))
-        self.searchbar.search_items()
         self.attach_slave('searchbar_holder', self.searchbar)
 
     def _get_columns(self):

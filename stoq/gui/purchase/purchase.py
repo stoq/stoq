@@ -32,7 +32,7 @@ import gettext
 import datetime
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
@@ -42,7 +42,7 @@ from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.product import ProductEditor
@@ -60,17 +60,12 @@ class PurchaseApp(AppWindow):
    
     app_name = _('Purchase')
     gladefile = "purchase"
-    
-    widgets = ('total_ordered_lbl',
-               'ordered_lbl',
-               'received_lbl',
-               'total_received_lbl',
-               'purchase_list',
+    widgets = ('purchase_list',
                'edit_button',
                'details_button',
+               'summary_hbox',
                'print_button')
                
-    
     def __init__(self, app):
         self.conn = new_transaction()
         AppWindow.__init__(self, app)
@@ -79,13 +74,19 @@ class PurchaseApp(AppWindow):
         self._update_view()
 
     def _setup_widgets(self):
-        labels = [self.ordered_lbl, self.received_lbl,
-                  self.total_ordered_lbl, self.total_received_lbl]
-        for label in labels:
-            label.set_size('medium')
-            label.set_bold(True)
         self.purchase_list.set_columns(self._get_columns())
         self.purchase_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_total = SummaryLabel(klist=self.purchase_list,
+                                          column='purchase_total',
+                                          label='<b>Totals:</b>',
+                                          value_format=value_format)
+        self.summary_received = SummaryLabel(klist=self.purchase_list,
+                                             column='received_total',
+                                             label='',
+                                             value_format=value_format)
+        self.summary_hbox.pack_start(self.summary_total, False)
+        self.summary_hbox.pack_end(self.summary_received, False)
 
     def _setup_slaves(self):
         combo_items = [(text, value) 
@@ -118,16 +119,6 @@ class PurchaseApp(AppWindow):
         self.details_button.set_sensitive(one_selected)
         has_item_selected = len(selection) > 0
         self.print_button.set_sensitive(has_item_selected)
-        self._update_totals()
-
-    def _update_totals(self):
-        total_ordered = 0.0
-        total_received = 0.0
-        for order in self.purchase_list:
-            total_ordered += order.get_purchase_total()
-            total_received += order.get_received_total()
-        self.total_ordered_lbl.set_text(get_formatted_price(total_ordered))
-        self.total_received_lbl.set_text(get_formatted_price(total_received))
 
     def _get_columns(self):
         return [Column('order_number', title=_('Number'), sorted=True,
@@ -161,6 +152,8 @@ class PurchaseApp(AppWindow):
             # the objects back in our main connection
             obj = PurchaseOrder.get(purchase.id, connection=self.conn)
             self.purchase_list.append(obj)
+        self.summary_total.update_total()
+        self.summary_received.update_total()
         self._update_view()
 
     def get_extra_query(self):

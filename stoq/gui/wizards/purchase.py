@@ -31,7 +31,7 @@ stoq/gui/wizards/purchase.py:
 import gettext
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.dialogs import run_dialog
 from stoqlib.gui.lists import AdditionListSlave
@@ -149,6 +149,9 @@ class PurchaseProductStep(BaseWizardStep):
                                         % code)
         return product[0]
 
+    def _update_total(self, *args):
+        self.summary.update_total()
+
     def _add_item(self):
         if (self.proxy.model and self.proxy.model.product):
             product = self.proxy.model.product
@@ -170,6 +173,7 @@ class PurchaseProductStep(BaseWizardStep):
                                      sellable=product, order=self.model,
                                      cost=product.cost)
         self.slave.klist.append(purchase_item)
+        self._update_total()
         self.product.set_text('')
 
     #
@@ -197,6 +201,13 @@ class PurchaseProductStep(BaseWizardStep):
         self.slave.register_editor_kwargs(model_type=PurchaseItem,
                                           value_attr='cost')
         self.slave.connect('before-delete-items', self._before_delete_items)
+        self.slave.connect('after-delete-items', self._update_total)
+        self.slave.connect('on-edit-item', self._update_total)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary = SummaryLabel(klist=self.slave.klist, column='total',
+                                    label='<b>Subtotal:</b>',
+                                    value_format=value_format)
+        self.slave.list_vbox.pack_start(self.summary, expand=False)
         self.attach_slave('list_holder', self.slave)
 
     #

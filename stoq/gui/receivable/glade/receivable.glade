@@ -111,7 +111,6 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -203,10 +202,22 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="receivable_list">
-                                <property name="border_width">5</property>
-                                <property name="shadow_type">in</property>
-                                <property name="vscrollbar_policy">automatic</property>
+                            <widget class="GtkVBox" id="list_vbox">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+list+List" id="receivable_list">
+                                        <property name="border_width">5</property>
+                                        <property name="shadow_type">in</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -233,7 +244,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">edit16px.png</property>
+                                                                        <property name="file">add16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
@@ -264,7 +275,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">edit16px.png</property>
+                                                                        <property name="file">remove16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
@@ -332,25 +343,6 @@
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total_label">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Total:</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total_value">
-                                        <property name="data_type">str</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                             </widget>

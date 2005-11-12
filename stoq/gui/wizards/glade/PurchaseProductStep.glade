@@ -5,7 +5,7 @@
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
-            <widget class="GtkVBox" id="vbox1">
+            <widget class="GtkVBox" id="product_vbox">
                 <property name="border_width">5</property>
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
@@ -25,6 +25,7 @@
                                 <property name="completion">True</property>
                                 <property name="data_type">object</property>
                                 <property name="exact_completion">False</property>
+                                <property name="is_focus">True</property>
                                 <property name="model_attribute">product</property>
                             </widget>
                             <packing>
@@ -46,7 +47,7 @@
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                <property name="file">add16px.png</property>
+                                                                <property name="file">search16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                         </child>

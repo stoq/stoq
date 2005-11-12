@@ -33,7 +33,7 @@ stoq/gui/pos/pos.py:
 import gettext
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
@@ -41,7 +41,8 @@ from stoqlib.gui.search import get_max_search_results
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import new_transaction, get_current_user
-from stoq.lib.validators import format_quantity, get_formatted_price
+from stoq.lib.validators import (format_quantity, get_formatted_price, 
+                                 get_price_format_str)
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.sale import Sale
@@ -68,8 +69,8 @@ class POSApp(AppWindow):
     gladefile = "pos"
     client_widgets =  ('client',)
     product_widgets = ('product',)
-    widgets = ('total',
-               'order_list',
+    widgets = ('order_list',
+               'list_vbox',
                'add_button',
                'advanced_search',
                'anonymous_check',
@@ -133,20 +134,19 @@ class POSApp(AppWindow):
 
     def _setup_widgets(self):
         self.order_list.set_columns(self._get_columns())
-        self.total.set_size('x-large')
-        self.total.set_bold(1)
+        value_format = '<b>%s</b>' % get_price_format_str()
+        self.summary_label = SummaryLabel(klist=self.order_list,
+                                          column='total',
+                                          label='<b>Total:</b>',
+                                          value_format=value_format)
+        self.list_vbox.pack_start(self.summary_label, False)
+        
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
         self._setup_entry_completion()
 
-    def _update_order_lbls(self, *args):
-        if len(self.order_list):
-            totals = [item.get_total() for item in self.order_list]
-            total = sum(totals, 0.0) 
-            text = get_formatted_price(total)
-        else:
-            text = ''
-        self.total.set_text(text)
+    def _update_totals(self, *args):
+        self.summary_label.update_total()
 
     def _get_sellable_by_code(self, code):
         sellable = AbstractSellable.selectBy(code=code,
@@ -208,7 +208,7 @@ class POSApp(AppWindow):
                          salesperson=salesperson)
         self.client_proxy.new_model(self.sale)
         self._update_widgets()
-        self._update_order_lbls()
+        self._update_totals()
 
     def _update_client_widgets(self):
         widgets = [self.client, self.client_edit_button]
@@ -228,7 +228,7 @@ class POSApp(AppWindow):
         for widget in widgets:
             widget.set_sensitive(has_client)
         model = self.order_list.get_selected()
-        self._update_order_lbls()
+        self._update_totals()
         has_sellable_str = self.product.get_text() != ''
         self.add_button.set_sensitive(has_sellable_str)
 
@@ -301,7 +301,7 @@ class POSApp(AppWindow):
         for item in items:
             self._update_order_list(item)
         self.select_first_item()
-        self._update_order_lbls()
+        self._update_totals()
 
     def on_add_button__clicked(self, *args):
         self.add_sellable_item()
@@ -318,7 +318,7 @@ class POSApp(AppWindow):
         self._edit_item()
 
     def on_order_list__cell_edited(self, *args):
-        self._update_order_lbls()
+        self._update_totals()
 
     def on_client_edit_button__clicked(self, *args):
         if run_person_role_dialog(ClientEditor, self, self.conn, 

@@ -9,7 +9,7 @@
                         <property name="name">AddOrder</property>
                         <property name="label" translatable="yes">Add Order...</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;a</property>
+                        <property name="accelerator">&lt;control&gt;a</property>
                     </object>
                 </child>
                 <child>
@@ -278,10 +278,27 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="purchase_list">
-                                <property name="is_focus">True</property>
-                                <property name="shadow_type">in</property>
-                                <property name="vscrollbar_policy">automatic</property>
+                            <widget class="GtkVBox" id="vbox3">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+list+List" id="purchase_list">
+                                        <property name="is_focus">True</property>
+                                        <property name="shadow_type">in</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkHBox" id="summary_hbox">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <placeholder/>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -356,44 +373,6 @@
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="ordered_lbl">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Total Ordered:</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total_ordered_lbl">
-                                        <property name="data_type">str</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="received_lbl">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Total Received:</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">3</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total_received_lbl">
-                                        <property name="data_type">str</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">4</property>
                                     </packing>
                                 </child>
                             </widget>
