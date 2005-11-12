@@ -241,7 +241,7 @@ class Sale(Domain):
         if not group:
             raise ValueError("Sale %s doesn't have an IPaymentGroup "
                              "facet at this point" % self)
-        if not self.get_active():
+        if not self.get_valid():
             self.set_valid()
 
     def confirm_sale(self):
