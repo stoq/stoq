@@ -318,8 +318,8 @@ class NotifyDialog(ConfirmDialog):
 offers a single OK button."""
 
     title = 'Notification'
-    def __init__(self, text, title=None):
-        ConfirmDialog.__init__(self, text, title)
+    def __init__(self, text, title=None, size=None):
+        ConfirmDialog.__init__(self, text, title, size=size)
         self.cancel_button.hide()
 
 
@@ -378,8 +378,8 @@ def notify_if_raises(win, check_func, exceptions=ModelDataError,
         return True 
     return False
 
-def notify_dialog(msg, title=None):
-    run_dialog(NotifyDialog, None, text=msg, title=title)
+def notify_dialog(msg, title=None, size=None):
+    run_dialog(NotifyDialog, None, text=msg, title=title, size=size)
 
 def confirm_dialog(msg, title=None, size=None):
     return run_dialog(ConfirmDialog, None, text=msg, title=title, size=size)
