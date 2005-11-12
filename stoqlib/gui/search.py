@@ -1,25 +1,27 @@
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
-#
-# Copyright (C) 2005 Async Open Source
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
-# Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
-#
 
+##
+## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##
 """
 gui/search.py:
 
@@ -323,6 +325,24 @@ class SearchBar(SlaveDelegate):
     # Preparing query fields and groups
     #
 
+    def _set_field_types(self, columns, attributes, table_type):
+        for column in table_type.sqlmeta.columns.values():
+            if not column.origName in attributes:
+                continue
+            value = (column.name, table_type)
+            if (isinstance(column, SOStringCol) 
+                and value not in self.str_fields):
+               self.str_fields.append(value)
+            elif (isinstance(column, SOIntCol)
+                  and value not in self.int_fields):
+                 self.int_fields.append(value)
+            elif (isinstance(column, SOFloatCol)
+                  and value not in self.float_fields):
+                 self.float_fields.append(value)
+            elif (isinstance(column, (SODateTimeCol, SODateCol))
+                  and value not in self.dtime_fields):
+                 self.dtime_fields.append(value)
+
     def _split_field_types(self):
         self.int_fields = []
         self.float_fields = []
@@ -352,23 +372,12 @@ class SearchBar(SlaveDelegate):
             else:
                 raise TypeError('Invalid column type %s' % type(k_column))
 
-            for column in table_type.sqlmeta.columns.values():
-                if not column.origName in attributes:
-                    continue
-                value = (column.name, table_type)
-
-                if (isinstance(column, SOStringCol) 
-                    and value not in self.str_fields):
-                   self.str_fields.append(value)
-                elif (isinstance(column, SOIntCol)
-                      and value not in self.int_fields):
-                     self.int_fields.append(value)
-                elif (isinstance(column, SOFloatCol)
-                      and value not in self.float_fields):
-                     self.float_fields.append(value)
-                elif (isinstance(column, (SODateTimeCol, SODateCol))
-                      and value not in self.dtime_fields):
-                     self.dtime_fields.append(value)
+            columns = table_type.sqlmeta.columns.values()
+            self._set_field_types(columns, attributes, table_type)
+            if table_type._parentClass:
+                columns = table_type._parentClass.sqlmeta.columns.values()
+                self._set_field_types(columns, attributes, 
+                                      table_type._parentClass)
 
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % string.upper(search_str)
@@ -838,6 +847,7 @@ class SearchEditor(SearchDialog):
             else:
                 obj = self.klist.get_selected()
                 assert obj, msg % 0
+        obj = self.get_model(obj)
         self.run(obj) 
     
     #
@@ -846,6 +856,12 @@ class SearchEditor(SearchDialog):
 
     def new(self):
         self.run()
+
+    def get_model(self, model):
+        """This hook must be redefined on child when changing the type of
+        the model is a requirement for edit method.
+        """
+        return model
 
 
 max_search_results = None
