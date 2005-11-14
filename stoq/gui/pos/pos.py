@@ -139,6 +139,7 @@ class POSApp(AppWindow):
                                           column='total',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
+        self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
         
         if not sysparam(self.conn).HAS_DELIVERY_MODE:

@@ -81,10 +81,12 @@ class PurchaseApp(AppWindow):
                                           column='purchase_total',
                                           label='<b>Totals:</b>',
                                           value_format=value_format)
+        self.summary_total.show()
         self.summary_received = SummaryLabel(klist=self.purchase_list,
                                              column='received_total',
                                              label='',
                                              value_format=value_format)
+        self.summary_received.show()
         self.summary_hbox.pack_start(self.summary_total, False)
         self.summary_hbox.pack_end(self.summary_received, False)
 
