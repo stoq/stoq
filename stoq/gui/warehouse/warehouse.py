@@ -76,6 +76,7 @@ class WarehouseApp(AppWindow):
                                           column='quantity',
                                           label='<b>Stock Total:</b>',
                                           value_format=value_format)
+        self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
 
     def _setup_slaves(self):

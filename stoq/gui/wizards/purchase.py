@@ -207,6 +207,7 @@ class PurchaseProductStep(BaseWizardStep):
         self.summary = SummaryLabel(klist=self.slave.klist, column='total',
                                     label='<b>Subtotal:</b>',
                                     value_format=value_format)
+        self.summary.show()
         self.slave.list_vbox.pack_start(self.summary, expand=False)
         self.attach_slave('list_holder', self.slave)
 

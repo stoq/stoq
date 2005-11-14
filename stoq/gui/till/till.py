@@ -90,6 +90,7 @@ class TillApp(AppWindow):
                                           column='total_sale_amount',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
+        self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
 
     def _update_widgets(self):
