@@ -62,7 +62,7 @@ Is everything properly saved ?
     >>> ProfileSettings.select(connection=conn).count() == settings_number
     True
 
-The number of Stoq application can change in the future and that's wy we
+The number of Stoq applications can change in the future and that's why we
 have the method update_profile_applications. A simple usage for this method
 is:
 
