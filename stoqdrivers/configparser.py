@@ -2,6 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
+## Stoqdrivers
 ## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
