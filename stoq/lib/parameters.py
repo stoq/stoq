@@ -262,12 +262,17 @@ class ParameterAccess(ClassInittableObject):
                       field_value=field_value)
         
     def get_parameter_by_field(self, field_name, field_type): 
+        if type(field_type) == str:
+            field_type = namedAny('stoq.domain.' + field_type)
+
         if self._cache.has_key(field_name):
             param = self._cache[field_name]
+            if issubclass(field_type, AbstractModel):
+                return field_type.get(param.id, connection=self.conn)
+            return param
 
         values = ParameterData.select(ParameterData.q.field_name == field_name,
                                       connection=self.conn)
-
         if values.count() > 1:
             msg = ('There is no unique correspondent parameter for this field '
                    'name. Found %s items.' % values.count())
@@ -275,9 +280,6 @@ class ParameterAccess(ClassInittableObject):
         elif not values.count():
             return None
 
-        if type(field_type) == str:
-            field_type = namedAny('stoq.domain.' + field_type)
-            
         value = values[0]
         if issubclass(field_type, AbstractModel):
             param = field_type.get(value.field_value, connection=self.conn)
