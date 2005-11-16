@@ -148,17 +148,17 @@ def test():
             p.close_till()
             return
 
-    i1 = p.add_item("foo", 1, 10.00, UNIT_EMPTY, "description", TAX_NONE, 0, 0)
-    i2 = p.add_item("HK001", 5, 1.53, UNIT_LITERS, "Bohemia Beer", TAX_NONE,
-                    0, 0)
+    i1 = p.add_item("1523462123", 2, 10.00, UNIT_EMPTY, "Hollywood mç",
+                    TAX_NONE, 0, 0)
+    i2 = p.add_item("0093920912", 5, 1.53, UNIT_LITERS, "Bohemia Beer",
+                    TAX_NONE, 0, 0)
+
     p.cancel_item(i1)
+    coupon_total = p.totalize(1.0, 0, TAX_NONE)
 
-    coupon_total = p.totalize(0.0, 0, TAX_NONE)
-
-    p.add_payment(MONEY_PM, 5.00, '')
     p.add_payment(MONEY_PM, 2.00, '')
-    p.add_payment(MONEY_PM, 1.00, '')
-
+    p.add_payment(MONEY_PM, 11.00, '')
+    
     p.close()
 
 if __name__ == '__main__':

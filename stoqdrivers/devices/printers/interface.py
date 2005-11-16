@@ -171,3 +171,19 @@ class ICouponPrinter(Interface):
         """
         Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure
         """
+
+class IChequePrinter(Interface):
+    """ Interface specification for cheque printers. """
+
+    def print_cheque(value, thirdparty, city, date=None):
+        """ Prints a cheque
+
+        @param value: the value of the cheque
+        @type value: number
+        @param thirdparty: receiver of the cheque
+        @type thirdparty: string
+        @param city:
+        @type city: string
+        @param date: when the cheque was payed, optional
+        @type date: datetime
+        """
