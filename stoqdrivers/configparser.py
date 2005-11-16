@@ -36,9 +36,9 @@ from ConfigParser import ConfigParser
 from stoqdrivers.exceptions import ConfigError
 
 
-class FiscalPrinterConfig:
+class StoqdriversConfig:
 
-    domain = 'fiscalprinter'
+    domain = 'stoqdrivers'
 
     def __init__(self, filename=None):
         """ filename is the name of the configuration file we're reading """
