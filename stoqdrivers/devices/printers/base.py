@@ -29,12 +29,17 @@ stoqdrivers/devices/printers/base.py:
     Generic base class implementation for all printers
 """
 
+import os
+
 from zope.interface import providedBy
+from kiwi.python import namedAny
 
 from stoqdrivers.log import Logger
 from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.exceptions import CriticalError, ConfigError
-from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices import printers
+from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IChequePrinter)
 
 class BasePrinter(Logger):
     def __init__(self, config_file=None):
@@ -77,3 +82,36 @@ class BasePrinter(Logger):
         if not (ICouponPrinter in driver_interfaces):
             raise TypeError("The driver %s doesn't implements a known "
                             "interface")
+
+def get_supported_printers():
+    printers_dir = os.path.dirname(printers.__file__)
+    result = {}
+
+    for brand in os.listdir(printers_dir):
+        brand_dir = os.path.join(printers_dir, brand)
+        if ((not os.path.isdir(brand_dir))
+            or brand.startswith(".")):
+            continue
+
+        result[brand] = []
+        for model in os.listdir(brand_dir):
+            if not model.endswith(".py") or model.startswith('__init__.py'):
+                continue
+            if not os.path.isfile(os.path.join(brand_dir, model)):
+                continue
+
+            model_name = model[:-3]
+            try:
+                obj = namedAny(("stoqdrivers.devices.printers.%s.%s.%sPrinter"
+                                % (brand, model_name, model_name)))
+            except AttributeError:
+                raise ImportError("Can't find class %sPrinter for module %s"
+                                  % (model_name, model_name))
+            if not (IChequePrinter.isImplemented(obj) or
+                    ICouponPrinter.isImplemented(obj)):
+                raise TypeError("The driver %s doesn't implements a valid "
+                                "interface")
+                
+            result[brand].append(obj)
+
+    return result
