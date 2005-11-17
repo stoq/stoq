@@ -50,8 +50,10 @@ class BaseEditorSlave(SlaveDelegate):
         if self.model_type:
             model = model or self.create_model(self.conn)
             if model and not isinstance(model, self.model_type):
-                raise TypeError('Invalid type for model attribute. Type: %s' %
-                                type(model))
+                raise TypeError('%s editor requires a model of type %s, '
+                                'got a %r' % (self.__class__.__name__,
+                                              self.model_type,
+                                              model))
         else:
             model = None
         self.model = model 
