@@ -107,10 +107,10 @@ def get_supported_printers():
             except AttributeError:
                 raise ImportError("Can't find class %sPrinter for module %s"
                                   % (model_name, model_name))
-            if not (IChequePrinter.isImplemented(obj) or
-                    ICouponPrinter.isImplemented(obj)):
-                raise TypeError("The driver %s doesn't implements a valid "
-                                "interface")
+            if not (IChequePrinter.implementedBy(obj) or
+                    ICouponPrinter.implementedBy(obj)):
+                raise TypeError("The driver %s %s doesn't implements a valid "
+                                "interface" % (brand, model_name))
                 
             result[brand].append(obj)
 
