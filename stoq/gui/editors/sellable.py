@@ -122,12 +122,12 @@ class SellablePriceEditor(BaseEditor):
     # Kiwi handlers
     # 
 
-    def after_price__changed(self, entry_box):
+    def after_price__content_changed(self, entry_box):
         self.handler_block(self.markup, 'changed')
         self.update_markup()
         self.handler_unblock(self.markup, 'changed')
 
-    def after_markup__changed(self, spin_button):
+    def after_markup__content_changed(self, spin_button):
         self.handler_block(self.price, 'changed')
         self.update_price()
         self.handler_unblock(self.price, 'changed')
