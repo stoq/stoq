@@ -90,7 +90,7 @@ class PaymentMethodStep(BaseWizardStep):
             raise ValueError('Invalid payment method type: %s' 
                              % type(selected))
         iface, slave_class = self.method_dict[selected]
-        group.set_default_method(iface)
+        group.set_method(iface)
         self._set_method_slave(slave_class, slave_args)
         
         if self.get_slave(self.slave_holder):
@@ -208,7 +208,8 @@ class SalesPersonStep(BaseWizardStep):
                                'othermethods_check')
 
     def __init__(self, wizard, conn, model):
-        self.discount_charge_slave = DiscountChargeSlave(conn, model)
+        self.discount_charge_slave = DiscountChargeSlave(conn, model,
+                                                         self.model_type)
         BaseWizardStep.__init__(self, conn, wizard, model)
         self.register_validate_function(self.previous.refresh_next)
         changed_handler = self.update_totals
@@ -232,7 +233,7 @@ class SalesPersonStep(BaseWizardStep):
         total = group.get_total_received()
         # For cash we only have one installment always
         inst_number = money_method.get_max_installments_number()
-        money_method.setup_payments(total, group, inst_number)
+        money_method.setup_inpayments(total, group, inst_number)
 
     def on_discount_charge_slave__discount_changed(self, slave):
         self.update_totals()

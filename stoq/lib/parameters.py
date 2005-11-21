@@ -136,6 +136,14 @@ Current System parameters:
     * CONFIRM_SALES_ON_TILL(integer): Once this parameter is set, the sales
                                       confirmation are only made on till
                                       application
+
+    * USE_PURCHASE_PREVIEW_PAYMENTS(integer): Generate preview payments for
+                                              new purchases which are not
+                                              received yet. Once the order
+                                              is received the preview
+                                              payments will be also
+                                              confirmed as valid payments
+                                              with STATuS_TO_PAY
 """
     
 import gettext
@@ -224,6 +232,8 @@ class ParameterAccess(ClassInittableObject):
                                initial=True),
                  ParameterAttr('MANDATORY_INTEREST_CHARGE', int, 
                                initial=False),
+                 ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', int, 
+                               initial=True),
 
                  # Adding objects
                  ParameterAttr('SUGGESTED_SUPPLIER', 

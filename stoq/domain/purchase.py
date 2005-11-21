@@ -37,7 +37,10 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
 from zope.interface import implements
 
 from stoq.domain.base import Domain
-from stoq.domain.interfaces import IContainer
+from stoq.domain.payment.base import AbstractPaymentGroup
+from stoq.domain.interfaces import (IContainer, ICheckPM, IBillPM, IMoneyPM,
+                                    IPaymentGroup)
+from stoq.lib.parameters import sysparam
 
 _ = gettext.gettext
 
@@ -136,8 +139,15 @@ class PurchaseOrder(Domain):
     # Auxiliar methods
     #
 
+    def get_purchase_subtotal(self):
+        return sum([item.cost for item in self.get_items()], 0.0)
+
     def get_purchase_total(self):
-        return sum([item.cost for item in self.get_items()])
+        subtotal = self.get_purchase_subtotal()
+        total = subtotal - self.discount_value + self.charge_value
+        if total < 0:
+            raise ValueError('Purchase total can not be lesser than zero')
+        return total
 
     def get_received_total(self):
         return sum([item.cost * item.quantity_received 
@@ -153,8 +163,64 @@ class PurchaseOrder(Domain):
         return self.statuses[self.status]
 
     def validate(self):
-        if not self.get_valid():
-            self.set_valid()
+        conn = self.get_connection()
+        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
+            group = IPaymentGroup(self, connection=conn)
+            if not group:
+                raise ValueError('You must have a IPaymentGroup facet '
+                                 'defined at this point') 
+            group.create_preview_outpayments()
+        self.set_valid()
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return 0.0
+        subtotal = self.get_purchase_subtotal()
+        return subtotal * (percentage/100.0)
+
+    def _set_discount_by_percentage(self, value):
+        """Sets a discount by percentage.
+        Note that percentage must be added as an absolute value not as a 
+        factor like 1.05 = 5 % of charge
+        The correct form is 'percentage = 3' for a discount of 3 %"""
+        self.discount_value = self._get_percentage_value(value)
+
+    def _get_discount_by_percentage(self):
+        discount_value = self.discount_value
+        if not discount_value:
+            return 0.0
+        subtotal = self.get_purchase_subtotal()
+        assert subtotal > 0, ('the subtotal should not be zero '
+                              'at this point')
+        total = subtotal - discount_value
+        percentage = (1 - total / float(subtotal)) * 100
+        return percentage
+
+    discount_percentage = property(_get_discount_by_percentage,
+                                   _set_discount_by_percentage)
+
+    def _set_charge_by_percentage(self, value):
+        """Sets a charge by percentage.
+        Note that charge must be added as an absolute value not as a 
+        factor like 0.97 = 3 % of discount.
+        The correct form is 'percentage = 3' for a charge of 3 %"""
+        self.charge_value = self._get_percentage_value(value)
+
+    def _get_charge_by_percentage(self):
+        charge_value = self.charge_value
+        if not charge_value:
+            return 0.0
+        subtotal = self.get_purchase_subtotal()
+        assert subtotal > 0, ('the subtotal should not be zero '
+                              'at this point')
+        total = subtotal + charge_value
+        percentage = ((total / float(subtotal)) - 1) * 100
+        return percentage
+
+    charge_percentage = property(_get_charge_by_percentage,
+                                 _set_charge_by_percentage)
+    def reset_discount_and_charge(self):
+        self.discount_value = self.charge_value = 0.0
 
     #
     # IContainer implementation
@@ -176,3 +242,51 @@ class PurchaseOrder(Domain):
             raise ValueError('Argument item must have an order attribute '
                              'associated with the current purchase instance')
         PurchaseItem.delete(item.id, connection=conn)
+
+
+class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
+
+    #
+    # IPaymentGroup implementation
+    #
+
+    def get_thirdparty(self):
+        order = self.get_adapted()
+        if not order.supplier:
+            raise DatabaseInconsistency('An order must have a supplier')
+        return order.supplier.get_adapted()
+
+    def set_thirdparty(self):
+        raise NotImplementedError
+
+    def get_group_description(self):
+        order = self.get_adapted()
+        return _('order %s') % order.order_number
+
+    #
+    # Auxiliar methods
+    #
+
+    def create_preview_outpayments(self):
+        conn = self.get_connection()
+        base_method = sysparam(conn).BASE_PAYMENT_METHOD
+        order = self.get_adapted()
+        total = order.get_purchase_total()
+        first_due_date = order.expected_receival_date
+        if self.default_method == self.METHOD_MONEY:
+            method = IMoneyPM(base_method, connection=conn)
+            method.setup_outpayments(total, self, self.installments_number)
+            return
+        elif self.default_method == self.METHOD_CHECK:
+            method = ICheckPM(base_method, connection=conn)
+        elif self.default_method == self.METHOD_BILL:
+            method = IBillPM(base_method, connection=conn)
+        else:
+            raise ValueError('Invalid payment method, got %d' %
+                             self.default_method)
+        method.setup_outpayments(self, self.installments_number,
+                                 first_due_date, self.interval_type,
+                                 self.intervals, total)
+
+        
+PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup)

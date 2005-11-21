@@ -431,11 +431,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         interest = self.model.interest
         self.payment_list.clear_list()
         method = self.method
-        inpayments, interest = method.create_inpayments(group, inst_number,
-                                                        due_date, 
-                                                        interval_type,
-                                                        intervals, 
-                                                        total, interest)
+        inpayments, interest = method.setup_inpayments(group, inst_number,
+                                                       due_date, 
+                                                       interval_type,
+                                                       intervals, 
+                                                       total, interest)
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = interest
@@ -673,8 +673,8 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         inst_number = self.model.installments_number
         payment_type = self.model.payment_type
         first_due_date = self.sale.open_date
-        payment_type.create_inpayments(group, inst_number, first_due_date,
-                                       total)
+        payment_type.setup_inpayments(group, inst_number, first_due_date,
+                                      total)
 
 
 

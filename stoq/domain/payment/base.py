@@ -226,6 +226,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     close_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
     installments_number = IntCol(default=1)
+    interval_type = IntCol(default=None)
+    intervals = IntCol(default=None)
     daily_penalty = FloatCol(default=0.0)
         
     #
@@ -277,7 +279,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                 self.METHOD_FINANCIER:  IFinancePM,
                 self.METHOD_MULTIPLE:   None}
 
-    def set_default_method(self, method_iface):
+    def set_method(self, method_iface):
         items = self.get_available_methods().items()
         method = [method_id for method_id, iface in items
                         if method_iface is iface]
@@ -286,7 +288,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                             % method_iface)
         self.default_method = method[0]
 
-    def setup_payments(self):
+    def setup_inpayments(self):
         methods = self.get_available_methods()
         if self.default_method != self.METHOD_MULTIPLE:
             self.clear_preview_payments(methods[self.default_method])

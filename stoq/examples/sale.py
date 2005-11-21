@@ -151,10 +151,10 @@ def create_sales():
             raise ValueError('Number of installments for this payment '
                              'method can not be greater than %d, got %d' 
                              % (installments, MAX_INSTALLMENTS_NUMBER))
-        check_method.create_inpayments(pg_facet, installments, open_date,
-                                       DEFAULT_PAYMENT_INTERVAL_TYPE,
-                                       DEFAULT_PAYMENTS_INTERVAL, 
-                                       sale_total)
+        check_method.setup_inpayments(pg_facet, installments, open_date,
+                                      DEFAULT_PAYMENT_INTERVAL_TYPE,
+                                      DEFAULT_PAYMENTS_INTERVAL, 
+                                      sale_total)
         sale.set_valid()
 
     conn.commit()
