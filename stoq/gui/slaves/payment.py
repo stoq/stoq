@@ -348,11 +348,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interest_total = 0.0
         self.payment_group = self.wizard.get_payment_group()
         self.payment_list = None
+        self.reset_btn_validation_ok = True
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
         self._setup_widgets()
-        self.reset_btn_validation_ok = True
         self.update_view()
 
     def _refresh_next(self, validation_ok=True):
