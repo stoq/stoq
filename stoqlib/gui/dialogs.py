@@ -35,11 +35,9 @@ from stoqlib.exceptions import _warn, ModelDataError
 from stoqlib.gui.gtkadds import change_button_appearance
 
 
-
 #
 # Helper classes
 #
-
 
 
 class Warnbox(SlaveDelegate):
@@ -92,11 +90,9 @@ the retval attribute"""
         self.show()
 
 
-
 #
 # Abstract classes: inherit only, do not use.
 #
-
 
 
 class AbstractDialog(Delegate, RunnableView):
@@ -117,7 +113,6 @@ class AbstractDialog(Delegate, RunnableView):
         self.keyactions = {}
 
 
-
 #
 # Special note for BasicDialog and BasicPluggableDialog: if you inherit
 # from this class, you *must* call Basic*Dialog._initialize() right after
@@ -127,7 +122,6 @@ class AbstractDialog(Delegate, RunnableView):
 # NotifyDialog/PluggableNotifyDialog for an example of how __init__ should
 # behave.
 #
-
 
 
 class BasicDialog(AbstractDialog):
@@ -277,13 +271,11 @@ class BasicPluggableDialog(BasicDialog):
         self.close()
 
 
-
 #
 # Wrapping variants, which take a slave as a parameter and set it up to
 # have a "normal" dialog API, which follows the BasicPluggableDialog
 # interface for stoqlib.services run_dialog compatibility.
 #       
-
 
 
 class BasicWrappingDialog(BasicPluggableDialog):
@@ -302,11 +294,13 @@ class ConfirmDialog(BasicDialog):
     It prints text in a label and offers OK/Cancel buttons."""
 
     title = 'Confirmation'
-    def __init__(self, text, title=None, size=None):
+    def __init__(self, text, title=None, size=None, ok_label=None):
         BasicDialog.__init__(self)
         self.justify_label(gtk.JUSTIFY_CENTER)
         title = title or self.title
         BasicDialog._initialize(self, text, title=title, size=size)
+        if ok_label:
+            self.set_ok_label(ok_label)
 
     def setup_keyactions(self):
         self.keyactions = { gtk.keysyms.Escape: self.cancel,
@@ -318,16 +312,15 @@ class NotifyDialog(ConfirmDialog):
 offers a single OK button."""
 
     title = 'Notification'
-    def __init__(self, text, title=None, size=None):
-        ConfirmDialog.__init__(self, text, title, size=size)
+    def __init__(self, text, title=None, size=None, ok_label=None):
+        ConfirmDialog.__init__(self, text, title, size=size,
+                               ok_label=ok_label)
         self.cancel_button.hide()
-
 
 
 #
 # Auxiliar methods
 #
-
 
 
 def get_dialog(parent, dialog, *args, **kwargs):
@@ -378,8 +371,10 @@ def notify_if_raises(win, check_func, exceptions=ModelDataError,
         return True 
     return False
 
-def notify_dialog(msg, title=None, size=None):
-    run_dialog(NotifyDialog, None, text=msg, title=title, size=size)
+def notify_dialog(msg, title=None, size=None, ok_label=None):
+    run_dialog(NotifyDialog, None, text=msg, title=title, size=size,
+               ok_label=ok_label)
 
-def confirm_dialog(msg, title=None, size=None):
-    return run_dialog(ConfirmDialog, None, text=msg, title=title, size=size)
+def confirm_dialog(msg, title=None, size=None, ok_label=None):
+    return run_dialog(ConfirmDialog, None, text=msg, title=title, 
+                      size=size, ok_label=ok_label)
