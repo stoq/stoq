@@ -66,6 +66,8 @@ class AccessorColumn(Column):
             raise TypeError('AccessorColumn needs an accessor argument')
  
         self.accessor = accessor
+        if not kwargs.has_key('cache'):
+            kwargs['cache'] = True
         assert callable(self.accessor)
         Column.__init__(self, attribute=attribute, *args, **kwargs)
  
