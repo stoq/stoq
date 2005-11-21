@@ -140,7 +140,7 @@ class Sale(Domain):
             raise TypeError("%s cannot be adapted to IClient." % person)
         self.client = client
 
-    def reset_discount_charge(self):
+    def reset_discount_and_charge(self):
         self.discount_value = self.charge_value = 0.0
 
     def _get_percentage_value(self, percentage):
