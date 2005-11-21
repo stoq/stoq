@@ -93,8 +93,9 @@ class SerialBase(Serial, Logger):
 
     def handle_error(self, error, command):
         """
-        Should be implemeneted be subclass
+        Should be implemented by subclass
         
         @param error:
         @param command:
         """
+        raise NotImplementedError
