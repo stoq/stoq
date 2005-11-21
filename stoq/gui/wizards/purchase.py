@@ -39,14 +39,17 @@ from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.lib.validators import (get_price_format_str, format_quantity, 
                                  get_formatted_price)
+from stoq.lib.defaults import INTERVALTYPE_MONTH
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import SupplierEditor, TransporterEditor
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.gui.slaves.purchase import PurchasePaymentSlave
+from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.domain.product import Product, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder, PurchaseItem
 from stoq.domain.interfaces import (ISupplier, IBranch, ITransporter,
-                                    ISellable)
+                                    ISellable, IPaymentGroup)
 
 _ = gettext.gettext
 
@@ -98,6 +101,93 @@ class FinishPurchaseStep(BaseWizardStep):
                                   self.model.transporter):
             self.conn.commit()
             self._setup_transporter_entry()
+
+
+class PurchasePaymentStep(BaseWizardStep):
+    gladefile = 'PurchasePaymentStep'
+    model_type = PurchaseOrder.getAdapterClass(IPaymentGroup)
+    payment_widgets = ('method_combo',)
+    order_widgets = ('subtotal_lbl',
+                     'total_lbl')
+    widgets = payment_widgets + order_widgets
+
+    def __init__(self, wizard, previous, conn, model):
+        self.order = model
+        pg = IPaymentGroup(model, connection=conn)
+        if pg:
+            model = pg
+        else:
+            method = self.model_type.METHOD_BILL
+            interval_type = INTERVALTYPE_MONTH
+            model = model.addFacet(IPaymentGroup, default_method=method,
+                                   intervals=1, 
+                                   interval_type=interval_type,
+                                   connection=conn)
+        self.slave = None
+        self.discount_charge_slave = None
+        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+
+    def _setup_widgets(self):
+        table = self.model_type
+        items = [(_('Bill'), table.METHOD_BILL),
+                 (_('Check'), table.METHOD_CHECK),
+                 (_('Money'), table.METHOD_MONEY)]
+        self.method_combo.prefill(items)
+        format_str = get_price_format_str()
+        self.subtotal_lbl.set_data_format(format_str)
+        self.total_lbl.set_data_format(format_str)
+
+    def _update_payment_method_slave(self):
+        holder_name = 'method_slave_holder'
+        if self.get_slave(holder_name):
+            self.detach_slave(holder_name)
+        if not self.slave:
+            self.slave = PurchasePaymentSlave(self.conn, self.model)
+        if self.model.default_method == self.model_type.METHOD_MONEY:
+            self.slave.get_toplevel().hide()
+            return
+        self.slave.get_toplevel().show()
+        self.attach_slave('method_slave_holder', self.slave)
+
+    def _update_totals(self, *args):
+        for field_name in ('purchase_subtotal', 'purchase_total'):
+            self.order_proxy.update(field_name)
+
+    #
+    # WizardStep hooks
+    #
+
+    def next_step(self):
+        return FinishPurchaseStep(self.wizard, self, self.conn, 
+                                  self.order)
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.order_proxy = self.add_proxy(self.order, self.order_widgets)
+        self.proxy = self.add_proxy(self.model, self.payment_widgets)
+
+    def setup_slaves(self):
+        self._update_payment_method_slave()
+        slave_holder = 'discount_charge_slave'
+        if self.get_slave(slave_holder):
+            return
+        self.discount_charge_slave = DiscountChargeSlave(self.conn, self.order,
+                                                         PurchaseOrder)
+        self.attach_slave(slave_holder, self.discount_charge_slave)
+        self.discount_charge_slave.connect('discount-changed', 
+                                           self._update_totals)
+        self._update_totals()
+
+    #
+    # callbacks
+    #
+
+    def on_method_combo__changed(self, *args):
+        self._update_payment_method_slave()
 
 
 class PurchaseProductStep(BaseWizardStep):
@@ -181,8 +271,8 @@ class PurchaseProductStep(BaseWizardStep):
     #
 
     def next_step(self):
-        return FinishPurchaseStep(self.wizard, self, self.conn, 
-                                  self.model)
+        return PurchasePaymentStep(self.wizard, self, self.conn, 
+                                   self.model)
 
     def post_init(self):
         self.register_validate_function(self.wizard.refresh_next)
@@ -349,7 +439,6 @@ class PurchaseWizard(BaseWizard):
     #
 
     def finish(self):
-        # TODO generate preview payments for this order
         self.model.validate()
         self.retval = self.model
         self.close()

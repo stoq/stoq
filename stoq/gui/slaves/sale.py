@@ -33,7 +33,6 @@ from kiwi.ui.views import signal_block
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.lib.validators import get_price_format_str
-from stoq.domain.sale import Sale
 
 
 class DiscountChargeSlave(BaseEditorSlave):
@@ -45,7 +44,6 @@ class DiscountChargeSlave(BaseEditorSlave):
                                           is changed
     """
     gladefile = 'DiscountChargeSlave'
-    model_type = Sale
     proxy_widgets = ('discount_value',
                      'charge_value',
                      'discount_perc',
@@ -56,16 +54,18 @@ class DiscountChargeSlave(BaseEditorSlave):
                'charge_value_ck') + proxy_widgets
     gsignal('discount-changed')
 
+    def __init__(self, conn, model, model_type):
+        self.model_type = model_type
+        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_widgets(self):
-        self.subtotal = self.model.get_sale_subtotal()
         float_widgets = [self.discount_perc, self.discount_value, 
                          self.charge_perc, self.charge_value]
         format_str = get_price_format_str()
         for widget in float_widgets:
             widget.set_data_format(format_str)
         self.update_widget_status()
-        self.model.reset_discount_charge()
+        self.model.reset_discount_and_charge()
 
     def update_widget_status(self):
         charge_by_value = not self.charge_perc_ck.get_active()

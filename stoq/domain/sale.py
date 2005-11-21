@@ -248,7 +248,7 @@ class Sale(Domain):
         self.validate()
         conn = self.get_connection()
         group = IPaymentGroup(self, connection=conn)
-        group.setup_payments()
+        group.setup_inpayments()
         self.update_stocks()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()

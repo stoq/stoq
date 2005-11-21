@@ -51,7 +51,7 @@ from stoq.domain.base import (Domain, InheritableModel,
                               InheritableModelAdapter)
 from stoq.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM, 
                                     IBillPM, IFinancePM, ICardPM, 
-                                    ICreditProvider, IActive)
+                                    ICreditProvider, IActive, IOutPayment)
 
 _ = gettext.gettext
 
@@ -142,10 +142,10 @@ class PaymentMethod(Domain):
     """A base payment method with its description"""
 
     def get_total_by_client(self, client):
-        raise NotImplementedError
+        raise NotImplementedError('This method must be implemented on child')
 
     def get_total_by_date(self, start_date=None, end_date=None):
-        raise NotImplementedError
+        raise NotImplementedError('This method must be implemented on child')
 
 
 #
@@ -188,7 +188,8 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         return count
 
     def add_payment(self, payment_group, due_date, value,
-                    method_details=None, description=None):
+                    method_details=None, description=None,
+                    iface=IInPayment):
         conn = self.get_connection()
         created_number = self.get_payment_number_by_group(payment_group)
         if method_details:
@@ -210,18 +211,23 @@ class PaymentMethodAdapter(InheritableModelAdapter):
             group_desc = payment_group.get_group_description()
             description = '%s (1 of 1) from %s' % (self.description,
                                                    group_desc)
-        return Payment(connection=conn, group=payment_group,
-                       method=self, destination=destination,
-                       method_details=method_details,
-                       due_date=due_date, value=value,
-                       description=description)
+        payment = Payment(connection=conn, group=payment_group,
+                          method=self, destination=destination,
+                          method_details=method_details,
+                          due_date=due_date, value=value,
+                          description=description)
+        return payment.addFacet(iface, connection=conn)
 
     def create_inpayment(self, payment_group, due_date, value,
                          method_details=None, description=None):
-        payment = self.add_payment(payment_group, due_date, value,
-                                   method_details, description)
-        conn = self.get_connection()
-        return payment.addFacet(IInPayment, connection=conn)
+        return self.add_payment(payment_group, due_date, value,
+                                method_details, description)
+
+    def create_outpayment(self, payment_group, due_date, value,
+                          method_details=None, description=None):
+        return self.add_payment(payment_group, due_date, value,
+                                method_details, description,
+                                IOutPayment)
 
     @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
@@ -234,10 +240,13 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         Payment.delete(payment.id, connection=conn)
         
     def get_max_installments_number(self):
-        raise NotImplementedError
+        raise NotImplementedError('This method must be implemented on child')
 
-    def setup_payments(self, total, group, installments_number):
-        raise NotImplementedError
+    def setup_inpayments(self, total, group, installments_number):
+        raise NotImplementedError('This method must be implemented on child')
+
+    def setup_outpayments(self, total, group, installments_number):
+        raise NotImplementedError('This method must be implemented on child')
 
     @argcheck(AbstractPaymentGroup)
     def get_thirdparty(self, payment_group):
@@ -269,7 +278,7 @@ class PMAdaptToMoney(PaymentMethodAdapter):
         # Money method supports only one payment
         return 1
 
-    def setup_payments(self, total, group, installments_number):
+    def _get_new_payment(self, total, group, installments_number):
         self._check_installments_number(installments_number)
         due_date = datetime.today()
         group_desc = group.get_group_description()
@@ -277,6 +286,16 @@ class PMAdaptToMoney(PaymentMethodAdapter):
                                                group_desc)
         payment = group.add_payment(total, description, self, 
                                     self.destination, due_date)
+        return payment
+
+    def setup_outpayments(self, total, group, installments_number):
+        total = abs(total) * -1
+        payment = self._get_new_payment(total, group, installments_number)
+        conn = self.get_connection()
+        payment.addFacet(IOutPayment, connection=conn)
+
+    def setup_inpayments(self, total, group, installments_number):
+        payment = self._get_new_payment(total, group, installments_number)
         conn = self.get_connection()
         payment.addFacet(IInPayment, connection=conn)
 
@@ -338,12 +357,12 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
     # XXX Waiting for bug fix in kiwi
     # @argcheck(object, AbstractPaymentGroup, int, datetime, int, int, 
     #           float)
-    def create_inpayments(self, payment_group, installments_number,
-                          first_duedate, interval_type, intervals,
-                          total_value, interest=None):
-        """Return a list of newly created inpayments and its total
-        interest. The result value is a tuple where the first item is the
-        payment list and the second one is the interest total value
+    def _setup_payments(self, payment_group, installments_number,
+                        first_duedate, interval_type, intervals,
+                        total_value, interest=None, iface=IInPayment):
+        """Return a list of newly created inpayments or outpayments and its 
+        total interest. The result value is a tuple where the first item 
+        is the payment list and the second one is the interest total value
         
         payment_group       = a AbstractPaymentGroup instance
         installments_number = the number of installments for payment
@@ -377,10 +396,26 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
                                                      i + 1, 
                                                      installments_number,
                                                      group_desc)
-            payment = self.create_inpayment(payment_group, due_date, 
-                                            value, self, description)
+            payment = self.add_payment(payment_group, due_date, value,
+                                       description=description, 
+                                       iface=iface)
             payments.append(payment)
         return payments, interest_total
+
+    def setup_inpayments(self, payment_group, installments_number,
+                          first_duedate, interval_type, intervals,
+                          total_value, interest=None):
+        return self._setup_payments(payment_group, installments_number,
+                                    first_duedate, interval_type, 
+                                    intervals, total_value, interest)
+
+    def setup_outpayments(self, payment_group, installments_number,
+                         first_duedate, interval_type, intervals,
+                         total_value, interest=None):
+        return self._setup_payments(payment_group, installments_number,
+                                    first_duedate, interval_type, 
+                                    intervals, total_value, interest,
+                                    IOutPayment)
 
     def get_max_installments_number(self):
         return self.max_installments_number
@@ -425,19 +460,22 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
     #
 
     def add_payment(self, payment_group, due_date, value,
-                    method_details=None, description=None):
+                    method_details=None, description=None,
+                    iface=IInPayment):
         # The method_details argument exists only for
         # AbstractCheckBillAdapter compatibility
         desc = description
         payment = AbstractCheckBillAdapter.add_payment(self, 
                                                        payment_group, 
                                                        due_date, value,
-                                                       description=desc)
+                                                       description=desc,
+                                                       iface=iface)
         conn = self.get_connection()
         bank_data = BankAccount(connection=conn)
+        adapted = payment.get_adapted()
         # Every check must have a check data reference
         CheckData(connection=conn, bank_data=bank_data,
-                  payment=payment)
+                  payment=adapted)
         return payment
 
     @argcheck(PaymentAdaptToInPayment)
@@ -605,8 +643,8 @@ class PaymentMethodDetails(InheritableModel):
                                                value, self, description)
 
     @argcheck(AbstractPaymentGroup, int, datetime, float)
-    def create_inpayments(self, payment_group, installments_number,
-                          first_duedate, total_value):
+    def setup_inpayments(self, payment_group, installments_number,
+                         first_duedate, total_value):
         """Return a list of newly created inpayments and its total
         payment list and the second one is the interest total value
         

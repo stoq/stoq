@@ -234,7 +234,6 @@ class ProductEditor(SellableEditor):
 
         if self.sellable_proxy.model.price:
            return
-
         cost = self.sellable_proxy.model.cost or 0.0
         markup = self.sellable_proxy.model.get_suggested_markup() or 0.0
         self.sellable_proxy.model.price = cost + ((markup / 100) * cost)

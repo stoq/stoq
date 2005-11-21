@@ -145,6 +145,7 @@ TABLES = [
                                             "ProductStockItem",
                                             )),
      ('stoq.domain.purchase',              ("PurchaseOrder",
+                                            "PurchaseOrderAdaptToPaymentGroup",
                                             "PurchaseItem",
                                             )),
 ]
