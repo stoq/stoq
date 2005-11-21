@@ -419,7 +419,7 @@ class PurchaseWizard(BaseWizard):
         title = self._get_title(model)
         model = model or self._create_model(conn)
         if model.status != PurchaseOrder.ORDER_PENDING:
-            raise ValueError('Invalid order status. It should'
+            raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
         first_step = StartPurchaseStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model, title=title)
@@ -439,6 +439,6 @@ class PurchaseWizard(BaseWizard):
     #
 
     def finish(self):
-        self.model.validate()
+        self.model.set_valid()
         self.retval = self.model
         self.close()

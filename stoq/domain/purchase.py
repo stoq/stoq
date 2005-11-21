@@ -29,7 +29,7 @@ stoq/domain/purchase.py:
 """
 
 import gettext
-from datetime import datetime
+import datetime
 
 from kiwi.argcheck import argcheck
 from stoqlib.exceptions import DatabaseInconsistency
@@ -110,7 +110,7 @@ class PurchaseOrder(Domain):
     status = IntCol(default=ORDER_QUOTING)
     # Field order_number must be unique. Waiting for bug 2214
     order_number = IntCol(default=None)
-    open_date = DateTimeCol(default=datetime.now())
+    open_date = DateTimeCol(default=datetime.datetime.now())
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=None)
     expected_pay_date = DateTimeCol(default=None)
@@ -139,6 +139,21 @@ class PurchaseOrder(Domain):
     # Auxiliar methods
     #
 
+    def confirm_order(self, confirm_date=datetime.datetime.now()):
+        if self.status != self.ORDER_PENDING:
+            raise ValueError('Invalid order status, it should be '
+                             'ORDER_PENDING, got %s' 
+                             % self.get_status_str())
+        conn = self.get_connection()
+        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
+            group = IPaymentGroup(self, connection=conn)
+            if not group:
+                raise ValueError('You must have a IPaymentGroup facet '
+                                 'defined at this point') 
+            group.create_preview_outpayments()
+        self.status = self.ORDER_CONFIRMED
+        self.confirm_date = confirm_date
+
     def get_purchase_subtotal(self):
         return sum([item.cost for item in self.get_items()], 0.0)
 
@@ -161,16 +176,6 @@ class PurchaseOrder(Domain):
             raise DatabaseInconsistency('Got an unexpected status value: '
                                         '%s' % self.status)
         return self.statuses[self.status]
-
-    def validate(self):
-        conn = self.get_connection()
-        if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(self, connection=conn)
-            if not group:
-                raise ValueError('You must have a IPaymentGroup facet '
-                                 'defined at this point') 
-            group.create_preview_outpayments()
-        self.set_valid()
 
     def _get_percentage_value(self, percentage):
         if not percentage:
@@ -242,7 +247,7 @@ class PurchaseOrder(Domain):
             raise ValueError('Argument item must have an order attribute '
                              'associated with the current purchase instance')
         PurchaseItem.delete(item.id, connection=conn)
-
+    
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 

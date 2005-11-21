@@ -36,6 +36,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
+from stoqlib.gui.dialogs import confirm_dialog, notify_dialog
 from stoqlib.database import rollback_and_begin, finish_transaction
 
 from stoq.domain.purchase import PurchaseOrder
@@ -64,6 +65,7 @@ class PurchaseApp(AppWindow):
                'edit_button',
                'details_button',
                'summary_hbox',
+               'send_to_supplier_action',
                'print_button')
                
     def __init__(self, app):
@@ -112,15 +114,20 @@ class PurchaseApp(AppWindow):
 
     def _update_view(self):
         has_purchases = len(self.purchase_list) > 0
-        widgets = [self.edit_button, self.details_button, self.print_button]
+        widgets = [self.edit_button, self.details_button, self.print_button,
+                   self.send_to_supplier_action]
         for widget in widgets:
             widget.set_sensitive(has_purchases)
         selection = self.purchase_list.get_selected_rows()
-        one_selected = len(selection) == 1
-        self.edit_button.set_sensitive(one_selected)
+        can_edit = one_selected = len(selection) == 1
+        if one_selected:
+            can_edit = (selection[0].status ==
+                        PurchaseOrder.ORDER_PENDING)
+        self.edit_button.set_sensitive(can_edit)
         self.details_button.set_sensitive(one_selected)
         has_item_selected = len(selection) > 0
         self.print_button.set_sensitive(has_item_selected)
+        self.send_to_supplier_action.set_sensitive(has_item_selected)
 
     def _get_columns(self):
         return [Column('order_number', title=_('Number'), sorted=True,
@@ -209,13 +216,41 @@ class PurchaseApp(AppWindow):
 
     def _on_order_action_clicked(self, *args):
         self._open_order()
+        self.search_bar.search_items()
 
     def on_edit_button__clicked(self, *args):
         self._edit_order()
 
     def _on_send_to_supplier_action_clicked(self, *args):
-        # TODO bug 2213
-        pass
+        rollback_and_begin(self.conn)
+        orders = self.purchase_list.get_selected_rows()
+        valid_orders = [order for order in orders 
+                            if order.status == PurchaseOrder.ORDER_PENDING]
+        qty = len(orders)
+        invalid_qty = qty - len(valid_orders)
+        if invalid_qty == qty:
+            notify_dialog('There are no orders with status pending in the '
+                          'selection')
+            return
+        qty -= invalid_qty
+        if not qty:
+            raise ValueError('You should have at least one order selected '
+                             'at this point')
+        if qty > 1:
+            msg = _('The %d selected orders will be market as sent.') % qty
+        else:
+            msg = _('The selected order will be market as sent.')
+        if invalid_qty:
+            msg += ('\nWarning: there are %d order(s) with status different '
+                    'than pending that will not be included.' 
+                    % invalid_qty)
+        title = _('Send order to supplier')
+        if not confirm_dialog(msg, title, ok_label="Confirm"):
+            return
+        for order in valid_orders:
+            order.confirm_order()
+        self.conn.commit()
+        self.search_bar.search_items()
 
     def _on_base_categories_action_clicked(self, *args):
         self.run_dialog(BaseSellableCatSearch)
