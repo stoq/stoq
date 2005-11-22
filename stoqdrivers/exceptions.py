@@ -86,8 +86,17 @@ class ClosedTillError(DriverError):
 class ReduceZError(DriverError):
     "A Reduce already done."
 
+class ReadXError(DriverError):
+    "A Read X is already done."
+
 class CouponTotalizeError(DriverError):
     "Error while totalizing a coupon."
 
 class PaymentAdditionError(DriverError):
     "Error while adding a payment."
+
+class CancelItemError(DriverError):
+    "Error while cancelling coupon."
+
+class InvalidState(DriverError):
+    "Invalid state for the requested operation."
