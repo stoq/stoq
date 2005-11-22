@@ -230,10 +230,11 @@ class Pay2023Printer(SerialBase):
         self.send_command(Pay2023Printer.CMD_ADD_COUPON_DIFFERENCE,
                           Cancelar='f', ValorPercentual="%.02f" % value)
 
-    def coupon_add_payment(self, payment_method, value, taxcode):
+    def coupon_add_payment(self, payment_method, value, description=''):
         pm = Pay2023Printer.payment_methods[payment_method]
         self.send_command(Pay2023Printer.CMD_ADD_PAYMENT,
-                          CodMeioPagamento=pm, Valor="%.04f" % value)
+                          CodMeioPagamento=pm, Valor="%.04f" % value,
+                          TextoAdicional="\"%s\"" % description[:80])
         
     def coupon_close(self, message=''):
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed

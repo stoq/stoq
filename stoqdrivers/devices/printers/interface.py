@@ -126,12 +126,14 @@ class ICouponPrinter(Interface):
         @returns             the coupon total value
         """
 
-    def coupon_add_payment(payment_method, value):
+    def coupon_add_payment(payment_method, value, description):
         """
         @param payment_method:    A constant (defined in the constants.py
                                   module) representing the payment method
-        @type value:              float
         @param value:             the payment value
+        @type value:              float
+        @param description:       A simple description of the payment method
+                                  to be appended to the coupon.
 
         @rtype:                   float
         @returns                  the total remaining amount
