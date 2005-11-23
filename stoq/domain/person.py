@@ -277,11 +277,7 @@ class Person(Domain):
         return PersonAdaptToEmployee(self, **kwargs)
 
     def facet_IUser_add(self, **kwargs):
-        employee = IEmployee(self)
-        if not employee:
-                msg = ('The person you want to adapt must have '
-                       'an employee facet')
-                raise CannotAdapt(msg)
+        self.check_individual_or_company_facets()
         return PersonAdaptToUser(self, **kwargs)
     
     def facet_IBranch_add(self, **kwargs):
@@ -495,8 +491,9 @@ class PersonAdaptToUser(ModelAdapter):
     """ An user facet of a person. """
     
     implements(IUser, IActive)
+    
     (STATUS_ACTIVE,
-     STATUS_INACTIVE) = range(2)
+     STATUS_INACTIVE) = range(2) 
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive')}
 
@@ -749,3 +746,14 @@ class PersonAdaptToTransporter(ModelAdapter):
         return cls.select(query, connection=conn)
 
 Person.registerFacet(PersonAdaptToTransporter)
+
+class LoginInfo:
+    """ This class is used by password editor only for validation of the 
+        fields.
+    """
+
+    PASSWORD_LEN = 6
+    
+    current_password = None
+    new_password = None
+    confirm_password = None

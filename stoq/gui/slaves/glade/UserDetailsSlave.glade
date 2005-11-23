@@ -1,0 +1,139 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="UserDetailsSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="column_spacing">6</property>
+                <property name="n_columns">3</property>
+                <property name="n_rows">3</property>
+                <property name="row_spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="username_lbl">
+                        <property name="label" context="yes" translatable="yes">Username:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkEventBox" id="password_holder">
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="profile_lbl">
+                        <property name="label" context="yes" translatable="yes">Profile:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="username">
+                        <property name="data_type">str</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">username</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="profile">
+                        <property name="completion">True</property>
+                        <property name="data_type">object</property>
+                        <property name="exact_completion">False</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">profile</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="layout_style">end</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkButton" id="profile_button">
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">Add/Edit Profile...</property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

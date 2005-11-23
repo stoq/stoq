@@ -202,6 +202,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+list+List" id="users_list">
                                 <property name="is_focus">True</property>
+                                <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
@@ -237,7 +238,7 @@
                                                                     <widget class="GtkHBox" id="GtkHBox1">
                                                                         <property name="visible">True</property>
                                                                         <child>
-                                                                            <widget class="GtkImage" id="GtkImage2">
+                                                                            <widget class="GtkImage" id="GtkImage1">
                                                                                 <property name="file">add16px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
@@ -259,6 +260,7 @@
                                                 </child>
                                                 <child>
                                                     <widget class="GtkButton" id="edit_button">
+                                                        <property name="is_focus">True</property>
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkAlignment" id="GtkAlignment1">
@@ -274,7 +276,8 @@
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                                <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                                <property name="label" context="yes" translatable="yes">_Edit...</property>
+                                                                                <property name="use_underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
@@ -288,6 +291,17 @@
                                                     </widget>
                                                     <packing>
                                                         <property name="position">1</property>
+                                                    </packing>
+                                                </child>
+                                                <child>
+                                                    <widget class="GtkButton" id="change_password_button">
+                                                        <property name="is_focus">True</property>
+                                                        <property name="label" context="yes" translatable="yes">Change _Password...</property>
+                                                        <property name="use_underline">True</property>
+                                                        <property name="visible">True</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">2</property>
                                                     </packing>
                                                 </child>
                                             </widget>
