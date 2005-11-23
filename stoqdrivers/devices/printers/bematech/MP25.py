@@ -43,7 +43,7 @@ from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
                                    MONEY_PM, CHEQUE_PM)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 
-logger = Log()
+logger = Log(category='MP25')
 
 # Data formatting functions
 def fmt_fl_7c_3d_nodot(value):
