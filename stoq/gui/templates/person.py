@@ -72,6 +72,12 @@ class PersonEditorTemplate(BaseEditorSlave):
                'person_notebook',
                'address_button') + proxy_widgets
 
+    def attach_custom_slave(self, slave, tab_text):
+        self.custom_tab.show()
+        tab_child = self.custom_tab
+        self.person_notebook.set_tab_label_text(tab_child, tab_text)
+        self.attach_slave('custom_holder', slave)
+
     def create_model(self, conn):
         # XXX: Waiting fix for bug 2163
         return Person(name="", connection=conn)
@@ -199,22 +205,6 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
     def attach_person_slave(self, slave):
         self._person_slave.attach_slave('person_status_holder', slave)
-
-    def attach_custom_slave(self, slave):
-        self._person_slave.custom_tab.show()
-        tab_child = self._person_slave.custom_tab
-        tab_text = _('Employee Data')
-        # XXX This is horrible, add a method in PersonEditorTemplate for
-        # that ?
-        self._person_slave.person_notebook.set_tab_label_text(tab_child, 
-                                                              tab_text)
-        self._person_slave.attach_slave('custom_holder', slave)
-
-    def show_custom_holder(self, name):
-        custom_holder = self._person_slave.custom_holder
-        custom_holder.show()
-        self._person_slave.person_notebook.set_tab_label_text(custom_holder, 
-                                                              name)
 
     #
     # BaseEditorSlave hooks

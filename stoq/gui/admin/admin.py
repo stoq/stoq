@@ -21,6 +21,7 @@
 ## USA.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Bruno Rafael Garcia         <brg@async.com.br>
 ##
 """
 stoq/gui/admin/admin.py:
@@ -39,7 +40,9 @@ from stoqlib.database import rollback_and_begin, finish_transaction
 from stoq.gui.search.person import EmployeeRoleSearch, EmployeeSearch
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.profile import UserProfileEditor
+from stoq.gui.editors.person import UserEditor
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.person import Person
@@ -56,7 +59,8 @@ class AdminApp(AppWindow):
     
     widgets = ('add_button',
                'users_list', 
-               'edit_button')
+               'edit_button',
+               'change_password_button')
     
     def __init__(self, app):
         self.conn = new_transaction()
@@ -65,7 +69,12 @@ class AdminApp(AppWindow):
         self.users_list.set_columns(self._get_columns())
         self._setup_slaves()
         self._update_view()
-
+        
+    def _select_first_item(self, list):
+        if len(list):
+            # XXX Probably kiwi should handle this for us. Waiting for
+            # support
+            list.select(list[0])
 
     def _setup_slaves(self):
         table = Person.getAdapterClass(IUser)
@@ -83,8 +92,9 @@ class AdminApp(AppWindow):
         self.attach_slave("search_bar_holder", self.search_bar)
 
     def _update_view(self):
-        has_users = len(self.users_list) > 0
-        self.edit_button.set_sensitive(has_users)
+        has_selected = self.users_list.get_selected() is not None
+        self.edit_button.set_sensitive(has_selected)
+        self.change_password_button.set_sensitive(has_selected)
 
     def _get_columns(self):
         return [Column('username', title=_('Login Name'), sorted=True,
@@ -96,6 +106,13 @@ class AdminApp(AppWindow):
                                  data_type=str, obj_field='_original',
                                  width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
+
+    def _edit_user(self): 
+        user = self.users_list.get_selected()
+        model =  run_person_role_dialog(UserEditor, self, self.conn, 
+                                        user)
+        if finish_transaction(self.conn, model, keep_transaction=True):
+            self.users_list.update(model)
 
     #
     # Hooks
@@ -116,6 +133,8 @@ class AdminApp(AppWindow):
             # the objects back in our main connection
             obj = self.table.get(user.id, connection=self.conn)
             self.users_list.append(obj)
+        if len(self.users_list) > 0:
+            self._select_first_item(self.users_list)
         self._update_view()
 
     def filter_results(self, users):
@@ -134,7 +153,10 @@ class AdminApp(AppWindow):
     #
     # Callbacks
     #
-
+    
+    def on_users_list__double_click(self, *args):
+        self._edit_user()
+        
     def on_users_list__selection_changed(self, *args):
         self._update_view()
 
@@ -146,4 +168,22 @@ class AdminApp(AppWindow):
         finish_transaction(self.conn, model, keep_transaction=True)
     
     def _on_employee_role__action_clicked(self, *args):
-        self.run_dialog(EmployeeRoleSearch) 
+        self.run_dialog(EmployeeRoleSearch)
+
+    def on_add_button__clicked(self, *args):
+        conn = new_transaction()
+        model = run_person_role_dialog(UserEditor, self, conn)
+        if finish_transaction(conn, model):
+            self.search_bar.search_items()
+            model = self.table.get(model.id, connection=self.conn)
+            self.users_list.select(model)
+        
+    def on_edit_button__clicked(self, *args):
+        self._edit_user()
+            
+    def on_change_password_button__clicked(self, *args):
+        from stoq.gui.editors.person import PasswordEditor
+        # This avoid circular import
+        user = self.users_list.get_selected()
+        model = self.run_dialog(PasswordEditor, self.conn, user)
+        finish_transaction(self.conn, model, keep_transaction=True)

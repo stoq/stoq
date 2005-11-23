@@ -210,7 +210,7 @@ class PersonRoleWizard(BaseWizard):
 
     def finish(self):
         self.editor.on_confirm()
-        self.retval = True
+        self.retval = self.editor.model
         self.close()
 
 

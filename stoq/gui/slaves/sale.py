@@ -29,7 +29,7 @@ stoq/gui/slaves/sale.py
 """
 
 from kiwi.utils import gsignal
-from kiwi.ui.views import signal_block
+from kiwi.decorators import signal_block
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.lib.validators import get_price_format_str
