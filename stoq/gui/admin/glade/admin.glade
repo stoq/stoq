@@ -45,7 +45,7 @@
                 <child>
                     <object class="GtkAction" id="EmployeeRole">
                         <property name="name">EmployeeRole</property>
-                        <property name="label" translatable="yes">Employee Role</property>
+                        <property name="label" translatable="yes">Find Employee Roles...</property>
                         <signal handler="_on_employee_role__action_clicked" name="activate"/>
                     </object>
                 </child>
@@ -127,6 +127,13 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="UserProfile">
+                        <property name="name">UserProfile</property>
+                        <property name="label" translatable="yes">Find User Profiles...</property>
+                        <signal handler="_on_user_profiles_action_clicked" name="activate"/>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="stock_id">gtk-about</property>
@@ -156,7 +163,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="admin">
         <property name="destroy_with_parent">True</property>
