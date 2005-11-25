@@ -4,14 +4,8 @@
 # Code by Async Open Source <http://www.async.com.br>
 
 from distutils.core import setup
-from fnmatch import fnmatch
-import os
 
-def listfiles(*dirs):
-    dir, pattern = os.path.split(os.path.join(*dirs))
-    return [os.path.join(dir, filename)
-            for filename in os.listdir(os.path.abspath(dir))
-                if filename[0] != '.' and fnmatch(filename, pattern)]
+from kiwi.dist import listpackages
 
 version = ''
 execfile("stoqdrivers/__version__.py")
@@ -27,12 +21,5 @@ setup(
     author_email = "kiko@async.com.br",
     url = "http://www.async.com.br/projects/",
     license = "GNU LGPL 2.1 (see COPYING)",
-    packages = ['stoqdrivers',
-                'stoqdrivers.devices',
-                'stoqdrivers.devices.printers',
-                'stoqdrivers.devices.printers.perto',
-                'stoqdrivers.devices.printers.dataregis',
-                'stoqdrivers.devices.printers.bematech',
-                'stoqdrivers.devices.printers.daruma',
-                'stoqdrivers.devices.printers.sweda']
+    packages = listpackages('stoqdrivers'),
     )
