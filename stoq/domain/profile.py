@@ -30,7 +30,7 @@ stoq/domain/profile.py:
 from sqlobject import StringCol, ForeignKey, MultipleJoin, BoolCol
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.main import get_app_list
+from stoq.main import get_application_names
 from stoq.domain.base import Domain
     
 
@@ -53,9 +53,8 @@ class UserProfile(Domain):
     @classmethod
     def create_profile_template(cls, conn, name, 
                                 has_full_permission=False):
-        app_list = get_app_list()
         profile = cls(connection=conn, name=name)
-        for app_dir in app_list:
+        for app_dir in get_application_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
                             app_dir_name=app_dir,

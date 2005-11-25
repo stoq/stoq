@@ -22,30 +22,10 @@
 import glob
 import os
 
-def get_app_list():
-    """Collects the application names from the gui/ directory and
-    sets a list member
-    """
-    import stoq
-
-    # Find out what applications we have available
-    applications = []
-    expr = os.path.join(os.path.split(stoq.__file__)[0],
-                        'gui', '*', 'app.py')
-    for sub_dir in glob.glob(expr):
-        # sub_dir is stoq/gui/foobar/app.py
-        # dirname is stoq/gui/foobar
-        # appname is foobar
-        
-        dirname = os.path.split(sub_dir)[0]
-        appname = os.path.split(dirname)[1]
-        applications.append(appname)
-        
-    applications.sort()
-    return applications
+from stoq.lib.applist import get_application_names
 
 def main(args):
-    apps = get_app_list()
+    apps = get_application_names()
     
     if len(args) < 2:
        raise SystemExit("Usage: stoq <application>. "
