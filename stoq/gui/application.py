@@ -75,7 +75,9 @@ class AppWindow(BaseAppWindow):
 
     def __init__(self, app):
         self.app = app
-        self.widgets = self.widgets[:] + ('users_menu', 'help_menu')
+        self.widgets = self.widgets[:] + ('users_menu', 'help_menu',
+                                          'StoreCookie', 'ClearCookie',
+                                          'ChangeUser')
         BaseAppWindow.__init__(self, app)
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
@@ -85,21 +87,15 @@ class AppWindow(BaseAppWindow):
                              'attribute')
         self.toplevel.set_title(self.get_title())
 
-    def key_control_k(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
+    def on_StoreCookie__activate(self, action):
         self._store_cookie()
-
-    def key_control_e(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
+        
+    def on_ClearCookie__activate(self, action):
         self._clear_cookie()
 
-    def key_control_h(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
+    def on_ChangeUser__activate(self, action):
         # Implement a change user dialog here
-        pass 
+        raise NotImplementedError
 
     def get_title(self):
         # This method must be redefined in child when it's needed
