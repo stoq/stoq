@@ -28,8 +28,11 @@ setup(
     url = "http://www.async.com.br/projects/",
     license = "GNU LGPL 2.1 (see COPYING)",
     packages = ['stoqdrivers',
-                'stoqdrivers.drivers',
-                'stoqdrivers.drivers.daruma',
-                'stoqdrivers.drivers.sweda',
-                'stoqdrivers.drivers.bematech'],
+                'stoqdrivers.devices',
+                'stoqdrivers.devices.printers',
+                'stoqdrivers.devices.printers.perto',
+                'stoqdrivers.devices.printers.dataregis',
+                'stoqdrivers.devices.printers.bematech',
+                'stoqdrivers.devices.printers.daruma',
+                'stoqdrivers.devices.printers.sweda']
     )
