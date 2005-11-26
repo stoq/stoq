@@ -33,6 +33,7 @@ from kiwi.ui.wizard import PluggableWizard, WizardStep
 from stoqlib.gui.editors import BaseEditorSlave
 from stoqlib.gui.dialogs import AbstractDialog
 
+
 class BaseWizardStep(BaseEditorSlave, WizardStep):
     """A wizard step base class definition"""
 
@@ -42,13 +43,14 @@ class BaseWizardStep(BaseEditorSlave, WizardStep):
         WizardStep.__init__(self, previous)
         BaseEditorSlave.__init__(self, conn, model)
 
+
 class BaseWizard(PluggableWizard, AbstractDialog):
     """A wizard base class definition"""
     title = None
     size = ()
 
     def __init__(self, conn, first_step, model=None, title=None, 
-                 size=None):
+                 size=None, edit_mode=False):
         self.conn = conn
         self.model = model
         size = size or self.size
@@ -56,7 +58,7 @@ class BaseWizard(PluggableWizard, AbstractDialog):
         if not title:
             raise ValueError('A title argument is required')
         PluggableWizard.__init__(self, title=title, first_step=first_step,
-                                 size=size)
+                                 size=size, edit_mode=edit_mode)
 
     def cancel(self):
         PluggableWizard.cancel(self)
