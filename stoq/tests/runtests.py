@@ -32,6 +32,7 @@ stoq/tests/domain/runtests.py:
 import os
 import sys
 import doctest
+import subprocess
 
 from stoq.examples.createall import create
 from stoq.lib.admin import setup_tables, ensure_admin_user
@@ -64,3 +65,8 @@ for doc_file in doc_files:
     doctest.testfile(doc_file, verbose=VERBOSE, module_relative=False)
 if VERBOSE:
     print_immediately('done')
+
+pytest_args = ['py.test']
+if VERBOSE:
+    pytest_args.append('-v')
+subprocess.call(pytest_args) 
