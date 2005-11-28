@@ -155,7 +155,7 @@ class PurchaseOrder(Domain):
         self.confirm_date = confirm_date
 
     def get_purchase_subtotal(self):
-        return sum([item.cost for item in self.get_items()], 0.0)
+        return sum([item.get_total() for item in self.get_items()], 0.0)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
