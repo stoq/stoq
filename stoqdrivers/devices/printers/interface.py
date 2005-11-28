@@ -32,7 +32,7 @@ stoqdrivers/devices/printers/interface.py:
     Printer Driver API
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 class ICouponPrinter(Interface):
     """
@@ -52,6 +52,10 @@ class ICouponPrinter(Interface):
         * The 'taxcode' arguments must be one of the TAX_* constants
           defined in BaseDriver class.
     """
+
+    printer_name = Attribute("The name of the printer that the driver "
+                             "implements")
+
 
     #
     # Common API

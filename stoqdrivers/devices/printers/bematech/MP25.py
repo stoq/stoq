@@ -549,10 +549,12 @@ class MP25Printer(SerialBase):
 
     implements(ICouponPrinter)
 
+    printer_name = "Bematech MP25 FI"
+
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
         self.remainder_value = 0.00
-    
+
     def _check(self):
         """Check the printer status after sending a commit"""
         pass

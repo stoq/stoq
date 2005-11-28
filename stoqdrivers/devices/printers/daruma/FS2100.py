@@ -38,6 +38,8 @@ CMD_ADD_ITEM = 201
 
 class FS2100Printer(FS345Printer):
 
+    printer_name = "Daruma FS 2100"
+
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge):
         if taxcode == TAX_NONE:

@@ -208,6 +208,8 @@ class EP375Printer(SerialBase):
 
     implements(ICouponPrinter, IChequePrinter)
 
+    printer_name = "Dataregis 375 EP"
+
     CMD_PREFIX = '\xfe'
 
     #
@@ -279,7 +281,7 @@ class EP375Printer(SerialBase):
         # number as a guard to make sure that the printer doesn't freeze
         # if we start up too fast.
         time.sleep(0.2)
-        
+
     #
     # Helper methods
     #
@@ -405,6 +407,7 @@ class EP375Printer(SerialBase):
     #
     # ICouponPrinter implementation
     #
+
 
     def coupon_open(self, customer, address, document):
         # 

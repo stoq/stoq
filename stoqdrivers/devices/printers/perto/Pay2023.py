@@ -53,6 +53,8 @@ class Pay2023Printer(SerialBase):
 
     implements(IChequePrinter, ICouponPrinter)
 
+    printer_name = "Pertopay Fiscal 2023"
+
     CMD_PREFIX = '{'
     CMD_SUFFIX = '}'
     EOL_DELIMIT = CMD_SUFFIX
@@ -192,6 +194,7 @@ class Pay2023Printer(SerialBase):
     #
     # ICouponPrinter implementation
     #
+
 
     def coupon_open(self, customer, address, document):
         try:

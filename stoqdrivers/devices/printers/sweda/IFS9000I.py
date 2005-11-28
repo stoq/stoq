@@ -55,6 +55,8 @@ class IFS9000IPrinter(SerialBase):
 
     implements(ICouponPrinter)
 
+    printer_name = "Sweda IFS 9000 I"
+
     CMD_PREFIX = "."
     CMD_SUFFIX = EOL_DELIMIT = '}'
     DEBUG_MODE = 0
@@ -387,8 +389,6 @@ class IFS9000IPrinter(SerialBase):
     #
     # ICouponPrinter implementation
     #
-
-
 
     def coupon_open(self, customer, address, document):
         # The arguments address and document are here only for API

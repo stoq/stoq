@@ -121,6 +121,8 @@ class FS345Printer(SerialBase):
 
     implements(ICouponPrinter)
 
+    printer_name = "Daruma FS 345"
+
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
         retval = super(FS345Printer, self).writeline(raw)
@@ -262,7 +264,7 @@ class FS345Printer(SerialBase):
     # 
     # API implementation
     #
-    
+
     def coupon_open(self, customer, address, document):
         status = self._check_status()
         if self._is_open(status):
