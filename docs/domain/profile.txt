@@ -87,8 +87,8 @@ certain table matching with one or more columns.  See `Select-By
 
 Now getting the list of available applications and performing the check itself.     
 
-    >>> from stoq.main import get_app_list
-    >>> items.count() == len(get_app_list())
+    >>> from stoq.lib.applist import get_application_names
+    >>> items.count() == len(get_application_names())
     True
 
 There is also a much more easy way to create user profiles without the need
@@ -108,7 +108,7 @@ applications:
 
     >>> items = ProfileSettings.selectBy(user_profile=boss_profile, 
     ...                                  connection=conn)
-    >>> items.count() == len(get_app_list())
+    >>> items.count() == len(get_application_names())
     True
 
 Now we have created profiles why not checking  permissions for a certain
