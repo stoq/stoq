@@ -65,7 +65,6 @@ class DiscountChargeSlave(BaseEditorSlave):
         for widget in float_widgets:
             widget.set_data_format(format_str)
         self.update_widget_status()
-        self.model.reset_discount_and_charge()
 
     def update_widget_status(self):
         charge_by_value = not self.charge_perc_ck.get_active()

@@ -42,17 +42,16 @@ from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
+from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
                                     ICheckPM, ICardPM, IBillPM, 
                                     IFinancePM)
 _ = gettext.gettext
 
 
-
 #
 # Wizard Steps
 #
-
 
 
 class PaymentMethodStep(BaseWizardStep):
@@ -111,13 +110,9 @@ class PaymentMethodStep(BaseWizardStep):
                 combo_items.append((method.description, method))
         self.method_combo.prefill(combo_items)
 
-
-
     #
     # WizardStep hooks
     #
-
-
 
     def next_step(self):
         self.method_slave.finish()
@@ -158,7 +153,7 @@ class CustomerStep(BaseWizardStep):
     def update_view(self):
         # TODO Check here if the customer data has enough information like
         # cpf or phone_number according to parameter value. Bug 2172
-        self.wizard.enable_next()
+        pass
 
     def _setup_widgets(self):
         self.setup_entry_completion()
@@ -207,10 +202,21 @@ class SalesPersonStep(BaseWizardStep):
                                'subtotal_expander',
                                'othermethods_check')
 
-    def __init__(self, wizard, conn, model):
+    def __init__(self, wizard, conn, model, edit_mode):
         self.discount_charge_slave = DiscountChargeSlave(conn, model,
                                                          self.model_type)
         BaseWizardStep.__init__(self, conn, wizard, model)
+        if edit_mode:
+            group = IPaymentGroup(self.model, connection=self.conn)
+            if not group:
+                raise ValueError('You should have a IPaymentGroup facet '
+                                 'defined at this point')
+            if group.default_method == AbstractPaymentGroup.METHOD_MONEY:
+                self.cash_check.set_active(True)
+            else:
+                self.othermethods_check.set_active(True)
+        else:
+            model.reset_discount_and_charge()
         self.register_validate_function(self.previous.refresh_next)
         changed_handler = self.update_totals
         if self.get_slave(self.slave_holder):
@@ -243,17 +249,28 @@ class SalesPersonStep(BaseWizardStep):
         self.total_lbl.set_data_format(get_price_format_str())
         self.subtotal_lbl.set_data_format(get_price_format_str())
 
+
     #
     # WizardStep hooks
     #
 
     def next_step(self):
-        if self.cash_check.get_active():
+        has_cash = self.cash_check.get_active()
+        if self.wizard.skip_payment_step:
+            group = self.wizard.get_payment_group()
+            if has_cash:
+                group.default_method = AbstractPaymentGroup.METHOD_MONEY
+            else:
+                group.default_method = AbstractPaymentGroup.METHOD_MULTIPLE
+
+        if has_cash:
             self.setup_cash_payment()
-            return CustomerStep(self.previous, self, self.conn, self.model)
+            step_class = CustomerStep
+        elif not self.wizard.skip_payment_step:
+            step_class = PaymentMethodStep
         else:
-            return PaymentMethodStep(self.previous, self, self.conn,
-                                     self.model)
+            step_class = CustomerStep
+        return step_class(self.previous, self, self.conn, self.model)
 
     def has_previous_step(self):
         return False
@@ -273,12 +290,15 @@ class SalesPersonStep(BaseWizardStep):
 
 
 class SaleWizard(BaseWizard):
-    title = _('Sale Checkout')
     size = (600, 400)
     
-    def __init__(self, conn, model):
-        first_step = SalesPersonStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model)
+    def __init__(self, conn, model, title=_('Sale Checkout'),
+                 edit_mode=False, skip_payment_step=False):
+        self.title = title
+        self.skip_payment_step = skip_payment_step
+        first_step = SalesPersonStep(self, conn, model, edit_mode)
+        BaseWizard.__init__(self, conn, first_step, model,
+                            edit_mode=edit_mode)
         group = self.get_payment_group()
         group.clear_preview_payments()
 

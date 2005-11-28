@@ -38,7 +38,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.exceptions import TillError
-from stoqlib.database import rollback_and_begin
+from stoqlib.database import rollback_and_begin, finish_transaction
 
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person, PersonAdaptToClient
@@ -49,6 +49,7 @@ from stoq.lib.validators import get_formatted_price, get_price_format_str
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoq.gui.till.operation import TillOperationDialog
+from stoq.gui.wizards.sale import SaleWizard
 
 _ = gettext.gettext
 
@@ -71,6 +72,8 @@ class TillApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.conn = new_transaction()
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.confirm_order_button.hide()
         self._setup_slaves()
         self._setup_widgets()
         self.searchbar.search_items()
@@ -197,11 +200,14 @@ class TillApp(AppWindow):
    
     def on_confirm_order_button__clicked(self, *args):
         rollback_and_begin(self.conn)
-        # TODO Call SaleWizard dialog and let the user change the sale here
         sale = self.sales_list.get_selected()
-        sale.confirm_sale()
-        self.conn.commit()
-        self.searchbar.search_items()
+        title = _('Confirm Sale')
+        model = self.run_dialog(SaleWizard, self.conn, sale, title=title,
+                                edit_mode=True)
+        if finish_transaction(self.conn, model, keep_transaction=True):
+            sale.confirm_sale()
+            self.conn.commit()
+            self.searchbar.search_items()
 
     def _on_close_till_action__clicked(self, *args):
         self.close_till()

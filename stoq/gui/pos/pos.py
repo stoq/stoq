@@ -377,7 +377,11 @@ class POSApp(AppWindow):
         self.order_list.select(service)
 
     def _sale_checkout(self, *args):
-        if self.run_dialog(SaleWizard, self.conn, self.sale):
+        param = sysparam(self.conn)
+        skip_payment_step = (param.CONFIRM_SALES_ON_TILL and
+                             param.SET_PAYMENT_METHODS_ON_TILL)
+        if self.run_dialog(SaleWizard, self.conn, self.sale,
+                           skip_payment_step=skip_payment_step):
             self.conn.commit()
             self.reset_order()
 

@@ -137,6 +137,13 @@ Current System parameters:
                                       confirmation are only made on till
                                       application
 
+    * SET_PAYMENT_METHODS_ON_TILL(integer): Do not show payment method
+                                            definitions step on SaleWizard
+                                            through POS application if
+                                            CONFIRM_SALES_ON_TILL is set.
+                                            This step will only be show on
+                                            Till application.
+
     * USE_PURCHASE_PREVIEW_PAYMENTS(integer): Generate preview payments for
                                               new purchases which are not
                                               received yet. Once the order
@@ -233,6 +240,8 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('MANDATORY_INTEREST_CHARGE', int, 
                                initial=False),
                  ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', int, 
+                               initial=True),
+                 ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', int, 
                                initial=True),
 
                  # Adding objects
