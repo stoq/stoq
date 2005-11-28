@@ -30,7 +30,7 @@ stoq/domain/profile.py:
 from sqlobject import StringCol, ForeignKey, MultipleJoin, BoolCol
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.main import get_application_names
+from stoq.lib.applist import get_application_names
 from stoq.domain.base import Domain
     
 
@@ -86,7 +86,7 @@ def update_profile_applications(conn):
     comparision with the application names stored in user profiles. If a
     certain application is not there it is added.
     """
-    app_list = [app_name for app_name in get_app_list()]
+    app_list = [app_name for app_name in get_application_names()]
     profiles = UserProfile.select(connection=conn)
     for app_name in app_list:
         for profile in profiles:
