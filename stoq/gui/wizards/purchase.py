@@ -175,6 +175,8 @@ class PurchasePaymentStep(BaseWizardStep):
         slave_holder = 'discount_charge_slave'
         if self.get_slave(slave_holder):
             return
+        if not self.wizard.edit_mode:
+            self.order.reset_discount_and_charge()
         self.discount_charge_slave = DiscountChargeSlave(self.conn, self.order,
                                                          PurchaseOrder)
         self.attach_slave(slave_holder, self.discount_charge_slave)
@@ -415,14 +417,15 @@ class StartPurchaseStep(BaseWizardStep):
 class PurchaseWizard(BaseWizard):
     size = (600, 400)
     
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, edit_mode=False):
         title = self._get_title(model)
         model = model or self._create_model(conn)
         if model.status != PurchaseOrder.ORDER_PENDING:
             raise ValueError('Invalid order status. It should '
                              'be ORDER_PENDING')
         first_step = StartPurchaseStep(self, conn, model)
-        BaseWizard.__init__(self, conn, first_step, model, title=title)
+        BaseWizard.__init__(self, conn, first_step, model, title=title,
+                            edit_mode=edit_mode)
 
     def _get_title(self, model=None):
         if not model:

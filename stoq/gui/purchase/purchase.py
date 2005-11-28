@@ -175,8 +175,9 @@ class PurchaseApp(AppWindow):
             return AND(q1, q2, q3)
         return AND(q1, q2)
     
-    def _open_order(self, order=None):
-        order = self.run_dialog(PurchaseWizard, self.conn, order)
+    def _open_order(self, order=None, edit_mode=False):
+        order = self.run_dialog(PurchaseWizard, self.conn, order,
+                                edit_mode)
         if not order:
             return
         self.conn.commit()
@@ -188,7 +189,7 @@ class PurchaseApp(AppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
-        self._open_order(order[0])
+        self._open_order(order[0], edit_mode=True)
         self.search_bar.search_items()
 
     #
