@@ -226,7 +226,7 @@ class PurchaseApp(AppWindow):
         rollback_and_begin(self.conn)
         orders = self.purchase_list.get_selected_rows()
         valid_orders = [order for order in orders 
-                            if order.status == PurchaseOrder.ORDER_PENDING]
+                                  if order.status == PurchaseOrder.ORDER_PENDING]
         qty = len(orders)
         invalid_qty = qty - len(valid_orders)
         if invalid_qty == qty:
