@@ -108,13 +108,13 @@ class AbstractModel:
                             type(self))
         klass = type(self)
         kwargs = {'connection' : self._connection}
-        columns = self._columns
+        columns = self.sqlmeta.columnList
 
         if isinstance(self, InheritableSQLObject):
             # This is an InheritableSQLObject object and we also 
             # need to copy data from the parent.
             # XXX SQLObject should provide a get_parent method.
-            columns += self._parent._columns
+            columns += self._parent.sqlmeta.columnList
         for column in columns:
             if column.name == '_sys_data':
                 continue
