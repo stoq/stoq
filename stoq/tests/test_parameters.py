@@ -106,7 +106,7 @@ class ParameterTest(TestCase):
     def testMoneyPaymentMethod(self):
         method = self.sparam.METHOD_MONEY
         self.failUnless(method != None)
-        self.failUnless(isinstance(method, PaymentMethod))
+        self.failUnless(isinstance(method, PaymentMethod), method)
 
     def testDeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
