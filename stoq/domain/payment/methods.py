@@ -46,9 +46,10 @@ from stoq.lib.validators import compare_float_numbers
 from stoq.domain.account import BankAccount
 from stoq.domain.person import Person
 from stoq.domain.payment.base import (Payment, PaymentAdaptToInPayment,
-                                      AbstractPaymentGroup)
+                                      AbstractPaymentGroup,
+                                      MAX_PAYMENT_PRECISION)
 from stoq.domain.base import (Domain, InheritableModel,
-                              InheritableModelAdapter, MAX_PAYMENT_PRECISION)
+                              InheritableModelAdapter)
 from stoq.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM, 
                                     IBillPM, IFinancePM, ICardPM, 
                                     ICreditProvider, IActive, IOutPayment)
