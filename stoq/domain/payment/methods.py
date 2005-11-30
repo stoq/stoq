@@ -48,7 +48,7 @@ from stoq.domain.person import Person
 from stoq.domain.payment.base import (Payment, PaymentAdaptToInPayment,
                                       AbstractPaymentGroup)
 from stoq.domain.base import (Domain, InheritableModel,
-                              InheritableModelAdapter)
+                              InheritableModelAdapter, MAX_PAYMENT_PRECISION)
 from stoq.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM, 
                                     IBillPM, IFinancePM, ICardPM, 
                                     ICreditProvider, IActive, IOutPayment)
@@ -382,6 +382,11 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
         value = self.calculate_payment_value(total_value,
                                              installments_number,
                                              interest)
+
+        # We need to call round for each payment value since we need good
+        # suport for fiscal printers (and stoqdrivers package) which most
+        # of times have two decimal digits. 
+        value = round(value, MAX_PAYMENT_PRECISION)
         if interest:
             interest_total = value * installments_number - total_value
         else:
@@ -399,7 +404,12 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
             payment = self.add_payment(payment_group, due_date, value,
                                        description=description, 
                                        iface=iface)
+            total_value -= value
             payments.append(payment)
+
+        if total_value != 0.0:
+            payment.get_adapted().value += total_value
+
         return payments, interest_total
 
     def setup_inpayments(self, payment_group, installments_number,

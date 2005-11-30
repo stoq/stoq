@@ -49,6 +49,7 @@ from stoq.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
 
 _ = gettext.gettext
 
+MAX_PAYMENT_PRECISION = 2
 
 #
 # Domain Classes
