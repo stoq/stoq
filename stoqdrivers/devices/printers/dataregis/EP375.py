@@ -30,7 +30,6 @@ stoqdrivers/devices/printers/dataregis/EP375.py:
 """
 
 import time
-from datetime import date
 
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
@@ -46,6 +45,7 @@ from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
                                    TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
                                    UNIT_EMPTY)
+from stoqdrivers.devices.printers.capabilities import Capability
 
 EOT = 0x04
 BS = 0x08
@@ -535,6 +535,28 @@ class EP375Printer(SerialBase):
 
     def summarize(self):
         self.send_command(self.CMD_READ_X)
+
+    def get_capabilities(self):
+        # FIXME: As always, we have a problem here with Dataregis printer:
+        # only one of the last 100 items can be cancelled, so the 'item_id'
+        # capability must have what value? Probably we never will have
+        # more than 100 items right now, so I just mark a FIXME here, this
+        # must be fixed in the future.
+
+        return dict(item_code=Capability(max_len=6),
+                    item_id=Capability(digits=3),
+                    items_quantity=Capability(min_size=1, digits=3, decimals=3),
+                    item_price=Capability(digits=6, decimals=3),
+                    item_description=Capability(max_len=60),
+                    payment_value=Capability(digits=12, decimals=2),
+                    promotional_message=Capability(),
+                    payment_description=Capability(),
+                    customer_name=Capability(),
+                    customer_id=Capability(),
+                    customer_address=Capability(),
+                    cheque_thirdparty=Capability(max_len=50),
+                    cheque_value=Capability(digits=12, decimals=2),
+                    cheque_city=Capability(max_len=20))
 
     #
     # IChequePrinter implementation

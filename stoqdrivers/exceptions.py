@@ -100,3 +100,6 @@ class CancelItemError(DriverError):
 
 class InvalidState(DriverError):
     "Invalid state for the requested operation."
+
+class CapabilityError(Exception):
+    "General capability error."

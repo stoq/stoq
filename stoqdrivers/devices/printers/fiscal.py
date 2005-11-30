@@ -25,15 +25,16 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 
-from kiwi.argcheck import argcheck, number, percent
+from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     PendingReadX, PendingReduceZ,
-                                    CouponOpenError)
+                                    CouponOpenError, CapabilityError)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM)
 from stoqdrivers.devices.printers.base import BasePrinter
+from stoqdrivers.devices.printers.capabilities import capcheck
 
 #
 # Extra data types to argcheck
@@ -65,26 +66,33 @@ class payment_method(number):
 
 class FiscalPrinter(BasePrinter):
     log_domain = 'fp'
+
     def __init__(self, config_file=None):
         BasePrinter.__init__(self, config_file)
         self.has_been_totalized = False
+        self._capabilities = self._driver.get_capabilities()
 
-    @argcheck(str, str, str)
-    def open(self, customer, address, document):
+    def get_capabilities(self):
+        return self._capabilities
+    
+    @capcheck(str, str, str)
+    def open(self, customer_name, customer_address, customer_id):
         self.info('coupon_open')
-        return self._driver.coupon_open(customer, address, document)
+        return self._driver.coupon_open(customer_name, customer_address,
+                                        customer_id)
 
-    @argcheck(str, number, number, unit, str, taxcode, percent, percent)
-    def add_item(self, code, quantity, price, unit, description,
-                 taxcode, discount, charge):
+    @capcheck(str, number, number, unit, str, taxcode, percent, percent)
+    def add_item(self, item_code, items_quantity, item_price, unit,
+                 item_description, taxcode, discount, charge):
         if discount and charge:
             raise TypeError("discount and charge can not be used together")
 
         self.info('coupon_add_item')
-        return self._driver.coupon_add_item(code, quantity, price,
-                                            unit, description,
-                                            taxcode, discount, charge)
-    @argcheck(percent, percent, taxcode)
+        return self._driver.coupon_add_item(item_code, items_quantity,
+                                            item_price, unit,
+                                            item_description, taxcode,
+                                            discount, charge)
+    @capcheck(percent, percent, taxcode)
     def totalize(self, discount, charge, taxcode):
         if discount and charge:
             raise TypeError("discount and charge can not be used together")
@@ -94,31 +102,31 @@ class FiscalPrinter(BasePrinter):
         self.has_been_totalized = True
         return result
 
-    @argcheck(payment_method, float, str)
-    def add_payment(self, payment_method, value, description=''):
+    @capcheck(payment_method, float, str)
+    def add_payment(self, payment_method, payment_value, payment_description=''):
         self.info('coupon_add_payment')
         if not self.has_been_totalized:
             raise PaymentAdditionError("You must totalize the coupon "
                                        "before add payments.")
-        result = self._driver.coupon_add_payment(payment_method, value,
-                                                 description)
+        result = self._driver.coupon_add_payment(payment_method, payment_value,
+                                                 payment_description)
         return result
         
     def cancel(self):
         self.info('coupon_cancel')
         return self._driver.coupon_cancel()
 
+    @capcheck(int)
     def cancel_item(self, item_id):
         self.info('coupon_cancel_item')
         return self._driver.coupon_cancel_item(item_id)
 
-    @argcheck(str)
-    def close(self, message=''):
+    @capcheck(str)
+    def close(self, promotional_message=''):
         self.info('coupon_close')
-        if not self.has_been_totalized:
-            raise CloseCouponError("You must totalize the coupon before close "
-                                   "it.")
-        return self._driver.coupon_close(message)
+        if self.has_been_totalized:
+            return self._driver.coupon_close(promotional_message)
+        raise CloseCouponError("You must totalize the coupon before close it")
 
     def summarize(self):
         self.info('summarize')
@@ -135,6 +143,9 @@ class FiscalPrinter(BasePrinter):
 def test():
     p = FiscalPrinter()
 
+    p.cancel()
+    return
+
     while True:
         try:
             p.open('Zee germans', 'Home', 'yaya')
@@ -148,9 +159,9 @@ def test():
             p.close_till()
             return
 
-    i1 = p.add_item("1523462123", 2, 10.00, UNIT_EMPTY, "Hollywood mç",
+    i1 = p.add_item("123456", 2, 10.00, UNIT_EMPTY, "Hollywood mc",
                     TAX_NONE, 0, 0)
-    i2 = p.add_item("0093920912", 5, 1.53, UNIT_LITERS, "Bohemia Beer",
+    i2 = p.add_item("654321", 5, 1.53, UNIT_LITERS, "Bohemia Beer",
                     TAX_NONE, 0, 0)
 
     p.cancel_item(i1)

@@ -42,6 +42,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
                                     OutofPaperError, PrinterOfflineError,
                                     CouponOpenError)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.printers.capabilities import Capability
 
 CMD_STATUS = '\x1d\xff'
 
@@ -382,3 +383,15 @@ class FS345Printer(SerialBase):
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
 
+    def get_capabilities(self):
+        return dict(item_code=Capability(max_len=13),
+                    item_id=Capability(digits=3),
+                    items_quantity=Capability(min_size=1, digits=5, decimals=3),
+                    item_price=Capability(min_size=0, digits=7, decimals=3),
+                    item_description=Capability(max_len=173),
+                    payment_value=Capability(digits=10, decimals=2),
+                    promotional_message=Capability(max_len=384),
+                    payment_description=Capability(max_len=48),
+                    customer_name=Capability(max_len=42),
+                    customer_id=Capability(max_len=42),
+                    customer_address=Capability(max_len=42))

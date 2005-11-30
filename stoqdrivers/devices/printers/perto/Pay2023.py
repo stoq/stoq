@@ -48,6 +48,8 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ReduceZError,
                                     CouponOpenError, InvalidState)
+from stoqdrivers.devices.printers.capabilities import Capability
+
 
 class Pay2023Printer(SerialBase):
 
@@ -206,7 +208,7 @@ class Pay2023Printer(SerialBase):
             raise CouponOpenError("Coupon already opened.")
 
     def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
-                        discount, surcharge):
+                        discount, surcharge):        
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023Printer.CMD_ADD_ITEM,
                           CodAliquota=Pay2023Printer.taxcode_dict[taxcode],
@@ -280,3 +282,18 @@ class Pay2023Printer(SerialBase):
                           VPosFavorecido=Pay2023Printer.CHEQUE_THIRDPARTY_ROW,
                           VPosValor=Pay2023Printer.CHEQUE_NUMERIC_VALUE_ROW)
 
+    def get_capabilities(self):
+        return dict(item_code=Capability(max_len=48),
+                    item_id=Capability(max_size=32767),
+                    items_quantity=Capability(digits=14, decimals=4),
+                    item_price=Capability(digits=14, decimals=4),
+                    item_description=Capability(max_len=200),
+                    payment_value=Capability(digits=14, decimals=4),
+                    promotional_message=Capability(max_len=492),
+                    payment_description=Capability(max_len=80),
+                    customer_name=Capability(max_len=30),
+                    customer_id=Capability(max_len=29),
+                    customer_address=Capability(max_len=80),
+                    cheque_thirdparty=Capability(max_len=45),
+                    cheque_value=Capability(digits=14, decimals=4),
+                    cheque_city=Capability(max_len=27))

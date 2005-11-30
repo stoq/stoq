@@ -178,6 +178,23 @@ class ICouponPrinter(Interface):
         Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure
         """
 
+    def get_capabilities():
+        """ Returns a capabilities dictionary, where the keys are the strings
+        below and its values are Capability instances
+
+        * item_code (str)
+        * item_id (int)
+        * items_quantity (float)
+        * item_price (float)
+        * item_description (str)
+        * payment_value (float)
+        * payment_description (str)
+        * promotional_message (str)
+        * customer_name (str)
+        * customer_id (str)
+        * customer_address (str)
+        """
+
 class IChequePrinter(Interface):
     """ Interface specification for cheque printers. """
 
@@ -192,4 +209,12 @@ class IChequePrinter(Interface):
         @type city: string
         @param date: when the cheque was payed, optional
         @type date: datetime
+        """
+    def get_capabilities():
+        """ Returns a capabilities dictionary, where the keys are the strings
+        below and its values are Capability instances
+
+        * cheque_thirdparty (str)
+        * cheque_value (float)
+        * cheque_city (str)
         """

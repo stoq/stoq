@@ -42,6 +42,7 @@ from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
                                    TAX_EXEMPTION, TAX_SUBSTITUTION,
                                    MONEY_PM, CHEQUE_PM)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.printers.capabilities import Capability
 
 logger = Log(category='MP25')
 
@@ -689,7 +690,20 @@ class MP25Printer(SerialBase):
         totalized_value = self.get_coupon_subtotal()
         self.remainder_value = totalized_value
         return totalized_value
-        
+
+    def get_capabilities(self):
+        return dict(item_code=Capability(max_len=13),
+                    item_id=Capability(digits=4),
+                    items_quantity=Capability(min_size=1, digits=4,
+                                              decimals=3),
+                    item_price=Capability(digits=6, decimals=2),
+                    item_description=Capability(max_len=29),
+                    payment_value=Capability(digits=12, decimals=2),
+                    promotional_message=Capability(max_len=320),
+                    payment_description=Capability(max_len=48),
+                    customer_name=Capability(max_len=20),
+                    customer_id=Capability(max_len=22),
+                    customer_address=Capability(max_len=42))
 
     #
     # Here ends the implementation of the ICouponPrinter Driver Interface
