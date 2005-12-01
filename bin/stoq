@@ -77,6 +77,7 @@ if app.uninstalled:
     app.add_resources(locale='locale',
                       basedir='.',
                       docs='docs')
+app.enable_translation()
 app.run()
 try:
     sys.exit(main(sys.argv))
