@@ -143,9 +143,6 @@ class FiscalPrinter(BasePrinter):
 def test():
     p = FiscalPrinter()
 
-    p.cancel()
-    return
-
     while True:
         try:
             p.open('Zee germans', 'Home', 'yaya')
