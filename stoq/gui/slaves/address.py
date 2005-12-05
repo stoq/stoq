@@ -42,21 +42,27 @@ from stoq.lib.parameters import sysparam
 class AddressSlave(BaseEditorSlave):
     model_type = Address
     gladefile = 'AddressSlave'
-    
-    left_widgets = ('street',
-                    'address_lbl',
-                    'complement',
-                    'complement_lbl',
-                    'postal_code',
-                    'postal_code_lbl',
-                    'state_lbl',
-                    'state')
-    
-    widgets = ('number',
-               'district',
-               'country',
-               'city') + left_widgets
 
+    left_proxy = (
+        'street',
+        'complement',
+        'postal_code',
+        'state')
+
+    left_widgets = (
+        'address_lbl',
+        'complement_lbl',
+        'postal_code_lbl',
+        'state_lbl'
+        ) 
+
+    proxy_widgets = (
+        'number',
+        'district',
+        'country',
+        'city',
+        ) + left_proxy
+    
     def __init__(self, conn, model=None, is_main_address=True):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
@@ -64,11 +70,9 @@ class AddressSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def get_left_widgets(self):
-        widgets = []
-        for widget_name in self.left_widgets:
-            widget = getattr(self, widget_name)
-            widgets.append(widget)
-        return widgets
+        return [getattr(self, name)
+                    for name in (self.left_proxy +
+                                 self.left_widgets)]
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043. We should create Address and
@@ -144,7 +148,7 @@ class AddressSlave(BaseEditorSlave):
             city_loc = self.model.city_location.clone()
         self.model.city_location = city_loc
 
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     def can_confirm(self):
         return self.model.is_valid_model()

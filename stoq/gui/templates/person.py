@@ -53,24 +53,16 @@ class PersonEditorTemplate(BaseEditorSlave):
     model_type = Person
     gladefile = 'PersonEditorTemplate'
 
-    left_proxy_widgets = ('name',
-                          'name_lbl',
-                          'phone_number',
-                          'phone_number_lbl',
-                          'fax_lbl',
-                          'fax_number')
+    left_proxy_widgets = (
+        'name',
+        'phone_number',
+        'fax_number'
+        )
     
-    proxy_widgets = ('mobile_number',
-                     'email') + left_proxy_widgets
-
-    widgets = ('contacts_button',
-               'individual_frame',
-               'company_frame',
-               'custom_holder',
-               'person_data_tab',
-               'custom_tab',
-               'person_notebook',
-               'address_button') + proxy_widgets
+    proxy_widgets = (
+        'mobile_number',
+        'email'
+        ) + left_proxy_widgets
 
     def attach_custom_slave(self, slave, tab_text):
         self.custom_tab.show()
