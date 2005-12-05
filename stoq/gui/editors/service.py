@@ -93,7 +93,7 @@ class ServiceEditor(SellableEditor):
 
     def create_model(self, conn):
         model = Service(connection=conn)
-        model.addFacet(ISellable, code='', description='', price=0.0, 
+        model.addFacet(ISellable, code=0, description='', price=0.0, 
                        connection=conn)
         return model
 

@@ -436,7 +436,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, Service):
             return
         service = Service(connection=self.conn)
-        service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
+        service.addFacet(ISellable, code=1, price=0.0, description='Delivery',
                          connection=self.conn)
         self.set_schema(key, service.id)
 

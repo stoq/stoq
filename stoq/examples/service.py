@@ -43,13 +43,13 @@ def create_services():
     trans = new_transaction()
     
 
-    sellable_data = [dict(code='General89',
+    sellable_data = [dict(code=157,
                           description='General Service'),
-                     dict(code='C762',
+                     dict(code=359,
                           description='Cleanness'),
-                     dict(code='872626',
+                     dict(code=257,
                           description='Computer Maintenance'),
-                     dict(code='S123',
+                     dict(code=231,
                           description='Computer Components Switch')]
 
 
