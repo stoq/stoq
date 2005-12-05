@@ -186,6 +186,7 @@ class NoteEditor(BaseEditor):
         self.attr_name = attr_name
 
         BaseEditor.__init__(self, conn, model)
+        self.notes.set_accepts_tab(False)
 
     # 
     # BaseEditor hooks
