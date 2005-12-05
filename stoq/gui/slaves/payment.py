@@ -320,7 +320,7 @@ class CheckDataSlave(BillDataSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, BillDataSlave.payment_widgets)
+        self.add_proxy(self.model.payment, BillDataSlave.payment_widgets)
 
 
 class BasePaymentMethodSlave(BaseEditorSlave):
