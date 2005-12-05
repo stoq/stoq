@@ -52,8 +52,7 @@ class AddressSlave(BaseEditorSlave):
                     'state_lbl',
                     'state')
     
-    widgets = ('street',
-               'number',
+    widgets = ('number',
                'district',
                'country',
                'city') + left_widgets
