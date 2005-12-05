@@ -81,6 +81,7 @@ class POSApp(AppWindow):
                'checkout_button',
                'remove_item_button',
                'edit_button',
+               'search_box',
                'SalesMenu') + client_widgets + product_widgets
     
     def __init__(self, app):
@@ -141,6 +142,7 @@ class POSApp(AppWindow):
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
+        self.product.grab_focus()
         
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
@@ -270,6 +272,13 @@ class POSApp(AppWindow):
 
     def _search_clients(self):
         self.run_dialog(ClientSearch, hide_footer=True)
+
+    #
+    # AppWindow Hooks
+    #
+
+    def setup_focus(self): 
+        self.search_box.set_focus_chain([self.product, self.add_button])
 
     #
     # Callbacks

@@ -79,6 +79,11 @@ class TillApp(AppWindow):
         self.searchbar.search_items()
         self._update_widgets()
 
+    def _select_first_item(self, list):
+        if len(list):
+            # XXX this part will be removed after bug 2178
+            list.select(list[0])
+
     def get_title(self):
         today_format = _('%d of %B')
         today_str = datetime.datetime.today().strftime(today_format)
@@ -137,6 +142,7 @@ class TillApp(AppWindow):
             # the objects back in our main connection
             obj = Sale.get(sale.id, connection=self.conn)
             self.sales_list.append(obj)
+        self._select_first_item(self.sales_list)
         self._update_widgets()
 
     def open_till(self):

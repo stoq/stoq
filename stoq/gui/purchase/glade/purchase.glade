@@ -17,6 +17,7 @@
                         <property name="name">BaseCategories</property>
                         <property name="label" translatable="yes">Find Base Categories...</property>
                         <signal handler="_on_base_categories_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;b</property>
                     </object>
                 </child>
                 <child>
@@ -24,6 +25,7 @@
                         <property name="name">Categories</property>
                         <property name="label" translatable="yes">Find Categories...</property>
                         <signal handler="_on_categories_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;g</property>
                     </object>
                 </child>
                 <child>
@@ -104,6 +106,7 @@
                         <property name="name">Products</property>
                         <property name="label" translatable="yes">Find Products...</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;d</property>
                     </object>
                 </child>
                 <child>
@@ -146,7 +149,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Search</property>
+                        <property name="label" translatable="yes">Se_arch</property>
                     </object>
                 </child>
                 <child>
@@ -154,6 +157,7 @@
                         <property name="name">Services</property>
                         <property name="label" translatable="yes">Find Services...</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;s</property>
                     </object>
                 </child>
                 <child>
@@ -162,6 +166,7 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -169,6 +174,7 @@
                         <property name="name">Suppliers</property>
                         <property name="label" translatable="yes">Find Suppliers...</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;u</property>
                     </object>
                 </child>
                 <child>
@@ -184,11 +190,13 @@
                         <property name="name">Transporter</property>
                         <property name="label" translatable="yes">Find Transporters...</property>
                         <signal handler="_on_transporters_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;t</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
+                        <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -204,6 +212,7 @@
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">_Receive</property>
                         <property name="stock_id">gtk-redo</property>
+                        <property name="accelerator">&lt;control&gt;r</property>
                     </object>
                 </child>
                 <child>
@@ -211,6 +220,7 @@
                         <property name="name">send_to_supplier_action</property>
                         <property name="label" translatable="yes">Send to Supplier...</property>
                         <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -223,7 +233,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="send_to_supplier_action" name="send_to_supplier_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="users_menu" name="users_menu"><menuitem action="ClearCookie" name="ClearCookie"/><menuitem action="StoreCookie" name="StoreCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="send_to_supplier_action" name="send_to_supplier_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -332,7 +342,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Edit...</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -351,7 +362,8 @@
                                         <child>
                                             <widget class="GtkButton" id="details_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                <property name="label" context="yes" translatable="yes">_Details</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -362,7 +374,8 @@
                                         <child>
                                             <widget class="GtkButton" id="print_button">
                                                 <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">Print Order</property>
+                                                <property name="label" context="yes" translatable="yes">_Print Order</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>

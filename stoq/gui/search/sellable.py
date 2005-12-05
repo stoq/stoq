@@ -60,7 +60,7 @@ class SellableSearch(SearchDialog):
                               parent_conn=conn, 
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching:'))
-        self.set_ok_label(_('Add product/service'))
+        self.set_ok_label(_('_Add product/service'))
                 
     #
     # Accessors

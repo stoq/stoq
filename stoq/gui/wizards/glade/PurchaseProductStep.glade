@@ -10,7 +10,7 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
+                    <widget class="GtkHBox" id="product_hbox">
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
@@ -24,7 +24,6 @@
                             <widget class="kiwi+ui+widgets+entry+Entry" id="product">
                                 <property name="completion">True</property>
                                 <property name="data_type">object</property>
-                                <property name="exact_completion">False</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">product</property>
                             </widget>
@@ -48,13 +47,14 @@
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                <property name="file">add16px.png</property>
+                                                                <property name="file">search16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes">Add to Order</property>
+                                                                <property name="label" context="yes" translatable="yes">Add to _Order</property>
+                                                                <property name="use_underline">True</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
@@ -69,6 +69,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="product_button">
+                                        <property name="is_focus">True</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkAlignment" id="GtkAlignment1">
@@ -84,7 +85,8 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes">Add/Edit Product...</property>
+                                                                <property name="label" context="yes" translatable="yes">Add/Edit _Product...</property>
+                                                                <property name="use_underline">True</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>

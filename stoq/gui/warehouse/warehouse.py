@@ -64,9 +64,14 @@ class WarehouseApp(AppWindow):
     def __init__(self, app):
         self.conn = new_transaction()
         AppWindow.__init__(self, app)
-        self._setup_widgets()
         self._setup_slaves()
+        self._setup_widgets()
         self._update_view()
+
+    def _select_first_item(self, list):
+        if len(list):
+            # XXX this part will be removed after bug 2178
+            list.select(list[0])
 
     def _setup_widgets(self):
         self.sellable_list.set_columns(self._get_columns())
@@ -78,6 +83,7 @@ class WarehouseApp(AppWindow):
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
+        self.search_bar.set_focus()
 
     def _setup_slaves(self):
         table = Person.getAdapterClass(IBranch)
@@ -172,6 +178,7 @@ class WarehouseApp(AppWindow):
             # the objects back in our main connection
             obj = AbstractSellable.get(sellable.id, connection=self.conn)
             self.sellable_list.append(obj)
+        self._select_first_item(self.sellable_list)
         self._update_view()
         self._update_stock_total()
 

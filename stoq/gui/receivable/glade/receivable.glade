@@ -87,6 +87,7 @@
                 <child>
                     <object class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                     </object>
@@ -111,6 +112,7 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -130,7 +132,7 @@
                 <child>
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Help</property>
+                        <property name="label" translatable="yes">_Help</property>
                     </object>
                 </child>
                 <child>
@@ -144,7 +146,7 @@
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
-                        <property name="label" translatable="yes">User</property>
+                        <property name="label" translatable="yes">_User</property>
                     </object>
                 </child>
             </object>
@@ -250,7 +252,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Add...</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Add...</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -281,7 +284,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Cancel</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Cancel</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -315,7 +319,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Edit...</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Edit...</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -333,7 +338,9 @@
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="details_button">
-                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">_Details</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>

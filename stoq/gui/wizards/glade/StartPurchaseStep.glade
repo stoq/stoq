@@ -5,7 +5,7 @@
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
-            <widget class="GtkTable" id="table1">
+            <widget class="GtkTable" id="table">
                 <property name="border_width">5</property>
                 <property name="column_spacing">5</property>
                 <property name="n_columns">5</property>
@@ -86,7 +86,6 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="supplier">
                         <property name="completion">True</property>
                         <property name="data_type">object</property>
-                        <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">supplier</property>
                     </widget>
@@ -98,10 +97,11 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkHBox" id="hbox10">
+                    <widget class="GtkHBox" id="radio_hbox">
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkRadioButton" id="cif_radio">
+                                <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes">CIF</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -196,7 +196,8 @@
                 <child>
                     <widget class="GtkButton" id="supplier_button">
                         <property name="is_focus">True</property>
-                        <property name="label" context="yes" translatable="yes">Add/Edit Supplier...</property>
+                        <property name="label" context="yes" translatable="yes">A_dd/Edit Supplier...</property>
+                        <property name="use_underline">True</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

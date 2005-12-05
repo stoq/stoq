@@ -7,6 +7,7 @@
                 <child>
                     <object class="GtkAction" id="About">
                         <property name="name">About</property>
+                        <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -112,7 +113,7 @@
                 <child>
                     <object class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
-                        <property name="label" translatable="yes">Sales</property>
+                        <property name="label" translatable="yes">Sa_les</property>
                     </object>
                 </child>
                 <child>
@@ -133,7 +134,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Search</property>
+                        <property name="label" translatable="yes">Se_arch</property>
                     </object>
                 </child>
                 <child>
@@ -153,7 +154,7 @@
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
-                        <property name="label" translatable="yes">User</property>
+                        <property name="label" translatable="yes">_User</property>
                     </object>
                 </child>
             </object>
@@ -226,9 +227,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="client">
-                                        <property name="completion">True</property>
                                         <property name="data_type">int</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">client</property>
                                     </widget>
@@ -276,7 +275,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkHBox" id="hbox2">
+                            <widget class="GtkHBox" id="search_box">
                                 <property name="border_width">10</property>
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
@@ -289,9 +288,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="product">
-                                        <property name="completion">True</property>
                                         <property name="data_type">int</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="model_attribute">product</property>
                                     </widget>
                                     <packing>
@@ -313,14 +310,14 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage6">
+                                                                    <widget class="GtkImage" id="GtkImage1">
                                                                         <property name="file">add16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">_Add to Order</property>
+                                                                        <property name="label" context="yes" translatable="yes">Add to _Order</property>
                                                                         <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
@@ -530,14 +527,14 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage5">
+                                                                    <widget class="GtkImage" id="GtkImage1">
                                                                         <property name="file">confirm16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Check_out...</property>
+                                                                        <property name="label" context="yes" translatable="yes">Chec_kout...</property>
                                                                         <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
