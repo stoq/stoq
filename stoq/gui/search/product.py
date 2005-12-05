@@ -87,7 +87,7 @@ class ProductSearch(SearchEditor):
         
 
     def get_columns(self):
-        return [Column('code', _('Code'), data_type=int, sorted=True, 
+        return [Column('code', _('Code'), data_type=str, sorted=True, 
                        width=80),
                 Column('description', _('Description'), data_type=str, 
                        width=260),
