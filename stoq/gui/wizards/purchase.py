@@ -355,7 +355,6 @@ class StartPurchaseStep(BaseWizardStep):
                      'order_number',
                      'supplier',
                      'branch',
-                     'supplier_button',
                      'freight')
 
     def __init__(self, wizard, conn, model):

@@ -154,13 +154,9 @@ class SellableEditor(BaseEditor):
                         'description',
                         'category_combo',
                         'cost',
-                        'price',
-                        'notes_lbl')
+                        'price')
 
-    storable_widgets = ('stock_total_lbl', 'stock_lbl')
-
-    widgets = (('sale_price_button', 'product_supplier_holder')
-                + product_widgets + sellable_widgets + storable_widgets)
+    storable_widgets = ('stock_total_lbl',)
 
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)

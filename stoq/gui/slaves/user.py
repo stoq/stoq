@@ -47,12 +47,10 @@ _ = gettext.gettext
 class UserStatusSlave(BaseEditorSlave):
     gladefile = 'UserStatusSlave'
     model_type = Person.getAdapterClass(IUser)
-    proxy_widgets = ('active_check',
-                     'inactive_check')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
-                                    UserStatusSlave.proxy_widgets)
+                                    UserStatusSlave.widgets)
 
 
 class PasswordEditorSlave(BaseEditorSlave):
