@@ -154,8 +154,8 @@ class DeliveryEditor(BaseEditor):
     def setup_proxies(self):
         self.set_widgets_format()
         delivery = IDelivery(self.model, connection=self.conn)
-        self.add_proxy(delivery, self.delivery_widgets)
-        self.add_proxy(self.model, self.sellableitem_widgets)
+        self.add_proxy(delivery, DeliveryEditor.delivery_widgets)
+        self.add_proxy(self.model, DeliveryEditor.sellableitem_widgets)
 
     def setup_slaves(self):
         columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 

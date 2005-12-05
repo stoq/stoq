@@ -50,7 +50,8 @@ class IndividualDocuments(BaseEditorSlave):
                'rg_number')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    IndividualDocuments.widgets)
 
 class IndividualDetailsSlave(BaseEditorSlave):
     model_type = Person.getAdapterClass(IIndividual)
@@ -151,15 +152,17 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    IndividualDetailsSlave.proxy_widgets)
         self.update_marital_status()
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()
         else:
             c = CityLocation(connection=self.conn)
             self.model.birth_location = c
-        self.birth_loc_proxy = self.add_proxy(self.model.birth_location,
-                                              self.birth_loc_widgets)
+        self.birth_loc_proxy = self.add_proxy(
+            self.model.birth_location,
+            IndividualDetailsSlave.birth_loc_widgets)
 
     def on_confirm(self):
         if self.male_check.get_active():

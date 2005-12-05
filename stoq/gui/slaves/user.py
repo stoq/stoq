@@ -51,7 +51,8 @@ class UserStatusSlave(BaseEditorSlave):
                      'inactive_check')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    UserStatusSlave.proxy_widgets)
 
 
 class PasswordEditorSlave(BaseEditorSlave):
@@ -78,7 +79,8 @@ class PasswordEditorSlave(BaseEditorSlave):
         return LoginInfo()
     
     def setup_proxies(self): 
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    PasswordEditorSlave.proxy_widgets)
         
     #
     # Kiwi handlers
@@ -126,7 +128,8 @@ class UserDetailsSlave(BaseEditorSlave):
         if self.show_password_fields:
             self._attach_slaves()
             size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-            self._setup_size_group(size_group, self.size_group_widgets,
+            self._setup_size_group(size_group,
+                                   UserDetailsSlave.size_group_widgets,
                                    self)
             self._setup_size_group(size_group,
                                    self.password_slave.size_group_widgets,
@@ -150,7 +153,8 @@ class UserDetailsSlave(BaseEditorSlave):
 
     def setup_proxies(self): 
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    UserDetailsSlave.proxy_widgets)
 
     def on_confirm(self):
         if self.show_password_fields:

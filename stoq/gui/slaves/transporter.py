@@ -43,4 +43,5 @@ class TransporterDataSlave(BaseEditorSlave):
                'open_contract_date')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    TransporterDataSlave.widgets)

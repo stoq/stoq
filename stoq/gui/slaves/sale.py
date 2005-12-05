@@ -93,7 +93,8 @@ class DiscountChargeSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    DiscountChargeSlave.proxy_widgets)
 
     #
     # Kiwi callbacks

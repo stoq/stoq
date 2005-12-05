@@ -67,4 +67,5 @@ class UserProfileSettingsSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         data = self.model.has_permission 
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(
+            self.model, UserProfileSettingsSlave.proxy_widgets)

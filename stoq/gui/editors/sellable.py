@@ -108,7 +108,8 @@ class SellablePriceEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widget_formats()
-        self.main_proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.main_proxy = self.add_proxy(self.model,
+                                         SellablePriceEditor.proxy_widgets)
 
         if self.model.markup is not None:
             return
@@ -198,12 +199,15 @@ class SellableEditor(BaseEditor):
         self.set_widget_formats()
         self.setup_combos()
 
-        self.main_proxy = self.add_proxy(self.model, self.product_widgets)
+        self.main_proxy = self.add_proxy(self.model,
+                                         SellableEditor.product_widgets)
 
         sellable = ISellable(self.model, connection=self.conn)
-        self.sellable_proxy = self.add_proxy(sellable, self.sellable_widgets)
+        self.sellable_proxy = self.add_proxy(sellable,
+                                             SellableEditor.sellable_widgets)
         storable = IStorable(self.model, connection=self.conn)
-        self.storable_proxy = self.add_proxy(storable, self.storable_widgets)
+        self.storable_proxy = self.add_proxy(storable,
+                                             SellableEditor.storable_widgets)
 
     #
     # Kiwi handlers

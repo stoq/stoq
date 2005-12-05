@@ -40,5 +40,6 @@ class CompanyDocumentsSlave(BaseEditorSlave):
                'state_registry')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    CompanyDocumentsSlave.widgets)
 
