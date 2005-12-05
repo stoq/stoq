@@ -92,7 +92,8 @@ class TillOpeningEditor(BaseEditor):
         self.model.open_till()
         self._setup_widgets()
         self._initialize_till_operation()
-        self.add_proxy(self.model, self.widgets)
+        self.add_proxy(self.model,
+                       TillOpeningEditor.widgets)
 
 
 class TillClosingEditor(BaseEditor):
@@ -174,7 +175,8 @@ class TillClosingEditor(BaseEditor):
         self.model.close_till()
         self.final_cash = self.model.final_cash_amount
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    TillClosingEditor.proxy_widgets)
 
     #
     # Kiwi handlers
@@ -241,7 +243,8 @@ class BaseCashSlave(BaseEditorSlave):
         return model
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    BaseCashSlave.proxy_widgets)
         self._setup_widgets()
 
     #
@@ -269,13 +272,15 @@ class CashAdvanceEditor(BaseEditor):
                             
     def _setup_widgets(self):
         self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.entry_size_group, self.entry_widgets,
+        self._setup_size_group(self.entry_size_group,
+                               CashAdvanceEditor.entry_widgets,
                                self)
         self._setup_size_group(self.entry_size_group,
                                self.cash_slave.proxy_widgets, 
                                self.cash_slave)
         self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.label_size_group, self.label_widgets,
+        self._setup_size_group(self.label_size_group,
+                               CashAdvanceEditor.label_widgets,
                                self)
         self._setup_size_group(self.label_size_group, 
                                self.cash_slave.label_widgets,
@@ -358,13 +363,15 @@ class CashOutEditor(BaseEditor):
         
     def _setup_widgets(self):
         self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.entry_size_group, self.entry_widgets,
+        self._setup_size_group(self.entry_size_group,
+                               CashOutEditor.entry_widgets,
                                self)
         self._setup_size_group(self.entry_size_group,
                                self.cash_slave.proxy_widgets, 
                                self.cash_slave)
         self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.label_size_group, self.label_widgets,
+        self._setup_size_group(self.label_size_group,
+                               CashOutEditor.label_widgets,
                                self)
         self._setup_size_group(self.label_size_group, 
                                self.cash_slave.label_widgets,

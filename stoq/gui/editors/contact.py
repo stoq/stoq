@@ -56,4 +56,4 @@ class ContactEditor(BaseEditor):
         return Liaison(person=None, connection=conn)
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model, ContactEditor.widgets)

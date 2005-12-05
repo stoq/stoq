@@ -109,11 +109,11 @@ class EmployeeDetailsSlave(BaseEditorSlave):
         self.right_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self.left_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
 
-        for widget in self.left_widgets_group:
+        for widget in EmployeeDetailsSlave.left_widgets_group:
             w = getattr(self, widget)
             self.left_size_group.add_widget(w)
 
-        for widget in self.right_widgets_group:
+        for widget in EmployeeDetailsSlave.right_widgets_group:
             w = getattr(self, widget)
             self.right_size_group.add_widget(w)
 
@@ -136,12 +136,17 @@ class EmployeeDetailsSlave(BaseEditorSlave):
         assert(self.model)
 
         proxy_info = [
-            ('workpermit_data', self.work_permit_widgets, WorkPermitData),
-            ('military_data', self.military_widgets, MilitaryData),
-            ('voter_data', self.voter_widgets, VoterData),
-            ('bank_account', self.bank_account_widgets, BankAccount)
+            ('workpermit_data',
+             EmployeeDetailsSlave.work_permit_widgets, WorkPermitData),
+            ('military_data',
+             EmployeeDetailsSlave.military_widgets, MilitaryData),
+            ('voter_data',
+             EmployeeDetailsSlave.voter_widgets, VoterData),
+            ('bank_account',
+             EmployeeDetailsSlave.bank_account_widgets, BankAccount)
         ]
-        self.proxy = self.add_proxy(self.model, self.employee_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    EmployeeDetailsSlave.employee_widgets)
 
         for name, widgets, table in proxy_info:
             obj = getattr(self.model, name)
@@ -157,9 +162,10 @@ class EmployeeStatusSlave(BaseEditorSlave):
     widgets = ('statuses_combo',)
 
     def setup_proxies(self):
-        items = [(value, constant) 
-                    for constant, value in self.model_type.statuses.items()]
+        items = [(v, c) 
+                    for c, v in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    EmployeeStatusSlave.widgets)
 
     

@@ -105,7 +105,7 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.person_notebook.set_tab_label_text(tab_child, tab_text)
 
         self.size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        for widget_name in self.left_proxy_widgets:
+        for widget_name in PersonEditorTemplate.left_proxy_widgets:
             widget = getattr(self, widget_name)
             self.size_group.add_widget(widget)
 
@@ -145,7 +145,8 @@ class PersonEditorTemplate(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    PersonEditorTemplate.proxy_widgets)
 
     def setup_slaves(self):
         main_address = self.model.get_main_address()

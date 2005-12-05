@@ -223,7 +223,7 @@ class BankDataSlave(BaseEditorSlave):
 
 
     def setup_proxies(self):
-        self.add_proxy(self.model, self.widgets)
+        self.add_proxy(self.model, BankDataSlave.widgets)
 
 
 
@@ -273,7 +273,7 @@ class BillDataSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model, self.payment_widgets)
+        self.add_proxy(self.model, BillDataSlave.payment_widgets)
 
 
     
@@ -320,7 +320,7 @@ class CheckDataSlave(BillDataSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.add_proxy(self.model.payment, self.payment_widgets)
+        self.add_proxy(self.model, BillDataSlave.payment_widgets)
 
 
 class BasePaymentMethodSlave(BaseEditorSlave):
@@ -396,9 +396,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.payment_list.connect('remove-slave',
                                   self.update_installments_number)
         self.payment_list.register_max_installments_number(max)
-        if self.get_slave(self.slave_holder):
-            self.detach_slave(self.slave_holder)
-        self.attach_slave(self.slave_holder, self.payment_list)
+        if self.get_slave(BasePaymentMethodSlave.slave_holder):
+            self.detach_slave(BasePaymentMethodSlave.slave_holder)
+        self.attach_slave(BasePaymentMethodSlave.slave_holder,
+                          self.payment_list)
         created_inpayments = self.get_created_inpayments()
         if created_inpayments:
             self.fill_slave_list(created_inpayments)
@@ -523,7 +524,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    BasePaymentMethodSlave.widgets)
 
     def create_model(self, conn):
         check_group = self.method.get_check_group_data(self.sale)
@@ -697,7 +699,8 @@ class CreditProviderMethodSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    CreditProviderMethodSlave.widgets)
 
     def create_model(self, conn):
         providers = self._get_credit_providers()

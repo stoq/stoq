@@ -78,7 +78,8 @@ class ProductSupplierSlave(BaseEditorSlave):
         self.proxy.update('main_supplier_info.name')
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    ProductSupplierSlave.proxy_widgets)
 
 #
 # Editors
@@ -287,7 +288,8 @@ class ProductItemEditor(BaseEditor):
         self.setup_widgets()
         if self.value_attr:
             self.value.set_property('model-attribute', self.value_attr)
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    ProductItemEditor.proxy_widgets)
 
     def setup_widgets(self):
         sellable = self.model.sellable

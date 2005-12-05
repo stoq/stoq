@@ -57,7 +57,8 @@ class BaseSellableCategoryEditor(BaseEditor):
         return model.get_description()
 
     def setup_proxies(self):
-        self.add_proxy(model=self.model, widgets=self.widgets)
+        self.add_proxy(model=self.model,
+                       widgets=BaseSellableCategoryEditor.widgets)
 
 
 class SellableCategoryEditor(BaseEditor):
@@ -94,4 +95,5 @@ class SellableCategoryEditor(BaseEditor):
         # the attribute 'group' be set properly in the combo.
         self.setup_combo()
 
-        self.add_proxy(model=self.model, widgets=self.widgets)
+        self.add_proxy(model=self.model,
+                       widgets=SellableCategoryEditor.widgets)

@@ -71,8 +71,8 @@ class AddressSlave(BaseEditorSlave):
 
     def get_left_widgets(self):
         return [getattr(self, name)
-                    for name in (self.left_proxy +
-                                 self.left_widgets)]
+                    for name in (AddressSlave.left_proxy +
+                                 AddressSlave.left_widgets)]
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug #2043. We should create Address and
@@ -148,7 +148,8 @@ class AddressSlave(BaseEditorSlave):
             city_loc = self.model.city_location.clone()
         self.model.city_location = city_loc
 
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    AddressSlave.proxy_widgets)
 
     def can_confirm(self):
         return self.model.is_valid_model()

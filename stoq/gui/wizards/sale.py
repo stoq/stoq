@@ -165,7 +165,8 @@ class CustomerStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    CustomerStep.proxy_widgets)
 
     #
     # WizardStep hooks
@@ -281,7 +282,8 @@ class SalesPersonStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    SalesPersonStep.proxy_widgets)
 
 
 #

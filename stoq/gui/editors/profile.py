@@ -59,7 +59,8 @@ class UserProfileEditor(BaseEditor):
         return UserProfile(name='', connection=conn)
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    UserProfileEditor.proxy_widgets)
 
     def setup_slaves(self):
         apps = get_app_full_names()

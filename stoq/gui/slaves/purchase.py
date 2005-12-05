@@ -53,4 +53,5 @@ class PurchasePaymentSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    PurchasePaymentSlave.widgets)

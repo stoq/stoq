@@ -51,4 +51,5 @@ class CreditProviderDetailsSlave(BaseEditorSlave):
         items = [(description, value) for value, description 
                         in provider_types.items()]
         self.provider_type_combo.prefill(items)
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    CreditProviderDetailsSlave.widgets)

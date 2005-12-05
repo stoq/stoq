@@ -71,7 +71,7 @@ class ServiceItemEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widgets_format()
-        self.add_proxy(self.model, self.widgets)
+        self.add_proxy(self.model, ServiceItemEditor.widgets)
 
 
 class ServiceEditor(SellableEditor):

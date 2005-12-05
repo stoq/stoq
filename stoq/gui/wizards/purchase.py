@@ -90,7 +90,8 @@ class FinishPurchaseStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_transporter_entry()
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    FinishPurchaseStep.widgets)
 
     #
     # Kiwi callbacks
@@ -167,8 +168,10 @@ class PurchasePaymentStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.order_proxy = self.add_proxy(self.order, self.order_widgets)
-        self.proxy = self.add_proxy(self.model, self.payment_widgets)
+        self.order_proxy = self.add_proxy(self.order,
+                                          PurchasePaymentStep.order_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    PurchasePaymentStep.payment_widgets)
 
     def setup_slaves(self):
         self._update_payment_method_slave()
@@ -283,7 +286,8 @@ class PurchaseProductStep(BaseWizardStep):
     def setup_proxies(self):
         self._setup_product_entry()
         self.product_model = FancyProduct()
-        self.proxy = self.add_proxy(self.product_model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.product_model,
+                                    PurchaseProductStep.proxy_widgets)
 
     def setup_slaves(self):
         products = list(self.model.get_items())
@@ -390,7 +394,8 @@ class StartPurchaseStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    StartPurchaseStep.proxy_widgets)
 
     #
     # Kiwi callbacks
