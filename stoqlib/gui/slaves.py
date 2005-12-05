@@ -38,6 +38,7 @@ class NoteSlave(BaseEditorSlave):
         self.model = model
         self.model_type = self.model_type or type(model)
         BaseEditorSlave.__init__(self, conn, self.model)
+        self.notes.set_accepts_tab(False)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)

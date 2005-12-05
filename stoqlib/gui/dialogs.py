@@ -163,6 +163,7 @@ be subclassed and customized."""
         if hide_footer:
             self.ok_button.hide()
             self.cancel_button.hide()
+        self.ok_button.set_use_underline(True)
 
     def setup_keyactions(self):
         self.keyactions = {gtk.keysyms.Escape: self.cancel}

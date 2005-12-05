@@ -309,6 +309,12 @@ class SearchBar(SlaveDelegate):
         self._slave_callback = search_callback
         self._split_field_types()
 
+    def set_focus(self):
+        if self.searching_by_date:
+            self._slave.get_slave().search_entry.grab_focus()
+        else:
+            self._slave.search_entry.grab_focus()
+
     def set_result_strings(self, singular_form, plural_form):
         """This method defines strings to be used in the
         search_results_label of SearchEntry class.
@@ -623,7 +629,7 @@ class SearchDialog(BasicDialog):
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text, 
                                 title=title, size=self.size)
-        self.set_ok_label(_('Select Items'))
+        self.set_ok_label(_('Se_lect Items'))
         self.table = table
         self.search_table = search_table or self.table
         self.parent_conn = parent_conn
@@ -633,6 +639,7 @@ class SearchDialog(BasicDialog):
         self.setup_slaves()
 
     def setup_slaves(self, **kwargs):
+        self.disable_ok()
         self.klist_slave = BaseListSlave(parent=self)
         self.attach_slave('main', self.klist_slave)
         self.klist = self.klist_slave.klist
@@ -727,6 +734,7 @@ class SearchDialog(BasicDialog):
         self.klist.clear()
         
         if not objs:
+            self.disable_ok()
             self.update_widgets()
             return
 
@@ -741,6 +749,7 @@ class SearchDialog(BasicDialog):
         if count:
             self.klist.add_list(objs)
             self.klist.select(objs[0])
+            self.enable_ok()
         self.update_widgets()
 
     def update_widgets(self, *args):

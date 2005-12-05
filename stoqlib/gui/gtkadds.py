@@ -55,12 +55,12 @@ def change_toolbar_button_appearance(item, icon=None, text=None):
         image.set_from_stock(icon, gtk.ICON_SIZE_LARGE_TOOLBAR)
     if text:
         label.set_text(text)
-
+    
 def change_button_appearance(button, icon=None, text=None):
     alignment = button.get_children()[0]
     hbox = alignment.get_children()[0]
     image, label = hbox.get_children()
     if icon:
         image.set_from_stock(icon, gtk.ICON_SIZE_BUTTON)
-    if text or text == '':
-        label.set_text(text)
+    if text is not None:
+        label.set_text_with_mnemonic(text)

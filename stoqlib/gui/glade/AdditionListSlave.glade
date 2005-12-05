@@ -51,7 +51,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Add...</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Add...</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -85,7 +86,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Delete</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Delete</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
