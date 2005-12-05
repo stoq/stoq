@@ -86,7 +86,7 @@ class SellableSearch(SearchDialog):
         """Hook called by SearchDialog"""
         self.has_stock_mode = sysparam(self.conn).HAS_STOCK_MODE
         columns = [Column('code', title=_('Code'), sorted=True,
-                          data_type=str, width=100),
+                          data_type=int, width=100),
                    Column('description', title=_('Description'),
                           expand=True, data_type=str, searchable=True),
                    Column('price', title=_('Price'), data_type=float,

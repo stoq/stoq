@@ -145,7 +145,7 @@ class AbstractSellable(InheritableModelAdapter):
               STATE_SOLD: _("Sold"),
               STATE_BLOCKED: _("Blocked")}
 
-    code = StringCol(alternateID=True)
+    code = IntCol(alternateID=True)
     state = IntCol(default=STATE_AVAILABLE)
     price = FloatCol()
     description = StringCol()
