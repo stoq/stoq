@@ -39,12 +39,6 @@ from stoq.domain.interfaces import ICreditProvider
 class CreditProviderDetailsSlave(BaseEditorSlave):
     model_type = Person.getAdapterClass(ICreditProvider)
     gladefile = 'CredProviderDetailsSlave'
-    widgets = ('active_radio', 
-               'inactive_radio', 
-               'provider_type_combo', 
-               'short_name',
-               'provider_id', 
-               'open_contract_date')
 
     def setup_proxies(self):
         provider_types = self.model_type.provider_types

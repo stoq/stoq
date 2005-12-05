@@ -329,12 +329,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     gladefile = 'BillCheckMethodSlave'
     model_type = BillCheckGroupData
     slave_holder = 'bill_check_data_list'
-    widgets = ('interest',
-               'interval_type_combo',
-               'intervals',
-               'first_duedate',
-               'reset_button',
-               'installments_number')
+    proxy_widgets = ('interest',
+                     'interval_type_combo',
+                     'intervals',
+                     'first_duedate',
+                     'installments_number')
     # This attribute must be defined in child. It can assume two
     # value: CheckDataSlave, BillDataSlave
     _data_slave_class = None
@@ -525,7 +524,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
-                                    BasePaymentMethodSlave.widgets)
+                                    BasePaymentMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
         check_group = self.method.get_check_group_data(self.sale)

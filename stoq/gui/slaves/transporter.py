@@ -37,10 +37,6 @@ from stoq.domain.interfaces import ITransporter
 class TransporterDataSlave(BaseEditorSlave):
     model_type = Person.getAdapterClass(ITransporter)
     gladefile = 'TransporterDataSlave'
-    widgets = ('active_radio', 
-               'inactive_radio', 
-               'freight', 
-               'open_contract_date')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,

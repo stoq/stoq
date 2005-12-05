@@ -349,6 +349,25 @@
                         <property name="tab_label" context="yes" translatable="yes">General Details</property>
                     </packing>
                 </child>
+                <child>
+                    <widget class="GtkVBox" id="custom_tab">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
+                        <child>
+                            <widget class="GtkEventBox" id="custom_holder">
+                                <property name="border_width">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                        <property name="tab_label" context="yes" translatable="yes">Custom tab</property>
+                    </packing>
+                </child>
             </widget>
         </child>
     </widget>

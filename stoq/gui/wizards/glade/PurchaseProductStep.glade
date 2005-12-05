@@ -47,14 +47,13 @@
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                <property name="file">search16px.png</property>
+                                                                <property name="file">add16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes">Add to _Order</property>
-                                                                <property name="use_underline">True</property>
+                                                                <property name="label" context="yes" translatable="yes">Add to Order</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
@@ -85,8 +84,7 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes">Add/Edit _Product...</property>
-                                                                <property name="use_underline">True</property>
+                                                                <property name="label" context="yes" translatable="yes">Add/Edit Product...</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
