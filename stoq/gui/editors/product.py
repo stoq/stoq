@@ -242,7 +242,7 @@ class ProductEditor(SellableEditor):
 
     def create_model(self, conn):
         model = Product(connection=conn)
-        model.addFacet(ISellable, code=0, description='', price=0.0, 
+        model.addFacet(ISellable, code='', description='', price=0.0, 
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER

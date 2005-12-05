@@ -71,13 +71,13 @@ def create_products():
                      'LCD', 
                      'AMD Durom']
 
-    sellable_data = [dict(code=123,
+    sellable_data = [dict(code='K15',
                           description='Keyboard AXDR'), 
-                     dict(code=456,
+                     dict(code='M73',
                           description='Optical Mouse 45FG'), 
-                     dict(code=789,
+                     dict(code='M025',
                           description='Monitor LCD SXDF'), 
-                     dict(code=135,
+                     dict(code='P83',
                           description='Processor AMD Durom 1.2Ghz')]
 
     supplier_table = Person.getAdapterClass(ISupplier)

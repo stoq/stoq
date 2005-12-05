@@ -159,7 +159,7 @@ class DeliveryEditor(BaseEditor):
 
     def setup_slaves(self):
         columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 
-                                    data_type=int, sorted=True, 
+                                    data_type=str, sorted=True, 
                                     justify=gtk.JUSTIFY_LEFT, 
                                     obj_field='sellable'),
                    ForeignKeyColumn(AbstractSellable, 'description',
