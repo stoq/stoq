@@ -50,13 +50,13 @@ _ = gettext.gettext
 
 
 class Service(Domain):
-    """ Class responsible to store basic service informations """
+    """Class responsible to store basic service informations."""
     
     notes = StringCol(default='')
 
 
 class ServiceSellableItem(AbstractSellableItem):
-    """ A service implementation as a sellable item. """
+    """A service implementation as a sellable item."""
 
     notes = StringCol(default=None)
     estimated_fix_date = DateTimeCol(default=None)
@@ -81,7 +81,7 @@ class ServiceSellableItem(AbstractSellableItem):
 
 
 class ServiceSellableItemAdaptToDelivery(ModelAdapter):
-    """ A service implementation as a delivery facet. """
+    """A service implementation as a delivery facet."""
 
     implements(IDelivery, IContainer)
 
@@ -109,7 +109,7 @@ ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery)
 
 
 class ServiceAdaptToSellable(AbstractSellable):
-    """ A service implementation as a sellable facet. """
+    """A service implementation as a sellable facet."""
 
     sellableitem_table = ServiceSellableItem
 

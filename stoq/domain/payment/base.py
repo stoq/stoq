@@ -58,12 +58,12 @@ MAX_PAYMENT_PRECISION = 2
 
 class Payment(Domain):
     """Base class for payments.
-    Attribute details:
-    
-    interest    =   the absolute value for the interest associated with this
-                    payment
-    discount    =   the absolute value for the discount associated with this
-                    payment
+
+    B{Importante attributes}:
+        - I{interest}: the absolute value for the interest associated with
+                       this payment.
+        - I{discount}: the absolute value for the discount associated with 
+                       this payment.
     """
 
     (STATUS_PREVIEW, 
@@ -203,7 +203,8 @@ class Payment(Domain):
 class AbstractPaymentGroup(InheritableModelAdapter):
     """A base class for payment group adapters.
     
-       daily_penalty    =   represents the percentage amount which will be
+    B{Important attributes}:
+        - I{daily_penalty}: represents the percentage amount which will be
                             charged sometimes in payment acquitance. This
                             value must be between 0 and 100.
     """

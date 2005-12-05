@@ -39,11 +39,12 @@ from stoq.domain.base import Domain
 class Bank(Domain):
     """A definition of a bank. A bank can have many branches associated with
     it.
-    Notes:
-        name                = the name of the bank
-        short_name          = a short idenfier for the bank
-        compensation_code   = some financial operations require this code.
-                              It is specific for each bank.
+    
+    B{Important attributes}:
+        - I{name}: the name of the bank.
+        - I{short_name}: a short idenfier for the bank.
+        - I{compensation_code}: some financial operations require this code.
+                                It is specific for each bank.
     """
     name = StringCol()
     short_name = StringCol()
@@ -51,11 +52,12 @@ class Bank(Domain):
 
 
 class BankAccount(Domain):
-    """ A bank account definition 
-    Notes:
-        name    = an identifier for this bank account
-        branch  = the bank branch where this account lives
-        account = an identifier of this account in the branch
+    """A bank account definition.
+
+    B{Important atributes}:
+        - I{name}: an identifier for this bank account.
+        - I{branch}: the bank branch where this account lives.
+        - I{account}: an identifier of this account in the branch.
     """
     name = StringCol(default=None)
     branch = StringCol(default=None)
