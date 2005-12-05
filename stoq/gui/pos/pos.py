@@ -104,9 +104,9 @@ class POSApp(AppWindow):
         table.delete(item.id, connection=self.conn)
 
     def _setup_proxies(self):
-        self.client_proxy = self.add_proxy(widgets=self.client_widgets)
+        self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
         self.product_proxy = self.add_proxy(FancyProduct(),
-                                            self.product_widgets)
+                                            POSApp.product_widgets)
 
     def _setup_client_entry(self):
         # TODO Waiting for improvements in kiwi entry completion. We need a
