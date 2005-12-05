@@ -63,19 +63,25 @@ _ = gettext.gettext
 class CheckData(Domain):
     """Stores check informations and also a history of possible 
     devolutions.
-    bank_data   = information about the bank account of this check
-    payment   = the payment object
+    
+    B{Importante attributes}:
+        - I{bank_data}: information about the bank account of this check.
+        - I{payment}: the payment object.
     """
     payment = ForeignKey('Payment')
     bank_data = ForeignKey('BankAccount')
 
 
 class BillCheckGroupData(Domain):
-    """Stores general information for payment groups which store checks. 
-    interval_types =  a useful attribute when generating multiple payments.
-                      callsites you ensure to use it properly sending valid
-                      constants which define period types for payment
-                      generation
+    """Stores general information for payment groups which store checks.
+
+    B{Importante attributes}:
+        - I{interval_types}: a useful attribute when generating multiple 
+                             payments. callsites you ensure to use it 
+                             properly sending valid constants which define 
+                             period types for payment generation. All the
+                             interval_types constants are at
+                             L{stoq.lib.defaults} path.
     """
     installments_number = IntCol(default=1)
     first_duedate = DateTimeCol(default=datetime.now())
@@ -98,14 +104,16 @@ class CreditProviderGroupData(Domain):
 
 
 class CardInstallmentSettings(Domain):
-    """General settings for card payment method
-    Notes:
-        payment_day = which day in the month is the credit provider going to
-                      pay the store? Usually they pay in the same day every
-                      month.
-        closing_day = which day the credit provider stoq counting sales to
-                      pay in the payment_day? Sales after this day will be
-                      paid only in the next month."""
+    """General settings for card payment method.
+
+    B{Importante attributes}:
+        - I{payment_day}: which day in the month is the credit provider going 
+                          to pay the store? Usually they pay in the same day 
+                          every month.
+        - I{closing_day}: which day the credit provider stoq counting sales 
+                          to pay in the payment_day? Sales after this day 
+                          will be paid only in the next month.
+    """
     # Note that payment_day and closing_day can not have a value greater
     # than 28.
     MAX_DAY_NUMBER = 28
@@ -140,7 +148,7 @@ class CardInstallmentSettings(Domain):
 
 
 class PaymentMethod(Domain):
-    """A base payment method with its description"""
+    """A base payment method with its description."""
 
     def get_total_by_client(self, client):
         raise NotImplementedError('This method must be implemented on child')
@@ -305,10 +313,11 @@ PaymentMethod.registerFacet(PMAdaptToMoney)
 
 class AbstractCheckBillAdapter(PaymentMethodAdapter):
     """Base payment method adapter class for for Check and Bill.
-    
-        monthly_interest = a percentage value for the monthly interest.
-                           It must always be in the format:
-                           0 <= monthly_interest <= 100
+
+    B{Importante attributes}:
+        - I{monthly_interest}: a percentage value for the monthly interest.
+                               It must always be in the format:
+                               0 <= monthly_interest <= 100
     """
 
     destination = ForeignKey('PaymentDestination')
@@ -491,8 +500,10 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
 
     @argcheck(PaymentAdaptToInPayment)
     def delete_inpayment(self, inpayment):
-        """Deletes the inpayment, its associated payment and also the
-        check_data object. Missing a cascade argument in SQLObject ?"""
+        """
+        Deletes the inpayment, its associated payment and also the
+        check_data object. Missing a cascade argument in SQLObject ?
+        """
         conn = self.get_connection()
         payment = inpayment.get_adapted()
         check_data = self.get_check_data_by_payment(payment)
@@ -582,15 +593,16 @@ PaymentMethod.registerFacet(PMAdaptToFinance)
 
 
 class PaymentMethodDetails(InheritableModel):
-    """
-    commission              =   a percentage value. Note the percentages in
-                                Stoq applications must follow the standard:
-                                A discount of 5%    = 0,95
-                                A charge of 3%      = 1,03
-    provider        = the credit provider which is the responsible to pay
-                      this payment.
-    destination     = the suggested destination for the payment when it is
-                      paid.
+    """.
+    B{Important attributes}:
+        - I{commission}: a percentage value. Note the percentages in Stoq 
+                         applications must follow the standard:
+                         A discount of 5%    = 0,95.
+                         A charge of 3%      = 1,03.
+        - I{provider}: the credit provider which is the responsible to pay
+                       this payment.
+        - I{destination}: the suggested destination for the payment when it 
+                          is paid.
     """
     implements(IActive)
                                 
@@ -709,15 +721,14 @@ class DebitCardDetails(PaymentMethodDetails):
 class CreditCardDetails(PaymentMethodDetails):
     """Credit card payment method definition.
     
-    Information about some attributes:
-        closing_day     =   If the due_date.day is greater than closing_day
-                            the month will be increased and the next
-                            due_date will be the payment_day of the next
-                            month.
-        payment_day     =   The day of the month which the credit provider
-                            actually pay the payments.
+    B{Important attributes}:
+        - I{closing_day}: If the due_date.day is greater than closing_day
+                          the month will be increased and the next due_date 
+                          will be the payment_day of the next month.
+        - I{payment_day}: The day of the month which the credit provider
+                          actually pay the payments.
 
-        Note that closing_day should never be greater than payment_day.
+    Note that closing_day should never be greater than payment_day.
     """
 
     # Lowercases here is for PaymentMethodDetails

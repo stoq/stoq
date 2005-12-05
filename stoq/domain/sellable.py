@@ -89,7 +89,7 @@ class SellableCategory(Domain):
 
 
 class AbstractSellableItem(InheritableModel):
-    """ Abstract representation of a concrete sellable"""
+    """Abstract representation of a concrete sellable."""
 
     quantity = FloatCol()
     base_price = FloatCol()
@@ -131,7 +131,7 @@ class AbstractSellableItem(InheritableModel):
 
 
 class AbstractSellable(InheritableModelAdapter):
-    """ A sellable (a product or a service, for instance). """
+    """A sellable (a product or a service, for instance)."""
 
     implements(ISellable, IContainer)
 

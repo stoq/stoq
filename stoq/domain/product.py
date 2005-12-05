@@ -58,8 +58,19 @@ class FancyProduct:
 
 
 class ProductSupplierInfo(Domain):
-    """ This class store information of the suppliers of a product. Each
-    product can has more than one supplier.  """
+    """This class store information of the suppliers of a product. 
+    Each product can has more than one supplier.
+
+    B{Important attributes}: 
+        - I{is_main_supplier}: defines if this object stores information 
+                               for the main supplier.
+        - I{base_cost}: the cost which helps the purchaser to define the 
+                        main cost of a certain product. Each product can 
+                        have multiple suppliers and for each supplier a 
+                        base_cost is available. The purchaser in this case 
+                        must decide how to define the main cost based in 
+                        the base cost avarage of all suppliers.
+    """
     
     base_cost = FloatCol(default=0.0)
     notes = StringCol(default='')
@@ -79,7 +90,7 @@ class ProductSupplierInfo(Domain):
 
 
 class Product(Domain):
-    """ Class responsible to store basic products informations """
+    """Class responsible to store basic products informations."""
     
     notes = StringCol(default='')
     suppliers = MultipleJoin('ProductSupplierInfo')
@@ -111,7 +122,17 @@ class Product(Domain):
 
 
 class ProductStockReference(Domain):
-    """ Base stock informations for products"""
+    """Stock informations for products.
+    
+    B{Important attributes}:
+        - I{logic_quantity}: Represents the current quantity of a product
+                             in the warehouse reserved for this store. 
+                             For example: you can have decentralized 
+                             servers, in this case the quantity of the
+                             product in the stock will be shared between the
+                             stores, or a centralized server wich contains 
+                             all the product.
+    """
 
     quantity = FloatCol(default=0.0)
     logic_quantity = FloatCol(default=0.0)
@@ -120,7 +141,7 @@ class ProductStockReference(Domain):
 
 
 class ProductSellableItem(AbstractSellableItem):
-    """ Class responsible to store basic products informations """
+    """Class responsible to store basic products informations."""
 
     implements(IContainer)
 
@@ -205,7 +226,7 @@ class ProductSellableItem(AbstractSellableItem):
         self.delivery_data = None
 
 class ProductStockItem(AbstractStockItem):
-    """ Class that makes a reference to the product stock of a 
+    """Class that makes a reference to the product stock of a 
     certain branch company."""
 
     storable = ForeignKey('ProductAdaptToStorable')
@@ -217,7 +238,7 @@ class ProductStockItem(AbstractStockItem):
 
 
 class ProductAdaptToSellable(AbstractSellable):
-    """ A product implementation as a sellable facet. """
+    """A product implementation as a sellable facet."""
 
     sellableitem_table = ProductSellableItem
 
@@ -226,7 +247,7 @@ Product.registerFacet(ProductAdaptToSellable)
 
 
 class ProductAdaptToStorable(ModelAdapter):
-    """ A product implementation as a storable facet. """
+    """A product implementation as a storable facet."""
     
     implements(IStorable, IContainer)
 
@@ -408,6 +429,7 @@ Product.registerFacet(ProductAdaptToStorable)
 
 def storables_set_branch(conn, branch):
     """A method that must be called always when a new branch company is
-    created. It creates a new stock reference for all the products."""
+    created. It creates a new stock reference for all the products.
+    """
     for storable in ProductAdaptToStorable.select(connection=conn):
         storable.add_stock_item(branch)

@@ -58,9 +58,7 @@ _ = gettext.gettext
 
 
 class EmployeeRole(Domain):
-    """ 
-    Base class to store the employee roles 
-    """
+    """Base class to store the employee roles."""
     
     name = StringCol(alternateID=True)
 
@@ -79,9 +77,11 @@ class EmployeeRole(Domain):
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
-    """ 
-    Work permit data for employees. pis_* is a reference to PIS ("Programa
-    de Integração Social"), that is a Brazil-specific information.
+    """Work permit data for employees. 
+    
+    B{Important Attributes}:
+        - I{pis_*}: is a reference to PIS ("Programa de Integração Social"),
+                    that is a Brazil-specific information.
     """
     
     number = StringCol(default=None)
@@ -92,8 +92,8 @@ class WorkPermitData(Domain):
 
 
 class MilitaryData(Domain):
-    """ 
-    Military data for employees. This is Brazil-specific information.
+    """ Military data for employees. This is Brazil-specific 
+    information. 
     """
     
     number = StringCol(default=None)
@@ -102,9 +102,7 @@ class MilitaryData(Domain):
 
 
 class VoterData(Domain):
-    """ 
-    Voter data for employees. This is Brazil-specific information.
-    """
+    """Voter data for employees. This is Brazil-specific information."""
     
     number = StringCol(default=None)
     section = StringCol(default=None)
@@ -112,9 +110,8 @@ class VoterData(Domain):
 
 
 class CityLocation(Domain):
-    """ 
-    Base class to store the locations. Used to store a person's address 
-    or birth location 
+    """Base class to store the locations. Used to store a person's address
+    or birth location.
     """
     
     country = StringCol(default=None)
@@ -126,8 +123,12 @@ class CityLocation(Domain):
 
 
 class Address(Domain):
-    """ 
-    Class to store person's addresses 
+    """Class to store person's addresses.
+
+    B{Important Attributes}:
+       - I{is_main_address}: defines if this object stores information 
+                             for the main address
+  
     """
     
     street = StringCol(default='')
@@ -158,9 +159,7 @@ class Address(Domain):
 
 
 class Liaison(Domain):
-    """ 
-    Base class to store the person's contact informations.
-    """
+    """Base class to store the person's contact informations."""
     
     name = StringCol(default='')
     phone_number = StringCol(default='')
@@ -168,8 +167,7 @@ class Liaison(Domain):
 
 
 class Calls(Domain):
-    """ 
-    Person's calls information.
+    """Person's calls information.
 
     Calls are information associated to a person(Clients, suppliers, 
     employees, etc) that can be financial problems registries, 
@@ -184,9 +182,8 @@ class Calls(Domain):
 
 
 class Person(Domain):
-    """ 
-    Base class to register persons in the system. This class should never 
-    be instantiated directly. 
+    """Base class to register persons in the system. This class should never
+    be instantiated directly.
     """
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
@@ -306,7 +303,14 @@ class Person(Domain):
 #
 
 class PersonAdaptToIndividual(ModelAdapter):
-    """ An individual facet of a person. """
+    """An individual facet of a person. 
+    
+    B{Important attributes}:
+        - I{rg_*}: Is a reference to RG ("Registro Geral"), this is 
+                   Brazil-specific information.
+        - I{cpf}: ("Cadastro de Pessoa Fisica"), this is a Brazil-specific
+                  information.
+    """
     
     implements(IIndividual)
 
@@ -350,7 +354,13 @@ Person.registerFacet(PersonAdaptToIndividual)
 
                     
 class PersonAdaptToCompany(ModelAdapter):
-    """ A company facet of a person. """
+    """A company facet of a person.
+
+    B{Important attributes}:
+        - I{cnpj}: ("Cadastro Nacional de Pessoa Juridica"), this is 
+                   Brazil-specific information.
+        - I{fancy_name}: Represents the fancy name of a company.
+    """
     
     implements(ICompany)
 
@@ -364,7 +374,7 @@ Person.registerFacet(PersonAdaptToCompany)
 
 
 class PersonAdaptToClient(ModelAdapter):
-    """ A client facet of a person. """
+    """A client facet of a person."""
     
     implements(IClient, IActive)
     
@@ -421,7 +431,11 @@ Person.registerFacet(PersonAdaptToClient)
 
 
 class PersonAdaptToSupplier(ModelAdapter):
-    """ A supplier facet of a person. """
+    """A supplier facet of a person. 
+    
+    B{Notes}:
+        - I{product_desc}: Basic description of the products of a supplier.
+    """
     
     implements(ISupplier)
 
@@ -449,7 +463,7 @@ Person.registerFacet(PersonAdaptToSupplier)
 
 
 class PersonAdaptToEmployee(ModelAdapter):
-    """ An employee facet of a person. """
+    """An employee facet of a person."""
     
     implements(IEmployee)
 
@@ -488,7 +502,7 @@ Person.registerFacet(PersonAdaptToEmployee)
 
 
 class PersonAdaptToUser(ModelAdapter):
-    """ An user facet of a person. """
+    """An user facet of a person."""
     
     implements(IUser, IActive)
     
@@ -523,7 +537,7 @@ Person.registerFacet(PersonAdaptToUser)
 
 
 class PersonAdaptToBranch(ModelAdapter):
-    """ A branch facet of a person. """
+    """A branch facet of a person."""
     
     implements(IBranch, IActive)
 
@@ -570,7 +584,7 @@ Person.registerFacet(PersonAdaptToBranch)
 
 
 class PersonAdaptToBankBranch(ModelAdapter):
-    """ A bank branch facet of a person. """
+    """A bank branch facet of a person."""
     
     implements(IBankBranch, IActive)
 
@@ -593,7 +607,7 @@ Person.registerFacet(PersonAdaptToBankBranch)
 
 
 class PersonAdaptToCreditProvider(ModelAdapter):
-    """ A credit provider facet of a person. """
+    """A credit provider facet of a person."""
     
     implements(ICreditProvider, IActive)
 
@@ -649,7 +663,7 @@ class PersonAdaptToCreditProvider(ModelAdapter):
         """Get a list of all credit providers.
         If provider_type is provided, we will only search for this type.
         Available types are these constants: PROVIDER_CARD and
-                                             PROVIDER_FINANCE
+                                             PROVIDER_FINANCE.
         """
         q1 = cls.q.is_active == True
         if provider_type is not None:
@@ -663,7 +677,12 @@ Person.registerFacet(PersonAdaptToCreditProvider)
 
 
 class PersonAdaptToSalesPerson(ModelAdapter):
-    """ A sales person facet of a person. """
+    """A sales person facet of a person.
+
+    B{Important attributes}:
+        - I{comission_type}: specifies the type of commission to be used by
+                             the salesman.
+    """
 
     implements(ISalesPerson, IActive)
 
@@ -710,7 +729,7 @@ Person.registerFacet(PersonAdaptToSalesPerson)
 
 
 class PersonAdaptToTransporter(ModelAdapter):
-    """ A transporter facet of a person. """
+    """A transporter facet of a person."""
     
     implements(ITransporter, IActive)
 

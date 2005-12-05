@@ -56,17 +56,16 @@ class Sale(Domain):
     Nested imports are needed here because domain/sallable.py imports the
     current one.
 
-    Information about some attributes: 
-        order_number    =   an optional identifier for this sale defined 
-                            by the store
-        open_date       =   The day when we started this sale
-        close_date      =   The day when we confirmed this sale
-        notes           =   Some optional additional information related to 
-                            this sale
-        till            =   The Till operation where this sale lives. Note
-                            that every sale and payment generated are always
-                            in a till operation which defines a financial
-                            history of a store.
+    B{Importante attributes}:
+        - I{order_number}: an optional identifier for this sale defined by 
+                           the store.
+        - I{open_date}: The day when we started this sale.
+        - I{close_date}: The day when we confirmed this sale.
+        - I{notes}: Some optional additional information related to this 
+                    sale.
+        - I{till}: The Till operation where this sale lives. Note that every
+                   sale and payment generated are always in a till operation 
+                   which defines a financial history of a store.
     """
 
     implements(IContainer)

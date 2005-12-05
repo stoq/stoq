@@ -55,27 +55,20 @@ _ = gettext.gettext
 class Till(Domain):
     """A definition of till operation.
     
-    Notes:
-
-        STATUS_PENDING      =   this till have some sales unconfirmed when
-                                closing the till of the last day but it's
-                                not opened yet.
-        STATUS_OPEN         =   this till is opened and we can make sales for
-                                it
-
-        STATUS_CLOSED       =   end of the day, the till is closed and no more
-                                financial operations can be done in this store
-
-        balance_sent        =   the amount total sent to the warehouse or main
-                                store after closing the till
-
-        initial_cash_amount =   the amount total we have in the moment we
-                                are opening the till. This value is very
-                                useful when change values are need
-
-        branch              =   a till operation is always associated with a
-                                a branch which can means a store or a
-                                warehouse
+    B{Attributes}:
+        - I{STATUS_PENDING}: this till have some sales unconfirmed when
+                             closing the till of the last day but it's
+                             not opened yet.
+        - I{STATUS_OPEN}: this till is opened and we can make sales for it.
+        - I{STATUS_CLOSED}: end of the day, the till is closed and no more
+                            financial operations can be done in this store.
+        - I{balance_sent}: the amount total sent to the warehouse or main
+                           store after closing the till.
+        - I{initial_cash_amount}: The total amount we have in the moment we
+                                  are opening the till. This value is useful
+                                  when providing change during sales.
+        - I{branch}: a till operation is always associated with a branch 
+                     which can means a store or a warehouse
     """
 
     (STATUS_PENDING, 

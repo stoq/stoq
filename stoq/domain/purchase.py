@@ -46,6 +46,12 @@ _ = gettext.gettext
 
 
 class PurchaseItem(Domain):
+    """This class stores information of the purchased items.
+    
+    B{Importante attributes}
+        - I{base_cost}: the cost which helps the purchaser to define the 
+                        main cost of a certain product.
+    """
     quantity = FloatCol(default=1.0)
     quantity_received = FloatCol(default=0.0)
     base_cost = FloatCol()
@@ -85,7 +91,7 @@ class PurchaseItem(Domain):
 
 
 class PurchaseOrder(Domain):
-    """Purchase and order definition"""
+    """Purchase and order definition."""
 
     implements(IContainer)
 

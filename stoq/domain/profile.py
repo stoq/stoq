@@ -45,7 +45,7 @@ class ProfileSettings(Domain):
     
 
 class UserProfile(Domain):
-    """User profile definition"""
+    """User profile definition."""
 
     name = StringCol()
     profile_settings = MultipleJoin('ProfileSettings')

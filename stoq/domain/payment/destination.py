@@ -43,9 +43,11 @@ from stoq.domain.base import InheritableModel
 class PaymentDestination(InheritableModel):
     """PaymentDestination is the location where all the paid payments live.
     
-    description: an easy identification for this payment destination
-    account: if this payment destination represents a bank account, use it
-             here
+    B{Important attributes}:
+        - I{description}: an easy identification for this payment
+                          destination.
+        - I{account}: if this payment destination represents a bank account,
+                      use it here.
     """
     description = StringCol()
     account = ForeignKey('BankAccount', default=None)
@@ -60,7 +62,8 @@ class StoreDestination(PaymentDestination):
     Most of times this will represent the total value of operations in this
     store.
     
-    branch = the store itself
+    B{Importante attributes}:
+        - I{branch}: the store itself.
     """
     branch = ForeignKey('PersonAdaptToBranch')
 
@@ -68,6 +71,8 @@ class StoreDestination(PaymentDestination):
 class BankDestination(PaymentDestination):
     """A Bank Destination is a payment destination which lives in a bank.
     
-    branch = the bank branch where all the paid payments are send to
+    B{Importante attributes}:
+        - I{branch}: the bank branch where all the paid payments are send
+                     to.
     """
     branch = ForeignKey('PersonAdaptToBankBranch') 

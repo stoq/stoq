@@ -38,7 +38,12 @@ from stoq.domain.base import InheritableModel
 
 
 class AbstractStockItem(InheritableModel):
-    """ A reference to the stock of a certain branch company."""
+    """A reference to the stock of a certain branch company.
+    
+    B{Important attributes}:
+        - I{base_cost}: the cost which helps the purchaser to define the 
+                        main cost of a certain product.
+    """
 
     stock_cost = FloatCol(default=0.0)
     quantity = FloatCol(default=0.0)
