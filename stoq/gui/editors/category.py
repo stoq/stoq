@@ -45,7 +45,7 @@ class BaseSellableCategoryEditor(BaseEditor):
     widgets = ('description',
                'markup',
                'comission')
-    size = (400, 160)
+    size = (400, 175)
 
     def create_model(self, conn):
         category_data = AbstractSellableCategory(description='',

@@ -59,7 +59,6 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="name">
                                         <property name="data_type">str</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">name</property>
@@ -72,7 +71,6 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
                                         <property name="data_type">str</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="model_attribute">phone_number</property>
                                     </widget>
                                     <packing>
@@ -85,7 +83,6 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="fax_number">
                                         <property name="data_type">str</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="model_attribute">fax_number</property>
                                     </widget>
                                     <packing>
@@ -140,7 +137,6 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="email">
                                         <property name="data_type">str</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="model_attribute">email</property>
                                     </widget>
                                     <packing>
@@ -153,7 +149,6 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="mobile_number">
                                         <property name="data_type">str</property>
-                                        <property name="exact_completion">False</property>
                                         <property name="model_attribute">mobile_number</property>
                                     </widget>
                                     <packing>
@@ -179,7 +174,9 @@
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="contacts_button">
-                                        <property name="label" context="yes" translatable="yes">Contacts...</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Co_ntacts...</property>
+                                        <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -234,7 +231,9 @@
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="address_button">
-                                        <property name="label" context="yes" translatable="yes">More Addresses...</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">More _Addresses...</property>
+                                        <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -348,24 +347,6 @@
                         <property name="menu_label" context="yes" translatable="yes"></property>
                         <property name="position">2</property>
                         <property name="tab_label" context="yes" translatable="yes">General Details</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkVBox" id="custom_tab">
-                        <property name="border_width">5</property>
-                        <child>
-                            <widget class="GtkEventBox" id="custom_holder">
-                                <property name="border_width">5</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <placeholder/>
-                                </child>
-                            </widget>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="position">3</property>
-                        <property name="tab_label" context="yes" translatable="yes">Custom</property>
                     </packing>
                 </child>
             </widget>

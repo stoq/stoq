@@ -79,7 +79,6 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="profile">
                         <property name="completion">True</property>
                         <property name="data_type">object</property>
-                        <property name="exact_completion">False</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">profile</property>
@@ -120,7 +119,8 @@
                         <child>
                             <widget class="GtkButton" id="profile_button">
                                 <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Add/Edit Profile...</property>
+                                <property name="label" context="yes" translatable="yes">A_dd/Edit Profile...</property>
+                                <property name="use_underline">True</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>

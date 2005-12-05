@@ -63,6 +63,11 @@ class ReceivableApp(AppWindow):
         self._setup_widgets()
         self._update_widgets()
 
+    def _select_first_item(self, list):
+        if len(list):
+            # XXX this part will be removed after bug 2178
+            list.select(list[0])
+
     def _setup_widgets(self):
         self.receivable_list.set_columns(self._get_columns())
         self.receivable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
@@ -73,7 +78,7 @@ class ReceivableApp(AppWindow):
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
-
+        self.searchbar.set_focus()
 
     def _update_widgets(self):
         has_sales = len(self.receivable_list) > 0
@@ -141,6 +146,7 @@ class ReceivableApp(AppWindow):
             # the objects back in our main connection
             obj = Payment.get(payment.id, connection=self.conn)
             self.receivable_list.append(obj)
+        self._select_first_item(self.receivable_list)
         self._update_widgets()
 
     #

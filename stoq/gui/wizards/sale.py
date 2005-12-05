@@ -120,6 +120,7 @@ class PaymentMethodStep(BaseWizardStep):
 
 
     def post_init(self):
+        self.method_combo.grab_focus()
         if self.method_slave:
             self.method_slave.update_view()
 
@@ -138,7 +139,6 @@ class CustomerStep(BaseWizardStep):
                      'order_number',
                      'order_details', 
                      'order_total_lbl')
-    widgets = ('add_button',) + proxy_widgets
 
     def __init__(self, wizard, previous, conn, model):
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
@@ -173,6 +173,9 @@ class CustomerStep(BaseWizardStep):
     #
 
     def post_init(self):
+        self.client.grab_focus()
+        self.client_hbox.set_focus_chain([self.client])
+        self.order_details.set_accepts_tab(False)
         self.update_view()
 
     def has_next_step(self):
@@ -255,6 +258,9 @@ class SalesPersonStep(BaseWizardStep):
     # WizardStep hooks
     #
 
+    def post_init(self):
+        self.salesperson_combo.grab_focus()
+        
     def next_step(self):
         has_cash = self.cash_check.get_active()
         if self.wizard.skip_payment_step:

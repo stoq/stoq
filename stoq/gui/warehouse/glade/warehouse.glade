@@ -101,7 +101,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Search</property>
+                        <property name="label" translatable="yes">S_earch</property>
                     </object>
                 </child>
                 <child>
@@ -110,11 +110,13 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
+                        <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -128,8 +130,9 @@
                 <child>
                     <object class="GtkAction" id="receive_action">
                         <property name="name">receive_action</property>
-                        <property name="label" translatable="yes">_Receive</property>
+                        <property name="label" translatable="yes">Receive</property>
                         <property name="stock_id">gtk-redo</property>
+                        <property name="accelerator">&lt;control&gt;r</property>
                     </object>
                 </child>
                 <child>
@@ -142,8 +145,9 @@
                 <child>
                     <object class="GtkAction" id="transfer_action">
                         <property name="name">transfer_action</property>
-                        <property name="label" translatable="yes">_Transfer</property>
+                        <property name="label" translatable="yes">Transfer</property>
                         <property name="stock_id">gtk-copy</property>
+                        <property name="accelerator">&lt;control&gt;t</property>
                     </object>
                 </child>
                 <child>
@@ -242,13 +246,17 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkButton" id="history_button">
-                                                <property name="label" context="yes" translatable="yes">History</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">H_istory</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="retention_button">
-                                                <property name="label" context="yes" translatable="yes">Retention...</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">_Retention...</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>

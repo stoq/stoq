@@ -164,6 +164,7 @@ class SellableEditor(BaseEditor):
 
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
+        self.notes.set_accepts_tab(False)
         self.setup_widgets()
 
     def set_widget_formats(self):

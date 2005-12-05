@@ -7,7 +7,7 @@
                 <child>
                     <object class="GtkAction" id="Actions">
                         <property name="name">Actions</property>
-                        <property name="label" translatable="yes">Search</property>
+                        <property name="label" translatable="yes">S_earch</property>
                     </object>
                 </child>
                 <child>
@@ -84,6 +84,7 @@
                 <child>
                     <object class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                     </object>
@@ -108,6 +109,7 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -115,12 +117,13 @@
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till...</property>
                         <signal handler="_on_close_till_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;s</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="TillMenu">
                         <property name="name">TillMenu</property>
-                        <property name="label" translatable="yes">Till</property>
+                        <property name="label" translatable="yes">_Till</property>
                     </object>
                 </child>
                 <child>
@@ -128,6 +131,7 @@
                         <property name="name">TillOpen</property>
                         <property name="label" translatable="yes">Open Till...</property>
                         <signal handler="_on_open_till_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -135,6 +139,7 @@
                         <property name="name">TillOperations</property>
                         <property name="label" translatable="yes">Find Till Operations...</property>
                         <signal handler="_on_operations_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;o</property>
                     </object>
                 </child>
                 <child>
@@ -148,7 +153,7 @@
                 <child>
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Help</property>
+                        <property name="label" translatable="yes">_Help</property>
                     </object>
                 </child>
                 <child>
@@ -162,7 +167,7 @@
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
-                        <property name="label" translatable="yes">User</property>
+                        <property name="label" translatable="yes">_User</property>
                     </object>
                 </child>
             </object>
@@ -249,7 +254,8 @@
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                <property name="label" context="yes" translatable="yes"> Confirm Order...</property>
+                                                                <property name="label" context="yes" translatable="yes"> Confirm _Order...</property>
+                                                                <property name="use_underline">True</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>

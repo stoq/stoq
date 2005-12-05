@@ -72,8 +72,7 @@ class AdminApp(AppWindow):
         
     def _select_first_item(self, list):
         if len(list):
-            # XXX Probably kiwi should handle this for us. Waiting for
-            # support
+            # XXX this part will be removed after bug 2178
             list.select(list[0])
 
     def _setup_slaves(self):

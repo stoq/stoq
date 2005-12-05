@@ -62,11 +62,10 @@ _ = gettext.gettext
 class FinishPurchaseStep(BaseWizardStep):
     gladefile = 'FinishPurchaseStep'
     model_type = PurchaseOrder
-    widgets = ('salesperson_name', 
-               'receival_date',
-               'transporter',
-               'notes',
-               'transporter_button')
+    proxy_widgets = ('salesperson_name', 
+                     'receival_date',
+                     'transporter',
+                     'notes')
 
     def __init__(self, wizard, previous, conn, model):
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
@@ -76,6 +75,10 @@ class FinishPurchaseStep(BaseWizardStep):
         transporters = table.get_active_transporters(self.conn)
         names = [t.get_adapted().name for t in transporters]
         self.transporter.set_completion_strings(names, list(transporters))
+
+    def _setup_focus(self):
+        self.salesperson_name.grab_focus()
+        self.notes.set_accepts_tab(False)
 
     #
     # WizardStep hooks
@@ -90,8 +93,7 @@ class FinishPurchaseStep(BaseWizardStep):
 
     def setup_proxies(self):
         self._setup_transporter_entry()
-        self.proxy = self.add_proxy(self.model,
-                                    FinishPurchaseStep.widgets)
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
 
     #
     # Kiwi callbacks
@@ -110,7 +112,6 @@ class PurchasePaymentStep(BaseWizardStep):
     payment_widgets = ('method_combo',)
     order_widgets = ('subtotal_lbl',
                      'total_lbl')
-    widgets = payment_widgets + order_widgets
 
     def __init__(self, wizard, previous, conn, model):
         self.order = model
@@ -163,6 +164,10 @@ class PurchasePaymentStep(BaseWizardStep):
                                   self.order)
 
     def post_init(self):
+        self.method_combo.grab_focus()
+        self.main_box.set_focus_chain([self.payment_method_hbox,
+                                       self.method_slave_holder])
+        self.payment_method_hbox.set_focus_chain([self.method_combo])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -200,7 +205,8 @@ class PurchaseProductStep(BaseWizardStep):
     model_type = PurchaseOrder
     proxy_widgets = ('product',)
     widgets = ('add_item_button',
-               'product_button') + proxy_widgets
+               'product_button',
+               'product_hbox') + proxy_widgets
 
     def __init__(self, wizard, previous, conn, model):
         self.table = Product.getAdapterClass(ISellable)
@@ -280,6 +286,9 @@ class PurchaseProductStep(BaseWizardStep):
                                    self.model)
 
     def post_init(self):
+        self.product.grab_focus()
+        self.product_hbox.set_focus_chain([self.product, 
+                                           self.add_item_button])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -348,8 +357,6 @@ class StartPurchaseStep(BaseWizardStep):
                      'branch',
                      'supplier_button',
                      'freight')
-    widgets = proxy_widgets + ('cif_radio',
-                               'fob_radio')
 
     def __init__(self, wizard, conn, model):
         BaseWizardStep.__init__(self, conn, wizard, model)
@@ -378,6 +385,11 @@ class StartPurchaseStep(BaseWizardStep):
     #
 
     def post_init(self):
+        self.open_date.grab_focus()
+        self.table.set_focus_chain([self.open_date, self.order_number,
+                                    self.branch, self.supplier, 
+                                    self.radio_hbox, self.freight])
+        self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 

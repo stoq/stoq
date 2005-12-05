@@ -257,7 +257,7 @@ class ProductItemEditor(BaseEditor):
     model_name = _('Product')
     model_type = ProductSellableItem
     gladefile = 'ProductItemEditor'
-    size = (550, 100)
+    size = (550, 115)
 
     proxy_widgets = ('quantity', 
                      'value',

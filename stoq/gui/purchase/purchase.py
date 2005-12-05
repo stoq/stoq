@@ -75,6 +75,11 @@ class PurchaseApp(AppWindow):
         self._setup_slaves()
         self._update_view()
 
+    def _select_first_item(self, list):
+        if len(list):
+            # XXX this part will be removed after bug 2178
+            list.select(list[0])
+
     def _setup_widgets(self):
         self.purchase_list.set_columns(self._get_columns())
         self.purchase_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
@@ -91,7 +96,7 @@ class PurchaseApp(AppWindow):
         self.summary_received.show()
         self.summary_hbox.pack_start(self.summary_total, False)
         self.summary_hbox.pack_end(self.summary_received, False)
-
+        
     def _setup_slaves(self):
         combo_items = [(text, value) 
                         for value, text in PurchaseOrder.statuses.items()]
@@ -111,6 +116,7 @@ class PurchaseApp(AppWindow):
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
         self.attach_slave("search_bar_holder", self.search_bar)
+        self.search_bar.set_focus()
 
     def _update_view(self):
         has_purchases = len(self.purchase_list) > 0
@@ -163,6 +169,7 @@ class PurchaseApp(AppWindow):
             self.purchase_list.append(obj)
         self.summary_total.update_total()
         self.summary_received.update_total()
+        self._select_first_item(self.purchase_list)
         self._update_view()
 
     def get_extra_query(self):
@@ -246,7 +253,7 @@ class PurchaseApp(AppWindow):
                     'than pending that will not be included.' 
                     % invalid_qty)
         title = _('Send order to supplier')
-        if not confirm_dialog(msg, title, ok_label="Confirm"):
+        if not confirm_dialog(msg, title, ok_label="C_onfirm"):
             return
         for order in valid_orders:
             order.confirm_order()

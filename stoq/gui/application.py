@@ -86,6 +86,11 @@ class AppWindow(BaseAppWindow):
             raise ValueError('Child classes must define an app_name '
                              'attribute')
         self.toplevel.set_title(self.get_title())
+        self.setup_focus()
+
+    def setup_focus(self):
+        """Define this method on child when it's needed."""
+        pass
 
     def on_StoreCookie__activate(self, action):
         self._store_cookie()

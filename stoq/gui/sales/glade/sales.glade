@@ -24,10 +24,9 @@
                 <child>
                     <object class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
-                        <property name="label" translatable="yes">_Clients</property>
+                        <property name="label" translatable="yes">Clients</property>
                         <property name="stock_id">gtk-no</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -42,6 +41,7 @@
                         <property name="name">CreditProvider</property>
                         <property name="label" translatable="yes">Find Credit Providers...</property>
                         <signal handler="_on_credit_provider_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -95,6 +95,7 @@
                 <child>
                     <object class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                     </object>
@@ -125,12 +126,13 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="TillMenu">
                         <property name="name">TillMenu</property>
-                        <property name="label" translatable="yes">_Sales</property>
+                        <property name="label" translatable="yes">S_ales</property>
                     </object>
                 </child>
                 <child>
@@ -144,7 +146,7 @@
                 <child>
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Help</property>
+                        <property name="label" translatable="yes">_Help</property>
                     </object>
                 </child>
                 <child>
@@ -158,7 +160,7 @@
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
-                        <property name="label" translatable="yes">User</property>
+                        <property name="label" translatable="yes">_User</property>
                     </object>
                 </child>
             </object>
@@ -264,7 +266,8 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Cancel Sale</property>
+                                                                        <property name="label" context="yes" translatable="yes">_Cancel Sale</property>
+                                                                        <property name="use_underline">True</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
@@ -279,7 +282,8 @@
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="installments_button">
-                                                <property name="label" context="yes" translatable="yes">Change Installments</property>
+                                                <property name="label" context="yes" translatable="yes">Change _Installments</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -288,7 +292,8 @@
                                         </child>
                                         <child>
                                             <widget class="GtkButton" id="details_button">
-                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                <property name="label" context="yes" translatable="yes">_Details</property>
+                                                <property name="use_underline">True</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>

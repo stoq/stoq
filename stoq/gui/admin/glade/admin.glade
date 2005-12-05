@@ -47,6 +47,7 @@
                         <property name="name">EmployeeRole</property>
                         <property name="label" translatable="yes">Find Employee Roles...</property>
                         <signal handler="_on_employee_role__action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;r</property>
                     </object>
                 </child>
                 <child>
@@ -54,6 +55,7 @@
                         <property name="name">EmployeeSearch</property>
                         <property name="label" translatable="yes">Find Employees...</property>
                         <signal handler="_on_employees_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -86,6 +88,7 @@
                 <child>
                     <object class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
@@ -115,7 +118,7 @@
                 <child>
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Search</property>
+                        <property name="label" translatable="yes">Sea_rch</property>
                     </object>
                 </child>
                 <child>
@@ -124,6 +127,7 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -131,11 +135,13 @@
                         <property name="name">UserProfile</property>
                         <property name="label" translatable="yes">Find User Profiles...</property>
                         <signal handler="_on_user_profiles_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;f</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
+                        <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -151,6 +157,7 @@
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">_Receive</property>
                         <property name="stock_id">gtk-redo</property>
+                        <property name="accelerator">&lt;control&gt;r</property>
                     </object>
                 </child>
                 <child>
@@ -245,7 +252,8 @@
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                                <property name="label" context="yes" translatable="yes">Add...</property>
+                                                                                <property name="label" context="yes" translatable="yes">A_dd...</property>
+                                                                                <property name="use_underline">True</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
