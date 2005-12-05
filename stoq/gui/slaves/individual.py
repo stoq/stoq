@@ -56,20 +56,26 @@ class IndividualDetailsSlave(BaseEditorSlave):
     model_type = Person.getAdapterClass(IIndividual)
     gladefile = 'IndividualDetailsSlave'
 
-    birth_loc_widgets = ('birth_loc_city',
-                         'birth_loc_country',
-                         'birth_loc_state')
+    birth_loc_widgets = (
+        'birth_loc_city',
+        'birth_loc_country',
+        'birth_loc_state'
+        )
 
-    proxy_widgets = ('birth_date',
-                     'mother_name',
-                     'father_name',
-                     'occupation',
-                     'spouse_name',
-                     'marital_status',
-                     'male_check',
-                     'female_check')
+    proxy_widgets = (
+        'birth_date',
+        'mother_name',
+        'father_name',
+        'occupation',
+        'spouse_name',
+        'marital_status',
+        )
 
-    widgets = (proxy_widgets + birth_loc_widgets) + ('spouse_lbl',)
+    widgets = (
+        'spouse_lbl',
+        'male_check',
+        'female_check'
+        ) + proxy_widgets + birth_loc_widgets
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]
