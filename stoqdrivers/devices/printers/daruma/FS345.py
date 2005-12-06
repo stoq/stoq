@@ -186,6 +186,7 @@ class FS345Printer(SerialBase):
     def needs_read_x(self, status=None):
         if not status:
             status = self._get_status()
+
         return not self.status_check(status, 6, 2)
     
     # Error handling
@@ -308,8 +309,6 @@ class FS345Printer(SerialBase):
     def coupon_add_payment(self, payment_method, value, description=''):
         self._check_status()
         self._verify_coupon_open()
-        if not payment_method in payment_methods:
-            raise TypeError("You need specify a valid payment method.")
 
         pm = payment_methods[payment_method]
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
@@ -361,9 +360,7 @@ class FS345Printer(SerialBase):
 
         LINE_LEN = 48
         msg_len = len(message)
-        if msg_len > LINE_LEN * 8:
-            raise TypeError("message too long")
-        elif msg_len > LINE_LEN:
+        if msg_len > LINE_LEN:
             l = []
             for i in range(0, msg_len, LINE_LEN):
                 l.append(message[i:i+LINE_LEN])
@@ -375,9 +372,10 @@ class FS345Printer(SerialBase):
         self.send_command(CMD_GET_X)
 
     def close_till(self):
-        if self._is_open(self._get_status()):
+        status = self._get_status()
+        if self._is_open(status):
             raise CouponOpenError("There is a coupon opened")
-        elif self.needs_read_x():
+        elif self.needs_read_x(status):
             raise PendingReadX("Pending read X")
 
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
