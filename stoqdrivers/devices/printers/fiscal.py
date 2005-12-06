@@ -67,8 +67,8 @@ class payment_method(number):
 class FiscalPrinter(BasePrinter):
     log_domain = 'fp'
 
-    def __init__(self, config_file=None):
-        BasePrinter.__init__(self, config_file)
+    def __init__(self, brand=None, model=None, device=None, config_file=None):
+        BasePrinter.__init__(self, brand, model, device, config_file)
         self.has_been_totalized = False
         self._capabilities = self._driver.get_capabilities()
 

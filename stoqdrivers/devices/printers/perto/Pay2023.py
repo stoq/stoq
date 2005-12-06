@@ -52,7 +52,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
 from stoqdrivers.devices.printers.capabilities import Capability
 
 
-class Pay2023Printer(SerialBase):
+class Pay2023(SerialBase):
 
     implements(IChequePrinter, ICouponPrinter)
 
@@ -173,7 +173,7 @@ class Pay2023Printer(SerialBase):
         desc_idx = desc.index(substr) + len(substr)
         desc = desc[desc_idx:]
         try:
-            exception = Pay2023Printer.errors_dict[code]
+            exception = Pay2023.errors_dict[code]
         except KeyError:
             raise DriverError("%d: %s" % (code, desc))
         raise exception(desc)
@@ -185,8 +185,8 @@ class Pay2023Printer(SerialBase):
         return 0
 
     def get_last_item_id(self):
-        name = "\"%s\"" % Pay2023Printer.CMD_GET_LAST_ITEM_ID
-        result = self._send_command(Pay2023Printer.CMD_GET_REGISTER_DATA,
+        name = "\"%s\"" % Pay2023.CMD_GET_LAST_ITEM_ID
+        result = self._send_command(Pay2023.CMD_GET_REGISTER_DATA,
                                     NomeInteiro=name)
         result = result[:-1]
         substr = "ValorInteiro"
@@ -201,7 +201,7 @@ class Pay2023Printer(SerialBase):
 
     def coupon_open(self, customer, address, document):
         try:
-            self.send_command(Pay2023Printer.CMD_COUPON_OPEN,
+            self.send_command(Pay2023.CMD_COUPON_OPEN,
                               EnderecoConsumidor="\"%s\"" % address[:80],
                               IdConsumidor="\"%s\"" % document[:29],
                               NomeConsumidor="\"%s\"" % customer[:30])
@@ -211,21 +211,21 @@ class Pay2023Printer(SerialBase):
     def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
                         discount, surcharge):        
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
-        self.send_command(Pay2023Printer.CMD_ADD_ITEM,
-                          CodAliquota=Pay2023Printer.taxcode_dict[taxcode],
+        self.send_command(Pay2023.CMD_ADD_ITEM,
+                          CodAliquota=Pay2023.taxcode_dict[taxcode],
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
-                          Unidade="\"%02s\"" % Pay2023Printer.unit_dict[unit],
+                          Unidade="\"%02s\"" % Pay2023.unit_dict[unit],
                           PrecoUnitario="%.04f" % price,
                           Quantidade="%.03f" % quantity)
 
         return self.get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
-        self.send_command(Pay2023Printer.CMD_CANCEL_ITEM, NumItem=item_id)
+        self.send_command(Pay2023.CMD_CANCEL_ITEM, NumItem=item_id)
 
     def coupon_cancel(self):
-        self.send_command(Pay2023Printer.CMD_COUPON_CANCEL)
+        self.send_command(Pay2023.CMD_COUPON_CANCEL)
 
     def coupon_totalize(self, discount, surcharge, taxcode):
         # The FISCnet protocol (the protocol used in this printer model)
@@ -233,55 +233,55 @@ class Pay2023Printer(SerialBase):
         # the discount/surcharge values and applied to the coupon.
         value = discount and (discount * -1) or surcharge
 
-        self.send_command(Pay2023Printer.CMD_ADD_COUPON_DIFFERENCE,
+        self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE,
                           Cancelar='f', ValorPercentual="%.02f" % value)
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = Pay2023Printer.payment_methods[payment_method]
-        self.send_command(Pay2023Printer.CMD_ADD_PAYMENT,
+        pm = Pay2023.payment_methods[payment_method]
+        self.send_command(Pay2023.CMD_ADD_PAYMENT,
                           CodMeioPagamento=pm, Valor="%.04f" % value,
                           TextoAdicional="\"%s\"" % description[:80])
         
     def coupon_close(self, message=''):
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
-        self.send_command(Pay2023Printer.CMD_COUPON_CLOSE,
+        self.send_command(Pay2023.CMD_COUPON_CLOSE,
                           TextoPromocional="\"%s\"" % message[:492])
 
     def summarize(self):
-        self.send_command(Pay2023Printer.CMD_READ_X)
+        self.send_command(Pay2023.CMD_READ_X)
 
     def close_till(self):
-        self.send_command(Pay2023Printer.CMD_CLOSE_TILL)
+        self.send_command(Pay2023.CMD_CLOSE_TILL)
 
     #
     # IChequePrinter implementation
     #
 
     def print_cheque(self, value, thirdparty, city, date=datetime.now()):
-        cheque_value_string_col1 = Pay2023Printer.CHEQUE_VALUE_STRING_COL1
-        cheque_value_string_col2 = Pay2023Printer.CHEQUE_VALUE_STRING_COL2
-        cheque_value_string_row1 = Pay2023Printer.CHEQUE_VALUE_STRING_ROW1
-        cheque_value_string_row2 = Pay2023Printer.CHEQUE_VALUE_STRING_ROW2
+        cheque_value_string_col1 = Pay2023.CHEQUE_VALUE_STRING_COL1
+        cheque_value_string_col2 = Pay2023.CHEQUE_VALUE_STRING_COL2
+        cheque_value_string_row1 = Pay2023.CHEQUE_VALUE_STRING_ROW1
+        cheque_value_string_row2 = Pay2023.CHEQUE_VALUE_STRING_ROW2
 
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
-        self.send_command(Pay2023Printer.CMD_PRINT_CHEQUE,
+        self.send_command(Pay2023.CMD_PRINT_CHEQUE,
                           Cidade="\"%s\"" % city[:27],
                           Data=date.strftime("#%d/%m/%Y#"),
                           Favorecido="\"%s\"" % thirdparty[:45],
-                          HPosAno=Pay2023Printer.CHEQUE_YEAR_COL,
-                          HPosCidade=Pay2023Printer.CHEQUE_CITY_COL,
-                          HPosDia=Pay2023Printer.CHEQUE_DAY_COL,
+                          HPosAno=Pay2023.CHEQUE_YEAR_COL,
+                          HPosCidade=Pay2023.CHEQUE_CITY_COL,
+                          HPosDia=Pay2023.CHEQUE_DAY_COL,
                           HPosExtensoLinha1=cheque_value_string_col1,
                           HPosExtensoLinha2=cheque_value_string_col2,
-                          HPosFavorecido=Pay2023Printer.CHEQUE_THIRDPARTY_COL,
-                          HPosMes=Pay2023Printer.CHEQUE_MONTH_COL,
-                          HPosValor=Pay2023Printer.CHEQUE_NUMERIC_VALUE_COL,
+                          HPosFavorecido=Pay2023.CHEQUE_THIRDPARTY_COL,
+                          HPosMes=Pay2023.CHEQUE_MONTH_COL,
+                          HPosValor=Pay2023.CHEQUE_NUMERIC_VALUE_COL,
                           Valor="%.04f" % value,
-                          VPosCidade=Pay2023Printer.CHEQUE_CITY_ROW,
+                          VPosCidade=Pay2023.CHEQUE_CITY_ROW,
                           VPosExtensoLinha1=cheque_value_string_row1,
                           VPosExtensoLinha2=cheque_value_string_row2,
-                          VPosFavorecido=Pay2023Printer.CHEQUE_THIRDPARTY_ROW,
-                          VPosValor=Pay2023Printer.CHEQUE_NUMERIC_VALUE_ROW)
+                          VPosFavorecido=Pay2023.CHEQUE_THIRDPARTY_ROW,
+                          VPosValor=Pay2023.CHEQUE_NUMERIC_VALUE_ROW)
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=48),

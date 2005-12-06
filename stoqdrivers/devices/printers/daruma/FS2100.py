@@ -31,12 +31,12 @@ stoqdrivers/devices/printers/daruma/FS2100.py:
 
 import operator
 
-from stoqdrivers.devices.printers.daruma.FS345 import FS345Printer
+from stoqdrivers.devices.printers.daruma.FS345 import FS345
 from stoqdrivers.constants import TAX_NONE, TAX_SUBSTITUTION
 
 CMD_ADD_ITEM = 201
 
-class FS2100Printer(FS345Printer):
+class FS2100(FS345):
 
     printer_name = "Daruma FS 2100"
 

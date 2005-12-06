@@ -42,8 +42,9 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 
 class BasePrinter(Logger):
-    def __init__(self, config_file=None):
+    def __init__(self, brand=None, model=None, device=None, config_file=None):
         Logger.__init__(self)
+        self.brand, self.model, self.device = brand, model, device
         self._load_configuration(config_file)
 
     def _load_configuration(self, config_file):
@@ -52,10 +53,12 @@ class BasePrinter(Logger):
         if not self.config.has_section("Printer"):
             raise ConfigError("There is no printer configured!")
 
-        self.brand = self.config.get_option("brand", "Printer")
+        self.brand = self.brand or self.config.get_option("brand", "Printer")
+        # TODO: The baudrate must be defined in the driver implementation,
+        # there is no reason for the user change it.
         self.baudrate = int(self.config.get_option("baudrate", "Printer"))
-        self.model = self.config.get_option("model", "Printer")
-        self.device = self.config.get_option("device", "Printer")
+        self.device = self.device or self.config.get_option("device", "Printer")
+        self.model = self.model or self.config.get_option("model", "Printer")
 
         self.debug(("Config data: brand=%s,device=%s,model=%s,baudrate=%s\n"
                     % (self.brand, self.device, self.model, self.baudrate)))
@@ -68,7 +71,7 @@ class BasePrinter(Logger):
                                  % (self.brand.capitalize(),
                                     self.model.upper(), reason)))
 
-        class_name = self.model + 'Printer'
+        class_name = self.model
 
         driver_class = getattr(module, class_name, None)
         if not driver_class:
@@ -82,6 +85,7 @@ class BasePrinter(Logger):
         if not (ICouponPrinter in driver_interfaces):
             raise TypeError("The driver %s doesn't implements a known "
                             "interface")
+
 
 def get_supported_printers():
     printers_dir = os.path.dirname(printers.__file__)
@@ -102,10 +106,10 @@ def get_supported_printers():
 
             model_name = model[:-3]
             try:
-                obj = namedAny(("stoqdrivers.devices.printers.%s.%s.%sPrinter"
+                obj = namedAny(("stoqdrivers.devices.printers.%s.%s.%s"
                                 % (brand, model_name, model_name)))
             except AttributeError:
-                raise ImportError("Can't find class %sPrinter for module %s"
+                raise ImportError("Can't find class %s for module %s"
                                   % (model_name, model_name))
             if not (IChequePrinter.implementedBy(obj) or
                     ICouponPrinter.implementedBy(obj)):

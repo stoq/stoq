@@ -546,7 +546,7 @@ payment_methods = {
 }
 
 
-class MP25Printer(SerialBase):
+class MP25(SerialBase):
 
     implements(ICouponPrinter)
 

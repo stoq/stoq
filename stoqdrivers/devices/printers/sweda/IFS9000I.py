@@ -54,7 +54,7 @@ payment_methods = {
     CHEQUE_PM : "02"
 }
 
-class IFS9000IPrinter(SerialBase):
+class IFS9000I(SerialBase):
 
     implements(ICouponPrinter)
 

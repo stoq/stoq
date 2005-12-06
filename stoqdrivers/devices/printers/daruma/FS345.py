@@ -117,7 +117,7 @@ payment_methods = {
 }
 
 
-class FS345Printer(SerialBase):
+class FS345(SerialBase):
     log_domain = 'fs345'
 
     implements(ICouponPrinter)
@@ -126,7 +126,7 @@ class FS345Printer(SerialBase):
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
-        retval = super(FS345Printer, self).writeline(raw)
+        retval = super(FS345, self).writeline(raw)
         if retval.startswith(':E'):
             self.handle_error(retval, raw)
         return retval[1:]

@@ -204,7 +204,7 @@ class CouponItem:
 # The driver implementation
 #
 
-class EP375Printer(SerialBase):
+class EP375(SerialBase):
 
     implements(ICouponPrinter, IChequePrinter)
 
@@ -446,8 +446,8 @@ class EP375Printer(SerialBase):
                 raise ValueError("the item code can contains only numbers "
                                  "if the product is using ICMS")
 
-        taxcode = EP375Printer.tax_codes[taxcode]
-        unit = EP375Printer.unit_indicators[unit]
+        taxcode = EP375.tax_codes[taxcode]
+        unit = EP375.unit_indicators[unit]
 
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)
@@ -498,7 +498,7 @@ class EP375Printer(SerialBase):
             return 0.0
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = EP375Printer.payment_methods[payment_method]
+        pm = EP375.payment_methods[payment_method]
         value = "%014d" % int(value * 1e2)
 
         if ((not self.get_status().has_been_totalized())
@@ -514,7 +514,7 @@ class EP375Printer(SerialBase):
                               type)
         else:
             self.send_command(self.CMD_ADD_PAYMENT,
-                              EP375Printer.payment_methods[payment_method],
+                              EP375.payment_methods[payment_method],
                               value)
 
         return self.get_coupon_remaining_value()
@@ -582,16 +582,16 @@ class EP375Printer(SerialBase):
         city = "%-20s" % city[:20]
         date = date.strftime("%d%m%y")
 
-        positions = [EP375Printer.CHEQUE_NUMERIC_VALUE_ROW,
-                     EP375Printer.CHEQUE_NUMERIC_VALUE_COL,
-                     EP375Printer.CHEQUE_VALUE_STRING_ROW1,
-                     EP375Printer.CHEQUE_VALUE_STRING_COL1,
-                     EP375Printer.CHEQUE_VALUE_STRING_ROW2,
-                     EP375Printer.CHEQUE_VALUE_STRING_COL2,
-                     EP375Printer.CHEQUE_THIRDPARTY_ROW,
-                     EP375Printer.CHEQUE_THIRDPARTY_COL,
-                     EP375Printer.CHEQUE_CITY_ROW,
-                     EP375Printer.CHEQUE_CITY_COL]
+        positions = [EP375.CHEQUE_NUMERIC_VALUE_ROW,
+                     EP375.CHEQUE_NUMERIC_VALUE_COL,
+                     EP375.CHEQUE_VALUE_STRING_ROW1,
+                     EP375.CHEQUE_VALUE_STRING_COL1,
+                     EP375.CHEQUE_VALUE_STRING_ROW2,
+                     EP375.CHEQUE_VALUE_STRING_COL2,
+                     EP375.CHEQUE_THIRDPARTY_ROW,
+                     EP375.CHEQUE_THIRDPARTY_COL,
+                     EP375.CHEQUE_CITY_ROW,
+                     EP375.CHEQUE_CITY_COL]
         positions_data = "".join(["%02d" % pos for pos in positions])
 
         self.send_cheque_command(self.CMD_PRINT_CHEQUE, positions_data, value,
