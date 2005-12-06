@@ -543,7 +543,7 @@ class EP375Printer(SerialBase):
         # more than 100 items right now, so I just mark a FIXME here, this
         # must be fixed in the future.
 
-        return dict(item_code=Capability(max_len=6),
+        return dict(item_code=Capability(min_len=3, max_len=6),
                     item_id=Capability(digits=3),
                     items_quantity=Capability(min_size=1, digits=3, decimals=3),
                     item_price=Capability(digits=6, decimals=3),
