@@ -64,15 +64,17 @@ class Capability:
     to validate a value with base in the capability limits.
     """
 
-    @argcheck(number, number, number, number, number)
-    def __init__(self, max_len=None, max_size=None, min_size=None,
-                 digits=None, decimals=None):
+    @argcheck(int, int, number, number, int, number)
+    def __init__(self, min_len=None, max_len=None, max_size=None,
+                 min_size=None, digits=None, decimals=None):
         """ Creates a new driver capability.  A driver capability can be
         represented basically by the max length of a string, the max digits
         number of a value or its minimum/maximum size.  With an instance of
         Capability you can check if a value is acceptable by the driver
         through the check_value method.  The Capability arguments are:
 
+        @param min_len:    The minimum length of a string
+        @type min_len:     number
         @param max_len:    The max length of a string
         @type max_len:     number
         @param max_size    The maximum size for a value
@@ -92,8 +94,12 @@ class Capability:
         also to verify the value type in the 'check_value' method.
         """
 
-        if max_len is not None and (max_size or min_size):
-            raise ValueError("max_len can't be used with max_size nor min_size")
+        if max_len is not None and (max_size is not None
+                                    and min_size is not None
+                                    and digits is not None
+                                    and decimals):
+            raise ValueError("max_len cannot be used together with max_size, "
+                             "min_size, digits or decimals")
         if digits is not None:
             if max_size is not None:
                 raise ValueError("digits can't be used with max_size")
@@ -103,6 +109,7 @@ class Capability:
                 decimal_part = 0
             self.max_size = ((10.0 ** digits) - 1) + decimal_part
 
+        self.min_len = min_len
         self.max_len = max_len
         self.min_size = min_size or 0
         self.max_size = max_size
@@ -116,6 +123,9 @@ class Capability:
             if len(value) > self.max_len:
                 raise CapabilityError("the value can't be greater than %d "
                                       "characters" % self.max_len)
+            elif len(value) < self.min_len:
+                raise CapabilityError("the value can't be less than %d "
+                                      "characters" % self.min_len)
             return
         elif not (self.max_size and self.min_size):
             return
