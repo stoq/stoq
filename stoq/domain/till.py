@@ -79,7 +79,7 @@ class Till(Domain):
     balance_sent = FloatCol(default=None)
     initial_cash_amount = FloatCol(default=0.0)
     final_cash_amount = FloatCol(default=None)
-    opening_date = DateTimeCol(default=datetime.datetime.now())
+    opening_date = DateTimeCol(default=datetime.datetime.now)
     closing_date = DateTimeCol(default=None)
 
     branch = ForeignKey('PersonAdaptToBranch')

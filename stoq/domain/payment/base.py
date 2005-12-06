@@ -224,7 +224,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     implements(IPaymentGroup, IContainer)
 
     status = IntCol(default=STATUS_OPEN)
-    open_date = DateTimeCol(default=datetime.datetime.now())
+    open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
     installments_number = IntCol(default=1)
@@ -387,5 +387,5 @@ Payment.registerFacet(PaymentAdaptToOutPayment)
 class CashAdvanceInfo(Domain):
     employee = ForeignKey("PersonAdaptToEmployee")
     payment = ForeignKey("Payment")
-    open_date = DateTimeCol(default=datetime.datetime.now())
+    open_date = DateTimeCol(default=datetime.datetime.now)
                 

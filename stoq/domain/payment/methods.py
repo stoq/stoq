@@ -84,7 +84,7 @@ class BillCheckGroupData(Domain):
                              L{stoq.lib.defaults} path.
     """
     installments_number = IntCol(default=1)
-    first_duedate = DateTimeCol(default=datetime.now())
+    first_duedate = DateTimeCol(default=datetime.now)
     interest = FloatCol(default=0.0)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=1)

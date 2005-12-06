@@ -83,7 +83,7 @@ class Sale(Domain):
                 STATUS_REVIEWING:       _("Reviewing")}
 
     order_number = StringCol(default='')
-    open_date = DateTimeCol(default=datetime.now())
+    open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
     discount_value = FloatCol(default=0.0)

@@ -734,7 +734,7 @@ class PersonAdaptToTransporter(ModelAdapter):
     implements(ITransporter, IActive)
 
     is_active = BoolCol(default=True)
-    open_contract_date = DateTimeCol(default=datetime.datetime.now())
+    open_contract_date = DateTimeCol(default=datetime.datetime.now)
     freight_percentage = FloatCol(default=None)
 
     #
