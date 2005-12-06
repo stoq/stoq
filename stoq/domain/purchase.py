@@ -116,7 +116,7 @@ class PurchaseOrder(Domain):
     status = IntCol(default=ORDER_QUOTING)
     # Field order_number must be unique. Waiting for bug 2214
     order_number = IntCol(default=None)
-    open_date = DateTimeCol(default=datetime.datetime.now())
+    open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=None)
     expected_pay_date = DateTimeCol(default=None)

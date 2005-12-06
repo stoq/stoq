@@ -356,9 +356,9 @@ class InheritableModelAdapter(InheritableModel, Adapter):
 
 for klass in (InheritableModel, Domain, ModelAdapter):
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
-                                        default=datetime.datetime.now()))
+                                        default=datetime.datetime.now))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
-                                        default=datetime.datetime.now()))
+                                        default=datetime.datetime.now))
     klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                                     forceDBName=True))
     klass.sqlmeta.cacheValues = False
