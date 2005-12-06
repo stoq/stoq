@@ -47,7 +47,8 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     ReadXError, OutofPaperError,
                                     CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ReduceZError,
-                                    CouponOpenError, InvalidState)
+                                    CouponOpenError, InvalidState,
+                                    PendingReadX)
 from stoqdrivers.devices.printers.capabilities import Capability
 
 
@@ -87,7 +88,7 @@ class Pay2023Printer(SerialBase):
                    11002: CommandParametersError,
                    11006: CommandError,
                    11007: InvalidState,
-                   15007: ReduceZError,
+                   15007: PendingReadX,
                    15008: ReadXError,
                    15011: OutofPaperError}
 
