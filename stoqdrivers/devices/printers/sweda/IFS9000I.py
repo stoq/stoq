@@ -51,7 +51,8 @@ from stoqdrivers.devices.printers.capabilities import Capability
 
 payment_methods = {
     MONEY_PM : "01",
-    CHEQUE_PM : "02"
+    # FIXME: This value will changed after bug #2246 is fixed
+    CHEQUE_PM : "01" 
 }
 
 class IFS9000I(SerialBase):
