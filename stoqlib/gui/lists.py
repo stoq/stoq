@@ -36,19 +36,15 @@ from kiwi.utils import gsignal
 
 from stoqlib.gui.dialogs import run_dialog, confirm_dialog
 from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
+from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.search import BaseListSlave
 from stoqlib.exceptions import SelectionError
 
 _ = gettext.gettext
 
 class AdditionListSlave(SlaveDelegate):
-    """ A slave that offers a simple list and its management. 
-    
-    editor_class    = represents the window that is going to be open when user 
-                      clicks on add_button or edit_button.
-    columns         = columns definition for AdditionListSlave klist widget.
-    klist_objects   = list of inicial objects to sendo to AdditionListSlave
-                      klist widget.
+    """
+    A slave that offers a simple list and its management. 
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
@@ -62,34 +58,34 @@ class AdditionListSlave(SlaveDelegate):
     gsignal('before-delete-items', object)
     gsignal('after-delete-items')
 
-    def __init__(self, conn, editor_class, columns, klist_objects=None):
+    def __init__(self, conn, editor_class, columns, klist_objects=[]):
+        """
+        @param conn:          a connection
+        @param editor_class:  the window that is going to be open when user 
+          clicks on add_button or edit_button.
+        @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
+        @param columns:       columns definitions
+        @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
+        @param klist_objects: initial objects to insert into the list
+        """
+        if not issubclass(editor_class, BaseEditor):
+            raise TypeError("editor_class must be a BaseEditor subclass")
+        
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self.conn = conn
-        self.editor_class = editor_class
+        self._editor_class = editor_class
         self._editor_kwargs = dict()
-        self.columns = columns
-        self._setup_list()
-        if klist_objects:
-            self.klist.add_list(klist_objects)
-        self._update_widgets()
+        self._columns = columns
+        self._setup_klist(klist_objects)
+        self._update_sensitivity()
 
-    def register_editor_kwargs(self, **kwargs):
-        self._editor_kwargs = kwargs
-
-    def _setup_list(self):
-        self.klist.set_columns(self.columns)
+    def _setup_klist(self, klist_objects):
+        self.klist.set_columns(self._columns)
         self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.klist.add_list(klist_objects)
 
-    def get_selection(self):
-        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            return self.klist.get_selected_rows()
-        selection = self.klist.get_selected()
-        if not selection:
-            return []
-        return [selection]
-
-    def _update_widgets(self, *args):
+    def _update_sensitivity(self, *args):
         can_delete = can_edit = True
         objs = self.get_selection()
         if not objs:
@@ -101,9 +97,9 @@ class AdditionListSlave(SlaveDelegate):
         self.edit_button.set_sensitive(can_edit)
         self.delete_button.set_sensitive(can_delete)
 
-    def run(self, model=None):
+    def _run(self, model=None):
         edit_mode = model
-        model = run_dialog(self.editor_class, None, conn=self.conn,
+        model = run_dialog(self._editor_class, None, conn=self.conn,
                            model=model, **self._editor_kwargs)
         if not model:
             return
@@ -118,9 +114,9 @@ class AdditionListSlave(SlaveDelegate):
         # need to unselect everything before select the new instance.
         self.klist.unselect_all()
         self.klist.select(model)
-        self._update_widgets()
+        self._update_sensitivity()
 
-    def edit(self):
+    def _edit(self):
         objs = self.get_selection()
         qty = len(objs)
         if qty != 1:
@@ -128,38 +124,9 @@ class AdditionListSlave(SlaveDelegate):
                    "\nThere are currently %d items selected")
             raise SelectionError(msg % qty)
         model = objs[0]
-        self.run(model)
+        self._run(model)
 
-    #
-    # Public API
-    #
-
-    def hide_add_button(self):
-        self.add_button.hide()
-
-    def hide_edit_button(self):
-        self.edit_button.hide()
-
-    def hide_del_button(self):
-        self.del_button.hide()
-
-    #
-    # Kiwi handlers
-    #
-
-    def on_klist__double_click(self, *args):
-        self.edit()
-
-    def on_klist__selection_changed(self, *args):
-        self._update_widgets()
-
-    def on_add_button__clicked(self, *args):
-        self.run()
-    
-    def on_edit_button__clicked(self, *args):
-        self.edit()
-
-    def on_delete_button__clicked(self, *args):
+    def _clear(self):
         objs = self.get_selection()
         qty = len(objs)
         if qty < 1:
@@ -176,13 +143,57 @@ class AdditionListSlave(SlaveDelegate):
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):
             self.klist.clear()
-
         else:
             for obj in objs:
                 self.klist.remove(obj)
         self.klist.unselect_all()
-        self._update_widgets()
+        self._update_sensitivity()
         self.emit('after-delete-items')
+
+    #
+    # Public API
+    #
+
+    def register_editor_kwargs(self, **kwargs):
+        self._editor_kwargs = kwargs
+
+    def get_selection(self):
+        # XXX: add get_selected_rows and raise exceptions if not in the
+        #      right mode
+        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            return self.klist.get_selected_rows()
+        selection = self.klist.get_selected()
+        if not selection:
+            return []
+        return [selection]
+
+    def hide_add_button(self):
+        self.add_button.hide()
+
+    def hide_edit_button(self):
+        self.edit_button.hide()
+
+    def hide_del_button(self):
+        self.del_button.hide()
+
+    #
+    # Signal handlers
+    #
+
+    def on_klist__double_click(self, *args):
+        self._edit()
+
+    def on_klist__selection_changed(self, *args):
+        self._update_sensitivity()
+
+    def on_add_button__clicked(self, *args):
+        self._run()
+    
+    def on_edit_button__clicked(self, *args):
+        self._edit()
+
+    def on_delete_button__clicked(self, *args):
+        self._clear()
 
 
 class AdditionListDialog(BasicPluggableDialog):
