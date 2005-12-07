@@ -114,12 +114,11 @@ class EmployeeSearch(BasePersonSearch):
 
     def get_extra_query(self):
         employee_table = Person.getAdapterClass(IEmployee)
-        q1 = employee_table.q._originalID == Person.q.id
+        query = employee_table.q._originalID == Person.q.id
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
-            q2 = employee_table.q.status == status
-            return AND(q1, q2)
-        return q1
+            query = AND(query, employee_table.q.status == status)
+        return query
 
     def get_query_args(self):
         return dict(join=LEFTJOINOn(self.table, EmployeeRole,
@@ -214,12 +213,11 @@ class CreditProviderSearch(BasePersonSearch):
 
     def get_extra_query(self):
         provider_table = self.table.getAdapterClass(ICreditProvider)
-        q1 = self.table.q.id == provider_table.q._originalID
+        query = self.table.q.id == provider_table.q._originalID
         status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return q1
-        q2 = provider_table.q.provider_type == status
-        return AND(q1, q2)
+        if status != ALL_ITEMS_INDEX:
+            query = AND(query, provider_table.q.provider_type == status)
+        return query
     
 
 class ClientSearch(BasePersonSearch):
@@ -261,12 +259,11 @@ class ClientSearch(BasePersonSearch):
 
     def get_extra_query(self):
         client_table = Person.getAdapterClass(IClient)
-        q1 = Person.q.id == client_table.q._originalID
+        query = Person.q.id == client_table.q._originalID
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
-            q2 = client_table.q.status == status
-            return AND(q1, q2)
-        return q1
+            query = AND(query, client_table.q.status == status)
+        return query
 
     def get_query_args(self):
         individual_table = Person.getAdapterClass(IIndividual)
@@ -308,9 +305,8 @@ class TransporterSearch(BasePersonSearch):
 
     def get_extra_query(self):
         transporter_table = self.table.getAdapterClass(ITransporter)
-        q1 = self.table.q.id == transporter_table.q._originalID
+        query = self.table.q.id == transporter_table.q._originalID
         status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return q1
-        q2 = transporter_table.q.is_active == status
-        return AND(q1, q2)
+        if status != ALL_ITEMS_INDEX:
+            query = AND(query, transporter_table.q.is_active == status)
+        return query
