@@ -133,7 +133,9 @@ class EmployeeRoleSearch(SearchEditor):
     size = (425, 390)
 
     def __init__(self):
-        SearchEditor.__init__(self, self.table, self.editor_class)
+        SearchEditor.__init__(self,
+                              EmployeeRoleSearch.table,
+                              EmployeeRoleSearch.editor_class)
         self.set_searchbar_labels(_('Role Matching'))
         self.set_result_strings(_('role'), _('roles'))
         
