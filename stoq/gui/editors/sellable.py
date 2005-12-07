@@ -37,6 +37,7 @@ from stoqlib.gui.dialogs import run_dialog
 
 from stoq.domain.sellable import SellableCategory, AbstractSellable
 from stoq.domain.interfaces import ISellable, IStorable
+from stoq.lib.runtime import new_transaction
 
 
 _ = gettext.gettext
@@ -162,6 +163,7 @@ class SellableEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
+        self._original_code = self.sellable_proxy.model.code
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
@@ -212,3 +214,19 @@ class SellableEditor(BaseEditor):
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()
+
+    def validate_confirm(self, *args):
+        code = self.code.get_text()
+        if self.edit_mode and code == self._original_code:
+            return True
+        conn = new_transaction() 
+        query = AbstractSellable.q.code == code
+        qty = AbstractSellable.select(query, connection=conn).count()
+        if qty:
+            msg = _('This code already exists!')
+            self.code.set_invalid(msg)
+            value_ok = False
+        else:
+            value_ok = True
+        conn._connection.close()
+        return value_ok
