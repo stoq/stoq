@@ -19,9 +19,6 @@
 # USA.
 #
 
-import glob
-import os
-
 from stoq.lib.applist import get_application_names
 
 def main(args):
