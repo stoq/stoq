@@ -96,5 +96,3 @@ class ServiceEditor(SellableEditor):
         model.addFacet(ISellable, code='', description='', price=0.0, 
                        connection=conn)
         return model
-
-    

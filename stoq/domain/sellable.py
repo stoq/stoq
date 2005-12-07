@@ -37,6 +37,7 @@ from zope.interface import implements
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 
 from stoq.lib.validators import is_date_in_interval, get_formatted_price
+from stoq.lib.runtime import get_connection
 from stoq.lib.parameters import sysparam
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.domain.base import (Domain, InheritableModelAdapter,
@@ -233,6 +234,14 @@ class AbstractSellable(InheritableModelAdapter):
             raise DatabaseInconsistency('Invalid state for product got '
                                         '%d' % self.state)
         return self.states[self.state]
+
+    def _set_code(self, code):
+        conn = get_connection()
+        query = AbstractSellable.q.code == code
+        # FIXME We should raise a proper stoqlib exception here if we find
+        # an existent code. Waiting for kiwi support 
+        if not AbstractSellable.select(query, connection=conn).count():
+            self._SO_set_code(code)
 
     @classmethod
     def get_available_sellables_query(cls, conn):
