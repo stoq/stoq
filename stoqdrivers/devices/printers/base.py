@@ -54,14 +54,8 @@ class BasePrinter(Logger):
             raise ConfigError("There is no printer configured!")
 
         self.brand = self.brand or self.config.get_option("brand", "Printer")
-        # TODO: The baudrate must be defined in the driver implementation,
-        # there is no reason for the user change it.
-        self.baudrate = int(self.config.get_option("baudrate", "Printer"))
         self.device = self.device or self.config.get_option("device", "Printer")
         self.model = self.model or self.config.get_option("model", "Printer")
-
-        self.debug(("Config data: brand=%s,device=%s,model=%s,baudrate=%s\n"
-                    % (self.brand, self.device, self.model, self.baudrate)))
 
         name = 'stoqdrivers.devices.printers.%s.%s' % (self.brand, self.model)
         try:
@@ -78,8 +72,11 @@ class BasePrinter(Logger):
             raise CriticalError(("Printer driver %s needs a class called %s"
                                  % (name, class_name)))
 
-        self._driver = driver_class(device=self.device,
-                                    baudrate=self.baudrate)
+        self._driver = driver_class(device=self.device)
+
+        self.debug(("Config data: brand=%s,device=%s,model=%s,baudrate=%s\n"
+                    % (self.brand, self.device, self.model,
+                       self._driver.getBaudrate())))
 
         driver_interfaces = providedBy(self._driver)
         if not (ICouponPrinter in driver_interfaces):
