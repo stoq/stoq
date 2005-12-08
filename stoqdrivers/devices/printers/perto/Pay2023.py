@@ -232,14 +232,15 @@ class Pay2023(SerialBase):
         # doesn't have a command to totalize the coupon, so we just get
         # the discount/surcharge values and applied to the coupon.
         value = discount and (discount * -1) or surcharge
-
-        self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE,
-                          Cancelar='f', ValorPercentual="%.02f" % value)
+        if value:
+            self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE, Cancelar='f',
+                              ValorPercentual="%.02f" % value)
 
     def coupon_add_payment(self, payment_method, value, description=''):
+        value = str(value).replace('.', ',')
         pm = Pay2023.payment_methods[payment_method]
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
-                          CodMeioPagamento=pm, Valor="%.04f" % value,
+                          CodMeioPagamento=pm, Valor=value,
                           TextoAdicional="\"%s\"" % description[:80])
         
     def coupon_close(self, message=''):
