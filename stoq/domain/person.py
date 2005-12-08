@@ -349,7 +349,7 @@ class PersonAdaptToIndividual(ModelAdapter):
         return [(self.marital_statuses[i], i) 
                 for i in self.marital_statuses.keys()]
                     
-Person.registerFacet(PersonAdaptToIndividual)
+Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
                     
 class PersonAdaptToCompany(ModelAdapter):
@@ -369,7 +369,7 @@ class PersonAdaptToCompany(ModelAdapter):
     fancy_name = StringCol(default='')
     state_registry = StringCol(default='')
                     
-Person.registerFacet(PersonAdaptToCompany)
+Person.registerFacet(PersonAdaptToCompany, ICompany)
 
 
 class PersonAdaptToClient(ModelAdapter):
@@ -426,7 +426,7 @@ class PersonAdaptToClient(ModelAdapter):
             query = AND(query, extra_query)
         return cls.select(query, connection=conn)
                     
-Person.registerFacet(PersonAdaptToClient)
+Person.registerFacet(PersonAdaptToClient, IClient)
 
 
 class PersonAdaptToSupplier(ModelAdapter):
@@ -458,7 +458,7 @@ class PersonAdaptToSupplier(ModelAdapter):
         query = cls.q.status == cls.STATUS_ACTIVE
         return cls.select(query, connection=conn)
                     
-Person.registerFacet(PersonAdaptToSupplier)
+Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
 
 class PersonAdaptToEmployee(ModelAdapter):
@@ -497,7 +497,7 @@ class PersonAdaptToEmployee(ModelAdapter):
                                         'got %d' % self.status)
         return self.statuses[self.status]
                     
-Person.registerFacet(PersonAdaptToEmployee)
+Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 
 class PersonAdaptToUser(ModelAdapter):
@@ -532,7 +532,7 @@ class PersonAdaptToUser(ModelAdapter):
             return _('Active')
         return _('Inactive')
                     
-Person.registerFacet(PersonAdaptToUser)
+Person.registerFacet(PersonAdaptToUser, IUser)
 
 
 class PersonAdaptToBranch(ModelAdapter):
@@ -579,7 +579,7 @@ class PersonAdaptToBranch(ModelAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
                     
-Person.registerFacet(PersonAdaptToBranch)
+Person.registerFacet(PersonAdaptToBranch, IBranch)
 
 
 class PersonAdaptToBankBranch(ModelAdapter):
@@ -602,7 +602,7 @@ class PersonAdaptToBankBranch(ModelAdapter):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
 
-Person.registerFacet(PersonAdaptToBankBranch)
+Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
 
 class PersonAdaptToCreditProvider(ModelAdapter):
@@ -672,7 +672,7 @@ class PersonAdaptToCreditProvider(ModelAdapter):
             query = q1
         return cls.select(query, connection=conn)
 
-Person.registerFacet(PersonAdaptToCreditProvider)
+Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
 
 class PersonAdaptToSalesPerson(ModelAdapter):
@@ -724,7 +724,7 @@ class PersonAdaptToSalesPerson(ModelAdapter):
             return _('Active')
         return _('Inactive')
                     
-Person.registerFacet(PersonAdaptToSalesPerson)
+Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 
 class PersonAdaptToTransporter(ModelAdapter):
@@ -763,7 +763,7 @@ class PersonAdaptToTransporter(ModelAdapter):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
 
-Person.registerFacet(PersonAdaptToTransporter)
+Person.registerFacet(PersonAdaptToTransporter, ITransporter)
 
 class LoginInfo:
     """ This class is used by password editor only for validation of the 

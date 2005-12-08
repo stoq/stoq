@@ -65,7 +65,8 @@ class POAdaptToPaymentDevolution(ModelAdapter):
     def get_devolution_date(self):
         return self.get_adapted().operation_date
 
-PaymentOperation.registerFacet(POAdaptToPaymentDevolution)
+PaymentOperation.registerFacet(POAdaptToPaymentDevolution,
+                               IPaymentDevolution)
 
 
 class POAdaptToPaymentDeposit(ModelAdapter):
@@ -75,4 +76,5 @@ class POAdaptToPaymentDeposit(ModelAdapter):
     def get_deposit_date(self):
         return self.get_adapted().operation_date
 
-PaymentOperation.registerFacet(POAdaptToPaymentDeposit)
+PaymentOperation.registerFacet(POAdaptToPaymentDeposit,
+                               IPaymentDeposit)

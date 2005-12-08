@@ -300,4 +300,4 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
                                  self.intervals, total)
 
         
-PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup)
+PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)

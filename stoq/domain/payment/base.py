@@ -369,7 +369,7 @@ class PaymentAdaptToInPayment(ModelAdapter):
         payment.pay()
         payment.group.update_thirdparty_status()
 
-Payment.registerFacet(PaymentAdaptToInPayment)
+Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
 
 
 class PaymentAdaptToOutPayment(ModelAdapter):
@@ -382,7 +382,7 @@ class PaymentAdaptToOutPayment(ModelAdapter):
             raise ValueError("This payment is already paid.")
         payment.pay()
 
-Payment.registerFacet(PaymentAdaptToOutPayment)
+Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 
 class CashAdvanceInfo(Domain):
     employee = ForeignKey("PersonAdaptToEmployee")
