@@ -32,7 +32,7 @@ stoq/tests/domain/runtests.py:
 import os
 import sys
 import doctest
-import subprocess
+import py 
 
 from stoq.examples.createall import create
 from stoq.lib.admin import setup_tables, ensure_admin_user
@@ -51,7 +51,6 @@ ensure_admin_user("Superuser", "administrator", "")
 
 if WITH_EXAMPLES:
     create()
-
 if VERBOSE:
     print_immediately('Performing domain module tests... ')
 domain_tests_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
@@ -66,7 +65,6 @@ for doc_file in doc_files:
 if VERBOSE:
     print_immediately('done')
 
-pytest_args = ['py.test']
-if VERBOSE:
-    pytest_args.append('-v')
-subprocess.call(pytest_args) 
+if WITH_EXAMPLES:
+    sys.argv.remove('-e')
+py.test.cmdline.main()
