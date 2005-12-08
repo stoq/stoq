@@ -21,7 +21,6 @@ Stoq has the following dependencies:
 
 Python 2.4 or higher
 PyGTK 2.8.1 or higher
-Twisted 2.0
 PostgresSQL 7.4.7
 SQLObject 0.7
 Gazpacho 0.6.2 
