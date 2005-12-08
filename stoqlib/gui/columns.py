@@ -48,17 +48,38 @@ class FacetColumn(Column):
         return self._facet
 
 class ForeignKeyColumn(Column):
+    """
+    ForeignKeyColumn is a special column which is normally used together
+    with a foreign key, for an sqlobject table.
+    """
     def __init__(self, table, *args, **kwargs):
-        if not 'obj_field' in kwargs:
-            raise TypeError('ForeigKeyColumn needs an obj_field argument')
- 
+        """
+        Need an obj_field or adapted argument.
+        See L{kiwi.ui.widgets.list.Column} for other arguments
+        @keyword obj_field: attribute name or None
+        @keyword adapted: if the attribute should be adapted or not, in
+          practice this means the original object will be fetched.
+        """
+        if not 'obj_field' in kwargs and not 'adapted' in kwargs:
+            raise TypeError(
+                'ForeigKeyColumn needs an obj_field or adapted argument')
+        
         self._table = table
-        self._obj_field = kwargs.pop('obj_field')
+        self._obj_field = kwargs.pop('obj_field', None)
+        self._adapted = kwargs.pop('adapted', False)
         Column.__init__(self, *args, **kwargs)
  
     def get_attribute(self, instance, name, default=None):
-        attr = '%s.%s' % (self._obj_field, name)
-        return kgetattr(instance, attr, default)
+        if self._obj_field:
+            value = kgetattr(instance, self._obj_field, default)
+            if value is None:
+                return
+        else:
+            value = instance
+
+        if self._adapted:
+            value = value.get_adapted()
+        return kgetattr(value, name, default)
 
 class AccessorColumn(Column):
     def __init__(self, attribute, accessor, *args, **kwargs):
