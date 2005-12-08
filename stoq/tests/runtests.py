@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s): Evandro Vale Miquelito    <evandro@async.com.br>
+##            Rudá Porto Filgueiras     <rudazz@gmail.com>
 ##
 """
 stoq/tests/domain/runtests.py:
