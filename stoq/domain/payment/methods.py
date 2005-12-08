@@ -298,7 +298,7 @@ class PMAdaptToMoneyPM(PaymentMethodAdapter):
         return payment
 
     def setup_outpayments(self, total, group, installments_number):
-        total = abs(total) * -1
+        total = - abs(total)
         payment = self._get_new_payment(total, group, installments_number)
         conn = self.get_connection()
         payment.addFacet(IOutPayment, connection=conn)
@@ -463,7 +463,7 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     #
 
     def get_check_data_by_payment(self, payment):
-        """Get an existent CheckData instance from a payment object."""
+        """Get an existing CheckData instance from a payment object."""
         conn = self.get_connection()
         data = CheckData.selectBy(payment=payment, 
                                   connection=conn)

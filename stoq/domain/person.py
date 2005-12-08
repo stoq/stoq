@@ -69,7 +69,7 @@ class EmployeeRole(Domain):
         conn = get_connection()
         query = EmployeeRole.q.name == value
         # FIXME We should raise a proper stoqlib exception here if we find
-        # an existent role. Waiting for kiwi support 
+        # an existing role. Waiting for kiwi support
         if not EmployeeRole.select(query, connection=conn).count():
             self._SO_set_name(value)
 
