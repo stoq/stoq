@@ -266,7 +266,7 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         return payment_group.get_thirdparty()
 
 
-class PMAdaptToMoney(PaymentMethodAdapter):
+class PMAdaptToMoneyPM(PaymentMethodAdapter):
     implements(IMoneyPM, IActive)
 
     description = _('Money')
@@ -308,7 +308,7 @@ class PMAdaptToMoney(PaymentMethodAdapter):
         conn = self.get_connection()
         payment.addFacet(IInPayment, connection=conn)
 
-PaymentMethod.registerFacet(PMAdaptToMoney)
+PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 
 
 class AbstractCheckBillAdapter(PaymentMethodAdapter):
@@ -453,7 +453,7 @@ class AbstractCheckBillAdapter(PaymentMethodAdapter):
                                         count)
 
 
-class PMAdaptToCheck(AbstractCheckBillAdapter):
+class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     implements(ICheckPM, IActive)
 
     description = _('Check')
@@ -513,10 +513,10 @@ class PMAdaptToCheck(AbstractCheckBillAdapter):
         BankAccount.delete(bank_data.id, connection=conn)
         Payment.delete(payment.id, connection=conn)
 
-PaymentMethod.registerFacet(PMAdaptToCheck)
+PaymentMethod.registerFacet(PMAdaptToCheckPM, ICheckPM)
 
 
-class PMAdaptToBill(AbstractCheckBillAdapter):
+class PMAdaptToBillPM(AbstractCheckBillAdapter):
     implements(IBillPM, IActive)
 
     description = _('Bill')
@@ -528,10 +528,10 @@ class PMAdaptToBill(AbstractCheckBillAdapter):
     def get_available_bill_accounts(self):
         raise NotImplementedError
 
-PaymentMethod.registerFacet(PMAdaptToBill)
+PaymentMethod.registerFacet(PMAdaptToBillPM, IBillPM)
 
 
-class PMAdaptToCard(PaymentMethodAdapter):
+class PMAdaptToCardPM(PaymentMethodAdapter):
     implements(ICardPM, IActive)
 
     description = _('Card')
@@ -558,10 +558,10 @@ class PMAdaptToCard(PaymentMethodAdapter):
         raise NotImplementedError('This method must be implemented in '
                                   'BasePMProviderInfo classes')
 
-PaymentMethod.registerFacet(PMAdaptToCard)
+PaymentMethod.registerFacet(PMAdaptToCardPM, ICardPM)
 
 
-class PMAdaptToFinance(PaymentMethodAdapter):
+class PMAdaptToFinancePM(PaymentMethodAdapter):
     implements(IFinancePM, IActive)
 
     description = _('Finance')
@@ -584,7 +584,7 @@ class PMAdaptToFinance(PaymentMethodAdapter):
         conn = self.get_connection()
         return table.get_finance_companies(conn)
 
-PaymentMethod.registerFacet(PMAdaptToFinance)
+PaymentMethod.registerFacet(PMAdaptToFinancePM, IFinancePM)
 
 
 #

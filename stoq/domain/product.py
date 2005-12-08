@@ -243,7 +243,7 @@ class ProductAdaptToSellable(AbstractSellable):
     sellableitem_table = ProductSellableItem
 
 
-Product.registerFacet(ProductAdaptToSellable)
+Product.registerFacet(ProductAdaptToSellable, ISellable)
 
 
 class ProductAdaptToStorable(ModelAdapter):
@@ -419,7 +419,7 @@ class ProductAdaptToStorable(ModelAdapter):
         return ProductStockItem.select(query, connection=conn)
 
 
-Product.registerFacet(ProductAdaptToStorable)
+Product.registerFacet(ProductAdaptToStorable, IStorable)
 
 
 #

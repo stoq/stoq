@@ -292,4 +292,4 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         sale = self.get_adapted()
         return sale.get_total_sale_amount() - self.get_pm_commission_total()
 
-Sale.registerFacet(SaleAdaptToPaymentGroup)
+Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)

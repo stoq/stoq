@@ -307,6 +307,7 @@ class ConnMetaInterface(MetaInterface):
             raise TypeError('Adaptable argument must be of type Domain '
                             'or InheritableModel, got %s instead' 
                             % type(adaptable))
+        default = _Nothing
         registry = getRegistry()
         # should this be `implements' of some kind?
         if ((persist is None or persist) 

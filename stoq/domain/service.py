@@ -105,7 +105,8 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
         for item in items:
             item.delivery_data = None
 
-ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery)
+ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery,
+                                  IDelivery)
 
 
 class ServiceAdaptToSellable(AbstractSellable):
@@ -113,4 +114,4 @@ class ServiceAdaptToSellable(AbstractSellable):
 
     sellableitem_table = ServiceSellableItem
 
-Service.registerFacet(ServiceAdaptToSellable)
+Service.registerFacet(ServiceAdaptToSellable, ISellable)

@@ -221,7 +221,8 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
         today_str = till.opening_date.strftime(date_format)
         return _('till of %s') % today_str
 
-Till.registerFacet(TillAdaptToPaymentGroup)
+
+Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
 
 
 #
