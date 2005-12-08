@@ -121,6 +121,10 @@ TABLES = [
                                             "CreditProviderGroupData", 
                                             "CheckData",
                                             )),
+     ('stoq.domain.giftcertificate',       ("GiftCertificate",
+                                            "GiftCertificateAdaptToSellable",
+                                            "GiftCertificateItem",
+                                            )),
      ('stoq.domain.sale',                  ("Sale",
                                            "SaleAdaptToPaymentGroup")),
      ('stoq.domain.sellable',              ("AbstractSellableCategory",
@@ -151,11 +155,9 @@ TABLES = [
 ]
 
 
-
 #
 # Auxiliar routines
 #
-
 
 
 def check_tables():

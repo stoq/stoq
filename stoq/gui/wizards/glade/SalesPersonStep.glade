@@ -141,21 +141,32 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="cash_check">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">bool</property>
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">Cash</property>
                                     </widget>
                                 </child>
                                 <child>
+                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="certificate_check">
+                                        <property name="active">False</property>
+                                        <property name="data_type">bool</property>
+                                        <property name="group">cash_check</property>
+                                        <property name="label" context="yes" translatable="yes">Gift Certificate</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                                <child>
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="othermethods_check">
                                         <property name="active">False</property>
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">bool</property>
                                         <property name="group">cash_check</property>
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">Other Methods</property>
                                     </widget>
                                     <packing>
-                                        <property name="position">1</property>
+                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                             </widget>
