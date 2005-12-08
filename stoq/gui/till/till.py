@@ -117,8 +117,15 @@ class TillApp(AppWindow):
         self.searchbar.set_searchbar_labels(_('Sales Matching:'))
         self.attach_slave('searchbar_holder', self.searchbar)
 
+    def _format_order_number(self, order_number):
+        # FIXME We will remove this method after bug 2214
+        if not order_number:
+            return 0
+        return order_number
+
     def _get_columns(self):
         return [Column('order_number', title=_('Order'), width=100, 
+                       format_func=self._format_order_number,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date'), width=120, 
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
