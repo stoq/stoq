@@ -102,7 +102,7 @@ class AdminApp(AppWindow):
                                  obj_field='profile', data_type=str,
                                  width=150),
                 ForeignKeyColumn(Person, 'name', title=_('Name'), 
-                                 data_type=str, obj_field='_original',
+                                 data_type=str, adapted=True,
                                  width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
 
