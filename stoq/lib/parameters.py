@@ -69,8 +69,8 @@ Current System parameters:
                                           easily be converted to other methods 
                                           like check and bill.
 
-    * METHOD_MONEY(PMAdaptToMoney): Definition of the money payment 
-                                    method.
+    * METHOD_MONEY(PMAdaptToMoneyPM): Definition of the money payment 
+                                      method.
 
     * DELIVERY_SERVICE(Service): The default delivery service
                                  to the system.
@@ -257,7 +257,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('BASE_PAYMENT_METHOD', 
                                'payment.methods.PaymentMethod'),
                  ParameterAttr('METHOD_MONEY', 
-                               'payment.methods.PMAdaptToMoney'),
+                               'payment.methods.PMAdaptToMoneyPM'),
                  ParameterAttr('DELIVERY_SERVICE', 
                                'service.Service'),
                  ParameterAttr('CURRENT_WAREHOUSE', 
