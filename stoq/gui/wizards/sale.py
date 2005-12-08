@@ -30,7 +30,7 @@ stoq/gui/wizards/sale.py:
 
 import gettext
 
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 
 from stoq.gui.search.person import ClientSearch
@@ -39,9 +39,11 @@ from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                      CardMethodSlave, 
                                      FinanceMethodSlave)
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_price_format_str
+from stoq.lib.validators import (get_price_format_str,
+                                 compare_float_numbers, get_formatted_price)
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
+from stoq.domain.giftcertificate import get_client_gift_certificates_total
 from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
                                     ICheckPM, ICardPM, IBillPM, 
@@ -203,6 +205,7 @@ class SalesPersonStep(BaseWizardStep):
                      'subtotal_lbl',
                      'salesperson_combo')
     widgets = proxy_widgets + ('cash_check', 
+                               'certificate_check',
                                'subtotal_expander',
                                'othermethods_check')
 
@@ -217,6 +220,9 @@ class SalesPersonStep(BaseWizardStep):
                                  'defined at this point')
             if group.default_method == AbstractPaymentGroup.METHOD_MONEY:
                 self.cash_check.set_active(True)
+            elif (group.default_method ==
+                  AbstractPaymentGroup.METHOD_GIFT_CERTIFICATE):
+                self.certificate_check.set_active(True)
             else:
                 self.othermethods_check.set_active(True)
         else:
@@ -259,24 +265,37 @@ class SalesPersonStep(BaseWizardStep):
     #
 
     def post_init(self):
+        if not self.model.client:
+            self.certificate_check.hide()
         self.salesperson_combo.grab_focus()
         
     def next_step(self):
-        has_cash = self.cash_check.get_active()
-        if self.wizard.skip_payment_step:
-            group = self.wizard.get_payment_group()
-            if has_cash:
-                group.default_method = AbstractPaymentGroup.METHOD_MONEY
-            else:
-                group.default_method = AbstractPaymentGroup.METHOD_MULTIPLE
-
-        if has_cash:
+        step_class = CustomerStep
+        group = self.wizard.get_payment_group()
+        if self.cash_check.get_active():
+            group.default_method = AbstractPaymentGroup.METHOD_MONEY
             self.setup_cash_payment()
-            step_class = CustomerStep
-        elif not self.wizard.skip_payment_step:
-            step_class = PaymentMethodStep
+        elif self.certificate_check.get_active():
+            if not self.model.client:
+                raise ValueError('You must have a client defined at this '
+                                 'point')
+            gift_total = get_client_gift_certificates_total(self.conn,
+                                                            self.model.client)
+            sale_total = self.model.get_total_sale_amount()
+            if (not compare_float_numbers(gift_total, sale_total) 
+                and sale_total > gift_total):
+                msg = _('The total sale amount can not be greater than\n'
+                        'the gift certificates total for this client, '
+                        'which is %s.\nPlease select another method ' 
+                        'of payment.' % get_formatted_price(gift_total))
+                notify_dialog(msg, title=_('Invalid Gift Certificate'))
+                return self
+            gift_method = AbstractPaymentGroup.METHOD_GIFT_CERTIFICATE
+            group.default_method = gift_method 
         else:
-            step_class = CustomerStep
+            group.default_method = AbstractPaymentGroup.METHOD_MULTIPLE
+            if not self.wizard.skip_payment_step:
+                step_class = PaymentMethodStep
         return step_class(self.previous, self, self.conn, self.model)
 
     def has_previous_step(self):

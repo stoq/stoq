@@ -142,7 +142,6 @@
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
-                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -317,8 +316,7 @@
                                                                 </child>
                                                                 <child>
                                                                     <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Add to _Order</property>
-                                                                        <property name="use_underline">True</property>
+                                                                        <property name="label" context="yes" translatable="yes">Add to Order</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                     <packing>
