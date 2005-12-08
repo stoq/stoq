@@ -8,6 +8,7 @@
             <widget class="GtkVBox" id="vbox1">
                 <property name="spacing">4</property>
                 <property name="visible">True</property>
+                <property name="border_width">5</property>
                 <child>
                     <widget class="GtkVBox" id="list_vbox">
                         <property name="visible">True</property>
