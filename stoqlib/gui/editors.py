@@ -128,6 +128,7 @@ class BaseEditor(BaseEditorSlave):
     model_name = None
     header = ''
     size = ()
+    title = None
 
     def __init__(self, conn, model=None):
         BaseEditorSlave.__init__(self, conn, model)
@@ -140,6 +141,8 @@ class BaseEditor(BaseEditorSlave):
         self.force_validation()
 
     def get_title(self, model):
+        if self.title:
+            return self.title
         if model:
             model_attr = self.get_title_model_attribute(model)
             return _('Edit "%s" Details') % model_attr
