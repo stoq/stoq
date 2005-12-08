@@ -39,7 +39,7 @@ from stoqlib.gui.columns import AccessorColumn
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_formatted_price
+from stoq.lib.validators import get_formatted_price, format_quantity
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.product import Product
 from stoq.domain.person import Person
@@ -70,13 +70,13 @@ class SellableSearch(SearchDialog):
         """Accessor called by AccessorColumn"""
         table = Product.getAdapterClass(ISellable)
         if not isinstance(instance, table):
-            return
+            return 0.0
         branch = self.filter_slave.get_selected_status()
         if branch == ALL_ITEMS_INDEX:
             branch = None
         adapted = instance.get_adapted()
         storable = IStorable(adapted)
-        return storable.get_full_balance_string(branch)
+        return storable.get_full_balance(branch)
     
     #
     # Hooks
@@ -94,6 +94,7 @@ class SellableSearch(SearchDialog):
                           width=90)]
         if self.has_stock_mode:
             column = AccessorColumn('stock', self.get_stock_balance, 
+                                    format_func=format_quantity,
                                     title=_('Stock'), data_type=float)
             columns.append(column) 
         return columns
