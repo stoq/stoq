@@ -389,11 +389,13 @@ class CashOutEditor(BaseEditor):
 
     def on_confirm(self):
         reason = self.reason.get_text()
-        if reason == '':
-            reason = _('no description.')
-        payment_description = _('Cash Out: %s' % reason)
+        if reason:
+            # %s is the description used when removing money
+            payment_description = _('Cash out: %s' % reason)
+        else:
+            payment_description = _('Cash out')
+            
         self.cash_slave.model.description = payment_description
-        value = self.cash_slave.model.value
-        value *= -1
-        self.cash_slave.model.value = value
+        model = self.cash_slave.model
+        model.value = -model.value
         return self.cash_slave.on_confirm()
