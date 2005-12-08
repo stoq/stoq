@@ -37,13 +37,12 @@ import datetime
 from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol, 
                        ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
-from twisted.python.components import CannotAdapt
 from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
 
 from stoq.lib.validators import raw_phone_number
 from stoq.lib.runtime import get_connection
-from stoq.domain.base import Domain, ModelAdapter
+from stoq.domain.base import CannotAdapt, Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
                                     ISalesPerson, IBankBranch,
