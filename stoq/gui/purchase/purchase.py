@@ -142,7 +142,7 @@ class PurchaseApp(AppWindow):
                        data_type=datetime.date, width=100),
                 ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
                                  data_type=str,
-                                 obj_field='supplier._original',
+                                 obj_field='supplier', adapted=True,
                                  searchable=True, width=270),
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),

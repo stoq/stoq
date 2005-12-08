@@ -123,7 +123,8 @@ class TillApp(AppWindow):
                 Column('open_date', title=_('Date'), width=120, 
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
-                                 data_type=str, obj_field='client._original'),
+                                 data_type=str, obj_field='client',
+                                 adapted=True),
                 Column('total_sale_amount', title=_('Total'), width=150, 
                        data_type=float, justify=gtk.JUSTIFY_RIGHT,
                        format_func=get_formatted_price)]

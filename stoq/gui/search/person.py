@@ -105,7 +105,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str, 
-                                 width=250, obj_field='_original'),
+                                 width=250, adapted=True),
                 ForeignKeyColumn(EmployeeRole, 'name', _('Role'), 
                                  str, width=250, obj_field='role'),
                 Column('registry_number', _('Registry Number'), str,
