@@ -30,21 +30,31 @@ stoq/domain/base.py:
 """
 
 import datetime
+import warnings
 
+from kiwi.python import qual
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
-from twisted.python.components import (Adapter, Componentized, MetaInterface,
-     Interface, _Nothing, CannotAdapt, getRegistry)
-from twisted.python.reflect import qual
 from stoqlib.exceptions import AdapterError
-from zope.interface import implementedBy
+from zope.interface.adapter import AdapterRegistry
+from zope.interface.declarations import implementedBy
+from zope.interface.interface import Interface, InterfaceClass
 
 from stoq.lib.runtime import get_connection
 
-
 __connection__ = get_connection()
+
+class MetaInterface(InterfaceClass):
+    pass
+
+class _Nothing:
+    pass
+
+class CannotAdapt(Exception):
+    pass
+
 
 
 #
@@ -144,26 +154,21 @@ class AbstractModel:
         # HMMM!
         self.__dict__['_original'] = _original
 
- 
-class ComponentizedModel(Componentized):
-    """Subclasses of ComponentizedModel are able to be extended with one or
-    more adapters. This class has all the infrastructure needed to deal 
-    with components.
-    """
+
+class Adaptable:
+    def __init__(self):
+        self._adapterCache = {}
 
     @classmethod
     def getAdapterClass(cls, iface):
         iface_str = qual(iface)
-        if not cls._facets.has_key(iface_str):
+        if not iface_str in cls._facets:
             raise TypeError(
                 "%s doesn't have a facet for interface %s" %
                 (cls.__name__, iface.__name__))
         return cls._facets[iface_str]
 
-    def _hasComponent(self, iface):
-        return qual(iface) in self._adapterCache
-
-    def _getComponent(self, iface, registry, default, connection=None):
+    def _getComponent(self, iface, registry, connection=None):
         k = qual(iface)
         adapter = self._adapterCache.get(k)
         if adapter is not None:
@@ -179,7 +184,7 @@ class ComponentizedModel(Componentized):
             assert not results.count() > 1 
             if results.count() == 1:
                 adapter = results[0]
-                self.setComponent(iface, adapter)
+                self._adapterCache[k] = adapter
         return adapter
         
     def addFacet(self, iface, *args, **kwargs):
@@ -189,13 +194,12 @@ class ComponentizedModel(Componentized):
         if not isinstance(iface, ConnMetaInterface):
             raise TypeError('iface must be a ConnInterface subclass')
 
-        if self._hasComponent(iface):
-            raise TypeError('%s already  have a facet for interface %s' %
-                            (self.__class__.__name__, iface.__name__))
+        k = qual(iface)
+        if k in self._adapterCache:
+            raise AdapterError('%s already  have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
 
         facets = self.__class__._facets
-
-        k = qual(iface)
         
         funcName = 'facet_%s_add' % iface.__name__
         func = getattr(self, funcName, None)
@@ -209,28 +213,34 @@ class ComponentizedModel(Componentized):
                                "adapter for interface %s" % (type(self),
                                iface))
         if adapter:
-            self.setComponent(iface, adapter)
+            self._adapterCache[k] = adapter
+            
         return adapter 
 
     def removeFacet(self, iface, *args, **kwargs):
+        """
+        @param iface:
+        """
         if not issubclass(iface, Interface):
             raise TypeError('iface must be a ConnInterface subclass')
 
-        if not self._facets.has_key(iface):
-            raise TypeError('%s does not have a facet for interface %s' %
-                            (self.__class__.__name__, iface.__name__))
+        facets = self.__class__._facets
+        if not iface in facets:
+            raise AdapterError('%s does not have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
         
         funcName = 'facet_%s_remove' % iface.__name__
         func = getattr(self, funcName, None)
         if func:
             func(*args, **kwargs)
 
-        del self._facets[qual(iface)]
-        if self._hasComponent(iface):
-            self.unsetComponent(iface)
+        k = qual(iface)
+        del facets[k]
+        if k in self._adapterCache:
+            del self._adapterCache[k]
 
     @classmethod
-    def registerFacet(cls, facet):
+    def registerFacet(cls, facet, *ifaces):
         """
         Registers a facet for class cls.
         
@@ -240,15 +250,27 @@ class ComponentizedModel(Componentized):
         '_original' will be assigned.
 
         Notes: the assigned key will have the name of the class cls.
-        """
 
-        ifaces = list(implementedBy(facet))
+        @param cls:
+        @param facet:
+        @param ifaces: optional list of interfaces to attach
+        """
 
         if not hasattr(cls, '_facets'):
             cls._facets = {}
 
+        if not ifaces:
+            ifaces = list(implementedBy(facet))
+            if len(ifaces) > 1:
+                warnings.warn(
+                    '%s has more than one iface, %s will be ignored' % (
+                    qual(cls),
+                    ', '.join(map(qual, ifaces[1:]))),
+                    DeprecationWarning, stacklevel=2)
+            del ifaces[1:]
+            
         for iface in ifaces:
-            if cls._facets.has_key(iface):
+            if iface in cls._facets:
                 raise TypeError(
                     '%s does already have a facet for interface %s' %
                     (cls.__name__, iface.__name__))
@@ -275,7 +297,7 @@ class ConnMetaInterface(MetaInterface):
     """A special interface for Stoq domain classes. It allows us to make
     mandatory the connection argument
     """
-    def __call__(self, adaptable, default=_Nothing, persist=None,
+    def __call__(self, adaptable, persist=None,
                  registry=None, connection=None):
         """
         Try to adapt `adaptable' to self; return `default' if it 
@@ -285,13 +307,11 @@ class ConnMetaInterface(MetaInterface):
             raise TypeError('Adaptable argument must be of type Domain '
                             'or InheritableModel, got %s instead' 
                             % type(adaptable))
-        adapter = default
-        registry = getRegistry(registry)
+        registry = getRegistry()
         # should this be `implements' of some kind?
         if ((persist is None or persist) 
             and hasattr(adaptable, '_getComponent')):
             adapter = adaptable._getComponent(self, registry,
-                                              default=_NoImplementor,
                                               connection=connection)
         else:
             adapter = registry.getAdapter(adaptable, self, _NoImplementor,
@@ -316,30 +336,32 @@ ConnInterface = ConnMetaInterface('ConnInterface',
 #
 
 
-class Domain(BaseDomain, ComponentizedModel):
+class Domain(BaseDomain, Adaptable):
     """If you want to be able to extend a certain class with adapters or
     even just have a simple class without sublasses, this is the right
     choice.
     """
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
-        ComponentizedModel.__init__(self)
+        Adaptable.__init__(self)
 
 
-class InheritableModel(InheritableSQLObject, AbstractModel,
-                       ComponentizedModel):
+class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
     """
     def __init__(self, *args, **kwargs):
         InheritableSQLObject.__init__(self, *args, **kwargs)
-        ComponentizedModel.__init__(self)
+        Adaptable.__init__(self)
 
 
 #
 # Adapters
 #
 
+
+class Adapter:
+    pass
 
 class ModelAdapter(BaseDomain, Adapter):
     def __init__(self, _original=None, *args, **kwargs):
@@ -348,7 +370,6 @@ class ModelAdapter(BaseDomain, Adapter):
 
 
 class InheritableModelAdapter(InheritableModel, Adapter):
-
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
         InheritableModel.__init__(self, *args, **kwargs)
@@ -367,3 +388,8 @@ for klass in (InheritableModel, Domain, ModelAdapter):
     # list(AbstractSellable.select()) = list of AbstractSellable 
     # objects instead child table objects.
     # lazyUpdate = True
+
+_registry = AdapterRegistry()
+
+def getRegistry():
+    return _registry
