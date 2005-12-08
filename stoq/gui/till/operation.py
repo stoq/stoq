@@ -45,6 +45,7 @@ from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.lib.runtime import new_transaction
+from stoq.lib.validators import get_price_format_str
 from stoq.domain.interfaces import IPaymentGroup
 from stoq.domain.sale import Sale
 from stoq.domain.till import get_current_till_operation
@@ -155,11 +156,12 @@ class TillOperationDialog(SlaveDelegate):
         # Attribute payment_id will be mandatory soon. 
         # Waiting for bug 2214.
         if not value:
-            return
+            return 0
         return '%03d' % value
 
     def _get_columns(self, *args):
         return [Column('payment_id', _('Number'), data_type=int, width=100,
+                        format_func=self._get_payment_id,
                        justify=gtk.JUSTIFY_RIGHT, sorted=True),
                        # XXX Waiting for bug 2214
                        # format='%03d'),
@@ -170,6 +172,7 @@ class TillOperationDialog(SlaveDelegate):
                        expand=True),
                 ColoredColumn('value', _('Value'), data_type=float, 
                               color='red', data_func=self._colorize,
+                              format=get_price_format_str(),
                               width=120, justify=gtk.JUSTIFY_RIGHT)]
 
     def _reverse_selection(self):
