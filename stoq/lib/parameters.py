@@ -157,8 +157,7 @@ import gettext
 
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import StringCol
-from twisted.python.reflect import namedAny
-from kiwi.python import ClassInittableObject
+from kiwi.python import namedAny, ClassInittableObject
 
 from stoq.domain.base import Domain, AbstractModel
 from stoq.domain.interfaces import (ISupplier, IBranch, ICompany, ISellable,
