@@ -22,162 +22,152 @@
 ##
 ## Author(s): Henrique Romano           <henrique@async.com.br>
 ##            Evandro Vale Miquelito    <evandro@async.com.br>
+##            Grazieno Pellegrino       <grazieno1@yahoo.com.br>
 ##
 """
 stoq/tests/test_parameters.py:
 
-   Unit test implementation for lib/parameters module.
+   Test for lib/parameters module.
 """
-
-import gettext
-
-from twisted.trial.unittest import TestCase
 
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import ParameterAccess, sysparam
-from stoq.domain.interfaces import ICompany, ISupplier, IBranch
-from stoq.domain.person import (Person, PersonAdaptToSupplier,
-                                PersonAdaptToBranch, 
-                                PersonAdaptToCompany,
-                                EmployeeRole)
+from stoq.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
+from stoq.domain.person import Person, EmployeeRole
 from stoq.domain.sellable import BaseSellableCategory
 from stoq.domain.payment.methods import PaymentMethod
+from stoq.domain.payment.destination import PaymentDestination
 from stoq.domain.service import Service
 
+class TestParameter:
 
-_ = gettext.gettext
+    def setup_class(self):
+        self.conn = new_transaction()
+        self.sparam = sysparam(self.conn)
+        assert isinstance(self.sparam, ParameterAccess)
 
+    # System instances based on stoq.lib.parameters
 
-class ParameterTest(TestCase):
-    def setUp(self):
-        conn = new_transaction()
-        self.sparam = sysparam(conn)
-        self.failUnless(isinstance(self.sparam, ParameterAccess))
-
-
-
-    #
-    # System instances
-    #
-
-
-
-    def testCurrentBranch(self):
+    def test_CurrentBranch(self):
         branch = self.sparam.CURRENT_BRANCH
-        self.failUnless(branch != None)
-        self.failUnless(isinstance(branch, PersonAdaptToBranch))
+        branchTable = Person.getAdapterClass(IBranch)
+        assert isinstance(branch, branchTable)
         person = branch.get_adapted()
-        self.failUnless(isinstance(person, Person))
-        company = ICompany(person)
-        self.failUnless(company != None)
-        branch = IBranch(person)
-        self.failUnless(branch != None)
-
-    def testCurrentWarehouse(self):
+        assert isinstance(person, Person)
+        
+    def test_CurrentWarehouse(self):
         warehouse = self.sparam.CURRENT_WAREHOUSE
-        self.failUnless(warehouse != None)
-        self.failUnless(isinstance(warehouse, PersonAdaptToCompany))
+        companyTable = Person.getAdapterClass(ICompany)
+        assert isinstance(warehouse, companyTable)
         person = warehouse.get_adapted()
-        self.failUnless(isinstance(person, Person))
-        company = ICompany(person)
-        self.failUnless(company != None)
-    
-    def testSuggestedSupplier(self):
-        supplier = self.sparam.SUGGESTED_SUPPLIER
-        self.failUnless(supplier != None)
-        self.failUnless(isinstance(supplier, PersonAdaptToSupplier))
-        person = supplier.get_adapted()
-        self.failUnless(isinstance(person, Person))
-        company = ICompany(person)
-        self.failUnless(company != None)
-        supplier = ISupplier(person)
-        self.failUnless(supplier != None)
-        
-    def testDefaultEmployeeRole(self):
+        assert isinstance(person, Person)
+        company = ICompany(person, connection=self.conn)
+        assert isinstance(company, companyTable)
+ 
+    def test_DefaultEmployeeRole(self):
         employee_role = self.sparam.DEFAULT_EMPLOYEE_ROLE
-        self.failUnless(employee_role != None)
-        self.failUnless(isinstance(employee_role, EmployeeRole))
+        assert isinstance(employee_role, EmployeeRole)
+   
+    def test_SuggestedSupplier(self):
+        supplier = self.sparam.SUGGESTED_SUPPLIER
+        supplierTable = Person.getAdapterClass(ISupplier)
+        assert isinstance(supplier, supplierTable)
+        person = supplier.get_adapted()
+        assert isinstance(person, Person)
+        supplier = ISupplier(person, connection=self.conn)
+        assert isinstance(supplier, supplierTable)
 
-    def testDefaultBaseCategory(self):
+    def test_DefaultBaseCategory(self):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
-        self.failUnless(base_category != None)
-        self.failUnless(isinstance(base_category, BaseSellableCategory))
+        assert isinstance(base_category, BaseSellableCategory)
 
-    def testMoneyPaymentMethod(self):
+    def test_PaymentDestination (self):
+        payment = self.sparam.DEFAULT_PAYMENT_DESTINATION
+        assert isinstance(payment, PaymentDestination)
+
+    def test_PaymentMethod (self):
+        payment_method = self.sparam.BASE_PAYMENT_METHOD
+        assert isinstance(payment_method, PaymentMethod)
+
+    def test_MethodMoney(self):
         method = self.sparam.METHOD_MONEY
-        self.failUnless(method != None)
-        self.failUnless(isinstance(method, PaymentMethod), method)
+        moneyTable = PaymentMethod.getAdapterClass (IMoneyPM)
+        assert isinstance(method, moneyTable)
 
-    def testDeliveryService(self):
+    def test_DeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
-        self.failUnless(service != None)
-        self.failUnless(isinstance(service, Service))
+        assert isinstance(service, Service)      
 
-        
+    # System constants based on stoq.lib.parameters
 
-    #
-    # System constants
-    #
-
-
-
-    def testUseLogicQuantity(self):
+    def test_UseLogicQuantity(self):
         param = self.sparam.USE_LOGIC_QUANTITY
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testMaxLateDays(self):
+    def test_MaxLateDays(self):
         param = self.sparam.MAX_LATE_DAYS
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testAcceptOrderProducts(self):
+    def test_AcceptOrderProducts(self):
         param = self.sparam.ACCEPT_ORDER_PRODUCTS
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testCitySuggested(self):
+    def test_CitySuggested(self):
         param = self.sparam.CITY_SUGGESTED
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, basestring))
+        assert isinstance(param, basestring)
 
-    def testStateSuggested(self):
+    def test_StateSuggested(self):
         param = self.sparam.STATE_SUGGESTED
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, basestring))
+        assert isinstance(param, basestring)
 
-    def testCountrySuggested(self):
+    def test_CountrySuggested(self):
         param = self.sparam.COUNTRY_SUGGESTED
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, basestring))
+        assert isinstance(param, basestring)
 
-    def testSellablePricePrecision(self):
+    def test_SellablePricePrecision(self):
         param = self.sparam.SELLABLE_PRICE_PRECISION
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testStockBalancePrecision(self):
+    def test_StockBalancePrecision(self):
         param = self.sparam.STOCK_BALANCE_PRECISION
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testHasStockMode(self):
-        param = self.sparam.HAS_STOCK_MODE
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+    def test_PaymentPrecision(self):
+        param = self.sparam.PAYMENT_PRECISION
+        assert isinstance(param, int)
 
-    def testEditSellablePrice(self):
-        param = self.sparam.EDIT_SELLABLE_PRICE
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
-
-    def testHasDeliveryMode(self):
+    def test_HasDeliveryMode(self):
         param = self.sparam.HAS_DELIVERY_MODE
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
-    def testMaxSearchResults(self):
+    def test_HasStockMode(self):
+        param = self.sparam.HAS_STOCK_MODE
+        assert isinstance(param, int)
+
+    def test_EditSellablePrice(self):
+        param = self.sparam.EDIT_SELLABLE_PRICE
+        assert isinstance(param, int)
+
+    def test_MaxSearchResults(self):
         param = self.sparam.MAX_SEARCH_RESULTS
-        self.failUnless(param != None)
-        self.failUnless(isinstance(param, int))
+        assert isinstance(param, int)
 
+    def test_MandatoryInterestChange(self):
+        param = self.sparam.MANDATORY_INTEREST_CHARGE
+        assert isinstance(param, int)
+
+    def test_ComparissonFloatTolerance(self):
+        param = self.sparam.COMPARISON_FLOAT_TOLERANCE
+        assert isinstance(param, float)
+
+    def test_ConfirmSalesOnTill(self):
+        param = self.sparam.CONFIRM_SALES_ON_TILL
+        assert isinstance(param, int)
+
+    def test_SetPaymentMethodsOnTill(self):
+        param = self.sparam.SET_PAYMENT_METHODS_ON_TILL
+        assert isinstance (param, int)
+
+    def test_PurchasePreviewPayment(self):
+        param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
+        assert isinstance (param, int)
