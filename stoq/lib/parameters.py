@@ -75,10 +75,6 @@ Current System parameters:
     * DELIVERY_SERVICE(Service): The default delivery service
                                  to the system.
 
-    * CANCELLATION_GIFT_CERTIFICATE(GiftCertificate): The default gift
-                                                     certificate instance used
-                                                     when canceling sales.
-
 >> System constants:                                               
                                                
 
@@ -264,8 +260,6 @@ class ParameterAccess(ClassInittableObject):
                                'payment.methods.PMAdaptToMoneyPM'),
                  ParameterAttr('DELIVERY_SERVICE', 
                                'service.Service'),
-                 ParameterAttr('CANCELLATION_GIFT_CERTIFICATE', 
-                               'certificate.GiftCertificate'),
                  ParameterAttr('CURRENT_WAREHOUSE', 
                                'person.PersonAdaptToCompany')]
 
@@ -339,7 +333,8 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_payment_destination()
         self.ensure_payment_methods()
         self.ensure_delivery_service()
-        self.ensure_default_gift_certificate_type()
+
+
 
     #
     # Methods for system objects creation
@@ -373,8 +368,8 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_EMPLOYEE_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        role = EmployeeRole(name=_('Sales Person'), 
-                            connection=self.conn)
+        role = EmployeeRole(name='Sales Person', 
+                                    connection=self.conn)
         self.set_schema(key, role.id)
 
     def ensure_current_branch(self):
@@ -387,7 +382,7 @@ class ParameterAccess(ClassInittableObject):
         # what is the cnpj of this company I need to put something there because
         # this is a mandatory field. I think use a simple string could help user
         # to fix this field later.
-        person_obj.addFacet(ICompany, cnpj=_('current_branch'), 
+        person_obj.addFacet(ICompany, cnpj='current_branch', 
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         self.set_schema(key, branch.id)               
@@ -400,7 +395,7 @@ class ParameterAccess(ClassInittableObject):
         person_obj = Person(name=key, connection=self.conn)
         # XXX See ensure_current_branch comment: we have the same problem with
         # cnpj here.
-        person_obj.addFacet(ICompany, cnpj=_('current_warehouse'), 
+        person_obj.addFacet(ICompany, cnpj='current_warehouse', 
                             connection=self.conn)
         self.set_schema(key, person_obj.id)
 
@@ -438,23 +433,10 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, Service):
             return
         service = Service(connection=self.conn)
-        service.addFacet(ISellable, code='SD', price=0.0,
-                         description=_('Delivery'), connection=self.conn)
+        service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
+                         connection=self.conn)
         self.set_schema(key, service.id)
 
-    def ensure_default_gift_certificate_type(self):
-        """Creates a initial gift certificate that will be tied with return
-        values of sale cancelations.
-        """
-        from stoq.domain.giftcertificate import GiftCertificate
-        key = "CANCELLATION_GIFT_CERTIFICATE"
-        if self.get_parameter_by_field(key, GiftCertificate):
-            return
-        certificate = GiftCertificate(connection=self.conn)
-        certificate.addFacet(ISellable, code='GC', price=0.0,
-                             description=_('General Gift Certificate'), 
-                             connection=self.conn)
-        self.set_schema(key, certificate.id)
 
 
 def sysparam(conn):

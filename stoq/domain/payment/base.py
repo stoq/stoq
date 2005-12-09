@@ -219,8 +219,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      METHOD_BILL,
      METHOD_CARD,
      METHOD_FINANCIER,
-     METHOD_GIFT_CERTIFICATE,
-     METHOD_MULTIPLE) = range(7)
+     METHOD_MULTIPLE) = range(6)
 
     implements(IPaymentGroup, IContainer)
 
@@ -252,8 +251,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def get_group_description(self):
         """Returns a small description for the payment group which will be
-        used in payment descriptions
-        """
+        used in payment descriptions"""
         raise NotImplementedError
 
     def update_thirdparty_status(self):
@@ -276,12 +274,12 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return payment
 
     def get_available_methods(self):
-        return {self.METHOD_MONEY: IMoneyPM,
-                self.METHOD_CHECK: ICheckPM,
-                self.METHOD_BILL: IBillPM,
-                self.METHOD_CARD: ICardPM,
-                self.METHOD_FINANCIER: IFinancePM,
-                self.METHOD_MULTIPLE: None}
+        return {self.METHOD_MONEY:      IMoneyPM,
+                self.METHOD_CHECK:      ICheckPM,
+                self.METHOD_BILL:       IBillPM,
+                self.METHOD_CARD:       ICardPM,
+                self.METHOD_FINANCIER:  IFinancePM,
+                self.METHOD_MULTIPLE:   None}
 
     def set_method(self, method_iface):
         items = self.get_available_methods().items()
@@ -293,8 +291,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.default_method = method[0]
 
     def setup_inpayments(self):
-        if self.default_method == self.METHOD_GIFT_CERTIFICATE:
-            return
         methods = self.get_available_methods()
         if self.default_method != self.METHOD_MULTIPLE:
             self.clear_preview_payments(methods[self.default_method])
@@ -307,8 +303,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def set_payments_to_pay(self):
         """Checks if all the payments have STATUS_PREVIEW and set them as
-        STATUS_TO_PAY
-        """
+        STATUS_TO_PAY"""
         for payment in self.get_items():
             payment.set_to_pay()
 

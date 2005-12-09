@@ -41,10 +41,6 @@ from stoq.domain.sellable import AbstractSellableItem
 from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.service import ServiceSellableItem
-from stoq.domain.giftcertificate import (get_gift_certificates_by_client,
-                                         GiftCertificateItem,
-                                         get_client_gift_certificates_total)
-from stoq.lib.validators import compare_float_numbers
 from stoq.domain.interfaces import (IContainer, IClient, IStorable, 
                                     IPaymentGroup)
 
@@ -60,7 +56,7 @@ class Sale(Domain):
     Nested imports are needed here because domain/sallable.py imports the
     current one.
 
-    B{Important attributes}:
+    B{Importante attributes}:
         - I{order_number}: an optional identifier for this sale defined by 
                            the store.
         - I{open_date}: The day when we started this sale.
@@ -221,11 +217,6 @@ class Sale(Domain):
         return [item for item in self.get_items() 
                     if isinstance(item, ProductSellableItem)]
 
-    def get_gift_certificates(self):
-        """Returns a list of gift certificates tied to the current sale"""
-        return [item for item in self.get_items() 
-                    if isinstance(item, GiftCertificateItem)]
-
     def update_stocks(self):
         conn = self.get_connection()
         branch = self.get_till_branch()
@@ -252,49 +243,12 @@ class Sale(Domain):
         if not self.get_valid():
             self.set_valid()
 
-    def update_existing_gift_certificates(self, group):
-        """Update gift certificates of the current sale, setting their
-        value properly.
-        """
-        if not self.client:
-            raise ValueError('You should have a client defined at '
-                             'this point')
-        conn = self.get_connection()
-        gift_total = get_client_gift_certificates_total(conn, self.client)
-        certificates = get_gift_certificates_by_client(conn, self.client)
-        total_sale_amount = self.get_total_sale_amount()
-        if (not compare_float_numbers(gift_total, total_sale_amount) and
-            total_sale_amount > gift_total):
-            raise ValueError('Total sale amount can not be greater than '
-                             'the gift certificate total for this client')
-        for certificate in certificates:
-            if not total_sale_amount:
-                break
-            difference = certificate.price - certificate.amount_paid
-            if total_sale_amount >= difference:
-                total_sale_amount -= difference
-            else:
-                difference = total_sale_amount
-            certificate.amount_paid += difference
-            certificate.sell()
-
-    def confirm_gift_certificates(self):
-        """Confirm the status of all gift certificates as available 
-        to be used.
-        """
-        for certificate in self.get_gift_certificates():
-            certificate.confirm()
-
     def confirm_sale(self):
         self.validate()
         conn = self.get_connection()
         group = IPaymentGroup(self, connection=conn)
         group.setup_inpayments()
         self.update_stocks()
-        if (group.default_method ==
-            AbstractPaymentGroup.METHOD_GIFT_CERTIFICATE):
-            self.update_existing_gift_certificates(group)
-        self.confirm_gift_certificates()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
         

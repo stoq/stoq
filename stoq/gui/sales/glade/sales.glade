@@ -41,7 +41,7 @@
                         <property name="name">CreditProvider</property>
                         <property name="label" translatable="yes">Find Credit Providers...</property>
                         <signal handler="_on_credit_provider_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -61,14 +61,6 @@
                     <object class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkAction" id="GiftCertificate">
-                        <property name="name">GiftCertificate</property>
-                        <property name="label" translatable="yes">Find Gift Certificates...</property>
-                        <signal handler="_on_gift_certificates_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;g</property>
                     </object>
                 </child>
                 <child>
@@ -134,6 +126,7 @@
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -175,7 +168,7 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="CreditProvider" name="CreditProvider"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="CreditProvider" name="CreditProvider"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
