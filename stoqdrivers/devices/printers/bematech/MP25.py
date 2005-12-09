@@ -598,7 +598,6 @@ class MP25(SerialBase):
         Close the till for the day, no other actions can be done
         after this is called
         """
-        raise NotImplementedError, 'DO NOT USE THIS FOR NOW'
         self._send_command(CloseTillCommand())
 
     def get_status(self):
