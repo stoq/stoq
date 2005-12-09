@@ -42,7 +42,8 @@ from stoq.lib.runtime import get_connection
 from stoq.lib.parameters import sysparam
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.domain.base import (Domain, InheritableModelAdapter,
-                              InheritableModel)
+                                    InheritableModel)
+
 
 
 _ = gettext.gettext
@@ -103,6 +104,9 @@ class AbstractSellableItem(InheritableModel):
         # connection argument is not set properly there. Waiting for
         # SQLObject improvements.
         if not 'kw' in kw:
+            if 'base_price' in kw:
+                raise TypeError('You should not provide a base_price '
+                                'argument since it is set automatically')
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
             base_price = kw['sellable'].get_price()
@@ -204,18 +208,14 @@ class AbstractSellable(InheritableModelAdapter):
                 return self.on_sale_price
         return self.price
 
-    def add_sellable_item(self, sale, quantity=1.0, price=None, **kwargs):
-        """Add a new sellable item instance tied to the current 
-        sellable object
-        """
+    def add_sellable_item(self, sale, quantity=1.0, price=None):
         if not self.sellableitem_table:
             raise ValueError('Child classes must define a sellableitem_table '
                              'attribute')
         price = price or self.get_price()
         conn = self.get_connection()
         return self.sellableitem_table(connection=conn, quantity=quantity,
-                                       sale=sale, sellable=self,
-                                       price=price, **kwargs)
+                                       sale=sale, sellable=self, price=price)
     #
     # Accessors
     #
@@ -240,7 +240,7 @@ class AbstractSellable(InheritableModelAdapter):
         conn = get_connection()
         query = AbstractSellable.q.code == code
         # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing code. Waiting for kiwi support 
+        # an existent code. Waiting for kiwi support 
         if not AbstractSellable.select(query, connection=conn).count():
             self._SO_set_code(code)
 

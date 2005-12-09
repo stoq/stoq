@@ -51,12 +51,10 @@ from stoq.domain.product import ProductSellableItem, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson, IClient
-from stoq.domain.giftcertificate import GiftCertificate
 from stoq.gui.editors.product import ProductItemEditor
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
-from stoq.gui.editors.giftcertificate import GiftCertificateItemEditor
 from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.search.sellable import SellableSearch
@@ -178,15 +176,8 @@ class POSApp(AppWindow):
                         % sellable.description)
                 self.product.set_invalid(msg)
             return
-        if isinstance(sellable.get_adapted(), GiftCertificate):
-            sellable_item = self.run_dialog(GiftCertificateItemEditor, 
-                                            self.conn, None, self.sale, 
-                                            sellable)
-            if not sellable_item:
-                return
-        else:
-            sellable = table.get(sellable.id, connection=self.conn)
-            sellable_item = sellable.add_sellable_item(self.sale)
+        sellable = table.get(sellable.id, connection=self.conn)
+        sellable_item = sellable.add_sellable_item(self.sale)
         self.order_list.append(sellable_item)
         self.order_list.select(sellable_item)
         self.product.set_text('')
@@ -235,7 +226,8 @@ class POSApp(AppWindow):
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale.client is not None
-        widgets = [self.client_details_button, self.delivery_button]
+        widgets = [self.client_details_button,
+                   self.delivery_button]
         for widget in widgets:
             widget.set_sensitive(has_client)
         model = self.order_list.get_selected()
@@ -261,25 +253,18 @@ class POSApp(AppWindow):
                        width=100, justify=gtk.JUSTIFY_RIGHT)]
 
     def _edit_item(self, *args):
-        # XXX Bug 2336 will improve this code
-        param = sysparam(self.conn)
         sellable_item = self.order_list.get_selected()
-        editor_args = [self.conn, sellable_item]
         if isinstance(sellable_item, ProductSellableItem):
             editor = ProductItemEditor
         elif (sellable_item.sellable.get_adapted() 
-              is param.DELIVERY_SERVICE):
+              is sysparam(self.conn).DELIVERY_SERVICE):
             editor = DeliveryEditor
-        elif (isinstance(sellable_item.sellable.get_adapted(),
-                         GiftCertificate)):
-            editor = GiftCertificateItemEditor
-            editor_args.append(self.sale)
         elif isinstance(sellable_item, ServiceSellableItem):
             editor = ServiceItemEditor
         else:
             raise AssertionError("Unknown sellable item selected: %s"
                                  % type(sellable_item))
-        model = self.run_dialog(editor, *editor_args)
+        model = self.run_dialog(editor, self.conn, sellable_item)
         if not model:
             return
         self.order_list.update(model)
