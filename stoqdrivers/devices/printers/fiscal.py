@@ -70,6 +70,7 @@ class FiscalPrinter(BasePrinter):
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         BasePrinter.__init__(self, brand, model, device, config_file)
         self.has_been_totalized = False
+        self.totalized_value = self.payments_total_value = 0.0
         self._capabilities = self._driver.get_capabilities()
 
     def get_capabilities(self):
@@ -100,6 +101,7 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_totalize')
         result = self._driver.coupon_totalize(discount, charge, taxcode)
         self.has_been_totalized = True
+        self.totalized_value = result
         return result
 
     @capcheck(payment_method, float, str)
@@ -110,6 +112,7 @@ class FiscalPrinter(BasePrinter):
                                        "before add payments.")
         result = self._driver.coupon_add_payment(payment_method, payment_value,
                                                  payment_description)
+        self.payments_total_value += result
         return result
         
     def cancel(self):
@@ -124,9 +127,15 @@ class FiscalPrinter(BasePrinter):
     @capcheck(str)
     def close(self, promotional_message=''):
         self.info('coupon_close')
-        if self.has_been_totalized:
-            return self._driver.coupon_close(promotional_message)
-        raise CloseCouponError("You must totalize the coupon before close it")
+        if not self.has_been_totalized:
+            raise CloseCouponError("You must totalized the coupon before "
+                                   "closing it")
+        elif self.totalized_value > self.payments_total_value:
+            raise CloseCouponError("Isn't possible close the coupon since "
+                                   "the payments added doesn't corresponds"
+                                   "to coupon totalied value")
+        else:
+            self._driver.coupon_close(promotional_message)
 
     def summarize(self):
         self.info('summarize')
