@@ -35,6 +35,7 @@ import datetime
 import gtk
 from sqlobject.sqlbuilder import AND
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.dialogs import messagedialog
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.exceptions import TillError
@@ -46,6 +47,7 @@ from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoq.gui.till.operation import TillOperationDialog
@@ -218,18 +220,45 @@ class TillApp(AppWindow):
         title = _('Confirm Sale')
         model = self.run_dialog(SaleWizard, self.conn, sale, title=title,
                                 edit_mode=True)
-        if finish_transaction(self.conn, model, keep_transaction=True):
-            sale.confirm_sale()
-            self.conn.commit()
-            self.searchbar.search_items()
+        if not finish_transaction(self.conn, model, keep_transaction=True):
+            return
+        sale.confirm_sale()
+
+        if not emit_coupon(self.conn, sale):
+            return
+        self.conn.commit()
+        self.searchbar.search_items()
 
     def _on_close_till_action__clicked(self, *args):
+        if not emit_reduce_Z(self.conn):
+            short = _("It's not possible to emit a reduce Z")
+            long = _("It's not possible to emit a reduce Z for the "
+                     "configured printer.\nWould you like to ignore "
+                     "this error and continue?")
+            buttons = ((_("Cancel Operation"), gtk.RESPONSE_CANCEL),
+                       (_("Ignore this error"), gtk.RESPONSE_YES))
+            parent = self.get_toplevel()
+            if messagedialog(gtk.MESSAGE_QUESTION, short, long,
+                             parent, buttons) != gtk.RESPONSE_YES:
+                return
         self.close_till()
 
     def _on_open_till_action__clicked(self, *args):
+        if not emit_read_X(self.conn):
+            short = _("It's not possible to emit a read X")
+            long = _("It's not possible to emit a read X for the "
+                     "configured printer.\nWould you like to ignore "
+                     "this error and continue?")
+            buttons = ((_("Cancel Operation"), gtk.RESPONSE_CANCEL),
+                       (_("Ignore this error"), gtk.RESPONSE_YES))
+            parent = self.get_toplevel()
+            if messagedialog(gtk.MESSAGE_QUESTION, short, long,
+                             parent, buttons) != gtk.RESPONSE_YES:
+                return
         self.open_till()
 
     def _on_operations_action__clicked(self, *args):
         dialog = TillOperationDialog(self.conn)
         dialog.connect('close-till', self.close_till)
         self.run_dialog(dialog, self.conn)
+

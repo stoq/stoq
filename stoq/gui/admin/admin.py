@@ -41,6 +41,7 @@ from stoq.gui.search.person import EmployeeRoleSearch, EmployeeSearch
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.profile import UserProfileEditor
 from stoq.gui.editors.person import UserEditor
+from stoq.gui.editors.printers import PrinterSettingsDialog
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.runtime import new_transaction
@@ -60,7 +61,8 @@ class AdminApp(AppWindow):
     widgets = ('add_button',
                'users_list', 
                'edit_button',
-               'change_password_button')
+               'change_password_button',
+               'printers_setup')
     
     def __init__(self, app):
         self.conn = new_transaction()
@@ -186,3 +188,8 @@ class AdminApp(AppWindow):
         user = self.users_list.get_selected()
         model = self.run_dialog(PasswordEditor, self.conn, user)
         finish_transaction(self.conn, model, keep_transaction=True)
+
+    def on_printers_setup__activate(self, *args):
+        self.run_dialog(PrinterSettingsDialog, self.conn)
+
+

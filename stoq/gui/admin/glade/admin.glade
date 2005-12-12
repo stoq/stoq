@@ -31,7 +31,7 @@
                 <child>
                     <object class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
-                        <property name="label" translatable="yes">C_ut</property>
+                        <property name="label" translatable="yes">Recortar</property>
                         <property name="tooltip">Cut selected object into the clipboard</property>
                         <property name="stock_id">gtk-cut</property>
                     </object>
@@ -61,7 +61,7 @@
                 <child>
                     <object class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
-                        <property name="label" translatable="yes">_File</property>
+                        <property name="label" translatable="yes">Arquivo</property>
                     </object>
                 </child>
                 <child>
@@ -88,7 +88,7 @@
                 <child>
                     <object class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
-                        <property name="label" translatable="yes">Quit</property>
+                        <property name="label" translatable="yes">Sair</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
@@ -127,7 +127,6 @@
                         <property name="label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;k</property>
                     </object>
                 </child>
                 <child>
@@ -141,7 +140,7 @@
                 <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
-                        <property name="label" translatable="yes">About</property>
+                        <property name="label" translatable="yes">Sobre</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -149,7 +148,13 @@
                 <child>
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">_Help</property>
+                        <property name="label" translatable="yes">Ajuda</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="printers_setup">
+                        <property name="name">printers_setup</property>
+                        <property name="label" translatable="yes">Printers _Setup</property>
                     </object>
                 </child>
                 <child>
@@ -158,6 +163,12 @@
                         <property name="label" translatable="yes">_Receive</property>
                         <property name="stock_id">gtk-redo</property>
                         <property name="accelerator">&lt;control&gt;r</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkAction" id="settings_menu">
+                        <property name="name">settings_menu</property>
+                        <property name="label" translatable="yes">Settin_gs</property>
                     </object>
                 </child>
                 <child>
@@ -170,7 +181,8 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="printers_setup" name="printers_setup"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="admin">
         <property name="destroy_with_parent">True</property>
@@ -246,7 +258,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                                <property name="file">add16px.png</property>
+                                                                                <property name="file">edit16px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>

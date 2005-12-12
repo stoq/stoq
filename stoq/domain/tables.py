@@ -148,6 +148,8 @@ TABLES = [
                                             "PurchaseOrderAdaptToPaymentGroup",
                                             "PurchaseItem",
                                             )),
+     ('stoq.domain.drivers',               ("PrinterSettings",
+                                            ))
 ]
 
 
