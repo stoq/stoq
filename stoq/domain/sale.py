@@ -128,6 +128,9 @@ class Sale(Domain):
     #
 
     def get_status_name(self):
+        if not self.status in self.statuses.items():
+            raise DatabaseInconsistency("Invalid status for sale %d: %d"
+                                        % (self.id, self.status))
         return self.statuses[self.status]
 
     def update_client(self, person):
@@ -233,8 +236,8 @@ class Sale(Domain):
                             '%s' % self.client.get_status_string())
         if not self.status == self.STATUS_OPENED:
             raise SellError('The sale must have STATUS_OPENED for this '
-                            'operation, got status %s instead' %
-                            self.statuses[self.status])
+                            'operation, got status %s instead'
+                            % self.get_status_name())
         conn = self.get_connection()
         group = IPaymentGroup(self, connection=conn)
         if not group:
