@@ -45,6 +45,7 @@ from stoq.gui.editors.person import SupplierEditor, TransporterEditor
 from stoq.gui.editors.product import ProductEditor, ProductItemEditor
 from stoq.gui.slaves.purchase import PurchasePaymentSlave
 from stoq.gui.slaves.sale import DiscountChargeSlave
+from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.product import Product, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder, PurchaseItem
@@ -119,7 +120,7 @@ class PurchasePaymentStep(BaseWizardStep):
         if pg:
             model = pg
         else:
-            method = self.model_type.METHOD_BILL
+            method = AbstractPaymentGroupPurchaseOrder.METHOD_BILL
             interval_type = INTERVALTYPE_MONTH
             model = model.addFacet(IPaymentGroup, default_method=method,
                                    intervals=1, 
