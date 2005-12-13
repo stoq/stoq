@@ -63,7 +63,7 @@ class BaseSellableCatSearch(SearchEditor):
                                  'suggested_markup', _('Suggested Markup (%)'), 
                                  float, obj_field='category_data', width=180),
                 ForeignKeyColumn(AbstractSellableCategory, 
-                                 'salesperson_comission', 
+                                 'salesperson_commission', 
                                  _('Suggested Commission (%)'), 
                                  float, obj_field='category_data')]
 
@@ -110,7 +110,7 @@ class SellableCatSearch(SearchEditor):
                                  _('Suggested Markup (%)'), str, 
                                  obj_field='category_data', width=170),
                 ForeignKeyColumn(AbstractSellableCategory, 
-                                 'salesperson_comission', 
+                                 'salesperson_commission', 
                                  _('Suggested Commission (%)'), str, 
                                  obj_field='category_data', )]
 

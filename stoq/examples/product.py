@@ -102,7 +102,7 @@ def create_products():
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
         abstract_data = table(connection=trans, suggested_markup=markup,
-                              salesperson_comission=commission,
+                              salesperson_commission=commission,
                               description=base_cat_desc)
 
         base_cat = BaseSellableCategory(connection=trans,
@@ -112,7 +112,7 @@ def create_products():
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
         abstract_data = table(connection=trans, description=cat_desc,
-                              salesperson_comission=commission,
+                              salesperson_commission=commission,
                               suggested_markup=markup)
 
         cat = SellableCategory(connection=trans,

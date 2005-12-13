@@ -679,22 +679,22 @@ class PersonAdaptToSalesPerson(ModelAdapter):
     """A sales person facet of a person.
 
     B{Important attributes}:
-        - I{comission_type}: specifies the type of commission to be used by
+        - I{commission_type}: specifies the type of commission to be used by
                              the salesman.
     """
 
     implements(ISalesPerson, IActive)
 
-    (COMISSION_GLOBAL, 
-     COMISSION_BY_SALESPERSON, 
-     COMISSION_BY_SELLABLE,
-     COMISSION_BY_PAYMENT_METHOD, 
-     COMISSION_BY_BASE_SELLABLE_CATEGORY, 
-     COMISSION_BY_SELLABLE_CATEGORY, 
-     COMISSION_BY_SALE_TOTAL) = range(7)
+    (COMMISSION_GLOBAL, 
+     COMMISSION_BY_SALESPERSON, 
+     COMMISSION_BY_SELLABLE,
+     COMMISSION_BY_PAYMENT_METHOD, 
+     COMMISSION_BY_BASE_SELLABLE_CATEGORY, 
+     COMMISSION_BY_SELLABLE_CATEGORY, 
+     COMMISSION_BY_SALE_TOTAL) = range(7)
 
-    comission = FloatCol(default=0.0)
-    comission_type = IntCol(default=COMISSION_BY_SALESPERSON)
+    commission = FloatCol(default=0.0)
+    commission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
 
     #

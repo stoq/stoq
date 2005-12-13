@@ -56,19 +56,19 @@ class AbstractSellableCategory(Domain):
     description = StringCol()
     suggested_markup = FloatCol(default=0.0)
 
-    # A percentage comission suggested for all the sales which products
+    # A percentage commission suggested for all the sales which products
     # belongs to this category or base category
-    salesperson_comission = FloatCol(default=0.0)
+    salesperson_commission = FloatCol(default=0.0)
 
-    def get_comission(self):
-        return self.salesperson_comission
+    def get_commission(self):
+        return self.salesperson_commission
 
 
 class BaseSellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
 
-    def get_comission(self):
-        return self.category_data.get_comission()
+    def get_commission(self):
+        return self.category_data.get_commission()
 
     def get_description(self):
         return self.category_data.description
@@ -82,8 +82,8 @@ class SellableCategory(Domain):
         return self.category_data.suggested_markup or \
                self.base_category.category_data.suggested_markup
 
-    def get_comission(self):
-        return self.category_data.get_comission()
+    def get_commission(self):
+        return self.category_data.get_commission()
 
     def get_description(self):
         return "%s %s" % (self.base_category.get_description(),
@@ -154,7 +154,7 @@ class AbstractSellable(InheritableModelAdapter):
     markup = FloatCol(default=0.0)
     cost = FloatCol(default=0.0)
     max_discount = FloatCol(default=0.0)
-    comission = FloatCol(default=None)
+    commission = FloatCol(default=None)
     # This field must be mandatory, waiting for bug 2247
     unit = StringCol(default=None)
     on_sale_price = FloatCol(default=0.0)
@@ -223,8 +223,8 @@ class AbstractSellable(InheritableModelAdapter):
     def get_price_string(self):
         return get_formatted_price(self.get_price())
 
-    def get_comission(self):
-        return self.comission
+    def get_commission(self):
+        return self.commission
 
     #
     # Auxiliary methods
@@ -264,9 +264,9 @@ class AbstractSellable(InheritableModelAdapter):
     def get_suggested_markup(self):
         return self.category and self.category.get_markup() 
 
-    def set_default_comission(self):
+    def set_default_commission(self):
         if not self.category:
-            self.comission = 0.0
+            self.commission = 0.0
         else:
-            self.comission = (self.category.get_comission() 
-                              or self.category.base_category.get_comission())
+            self.commission = (self.category.get_commission() 
+                              or self.category.base_category.get_commission())

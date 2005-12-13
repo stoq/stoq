@@ -1833,7 +1833,7 @@ msgid "Base Markup:"
 msgstr ""
 
 #: ../stoq/gui/editors/glade/SellablePriceEditor.glade.h:10
-msgid "Comission:"
+msgid "Commission:"
 msgstr ""
 
 #: ../stoq/gui/editors/glade/SellablePriceEditor.glade.h:11
