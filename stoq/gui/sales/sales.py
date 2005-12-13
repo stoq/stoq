@@ -32,8 +32,9 @@ import gtk
 import gettext
 from datetime import date
 
-from sqlobject.sqlbuilder import AND, LEFTJOINOn
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from sqlobject.sqlbuilder import AND, LEFTJOINOn
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
@@ -42,7 +43,7 @@ from stoq.domain.sale import Sale
 from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch
@@ -137,8 +138,7 @@ class SalesApp(AppWindow):
                 Column('status_name', title=_('Status'), width=80, 
                        data_type=str), 
                 Column('total_sale_amount', title=_('Total'), 
-                       data_type=float, justify=gtk.JUSTIFY_RIGHT,
-                       format_func=get_formatted_price)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
 
     def get_extra_query(self):
         salesperson_table = Person.getAdapterClass(ISalesPerson)
