@@ -27,6 +27,7 @@ gui/editors.py:
 import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
+from zope.interface.interface import Interface
 
 from stoqlib.gui.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
@@ -36,24 +37,44 @@ _ = gettext.gettext
 class BaseEditorSlave(SlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
     setting up focus sequence, required attributes and validated attrs.
+
+    @cvar gladefile:
+    @vcar widgets:
+    @cvar model_type:
+    @cvar model_iface: 
     """
     gladefile = None
     widgets = ()
     model_type = None
-
+    model_iface = None
+    
     def __init__(self, conn, model=None):
-        # The model attribute represents the main object that has been
-        # edited by an interface. It will be always the object the is sent
-        # from a kiwi list to an editor.
+        """
+        @param conn: a connection
+        @param model: 
+        """
+        
+        # The model attribute represents the 
         self.conn = conn
         self.edit_mode = model is not None
-        if self.model_type:
+        if self.model_iface:
+            model = model or self.create_model(self.conn)
+            if not self.model_iface.providedBy(model):
+                raise TypeError(
+                    "%s editor requires a model implementing %s, got a %r" % (
+                    self.__class__.__name__, self.model_iface.__name__,
+                    model))
+            # XXX: Some code use model type
+            if not self.model_type:
+                self.model_type = type(model)
+                
+        elif self.model_type:
             model = model or self.create_model(self.conn)
             if model and not isinstance(model, self.model_type):
-                raise TypeError('%s editor requires a model of type %s, '
-                                'got a %r' % (self.__class__.__name__,
-                                              self.model_type,
-                                              model))
+                raise TypeError(
+                    '%s editor requires a model of type %s, got a %r' % (
+                    self.__class__.__name__, self.model_type.__name__,
+                    model))
         else:
             model = None
         self.model = model 
@@ -61,7 +82,6 @@ class BaseEditorSlave(SlaveDelegate):
                                widgets=self.widgets)
         self.setup_proxies()
         self.setup_slaves()
-
 
     def create_model(self, conn):
         """
@@ -74,18 +94,18 @@ class BaseEditorSlave(SlaveDelegate):
                         "implement create_model?" % self)
     
     def setup_proxies(self):
-        """ This method should be defined in each child. """
+        """
+        A subclass can override this
+        """
 
     def setup_slaves(self):
-        """ This method should be defined in each child. """
-
-
+        """
+        A subclass can override this
+        """
 
     #
     # Hook methods
     #
-
-
 
     def on_cancel(self):
         """ This is a hook method which must be redefined when some
