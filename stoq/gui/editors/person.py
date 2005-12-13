@@ -49,7 +49,7 @@ from stoq.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
                                   PasswordEditorSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.slaves.transporter import TransporterDataSlave
-from stoq.domain.person import Person, EmployeeRole, LoginInfo
+from stoq.domain.person import EmployeeRole, LoginInfo
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                     ISupplier, ITransporter, IUser)
 
@@ -58,7 +58,7 @@ _ = gettext.gettext
 
 class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
-    model_type = Person.getAdapterClass(IClient)
+    model_iface = IClient
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
@@ -79,7 +79,7 @@ class ClientEditor(BasePersonRoleEditor):
         
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
-    model_type = Person.getAdapterClass(IUser)
+    model_iface = IUser
     gladefile = 'BaseTemplate'
     widgets = ('main_holder',)
     USER_TAB_POSITION = 0
@@ -173,7 +173,7 @@ class PasswordEditor(BaseEditor):
 
 class CreditProviderEditor(BasePersonRoleEditor):
     model_name = _('Credit Provider')
-    model_type = Person.getAdapterClass(ICreditProvider)
+    model_iface = ICreditProvider
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
@@ -200,7 +200,7 @@ class CreditProviderEditor(BasePersonRoleEditor):
 
 class EmployeeEditor(BasePersonRoleEditor):
     model_name = _('Employee')
-    model_type = Person.getAdapterClass(IEmployee)
+    model_iface = IEmployee
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
@@ -278,7 +278,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
 
 class SupplierEditor(BasePersonRoleEditor):
     model_name = _('Supplier')
-    model_type = Person.getAdapterClass(ISupplier)
+    model_iface = ISupplier
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
@@ -300,7 +300,7 @@ class SupplierEditor(BasePersonRoleEditor):
 
 class TransporterEditor(BasePersonRoleEditor):
     model_name = _('Transporter')
-    model_type = Person.getAdapterClass(ITransporter)
+    model_iface = ITransporter
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
