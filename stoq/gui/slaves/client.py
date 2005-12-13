@@ -33,10 +33,9 @@ stoq/gui/slaves/client.py
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.domain.interfaces import IClient
-from stoq.domain.person import Person
 
 class ClientStatusSlave(BaseEditorSlave):
-    model_type = Person.getAdapterClass(IClient)
+    model_iface = IClient
     gladefile = 'ClientStatusSlave'
 
     widgets = ('statuses_combo',)

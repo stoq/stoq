@@ -32,12 +32,11 @@ stoq/gui/slaves/credprovider.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import Person
 from stoq.domain.interfaces import ICreditProvider
 
 
 class CreditProviderDetailsSlave(BaseEditorSlave):
-    model_type = Person.getAdapterClass(ICreditProvider)
+    model_iface = ICreditProvider
     gladefile = 'CredProviderDetailsSlave'
 
     def setup_proxies(self):

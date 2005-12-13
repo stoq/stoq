@@ -31,13 +31,12 @@ stoq/gui/slaves/purchase.py
 from stoqlib.gui.editors import BaseEditorSlave
 
 from stoq.lib.defaults import interval_types
-from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.interfaces import IPaymentGroup
 
 
 class PurchasePaymentSlave(BaseEditorSlave):
     gladefile = 'PurchasePaymentSlave'
-    model_type = PurchaseOrder.getAdapterClass(IPaymentGroup)
+    model_iface = IPaymentGroup
     widgets = ('interval_type_combo',
                'intervals',
                'installments_number')
