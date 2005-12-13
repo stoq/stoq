@@ -166,7 +166,7 @@ class PersonEditorTemplate(BaseEditorSlave):
 
 
 class IndividualEditorTemplate(BaseEditorSlave):
-    model_type = Person.getAdapterClass(IIndividual)
+    model_iface = IIndividual
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
@@ -231,7 +231,7 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
 
 class CompanyEditorTemplate(BaseEditorSlave):
-    model_type = Person.getAdapterClass(ICompany)
+    model_iface = ICompany
     gladefile = 'BaseTemplate'
     widgets = ('main_holder', )
 
