@@ -33,7 +33,7 @@ stoq/gui/slaves/individual.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import CityLocation, Person
+from stoq.domain.person import CityLocation
 from stoq.domain.interfaces import IIndividual
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import new_transaction
@@ -41,7 +41,7 @@ from stoq.lib.defaults import get_country_states
 
 
 class IndividualDocuments(BaseEditorSlave):
-    model_type = Person.getAdapterClass(IIndividual)
+    model_iface = IIndividual
     gladefile = 'IndividualDocuments'
 
     widgets = ('cpf',
@@ -54,7 +54,7 @@ class IndividualDocuments(BaseEditorSlave):
                                     IndividualDocuments.widgets)
 
 class IndividualDetailsSlave(BaseEditorSlave):
-    model_type = Person.getAdapterClass(IIndividual)
+    model_iface = IIndividual
     gladefile = 'IndividualDetailsSlave'
 
     birth_loc_widgets = (

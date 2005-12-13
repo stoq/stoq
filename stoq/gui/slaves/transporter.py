@@ -30,12 +30,11 @@ stoq/gui/slaves/transporter.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import Person
 from stoq.domain.interfaces import ITransporter
 
 
 class TransporterDataSlave(BaseEditorSlave):
-    model_type = Person.getAdapterClass(ITransporter)
+    model_iface = ITransporter
     gladefile = 'TransporterDataSlave'
 
     def setup_proxies(self):

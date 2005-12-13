@@ -34,7 +34,7 @@
 import gtk
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import (Person, WorkPermitData, MilitaryData, 
+from stoq.domain.person import (WorkPermitData, MilitaryData, 
                                 VoterData, EmployeeRole)
 from stoq.domain.interfaces import IEmployee
 from stoq.domain.account import BankAccount
@@ -42,7 +42,7 @@ from stoq.domain.account import BankAccount
 
 class EmployeeDetailsSlave(BaseEditorSlave):
     gladefile = 'EmployeeDetailsSlave'
-    model_type = Person.getAdapterClass(IEmployee)
+    model_iface = IEmployee
 
     # 
     # Widgets specification for size groups.
@@ -158,7 +158,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
 class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
-    model_type = Person.getAdapterClass(IEmployee)
+    model_iface = IEmployee
     widgets = ('statuses_combo',)
 
     def setup_proxies(self):

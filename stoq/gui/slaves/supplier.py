@@ -33,12 +33,11 @@ stoq/gui/slaves/supplier.py
 
 from stoqlib.gui.editors import BaseEditorSlave
 
-from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 
 
 class SupplierDetailsSlave(BaseEditorSlave):
-    model_type = Person.getAdapterClass(ISupplier)
+    model_iface = ISupplier
     gladefile = 'SupplierDetailsSlave'
     widgets = ('statuses_combo', 'product_desc')
 
