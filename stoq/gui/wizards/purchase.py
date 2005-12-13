@@ -31,14 +31,14 @@ stoq/gui/wizards/purchase.py:
 import gettext
 
 import gtk
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.dialogs import run_dialog
 from stoqlib.gui.lists import AdditionListSlave
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.lib.validators import (get_price_format_str, format_quantity, 
-                                 get_formatted_price)
+from stoq.lib.validators import get_price_format_str, format_quantity
 from stoq.lib.defaults import INTERVALTYPE_MONTH
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import SupplierEditor, TransporterEditor
@@ -108,7 +108,7 @@ class FinishPurchaseStep(BaseWizardStep):
 
 class PurchasePaymentStep(BaseWizardStep):
     gladefile = 'PurchasePaymentStep'
-    model_type = PurchaseOrder.getAdapterClass(IPaymentGroup)
+    model_iface = IPaymentGroup
     payment_widgets = ('method_combo',)
     order_widgets = ('subtotal_lbl',
                      'total_lbl')
@@ -226,11 +226,9 @@ class PurchaseProductStep(BaseWizardStep):
                        editable=True, justify=gtk.JUSTIFY_RIGHT),
                 Column('sellable.unit', title=_('Unit'), data_type=str, 
                        width=90),
-                Column('cost', title=_('Cost'), data_type=float, 
-                       format_func=get_formatted_price, editable=True,
-                       width=90, justify=gtk.JUSTIFY_RIGHT),
-                Column('total', title=_('Total'), data_type=float,
-                       format_func=get_formatted_price,
+                Column('cost', title=_('Cost'), data_type=currency, 
+                       editable=True, width=90, justify=gtk.JUSTIFY_RIGHT),
+                Column('total', title=_('Total'), data_type=currency,
                        width=100, justify=gtk.JUSTIFY_RIGHT)]
 
     def _update_widgets(self):

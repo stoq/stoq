@@ -35,9 +35,9 @@ import datetime
 
 import gtk
 from kiwi.utils import gsignal
-from sqlobject.sqlbuilder import AND, IN
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
+from sqlobject.sqlbuilder import AND, IN
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.dialogs import (BasicWrappingDialog, run_dialog,
                                  confirm_dialog, notify_dialog)

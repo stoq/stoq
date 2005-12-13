@@ -32,6 +32,7 @@ import gettext
 import datetime
 
 import gtk
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchBar
@@ -43,7 +44,7 @@ from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.service import ServiceEditor
@@ -147,12 +148,10 @@ class PurchaseApp(AppWindow):
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),
                 Column('purchase_total', title=_('Ordered'), 
-                       data_type=float, width=100,
-                       format_func=get_formatted_price,
+                       data_type=currency, width=100,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('received_total', title=_('Received'), 
-                       format_func=get_formatted_price,
-                       data_type=float, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
 
     #
     # Hooks

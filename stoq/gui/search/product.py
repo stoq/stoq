@@ -31,10 +31,10 @@ stoq/gui/search/product.py
 import gettext
 import gtk
 
+from kiwi.datatypes import currency
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import Column, AccessorColumn
 
-from stoq.lib.validators import get_formatted_price
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.interfaces import ISellable
@@ -95,12 +95,10 @@ class ProductSearch(SearchEditor):
                                self.get_main_supplier_name,
                                title=_('Supplier'), data_type=str, 
                                width=200),
-                Column('cost', _('Cost'), data_type=float,
-                       format_func=get_formatted_price, 
+                Column('cost', _('Cost'), data_type=currency,
                        width=80, justify=gtk.JUSTIFY_RIGHT),
-                Column('price', _('Price'), data_type=float,
-                       format_func=get_formatted_price, width=80, 
-                       justify=gtk.JUSTIFY_RIGHT),
+                Column('price', _('Price'), data_type=currency,
+                       width=80, justify=gtk.JUSTIFY_RIGHT),
                 Column('states_string', _('State'), data_type=str)]
 
     def get_extra_query(self):

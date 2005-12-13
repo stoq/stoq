@@ -32,9 +32,11 @@ stoq/domain/base.py:
 import datetime
 import warnings
 
+from kiwi.datatypes import currency
 from kiwi.python import qual
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
+from sqlobject.converters import registerConverter, FloatConverter
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from stoqlib.exceptions import AdapterError
@@ -376,6 +378,8 @@ class InheritableModelAdapter(InheritableModel, Adapter):
         InheritableModel.__init__(self, *args, **kwargs)
 
 
+
+
 for klass in (InheritableModel, Domain, ModelAdapter):
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
                                         default=datetime.datetime.now))
@@ -389,6 +393,10 @@ for klass in (InheritableModel, Domain, ModelAdapter):
     # list(AbstractSellable.select()) = list of AbstractSellable 
     # objects instead child table objects.
     # lazyUpdate = True
+
+def CurrencyConverter(value, db):
+    return repr(float(value))
+registerConverter(currency, CurrencyConverter)
 
 _registry = AdapterRegistry()
 

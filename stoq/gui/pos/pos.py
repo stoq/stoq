@@ -33,6 +33,7 @@ stoq/gui/pos/pos.py:
 import gettext
 
 import gtk
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import rollback_and_begin
@@ -41,8 +42,7 @@ from stoqlib.gui.search import get_max_search_results
 
 from stoq.gui.application import AppWindow
 from stoq.lib.runtime import new_transaction, get_current_user
-from stoq.lib.validators import (format_quantity, get_formatted_price, 
-                                 get_price_format_str)
+from stoq.lib.validators import (format_quantity, get_price_format_str)
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.sale import Sale
@@ -240,16 +240,14 @@ class POSApp(AppWindow):
                        data_type=str, width=90),
                 Column('sellable.description', title=_('Description'), 
                        data_type=str, expand=True, searchable=True),
-                Column('price', title=_('Price'), data_type=float, 
-                       format_func=get_formatted_price,
+                Column('price', title=_('Price'), data_type=currency, 
                        editable=True,
                        width=90, justify=gtk.JUSTIFY_RIGHT),
                 Column('quantity', title=_('Quantity'), data_type=float,
                        width=90, format_func=format_quantity,
                        editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
-                Column('total', title=_('Total'), data_type=float,
-                       format_func=get_formatted_price,
+                Column('total', title=_('Total'), data_type=currency,
                        width=100, justify=gtk.JUSTIFY_RIGHT)]
 
     def _edit_item(self, *args):

@@ -33,8 +33,9 @@ import gettext
 import datetime
 
 import gtk
-from sqlobject.sqlbuilder import AND
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from sqlobject.sqlbuilder import AND
 from kiwi.ui.dialogs import messagedialog
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
@@ -46,7 +47,7 @@ from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
@@ -135,8 +136,7 @@ class TillApp(AppWindow):
                                  data_type=str, obj_field='client',
                                  adapted=True),
                 Column('total_sale_amount', title=_('Total'), width=150, 
-                       data_type=float, justify=gtk.JUSTIFY_RIGHT,
-                       format_func=get_formatted_price)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
 
     def get_extra_query(self):
         q1 = Sale.q.clientID == PersonAdaptToClient.q.id

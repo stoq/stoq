@@ -32,13 +32,14 @@ import gtk
 import gettext
 import datetime
 
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
 
 from stoq.domain.payment.base import Payment
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_formatted_price, get_price_format_str
+from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import AppWindow
 from stoq.gui.slaves.filter import FilterSlave
@@ -129,8 +130,7 @@ class ReceivableApp(AppWindow):
                 Column('status_str', title=_('Status'), width=80, 
                        data_type=str), 
                 Column('value', title=_('Value'), 
-                       data_type=float, justify=gtk.JUSTIFY_RIGHT,
-                       format_func=get_formatted_price)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()

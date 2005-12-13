@@ -32,6 +32,7 @@ stoq/gui/search/sellable:
 import gettext
 
 import gtk
+from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchDialog
 from stoqlib.gui.columns import AccessorColumn
@@ -39,7 +40,7 @@ from stoqlib.gui.columns import AccessorColumn
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_formatted_price, format_quantity
+from stoq.lib.validators import format_quantity
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.product import Product
 from stoq.domain.person import Person
@@ -89,8 +90,7 @@ class SellableSearch(SearchDialog):
                           data_type=str, width=100),
                    Column('description', title=_('Description'),
                           expand=True, data_type=str, searchable=True),
-                   Column('price', title=_('Price'), data_type=float,
-                          format_func=get_formatted_price,
+                   Column('price', title=_('Price'), data_type=currency,
                           width=90)]
         if self.has_stock_mode:
             column = AccessorColumn('stock', self.get_stock_balance, 
