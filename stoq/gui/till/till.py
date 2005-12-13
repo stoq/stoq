@@ -131,12 +131,12 @@ class TillApp(AppWindow):
                        format_func=self._format_order_number,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date'), width=120, 
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date),
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
                                  data_type=str, obj_field='client',
                                  adapted=True),
                 Column('total_sale_amount', title=_('Total'), width=150, 
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency)]
 
     def get_extra_query(self):
         q1 = Sale.q.clientID == PersonAdaptToClient.q.id

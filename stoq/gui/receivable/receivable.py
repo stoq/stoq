@@ -118,19 +118,16 @@ class ReceivableApp(AppWindow):
     def _get_columns(self):
         return [Column('payment_id', title=_('Number'), width=100, 
                        data_type=str, sorted=True,
-                       justify=gtk.JUSTIFY_RIGHT,
                        format_func=self._get_payment_id),
                 Column('description', title=_('Description'), width=220, 
                        data_type=str),
                 Column('thirdparty_name', title=_('Drawee'), data_type=str,
                        width=170),
                 Column('due_date', title=_('Due Date'),
-                       justify=gtk.JUSTIFY_RIGHT,
                        data_type=datetime.date, width=90),
                 Column('status_str', title=_('Status'), width=80, 
                        data_type=str), 
-                Column('value', title=_('Value'), 
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                Column('value', title=_('Value'), data_type=currency)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()

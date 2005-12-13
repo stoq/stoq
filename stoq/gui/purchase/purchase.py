@@ -148,10 +148,9 @@ class PurchaseApp(AppWindow):
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),
                 Column('purchase_total', title=_('Ordered'), 
-                       data_type=currency, width=100,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       data_type=currency, width=100),
                 Column('received_total', title=_('Received'), 
-                       data_type=currency, justify=gtk.JUSTIFY_RIGHT)]
+                       data_type=currency)]
 
     #
     # Hooks
