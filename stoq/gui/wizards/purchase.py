@@ -120,7 +120,7 @@ class PurchasePaymentStep(BaseWizardStep):
         if pg:
             model = pg
         else:
-            method = AbstractPaymentGroupPurchaseOrder.METHOD_BILL
+            method = AbstractPaymentGroup.METHOD_BILL
             interval_type = INTERVALTYPE_MONTH
             model = model.addFacet(IPaymentGroup, default_method=method,
                                    intervals=1, 
