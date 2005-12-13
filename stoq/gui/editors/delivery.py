@@ -159,15 +159,13 @@ class DeliveryEditor(BaseEditor):
 
     def setup_slaves(self):
         columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 
-                                    data_type=str, sorted=True, 
-                                    justify=gtk.JUSTIFY_LEFT, 
+                                    data_type=str, sorted=True,
                                     obj_field='sellable'),
                    ForeignKeyColumn(AbstractSellable, 'description',
                                     title=_('Description'), data_type=str, 
                                     expand=True, obj_field='sellable'),
                    Column('quantity', title=_('Quantity'), data_type=float, 
-                          format_func=format_quantity,
-                          justify=gtk.JUSTIFY_RIGHT)]
+                          format_func=format_quantity)]
 
         delivery = IDelivery(self.model, connection=self.conn)
         items = delivery.get_items()

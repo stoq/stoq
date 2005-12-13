@@ -241,14 +241,13 @@ class POSApp(AppWindow):
                 Column('sellable.description', title=_('Description'), 
                        data_type=str, expand=True, searchable=True),
                 Column('price', title=_('Price'), data_type=currency, 
-                       editable=True,
-                       width=90, justify=gtk.JUSTIFY_RIGHT),
+                       editable=True, width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
                        width=90, format_func=format_quantity,
-                       editable=True,
-                       justify=gtk.JUSTIFY_RIGHT),
+                       editable=True),
                 Column('total', title=_('Total'), data_type=currency,
-                       width=100, justify=gtk.JUSTIFY_RIGHT)]
+                       width=100)]
+                       
 
     def _edit_item(self, *args):
         sellable_item = self.order_list.get_selected()

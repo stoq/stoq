@@ -91,14 +91,11 @@ class ProductSearch(SearchEditor):
                        width=80),
                 Column('description', _('Description'), data_type=str, 
                        width=260),
-                AccessorColumn('suppliers', 
-                               self.get_main_supplier_name,
-                               title=_('Supplier'), data_type=str, 
+                AccessorColumn('suppliers', self.get_main_supplier_name,
+                               title=_('Supplier'), data_type=str,
                                width=200),
-                Column('cost', _('Cost'), data_type=currency,
-                       width=80, justify=gtk.JUSTIFY_RIGHT),
-                Column('price', _('Price'), data_type=currency,
-                       width=80, justify=gtk.JUSTIFY_RIGHT),
+                Column('cost', _('Cost'), data_type=currency, width=80),
+                Column('price', _('Price'), data_type=currency, width=80),
                 Column('states_string', _('State'), data_type=str)]
 
     def get_extra_query(self):

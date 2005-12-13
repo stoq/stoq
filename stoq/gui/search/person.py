@@ -298,8 +298,8 @@ class TransporterSearch(BasePersonSearch):
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=180),
                 FacetColumn(ITransporter, 'freight_percentage', 
-                            title=_('Freight (%)'), data_type=float, 
-                            width=150, justify=gtk.JUSTIFY_RIGHT),
+                            title=_('Freight (%)'), data_type=float,
+                            width=150),
                 FacetColumn(ITransporter, 'status_string', 
                             title=_('Status'), data_type=str)]
 

@@ -161,19 +161,16 @@ class TillOperationDialog(SlaveDelegate):
 
     def _get_columns(self, *args):
         return [Column('payment_id', _('Number'), data_type=int, width=100,
-                        format_func=self._get_payment_id,
-                       justify=gtk.JUSTIFY_RIGHT, sorted=True),
+                        format_func=self._get_payment_id, sorted=True),
                        # XXX Waiting for bug 2214
                        # format='%03d'),
                 Column('due_date', _('Due Date'), 
-                       data_type=datetime.date, width=120, 
-                       justify=gtk.JUSTIFY_RIGHT),
+                       data_type=datetime.date, width=120),
                 Column('description', _('Description'), data_type=str, 
                        expand=True),
-                ColoredColumn('value', _('Value'), data_type=float, 
+                ColoredColumn('value', _('Value'), data_type=currency, 
                               color='red', data_func=self._colorize,
-                              format=get_price_format_str(),
-                              width=120, justify=gtk.JUSTIFY_RIGHT)]
+                              width=120)]
 
     def _reverse_selection(self):
         title = _('Reverse Selection')

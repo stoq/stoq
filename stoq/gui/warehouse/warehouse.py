@@ -119,8 +119,7 @@ class WarehouseApp(AppWindow):
                 AccessorColumn('supplier', self._get_supplier, 
                                title=_('Supplier'), data_type=str),
                 AccessorColumn('quantity', self._get_stock_balance_str, 
-                               title=_('Quantity'), data_type=float,
-                               justify=gtk.JUSTIFY_RIGHT)]
+                               title=_('Quantity'), data_type=float)]
     #
     # Accessor
     #
