@@ -57,7 +57,7 @@ class SellablePriceEditor(BaseEditor):
                      'on_sale_start_date',
                      'on_sale_end_date',
                      'max_discount',
-                     'comission',
+                     'commission',
                      'on_sale_price',
                      'price')
 
@@ -68,11 +68,11 @@ class SellablePriceEditor(BaseEditor):
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
         self.update_markup()
-        self.update_comission()
+        self.update_commission()
 
     def set_widget_formats(self):
         widgets = (self.markup, self.base_markup, self.max_discount,
-                   self.comission, self.on_sale_price, self.price,
+                   self.commission, self.on_sale_price, self.price,
                    self.cost)
         for widget in widgets:
             widget.set_data_format('%.02f')
@@ -84,11 +84,11 @@ class SellablePriceEditor(BaseEditor):
         self.model.markup = ((price / cost) - 1) * 100
         self.main_proxy.update('markup')
 
-    def update_comission(self):
-        if self.model.get_comission() is not None:
+    def update_commission(self):
+        if self.model.get_commission() is not None:
             return
-        self.model.set_default_comission()
-        self.main_proxy.update('comission')
+        self.model.set_default_commission()
+        self.main_proxy.update('commission')
 
     def update_price(self):
         cost = self.model.cost

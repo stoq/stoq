@@ -61,7 +61,7 @@ class ISellable(ConnInterface):
     @itype markup float
     @itype cost float
     @itype mas_discount float
-    @itype comission float
+    @itype commission float
     @itype on_sale_price float
     """
     
@@ -72,7 +72,7 @@ class ISellable(ConnInterface):
     markup = Attribute('((cost/price)-1)*100')
     cost = Attribute('final cost of sellable')
     max_discount = Attribute('maximum discount allowed')
-    comission = Attribute('comission to pay after selling this sellable')
+    commission = Attribute('commission to pay after selling this sellable')
 
     # If the sellable is on sale, here we have settings for that
     on_sale_price = Attribute('A special price used when we have a '
@@ -248,10 +248,10 @@ class IBranch(ConnInterface):
 class ISalesPerson(ConnInterface):
     """An employee in charge of make sales"""
 
-    comission = Attribute('The percentege of comission the company must pay '
+    commission = Attribute('The percentege of commission the company must pay '
                           'for this salesman')
-    comission_type = Attribute('A rule used to calculate the amount of '
-                               'comission. This is a reference to another '
+    commission_type = Attribute('A rule used to calculate the amount of '
+                               'commission. This is a reference to another '
                                'object')
 
 

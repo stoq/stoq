@@ -283,7 +283,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     #
 
     def get_pm_commission_total(self):
-        """Return the payment method comission total. Usually credit 
+        """Return the payment method commission total. Usually credit 
         card payment method is the most common method which uses 
         commission
         """
