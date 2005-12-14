@@ -31,7 +31,6 @@ stoq/gui/editors/printers.py:
 import gettext
 
 from kiwi.ui.widgets.list import Column
-from kiwi.datatypes import ValidationError
 from stoqdrivers.devices.printers.base import get_supported_printers
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.lists import AdditionListDialog
