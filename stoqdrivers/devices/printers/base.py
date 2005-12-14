@@ -82,6 +82,9 @@ class BasePrinter(Logger):
             raise TypeError("The driver %s doesn't implements a known "
                             "interface")
 
+def get_virtual_printer():
+    from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+    return FiscalPrinter(brand='virtual', model='Simple')
 
 def get_supported_printers():
     printers_dir = os.path.dirname(printers.__file__)
@@ -89,8 +92,8 @@ def get_supported_printers():
 
     for brand in os.listdir(printers_dir):
         brand_dir = os.path.join(printers_dir, brand)
-        if ((not os.path.isdir(brand_dir))
-            or brand.startswith(".")):
+        if ((not os.path.isdir(brand_dir)) or brand.startswith(".")
+            or brand.startswith("virtual")):
             continue
 
         result[brand] = []
