@@ -33,7 +33,7 @@ import gettext
 from datetime import datetime
 
 from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
-from stoqlib.exceptions import SellError
+from stoqlib.exceptions import SellError, DatabaseInconsistency 
 from zope.interface import implements
 
 from stoq.domain.base import Domain
@@ -128,7 +128,7 @@ class Sale(Domain):
     #
 
     def get_status_name(self):
-        if not self.status in self.statuses.items():
+        if not self.status in self.statuses:
             raise DatabaseInconsistency("Invalid status for sale %d: %d"
                                         % (self.id, self.status))
         return self.statuses[self.status]
