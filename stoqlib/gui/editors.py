@@ -27,7 +27,6 @@ gui/editors.py:
 import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
-from zope.interface.interface import Interface
 
 from stoqlib.gui.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
@@ -57,6 +56,7 @@ class BaseEditorSlave(SlaveDelegate):
         # The model attribute represents the 
         self.conn = conn
         self.edit_mode = model is not None
+        print model, self.model_iface, self.model_type
         if self.model_iface:
             model = model or self.create_model(self.conn)
             if not self.model_iface.providedBy(model):
@@ -64,8 +64,8 @@ class BaseEditorSlave(SlaveDelegate):
                     "%s editor requires a model implementing %s, got a %r" % (
                     self.__class__.__name__, self.model_iface.__name__,
                     model))
-            # XXX: Some code use model type
             if not self.model_type:
+                # XXX: Some code use model type
                 self.model_type = type(model)
                 
         elif self.model_type:
