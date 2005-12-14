@@ -103,3 +103,6 @@ class InvalidState(DriverError):
 
 class CapabilityError(Exception):
     "General capability error."
+
+class ItemAdditionError(DriverError):
+    "Error while adding an item."""

@@ -74,9 +74,8 @@ class BasePrinter(Logger):
 
         self._driver = driver_class(device=self.device)
 
-        self.debug(("Config data: brand=%s,device=%s,model=%s,baudrate=%s\n"
-                    % (self.brand, self.device, self.model,
-                       self._driver.getBaudrate())))
+        self.debug(("Config data: brand=%s,device=%s,model=%s\n"
+                    % (self.brand, self.device, self.model)))
 
         driver_interfaces = providedBy(self._driver)
         if not (ICouponPrinter in driver_interfaces):
