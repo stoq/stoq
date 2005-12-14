@@ -32,7 +32,6 @@ gui/search/person.py
 
 import gettext
 
-import gtk
 from sqlobject.sqlbuilder import LEFTJOINOn, AND
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor

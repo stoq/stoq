@@ -36,7 +36,7 @@ from kiwi.datatypes import currency
 from kiwi.python import qual
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
-from sqlobject.converters import registerConverter, FloatConverter
+from sqlobject.converters import registerConverter
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from stoqlib.exceptions import AdapterError
