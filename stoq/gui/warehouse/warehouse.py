@@ -118,7 +118,7 @@ class WarehouseApp(AppWindow):
                        expand=True, data_type=str, searchable=True),
                 AccessorColumn('supplier', self._get_supplier, 
                                title=_('Supplier'), data_type=str),
-                AccessorColumn('quantity', self._get_stock_balance_str, 
+                AccessorColumn('quantity', self._get_stock_balance, 
                                title=_('Quantity'), data_type=float)]
     #
     # Accessor
@@ -148,16 +148,8 @@ class WarehouseApp(AppWindow):
         storable = self._get_storable(instance)
         return storable.get_full_balance(branch)
 
-    def _get_stock_balance_str(self, instance):
-        """Accessor called by AccessorColumn"""
-        balance = self._get_stock_balance(instance)
-        storable = self._get_storable(instance)
-        return storable.get_full_balance_string(full_balance=balance)
-
     def _update_stock_total(self):
-        # FIXME Waiting for a bug fix in kiwi
-        # self.summary_label.update_total()
-        pass
+        self.summary_label.update_total()
 
     #
     # Hooks
