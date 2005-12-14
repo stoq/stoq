@@ -112,7 +112,7 @@ class FiscalPrinter(BasePrinter):
                                        "before add payments.")
         result = self._driver.coupon_add_payment(payment_method, payment_value,
                                                  payment_description)
-        self.payments_total_value += result
+        self.payments_total_value += payment_value
         return result
         
     def cancel(self):
@@ -132,8 +132,10 @@ class FiscalPrinter(BasePrinter):
                                    "closing it")
         elif self.totalized_value > self.payments_total_value:
             raise CloseCouponError("Isn't possible close the coupon since "
-                                   "the payments added doesn't corresponds"
-                                   "to coupon totalied value")
+                                   "the payments total (%.2f) doesn't "
+                                   "match the totalized value (%.2f)."
+                                   % (self.payments_total_value,
+                                      self.totalized_value))
         else:
             self._driver.coupon_close(promotional_message)
 
