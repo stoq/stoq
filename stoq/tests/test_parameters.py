@@ -65,7 +65,7 @@ class TestParameter:
         assert isinstance(company, companyTable)
  
     def test_DefaultEmployeeRole(self):
-        employee_role = self.sparam.DEFAULT_EMPLOYEE_ROLE
+        employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
         assert isinstance(employee_role, EmployeeRole)
    
     def test_SuggestedSupplier(self):

@@ -35,23 +35,26 @@ import datetime
 
 import gtk
 import gettext
-from sqlobject.sqlbuilder import func
+from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 from stoqlib.gui.editors import SimpleEntryEditor, BaseEditor
 
-from stoq.lib.runtime import new_transaction
+from stoq.lib.runtime import get_connection
 from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
-                                      EmployeeStatusSlave)
+                                      EmployeeStatusSlave, 
+                                      EmployeeRoleSlave, 
+                                      EmployeeRoleHistorySlave)
 from stoq.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
                                   PasswordEditorSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.slaves.transporter import TransporterDataSlave
 from stoq.domain.person import EmployeeRole, LoginInfo
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
-                                    ISupplier, ITransporter, IUser)
+                                    ISupplier, ITransporter, IUser, 
+                                    ICompany, IIndividual)
 
 _ = gettext.gettext
 
@@ -210,6 +213,8 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
+        if ICompany(person, connection=self.conn):
+            person.addFacet(IIndividual, connection=self.conn)
         employee = IEmployee(person, connection=conn)
         return employee or person.addFacet(IEmployee, connection=conn,
                                            role=None)
@@ -219,13 +224,26 @@ class EmployeeEditor(BasePersonRoleEditor):
         if not self.individual_slave:
             raise ValueError('This editor must have an individual slave')
         self.details_slave = EmployeeDetailsSlave(self.conn, self.model)
-        tab_text = _('Employee Data')
+        custom_tab_label = _('Employee Data')
         slave = self.individual_slave
         slave._person_slave.attach_custom_slave(self.details_slave,
-                                                tab_text)
+                                                custom_tab_label)
         self.status_slave = EmployeeStatusSlave(self.conn, self.model)
         slave.attach_person_slave(self.status_slave)
+        self.role_slave = EmployeeRoleSlave(self.conn, self.model,
+                                            edit_mode=self.edit_mode)
+        slave._person_slave.attach_role_slave(self.role_slave)
+        history_tab_label = _("Role History")
+        history_slave = EmployeeRoleHistorySlave(self.model)
+        slave._person_slave.attach_extra_slave(history_slave,
+                                               history_tab_label)
 
+    def on_confirm(self):
+        self.individual_slave.on_confirm()
+        self.role_slave.on_confirm()
+        return self.model
+                
+ 
 
 class EmployeeRoleEditor(SimpleEntryEditor):
     model_type = EmployeeRole
@@ -235,7 +253,6 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     def __init__(self, conn, model):
         SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
                                    name_entry_label='Role Name:')
-        self.main_dialog.enable_notices()
 
     #
     # BaseEditor Hooks
@@ -251,29 +268,23 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     def create_model(self, conn):
         return EmployeeRole(connection=conn, name='')
 
-    #     
-    # BasicPluggableDialog Hooks
-    #         
+    def on_cancel(self):
+        # XXX This will prevent problems in case that you can't
+        # update the connection.
+        if not self.edit_mode:
+            self.model_type.delete(self.model.id, connection=self.conn)
 
-    def after_name_entry__changed(self, *args):
-        self.main_dialog.clear_notices()
-        role_name = self.name_entry.get_text()
-        conn = new_transaction() 
-        self.main_dialog.enable_ok()
-        for role in EmployeeRole.select(connection=conn):
-            query = func.UPPER(EmployeeRole.q.name) == role_name.upper()
-            if EmployeeRole.select(query, connection=conn).count():       
-                msg = _('This role already exists!')
-                # FIXME enable this line after a bug fix in kiwi
-                # self.name_entry.set_invalid(msg)
-                self.main_dialog.disable_ok()
-                # XXX We will not need this line when kiwi provide 
-                # support for validation when changing the model 
-                # attribute dynamically
-                self.main_dialog.alert(msg)
-                return False
-        self.model.name = role_name
-        return self.model
+    #
+    # Kiwi handlers
+    #
+
+    def on_name_entry__validate(self, widget, value):
+        conn = get_connection()
+        q1 = func.UPPER(EmployeeRole.q.name) == value.upper()
+        q2 = EmployeeRole.q.id != self.model.id
+        query = AND(q1, q2)
+        if EmployeeRole.select(query, connection=conn).count():       
+            return ValidationError('This role already exists!')
 
 
 class SupplierEditor(BasePersonRoleEditor):

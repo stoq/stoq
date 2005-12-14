@@ -24,6 +24,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
+##              Bruno Rafael Garcia         <brg@async.com.br>
 ##
 """
 stoq/domain/person.py:
@@ -41,7 +42,6 @@ from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
 
 from stoq.lib.validators import raw_phone_number
-from stoq.lib.runtime import get_connection
 from stoq.domain.base import CannotAdapt, Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
@@ -60,18 +60,6 @@ class EmployeeRole(Domain):
     """Base class to store the employee roles."""
     
     name = StringCol(alternateID=True)
-
-    #
-    # SQLObject callbacks
-    #
-
-    def _set_name(self, value):
-        conn = get_connection()
-        query = EmployeeRole.q.name == value
-        # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing role. Waiting for kiwi support
-        if not EmployeeRole.select(query, connection=conn).count():
-            self._SO_set_name(value)
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
@@ -491,6 +479,19 @@ class PersonAdaptToEmployee(ModelAdapter):
     voter_data = ForeignKey('VoterData', default=None)
     bank_account = ForeignKey('BankAccount', default=None)
 
+    def get_role_history(self):
+        conn = self.get_connection()
+        return EmployeeRoleHistory.selectBy(employee=self, connection=conn)
+
+    def get_active_role_history(self):
+        active = [history for history in self.get_role_history()
+                    if history.is_active]
+        qty = len(active)
+        if qty != 1:
+            raise DatabaseInconsistency('You should have only one active '
+                                        'role history, got %d' % qty)
+        return active[0]
+
     def get_status_string(self):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Invalid status for employee, '
@@ -693,8 +694,19 @@ class PersonAdaptToSalesPerson(ModelAdapter):
      COMMISSION_BY_SELLABLE_CATEGORY, 
      COMMISSION_BY_SALE_TOTAL) = range(7)
 
-    commission = FloatCol(default=0.0)
-    commission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
+    comission_types = {COMMISSION_GLOBAL: _('Globally'),
+                       COMMISSION_BY_SALESPERSON: _('By Salesperson'),
+                       COMMISSION_BY_SELLABLE: _('By Sellable'),
+                       COMMISSION_BY_PAYMENT_METHOD: _('By Payment Method'),
+                       COMMISSION_BY_BASE_SELLABLE_CATEGORY: _('By Base '
+                                                              'Sellable '
+                                                              'Category'),
+                       COMMISSION_BY_SELLABLE_CATEGORY: _('By Sellable '
+                                                         'Category'),
+                       COMMISSION_BY_SALE_TOTAL: _('By Sale Total')}
+
+    comission = FloatCol(default=0.0)
+    comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
 
     #
@@ -775,3 +787,13 @@ class LoginInfo:
     current_password = None
     new_password = None
     confirm_password = None
+
+class EmployeeRoleHistory(Domain):
+    """Base class to store the employee role history."""
+
+    began = DateTimeCol(default=datetime.datetime.now())
+    ended = DateTimeCol(default=None)
+    salary = FloatCol()
+    role = ForeignKey('EmployeeRole')
+    employee = ForeignKey('PersonAdaptToEmployee')
+    is_active = BoolCol(default=True)

@@ -43,9 +43,9 @@ Current System parameters:
                                                instance that represents
                                                the company's warehouse.
 
-    * DEFAULT_EMPLOYEE_ROLE(EmployeeRole): The employee role
-                                                   suggested when we are
-                                                   adding a new employee.
+    * DEFAULT_SALESPERSON_ROLE(EmployeeRole): The employee role
+                                              suggested when we are
+                                              adding a new salesperson.
 
     * SUGGESTED_SUPPLIER(PersonAdaptToSupplier): The supplier suggested 
                                                  when we are adding a new
@@ -250,7 +250,7 @@ class ParameterAccess(ClassInittableObject):
                                'person.PersonAdaptToBranch'),
                  ParameterAttr('DEFAULT_BASE_CATEGORY', 
                                'sellable.BaseSellableCategory'),
-                 ParameterAttr('DEFAULT_EMPLOYEE_ROLE', 
+                 ParameterAttr('DEFAULT_SALESPERSON_ROLE', 
                                'person.EmployeeRole'),
                  ParameterAttr('DEFAULT_PAYMENT_DESTINATION', 
                                'payment.destination.PaymentDestination'),
@@ -327,7 +327,7 @@ class ParameterAccess(ClassInittableObject):
         # always here
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
-        self.ensure_default_employee_role()
+        self.ensure_default_salesperson_role()
         self.ensure_current_branch()
         self.ensure_current_warehouse()
         self.ensure_payment_destination()
@@ -363,12 +363,12 @@ class ParameterAccess(ClassInittableObject):
                                         category_data=abstract_cat)
         self.set_schema(key, base_cat.id)
 
-    def ensure_default_employee_role(self):
+    def ensure_default_salesperson_role(self):
         from stoq.domain.person import EmployeeRole
-        key = "DEFAULT_EMPLOYEE_ROLE"
+        key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        role = EmployeeRole(name='Sales Person', 
+        role = EmployeeRole(name='Salesperson', 
                                     connection=self.conn)
         self.set_schema(key, role.id)
 

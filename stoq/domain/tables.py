@@ -80,6 +80,7 @@ TABLES = [
                                             "PersonAdaptToBankBranch",
                                             "PersonAdaptToCreditProvider",
                                             "PersonAdaptToTransporter",
+                                            "EmployeeRoleHistory",
                                             )),
      ('stoq.domain.till',                  ("Till",
                                             "TillAdaptToPaymentGroup",
