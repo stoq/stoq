@@ -64,11 +64,20 @@ class PersonEditorTemplate(BaseEditorSlave):
         'email'
         ) + left_proxy_widgets
 
-    def attach_custom_slave(self, slave, tab_text):
+    def attach_custom_slave(self, slave, tab_label):
         self.custom_tab.show()
         tab_child = self.custom_tab
-        self.person_notebook.set_tab_label_text(tab_child, tab_text)
+        self.person_notebook.set_tab_label_text(tab_child, tab_label)
         self.attach_slave('custom_holder', slave)
+
+    def attach_role_slave(self, slave):
+        self.attach_slave('role_holder', slave)
+
+    def attach_extra_slave(self, slave, tab_label):
+        self.extra_tab.show()
+        tab_child = self.extra_tab
+        self.person_notebook.set_tab_label_text(tab_child, tab_label)
+        self.attach_slave('extra_holder', slave)
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug 2163

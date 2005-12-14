@@ -31,19 +31,23 @@ stoq/examples/person.py:
 """
 
 import datetime
+import gettext
 
 from stoq.lib.runtime import new_transaction, print_msg
 from stoq.domain.profile import UserProfile
 from stoq.domain.person import (Person, EmployeeRole, Address,
-                                CityLocation)
+                                CityLocation, EmployeeRoleHistory)
 from stoq.domain.interfaces import (ICompany, ISupplier, IBranch, 
                                     IClient, IIndividual, 
                                     IEmployee, ISalesPerson,
                                     IUser, ICreditProvider, ITransporter)
 
+_ = gettext.gettext
+
+
 def create_persons():
     print_msg('Creating persons...', break_line=False)
-    trans = new_transaction()
+    conn = new_transaction()
 
     person_data = [dict(name='John Wayne', 
                         phone_number='5143-2587',
@@ -84,10 +88,10 @@ def create_persons():
                          fancy_name='Dog Ltd',
                          state_registry='3421')]
 
-    position_data = [dict(name='SalesPerson'),
-                     dict(name='Manager'),
-                     dict(name='Secretary'), 
-                     dict(name='Director')]
+    role_data = [dict(name=_('Clerk')),
+                 dict(name=_('Manager')),
+                 dict(name=_('Secretary')), 
+                 dict(name=_('Director'))]
 
     employee_data = [dict(registry_number='00099'), 
                      dict(registry_number='7777'),
@@ -138,55 +142,75 @@ def create_persons():
                             dict(short_name='Fininvest', 
                                  provider_type=finance_type)]
 
+    role_history_data = [dict(began=now, salary=100,
+                              ended=now + datetime.timedelta(5)),
+                         dict(began=now + datetime.timedelta(5), salary=200,
+                              ended=now + datetime.timedelta(10)),
+                         dict(began=now + datetime.timedelta(10), salary=300,
+                              ended=now + datetime.timedelta(15)),
+                         dict(began=now + datetime.timedelta(15), salary=400,
+                              ended=now + datetime.timedelta(20))]
+
     profile_names = ['Salesperson', 'Manager', 'Secretary', 'Trainee']
 
     # Creating persons and facets
     for index, person_args in enumerate(person_data):
-        person_obj = Person(connection=trans, **person_args)
+        person_obj = Person(connection=conn, **person_args)
 
-        ctloc = CityLocation(connection=trans, **cityloc_data[index])
+        ctloc = CityLocation(connection=conn, **cityloc_data[index])
         address = Address(is_main_address=True, 
                           person=person_obj, city_location=ctloc, 
-                          connection=trans, **address_data[index])
+                          connection=conn, **address_data[index])
         
         individual_args = individual_data[index]
-        person_obj.addFacet(IIndividual, connection=trans, 
+        person_obj.addFacet(IIndividual, connection=conn, 
                             **individual_args)
 
         company_args = company_data[index]
-        person_obj.addFacet(ICompany, connection=trans, 
+        person_obj.addFacet(ICompany, connection=conn, 
                             **company_args)
 
-        person_obj.addFacet(IClient, connection=trans)
-        person_obj.addFacet(ISupplier, connection=trans)
-        person_obj.addFacet(IBranch, connection=trans)
+        person_obj.addFacet(IClient, connection=conn)
+        person_obj.addFacet(ISupplier, connection=conn)
+        person_obj.addFacet(IBranch, connection=conn)
 
         credit_provider = credit_provider_data[index]
-        person_obj.addFacet(ICreditProvider, connection=trans,
+        person_obj.addFacet(ICreditProvider, connection=conn,
                             open_contract_date=datetime.datetime.today(),
                             **credit_provider)
 
-        position_args = position_data[index]
-        role = EmployeeRole(connection=trans, **position_args)
+        role_args = role_data[index]
+        role = EmployeeRole(connection=conn, **role_args)
         employee_args = employee_data[index]
-        person_obj.addFacet(IEmployee, connection=trans, role=role,
-                            **employee_args)
+        employee = person_obj.addFacet(IEmployee, connection=conn, 
+                                       role=role, **employee_args)
+        for history in role_history_data:
+            role_history = EmployeeRoleHistory(connection=conn, role=role,
+                                               employee=employee,
+                                               is_active=False,
+                                               **history)
+        began = now + datetime.timedelta(20)
+        role_history = EmployeeRoleHistory(connection=conn, role=role,
+                                           employee=employee,
+                                           is_active=True, salary=500, 
+                                           began=began)
+        employee.salary = role_history.salary
         # SalesPerson facet requires an employee facet.
-        person_obj.addFacet(ISalesPerson, connection=trans)
+        person_obj.addFacet(ISalesPerson, connection=conn)
 
         prof_name = profile_names[index]
         # The True argument here means full permition for this profile. 
         # This is useful when testing all the fetuares of Stoq applications
-        profile = UserProfile.create_profile_template(trans, prof_name, 
+        profile = UserProfile.create_profile_template(conn, prof_name, 
                                                       True)
         user_args = user_data[index]
-        person_obj.addFacet(IUser, connection=trans, profile=profile,
+        person_obj.addFacet(IUser, connection=conn, profile=profile,
                             **user_args)
         transporter_args = transporter_data[index]
-        person_obj.addFacet(ITransporter, connection=trans,
+        person_obj.addFacet(ITransporter, connection=conn,
                             **transporter_args)
         
-    trans.commit()
+    conn.commit()
     print_msg('done.')
 
 

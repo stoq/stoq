@@ -247,6 +247,17 @@
                                 <property name="position">4</property>
                             </packing>
                         </child>
+                        <child>
+                            <widget class="GtkEventBox" id="role_holder">
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">5</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="menu_label" context="yes" translatable="yes"></property>
@@ -352,7 +363,6 @@
                 <child>
                     <widget class="GtkVBox" id="custom_tab">
                         <property name="border_width">5</property>
-                        <property name="spacing">5</property>
                         <child>
                             <widget class="GtkEventBox" id="custom_holder">
                                 <property name="border_width">5</property>
@@ -364,8 +374,27 @@
                         </child>
                     </widget>
                     <packing>
+                        <property name="menu_label" context="yes" translatable="yes"></property>
                         <property name="position">3</property>
-                        <property name="tab_label" context="yes" translatable="yes">Custom tab</property>
+                        <property name="tab_label" context="yes" translatable="yes">Custom Tab</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="extra_tab">
+                        <property name="border_width">5</property>
+                        <child>
+                            <widget class="GtkEventBox" id="extra_holder">
+                                <property name="border_width">5</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">4</property>
+                        <property name="tab_label" context="yes" translatable="yes">Extra Tab</property>
                     </packing>
                 </child>
             </widget>
