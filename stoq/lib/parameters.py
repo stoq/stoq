@@ -43,9 +43,9 @@ Current System parameters:
                                                instance that represents
                                                the company's warehouse.
 
-    * DEFAULT_SALESPERSON_ROLE(EmployeeRole): The employee role
-                                              suggested when we are
-                                              adding a new salesperson.
+    * DEFAULT_SALESPERSON_ROLE(EmployeeRole): This parameter defines what is
+                                              the salesperson role in the
+                                              database.
 
     * SUGGESTED_SUPPLIER(PersonAdaptToSupplier): The supplier suggested 
                                                  when we are adding a new
