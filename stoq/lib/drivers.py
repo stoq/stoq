@@ -39,15 +39,12 @@ from kiwi.ui.dialogs import warning
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.constants import (UNIT_EMPTY, TAX_NONE, MONEY_PM,
                                    CHEQUE_PM)
-from stoqdrivers.exceptions import (PendingReduceZ, PendingReadX,
-                                    CouponOpenError, DriverError,
-                                    ReduceZError, OutofPaperError,
-                                    PrinterOfflineError)
+from stoqdrivers.exceptions import (CouponOpenError, DriverError,
+                                    OutofPaperError, PrinterOfflineError)
 
-from stoq.lib.runtime import new_transaction
+from stoq.domain.drivers import PrinterSettings
 from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
                                     IMoneyPM, ICheckPM)
-from stoq.domain.drivers import PrinterSettings
 
 _ = gettext.gettext
 _printer = None
