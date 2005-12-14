@@ -34,6 +34,7 @@ import gettext
 import datetime
 
 import gtk
+from kiwi.datatypes import currency
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
@@ -45,7 +46,6 @@ from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.lib.runtime import new_transaction
-from stoq.lib.validators import get_price_format_str
 from stoq.domain.interfaces import IPaymentGroup
 from stoq.domain.sale import Sale
 from stoq.domain.till import get_current_till_operation

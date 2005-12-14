@@ -30,7 +30,6 @@ stoq/gui/wizards/purchase.py:
 
 import gettext
 
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard

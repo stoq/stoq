@@ -29,7 +29,6 @@ stoq/gui/search/product.py
 """
 
 import gettext
-import gtk
 
 from kiwi.datatypes import currency
 from stoqlib.gui.search import SearchEditor
