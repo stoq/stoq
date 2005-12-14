@@ -56,7 +56,6 @@ class BaseEditorSlave(SlaveDelegate):
         # The model attribute represents the 
         self.conn = conn
         self.edit_mode = model is not None
-        print model, self.model_iface, self.model_type
         if self.model_iface:
             model = model or self.create_model(self.conn)
             if not self.model_iface.providedBy(model):
