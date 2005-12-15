@@ -313,7 +313,7 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget class="GtkImage" id="GtkImage6">
                                                                         <property name="file">add16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
