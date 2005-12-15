@@ -61,6 +61,7 @@
                                         <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">admission_date</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -73,6 +74,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">registry_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -87,6 +89,7 @@
                                         <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">expire_vacation</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -140,6 +143,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -152,6 +156,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -221,6 +226,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -233,6 +239,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -247,6 +254,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">category</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -316,6 +324,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -328,6 +337,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">section</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -342,6 +352,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">zone</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -411,6 +422,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -423,6 +435,7 @@
                                         <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_registry_date</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -437,6 +450,7 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_bank</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -498,6 +512,7 @@ Number:</property>
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">education_level</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -510,6 +525,7 @@ Number:</property>
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">dependent_person_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -581,6 +597,7 @@ Number:</property>
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">name</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -593,6 +610,7 @@ Number:</property>
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">branch</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -607,6 +625,7 @@ Number:</property>
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">account</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>

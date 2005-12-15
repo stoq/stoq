@@ -11,6 +11,7 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="question_label">
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Is it one of these ?</property>
+                        <property name="visible">True</property>
                     </widget>
                 </child>
                 <child>
@@ -23,11 +24,13 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
@@ -37,6 +40,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>
@@ -61,6 +65,7 @@
                                 <property name="selection_mode">single</property>
                                 <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
@@ -86,6 +91,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="left_attach">2</property>
@@ -104,6 +110,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">3</property>

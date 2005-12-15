@@ -131,6 +131,7 @@
                         <property name="model_attribute">cost</property>
                         <property name="width_chars">0</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -153,6 +154,7 @@
                                 <property name="text" context="yes" translatable="yes">0.00</property>
                                 <property name="width_chars">6</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -187,6 +189,7 @@
                                 <property name="width_chars">0</property>
                                 <property name="xalign">1.0</property>
                                 <property name="xpad">12</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">3</property>
@@ -208,6 +211,7 @@
                         <property name="model_attribute">price</property>
                         <property name="width_chars">5</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -239,6 +243,7 @@
                                         <property name="text" context="yes" translatable="yes">0.00</property>
                                         <property name="width_chars">6</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
@@ -270,6 +275,7 @@
                                         <property name="text" context="yes" translatable="yes">0.00</property>
                                         <property name="width_chars">6</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">3</property>
@@ -293,6 +299,7 @@
                         <property name="model_attribute">on_sale_price</property>
                         <property name="width_chars">5</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">7</property>
@@ -309,6 +316,7 @@
                         <property name="model_attribute">on_sale_start_date</property>
                         <property name="width_chars">10</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">8</property>
@@ -409,6 +417,7 @@
                         <property name="model_attribute">on_sale_end_date</property>
                         <property name="width_chars">10</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">8</property>

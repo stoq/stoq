@@ -54,6 +54,7 @@
                         <property name="data_type">object</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">role</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -172,6 +173,7 @@
                         <property name="model_attribute">salary</property>
                         <property name="width_request">80</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -193,6 +195,7 @@
                                 <property name="digits">2</property>
                                 <property name="text" context="yes" translatable="yes">0.00</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>

@@ -12,6 +12,7 @@
                         <property name="data_type">str</property>
                         <property name="model_attribute">sellable.description</property>
                         <property name="xalign">0.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -44,6 +45,7 @@
                                         <property name="model_attribute">estimated_fix_date</property>
                                         <property name="width_chars">10</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -67,6 +69,7 @@
                                         <property name="model_attribute">price</property>
                                         <property name="width_chars">10</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -107,6 +110,7 @@
                             <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
                                 <property name="data_type">str</property>
                                 <property name="model_attribute">notes</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                     </widget>
