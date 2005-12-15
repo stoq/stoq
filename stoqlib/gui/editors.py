@@ -197,17 +197,23 @@ class SimpleEntryEditor(BaseEditor):
 class NoteEditor(BaseEditor):
     """ Simple editor that offers a label and a textview. """
     gladefile = "NoteSlave"
-    widgets = ('notes', )
+    proxy_widgets = ('notes',)
     size = (500, 200)
 
-    def __init__(self, conn, model, attr_name, title=''):
+    def __init__(self, conn, model, attr_name, title='', label_text=None):
         assert model, ("You must supply a valid model to this editor "
                        "(%r)" % self)
         self.model_type = type(model)
         self.title = title
+        self.label_text = label_text
         self.attr_name = attr_name
 
         BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
+        
+    def _setup_widgets(self):
+        if self.label_text:
+            self.notes_label.set_text(self.label_text)
         self.notes.set_accepts_tab(False)
 
     # 
@@ -216,7 +222,7 @@ class NoteEditor(BaseEditor):
 
     def setup_proxies(self):
         self.notes.set_property('model-attribute', self.attr_name)
-        proxy = self.add_proxy(model=self.model, widgets=self.widgets)
+        proxy = self.add_proxy(self.model, NoteEditor.proxy_widgets)
 
 
     def get_title(self, *args):
