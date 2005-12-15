@@ -35,7 +35,7 @@ from stoq.lib.runtime import new_transaction, print_msg
 from stoq.domain.drivers import PrinterSettings
 
 def create_printer_setting():
-    print_msg("Creating default printer settings", break_line=False)
+    print_msg("Creating default printer settings...", break_line=False)
     conn = new_transaction()
     printer = PrinterSettings(connection=conn)
     printer.host = socket.gethostname()
