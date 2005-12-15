@@ -21,38 +21,29 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s): Henrique Romano <henrique@async.com.br>
+##
 """
-stoq/examples/createall.py:
+stoq/examples/drivers.py:
 
-    Create all objects for an example database used by Stoq applications.
+    Create a PrinterSetting object that use a VirtualPrinter by default.
 """
 
-import sys
+import socket
 
-from stoq.lib.runtime import print_msg, set_verbose
-from stoq.examples.person import create_persons
-from stoq.examples.product import create_products
-from stoq.examples.service import create_services
-from stoq.examples.sale import create_sales
-from stoq.examples.payment import create_payments
-from stoq.examples.purchase import create_purchases
-from stoq.examples.drivers import create_printer_setting
+from stoq.lib.runtime import new_transaction, print_msg
+from stoq.domain.drivers import PrinterSettings
 
-VERBOSE = '-v' in sys.argv
-
-
-def create():
-    print_msg('Creating example database...')
-    create_persons()
-    create_products()
-    create_services()
-    create_payments()
-    create_sales()
-    create_purchases()
-    create_printer_setting()
-    print_msg('done.')
+def create_printer_setting():
+    print_msg("Creating default printer settings", break_line=False)
+    conn = new_transaction()
+    printer = PrinterSettings(connection=conn)
+    printer.host = socket.gethostname()
+    printer.device = PrinterSettings.DEVICE_SERIAL1
+    printer.brand = 'virtual'
+    printer.model = 'Simple'
+    conn.commit()
+    print_msg("done.")
 
 if __name__ == "__main__":
-    set_verbose(VERBOSE)
-    create()
-
+    create_printer_setting()
