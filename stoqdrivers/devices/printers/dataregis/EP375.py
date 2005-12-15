@@ -45,6 +45,8 @@ from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
                                    TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
                                    UNIT_EMPTY)
+from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
+                                                 BankConfiguration)
 from stoqdrivers.devices.printers.capabilities import Capability
 
 EOT = 0x04
@@ -204,11 +206,13 @@ class CouponItem:
 # The driver implementation
 #
 
-class EP375(SerialBase):
+class EP375(SerialBase, BaseChequePrinter):
 
     implements(ICouponPrinter, IChequePrinter)
 
     printer_name = "Dataregis 375 EP"
+
+    CHEQUE_CONFIGFILE = "dataregis.ini"
 
     CMD_PREFIX = '\xfe'
 
@@ -218,21 +222,6 @@ class EP375(SerialBase):
 
     CMD_CHEQUE = 'U'
     CMD_PRINT_CHEQUE = 'A'
-
-    #
-    # Cheque elements position
-    #
-
-    CHEQUE_NUMERIC_VALUE_ROW = 2
-    CHEQUE_NUMERIC_VALUE_COL = 60
-    CHEQUE_VALUE_STRING_ROW1 = 6
-    CHEQUE_VALUE_STRING_COL1 = 10
-    CHEQUE_VALUE_STRING_ROW2 = 9
-    CHEQUE_VALUE_STRING_COL2 = CHEQUE_VALUE_STRING_COL1
-    CHEQUE_CITY_ROW = 15
-    CHEQUE_CITY_COL = 27
-    CHEQUE_THIRDPARTY_ROW = 12
-    CHEQUE_THIRDPARTY_COL = 2
 
     #
     # ICouponPrinter Commands specification
@@ -273,6 +262,7 @@ class EP375(SerialBase):
                  parity=PARITY_NONE, stopbits=STOPBITS_ONE):
         SerialBase.__init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                             parity=PARITY_NONE, stopbits=STOPBITS_ONE)
+        BaseChequePrinter.__init__(self)
         self.coupon_discount = self.coupon_charge = 0.00
         self._command_id = self._item_counter = -1
         self.items_dict = {}
@@ -576,22 +566,25 @@ class EP375(SerialBase):
 
         return result
 
-    def print_cheque(self, value, thirdparty, city, date):
+    def print_cheque(self, bank, value, thirdparty, city, date):
+        if not isinstance(bank, BankConfiguration):
+            raise TypeError("bank parameter must be a BankConfiguration instance")
+        
         value = '%014d' % int(value * 1e2)
         thirdparty = '%-50s' % thirdparty[:50]
         city = "%-20s" % city[:20]
         date = date.strftime("%d%m%y")
 
-        positions = [EP375.CHEQUE_NUMERIC_VALUE_ROW,
-                     EP375.CHEQUE_NUMERIC_VALUE_COL,
-                     EP375.CHEQUE_VALUE_STRING_ROW1,
-                     EP375.CHEQUE_VALUE_STRING_COL1,
-                     EP375.CHEQUE_VALUE_STRING_ROW2,
-                     EP375.CHEQUE_VALUE_STRING_COL2,
-                     EP375.CHEQUE_THIRDPARTY_ROW,
-                     EP375.CHEQUE_THIRDPARTY_COL,
-                     EP375.CHEQUE_CITY_ROW,
-                     EP375.CHEQUE_CITY_COL]
+        positions = [bank.get_y_coordinate("value"),
+                     bank.get_x_coordinate("value"),
+                     bank.get_y_coordinate("legal_amount"),
+                     bank.get_x_coordinate("legal_amount"),
+                     bank.get_y_coordinate("legal_amount2"),
+                     bank.get_x_coordinate("legal_amount2"),
+                     bank.get_y_coordinate("thirdparty"),
+                     bank.get_x_coordinate("thirdparty"),
+                     bank.get_y_coordinate("city"),
+                     bank.get_x_coordinate("city")]
         positions_data = "".join(["%02d" % pos for pos in positions])
 
         self.send_cheque_command(self.CMD_PRINT_CHEQUE, positions_data, value,

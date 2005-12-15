@@ -33,11 +33,9 @@ stoqdrivers/devices/printers/virtual/Simple.py:
 from zope.interface import implements
 
 from stoqdrivers.devices.printers.capabilities import Capability
-from stoqdrivers.exceptions import (CouponNotOpenError, CouponTotalizeError,
-                                    PaymentAdditionError, CloseCouponError,
-                                    CouponOpenError, CancelItemError,
-                                    ItemAdditionError)
-from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
+from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
+                                    CloseCouponError, CouponOpenError,
+                                    CancelItemError, ItemAdditionError)
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 
@@ -121,7 +119,7 @@ class Simple:
             self.totalized_value += item.get_total_value()
 
         if not self.totalized_value:
-            raise CouponTotalizedError("Coupon totalized at zero!")
+            raise CouponTotalizeError("Coupon totalized at zero!")
 
         self.is_coupon_totalized = True
         return self.totalized_value

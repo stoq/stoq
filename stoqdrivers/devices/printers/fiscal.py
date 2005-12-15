@@ -29,7 +29,7 @@ from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     PendingReadX, PendingReduceZ,
-                                    CouponOpenError, CapabilityError)
+                                    CouponOpenError)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM)
@@ -65,8 +65,6 @@ class payment_method(number):
 #
 
 class FiscalPrinter(BasePrinter):
-    log_domain = 'fp'
-
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         BasePrinter.__init__(self, brand, model, device, config_file)
         self.has_been_totalized = False

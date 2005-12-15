@@ -28,7 +28,6 @@ stoqdrivers/devices/printers/base.py:
 
     Generic base class implementation for all printers
 """
-
 import os
 
 from zope.interface import providedBy
@@ -42,6 +41,8 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 
 class BasePrinter(Logger):
+    log_domain = "stoqdrivers"
+    
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         Logger.__init__(self)
         self.brand, self.model, self.device = brand, model, device

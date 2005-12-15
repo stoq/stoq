@@ -198,9 +198,19 @@ class ICouponPrinter(Interface):
 class IChequePrinter(Interface):
     """ Interface specification for cheque printers. """
 
-    def print_cheque(value, thirdparty, city, date=None):
+    def get_banks():
+        """ Returns a dictionary of all banks supported by the printer.
+        The dictionary's key is the bank name and its value are
+        BankConfiguration instances (this classe [BankConfiguration] is
+        used to store and manage the values of each section in the
+        configuration file).
+        """
+
+    def print_cheque(bank, value, thirdparty, city, date=None):
         """ Prints a cheque
 
+        @param bank: the code of bank
+        @type bank: one of codes returned by get_banks method.
         @param value: the value of the cheque
         @type value: number
         @param thirdparty: receiver of the cheque

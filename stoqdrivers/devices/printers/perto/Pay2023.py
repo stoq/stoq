@@ -37,6 +37,7 @@ from zope.interface import implements
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+from stoqdrivers.devices.printers.cheque import BaseChequePrinter, BankConfiguration
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS,
@@ -46,17 +47,16 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     CommandParametersError, CommandError,
                                     ReadXError, OutofPaperError,
                                     CouponTotalizeError, PaymentAdditionError,
-                                    CancelItemError, ReduceZError,
-                                    CouponOpenError, InvalidState,
-                                    PendingReadX)
+                                    CancelItemError, CouponOpenError,
+                                    InvalidState, PendingReadX)
 from stoqdrivers.devices.printers.capabilities import Capability
-
-
-class Pay2023(SerialBase):
-
+        
+class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
 
     printer_name = "Pertopay Fiscal 2023"
+
+    CHEQUE_CONFIGFILE = 'perto.ini'
 
     CMD_PREFIX = '{'
     CMD_SUFFIX = '}'
@@ -93,45 +93,29 @@ class Pay2023(SerialBase):
                    15011: OutofPaperError}
 
     # FIXME: this part will be fixed at bug #2246
-    taxcode_dict = {TAX_IOF : '0',
-                    TAX_ICMS : '0',
-                    TAX_SUBSTITUTION : '0',
-                    TAX_EXEMPTION : '0',
-                    TAX_NONE : '0'}
+    taxcode_dict = {TAX_IOF: '0',
+                    TAX_ICMS: '0',
+                    TAX_SUBSTITUTION: '0',
+                    TAX_EXEMPTION: '0',
+                    TAX_NONE: '0'}
 
-    unit_dict = {UNIT_WEIGHT : 'kg',
-                 UNIT_METERS : 'm ',
-                 UNIT_LITERS : 'lt',
-                 UNIT_EMPTY : '  '}
+    unit_dict = {UNIT_WEIGHT: 'kg',
+                 UNIT_METERS: 'm ',
+                 UNIT_LITERS: 'lt',
+                 UNIT_EMPTY: '  '}
 
-    payment_methods = {MONEY_PM : '1',
-                       CHEQUE_PM : '2'}
+    payment_methods = {MONEY_PM: '1',
+                       CHEQUE_PM: '2'}
 
     #
     # Cheque elements position
     #
 
-    # TODO: Bug #2284 will improve this "position declarations" to work with
-    # all the Brazilian banks
-
-    CHEQUE_NUMERIC_VALUE_ROW = 64
-    CHEQUE_NUMERIC_VALUE_COL = 1218
-    CHEQUE_VALUE_STRING_ROW1 = 152
-    CHEQUE_VALUE_STRING_COL1 = 269
-    CHEQUE_VALUE_STRING_ROW2 = 208
-    CHEQUE_VALUE_STRING_COL2 = 79
-    CHEQUE_CITY_ROW = 336
-    CHEQUE_CITY_COL = 589
-    CHEQUE_THIRDPARTY_ROW = 264
-    CHEQUE_THIRDPARTY_COL = 99
-    CHEQUE_YEAR_COL = 1577
-    CHEQUE_DAY_COL = 1058
-    CHEQUE_MONTH_COL = 1208
-
     def __init__(self, device, baudrate=115200, bytesize=EIGHTBITS,
                  parity=PARITY_EVEN, stopbits=STOPBITS_ONE):
         SerialBase.__init__(self, device, baudrate=baudrate, bytesize=bytesize,
                             parity=parity, stopbits=stopbits)
+        BaseChequePrinter.__init__(self)
 
     #
     # Helper methods
@@ -263,31 +247,28 @@ class Pay2023(SerialBase):
     # IChequePrinter implementation
     #
 
-    def print_cheque(self, value, thirdparty, city, date=datetime.now()):
-        cheque_value_string_col1 = Pay2023.CHEQUE_VALUE_STRING_COL1
-        cheque_value_string_col2 = Pay2023.CHEQUE_VALUE_STRING_COL2
-        cheque_value_string_row1 = Pay2023.CHEQUE_VALUE_STRING_ROW1
-        cheque_value_string_row2 = Pay2023.CHEQUE_VALUE_STRING_ROW2
+    def print_cheque(self, bank, value, thirdparty, city, date=datetime.now()):
+        if not isinstance(bank, BankConfiguration):
+            raise TypeError("bank parameter must be BankConfiguration instance")
 
-        # FIXME: these magic numbers will be remove when the bug #2176 is fixed
-        self.send_command(Pay2023.CMD_PRINT_CHEQUE,
-                          Cidade="\"%s\"" % city[:27],
+        data = dict(HPosAno=bank.get_x_coordinate("year"),
+                    HPosCidade=bank.get_x_coordinate("city"),
+                    HPosDia=bank.get_x_coordinate("day"),
+                    HPosExtensoLinha1=bank.get_x_coordinate("legal_amount"),
+                    HPosExtensoLinha2=bank.get_x_coordinate("legal_amount2"),
+                    HPosFavorecido=bank.get_x_coordinate("thirdparty"),
+                    HPosMes=bank.get_x_coordinate("month"),
+                    HPosValor=bank.get_x_coordinate("value"),
+                    VPosCidade=bank.get_y_coordinate("city"),
+                    VPosExtensoLinha1=bank.get_y_coordinate("legal_amount"),
+                    VPosExtensoLinha2=bank.get_y_coordinate("legal_amount2"),
+                    VPosFavorecido=bank.get_y_coordinate("thirdparty"),
+                    VPosValor=bank.get_y_coordinate("value"))
+
+        self.send_command(Pay2023.CMD_PRINT_CHEQUE, Cidade="\"%s\"" % city[:27],
                           Data=date.strftime("#%d/%m/%Y#"),
                           Favorecido="\"%s\"" % thirdparty[:45],
-                          HPosAno=Pay2023.CHEQUE_YEAR_COL,
-                          HPosCidade=Pay2023.CHEQUE_CITY_COL,
-                          HPosDia=Pay2023.CHEQUE_DAY_COL,
-                          HPosExtensoLinha1=cheque_value_string_col1,
-                          HPosExtensoLinha2=cheque_value_string_col2,
-                          HPosFavorecido=Pay2023.CHEQUE_THIRDPARTY_COL,
-                          HPosMes=Pay2023.CHEQUE_MONTH_COL,
-                          HPosValor=Pay2023.CHEQUE_NUMERIC_VALUE_COL,
-                          Valor=self.format_value(value),
-                          VPosCidade=Pay2023.CHEQUE_CITY_ROW,
-                          VPosExtensoLinha1=cheque_value_string_row1,
-                          VPosExtensoLinha2=cheque_value_string_row2,
-                          VPosFavorecido=Pay2023.CHEQUE_THIRDPARTY_ROW,
-                          VPosValor=Pay2023.CHEQUE_NUMERIC_VALUE_ROW)
+                          Valor=self.format_value(value), **data)
 
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=48),
