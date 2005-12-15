@@ -258,14 +258,13 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                                <property name="file">edit16px.png</property>
+                                                                                <property name="file">add16px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
                                                                         <child>
                                                                             <widget class="GtkLabel" id="GtkLabel1">
-                                                                                <property name="label" context="yes" translatable="yes">A_dd...</property>
-                                                                                <property name="use_underline">True</property>
+                                                                                <property name="label" context="yes" translatable="yes">Add...</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                             <packing>
