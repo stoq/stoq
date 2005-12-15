@@ -35,7 +35,7 @@ import gtk
 from sqlobject.sqlbuilder import OR
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.exceptions import _warn
-from kiwi.ui.dialogs import warning
+from kiwi.ui.dialogs import warning, error
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.constants import (UNIT_EMPTY, TAX_NONE, MONEY_PM,
                                    CHEQUE_PM)
@@ -80,8 +80,9 @@ def _get_fiscalprinter(conn):
         _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
                                  device=setting.get_device_name())
     else:
-        _warn("There is no fiscalprinter configured for this station (%s)"
-              % socket.gethostname())
+        error(_("There is no printer configured"),
+              _("There is no printer configured this station (\"%s\")"
+                % socket.gethostname()))
     return _printer
 
 def _cancel(printer):
@@ -96,7 +97,7 @@ def _cancel(printer):
 def _emit_reading(conn, cmd):
     printer = _get_fiscalprinter(conn)
     if not printer:
-        return
+        return False
     try:
         getattr(printer, cmd)()
     except CouponOpenError:
@@ -189,3 +190,4 @@ def emit_coupon(conn, sale):
     except DriverError, details:
         warning(_("Isn't possible close the coupon"), str(details))
         return False
+    return True
