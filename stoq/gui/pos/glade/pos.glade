@@ -284,8 +284,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Products/Services Matching:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                 </child>
                                 <child>
@@ -393,8 +393,8 @@
                                         <property name="border_width">5</property>
                                         <property name="is_focus">True</property>
                                         <property name="shadow_type">in</property>
-                                        <property name="vscrollbar_policy">automatic</property>
                                         <property name="visible">True</property>
+                                        <property name="vscrollbar_policy">automatic</property>
                                     </widget>
                                 </child>
                                 <child>
