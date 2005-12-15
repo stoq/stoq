@@ -48,14 +48,13 @@ class BasePrinter(Logger):
         self._load_configuration(config_file)
 
     def _load_configuration(self, config_file):
-        self.config = StoqdriversConfig(config_file)
-
-        if not self.config.has_section("Printer"):
-            raise ConfigError("There is no printer configured!")
-
-        self.brand = self.brand or self.config.get_option("brand", "Printer")
-        self.device = self.device or self.config.get_option("device", "Printer")
-        self.model = self.model or self.config.get_option("model", "Printer")
+        if not self.model or not self.brand or not self.device:
+            self.config = StoqdriversConfig(config_file)
+            if not self.config.has_section("Printer"):
+                raise ConfigError("There is no printer configured!")
+            self.brand = self.config.get_option("brand", "Printer")
+            self.device = self.config.get_option("device", "Printer")
+            self.model = self.config.get_option("model", "Printer")
 
         name = 'stoqdrivers.devices.printers.%s.%s' % (self.brand, self.model)
         try:
