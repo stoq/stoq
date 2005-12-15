@@ -17,7 +17,7 @@
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
-                        <property name="accelerator">&lt;control&gt;h</property>
+                        <property name="accelerator">&lt;Control&gt;h</property>
                     </object>
                 </child>
                 <child>
@@ -26,7 +26,7 @@
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;e</property>
+                        <property name="accelerator">&lt;Control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -34,7 +34,7 @@
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Find Clients...</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;p</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </object>
                 </child>
                 <child>
@@ -99,7 +99,7 @@
                         <property name="label" translatable="yes">_Reset Order</property>
                         <property name="tooltip">Reset the order</property>
                         <signal handler="_on_resetorder_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;r</property>
+                        <property name="accelerator">&lt;Control&gt;r</property>
                     </object>
                 </child>
                 <child>
@@ -107,7 +107,7 @@
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Find Sales...</property>
                         <signal handler="_on_sales_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;l</property>
+                        <property name="accelerator">&lt;Control&gt;l</property>
                     </object>
                 </child>
                 <child>
@@ -142,7 +142,7 @@
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
-                        <property name="accelerator">&lt;control&gt;k</property>
+                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
