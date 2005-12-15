@@ -16,6 +16,7 @@
                             <widget class="kiwi+ui+widgets+list+List" id="klist">
                                 <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                     </widget>
