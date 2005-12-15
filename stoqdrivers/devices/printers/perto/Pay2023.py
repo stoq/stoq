@@ -194,6 +194,12 @@ class Pay2023(SerialBase):
         value = int(result[index:])
         return value
 
+    def format_value(self, value):
+        """ This method receives a float value and format it to the string format
+        accepted by the FISCnet protocol.
+        """
+        return ("%.04f" % value).replace('.', ',')
+
     #
     # ICouponPrinter implementation
     #
@@ -216,7 +222,7 @@ class Pay2023(SerialBase):
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
                           Unidade="\"%02s\"" % Pay2023.unit_dict[unit],
-                          PrecoUnitario="%.04f" % price,
+                          PrecoUnitario=self.format_value(price),
                           Quantidade="%.03f" % quantity)
 
         return self.get_last_item_id()
@@ -237,10 +243,9 @@ class Pay2023(SerialBase):
                               ValorPercentual="%.02f" % value)
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        value = str(value).replace('.', ',')
         pm = Pay2023.payment_methods[payment_method]
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
-                          CodMeioPagamento=pm, Valor=value,
+                          CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])
         
     def coupon_close(self, message=''):
@@ -277,7 +282,7 @@ class Pay2023(SerialBase):
                           HPosFavorecido=Pay2023.CHEQUE_THIRDPARTY_COL,
                           HPosMes=Pay2023.CHEQUE_MONTH_COL,
                           HPosValor=Pay2023.CHEQUE_NUMERIC_VALUE_COL,
-                          Valor="%.04f" % value,
+                          Valor=self.format_value(value),
                           VPosCidade=Pay2023.CHEQUE_CITY_ROW,
                           VPosExtensoLinha1=cheque_value_string_row1,
                           VPosExtensoLinha2=cheque_value_string_row2,
