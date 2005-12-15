@@ -230,6 +230,7 @@
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">client</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">3</property>
@@ -284,12 +285,14 @@
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Products/Services Matching:</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="product">
                                         <property name="data_type">int</property>
                                         <property name="model_attribute">product</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">1</property>
@@ -391,6 +394,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="shadow_type">in</property>
                                         <property name="vscrollbar_policy">automatic</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
