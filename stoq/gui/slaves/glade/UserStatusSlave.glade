@@ -28,6 +28,7 @@
                         <property name="is_focus">True</property>
                         <property name="label" context="yes" translatable="yes">Active</property>
                         <property name="model_attribute">is_active</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -44,6 +45,7 @@
                         <property name="group">active_check</property>
                         <property name="label" context="yes" translatable="yes">Inactive</property>
                         <property name="model_attribute">is_active</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">2</property>

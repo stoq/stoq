@@ -13,6 +13,7 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="person_role_label">
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">What kind of client are you adding ?</property>
+                        <property name="visible">True</property>
                     </widget>
                 </child>
                 <child>
@@ -24,11 +25,13 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
@@ -70,6 +73,7 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">What is their phone number ?</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="position">2</property>
@@ -81,12 +85,14 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
                                 <property name="data_type">str</property>
                                 <property name="model_attribute"></property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -95,6 +101,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">2</property>

@@ -8,6 +8,7 @@
                 <property name="selection_mode">single</property>
                 <property name="shadow_type">in</property>
                 <property name="vscrollbar_policy">automatic</property>
+                <property name="visible">True</property>
             </widget>
         </child>
     </widget>

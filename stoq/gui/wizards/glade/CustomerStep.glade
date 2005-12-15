@@ -20,6 +20,7 @@
                                 <property name="label" context="yes" translatable="yes">Client:</property>
                                 <property name="width_request">100</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -31,6 +32,7 @@
                                 <property name="data_type">object</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">client</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -65,6 +67,7 @@
                                 <property name="label" context="yes" translatable="yes">Order Number:</property>
                                 <property name="width_request">100</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -76,6 +79,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">order_number</property>
                                 <property name="width_request">80</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -107,6 +111,7 @@
                                 <property name="label" context="yes" translatable="yes">Order Total:</property>
                                 <property name="width_request">100</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -118,6 +123,7 @@
                                 <property name="model_attribute">total_sale_amount</property>
                                 <property name="width_request">80</property>
                                 <property name="xalign">0.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -147,6 +153,7 @@
                                 <property name="label" context="yes" translatable="yes">Order Details:</property>
                                 <property name="width_request">100</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -182,6 +189,7 @@
                                 <property name="data_type">str</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">notes</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                     </widget>

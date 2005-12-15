@@ -38,6 +38,7 @@
                         <property name="data_type">str</property>
                         <property name="is_focus">True</property>
                         <property name="model_attribute">fancy_name</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -49,6 +50,7 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="cnpj">
                         <property name="data_type">str</property>
                         <property name="model_attribute">cnpj</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -76,6 +78,7 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="state_registry">
                         <property name="data_type">str</property>
                         <property name="model_attribute">state_registry</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>

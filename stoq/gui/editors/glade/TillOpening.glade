@@ -29,6 +29,7 @@
                         <property name="model_attribute">opening_date</property>
                         <property name="width_chars">10</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -59,6 +60,7 @@
                         <property name="model_attribute">initial_cash_amount</property>
                         <property name="width_chars">12</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">3</property>

@@ -17,6 +17,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Salesperson Name:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                 </child>
                 <child>
@@ -24,6 +25,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Transporter:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -35,6 +37,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Expected Receival Date:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -47,6 +50,7 @@
                         <property name="label" context="yes" translatable="yes">Notes:</property>
                         <property name="xalign">1.0</property>
                         <property name="yalign">0.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -65,6 +69,7 @@
                         <property name="data_type">str</property>
                         <property name="is_focus">True</property>
                         <property name="model_attribute">salesperson_name</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -76,6 +81,7 @@
                         <property name="completion">True</property>
                         <property name="data_type">object</property>
                         <property name="model_attribute">transporter</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -96,6 +102,7 @@
                                 <property name="model_attribute">expected_receival_date</property>
                                 <property name="width_chars">10</property>
                                 <property name="xalign">1.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -104,6 +111,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -128,6 +136,7 @@
                                 <property name="data_type">str</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">notes</property>
+                                <property name="visible">True</property>
                             </widget>
                         </child>
                     </widget>

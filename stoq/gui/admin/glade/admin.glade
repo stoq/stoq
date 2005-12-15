@@ -223,6 +223,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

@@ -42,6 +42,7 @@
                                 <property name="data_type">str</property>
                                 <property name="model_attribute">main_supplier_info.name</property>
                                 <property name="xalign">0.0</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

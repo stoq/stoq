@@ -65,6 +65,7 @@
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">street</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -75,6 +76,7 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="complement">
                         <property name="data_type">str</property>
                         <property name="model_attribute">complement</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -87,6 +89,7 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="postal_code">
                         <property name="data_type">str</property>
                         <property name="model_attribute">postal_code</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -103,6 +106,7 @@
                         <property name="mandatory">True</property>
                         <property name="max_length">2</property>
                         <property name="model_attribute">city_location.state</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -174,6 +178,7 @@
                         <property name="mandatory">True</property>
                         <property name="max_length">9</property>
                         <property name="model_attribute">number</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">3</property>
@@ -185,6 +190,7 @@
                         <property name="data_type">str</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">district</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -200,6 +206,7 @@
                         <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.city</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -215,6 +222,7 @@
                         <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.country</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>

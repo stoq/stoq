@@ -17,6 +17,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Open Date:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                 </child>
                 <child>
@@ -24,6 +25,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Branch:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -35,6 +37,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Supplier:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -46,6 +49,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Freight Type:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -61,6 +65,7 @@
                         <property name="model_attribute">open_date</property>
                         <property name="width_chars">10</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
@@ -73,6 +78,7 @@
                         <property name="height_request">26</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">branch</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -88,6 +94,7 @@
                         <property name="data_type">object</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">supplier</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -130,6 +137,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Order Number:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">2</property>
@@ -159,6 +167,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Freight:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -176,6 +185,7 @@
                         <property name="model_attribute">order_number</property>
                         <property name="width_chars">10</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">3</property>
@@ -185,6 +195,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel12">
                         <property name="data_type">str</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -217,6 +228,7 @@
                         <property name="model_attribute">freight</property>
                         <property name="text" context="yes" translatable="yes">0.00</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -228,6 +240,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel15">
                         <property name="data_type">str</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">4</property>
@@ -237,6 +250,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel14">
                         <property name="data_type">str</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -248,6 +262,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel13">
                         <property name="data_type">str</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -261,6 +276,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">%</property>
                         <property name="xalign">0.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>

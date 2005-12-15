@@ -17,6 +17,7 @@
                         <property name="data_type">str</property>
                         <property name="label" context="yes" translatable="yes">Profile Name:</property>
                         <property name="xalign">1.0</property>
+                        <property name="visible">True</property>
                     </widget>
                 </child>
                 <child>
@@ -25,6 +26,7 @@
                         <property name="label" context="yes" translatable="yes">Available Applications:</property>
                         <property name="xalign">1.0</property>
                         <property name="yalign">0.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -65,6 +67,7 @@
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">name</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>

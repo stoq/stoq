@@ -62,6 +62,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="mandatory">True</property>
                                         <property name="model_attribute">name</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -72,6 +73,7 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
                                         <property name="data_type">str</property>
                                         <property name="model_attribute">phone_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -84,6 +86,7 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="fax_number">
                                         <property name="data_type">str</property>
                                         <property name="model_attribute">fax_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -138,6 +141,7 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="email">
                                         <property name="data_type">str</property>
                                         <property name="model_attribute">email</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -150,6 +154,7 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="mobile_number">
                                         <property name="data_type">str</property>
                                         <property name="model_attribute">mobile_number</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -170,6 +175,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                         <property name="data_type">str</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
@@ -227,7 +233,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                         <property name="data_type">str</property>
-                                    </widget>
+                                        <property name="visible">True</property>                                    </widget>
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="address_button">

@@ -11,6 +11,7 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="payment_number_label">
                         <property name="data_type">str</property>
                         <property name="xalign">0.0</property>
+                        <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -31,6 +32,7 @@
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Duedate:</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
@@ -39,6 +41,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">due_date</property>
                                         <property name="width_request">90</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">1</property>
@@ -49,6 +52,7 @@
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">$:</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">2</property>
@@ -60,6 +64,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">value</property>
                                         <property name="width_request">90</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">3</property>
@@ -70,6 +75,7 @@
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Payment #:</property>
                                         <property name="xalign">1.0</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">4</property>
@@ -81,6 +87,7 @@
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">payment_number</property>
                                         <property name="width_request">90</property>
+                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="position">5</property>

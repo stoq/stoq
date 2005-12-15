@@ -32,6 +32,7 @@
                             <widget class="kiwi+ui+widgets+combobox+ComboBox" id="statuses_combo">
                                 <property name="data_type">int</property>
                                 <property name="model_attribute">status</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -40,6 +41,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -69,6 +71,7 @@
                             <widget class="kiwi+ui+widgets+entry+Entry" id="product_desc">
                                 <property name="data_type">str</property>
                                 <property name="model_attribute">product_desc</property>
+                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
