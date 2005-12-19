@@ -183,7 +183,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_money_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
-                                    NomeDadoMonetario="\"%s\"" % name)
+                                    NomeDadoMonetario="\"%s\"" % data_name)
         result = result[:-1]
         substr = "ValorMoeda"
         index = result.index(substr) + len(substr) + 1
