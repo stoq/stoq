@@ -334,6 +334,24 @@ class EP375(SerialBase, BaseChequePrinter):
 
         return result
 
+    def get_coupon_remaining_value(self):
+        #
+        # reply format:
+        #     STX | CMD_COUNTER | CMD_ID | PARAMS_SZ | PARAMS | CHECKSUM
+        # where PARAMS is:
+        #     XYYYYYYYYYYYYYYZZZ
+        # with:
+        #     X == 'S' if the coupon is not completely paid
+        #     Y == 14 bytes representing the remaining value
+        #     Z == the number of items in the coupon.
+        #
+        result = self.send_command(self.CMD_GET_REMAINING_VALUE)
+        has_remaining_value = result[4] == 'S'
+        if has_remaining_value:
+            return float(result[5:19]) / 1e2
+        else:
+            return 0.0
+
     #
     # SerialBase wrappers
     #
@@ -469,23 +487,9 @@ class EP375(SerialBase, BaseChequePrinter):
         # add_payment calls
         self.coupon_discount, self.coupon_charge = discount, charge
 
-    def get_coupon_remaining_value(self):
-        #
-        # reply format:
-        #     STX | CMD_COUNTER | CMD_ID | PARAMS_SZ | PARAMS | CHECKSUM
-        # where PARAMS is:
-        #     XYYYYYYYYYYYYYYZZZ
-        # with:
-        #     X == 'S' if the coupon is not completely paid
-        #     Y == 14 bytes representing the remaining value
-        #     Z == the number of items in the coupon.
-        #
-        result = self.send_command(self.CMD_GET_REMAINING_VALUE)
-        has_remaining_value = result[4] == 'S'
-        if has_remaining_value:
-            return float(result[5:19]) / 1e2
-        else:
-            return 0.0
+        coupon_total_value = (self.get_coupon_remaining_value() + charge
+                              - discount)
+        return coupon_total_value
 
     def coupon_add_payment(self, payment_method, value, description=''):
         pm = EP375.payment_methods[payment_method]
