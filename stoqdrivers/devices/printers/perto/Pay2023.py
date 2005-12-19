@@ -72,8 +72,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_ADD_COUPON_DIFFERENCE = 'AcresceSubtotal'
     CMD_COUPON_CANCEL = 'CancelaCupom'
     CMD_COUPON_CLOSE = 'EncerraDocumento'
-    CMD_GET_REGISTER_DATA = 'LeInteiro'
+    CMD_GET_INTEGER_REGISTER_DATA = 'LeInteiro'
+    CMD_GET_MONEY_REGISTER_DATA = 'LeMoeda'
     CMD_GET_LAST_ITEM_ID = 'ContadorDocUltimoItemVendido'
+    CMD_GET_COUPON_TOTAL_VALUE = 'TotalDocLiquido'
+    CMD_GET_COUPON_TOTAL_PAID_VALUE = 'TotalDocValorPago'
     CMD_PRINT_CHEQUE = 'ImprimeCheque'
 
     errors_dict = {7003: OutofPaperError,
@@ -170,7 +173,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def get_last_item_id(self):
         name = "\"%s\"" % Pay2023.CMD_GET_LAST_ITEM_ID
-        result = self._send_command(Pay2023.CMD_GET_REGISTER_DATA,
+        result = self._send_command(Pay2023.CMD_GET_INTEGER_REGISTER_DATA,
                                     NomeInteiro=name)
         result = result[:-1]
         substr = "ValorInteiro"
@@ -178,11 +181,40 @@ class Pay2023(SerialBase, BaseChequePrinter):
         value = int(result[index:])
         return value
 
+    def get_money_register_data(self, data_name):
+        result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
+                                    NomeDadoMonetario="\"%s\"" % name)
+        result = result[:-1]
+        substr = "ValorMoeda"
+        index = result.index(substr) + len(substr) + 1
+        return self.parse_value(result[index:])
+
+    def get_coupon_total_value(self):
+        name = Pay2023.CMD_GET_COUPON_TOTAL_VALUE
+        return self.get_money_register_data(name)
+
+    def get_coupon_remainder_value(self):
+        name = Pay2023.CMD_GET_COUPON_TOTAL_PAID_VALUE
+        value =  self.get_money_register_data(name)
+        result = self.get_coupon_total_value() - value
+        if result < 0.0:
+            result = 0.0
+        return result
+
     def format_value(self, value):
-        """ This method receives a float value and format it to the string format
-        accepted by the FISCnet protocol.
+        """ This method receives a float value and format it to the string
+        format accepted by the FISCnet protocol.
         """
         return ("%.04f" % value).replace('.', ',')
+
+    def parse_value(self, value):
+        """ This method receives a string value (representing the float
+        format used in the FISCnet protocol) and convert it to the
+        Python's float format.
+        """
+        if ',' in value:
+            value = value.replace(',', '.')
+        return float(value)
 
     #
     # ICouponPrinter implementation
@@ -208,7 +240,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
                           Unidade="\"%02s\"" % Pay2023.unit_dict[unit],
                           PrecoUnitario=self.format_value(price),
                           Quantidade="%.03f" % quantity)
-
         return self.get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
@@ -225,12 +256,14 @@ class Pay2023(SerialBase, BaseChequePrinter):
         if value:
             self.send_command(Pay2023.CMD_ADD_COUPON_DIFFERENCE, Cancelar='f',
                               ValorPercentual="%.02f" % value)
+        return self.get_coupon_total_value()
 
     def coupon_add_payment(self, payment_method, value, description=''):
         pm = Pay2023.payment_methods[payment_method]
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
                           CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])
+        return self.get_coupon_remainder_value()
         
     def coupon_close(self, message=''):
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
