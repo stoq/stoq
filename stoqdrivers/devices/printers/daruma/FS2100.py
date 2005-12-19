@@ -77,7 +77,7 @@ class FS2100(FS345):
                    desc_size, code, unit, description[:233]))
 
         value = self.send_new_command(CMD_ADD_ITEM, data)
-        return value[7:]
+        return int(value[3:6])
  
     def send_new_command(self, command, extra=''):
         """ This method is used to send especific commands to model FS2100.
