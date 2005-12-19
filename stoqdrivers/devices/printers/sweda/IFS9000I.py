@@ -65,33 +65,30 @@ class IFS9000I(SerialBase):
     CMD_SUFFIX = EOL_DELIMIT = '}'
     DEBUG_MODE = 0
 
-
     #
     # Printer command set
     #
     
-    CMD_COUPON_OPEN                         = '17'
-    CMD_COUPON_ADD_ITEM                     = '01'
-    CMD_ITEM_ADD_DISCOUNT                   = '02'
-    CMD_ITEM_CANCEL                         = '04'
-    CMD_COUPON_ADD_DISCOUNT                 = '03'
-    CMD_COUPON_ADD_CHARGE                   = '11'
-    CMD_COUPON_CANCEL                       = '05'
-    CMD_COUPON_TOTALIZE                     = '10'
-    CMD_COUPON_CLOSE                        = '12'
-    CMD_READ_X                              = '13'
-    CMD_REDUCE_Z                            = '14'
-
-    CMD_PRINTER_STATUS                      = '23'
-    CMD_PRINT_PARAMETERS                    = '18'
-    CMD_SET_SALE_PARAMETERS                 = '30'
-    CMD_SET_HEADER_PARAMETERS               = '31'
-    CMD_SAVE_USER_SETTINGS                  = '41'
-    CMD_ADD_USER_SETTINGS                   = '34'
-    CMD_SETUP_CLOCK                         = '35'
-    CMD_SETUP_PAYMENT_METHOD                = '39'
-
-    CMD_TRANSACTION_STATUS                  = '28'
+    CMD_COUPON_OPEN = '17'
+    CMD_COUPON_ADD_ITEM = '01'
+    CMD_ITEM_ADD_DISCOUNT = '02'
+    CMD_ITEM_CANCEL = '04'
+    CMD_COUPON_ADD_DISCOUNT = '03'
+    CMD_COUPON_ADD_CHARGE = '11'
+    CMD_COUPON_CANCEL = '05'
+    CMD_COUPON_TOTALIZE = '10'
+    CMD_COUPON_CLOSE = '12'
+    CMD_READ_X = '13'
+    CMD_REDUCE_Z = '14'
+    CMD_PRINTER_STATUS = '23'
+    CMD_PRINT_PARAMETERS = '18'
+    CMD_SET_SALE_PARAMETERS = '30'
+    CMD_SET_HEADER_PARAMETERS = '31'
+    CMD_SAVE_USER_SETTINGS = '41'
+    CMD_ADD_USER_SETTINGS = '34'
+    CMD_SETUP_CLOCK = '35'
+    CMD_SETUP_PAYMENT_METHOD = '39'
+    CMD_TRANSACTION_STATUS = '28'
     
     #
     # Settings for printer command parameters
@@ -137,7 +134,6 @@ class IFS9000I(SerialBase):
     unit_indicators[UNIT_METERS] = '@'
     unit_indicators[UNIT_LITERS] = ')'
     unit_indicators[UNIT_EMPTY]  = '^'
-
 
     errors_dict = {'DIA ENCERRADO' : (PendingReadX, "A Read X is pending"),
                    'ERRO-COMAND INVALIDO' : (CommandError, ("The command is "
@@ -269,7 +265,6 @@ class IFS9000I(SerialBase):
         for method in (MONEY_PM, CHEQUE_PM):
             label = ("%-15s" % method.get_description())[:15]
             self.send_command(self.CMD_SETUP_PAYMENT_METHOD, 'S', label)
-
 
     #
     # Formatting data
@@ -441,7 +436,6 @@ class IFS9000I(SerialBase):
         description = self._format_string(description,
                                           self.DESCRIPTION_CHAR_LEN, 
                                           'description')
-
         if second_desc:
             second_desc = self._format_string(second_desc,
                                               self.SECONDDESC_CHAR_LEN, 
@@ -451,7 +445,6 @@ class IFS9000I(SerialBase):
                           second_desc)
 
         return self.get_last_item_id()
-
 
     def coupon_cancel_item(self, item_id):
         self._check_integer(item_id, 'item_id')
