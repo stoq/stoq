@@ -546,11 +546,6 @@ class PersonAdaptToBranch(ModelAdapter):
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive')}
 
-    (STATUS_ACTIVE,
-     STATUS_INACTIVE) = range(2)
-    statuses = {STATUS_ACTIVE:      _('Active'),
-                STATUS_INACTIVE:    _('Inactive')}
-
     manager = ForeignKey('Person', default=None)
     is_active= BoolCol(default=True)
 
