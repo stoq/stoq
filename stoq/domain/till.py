@@ -169,6 +169,35 @@ class Till(Domain):
         self.final_cash_amount = current_balance - balance_to_send
         self.balance_sent = balance_to_send
 
+    def _create_entry(self, value, reason):
+        status = Payment.STATUS_TO_PAY
+        now = datetime.datetime.now()
+        conn = self.get_connection()
+        method = sysparam(conn).METHOD_MONEY
+        group = IPaymentGroup(self, connection=conn)
+        if not group:
+            ValueError('Till object must have a IPaymentGroup facet' 
+                       'defined at this point')
+        destination= sysparam(conn).DEFAULT_PAYMENT_DESTINATION
+        return Payment(status=status, due_date=now, value=value, 
+                       method=method, group=group, 
+                       destination=destination, 
+                       description=reason,
+                       connection=conn)
+
+    def create_debit(self, value, reason):
+        value = - abs(value)
+        model = self._create_entry(value, reason)
+        conn = self.get_connection()
+        model.addFacet(IOutPayment, connection=conn)
+        return model
+
+    def create_credit(self, value, reason):
+        model = self._create_entry(value, reason)
+        conn = self.get_connection()
+        model.addFacet(IInPayment, connection=conn)
+        return model
+
 
 #
 # Adapters
