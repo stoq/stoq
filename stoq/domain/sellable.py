@@ -42,8 +42,7 @@ from stoq.lib.runtime import get_connection
 from stoq.lib.parameters import sysparam
 from stoq.domain.interfaces import ISellable, IContainer
 from stoq.domain.base import (Domain, InheritableModelAdapter,
-                                    InheritableModel)
-
+                              InheritableModel)
 
 
 _ = gettext.gettext
@@ -100,13 +99,7 @@ class AbstractSellableItem(InheritableModel):
     sellable = ForeignKey('AbstractSellable')
 
     def _create(self, id, **kw):
-        # XXX This code doesn't work in the constructor because the
-        # connection argument is not set properly there. Waiting for
-        # SQLObject improvements.
         if not 'kw' in kw:
-            if 'base_price' in kw:
-                raise TypeError('You should not provide a base_price '
-                                'argument since it is set automatically')
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
             base_price = kw['sellable'].get_price()
@@ -119,7 +112,7 @@ class AbstractSellableItem(InheritableModel):
         if not sellable.can_be_sold():
             msg = '%s is already sold' % self.get_adapted()
             raise SellError(msg)
-        sellable.set_sold()
+        sellable.sell()
 
     #
     # Accessors
@@ -132,35 +125,57 @@ class AbstractSellableItem(InheritableModel):
         return get_formatted_price(self.price)
 
 
+class OnSaleInfo(Domain):
+    on_sale_price = FloatCol(default=0.0)
+    on_sale_start_date = DateTimeCol(default=None)
+    on_sale_end_date = DateTimeCol(default=None)
+
+
+class BaseSellableInfo(Domain):
+    price = FloatCol()
+    description = StringCol()
+    max_discount = FloatCol(default=0.0)
+    commission = FloatCol(default=None)
+
+    def get_commission(self):
+        if self.commission is None:
+            return 0.0
+        return self.commission
+
+
 class AbstractSellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
     implements(ISellable, IContainer)
 
     sellableitem_table = None
-    (STATE_AVAILABLE,
-     STATE_SOLD,
-     STATE_BLOCKED) = range(3)
+    (STATUS_AVAILABLE,
+     STATUS_SOLD,
+     STATUS_CLOSED,
+     STATUS_BLOCKED) = range(4)
     
 
-    states = {STATE_AVAILABLE: _("Available"),
-              STATE_SOLD: _("Sold"),
-              STATE_BLOCKED: _("Blocked")}
+    statuses = {STATUS_AVAILABLE: _("Available"),
+                STATUS_SOLD: _("Sold"),
+                STATUS_CLOSED: _("Closed"),
+                STATUS_BLOCKED: _("Blocked")}
 
     code = StringCol(alternateID=True)
-    state = IntCol(default=STATE_AVAILABLE)
-    price = FloatCol()
-    description = StringCol()
+    status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
     cost = FloatCol(default=0.0)
-    max_discount = FloatCol(default=0.0)
-    commission = FloatCol(default=None)
     # This field must be mandatory, waiting for bug 2247
     unit = StringCol(default=None)
-    on_sale_price = FloatCol(default=0.0)
-    on_sale_start_date = DateTimeCol(default=None)
-    on_sale_end_date = DateTimeCol(default=None)
+    base_sellable_info = ForeignKey('BaseSellableInfo')
+    on_sale_info = ForeignKey('OnSaleInfo')
     category = ForeignKey('SellableCategory', default=None)
+
+    def _create(self, id, **kw):
+        if not 'kw' in kw:
+            conn = self.get_connection()
+            if not 'on_sale_info' in kw:
+                kw['on_sale_info'] = OnSaleInfo(connection=conn)
+        InheritableModelAdapter._create(self, id, **kw)
 
     #
     # IContainer methods
@@ -194,28 +209,35 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def can_be_sold(self):
-        return self.state == self.STATE_AVAILABLE
+        return self.status == self.STATUS_AVAILABLE
 
-    def set_sold(self):
-        assert self.can_be_sold()
-        self.state = self.STATE_SOLD
+    def sell(self):
+        if not self.can_be_sold():
+            raise ValueError('This sellable is not available '
+                             'to be sold')
+        self.status = self.STATUS_SOLD
 
     def get_price(self):
-        if self.on_sale_price:
+        if self.on_sale_info.on_sale_price:
             today = datetime.datetime.today()
-            if is_date_in_interval(today, self.on_sale_start_date,
-                                   self.on_sale_end_date):
-                return self.on_sale_price
-        return self.price
+            start_date = self.on_sale_info.on_sale_start_date
+            end_date = self.on_sale_info.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                return self.on_sale_info.on_sale_price
+        return self.base_sellable_info.price
 
-    def add_sellable_item(self, sale, quantity=1.0, price=None):
+    def add_sellable_item(self, sale, quantity=1.0, price=None, **kwargs):
+        """Add a new sellable item instance tied to the current 
+        sellable object
+        """
         if not self.sellableitem_table:
             raise ValueError('Child classes must define a sellableitem_table '
                              'attribute')
         price = price or self.get_price()
         conn = self.get_connection()
         return self.sellableitem_table(connection=conn, quantity=quantity,
-                                       sale=sale, sellable=self, price=price)
+                                       sale=sale, sellable=self,
+                                       price=price, **kwargs)
     #
     # Accessors
     #
@@ -224,23 +246,26 @@ class AbstractSellable(InheritableModelAdapter):
         return get_formatted_price(self.get_price())
 
     def get_commission(self):
-        return self.commission
+        return self.base_sellable_info.commission
+
+    def get_short_description(self):
+        return '%s %s' % (self.code, self.base_sellable_info.description)
 
     #
     # Auxiliary methods
     #
 
-    def get_states_string(self):
-        if not self.states.has_key(self.state):
-            raise DatabaseInconsistency('Invalid state for product got '
-                                        '%d' % self.state)
-        return self.states[self.state]
+    def get_status_string(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for product got '
+                                        '%d' % self.status)
+        return self.statuses[self.status]
 
     def _set_code(self, code):
         conn = get_connection()
         query = AbstractSellable.q.code == code
         # FIXME We should raise a proper stoqlib exception here if we find
-        # an existent code. Waiting for kiwi support 
+        # an existing code. Waiting for kiwi support 
         if not AbstractSellable.select(query, connection=conn).count():
             self._SO_set_code(code)
 
@@ -249,7 +274,7 @@ class AbstractSellable(InheritableModelAdapter):
         service = sysparam(conn).DELIVERY_SERVICE
         delivery = ISellable(service, connection=conn)
         q1 = cls.q.id != delivery.id
-        q2 = cls.q.state == cls.STATE_AVAILABLE
+        q2 = cls.q.status == cls.STATUS_AVAILABLE
         return AND(q1, q2)
 
     @classmethod
@@ -261,6 +286,15 @@ class AbstractSellable(InheritableModelAdapter):
         query = cls.get_available_sellables_query(conn)
         return cls.select(query, connection=conn)
 
+    @classmethod
+    def get_sold_sellables(cls, conn):
+        """Returns sellable objects which can be added in a sale. By 
+        default a delivery sellable can not be added manually by users 
+        since a separated dialog is responsible for that.
+        """
+        query = cls.q.status == cls.STATUS_SOLD
+        return cls.select(query, connection=conn)
+
     def get_suggested_markup(self):
         return self.category and self.category.get_markup() 
 
@@ -268,5 +302,6 @@ class AbstractSellable(InheritableModelAdapter):
         if not self.category:
             self.commission = 0.0
         else:
+            commission = self.category.base_category.get_commission()
             self.commission = (self.category.get_commission() 
-                              or self.category.base_category.get_commission())
+                               or commission) 

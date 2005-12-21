@@ -36,6 +36,7 @@ import gettext
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.domain.service import ServiceSellableItem, Service
+from stoq.domain.sellable import BaseSellableInfo
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.domain.interfaces import ISellable
 from stoq.lib.validators import get_price_format_str
@@ -67,7 +68,7 @@ class ServiceItemEditor(BaseEditor):
 
 
     def get_title_model_attribute(self, model):
-        return model.sellable.description
+        return model.sellable.base_sellable_info.description
 
     def setup_proxies(self):
         self.set_widgets_format()
@@ -93,6 +94,9 @@ class ServiceEditor(SellableEditor):
 
     def create_model(self, conn):
         model = Service(connection=conn)
-        model.addFacet(ISellable, code='', description='', price=0.0, 
+
+        sellable_info = BaseSellableInfo(connection=conn, 
+                                         description='', price=0.0)
+        model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
                        connection=conn)
         return model

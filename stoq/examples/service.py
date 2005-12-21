@@ -30,6 +30,7 @@ stoq/examples/service.py:
 import random
 
 from stoq.domain.service import Service
+from stoq.domain.sellable import BaseSellableInfo
 from stoq.domain.interfaces import ISellable
 from stoq.lib.runtime import new_transaction, print_msg
 
@@ -40,31 +41,32 @@ COST_RANGE = 1, 99
 
 def create_services():
     print_msg('creating services...', break_line=False)
-    trans = new_transaction()
+    conn = new_transaction()
     
 
-    sellable_data = [dict(code='General89',
-                          description='General Service'),
-                     dict(code='C762',
-                          description='Cleanness'),
-                     dict(code='872626',
-                          description='Computer Maintenance'),
-                     dict(code='S123',
-                          description='Computer Components Switch')]
+    descriptions = ['General Service', 'Cleanness', 'Computer Maintenance',
+                    'Computer Components Switch']
+    codes = ['General89', 'C762', '872626', 'S123']
 
 
     # Creating services and facets
     for index in range(MAX_SERVICES_NUMBER):
-        service_obj = Service(connection=trans)
+        service_obj = Service(connection=conn)
         
-        sellable_args = sellable_data[index]
         price = round(random.uniform(*PRICE_RANGE))
-        cost = round(random.uniform(*COST_RANGE))
-        service_obj.addFacet(ISellable, connection=trans,
-                             price=price, cost=cost,
-                             **sellable_args)
+        description = descriptions[index]
 
-    trans.commit()
+        sellable_info = BaseSellableInfo(connection=conn, 
+                                         description=description,
+                                         price=price)
+        cost = round(random.uniform(*COST_RANGE))
+        code = codes[index]
+        
+        service_obj.addFacet(ISellable, connection=conn,
+                             base_sellable_info=sellable_info,
+                             cost=cost, code=code)
+
+    conn.commit()
     print_msg('done.')
     
 if __name__ == "__main__":

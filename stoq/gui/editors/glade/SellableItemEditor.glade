@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <widget class="GtkWindow" id="ProductItemEditor">
+    <widget class="GtkWindow" id="SellableItemEditor">
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">5</property>
@@ -12,11 +12,11 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="product_name">
+                            <widget class="kiwi+ui+widgets+label+Label" id="sellable_name">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">XXX</property>
-                                <property name="xalign">0.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
                             </widget>
                         </child>
                         <child>
@@ -32,12 +32,11 @@
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="value">
                                 <property name="data_type">float</property>
-                                <property name="exact_completion">False</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">price</property>
+                                <property name="visible">True</property>
                                 <property name="width_chars">9</property>
                                 <property name="xalign">1.0</property>
-                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -61,9 +60,9 @@
                                 <property name="model_attribute">quantity</property>
                                 <property name="numeric">True</property>
                                 <property name="text" context="yes" translatable="yes">0.00</property>
+                                <property name="visible">True</property>
                                 <property name="width_chars">6</property>
                                 <property name="xalign">1.0</property>
-                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="position">4</property>
@@ -73,8 +72,8 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Total:</property>
-                                <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="position">5</property>
@@ -84,8 +83,8 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="total_label">
                                 <property name="data_type">float</property>
                                 <property name="model_attribute">total</property>
-                                <property name="xalign">0.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="position">6</property>

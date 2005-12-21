@@ -39,7 +39,8 @@ from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.dialogs import run_dialog
 
 from stoq.domain.person import PersonAdaptToSupplier
-from stoq.domain.product import (ProductSupplierInfo, Product,                                                            ProductSellableItem)
+from stoq.domain.sellable import BaseSellableInfo
+from stoq.domain.product import ProductSupplierInfo, Product
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.lib.validators import get_price_format_str
@@ -242,7 +243,10 @@ class ProductEditor(SellableEditor):
 
     def create_model(self, conn):
         model = Product(connection=conn)
-        model.addFacet(ISellable, code='', description='', price=0.0, 
+        sellable_info = BaseSellableInfo(connection=conn, 
+                                         description='', price=0.0)
+        
+        model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
@@ -251,64 +255,3 @@ class ProductEditor(SellableEditor):
                                             supplier=supplier,
                                             product=model)
         return model
-
-
-class ProductItemEditor(BaseEditor):
-    model_name = _('Product')
-    model_type = ProductSellableItem
-    gladefile = 'ProductItemEditor'
-    size = (550, 115)
-
-    proxy_widgets = ('quantity', 
-                     'value',
-                     'total_label')
-    widgets = ('product_name', 
-               'price_label') + proxy_widgets
-
-    def __init__(self, conn, model=None, model_type=None, 
-                 value_attr=None):
-        self.model_type = model_type or self.model_type
-        self.value_attr = value_attr
-        BaseEditor.__init__(self, conn, model)
-
-    def disable_price_fields(self):
-        for widget in (self.value, self.price_label):
-            widget.set_sensitive(False)
-
-    #
-    # BaseEditor hooks
-    #
-
-    def get_title_model_attribute(self, model):
-        return model.sellable.description
-
-    def setup_proxies(self):
-        # We need to setup the widgets format before the proxy fill them
-        # with the values.
-        self.setup_widgets()
-        if self.value_attr:
-            self.value.set_property('model-attribute', self.value_attr)
-        self.proxy = self.add_proxy(self.model,
-                                    ProductItemEditor.proxy_widgets)
-
-    def setup_widgets(self):
-        sellable = self.model.sellable
-        self.product_name.set_text(sellable.description)
-        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
-            self.disable_price_fields()
-            return
-        self.value.set_data_format(get_price_format_str())
-        self.total_label.set_data_format(get_price_format_str())
-
-    #
-    # Callbacks
-    #
-
-    def on_quantity__value_changed(self, *args):
-        self.proxy.update('total')
-
-    def after_quantity__value_changed(self, *args):
-        self.proxy.update('total')
-
-    def after_value__changed(self, *args):
-        self.proxy.update('total')

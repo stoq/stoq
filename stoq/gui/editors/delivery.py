@@ -44,7 +44,7 @@ from stoq.domain.sellable import AbstractSellable
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.sale import Sale
 from stoq.domain.interfaces import ISellable, IDelivery
-from stoq.gui.editors.product import ProductItemEditor
+from stoq.gui.editors.sellable import SellableItemEditor
 
 _ = gettext.gettext
 
@@ -161,7 +161,8 @@ class DeliveryEditor(BaseEditor):
         columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 
                                     data_type=str, sorted=True,
                                     obj_field='sellable'),
-                   ForeignKeyColumn(AbstractSellable, 'description',
+                   ForeignKeyColumn(AbstractSellable, 
+                                    'base_sellable_info.description',
                                     title=_('Description'), data_type=str, 
                                     expand=True, obj_field='sellable'),
                    Column('quantity', title=_('Quantity'), data_type=float, 
@@ -169,8 +170,8 @@ class DeliveryEditor(BaseEditor):
 
         delivery = IDelivery(self.model, connection=self.conn)
         items = delivery.get_items()
-        self.slave = AdditionListSlave(self.conn, ProductItemEditor, 
-                                       columns, items)
+        self.slave = AdditionListSlave(self.conn, columns,
+                                       SellableItemEditor, items)
         self.slave.hide_add_button()
         self.slave.connect('before-delete-items', self.before_delete_items)
         self.attach_slave('addition_list_holder', self.slave)
