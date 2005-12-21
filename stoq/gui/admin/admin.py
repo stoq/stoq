@@ -38,8 +38,8 @@ from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin, finish_transaction
 
 from stoq.gui.search.person import EmployeeRoleSearch, EmployeeSearch
+from stoq.gui.search.profile import UserProfileSearch
 from stoq.gui.application import AppWindow
-from stoq.gui.editors.profile import UserProfileEditor
 from stoq.gui.editors.person import UserEditor
 from stoq.gui.editors.printers import PrinterSettingsDialog
 from stoq.gui.slaves.filter import FilterSlave
@@ -165,8 +165,7 @@ class AdminApp(AppWindow):
         self.run_dialog(EmployeeSearch, hide_footer=True)
 
     def _on_user_profiles_action_clicked(self, *args):
-        model = self.run_dialog(UserProfileEditor, self.conn)
-        finish_transaction(self.conn, model, keep_transaction=True)
+        self.run_dialog(UserProfileSearch, self.conn)
     
     def _on_employee_role__action_clicked(self, *args):
         self.run_dialog(EmployeeRoleSearch)
