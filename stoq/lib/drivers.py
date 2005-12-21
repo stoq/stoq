@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano <henrique@async.com.br>
+## Author(s):   Henrique Romano         <henrique@async.com.br>
+##              Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 """
 stoq/lib/drivers.py
@@ -154,40 +155,43 @@ def emit_coupon(conn, sale):
                 return False
             return emit_coupon(conn, sale)
         except DriverError, details:
-            warning(_("Isn't possible emit the coupon"), str(details))
+            warning(_("It's not possible to emit the coupon"), str(details))
             return False
 
-    # XXX: Should we allow services be added in the coupon?
     for item in sale.get_items():
         sellable = item.sellable
         # FIXME: TAX_NONE is a HACK, waiting for bug #2269
         # FIXME: UNIT_EMPTY is temporary and will be remove when bug #2247
         # is fixed.
-        printer.add_item(sellable.code, item.quantity, item.price, UNIT_EMPTY,
-                         sellable.description, TAX_NONE, 0, 0)
+        printer.add_item(sellable.code, item.quantity, item.price, 
+                         UNIT_EMPTY, sellable.base_sellable_info.description,
+                         TAX_NONE, 0, 0)
 
     printer.totalize(sale.discount_value, sale.charge_value, TAX_NONE)
 
-    group = IPaymentGroup(sale)
-    for payment in group.get_items():
-        if ICheckPM.providedBy(payment.method):
-            money_type = CHEQUE_PM
-        elif IMoneyPM.providedBy(payment.method):
-            money_type = MONEY_PM
-        # FIXME: A default value, this is wrong but can't be better right
-        # now, since stoqdrivers doesn't have support for any payment
-        # method diferent than money and cheque.  This will be improved
-        # when bug #2246 is fixed.
-        else:
-            _warn(("The payment type %d isn't supported yet. The default, "
-                   "MONEY_PM, will be used." % payment.method))
-            money_type = MONEY_PM
-
-        printer.add_payment(money_type, payment.value, '')
+    group = IPaymentGroup(sale, connection=conn)
+    if group.default_method == group.METHOD_GIFT_CERTIFICATE:
+        printer.add_payment(MONEY_PM, sale.get_total_sale_amount(), '')
+    else:
+        for payment in group.get_items():
+            if ICheckPM.providedBy(payment.method):
+                money_type = CHEQUE_PM
+            elif IMoneyPM.providedBy(payment.method):
+                money_type = MONEY_PM
+            # FIXME: A default value, this is wrong but can't be better right
+            # now, since stoqdrivers doesn't have support for any payment
+            # method diferent than money and cheque.  This will be improved
+            # when bug #2246 is fixed.
+            else:
+                _warn(_("The payment type %d isn't supported yet. "
+                        "The default, MONEY_PM, will be used.") 
+                        % payment.method)
+                money_type = MONEY_PM
+            printer.add_payment(money_type, payment.value, '')
 
     try:
         printer.close()
     except DriverError, details:
-        warning(_("Isn't possible close the coupon"), str(details))
+        warning(_("It's not possible to close the coupon"), str(details))
         return False
     return True

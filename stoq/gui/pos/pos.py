@@ -50,7 +50,8 @@ from stoq.domain.product import ProductSellableItem, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson, IClient
-from stoq.gui.editors.product import ProductItemEditor
+from stoq.domain.giftcertificate import GiftCertificateItem
+from stoq.gui.editors.sellable import SellableItemEditor
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
@@ -129,7 +130,7 @@ class POSApp(AppWindow):
         self._setup_client_entry()
         sellables = AbstractSellable.get_available_sellables(self.conn)
         sellables = sellables[:self.max_results]
-        strings = [s.description for s in sellables]
+        strings = [s.get_short_description() for s in sellables]
         self.product.set_completion_strings(strings, list(sellables))
 
     def _setup_widgets(self):
@@ -172,11 +173,12 @@ class POSApp(AppWindow):
         if sellable in sellables:
             if notify_on_entry:
                 msg = _("The item '%s' was already added to the order" 
-                        % sellable.description)
+                        % sellable.base_sellable_info.description)
                 self.product.set_invalid(msg)
             return
-        sellable = table.get(sellable.id, connection=self.conn)
-        sellable_item = sellable.add_sellable_item(self.sale)
+        else:
+            sellable = table.get(sellable.id, connection=self.conn)
+            sellable_item = sellable.add_sellable_item(self.sale)
         self.order_list.append(sellable_item)
         self.order_list.select(sellable_item)
         self.product.set_text('')
@@ -225,8 +227,7 @@ class POSApp(AppWindow):
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale.client is not None
-        widgets = [self.client_details_button,
-                   self.delivery_button]
+        widgets = [self.client_details_button, self.delivery_button]
         for widget in widgets:
             widget.set_sensitive(has_client)
         model = self.order_list.get_selected()
@@ -237,8 +238,9 @@ class POSApp(AppWindow):
     def _get_columns(self):
         return [Column('sellable.code', title=_('Code'), sorted=True, 
                        data_type=str, width=90),
-                Column('sellable.description', title=_('Description'), 
-                       data_type=str, expand=True, searchable=True),
+                Column('sellable.base_sellable_info.description', 
+                       title=_('Description'), data_type=str, expand=True, 
+                       searchable=True),
                 Column('price', title=_('Price'), data_type=currency, 
                        editable=True, width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
@@ -247,20 +249,30 @@ class POSApp(AppWindow):
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
                        
-
     def _edit_item(self, *args):
+        # XXX Bug 2336 will improve this code
+        param = sysparam(self.conn)
         sellable_item = self.order_list.get_selected()
+        editor_args = [self.conn]
         if isinstance(sellable_item, ProductSellableItem):
-            editor = ProductItemEditor
+            editor = SellableItemEditor
+            model_type = ProductSellableItem
+            editor_args += [model_type, sellable_item]
+        elif isinstance(sellable_item, GiftCertificateItem):
+            editor = SellableItemEditor
+            model_type = GiftCertificateItem
+            editor_args += [model_type, sellable_item]
         elif (sellable_item.sellable.get_adapted() 
-              is sysparam(self.conn).DELIVERY_SERVICE):
+              is param.DELIVERY_SERVICE):
             editor = DeliveryEditor
+            editor_args += [sellable_item]
         elif isinstance(sellable_item, ServiceSellableItem):
             editor = ServiceItemEditor
+            editor_args += [sellable_item]
         else:
             raise AssertionError("Unknown sellable item selected: %s"
                                  % type(sellable_item))
-        model = self.run_dialog(editor, self.conn, sellable_item)
+        model = self.run_dialog(editor, *editor_args)
         if not model:
             return
         self.order_list.update(model)

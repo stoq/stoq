@@ -35,14 +35,21 @@ from datetime import datetime
 from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
 from stoqlib.exceptions import SellError, DatabaseInconsistency 
 from zope.interface import implements
+from kiwi.argcheck import argcheck
 
 from stoq.domain.base import Domain
 from stoq.domain.sellable import AbstractSellableItem
 from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.service import ServiceSellableItem
+from stoq.domain.renegotiation import RenegotiationData
+from stoq.domain.giftcertificate import (GiftCertificateItem,
+                                         GiftCertificate)
 from stoq.domain.interfaces import (IContainer, IClient, IStorable, 
-                                    IPaymentGroup)
+                                    IPaymentGroup, ISellable,
+                                    IRenegotiationSaleReturnMoney,
+                                    IRenegotiationGiftCertificate,
+                                    IRenegotiationOutstandingValue)
 
 
 _ = gettext.gettext
@@ -56,7 +63,7 @@ class Sale(Domain):
     Nested imports are needed here because domain/sallable.py imports the
     current one.
 
-    B{Importante attributes}:
+    B{Important attributes}:
         - I{order_number}: an optional identifier for this sale defined by 
                            the store.
         - I{open_date}: The day when we started this sale.
@@ -129,8 +136,8 @@ class Sale(Domain):
 
     def get_status_name(self):
         if not self.status in self.statuses:
-            raise DatabaseInconsistency("Invalid status for sale %d: %d"
-                                        % (self.id, self.status))
+            raise DatabaseInconsistency("Invalid status for sale %s: %d"
+                                        % (self.order_number, self.status))
         return self.statuses[self.status]
 
     def update_client(self, person):
@@ -220,6 +227,11 @@ class Sale(Domain):
         return [item for item in self.get_items() 
                     if isinstance(item, ProductSellableItem)]
 
+    def get_gift_certificates(self):
+        """Returns a list of gift certificates tied to the current sale"""
+        return [item for item in self.get_items() 
+                    if isinstance(item, GiftCertificateItem)]
+
     def update_stocks(self):
         conn = self.get_connection()
         branch = self.get_till_branch()
@@ -246,12 +258,18 @@ class Sale(Domain):
         if not self.get_valid():
             self.set_valid()
 
+    def update_gift_certificates(self):
+        """Update the status of all gift certificates as sold"""
+        for item in self.get_gift_certificates():
+            item.sellable.sell()
+
     def confirm_sale(self):
         self.validate()
         conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
-        group.setup_inpayments()
         self.update_stocks()
+        group = IPaymentGroup(self, connection=conn)
+        group.confirm()
+        self.update_gift_certificates()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
         
@@ -262,6 +280,16 @@ class Sale(Domain):
 
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
+
+    (RENEGOTIATION_GIFT_CERTIFICATE,
+     RENEGOTIATION_RETURN,
+     RENEGOTIATION_OUTSTANDING) = range(3)
+
+    ifaces = {RENEGOTIATION_GIFT_CERTIFICATE: IRenegotiationGiftCertificate,
+              RENEGOTIATION_RETURN: IRenegotiationSaleReturnMoney,
+              RENEGOTIATION_OUTSTANDING:IRenegotiationOutstandingValue}
+
+    renegotiation_type = IntCol(default=None)
 
     #
     # IPaymentGroup implementation
@@ -282,6 +310,92 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     # Auxiliar methods
     #
 
+
+    def _get_stored_renegotiation(self, reason=None):
+        if self.renegotiation_data is not None:
+            return ValueError('You already have a renegotiation data '
+                              'defined')
+        sale = self.get_adapted()
+        responsible = sale.salesperson.get_adapted()
+        conn = self.get_connection()
+        reason = reason or _('Overpaid value of sale using gift certificates')
+        reneg_data = RenegotiationData(connection=conn, 
+                                       responsible=responsible,
+                                       reason=reason)
+        self.renegotiation_data = reneg_data
+        return reneg_data
+
+    @argcheck(float)
+    def create_renegotiation_return_data(self, overpaid_value):
+        renegotiation = self._get_stored_renegotiation()
+        reneg_type = self.RENEGOTIATION_RETURN
+        self.renegotiation_type = reneg_type
+        conn = self.get_connection()
+        renegotiation.addFacet(IRenegotiationSaleReturnMoney,
+                               connection=conn, 
+                               payment_group=self,
+                               overpaid_value=overpaid_value)
+
+    @argcheck(str, float)
+    def create_renegotiation_giftcertificate_data(self, certificate_number,
+                                                  overpaid_value):
+        if not certificate_number:
+            raise ValueError('You must provide a valid certificate number')
+        table = type(self)
+        reneg_type = table.RENEGOTIATION_GIFT_CERTIFICATE
+        self.renegotiation_type = reneg_type
+        conn = self.get_connection()
+        number = certificate_number
+        renegotiation = self._get_stored_renegotiation()
+        renegotiation.addFacet(IRenegotiationGiftCertificate,
+                               connection=conn,
+                               new_gift_certificate_number=number,
+                               overpaid_value=overpaid_value)
+
+    @argcheck(float, int)
+    def create_renegotiation_outstanding_data(self, outstanding_value,
+                                              preview_payment_method):
+        reneg_type = self.RENEGOTIATION_OUTSTANDING
+        self.renegotiation_type = reneg_type
+        conn = self.get_connection()
+        reason = _('Outstanding value of sale using gift certificates')
+        renegotiation = self._get_stored_renegotiation(reason)
+        renegotiation.addFacet(IRenegotiationOutstandingValue,
+                               connection=conn,
+                               preview_payment_method=preview_payment_method,
+                               outstanding_value=outstanding_value)
+
+    def get_gift_certificates(self):
+        conn = self.get_connection()
+        table = GiftCertificate.getAdapterClass(ISellable)
+        return table.selectBy(groupID=self.id, connection=conn)
+
+    def confirm_gift_certificates(self):
+        """Update gift certificates of the current sale, setting their
+        status properly.
+        """
+        certificates = self.get_gift_certificates()
+        for item in certificates:
+            item.apply_as_payment_method()
+
+    def get_renegotiation_adapter(self):
+        if self.renegotiation_type is None:
+            raise ValueError('You should have a renegotiation_type defined '
+                             'at this point')
+        if self.renegotiation_type not in self.ifaces.keys():
+            raise ValueError('Invalid renegotiation_type, got %d' 
+                             % self.renegotiation_type)
+        iface = self.ifaces[self.renegotiation_type]
+        conn = self.get_connection()
+        return iface(self.renegotiation_data, connection=conn)
+
+    def setup_inpayments(self):
+        reneg_type = self.RENEGOTIATION_OUTSTANDING
+        if (self.default_method == self.METHOD_GIFT_CERTIFICATE 
+            and not self.renegotiation_type == reneg_type):
+            return
+        AbstractPaymentGroup.setup_inpayments(self)
+
     def get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit 
         card payment method is the most common method which uses 
@@ -294,5 +408,33 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         deducted of payment method commissions"""
         sale = self.get_adapted()
         return sale.get_total_sale_amount() - self.get_pm_commission_total()
+
+    def confirm(self):
+        """Validate the current payment group, create payments and setup the
+        associated gift certificates properly.
+        """
+        self.setup_inpayments()
+        if (self.default_method ==
+            AbstractPaymentGroup.METHOD_GIFT_CERTIFICATE):
+            self.confirm_gift_certificates()
+        if self.renegotiation_type is None:
+            return
+        # Here we have the payment method set as gift certificate but there
+        # is an outstanding or overpaid values to deal with.
+        adapter = self.get_renegotiation_adapter()
+        adapter.confirm()
+
+    #
+    # AbstractPaymentGroup hooks
+    #
+
+    def get_default_payment_method(self):
+        if self.renegotiation_data is None:
+            return self.default_method
+        adapter = self.get_renegotiation_adapter()
+        if IRenegotiationOutstandingValue.providedBy(adapter):
+            return adapter.payment_method
+        else:
+            return self.default_method
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)

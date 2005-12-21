@@ -18,17 +18,17 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">str</property>
+                                <property name="visible">True</property>
                                 <property name="label" context="yes" translatable="yes">Salesperson:</property>
                                 <property name="xalign">1.0</property>
-                                <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="salesperson_combo">
                                 <property name="data_type">object</property>
                                 <property name="mandatory">True</property>
-                                <property name="model_attribute">salesperson</property>
                                 <property name="visible">True</property>
+                                <property name="model_attribute">salesperson</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -75,9 +75,9 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                         <property name="data_type">str</property>
+                                <property name="visible">True</property>
                                         <property name="label" context="yes" translatable="yes">Subtotal:</property>
                                         <property name="xalign">1.0</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -87,10 +87,10 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="subtotal_lbl">
                                         <property name="data_type">float</property>
+                                <property name="visible">True</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">sale_subtotal</property>
                                         <property name="xalign">1.0</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -107,18 +107,18 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                         <property name="data_type">str</property>
+                                <property name="visible">True</property>
                                         <property name="label" context="yes" translatable="yes">Total:</property>
                                         <property name="xalign">1.0</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="total_lbl">
                                         <property name="data_type">float</property>
+                                <property name="visible">True</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">total_sale_amount</property>
                                         <property name="xalign">1.0</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -147,23 +147,36 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="cash_check">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">bool</property>
+                                <property name="visible">True</property>
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">Cash</property>
-                                        <property name="visible">True</property>
                                     </widget>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="certificate_check">
+                                        <property name="active">False</property>
+                                <property name="visible">True</property>
+                                        <property name="data_type">bool</property>
+                                        <property name="group">cash_check</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Gift Certificate</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="othermethods_check">
                                         <property name="active">False</property>
-                                        <property name="data_type">str</property>
+                                        <property name="visible">True</property>
+                                        <property name="data_type">bool</property>
                                         <property name="group">cash_check</property>
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">Other Methods</property>
-                                        <property name="visible">True</property>
                                     </widget>
                                     <packing>
-                                        <property name="position">1</property>
+                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                             </widget>

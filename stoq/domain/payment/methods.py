@@ -297,13 +297,17 @@ class PMAdaptToMoneyPM(PaymentMethodAdapter):
                                     self.destination, due_date)
         return payment
 
-    def setup_outpayments(self, total, group, installments_number):
+    def setup_outpayments(self, total, group, installments_number=None):
+        installments_number = (installments_number or
+                               self.get_max_installments_number())
         total = - abs(total)
         payment = self._get_new_payment(total, group, installments_number)
         conn = self.get_connection()
         payment.addFacet(IOutPayment, connection=conn)
 
-    def setup_inpayments(self, total, group, installments_number):
+    def setup_inpayments(self, total, group, installments_number=None):
+        installments_number = (installments_number or
+                               self.get_max_installments_number())
         payment = self._get_new_payment(total, group, installments_number)
         conn = self.get_connection()
         payment.addFacet(IInPayment, connection=conn)
