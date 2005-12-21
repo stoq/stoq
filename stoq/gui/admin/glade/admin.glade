@@ -154,7 +154,7 @@
                 <child>
                     <object class="GtkAction" id="printers_setup">
                         <property name="name">printers_setup</property>
-                        <property name="label" translatable="yes">Printers _Setup</property>
+                        <property name="label" translatable="yes">Printer _Settings</property>
                     </object>
                 </child>
                 <child>
@@ -222,8 +222,8 @@
                             <widget class="kiwi+ui+widgets+list+List" id="users_list">
                                 <property name="is_focus">True</property>
                                 <property name="shadow_type">in</property>
-                                <property name="vscrollbar_policy">automatic</property>
                                 <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -259,7 +259,7 @@
                                                                         <property name="visible">True</property>
                                                                         <child>
                                                                             <widget class="GtkImage" id="GtkImage1">
-                                                                                <property name="file">add16px.png</property>
+                                                                                <property name="file">edit16px.png</property>
                                                                                 <property name="visible">True</property>
                                                                             </widget>
                                                                         </child>
