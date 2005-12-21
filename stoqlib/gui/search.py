@@ -643,6 +643,7 @@ class SearchDialog(BasicDialog):
         self.klist_slave = BaseListSlave(parent=self)
         self.attach_slave('main', self.klist_slave)
         self.klist = self.klist_slave.klist
+        self.klist.connect('cell_edited', self.on_cell_edited)
         # We can not change this through gazpacho because BaseListSlave 
         # can be used for some other classes which should always redefine
         # this mode
@@ -668,6 +669,11 @@ class SearchDialog(BasicDialog):
     def after_search_bar_created(self):
         """This method will be called after creating the SearchBar 
         instance.  Redefine this method in child when it's needed
+        """
+
+    def on_cell_edited(self, *args):
+        """Override this method on child when it's needed to perform some
+        tasks when editing a row.
         """
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
@@ -800,6 +806,7 @@ class SearchEditor(SearchDialog):
                               searching_by_date=searching_by_date)
         self.interface = interface
         self.editor_class = editor_class
+        self.accept_edit_data = True
         self.klist.connect('double_click', self.edit)
         self.update_widgets()
 
@@ -810,6 +817,13 @@ class SearchEditor(SearchDialog):
 
     def update_widgets(self, *args):
         self.toolbar.edit_button.set_sensitive(len(self.klist))
+
+    def hide_edit_button(self):
+        self.accept_edit_data = False
+        self.toolbar.edit_button.hide()
+
+    def hide_new_button(self):
+        self.toolbar.new_button.hide()
 
     def run(self, obj=None):
         if obj: 
@@ -846,6 +860,8 @@ class SearchEditor(SearchDialog):
         return run_dialog(self.editor_class, self, self.conn, obj)
 
     def edit(self, widget, obj=None):
+        if not self.accept_edit_data:
+            return
         if obj is None:
             msg = "There should be only one item selected. Got %s items"
             if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
