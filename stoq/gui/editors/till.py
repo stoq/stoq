@@ -39,7 +39,7 @@ from kiwi.datatypes import ValidationError
 
 from stoq.domain.sellable import get_formatted_price
 from stoq.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee, 
-                                    IBranch)
+                                    IBranch, IOutPayment)
 from stoq.domain.till import Till, get_current_till_operation
 from stoq.domain.payment.base import Payment, CashAdvanceInfo
 from stoq.domain.person import Person
@@ -63,22 +63,10 @@ class TillOpeningEditor(BaseEditor):
 
     def _initialize_till_operation(self):
         if self.model.initial_cash_amount > 0:
-            status = Payment.STATUS_TO_PAY
-            now = datetime.datetime.now()
-            value = self.model.initial_cash_amount
-            method = sysparam(self.conn).METHOD_MONEY
             current_till = get_current_till_operation(self.conn)
-            group = IPaymentGroup(current_till, connection=self.conn)
-            if not group:
-                raise ValueError('Till object must have a IPaymentGroup facet' 
-                                 'defined at this point')
-            destination= sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
-            description = _('Initial cash amount')
-            payment = Payment(status=status, due_date=now, value=value, 
-                              method=method, group=group, 
-                              destination=destination, 
-                              description=description,
-                              connection=self.conn)
+            value = self.model.initial_cash_amount
+            reason = _('Initial cash amount')
+            current_till.create_credit(value, reason)
             self.conn.commit()
 
     #
@@ -211,8 +199,10 @@ class BaseCashSlave(BaseEditorSlave):
                      'cash_amount_lbl')
     widgets = proxy_widgets + label_widgets
 
-    def __init__(self, conn, payment_description):
+    def __init__(self, conn, payment_description, 
+                 payment_iface=IInPayment):
         self.payment_description = payment_description
+        self.payment_iface = payment_iface
         BaseEditorSlave.__init__(self, conn)
 
     def _setup_widgets(self):
@@ -224,23 +214,17 @@ class BaseCashSlave(BaseEditorSlave):
     # 
 
     def create_model(self, conn):
-        status = Payment.STATUS_TO_PAY
-        now = datetime.datetime.now()
-        method = sysparam(conn).METHOD_MONEY
+        reason = self.payment_description
         current_till = get_current_till_operation(conn)
-        group = IPaymentGroup(current_till, connection=conn)
-        if not group:
-            ValueError('Till object must have a IPaymentGroup facet' 
-                       'defined at this point')
-        destination= sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-        description = self.payment_description
-        model = Payment(status=status, due_date=now, value=0.0, 
-                        method=method, group=group, 
-                        destination=destination, 
-                        description=description,
-                        connection=conn)
-        model.addFacet(IInPayment, connection=conn)
-        return model
+        payment_value = 0.0
+        args = [payment_value, reason]
+        if self.payment_iface is IInPayment:
+            return current_till.create_credit(*args)
+        elif self.payment_iface is IOutPayment:
+            return current_till.create_debit(*args)
+        else:
+            raise ValueError('Invalid interface, got %s' 
+                             % self.payment_iface)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
@@ -264,6 +248,7 @@ class CashAdvanceEditor(BaseEditor):
     label_widgets = ('employee_lbl',)
     entry_widgets = ('employee_combo',)
 
+    payment_iface = IOutPayment
 
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
@@ -303,8 +288,9 @@ class CashAdvanceEditor(BaseEditor):
         return model
         
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(payment_description=None,
-                                        conn=self.conn)
+        self.cash_slave = BaseCashSlave(conn=self.conn,
+                                        payment_description=None,
+                                        payment_iface=self.payment_iface)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -356,6 +342,8 @@ class CashOutEditor(BaseEditor):
     title = _('Reverse Payment')
     size = (350, 195)
     
+    payment_iface = IOutPayment
+    
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
             widget = getattr(obj, widget_name)
@@ -382,8 +370,8 @@ class CashOutEditor(BaseEditor):
     # 
     
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(payment_description=None,
-                                        conn=self.conn)
+        self.cash_slave = BaseCashSlave(self.conn, payment_description=None,
+                                        payment_iface=self.payment_iface)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -394,7 +382,6 @@ class CashOutEditor(BaseEditor):
             payment_description = _('Cash out: %s' % reason)
         else:
             payment_description = _('Cash out')
-            
         self.cash_slave.model.description = payment_description
         model = self.cash_slave.model
         model.value = -model.value
