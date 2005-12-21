@@ -43,7 +43,7 @@ class UserProfileSearch(SearchEditor):
     title = _("User Profile Search")
     table = UserProfile
     editor_class = UserProfileEditor
-    size = (425, 390)
+    size = (465, 390)
 
     def __init__(self, conn):
         SearchEditor.__init__(self, self.table, self.editor_class, 
@@ -51,7 +51,7 @@ class UserProfileSearch(SearchEditor):
         self._setup_widgets()
 
     def _setup_widgets(self):
-        self.set_searchbar_labels(_('Profiles Matching'))
+        self.set_searchbar_labels(_('Profiles Matching:'))
         self.set_result_strings(_('profile'), _('profiles'))
                         
     #
