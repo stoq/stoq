@@ -37,7 +37,13 @@ from stoqlib.gui.dialogs import run_dialog
 
 from stoq.domain.sellable import SellableCategory, AbstractSellable
 from stoq.domain.interfaces import ISellable, IStorable
+from stoq.domain.product import ProductSellableItem
+from stoq.domain.giftcertificate import GiftCertificateItem
+from stoq.domain.purchase import PurchaseItem
+from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoq.lib.runtime import new_transaction
+from stoq.lib.parameters import sysparam
+from stoq.lib.validators import get_price_format_str
 
 
 _ = gettext.gettext
@@ -54,11 +60,8 @@ class SellablePriceEditor(BaseEditor):
 
     proxy_widgets = ('cost',
                      'markup',
-                     'on_sale_start_date',
-                     'on_sale_end_date',
                      'max_discount',
                      'commission',
-                     'on_sale_price',
                      'price')
 
     general_widgets = ('base_markup',)
@@ -72,15 +75,13 @@ class SellablePriceEditor(BaseEditor):
 
     def set_widget_formats(self):
         widgets = (self.markup, self.base_markup, self.max_discount,
-                   self.commission, self.on_sale_price, self.price,
-                   self.cost)
+                   self.commission, self.price, self.cost)
         for widget in widgets:
-            widget.set_data_format('%.02f')
+            widget.set_data_format(get_price_format_str())
 
     def update_markup(self):
-        price = self.model.price or 1.0
+        price = self.model.base_sellable_info.price or 1.0
         cost = self.model.cost or 1.0
-
         self.model.markup = ((price / cost) - 1) * 100
         self.main_proxy.update('markup')
 
@@ -88,7 +89,7 @@ class SellablePriceEditor(BaseEditor):
         if self.model.get_commission() is not None:
             return
         self.model.set_default_commission()
-        self.main_proxy.update('commission')
+        self.main_proxy.update('base_sellable_info.commission')
 
     def update_price(self):
         cost = self.model.cost
@@ -97,8 +98,8 @@ class SellablePriceEditor(BaseEditor):
         # the spin value is None, so we need to manage this.
         if markup is None:
             return
-        self.model.price = cost + ((markup / 100) * cost)
-        self.main_proxy.update('price')
+        self.model.base_sellable_info.price = cost + ((markup / 100) * cost)
+        self.main_proxy.update('base_sellable_info.price')
 
     #
     # BaseEditor hooks
@@ -119,6 +120,10 @@ class SellablePriceEditor(BaseEditor):
         assert sellable
         self.model.markup = sellable.get_suggested_markup()
         self.main_proxy.update('markup')
+
+    def setup_slaves(self):
+        slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
+        self.attach_slave('on_sale_holder', slave)
 
     #
     # Kiwi handlers
@@ -170,10 +175,10 @@ class SellableEditor(BaseEditor):
             widget.set_data_format('%.02f')
 
     def edit_sale_price(self):
-        sellable = ISellable(self.model)
+        sellable = ISellable(self.model, connection=self.conn)
         result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
         if result:
-            self.sellable_proxy.update('price')
+            self.sellable_proxy.update('base_sellable_info.price')
 
     def setup_widgets(self):
         raise NotImplementedError
@@ -183,7 +188,8 @@ class SellableEditor(BaseEditor):
     #
 
     def get_title_model_attribute(self, model):
-        return ISellable(model).description
+        sellable = ISellable(model, connection=self.conn)
+        return sellable.base_sellable_info.description
 
     def setup_combos(self):
         table = SellableCategory
@@ -230,3 +236,71 @@ class SellableEditor(BaseEditor):
             value_ok = True
         conn._connection.close()
         return value_ok
+
+
+class SellableItemEditor(BaseEditor):
+    gladefile = 'SellableItemEditor'
+    size = (550, 115)
+    proxy_widgets = ('quantity', 
+                     'value',
+                     'total_label')
+    model_names = {ProductSellableItem: _('Product Item'),
+                   GiftCertificateItem: _('Gift Certificate'),
+                   PurchaseItem: _('Gift Certificate')}
+
+    def __init__(self, conn, model_type=ProductSellableItem, model=None,
+                 value_attr=None):
+        self.model_name = self._get_model_name(model_type)
+        self.model_type = model_type
+        self.value_attr = value_attr
+        BaseEditor.__init__(self, conn, model)
+
+    def _get_model_name(self, model_type):
+        if not self.model_names.has_key(model_type):
+            raise ValueError('Invalid model type for SellableItemEditor, '
+                             'got %s' % model_type)
+        return self.model_names[model_type]
+
+    def disable_price_fields(self):
+        for widget in (self.value, self.price_label):
+            widget.set_sensitive(False)
+
+    #
+    # BaseEditor hooks
+    #
+
+    def get_title_model_attribute(self, model):
+        return model.sellable.base_sellable_info.description
+
+    def setup_proxies(self):
+        # We need to setup the widgets format before the proxy fill them
+        # with the values.
+        self.setup_widgets()
+        if self.value_attr:
+            self.value.set_property('model-attribute', self.value_attr)
+        self.proxy = self.add_proxy(self.model,
+                                    SellableItemEditor.proxy_widgets)
+
+    def setup_widgets(self):
+        sellable = self.model.sellable
+        self.sellable_name.set_text(sellable.base_sellable_info.description)
+        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
+            self.disable_price_fields()
+            return
+        format = get_price_format_str()
+        self.value.set_data_format(format)
+        self.total_label.set_data_format(format)
+
+    #
+    # Callbacks
+    #
+
+    def on_quantity__value_changed(self, *args):
+        self.proxy.update('total')
+
+    def after_quantity__value_changed(self, *args):
+        self.proxy.update('total')
+
+    def after_value__changed(self, *args):
+        self.proxy.update('total')
+

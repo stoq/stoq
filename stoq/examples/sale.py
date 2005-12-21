@@ -138,7 +138,7 @@ def create_sales():
                     open_date=open_date, salesperson=salesperson)
         sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
-        sale_total = sellable_facet.price
+        sale_total = sellable_facet.base_sellable_info.price
 
         #
         # Setting up the payments

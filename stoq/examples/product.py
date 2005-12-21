@@ -38,7 +38,8 @@ from stoq.domain.person import Person
 from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
-                                  AbstractSellableCategory)
+                                  AbstractSellableCategory,
+                                  BaseSellableInfo)
 from stoq.lib.runtime import new_transaction, print_msg
 
 
@@ -59,7 +60,7 @@ def get_commission_and_markup():
     
 def create_products():
     print_msg('Creating products...', break_line=False)
-    trans = new_transaction()
+    conn = new_transaction()
 
     base_category_data= ['Keyboard', 
                          'Mouse', 
@@ -71,17 +72,13 @@ def create_products():
                      'LCD', 
                      'AMD Durom']
 
-    sellable_data = [dict(code='K15',
-                          description='Keyboard AXDR'), 
-                     dict(code='M73',
-                          description='Optical Mouse 45FG'), 
-                     dict(code='M025',
-                          description='Monitor LCD SXDF'), 
-                     dict(code='P83',
-                          description='Processor AMD Durom 1.2Ghz')]
+    codes = ['K15', 'M73', 'M025', 'P83'] 
+
+    descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG', 
+                    'Monitor LCD SXDF', 'Processor AMD Durom 1.2Ghz']
 
     supplier_table = Person.getAdapterClass(ISupplier)
-    suppliers = supplier_table.select(connection=trans)
+    suppliers = supplier_table.select(connection=conn)
     if suppliers.count() < MAX_PRODUCT_NUMBER:
         raise ValueError('You must have at least four suppliers on your '
                          'database at this point.')
@@ -89,11 +86,11 @@ def create_products():
 
     # Creating products and facets
     for index in range(MAX_PRODUCT_NUMBER):
-        product_obj = Product(connection=trans)
+        product_obj = Product(connection=conn)
 
         # Adding a main supplier for the product recently created
         supplier = suppliers[index]
-        supplier_info = ProductSupplierInfo(connection=trans,
+        supplier_info = ProductSupplierInfo(connection=conn,
                                             supplier=supplier,
                                             is_main_supplier=True, 
                                             product=product_obj)
@@ -101,31 +98,37 @@ def create_products():
         base_cat_desc = base_category_data[index]
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
-        abstract_data = table(connection=trans, suggested_markup=markup,
+        abstract_data = table(connection=conn, suggested_markup=markup,
                               salesperson_commission=commission,
                               description=base_cat_desc)
 
-        base_cat = BaseSellableCategory(connection=trans,
+        base_cat = BaseSellableCategory(connection=conn,
                                         category_data=abstract_data)
 
         cat_desc = category_data[index] 
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
-        abstract_data = table(connection=trans, description=cat_desc,
+        abstract_data = table(connection=conn, description=cat_desc,
                               salesperson_commission=commission,
                               suggested_markup=markup)
 
-        cat = SellableCategory(connection=trans,
+        cat = SellableCategory(connection=conn,
                                base_category=base_cat,
                                category_data=abstract_data)
-
-        sellable_args = sellable_data[index]
+    
+        description = descriptions[index]
         price = random.randrange(*PRICE_RANGE)
+        sellable_info = BaseSellableInfo(connection=conn, 
+                                         description=description, 
+                                         price=price)
+        
         cost = random.randrange(*COST_RANGE)
-        product_obj.addFacet(ISellable, connection=trans, category=cat, 
-                             price=price, cost=cost, **sellable_args)
+        code = codes[index]
+        product_obj.addFacet(ISellable, connection=conn, category=cat, 
+                             code=code, cost=cost, 
+                             base_sellable_info=sellable_info)
 
-        storable = product_obj.addFacet(IStorable, connection=trans)
+        storable = product_obj.addFacet(IStorable, connection=conn)
 
         # Setting a initial value for Stocks
         for stock_item in storable.get_stocks():
@@ -133,7 +136,7 @@ def create_products():
             stock_item.stock_cost = random.randrange(*COST_RANGE)
             stock_item.logic_quantity = stock_item.quantity * 2
         
-    trans.commit()
+    conn.commit()
     print_msg('done.')
 
 

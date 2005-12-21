@@ -36,6 +36,7 @@ from stoq.examples.service import create_services
 from stoq.examples.sale import create_sales
 from stoq.examples.payment import create_payments
 from stoq.examples.purchase import create_purchases
+from stoq.examples.giftcertificate import create_giftcertificates
 from stoq.examples.drivers import create_printer_setting
 
 VERBOSE = '-v' in sys.argv
@@ -49,6 +50,7 @@ def create():
     create_payments()
     create_sales()
     create_purchases()
+    create_giftcertificates()
     create_printer_setting()
     print_msg('done.')
 

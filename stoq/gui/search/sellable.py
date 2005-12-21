@@ -88,9 +88,11 @@ class SellableSearch(SearchDialog):
         self.has_stock_mode = sysparam(self.conn).HAS_STOCK_MODE
         columns = [Column('code', title=_('Code'), sorted=True,
                           data_type=str, width=100),
-                   Column('description', title=_('Description'),
-                          expand=True, data_type=str, searchable=True),
-                   Column('price', title=_('Price'), data_type=currency,
+                   Column('base_sellable_info.description', 
+                          title=_('Description'), expand=True, 
+                          data_type=str, searchable=True),
+                   Column('base_sellable_info.price', 
+                          title=_('Price'), data_type=currency,
                           width=90)]
         if self.has_stock_mode:
             column = AccessorColumn('stock', self.get_stock_balance, 

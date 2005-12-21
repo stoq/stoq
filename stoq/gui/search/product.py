@@ -64,7 +64,7 @@ class ProductSearch(SearchEditor):
     
     def get_filter_slave(self):
         products = [(value, key) for key, value in
-                    self.search_table.states.items()]
+                    self.search_table.statuses.items()]
         products.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(products, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(_('Show'))
@@ -88,16 +88,18 @@ class ProductSearch(SearchEditor):
     def get_columns(self):
         return [Column('code', _('Code'), data_type=str, sorted=True, 
                        width=80),
-                Column('description', _('Description'), data_type=str, 
+                Column('base_sellable_info.description', 
+                       _('Description'), data_type=str, 
                        width=260),
                 AccessorColumn('suppliers', self.get_main_supplier_name,
                                title=_('Supplier'), data_type=str,
                                width=200),
                 Column('cost', _('Cost'), data_type=currency, width=80),
-                Column('price', _('Price'), data_type=currency, width=80),
-                Column('states_string', _('State'), data_type=str)]
+                Column('base_sellable_info.price', _('Price'), 
+                       data_type=currency, width=80),
+                Column('status_string', _('Status'), data_type=str)]
 
     def get_extra_query(self):
-        state = self.filter_slave.get_selected_status()
-        if state != ALL_ITEMS_INDEX:
-            return AbstractSellable.q.state == state
+        status = self.filter_slave.get_selected_status()
+        if status != ALL_ITEMS_INDEX:
+            return AbstractSellable.q.status == status
