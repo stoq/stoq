@@ -58,7 +58,7 @@ class AdditionListSlave(SlaveDelegate):
     gsignal('before-delete-items', object)
     gsignal('after-delete-items')
 
-    def __init__(self, conn, editor_class, columns, klist_objects=[]):
+    def __init__(self, conn, columns, editor_class=None, klist_objects=[]):
         """
         @param conn:          a connection
         @param editor_class:  the window that is going to be open when user 
@@ -68,7 +68,7 @@ class AdditionListSlave(SlaveDelegate):
         @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
         @param klist_objects: initial objects to insert into the list
         """
-        if not issubclass(editor_class, BaseEditor):
+        if editor_class and not issubclass(editor_class, BaseEditor):
             raise TypeError("editor_class must be a BaseEditor subclass")
         
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
@@ -77,6 +77,7 @@ class AdditionListSlave(SlaveDelegate):
         self._editor_class = editor_class
         self._editor_kwargs = dict()
         self._columns = columns
+        self.can_edit = True
         self._setup_klist(klist_objects)
         self._update_sensitivity()
 
@@ -117,6 +118,8 @@ class AdditionListSlave(SlaveDelegate):
         self._update_sensitivity()
 
     def _edit(self):
+        if not self.can_edit:
+            return
         objs = self.get_selection()
         qty = len(objs)
         if qty != 1:
@@ -171,6 +174,7 @@ class AdditionListSlave(SlaveDelegate):
         self.add_button.hide()
 
     def hide_edit_button(self):
+        self.can_edit = False
         self.edit_button.hide()
 
     def hide_del_button(self):
@@ -207,8 +211,8 @@ class AdditionListDialog(BasicPluggableDialog):
         self._initialize(editor_class, columns, klist_objects)
 
     def _initialize(self, editor_class, columns, klist_objects):
-        self.addition_list = AdditionListSlave(self.conn, editor_class, 
-                                               columns, klist_objects)
+        self.addition_list = AdditionListSlave(self.conn, columns, 
+                                               editor_class, klist_objects)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm
