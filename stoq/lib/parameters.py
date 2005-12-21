@@ -75,6 +75,12 @@ Current System parameters:
     * DELIVERY_SERVICE(Service): The default delivery service
                                  to the system.
 
+    * DEFAULT_GIFT_CERTIFICATE_TYPE(GiftCertificateType): The default gift
+                                                          certificate type used
+                                                          when canceling sales
+                                                          and during
+                                                          renegotiations.
+
 >> System constants:                                               
                                                
 
@@ -150,7 +156,13 @@ Current System parameters:
                                               is received the preview
                                               payments will be also
                                               confirmed as valid payments
-                                              with STATuS_TO_PAY
+                                              with STATUS_TO_PAY
+
+    * RETURN_MONEY_ON_SALES(integer): Once this parameter is set the
+                                      salesperson can return money to
+                                      clients when there is overpaid values
+                                      in sales with gift certificates as 
+                                      payment method.
 """
     
 import gettext
@@ -242,6 +254,8 @@ class ParameterAccess(ClassInittableObject):
                                initial=True),
                  ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', int, 
                                initial=True),
+                 ParameterAttr('RETURN_MONEY_ON_SALES', int, 
+                               initial=True),
 
                  # Adding objects
                  ParameterAttr('SUGGESTED_SUPPLIER', 
@@ -260,6 +274,8 @@ class ParameterAccess(ClassInittableObject):
                                'payment.methods.PMAdaptToMoneyPM'),
                  ParameterAttr('DELIVERY_SERVICE', 
                                'service.Service'),
+                 ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE', 
+                               'giftcertificate.GiftCertificateType'),
                  ParameterAttr('CURRENT_WAREHOUSE', 
                                'person.PersonAdaptToCompany')]
 
@@ -333,8 +349,7 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_payment_destination()
         self.ensure_payment_methods()
         self.ensure_delivery_service()
-
-
+        self.ensure_default_gift_certificate_type()
 
     #
     # Methods for system objects creation
@@ -382,7 +397,7 @@ class ParameterAccess(ClassInittableObject):
         # what is the cnpj of this company I need to put something there because
         # this is a mandatory field. I think use a simple string could help user
         # to fix this field later.
-        person_obj.addFacet(ICompany, cnpj='current_branch', 
+        person_obj.addFacet(ICompany, cnpj=_('current_branch'), 
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         self.set_schema(key, branch.id)               
@@ -395,7 +410,7 @@ class ParameterAccess(ClassInittableObject):
         person_obj = Person(name=key, connection=self.conn)
         # XXX See ensure_current_branch comment: we have the same problem with
         # cnpj here.
-        person_obj.addFacet(ICompany, cnpj='current_warehouse', 
+        person_obj.addFacet(ICompany, cnpj=_('current_warehouse'), 
                             connection=self.conn)
         self.set_schema(key, person_obj.id)
 
@@ -428,15 +443,37 @@ class ParameterAccess(ClassInittableObject):
         self.set_schema(key, IMoneyPM(pm, connection=self.conn).id)
 
     def ensure_delivery_service(self):
+        from stoq.domain.sellable import BaseSellableInfo
         from stoq.domain.service import Service
         key = "DELIVERY_SERVICE"
         if self.get_parameter_by_field(key, Service):
             return
+
         service = Service(connection=self.conn)
-        service.addFacet(ISellable, code='SD', price=0.0, description='Delivery',
+
+        sellable_info = BaseSellableInfo(connection=self.conn, 
+                                         description=_('Delivery'), price=0.0)
+        service.addFacet(ISellable, code='SD',
+                         base_sellable_info=sellable_info,
                          connection=self.conn)
         self.set_schema(key, service.id)
 
+    def ensure_default_gift_certificate_type(self):
+        """Creates a initial gift certificate that will be tied with return
+        values of sale cancelations.
+        """
+        from stoq.domain.sellable import BaseSellableInfo
+        from stoq.domain.giftcertificate import GiftCertificateType
+        key = "DEFAULT_GIFT_CERTIFICATE_TYPE"
+        if self.get_parameter_by_field(key, GiftCertificateType):
+            return
+        description = _('General Gift Certificate')
+        sellable_info = BaseSellableInfo(connection=self.conn, 
+                                         description=description,
+                                         price=0.0)
+        certificate = GiftCertificateType(connection=self.conn,
+                                          base_sellable_info=sellable_info)
+        self.set_schema(key, certificate.id)
 
 
 def sysparam(conn):

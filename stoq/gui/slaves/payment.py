@@ -338,7 +338,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     # value: CheckDataSlave, BillDataSlave
     _data_slave_class = None
 
-    def __init__(self, wizard, parent, conn, sale_obj, payment_method):
+    def __init__(self, wizard, parent, conn, sale_obj, payment_method,
+                 outstanding_value=0.0):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
@@ -348,6 +349,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.payment_group = self.wizard.get_payment_group()
         self.payment_list = None
         self.reset_btn_validation_ok = True
+        self.total_value = outstanding_value or self.sale.get_total_sale_amount()
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
@@ -387,9 +389,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
 
-        total = self.sale.get_total_sale_amount()
         self.payment_list = PaymentListSlave(self, self.conn, 
-                                             self.method, total)
+                                             self.method, self.total_value)
         self.payment_list.connect('add-slave',
                                   self.update_installments_number)
         self.payment_list.connect('remove-slave',
@@ -423,7 +424,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def _setup_payments(self):
         group = self.wizard.get_payment_group()
-        total = self.sale.get_total_sale_amount()
         inst_number = self.model.installments_number
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
@@ -435,7 +435,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                                        due_date, 
                                                        interval_type,
                                                        intervals, 
-                                                       total, interest)
+                                                       self.total_value, 
+                                                       interest)
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = interest
@@ -467,7 +468,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         group = self.wizard.get_payment_group()
         due_date = datetime.today()
         if not self.payment_list.get_children_number():
-            total = self.sale.get_total_sale_amount()
+            total = self.total_value
         else:
             total = 0.0
         slave = self._data_slave_class(self.conn, group, due_date, total,
@@ -605,12 +606,14 @@ class CreditProviderMethodSlave(BaseEditorSlave):
                'installments_number')
     _payment_types = None
 
-    def __init__(self, wizard, parent, conn, sale_obj, payment_method):
+    def __init__(self, wizard, parent, conn, sale_obj, payment_method,
+                 outstanding_value=0.0):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
         self.payment_group = self.wizard.get_payment_group()
         self._pmdetails_objs = None
+        self.total_value = outstanding_value or self.sale.get_total_sale_amount()
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
@@ -670,12 +673,11 @@ class CreditProviderMethodSlave(BaseEditorSlave):
 
     def _setup_payments(self):
         group = self.wizard.get_payment_group()
-        total = self.sale.get_total_sale_amount()
         inst_number = self.model.installments_number
         payment_type = self.model.payment_type
         first_due_date = self.sale.open_date
         payment_type.setup_inpayments(group, inst_number, first_due_date,
-                                      total)
+                                      self.total_value)
 
 
 

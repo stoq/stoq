@@ -219,7 +219,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      METHOD_BILL,
      METHOD_CARD,
      METHOD_FINANCIER,
-     METHOD_MULTIPLE) = range(6)
+     METHOD_GIFT_CERTIFICATE,
+     METHOD_MULTIPLE) = range(7)
 
     implements(IPaymentGroup, IContainer)
 
@@ -231,6 +232,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
     daily_penalty = FloatCol(default=0.0)
+    renegotiation_data = ForeignKey('RenegotiationData', default=None)
+
         
     #
     # SQLObject callbacks
@@ -251,7 +254,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def get_group_description(self):
         """Returns a small description for the payment group which will be
-        used in payment descriptions"""
+        used in payment descriptions
+        """
         raise NotImplementedError
 
     def update_thirdparty_status(self):
@@ -274,12 +278,24 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return payment
 
     def get_available_methods(self):
-        return {self.METHOD_MONEY:      IMoneyPM,
-                self.METHOD_CHECK:      ICheckPM,
-                self.METHOD_BILL:       IBillPM,
-                self.METHOD_CARD:       ICardPM,
-                self.METHOD_FINANCIER:  IFinancePM,
-                self.METHOD_MULTIPLE:   None}
+        return {self.METHOD_MONEY: IMoneyPM,
+                self.METHOD_CHECK: ICheckPM,
+                self.METHOD_BILL: IBillPM,
+                self.METHOD_CARD: ICardPM,
+                self.METHOD_FINANCIER: IFinancePM,
+                self.METHOD_MULTIPLE: None}
+                
+    def get_method_id_by_iface(self, iface):
+        methods = self.get_available_methods()
+        if not iface in methods.values():
+            raise ValueError('Invalid interface, got %s' % iface)
+        method_data = [method_id for method_id, m_iface in methods.items()
+                            if m_iface is iface]
+        qty = len(method_data)
+        if not qty == 1:
+            raise ValueError('It should have only one item on method_data '
+                             'list, got %d instead' % qty)
+        return method_data[0]
 
     def set_method(self, method_iface):
         items = self.get_available_methods().items()
@@ -290,10 +306,15 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                             % method_iface)
         self.default_method = method[0]
 
+    def get_default_payment_method(self):
+        """This hook must be redefined in a subclass when it's necessary"""
+        return self.default_method
+
     def setup_inpayments(self):
         methods = self.get_available_methods()
-        if self.default_method != self.METHOD_MULTIPLE:
-            self.clear_preview_payments(methods[self.default_method])
+        payment_method = self.get_default_payment_method()
+        if payment_method != self.METHOD_MULTIPLE:
+            self.clear_preview_payments(methods[payment_method])
         payments = self.get_items()
         if not payments.count():
             raise ValueError('You must have at least one payment for each '
@@ -303,7 +324,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def set_payments_to_pay(self):
         """Checks if all the payments have STATUS_PREVIEW and set them as
-        STATUS_TO_PAY"""
+        STATUS_TO_PAY
+        """
         for payment in self.get_items():
             payment.set_to_pay()
 

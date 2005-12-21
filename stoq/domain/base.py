@@ -366,6 +366,7 @@ class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
 class Adapter:
     pass
 
+
 class ModelAdapter(BaseDomain, Adapter):
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)

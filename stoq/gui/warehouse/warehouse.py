@@ -114,7 +114,8 @@ class WarehouseApp(AppWindow):
     def _get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
                        data_type=str, width=100),
-                Column('description', title=_('Description'),
+                Column('base_sellable_info.description', 
+                       title=_('Description'),
                        expand=True, data_type=str, searchable=True),
                 AccessorColumn('supplier', self._get_supplier, 
                                title=_('Supplier'), data_type=str),

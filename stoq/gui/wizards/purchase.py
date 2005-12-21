@@ -41,7 +41,8 @@ from stoq.lib.validators import get_price_format_str, format_quantity
 from stoq.lib.defaults import INTERVALTYPE_MONTH
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import SupplierEditor, TransporterEditor
-from stoq.gui.editors.product import ProductEditor, ProductItemEditor
+from stoq.gui.editors.product import ProductEditor
+from stoq.gui.editors.sellable import SellableItemEditor
 from stoq.gui.slaves.purchase import PurchasePaymentSlave
 from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.domain.payment.base import AbstractPaymentGroup
@@ -215,11 +216,12 @@ class PurchaseProductStep(BaseWizardStep):
 
     def _setup_product_entry(self):
         products = self.table.get_available_sellables(self.conn)
-        descriptions = [p.description for p in products]
+        descriptions = [p.base_sellable_info.description for p in products]
         self.product.set_completion_strings(descriptions, list(products))
 
     def _get_columns(self):
-        return [Column('sellable.description', title=_('Description'), 
+        return [Column('sellable.base_sellable_info.description', 
+                       title=_('Description'), 
                        data_type=str, expand=True, searchable=True),
                 Column('quantity', title=_('Quantity'), data_type=float,
                        width=90, format_func=format_quantity,
@@ -265,7 +267,7 @@ class PurchaseProductStep(BaseWizardStep):
         products = [s.sellable for s in self.slave.klist]
         if product in products:
             msg = _("The product '%s' was already added to the order" 
-                    % product.description)
+                    % product.base_sellable_info.description)
             self.product.set_invalid(msg)
             return
         purchase_item = PurchaseItem(connection=self.conn,
@@ -298,8 +300,8 @@ class PurchaseProductStep(BaseWizardStep):
 
     def setup_slaves(self):
         products = list(self.model.get_items())
-        self.slave = AdditionListSlave(self.conn, ProductItemEditor,
-                                       self._get_columns(), products)
+        self.slave = AdditionListSlave(self.conn, self._get_columns(), 
+                                       SellableItemEditor, products)
         self.slave.hide_add_button()
         self.slave.register_editor_kwargs(model_type=PurchaseItem,
                                           value_attr='cost')
@@ -308,7 +310,7 @@ class PurchaseProductStep(BaseWizardStep):
         self.slave.connect('on-edit-item', self._update_total)
         value_format = '<b>%s</b>' % get_price_format_str()
         self.summary = SummaryLabel(klist=self.slave.klist, column='total',
-                                    label='<b>Subtotal:</b>',
+                                    label=_('<b>Subtotal:</b>'),
                                     value_format=value_format)
         self.summary.show()
         self.slave.list_vbox.pack_start(self.summary, expand=False)
