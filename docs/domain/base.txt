@@ -92,18 +92,17 @@ component that implement this interface:
 To get the correct Adapter class that implements a given interface you have
 to call getAdapterClass method, and never import directly an Adapter class.
 
-    >>> adapter = test_product.getAdapterClass(ISellable)
-    >>> adapter
+    >>> adapter_class = test_product.getAdapterClass(ISellable)
+    >>> adapter_class
     <class 'stoq.domain.product.ProductAdaptToSellable'>
 
 To register a new facet you can call registerFacet class method. But
 stoq/domain/product.py module alredy registry ProductAdaptToSeallble facet
 and thus this another call must raise an exception.
 
-    >>> Product.registerFacet(adapter)
+    >>> Product.registerFacet(adapter_class, ISellable)
     Traceback (most recent call last):
-    TypeError: Product does already have a facet for interface
-    ProductAdaptToSellalble
+    TypeError: Product does already have a facet for interface ISellable
 
 To create a unique code for a ProductAdaptToSellable object, I use datetime
 module
@@ -111,24 +110,32 @@ module
     >>> import datetime
     >>> product_code =  'test_code' + str(datetime.datetime.now())
 
+The BaseSellableInfo class stores basic information about sellables. This
+object is mandatory for every new sellable.
+    
+    >>> from stoq.domain.sellable import BaseSellableInfo
+    >>> description = 'Red Mustang, 1960'
+    >>> sellable_info = BaseSellableInfo(connection=conn,
+    ...                                  description=description,
+    ...                                  price=1500.45)
+
 To plug an adapter to a given component you have to call addFacet
 method.
 
-    >>> adapter_instance = test_product.addFacet(ISellable,
-    ...                                          connection=conn,
-    ...                                          code=product_code,
-    ...                                          price=1500.45,
-    ...                                          description='Red Mustang, 1960')
+    >>> adapter = test_product.addFacet(ISellable,
+    ...                                 base_sellable_info=sellable_info,
+    ...                                 connection=conn,
+    ...                                 code=product_code)
 
 Then you can check if the returned instance is of a correct adapter type:
 
-    >>> assert isinstance(adapter_instance, adapter)
+    >>> assert isinstance(adapter, adapter_class)
 
 When you have an adapter instance and need to discover the base component
 wich it's pluged, you can call get_adapted method, or get_adapted_id to get
 the id of your base class.
 
-    >>> base = adapter_instance.get_adapted()
+    >>> base = adapter.get_adapted()
     >>> assert base is test_product
-    >>> base_id = adapter_instance.get_adapted_id()
+    >>> base_id = adapter.get_adapted_id()
     >>> assert base_id == test_product.id 
