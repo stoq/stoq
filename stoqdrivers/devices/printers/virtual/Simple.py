@@ -78,7 +78,12 @@ class Simple:
     # ICouponPrinter implementation
     #
 
-    def coupon_open(self, customer, address, document):
+    def coupon_identify_customer(self, customer, address, document):
+        self._customer_name = customer
+        self._customer_document = document
+        self._customer_address = address
+
+    def coupon_open(self):
         self._check_coupon_is_closed()
         self.is_coupon_opened = True
 

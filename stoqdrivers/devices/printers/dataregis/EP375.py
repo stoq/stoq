@@ -416,8 +416,12 @@ class EP375(SerialBase, BaseChequePrinter):
     # ICouponPrinter implementation
     #
 
+    def coupon_identify_customer(self, customer, address, document):
+        # The printer Dataregis 375-EP doesn't supports customer
+        # identification
+        return
 
-    def coupon_open(self, customer, address, document):
+    def coupon_open(self):
         # 
         # Dataregis 375-EP doesn't need a function to open a coupon - the
         # coupon is opened when the first item is added, so simple checks

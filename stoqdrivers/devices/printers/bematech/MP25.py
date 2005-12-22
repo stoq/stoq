@@ -606,15 +606,20 @@ class MP25(SerialBase):
         """
         self._send_command(GetStatusCommand())
 
-    def coupon_open(self, company, address, document):
+    def coupon_identify_customer(self, customer, address, document):
+        self._customer_name = customer
+        self._customer_document = document
+        self._customer_address = address
+
+    def coupon_open(self):
         """
         This needs to be called before anything else
         """
-
-        if company or address or document:
-            self._send_command(CouponOpenCommand(cpf=document,
-                                                 name=company,
-                                                 address=address))
+        if (self._customer_name or self._customer_address
+            or self._customer_document):
+            self._send_command(CouponOpenCommand(cpf=self._customer_document,
+                                                 name=self._customer_name,
+                                                 address=self._customer_address))
         else:
             self._send_command(CouponOpenCommand())
         self.item_counter = 0

@@ -61,9 +61,10 @@ class ICouponPrinter(Interface):
     # Common API
     #
 
-    def coupon_open(customer, address, document):
-        """
-        This needs to be called before anything else
+    def identify_customer(customer, address, document):
+        """ Identify the customer.  This method doesn't have mandatory
+        execution (you can identify the customer only if you like),
+        but when executed it must be called before calling any method.
 
         @param customer:
         @type customer:  string
@@ -73,10 +74,14 @@ class ICouponPrinter(Interface):
         @type document:  string
         """
 
+    def coupon_open():
+        """ This needs to be called before anything else (except
+        identify_customer())
+        """
+
     def coupon_add_item(code, quantity, price, unit, description, 
                         taxcode, discount, charge):
-        """
-        Adds an item to the coupon.
+        """ Adds an item to the coupon.
         
         @param code:         item code identifier 
         @type  code:         string
@@ -101,22 +106,19 @@ class ICouponPrinter(Interface):
         """
         
     def coupon_cancel_item(item_id):
-        """
-        Cancels an item, item_id must be a value returned by
+        """ Cancels an item, item_id must be a value returned by
         coupon_add_item
         
         @param item_id:  the item id
         """
 
     def coupon_cancel():
-        """
-        Can only be called when a coupon is opened.
-        It needs to be possible to open new coupons after this is called.
+        """ Can only be called when a coupon is opened. It needs to be
+        possible to open new coupons after this is called.
         """
 
     def coupon_totalize(discount, charge, taxcode):
-        """
-        Closes the coupon applies addition a discount or charge and tax
+        """ Closes the coupon applies addition a discount or charge and tax
         This can only be called when the coupon is open, has items added
         and payments added.
         
@@ -144,9 +146,8 @@ class ICouponPrinter(Interface):
         """
 
     def coupon_close(message=''):
-        """
-        It needs to be possible to open new coupons after this is called.
-        You must call coupon_totalize before calling this method.
+        """ It needs to be possible to open new coupons after this is
+        called. You must call coupon_totalize before calling this method.
         
         @param message:      promotional message
         @type message:       string
@@ -157,14 +158,12 @@ class ICouponPrinter(Interface):
     #
 
     def summarize():
-        """
-        Prints a summary of all sales of the day
+        """ Prints a summary of all sales of the day.
         In Brazil this is 'read X' operation
         """
 
     def close_till():
-        """
-        Close the till for the day, no other actions can be done
+        """ Close the till for the day, no other actions can be done
         after this is called
         In Brazil this is 'reduce Z' operation
         """
@@ -174,13 +173,13 @@ class ICouponPrinter(Interface):
     #
 
     def get_status():
-        """
-        Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure
+        """ Returns a 3 sized tuple of boolean: Offline, OutOfPaper,
+        Failure.
         """
 
     def get_capabilities():
-        """ Returns a capabilities dictionary, where the keys are the strings
-        below and its values are Capability instances
+        """ Returns a capabilities dictionary, where the keys are the
+        strings below and its values are Capability instances
 
         * item_code (str)
         * item_id (int)

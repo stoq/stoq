@@ -389,12 +389,18 @@ class IFS9000I(SerialBase):
     # ICouponPrinter implementation
     #
 
-    def coupon_open(self, customer, address, document):
-        # The arguments address and document are here only for API
-        # compatibility
-        if customer:
-            customer = self._format_string(customer, self.CUSTOMER_CHAR_LEN,
-                                           'customer')
+    def coupon_identify_customer(self, customer, address, document):
+        # The arguments customer and address are here only for API
+        # compatibility, they are not supported by the printer.
+        self._customer_document = document
+
+    def coupon_open(self):
+        if self._customer_document:
+            customer = self._format_string(self._customer_document,
+                                           self.CUSTOMER_CHAR_LEN,
+                                           'customer_document')
+        else:
+            customer = ''
         try:
             self.send_command(self.CMD_COUPON_OPEN, customer)
         except InvalidState:

@@ -220,9 +220,16 @@ class Pay2023(SerialBase, BaseChequePrinter):
     # ICouponPrinter implementation
     #
 
+    def coupon_identify_customer(self, customer, address, document):
+        self._customer_name = customer
+        self._customer_document = document
+        self._customer_address = address
 
-    def coupon_open(self, customer, address, document):
+    def coupon_open(self):
         try:
+            customer = self._customer_name
+            document = self._customer_document
+            address = self._customer_address
             self.send_command(Pay2023.CMD_COUPON_OPEN,
                               EnderecoConsumidor="\"%s\"" % address[:80],
                               IdConsumidor="\"%s\"" % document[:29],

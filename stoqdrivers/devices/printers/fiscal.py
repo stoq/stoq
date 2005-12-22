@@ -73,12 +73,16 @@ class FiscalPrinter(BasePrinter):
 
     def get_capabilities(self):
         return self._capabilities
-    
+
     @capcheck(str, str, str)
-    def open(self, customer_name, customer_address, customer_id):
+    def identify_customer(self, customer_name, customer_address, customer_id):
+        self.info('identify_customer')
+        self._driver.coupon_identify_customer(customer_name, customer_address,
+                                              customer_id)
+
+    def open(self):
         self.info('coupon_open')
-        return self._driver.coupon_open(customer_name, customer_address,
-                                        customer_id)
+        return self._driver.coupon_open()
 
     @capcheck(str, number, number, unit, str, taxcode, percent, percent)
     def add_item(self, item_code, items_quantity, item_price, unit,
@@ -152,9 +156,10 @@ class FiscalPrinter(BasePrinter):
 def test():
     p = FiscalPrinter()
 
+    p.identify_customer('Henrique Romano', 'Async', '1234567890')
     while True:
         try:
-            p.open('Zee germans', 'Home', 'yaya')
+            p.open()
             break
         except CouponOpenError:
             p.cancel()
@@ -175,7 +180,7 @@ def test():
 
     p.add_payment(MONEY_PM, 2.00, '')
     p.add_payment(MONEY_PM, 11.00, '')
-    
+
     p.close()
 
 if __name__ == '__main__':

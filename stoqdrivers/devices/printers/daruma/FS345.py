@@ -267,15 +267,16 @@ class FS345(SerialBase):
     # API implementation
     #
 
-    def coupon_open(self, customer, address, document):
+    def coupon_identify_customer(self, customer, address, document):
+        self._customer_name = customer
+        self._customer_document = document
+        self._customer_address = address
+
+    def coupon_open(self):
         status = self._check_status()
         if self._is_open(status):
             raise CouponOpenError("Coupon already open")
         self.send_command(CMD_OPEN_COUPON)
-        
-        self._customer = customer
-        self._address = address
-        self._document = document
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge):
@@ -354,10 +355,9 @@ class FS345(SerialBase):
 
         if self._customer or self._address or self._document:
             self.send_command(CMD_IDENTIFY_CUSTOMER,
-                              (("% 42s" % self._customer) + empty +
-                               ("% 42s" % self._address) + empty +
-                               ("% 42s" % self._document) + empty))
-
+                              (("% 42s" % self._customer_name) + empty +
+                               ("% 42s" % self._customer_address) + empty +
+                               ("% 42s" % self._customer_document) + empty))
         LINE_LEN = 48
         msg_len = len(message)
         if msg_len > LINE_LEN:
