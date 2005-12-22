@@ -97,7 +97,7 @@ TABLES = [
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
      ('stoq.domain.payment.methods',       ("PaymentMethod",
-                                            "PaymentMethodAdapter",
+                                            "AbstractPaymentMethodAdapter",
                                             "PaymentMethodDetails",
                                             )),
      ('stoq.domain.renegotiation',         ("RenegotiationData",
