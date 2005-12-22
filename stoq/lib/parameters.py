@@ -384,7 +384,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, EmployeeRole):
             return
         role = EmployeeRole(name='Salesperson', 
-                                    connection=self.conn)
+                            connection=self.conn)
         self.set_schema(key, role.id)
 
     def ensure_current_branch(self):
