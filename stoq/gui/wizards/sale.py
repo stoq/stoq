@@ -144,7 +144,7 @@ class PaymentMethodStep(BaseWizardStep):
         self.slaves_dict = {}
         self.outstanding_value = outstanding_value
         self.group = wizard.get_payment_group()
-        self.renegotiation_mode = outstanding_value is not None
+        self.renegotiation_mode = outstanding_value > 0.0
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.method_slave = None
         self.setup_combo()
