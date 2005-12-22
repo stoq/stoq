@@ -51,6 +51,7 @@ from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
                                              GiftCertificateSearch)
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.sales.details import SaleDetailsDialog
 
 _ = gettext.gettext
 
@@ -175,6 +176,10 @@ class SalesApp(AppWindow):
 
     def _on_credit_provider_action__clicked(self, *args):
         self.run_dialog(CreditProviderSearch, hide_footer=True)
+
+    def on_details_button__clicked(self, *args):
+        sale = self.sales_list.get_selected()
+        self.run_dialog(SaleDetailsDialog, self.conn, sale)
 
     def _on_gift_certificate_types_action_clicked(self, *args):
         self.run_dialog(GiftCertificateTypeSearch)
