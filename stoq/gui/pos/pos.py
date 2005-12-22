@@ -43,15 +43,13 @@ from stoq.gui.application import AppWindow
 from stoq.lib.runtime import new_transaction, get_current_user
 from stoq.lib.validators import (format_quantity, get_price_format_str)
 from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellable
+from stoq.domain.sellable import AbstractSellable, FancySellable
 from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, ISalesPerson, IClient
-from stoq.domain.giftcertificate import GiftCertificateItem
-from stoq.gui.editors.sellable import SellableItemEditor
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
@@ -69,20 +67,22 @@ class POSApp(AppWindow):
     gladefile = "pos"
     client_widgets =  ('client',)
     product_widgets = ('product',)
-    widgets = ('order_list',
-               'list_vbox',
-               'add_button',
-               'advanced_search',
-               'anonymous_check',
-               'client_check',
-               'client_edit_button',
-               'client_details_button',
-               'delivery_button',
-               'checkout_button',
-               'remove_item_button',
-               'edit_button',
-               'search_box',
-               'SalesMenu') + client_widgets + product_widgets
+    sellable_widgets = ('price',
+                        'quantity')
+    widgets = (('order_list',
+                'list_vbox',
+                'add_button',
+                'advanced_search',
+                'anonymous_check',
+                'client_check',
+                'client_edit_button',
+                'client_details_button',
+                'delivery_button',
+                'checkout_button',
+                'remove_item_button',
+                'search_box',
+                'SalesMenu') + client_widgets + product_widgets +
+                               sellable_widgets)
     
     def __init__(self, app):
         AppWindow.__init__(self, app)
@@ -93,8 +93,8 @@ class POSApp(AppWindow):
             self.app.shutdown()
         self.max_results = get_max_search_results()
         self.client_table = Person.getAdapterClass(IClient)
-        self._setup_proxies()
         self._setup_widgets()
+        self._setup_proxies()
         self.reset_order()
         self._update_widgets()
         self._update_client_widgets()
@@ -106,6 +106,8 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
+        self.sellable_proxy = self.add_proxy(FancySellable(),
+                                             widgets=POSApp.sellable_widgets)
         self.product_proxy = self.add_proxy(FancyProduct(),
                                             POSApp.product_widgets)
 
@@ -134,6 +136,9 @@ class POSApp(AppWindow):
         self.product.set_completion_strings(strings, list(sellables))
 
     def _setup_widgets(self):
+        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
+            self.price.set_sensitive(False)
+        self.price.set_data_format(get_price_format_str())
         self.order_list.set_columns(self._get_columns())
         value_format = '<b>%s</b>' % get_price_format_str()
         self.summary_label = SummaryLabel(klist=self.order_list,
@@ -143,7 +148,6 @@ class POSApp(AppWindow):
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
         self.product.grab_focus()
-        
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
         self._setup_entry_completion()
@@ -178,23 +182,43 @@ class POSApp(AppWindow):
             return
         else:
             sellable = table.get(sellable.id, connection=self.conn)
-            sellable_item = sellable.add_sellable_item(self.sale)
+            quantity = self.sellable_proxy.model.quantity
+            price = self.sellable_proxy.model.price
+            sellable_item = sellable.add_sellable_item(self.sale,
+                                                       quantity=quantity, 
+                                                       price=price)
+        if isinstance(sellable_item, ServiceSellableItem):
+            model = self.run_dialog(ServiceItemEditor, self.conn, sellable_item)
+            if not model:
+                return
         self.order_list.append(sellable_item)
         self.order_list.select(sellable_item)
         self.product.set_text('')
 
-    def add_sellable_item(self):
+    def _get_sellable(self):
         if self.product_proxy.model:
             sellable = self.product_proxy.model.product
         else:
             sellable = None
-        self.add_button.set_sensitive(False)
         if not sellable:
             code = self.product.get_text()
             sellable = self._get_sellable_by_code(code)
+            if sellable:
+                # Waiting for a select method on kiwi entry using entry
+                # completions
+                self.product.set_text(sellable.get_short_description())
+        self.add_button.set_sensitive(sellable is not None)
+        return sellable
+
+    def add_sellable_item(self):
+        if not self.add_button.get_property('sensitive'):
+            return
+        self.add_button.set_sensitive(False)
+        sellable = self._get_sellable()
         if not sellable:
             return
         self._update_order_list(sellable, notify_on_entry=True)
+        self.product.grab_focus()
 
     def select_first_item(self):
         if len(self.order_list):
@@ -215,15 +239,12 @@ class POSApp(AppWindow):
         self._update_totals()
 
     def _update_client_widgets(self):
-        widgets = [self.client, self.client_edit_button]
         client_selected = self.client_check.get_active()
-        for widget in widgets:
-            widget.set_sensitive(client_selected)
+        self.client.set_sensitive(client_selected)
 
     def _update_widgets(self):
         has_sellables = len(self.order_list[:]) >= 1
-        widgets = [self.checkout_button, self.remove_item_button,
-                   self.edit_button]
+        widgets = [self.checkout_button, self.remove_item_button]
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale.client is not None
@@ -242,42 +263,12 @@ class POSApp(AppWindow):
                        title=_('Description'), data_type=str, expand=True, 
                        searchable=True),
                 Column('price', title=_('Price'), data_type=currency, 
-                       editable=True, width=90),
+                       width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
-                       width=90, format_func=format_quantity,
-                       editable=True),
+                       width=90, format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
                        
-    def _edit_item(self, *args):
-        # XXX Bug 2336 will improve this code
-        param = sysparam(self.conn)
-        sellable_item = self.order_list.get_selected()
-        editor_args = [self.conn]
-        if isinstance(sellable_item, ProductSellableItem):
-            editor = SellableItemEditor
-            model_type = ProductSellableItem
-            editor_args += [model_type, sellable_item]
-        elif isinstance(sellable_item, GiftCertificateItem):
-            editor = SellableItemEditor
-            model_type = GiftCertificateItem
-            editor_args += [model_type, sellable_item]
-        elif (sellable_item.sellable.get_adapted() 
-              is param.DELIVERY_SERVICE):
-            editor = DeliveryEditor
-            editor_args += [sellable_item]
-        elif isinstance(sellable_item, ServiceSellableItem):
-            editor = ServiceItemEditor
-            editor_args += [sellable_item]
-        else:
-            raise AssertionError("Unknown sellable item selected: %s"
-                                 % type(sellable_item))
-        model = self.run_dialog(editor, *editor_args)
-        if not model:
-            return
-        self.order_list.update(model)
-        self._update_widgets()
-
     def _search_clients(self):
         self.run_dialog(ClientSearch, hide_footer=True)
 
@@ -286,7 +277,8 @@ class POSApp(AppWindow):
     #
 
     def setup_focus(self): 
-        self.search_box.set_focus_chain([self.product, self.add_button])
+        self.search_box.set_focus_chain([self.product, self.quantity, 
+                                         self.price, self.add_button])
 
     #
     # Callbacks
@@ -308,9 +300,6 @@ class POSApp(AppWindow):
         # for menuitems
         self._search_clients()
 
-    def on_edit_button__clicked(self, *args):
-        self._edit_item()
-
     def on_product__changed(self, *args):
         self.product.set_valid()
 
@@ -325,18 +314,17 @@ class POSApp(AppWindow):
         self.add_sellable_item()
 
     def on_product__activate(self, *args):
-        if not self.add_button.get_property('sensitive'):
-            return
+        self._get_sellable()
+        self.quantity.grab_focus()
+
+    def on_quantity__activate(self, *args):
+        self.add_sellable_item()
+
+    def on_price__activate(self, *args):
         self.add_sellable_item()
 
     def on_order_list__selection_changed(self, *args):
         self._update_widgets()
-
-    def on_order_list__double_click(self, *args):
-        self._edit_item()
-
-    def on_order_list__cell_edited(self, *args):
-        self._update_totals()
 
     def on_client_edit_button__clicked(self, *args):
         if run_person_role_dialog(ClientEditor, self, self.conn, 
@@ -358,6 +346,12 @@ class POSApp(AppWindow):
 
     def after_product__changed(self, *args):
         self._update_widgets()
+        sellable = self.product_proxy.model.product
+        if not (sellable and self.product.get_text()):
+            self.sellable_proxy.new_model(FancySellable())
+            return
+        sellable_item = FancySellable(price=sellable.get_price())
+        self.sellable_proxy.new_model(sellable_item)
 
     def on_remove_item_button__clicked(self, *args):
         item = self.order_list.get_selected()

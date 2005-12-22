@@ -53,7 +53,7 @@ _ = gettext.gettext
 class FancyProduct:
     """A fancy class used by some kiwi entries."""
     # XXX Probably we could avoid this class with some kiwi improvements
-    # waiting for support
+    # Waiting for bug 2365.
     product = None
 
 

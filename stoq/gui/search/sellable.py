@@ -50,7 +50,7 @@ _ = gettext.gettext
 
 
 class SellableSearch(SearchDialog):
-    title = _('Search for products/services') 
+    title = _('Search for sale items') 
     size = (800, 500)
     search_table = AbstractSellable
  
@@ -61,7 +61,7 @@ class SellableSearch(SearchDialog):
                               parent_conn=conn, 
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching:'))
-        self.set_ok_label(_('_Add product/service'))
+        self.set_ok_label(_('_Add sale items'))
                 
     #
     # Accessors
@@ -107,7 +107,7 @@ class SellableSearch(SearchDialog):
 
     def setup_slaves(self, **kwargs):
         SearchDialog.setup_slaves(self, **kwargs)
-        singular, plural = _('product/service'), _('products/services')
+        singular, plural = _('sale item'), _('sale items')
         self.set_result_strings(singular, plural)
 
     def get_filter_slave(self):
@@ -122,7 +122,7 @@ class SellableSearch(SearchDialog):
                              'this point')
         items.append(ALL_BRANCHES)
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show products/services at:'))
+        self.filter_slave.set_filter_label(_('Show sale items at:'))
         return self.filter_slave
 
     def after_search_bar_created(self):
