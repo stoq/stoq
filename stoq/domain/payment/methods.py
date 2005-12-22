@@ -162,7 +162,7 @@ class PaymentMethod(Domain):
 #
 
 
-class PaymentMethodAdapter(InheritableModelAdapter):
+class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     implements(IActive)
 
     description = None
@@ -266,7 +266,7 @@ class PaymentMethodAdapter(InheritableModelAdapter):
         return payment_group.get_thirdparty()
 
 
-class PMAdaptToMoneyPM(PaymentMethodAdapter):
+class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
     implements(IMoneyPM, IActive)
 
     description = _('Money')
@@ -315,7 +315,7 @@ class PMAdaptToMoneyPM(PaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 
 
-class AbstractCheckBillAdapter(PaymentMethodAdapter):
+class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     """Base payment method adapter class for for Check and Bill.
 
     B{Importante attributes}:
@@ -535,7 +535,7 @@ class PMAdaptToBillPM(AbstractCheckBillAdapter):
 PaymentMethod.registerFacet(PMAdaptToBillPM, IBillPM)
 
 
-class PMAdaptToCardPM(PaymentMethodAdapter):
+class PMAdaptToCardPM(AbstractPaymentMethodAdapter):
     implements(ICardPM, IActive)
 
     description = _('Card')
@@ -565,7 +565,7 @@ class PMAdaptToCardPM(PaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToCardPM, ICardPM)
 
 
-class PMAdaptToFinancePM(PaymentMethodAdapter):
+class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
     implements(IFinancePM, IActive)
 
     description = _('Finance')

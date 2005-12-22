@@ -93,7 +93,7 @@ class Payment(Domain):
     description = StringCol(default=None)
     payment_number = StringCol(default=None)
 
-    method = ForeignKey('PaymentMethodAdapter')
+    method = ForeignKey('AbstractPaymentMethodAdapter')
     method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
     destination = ForeignKey('PaymentDestination')
