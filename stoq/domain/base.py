@@ -272,7 +272,7 @@ class Adaptable:
             del ifaces[1:]
             
         for iface in ifaces:
-            if iface in cls._facets:
+            if qual(iface) in cls._facets.keys():
                 raise TypeError(
                     '%s does already have a facet for interface %s' %
                     (cls.__name__, iface.__name__))
