@@ -129,9 +129,10 @@ def emit_coupon(conn, sale):
         raise DatabaseInconsistency("The client must have a Individual facet")
     cpf = individual.cpf
 
+    printer.identify_customer(person.name, address, cpf)
     while True:
         try:
-            printer.open(person.name, address, cpf)
+            printer.open()
             break
         except CouponOpenError:
             if not _cancel(printer):
