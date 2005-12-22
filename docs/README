@@ -26,7 +26,7 @@ SQLObject 0.7
 Gazpacho 0.6.2 
 Kiwi 1.9.1
 stoqlib 0.4.0
-Stoqdrivers 0.1.0
+Stoqdrivers 0.2.0
 zope.interface 3.0.0 or higher 
 dateutil (http://labix.org/python-dateutil)
 
