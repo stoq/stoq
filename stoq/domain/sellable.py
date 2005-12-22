@@ -51,6 +51,16 @@ _ = gettext.gettext
 # Base Domain Classes
 #
 
+class FancySellable:
+    """A fancy class used by some kiwi entries."""
+    # XXX Probably we could avoid this class with some kiwi improvements
+    # waiting for bug 2365.
+
+    def __init__(self, price=0.0, quantity=1.0):
+        self.price = price
+        self.quantity = quantity
+
+
 class AbstractSellableCategory(Domain):
     description = StringCol()
     suggested_markup = FloatCol(default=0.0)
