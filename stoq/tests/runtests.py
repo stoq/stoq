@@ -41,7 +41,6 @@ from stoq.lib.parameters import ensure_system_parameters
 from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
 
 VERBOSE = '-v' in sys.argv
-WITH_EXAMPLES = '-e' in sys.argv
 
 set_verbose(False)
 setup_tables(delete_only=True, list_tables=True, verbose=True)
@@ -50,8 +49,7 @@ setup_tables(verbose=True)
 ensure_system_parameters()
 ensure_admin_user("Superuser", "administrator", "")
 
-if WITH_EXAMPLES:
-    create()
+create()
 if VERBOSE:
     print_immediately('Performing domain module tests... ')
 domain_tests_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
@@ -66,6 +64,4 @@ for doc_file in doc_files:
 if VERBOSE:
     print_immediately('done')
 
-if WITH_EXAMPLES:
-    sys.argv.remove('-e')
 py.test.cmdline.main()
