@@ -224,7 +224,7 @@ class TillApp(AppWindow):
             return
         sale.confirm_sale()
 
-        if not emit_coupon(self.conn, sale):
+        if not emit_coupon(sale, self.conn):
             return
         self.conn.commit()
         self.searchbar.search_items()
