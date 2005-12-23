@@ -13,6 +13,14 @@
                     </object>
                 </child>
                 <child>
+                    <object class="GtkAction" id="CancelOrder">
+                        <property name="name">CancelOrder</property>
+                        <property name="label" translatable="yes">Cancel Order</property>
+                        <signal handler="_on_cancel_order_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;control&gt;o</property>
+                    </object>
+                </child>
+                <child>
                     <object class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
@@ -96,7 +104,7 @@
                 <child>
                     <object class="GtkAction" id="ResetOrder">
                         <property name="name">ResetOrder</property>
-                        <property name="label" translatable="yes">_Reset Order</property>
+                        <property name="label" translatable="yes">_New Order</property>
                         <property name="tooltip">Reset the order</property>
                         <signal handler="_on_resetorder_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;r</property>
@@ -113,7 +121,7 @@
                 <child>
                     <object class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
-                        <property name="label" translatable="yes">Sa_les</property>
+                        <property name="label" translatable="yes">Sal_es</property>
                     </object>
                 </child>
                 <child>
@@ -160,7 +168,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><separator name="sep1"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
     </object>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>
@@ -181,7 +189,24 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkVBox" id="vbox2">
+                    <widget class="GtkHBox" id="header_box">
+                        <property name="border_width">6</property>
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="header_label">
+                                <property name="label" context="yes" translatable="yes">Click on 'New Order' menu item to begin a new order</property>
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="pos_vbox">
                         <property name="border_width">5</property>
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
@@ -202,49 +227,27 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkRadioButton" id="anonymous_check">
-                                        <property name="is_focus">True</property>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="client">
+                                        <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Anonymous</property>
+                                        <property name="model_attribute">client_name</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
                                     </widget>
                                     <packing>
-                                        <property name="expand">False</property>
                                         <property name="position">1</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkRadioButton" id="client_check">
-                                        <property name="active">False</property>
-                                        <property name="group">anonymous_check</property>
-                                        <property name="label" context="yes" translatable="yes"></property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">2</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="client">
-                                        <property name="data_type">int</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">client</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">3</property>
                                     </packing>
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="client_edit_button">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Add/Edit _Client...</property>
+                                        <property name="label" context="yes" translatable="yes">_Edit Client...</property>
                                         <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                        <property name="position">4</property>
+                                        <property name="position">2</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -256,7 +259,7 @@
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                        <property name="position">5</property>
+                                        <property name="position">3</property>
                                     </packing>
                                 </child>
                             </widget>
@@ -290,6 +293,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="product">
                                         <property name="data_type">int</property>
+                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">product</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">27</property>
@@ -587,7 +591,7 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>

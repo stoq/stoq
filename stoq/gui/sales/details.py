@@ -70,7 +70,7 @@ class SaleDetailsDialog(SlaveDelegate):
         salesperson_name = salesperson.get_adapted().name
         self.salesperson_lbl.set_text(salesperson_name)
         client = self.sale.client
-        client_name = (client and client.get_adapted().name
+        client_name = (client and client.get_name()
                        or _("<i>Anonymous</i>"))
         self.client_lbl.set_text(client_name)
         
