@@ -54,9 +54,11 @@ from stoq.domain.interfaces import (IContainer, IClient, IStorable,
 
 _ = gettext.gettext
 
+
 #
 # Base Domain Classes
 #
+
 
 class Sale(Domain):
     """Sale object implementation.
@@ -133,6 +135,11 @@ class Sale(Domain):
     #
     # Auxiliar methods
     #
+
+    def get_client_name(self):
+        if not self.client:
+            return _('Anonymous')
+        return self.client.get_name()
 
     def get_status_name(self):
         if not self.status in self.statuses:

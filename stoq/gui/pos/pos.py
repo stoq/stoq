@@ -40,16 +40,15 @@ from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
 
 from stoq.gui.application import AppWindow
-from stoq.lib.runtime import new_transaction, get_current_user
+from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import (format_quantity, get_price_format_str)
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellable, FancySellable
-from stoq.domain.sale import Sale
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem, FancyProduct
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
-from stoq.domain.interfaces import ISellable, ISalesPerson, IClient
+from stoq.domain.interfaces import ISellable, IClient
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
@@ -57,6 +56,7 @@ from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.person import ClientSearch
+from stoq.gui.pos.neworder import NewOrderEditor
 
 _ = gettext.gettext
 
@@ -73,13 +73,14 @@ class POSApp(AppWindow):
                 'list_vbox',
                 'add_button',
                 'advanced_search',
-                'anonymous_check',
-                'client_check',
                 'client_edit_button',
                 'client_details_button',
                 'delivery_button',
                 'checkout_button',
                 'remove_item_button',
+                'header_box',
+                'header_label',
+                'pos_vbox',
                 'search_box',
                 'SalesMenu') + client_widgets + product_widgets +
                                sellable_widgets)
@@ -95,9 +96,17 @@ class POSApp(AppWindow):
         self.client_table = Person.getAdapterClass(IClient)
         self._setup_widgets()
         self._setup_proxies()
-        self.reset_order()
+        self._clear_order()
         self._update_widgets()
-        self._update_client_widgets()
+
+    def _clear_order(self):
+        self.header_label.set_color('red')
+        self.header_label.set_size('medium')
+        self.header_box.show()
+        self.pos_vbox.set_sensitive(False)
+        self.order_list.clear()
+        self.sale = None
+        self.client_proxy.new_model(self.sale, relax_type=True)
 
     def _delete_sellable_item(self, item):
         self.order_list.remove(item)
@@ -111,25 +120,10 @@ class POSApp(AppWindow):
         self.product_proxy = self.add_proxy(FancyProduct(),
                                             POSApp.product_widgets)
 
-    def _setup_client_entry(self):
-        # TODO Waiting for improvements in kiwi entry completion. We need a
-        # better way to query strings immediately when typing in the
-        # entry
-        # q1 = self.client_table.q._originalID == Person.q.id
-        # search_str = '%%%s%%' % self.client.get_text().upper()
-        # q2 = LIKE(func.UPPER(Person.q.name), search_str)
-        # query = AND(q1, q2)
-        # clients = self.client_table.get_active_clients(self.conn, query)
-        clients = self.client_table.get_active_clients(self.conn)
-        clients = clients[:self.max_results]
-        strings = [c.get_adapted().name for c in clients]
-        self.client.set_completion_strings(strings, list(clients))
-
     def _setup_entry_completion(self):
         # TODO Waiting for improvements in kiwi entry completion. We need a
         # better way to query strings immediately when typing in the
         # entry
-        self._setup_client_entry()
         sellables = AbstractSellable.get_available_sellables(self.conn)
         sellables = sellables[:self.max_results]
         strings = [s.get_short_description() for s in sellables]
@@ -147,10 +141,12 @@ class POSApp(AppWindow):
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
-        self.product.grab_focus()
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
         self._setup_entry_completion()
+        # Waiting for bug 2319
+        self.client_details_button.set_sensitive(False)
+                
 
     def _update_totals(self, *args):
         self.summary_label.update_total()
@@ -226,29 +222,27 @@ class POSApp(AppWindow):
             # support
             self.order_list.select(self.order_list[0])
 
-    def reset_order(self):
-        self.order_list.clear()
+    def _new_order(self):
         rollback_and_begin(self.conn)
-        user = get_current_user()
-        till = get_current_till_operation(self.conn)
-        salesperson = ISalesPerson(user.get_adapted(), connection=self.conn)
-        self.sale = Sale(connection=self.conn, till=till, 
-                         salesperson=salesperson)
-        self.client_proxy.new_model(self.sale)
-        self._update_widgets()
-        self._update_totals()
-
-    def _update_client_widgets(self):
-        client_selected = self.client_check.get_active()
-        self.client.set_sensitive(client_selected)
+        self.sale = self.run_dialog(NewOrderEditor, self.conn)
+        if self.sale:
+            self.order_list.clear()
+            self.client_proxy.new_model(self.sale)
+            self._update_widgets()
+            self._update_totals()
+            self.header_box.hide()
+            self.pos_vbox.set_sensitive(True)
+            self.product.grab_focus()
+        else:
+            rollback_and_begin(self.conn)
 
     def _update_widgets(self):
         has_sellables = len(self.order_list[:]) >= 1
         widgets = [self.checkout_button, self.remove_item_button]
         for widget in widgets:
             widget.set_sensitive(has_sellables)
-        has_client = self.sale.client is not None
-        widgets = [self.client_details_button, self.delivery_button]
+        has_client = self.sale is not None and self.sale.client is not None
+        widgets = [self.delivery_button, self.client_edit_button]
         for widget in widgets:
             widget.set_sensitive(has_client)
         model = self.order_list.get_selected()
@@ -287,7 +281,7 @@ class POSApp(AppWindow):
     def key_control_r(self, *args):
         # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
         # for menuitems
-        self.reset_order()
+        self._new_order()
 
     def key_control_l(self, *args):
         # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
@@ -327,22 +321,14 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def on_client_edit_button__clicked(self, *args):
+        if not (self.sale and self.sale.client):
+            raise ValueError('You must have a client defined at this point')
         if run_person_role_dialog(ClientEditor, self, self.conn, 
                                   self.sale.client):
             self.conn.commit()
-            # FIXME waiting for entry completion bug fix in kiwi. This part
-            # doesn't work properly when editing a client previously set in
-            # POS interface
-            self._setup_client_entry()
             
     def _on_clients_action__clicked(self, *args):
         self._search_clients()
-
-    def after_client__changed(self, *args):
-        # FIXME A bug in kiwi or gtk doesn't allow us to call this 
-        # method rigth here.
-        # self._setup_client_entry()
-        self._update_widgets()
 
     def after_product__changed(self, *args):
         self._update_widgets()
@@ -359,8 +345,11 @@ class POSApp(AppWindow):
         self.select_first_item()
         self._update_widgets()
 
+    def _on_cancel_order_action_clicked(self, *args):
+        pass
+
     def _on_resetorder_action__clicked(self, *args):
-        self.reset_order()
+        self._new_order()
 
     def _on_sales_action__clicked(self, *args):
         pass
@@ -394,17 +383,7 @@ class POSApp(AppWindow):
         if self.run_dialog(SaleWizard, self.conn, self.sale,
                            skip_payment_step=skip_payment_step):
             self.conn.commit()
-            self.reset_order()
+            self._clear_order()
 
     def on_checkout_button__clicked(self, *args):
         self._sale_checkout()
-
-    def on_client_check__toggled(self, *args):
-        self._update_client_widgets()
-        self._update_widgets()
-
-    def on_anonymous_check__toggled(self, *args):
-        self._update_client_widgets()
-        self.client.model = None
-        self.client.set_text('')
-        self._update_widgets()

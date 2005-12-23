@@ -680,7 +680,7 @@ class SaleWizard(BaseWizard):
             group = self.get_payment_group()
             for certificate in self.gift_certificates:
                 certificate.group = group
-        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+        if self.edit_mode or not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             self.model.confirm_sale()
         else:
             self.model.validate()
