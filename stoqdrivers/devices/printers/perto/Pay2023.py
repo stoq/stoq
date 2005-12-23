@@ -119,6 +119,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
         SerialBase.__init__(self, device, baudrate=baudrate, bytesize=bytesize,
                             parity=parity, stopbits=stopbits)
         BaseChequePrinter.__init__(self)
+        self._customer_name = ''
+        self._customer_document = ''
+        self._customer_address = ''
 
     #
     # Helper methods
@@ -212,6 +215,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
         format used in the FISCnet protocol) and convert it to the
         Python's float format.
         """
+        if '.' in value:
+            value = value.replace(".", '')
         if ',' in value:
             value = value.replace(',', '.')
         return float(value)
