@@ -33,6 +33,7 @@ import gettext
 import socket
 
 import gtk
+from zope.interface import implements
 from sqlobject.sqlbuilder import OR
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.exceptions import _warn
@@ -45,12 +46,10 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 
 from stoq.domain.drivers import PrinterSettings
 from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
-                                    IMoneyPM, ICheckPM)
+                                    IMoneyPM, ICheckPM, IContainer)
 
 _ = gettext.gettext
 _printer = None
-
-MAX_DIALOG_MESSAGE_LEN = 70
 
 def get_printer_settings_by_hostname(conn, hostname):
     """ Returns the PrinterSettings object associated with the given
@@ -86,15 +85,6 @@ def _get_fiscalprinter(conn):
                 % socket.gethostname()))
     return _printer
 
-def _cancel(printer):
-    """ @returns: True if the reduce Z has been emitted, False otherwise.
-    """
-    try:
-        printer.cancel()
-    except DriverError:
-        return False
-    return True
-
 def _emit_reading(conn, cmd):
     printer = _get_fiscalprinter(conn)
     if not printer:
@@ -113,86 +103,159 @@ def emit_read_X(conn):
 def emit_reduce_Z(conn):
     return _emit_reading(conn, 'close_till')
 
-def emit_coupon(conn, sale):
+def emit_coupon(sale, conn):
     """ Emit a coupon for a Sale instance.
 
     @returns: True if the coupon has been emitted, False otherwise.
     """
-    printer = _get_fiscalprinter(conn)
-    if not printer:
-        return False
-
+    coupon = FiscalCoupon(conn, sale)
     person = sale.client.get_adapted()
-    address = person.get_main_address().get_address_string()
-    individual = IIndividual(person, connection=person.get_connection())
-    if individual is None:
-        raise DatabaseInconsistency("The client must have a Individual facet")
-    cpf = individual.cpf
+    if person:
+        coupon.identify_customer(person)
+    if not coupon.open():
+        return False
+    map(coupon.add_item, sale.get_items())
+    if not coupon.totalize():
+        return False
+    if not coupon.setup_payments():
+        return False
+    return coupon.close()
 
-    printer.identify_customer(person.name, address, cpf)
-    while True:
-        try:
-            printer.open()
-            break
-        except CouponOpenError:
-            if not _cancel(printer):
-                return False
-        except OutofPaperError:
-            if warning(
-                _("The printer has run out of paper"),
-                _("The printer %s has run out of paper.\nAdd more paper "
-                  "before continuing." % printer.get_printer_name()),
-                buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
-                         (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
-                return False
-            return emit_coupon(conn, sale)
-        except PrinterOfflineError:
-            if warning(
-                _("The printer is offline"),
-                _("The printer %s is offline, turn it on and try again"
-                  % printer.get_printer_name()),
-                buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
-                         (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
-                return False
-            return emit_coupon(conn, sale)
-        except DriverError, details:
-            warning(_("It's not possible to emit the coupon"), str(details))
-            return False
+#
+# Class definitions
+#
 
-    for item in sale.get_items():
+class FiscalCoupon:
+    """ This class is used just to allow us cancel an item with base in a
+    AbstractSellable object.
+    """
+    implements(IContainer)
+    
+    #
+    # IContainer implementation
+    #
+
+    def __init__(self, conn, sale):
+        self.sale = sale
+        self.conn = conn
+        self.printer = _get_fiscalprinter(conn)
+        if not self.printer:
+            raise ValueError
+        self._item_ids = {}
+
+    def add_item(self, item):
         sellable = item.sellable
+        description = sellable.base_sellable_info.description
         # FIXME: TAX_NONE is a HACK, waiting for bug #2269
         # FIXME: UNIT_EMPTY is temporary and will be remove when bug #2247
         # is fixed.
-        printer.add_item(sellable.code, item.quantity, item.price, 
-                         UNIT_EMPTY, sellable.base_sellable_info.description,
-                         TAX_NONE, 0, 0)
+        item_id = self.printer.add_item(sellable.code, item.quantity,
+                                        item.price, UNIT_EMPTY,
+                                        description, TAX_NONE, 0, 0)
+        self._item_ids[item] = item_id
 
-    printer.totalize(sale.discount_value, sale.charge_value, TAX_NONE)
+    def get_items(self):
+        return self._item_ids.values()
 
-    group = IPaymentGroup(sale, connection=conn)
-    if group.default_method == group.METHOD_GIFT_CERTIFICATE:
-        printer.add_payment(MONEY_PM, sale.get_total_sale_amount(), '')
-    else:
-        for payment in group.get_items():
-            if ICheckPM.providedBy(payment.method):
-                money_type = CHEQUE_PM
-            elif IMoneyPM.providedBy(payment.method):
-                money_type = MONEY_PM
-            # FIXME: A default value, this is wrong but can't be better right
-            # now, since stoqdrivers doesn't have support for any payment
-            # method diferent than money and cheque.  This will be improved
-            # when bug #2246 is fixed.
-            else:
-                _warn(_("The payment type %d isn't supported yet. "
-                        "The default, MONEY_PM, will be used.") 
-                        % payment.method)
-                money_type = MONEY_PM
-            printer.add_payment(money_type, payment.value, '')
+    def remove_item(self, sellable):
+        item_id = self._item_ids[sellable]
+        try:
+            self.printer.cancel_item(item_id)
+        except DriverError:
+            return False
+        del self._item_ids[sellable]
+        return True
 
-    try:
-        printer.close()
-    except DriverError, details:
-        warning(_("It's not possible to close the coupon"), str(details))
-        return False
-    return True
+    #
+    # Fiscal coupon related functions
+    #
+
+    def identify_customer(self, person):
+        address = person.get_main_address().get_address_string()
+        individual = IIndividual(person, connection=person.get_connection())
+        if individual is None:
+            raise DatabaseInconsistency("The client must have a "
+                                        "Individual facet")
+        cpf = individual.cpf
+        self.printer.identify_customer(person.name, address, cpf)
+
+    def open(self):
+        while True:
+            try:
+                self.printer.open()
+                break
+            except CouponOpenError:
+                if not self.cancel():
+                    return False
+            except OutofPaperError:
+                if warning(
+                    _("The printer has run out of paper"),
+                    _("The printer %s has run out of paper.\nAdd more paper "
+                      "before continuing." % printer.get_printer_name()),
+                    buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
+                             (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+                    return False
+                return self.open()
+            except PrinterOfflineError:
+                if warning(
+                    _("The printer is offline"),
+                    _("The printer %s is offline, turn it on and try again"
+                      % printer.get_printer_name()),
+                    buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
+                             (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+                    return False
+                return self.open()
+            except DriverError, details:
+                warning(_("It's not possible to emit the coupon"), str(details))
+                return False
+        return True
+
+    def totalize(self):
+        self.printer.totalize(self.sale.discount_value,
+                              self.sale.charge_value, TAX_NONE)
+        return True
+
+    def cancel(self):
+        try:
+            self.printer.cancel()
+        except DriverError:
+            return False
+        return True
+
+    def setup_payments(self):
+        """ Add the payments defined in the sale to the coupon. Note that this
+        function must be called after all the payments has been created.
+        """
+        sale = self.sale
+        group = IPaymentGroup(sale, connection=self.conn)
+        if not group:
+            raise ValueError("The sale object must have a PaymentGroup facet at "
+                             "this point.")
+        if group.default_method == group.METHOD_GIFT_CERTIFICATE:
+            printer.add_payment(MONEY_PM, sale.get_total_sale_amount(), '')
+        else:
+            for payment in group.get_items():
+                if ICheckPM.providedBy(payment.method):
+                    money_type = CHEQUE_PM
+                elif IMoneyPM.providedBy(payment.method):
+                    money_type = MONEY_PM
+                    # FIXME: A default value, this is wrong but can't be better right
+                    # now, since stoqdrivers doesn't have support for any payment
+                    # method diferent than money and cheque.  This will be improved
+                    # when bug #2246 is fixed.
+                else:
+                    _warn(_("The payment type %d isn't supported yet. The default, "
+                            "MONEY_PM, will be used.") 
+                          % payment.method)
+                    money_type = MONEY_PM
+                self.printer.add_payment(money_type, payment.value, '')
+        return True
+
+    def close(self):
+        try:
+            self.printer.close()
+        except DriverError, details:
+            warning(_("It's not possible to close the coupon"), str(details))
+            return False
+        return True
+

@@ -43,6 +43,7 @@ from stoq.gui.application import AppWindow
 from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import (format_quantity, get_price_format_str)
 from stoq.lib.parameters import sysparam
+from stoq.lib.drivers import FiscalCoupon
 from stoq.domain.sellable import AbstractSellable, FancySellable
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem, FancyProduct
@@ -82,9 +83,13 @@ class POSApp(AppWindow):
                 'header_label',
                 'pos_vbox',
                 'search_box',
-                'SalesMenu') + client_widgets + product_widgets +
-                               sellable_widgets)
-    
+                'SalesMenu',
+                'CancelOrder',
+                'ResetOrder')
+               + client_widgets
+               + product_widgets
+               + sellable_widgets)
+
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.conn = new_transaction()
@@ -94,6 +99,7 @@ class POSApp(AppWindow):
             self.app.shutdown()
         self.max_results = get_max_search_results()
         self.client_table = Person.getAdapterClass(IClient)
+        self.coupon = None
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
@@ -107,6 +113,8 @@ class POSApp(AppWindow):
         self.order_list.clear()
         self.sale = None
         self.client_proxy.new_model(self.sale, relax_type=True)
+        self.CancelOrder.set_sensitive(False)
+        self.ResetOrder.set_sensitive(True)
 
     def _delete_sellable_item(self, item):
         self.order_list.remove(item)
@@ -146,7 +154,6 @@ class POSApp(AppWindow):
         self._setup_entry_completion()
         # Waiting for bug 2319
         self.client_details_button.set_sensitive(False)
-                
 
     def _update_totals(self, *args):
         self.summary_label.update_total()
@@ -190,6 +197,8 @@ class POSApp(AppWindow):
         self.order_list.append(sellable_item)
         self.order_list.select(sellable_item)
         self.product.set_text('')
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.coupon.add_item(sellable_item)
 
     def _get_sellable(self):
         if self.product_proxy.model:
@@ -233,8 +242,24 @@ class POSApp(AppWindow):
             self.header_box.hide()
             self.pos_vbox.set_sensitive(True)
             self.product.grab_focus()
+            self.ResetOrder.set_sensitive(False)
+            self.CancelOrder.set_sensitive(True)
         else:
             rollback_and_begin(self.conn)
+        if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            return
+        if not self.coupon:
+            self.coupon = FiscalCoupon(self.conn, self.sale)
+        if self.sale.client:
+            self.coupon.identify_customer(self.sale.client.get_adapted())
+        while not self.coupon.open():
+            if warning(
+                _("It is not possible open a fiscal coupon"),
+                _("It is not possible start a new sale since a "
+                  "fiscal does not can be opened."),
+                buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
+                         (_("Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+                self.app.shutdown()
 
     def _update_widgets(self):
         has_sellables = len(self.order_list[:]) >= 1
@@ -341,12 +366,17 @@ class POSApp(AppWindow):
 
     def on_remove_item_button__clicked(self, *args):
         item = self.order_list.get_selected()
+        if (not sysparam(self.conn).CONFIRM_SALES_ON_TILL
+            and not self.coupon.remove_item(item)):
+            return
         self._delete_sellable_item(item)
         self.select_first_item()
         self._update_widgets()
 
     def _on_cancel_order_action_clicked(self, *args):
-        pass
+        self._clear_order()
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.coupon.cancel()
 
     def _on_resetorder_action__clicked(self, *args):
         self._new_order()
@@ -382,6 +412,11 @@ class POSApp(AppWindow):
                              param.SET_PAYMENT_METHODS_ON_TILL)
         if self.run_dialog(SaleWizard, self.conn, self.sale,
                            skip_payment_step=skip_payment_step):
+            if not skip_payment_step and not param.CONFIRM_SALES_ON_TILL:
+                if (not self.coupon.totalize()
+                    or not self.coupon.setup_payments()
+                    or not self.coupon.close()):
+                    return
             self.conn.commit()
             self._clear_order()
 
