@@ -59,14 +59,21 @@ class SaleDetailsDialog(SlaveDelegate):
 
     def _setup_widgets(self):
         self.details_button.set_sensitive(False)
+
+        #
+        # FIXME: These labels must be defined through Kiwi's proxy.
+        # Waiting for bug #2366
+        #
+        salesperson = self.sale.salesperson
+        if not salesperson:
+            raise DatabaseInconsistency("A sale must have a salesperson.")
+        salesperson_name = salesperson.get_adapted().name
+        self.salesperson_lbl.set_text(salesperson_name)
+        client = self.sale.client
+        client_name = (client and client.get_adapted().name
+                       or _("<i>Anonymous</i>"))
+        self.client_lbl.set_text(client_name)
         
-        salesperson_str = self.sale.salesperson.get_adapted().name
-        client_str = self.sale.client.get_adapted().name
-        
-        self.salesperson_lbl.set_text(salesperson_str)
-        self.client_lbl.set_text(client_str)
-        
-        # These labels must set through proxy. Waiting for bug 2366.
         open_date_str = self.sale.open_date.strftime("%x")
         status_str = self.sale.get_status_name()
         subtotal_str = get_formatted_price(self.sale.get_sale_subtotal())
