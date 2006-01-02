@@ -172,6 +172,11 @@ class POSApp(AppWindow):
                                         % code)
         return sellable[0]
 
+    def _coupon_add_item(self, sellable_item):
+        if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            return
+        self.coupon.add_item(sellable_item)
+
     def _update_order_list(self, sellable, notify_on_entry=False):
         table = type(sellable)
         if not ISellable.implementedBy(table):
@@ -197,8 +202,7 @@ class POSApp(AppWindow):
         self.order_list.append(sellable_item)
         self.order_list.select(sellable_item)
         self.product.set_text('')
-        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.coupon.add_item(sellable_item)
+        self._coupon_add_item(sellable_item)
 
     def _get_sellable(self):
         if self.product_proxy.model:
@@ -246,6 +250,7 @@ class POSApp(AppWindow):
             self.CancelOrder.set_sensitive(True)
         else:
             rollback_and_begin(self.conn)
+            return
         if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             return
         if not self.coupon:
@@ -400,11 +405,9 @@ class POSApp(AppWindow):
                                   self.sale, products)
         if not service:
             return
-        if service in self.order_list:
-            self.order_list.update(service)
-        else:
-            self.order_list.append(service)
+        self.order_list.append(service)
         self.order_list.select(service)
+        self._coupon_add_item(service)
 
     def _sale_checkout(self, *args):
         param = sysparam(self.conn)
