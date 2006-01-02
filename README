@@ -1,0 +1,39 @@
+Stoqdrivers
+===========
+
+Stoqdrivers has  as goal  the implementation of  drivers for  the most
+common  equipments  that  interacts  with retail  systems.   The  main
+example usage of this package is in Stoq: http://www.stoq.com.br.
+
+
+Requirements
+------------
+
+	* Python 2.4 (http://www.python.org/)
+	* Kiwi 1.9.3 (http://www.async.com.br/projects/kiwi/)
+	* pySerial 1.3 (http://pyserial.sourceforge.net/)
+	* Zope interfaces 3.0 (http://www.zope.org/Products/ZopeInterface/)
+
+
+New Versions
+------------
+
+New versions of the package can be found always by the SVN repository:
+
+	svn://svn.async.com.br/pub/stoqdrivers/trunk/
+
+or at Stoq website:
+
+	http://www.stoq.com.br/
+
+
+Mailing list
+------------
+
+There is two mailing lists where you can put questions and suggestions
+about Stoqdrivers. You can subscribe to them through the web interface
+at:
+
+	* http://www.async.com.br/mailman/listinfo/stoq-users
+	* http://www.async.com.br/mailman/listinfo/stoq-devel
+

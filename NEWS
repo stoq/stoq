@@ -1,0 +1,21 @@
+
+Release 0.2.0 - 22/12/2005:
+
+	* Bug fixes: 2125, 2149, 2158, 2176, 2240, 2248, 
+		     2280, 2284, 2328, 2346
+
+	* Driver capabilities implementation.
+	* Dataregis EP375 support.
+	* PertoPay 2023 support.
+	* Virtual printer implementation.
+
+Release 0.1.0 - 26/09/2005
+
+	* Bug fixes: 2131, 2132, 2133, 2148, 2155, 2156
+
+	* Standard exceptions management implemented.
+	* Daruma FS2100 support.
+	* Support for multiple printer models of the same manufacter.
+	* Installation script implementation.
+	* Support for items cancellation on Daruma FS345.
+
