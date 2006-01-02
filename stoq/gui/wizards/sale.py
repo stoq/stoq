@@ -263,6 +263,7 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
                 step_class = PaymentMethodStep
         else:
             method = AbstractPaymentGroup.METHOD_MONEY
+            self.wizard.setup_cash_payment(self.outstanding_value)
 
         cert_adapter = self._get_renegotiation_data()
         if not cert_adapter:
@@ -594,13 +595,6 @@ class SalesPersonStep(BaseWizardStep):
         items = [(s.get_adapted().name, s) for s in salespersons]
         self.salesperson_combo.prefill(items)
 
-    def setup_cash_payment(self):
-        money_method = sysparam(self.conn).METHOD_MONEY
-        group = self.previous.get_payment_group()
-        total = group.get_total_received()
-        # For cash we only have one installment always
-        inst_number = money_method.get_max_installments_number()
-        money_method.setup_inpayments(total, group, inst_number)
 
     def on_discount_charge_slave__discount_changed(self, slave):
         self.update_totals()
@@ -622,7 +616,7 @@ class SalesPersonStep(BaseWizardStep):
         group = self.wizard.get_payment_group()
         if self.cash_check.get_active():
             group.default_method = AbstractPaymentGroup.METHOD_MONEY
-            self.setup_cash_payment()
+            self.wizard.setup_cash_payment()
         elif self.certificate_check.get_active():
             table = GiftCertificate.getAdapterClass(ISellable)
             if not table.get_sold_sellables(self.conn).count():
@@ -699,3 +693,9 @@ class SaleWizard(BaseWizard):
             group = self.model.addFacet(IPaymentGroup,
                                         connection=self.conn)
         return group
+
+    def setup_cash_payment(self, total=None):
+        money_method = sysparam(self.conn).METHOD_MONEY
+        group = self.get_payment_group()
+        total = total or group.get_total_received()
+        money_method.setup_inpayments(total, group)

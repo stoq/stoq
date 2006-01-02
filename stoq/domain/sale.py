@@ -370,6 +370,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         renegotiation.addFacet(IRenegotiationOutstandingValue,
                                connection=conn,
                                preview_payment_method=preview_payment_method,
+                               payment_method=preview_payment_method,
                                outstanding_value=outstanding_value)
 
     def get_gift_certificates(self):
