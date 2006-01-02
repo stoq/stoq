@@ -274,9 +274,8 @@ class POSApp(AppWindow):
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale is not None and self.sale.client is not None
-        widgets = [self.delivery_button, self.client_edit_button]
-        for widget in widgets:
-            widget.set_sensitive(has_client)
+        self.client_edit_button.set_sensitive(has_client)
+        self.delivery_button.set_sensitive(has_client and has_sellables)
         model = self.order_list.get_selected()
         self._update_totals()
         has_sellable_str = self.product.get_text() != ''
