@@ -170,11 +170,11 @@ class IFS9000I(SerialBase):
     # Initializing Fiscal Printer
     #
 
-    def setup_coupon_header(self, jump_lines_number, 
-                            header_data):
-        """Call this method only in non-fiscal mode.
+    def setup_coupon_header(self, jump_lines_number, header_data):
+        """ Call this method only in non-fiscal mode.
         header_data is a list of 5 strings of 40 characters which will be
-        added in the header of all the printed coupons"""
+        added in the header of all the printed coupons.
+        """
         command = self.CMD_SET_HEADER_PARAMETERS
         # This is standard. The first argument must be always 'S'
         command += 'S'
@@ -248,7 +248,8 @@ class IFS9000I(SerialBase):
         self.writeline(command)
 
     def setup_sale_data(self):
-        """Call this method only in non-fiscal mode."""
+        """ Call this method only in non-fiscal mode.
+        """
 
         # Set taxes table
         self.writeline('33T010500')
@@ -300,7 +301,8 @@ class IFS9000I(SerialBase):
               argument.
             - dec_separator is the number of decimal separator digits
             - zero_digits is the number of zeros we should add in the
-              beggining of the argument value """
+              beggining of the argument value.
+        """
         self._check_float(value, arg_name)
         value = '%.*f' % (dec_separator, value)
         
@@ -461,10 +463,11 @@ class IFS9000I(SerialBase):
         self.send_command(self.CMD_ITEM_CANCEL, item_id)
 
     def coupon_add_charge(self, item_id, value, description):
-        """Valid charge types are: "51": "charge"
+        """ Valid charge types are: "51": "charge"
                                    "52": "charge IOF" 
-            The arguments item_id and descriptions only exit for API
-            compatibility"""
+        The arguments item_id and descriptions only exit for API
+        compatibility
+        """
         self.charge_total += value
         if not self.has_been_totalized:
             return
@@ -499,10 +502,10 @@ class IFS9000I(SerialBase):
         return self.get_remainder_value()
 
     def coupon_totalize(self, discount, charge, taxcode, message=''):
-        """Print the total value of the coupon.
-           The taxcode argument is useless here and exists only for API
-           compatibility"""
-
+        """ Print the total value of the coupon.
+        The taxcode argument is useless here and exists only for API
+        compatibility
+        """
         if discount:
             self.discount_coupon(discount)
         elif charge:
