@@ -95,7 +95,7 @@ class CreditProviderGroupData(Domain):
     """Stores general information for payment groups which store methods of
     credit provider such finance, credit card and debit card.
     """
-    installments_number = IntCol(default=None)
+    installments_number = IntCol(default=1)
     # Attribute payment_type is one of the TYPE_* constants defined in
     # BasePMProviderInfo
     payment_type = ForeignKey('PaymentMethodDetails')
@@ -198,7 +198,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
 
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
-                    iface=IInPayment):
+                    iface=IInPayment, base_value=None):
         conn = self.get_connection()
         created_number = self.get_payment_number_by_group(payment_group)
         if method_details:
@@ -224,13 +224,16 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                           method=self, destination=destination,
                           method_details=method_details,
                           due_date=due_date, value=value,
+                          base_value=base_value,
                           description=description)
         return payment.addFacet(iface, connection=conn)
 
     def create_inpayment(self, payment_group, due_date, value,
-                         method_details=None, description=None):
+                         method_details=None, description=None,
+                         base_value=None):
         return self.add_payment(payment_group, due_date, value,
-                                method_details, description)
+                                method_details, description,
+                                base_value=base_value)
 
     def create_outpayment(self, payment_group, due_date, value,
                           method_details=None, description=None):
@@ -485,7 +488,7 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
 
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
-                    iface=IInPayment):
+                    iface=IInPayment, base_value=None):
         # The method_details argument exists only for
         # AbstractCheckBillAdapter compatibility
         desc = description
@@ -493,7 +496,8 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
                                                        payment_group, 
                                                        due_date, value,
                                                        description=desc,
-                                                       iface=iface)
+                                                       iface=iface,
+                                                       base_value=base_value)
         conn = self.get_connection()
         bank_data = BankAccount(connection=conn)
         adapted = payment.get_adapted()
@@ -665,9 +669,11 @@ class PaymentMethodDetails(InheritableModel):
         return self._get_payment_method_by_interface(iface)
 
     def create_inpayment(self, payment_group, due_date, value,
-                         payment_method, description=None):
+                         payment_method, description=None, 
+                         base_value=None):
         return payment_method.create_inpayment(payment_group, due_date,
-                                               value, self, description)
+                                               value, self, description,
+                                               base_value)
 
     @argcheck(AbstractPaymentGroup, int, datetime, float)
     def setup_inpayments(self, payment_group, installments_number,
@@ -688,10 +694,12 @@ class PaymentMethodDetails(InheritableModel):
         max = self.get_max_installments_number()
         method._check_installments_number(installments_number, max)
 
-        total_value = total_value * self.commission
-        payment_value = total_value / installments_number
+        base_value = total_value / installments_number
+        updated_value = total_value * self.commission
+        payment_value = updated_value / installments_number
         payment_precision = sysparam(conn).PAYMENT_PRECISION
         payment_value = round(payment_value, payment_precision)
+        base_value = round(base_value, payment_precision)
 
         payments = []
         due_date = first_duedate
@@ -699,12 +707,13 @@ class PaymentMethodDetails(InheritableModel):
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
             description = '%s (%s of %s) from %s' % (self.description,
-                                                     number, 
+                                                     number + 1, 
                                                      installments_number,
                                                      group_desc)
             payment = self.create_inpayment(payment_group, due_date, 
                                             payment_value, method,
-                                            description)
+                                            description,
+                                            base_value=base_value)
             payments.append(payment)
             due_date += relativedelta(month=+1)
         return payments

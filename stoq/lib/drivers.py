@@ -249,7 +249,7 @@ class FiscalCoupon:
                             "MONEY_PM, will be used.") 
                           % payment.method.description)
                     money_type = MONEY_PM
-                self.printer.add_payment(money_type, payment.value, '')
+                self.printer.add_payment(money_type, payment.base_value, '')
         return True
 
     def close(self):
