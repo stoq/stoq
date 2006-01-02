@@ -76,16 +76,17 @@ class POSApp(AppWindow):
                 'advanced_search',
                 'client_edit_button',
                 'client_details_button',
+                'new_order_button',
                 'delivery_button',
                 'checkout_button',
                 'remove_item_button',
-                'header_box',
-                'header_label',
                 'pos_vbox',
                 'search_box',
                 'SalesMenu',
                 'CancelOrder',
-                'ResetOrder')
+                'ResetOrder',
+                'client_data_hbox',
+                'footer_hbox')
                + client_widgets
                + product_widgets
                + sellable_widgets)
@@ -106,15 +107,14 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def _clear_order(self):
-        self.header_label.set_color('red')
-        self.header_label.set_size('medium')
-        self.header_box.show()
-        self.pos_vbox.set_sensitive(False)
         self.order_list.clear()
+        for widget in (self.search_box, self.client_data_hbox,
+                       self.list_vbox, self.CancelOrder):
+            widget.set_sensitive(False)
+        self.ResetOrder.set_sensitive(True)
+        self.new_order_button.set_sensitive(True)
         self.sale = None
         self.client_proxy.new_model(self.sale, relax_type=True)
-        self.CancelOrder.set_sensitive(False)
-        self.ResetOrder.set_sensitive(True)
 
     def _delete_sellable_item(self, item):
         self.order_list.remove(item)
@@ -243,11 +243,13 @@ class POSApp(AppWindow):
             self.client_proxy.new_model(self.sale)
             self._update_widgets()
             self._update_totals()
-            self.header_box.hide()
-            self.pos_vbox.set_sensitive(True)
-            self.product.grab_focus()
+            for widget in (self.search_box, self.client_data_hbox,
+                           self.list_vbox, self.footer_hbox,
+                           self.CancelOrder):
+                widget.set_sensitive(True)
             self.ResetOrder.set_sensitive(False)
-            self.CancelOrder.set_sensitive(True)
+            self.product.grab_focus()
+            self.new_order_button.set_sensitive(False)
         else:
             rollback_and_begin(self.conn)
             return
@@ -356,7 +358,7 @@ class POSApp(AppWindow):
         if run_person_role_dialog(ClientEditor, self, self.conn, 
                                   self.sale.client):
             self.conn.commit()
-            
+
     def _on_clients_action__clicked(self, *args):
         self._search_clients()
 
@@ -425,3 +427,7 @@ class POSApp(AppWindow):
 
     def on_checkout_button__clicked(self, *args):
         self._sale_checkout()
+
+    def on_new_order_button__clicked(self, *args):
+        self._new_order()
+
