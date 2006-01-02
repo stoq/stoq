@@ -245,9 +245,9 @@ class FiscalCoupon:
                     # method diferent than money and cheque.  This will be improved
                     # when bug #2246 is fixed.
                 else:
-                    _warn(_("The payment type %d isn't supported yet. The default, "
+                    _warn(_("The payment type %s isn't supported yet. The default, "
                             "MONEY_PM, will be used.") 
-                          % payment.method)
+                          % payment.method.description)
                     money_type = MONEY_PM
                 self.printer.add_payment(money_type, payment.value, '')
         return True
