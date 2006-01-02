@@ -46,7 +46,5 @@ stoqdrivers/constants.py:
 # Constants for Payment Method
 #
 
-(
-    MONEY_PM,
-    CHEQUE_PM
-) = range(2)
+(MONEY_PM,
+ CHEQUE_PM) = range(2)
