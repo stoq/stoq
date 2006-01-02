@@ -87,6 +87,7 @@ class Payment(Domain):
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
     paid_value = FloatCol(default=0.0)
+    base_value = FloatCol()
     value = FloatCol()
     interest = FloatCol(default=0.0)
     discount = FloatCol(default=0.0)
@@ -98,6 +99,22 @@ class Payment(Domain):
     group = ForeignKey('AbstractPaymentGroup')
     destination = ForeignKey('PaymentDestination')
     
+
+    #
+    # SQLObject hooks
+    #
+
+    def _create(self, id, **kw):
+        if not 'value' in kw:
+            raise TypeError('You must provide a value argument')
+        if not 'base_value' in kw:
+            kw['base_value'] = kw['value']
+        Domain._create(self, id, **kw)
+    
+    #
+    # General methods
+    #
+
     def get_status_str(self):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Invalid status for Payment '
