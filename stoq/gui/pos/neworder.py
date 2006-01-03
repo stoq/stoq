@@ -66,6 +66,7 @@ class NewOrderEditor(BaseEditor):
         salespersons = salesperson_table.select(connection=self.conn)
         items = [(s.get_adapted().name, s) for s in salespersons]
         self.salesperson.prefill(items)
+        self._update_client_widgets()
 
     def _update_client_widgets(self):
         client_selected = self.client_check.get_active()
