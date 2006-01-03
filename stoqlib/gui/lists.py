@@ -61,11 +61,11 @@ class AdditionListSlave(SlaveDelegate):
     def __init__(self, conn, columns, editor_class=None, klist_objects=[]):
         """
         @param conn:          a connection
-        @param editor_class:  the window that is going to be open when user 
-          clicks on add_button or edit_button.
-        @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
-        @param columns:       columns definitions
+        @param columns:       column definitions
         @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
+        @param editor_class:  the window that is going to be open when user 
+                              clicks on add_button or edit_button.
+        @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
         if editor_class and not issubclass(editor_class, BaseEditor):
@@ -77,7 +77,7 @@ class AdditionListSlave(SlaveDelegate):
         self._editor_class = editor_class
         self._editor_kwargs = dict()
         self._columns = columns
-        self.can_edit = True
+        self._can_edit = True
         self._setup_klist(klist_objects)
         self._update_sensitivity()
 
@@ -87,15 +87,15 @@ class AdditionListSlave(SlaveDelegate):
         self.klist.add_list(klist_objects)
 
     def _update_sensitivity(self, *args):
-        can_delete = can_edit = True
+        can_delete = _can_edit = True
         objs = self.get_selection()
         if not objs:
-            can_edit = can_delete = False
+            _can_edit = can_delete = False
         elif len(objs) > 1:
-            can_edit = False
+            _can_edit = False
             
         self.add_button.set_sensitive(True)
-        self.edit_button.set_sensitive(can_edit)
+        self.edit_button.set_sensitive(_can_edit)
         self.delete_button.set_sensitive(can_delete)
 
     def _run(self, model=None):
@@ -118,7 +118,7 @@ class AdditionListSlave(SlaveDelegate):
         self._update_sensitivity()
 
     def _edit(self):
-        if not self.can_edit:
+        if not self._can_edit:
             return
         objs = self.get_selection()
         qty = len(objs)
@@ -174,7 +174,7 @@ class AdditionListSlave(SlaveDelegate):
         self.add_button.hide()
 
     def hide_edit_button(self):
-        self.can_edit = False
+        self._can_edit = False
         self.edit_button.hide()
 
     def hide_del_button(self):
