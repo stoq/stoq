@@ -4,6 +4,7 @@
         <property name="title" context="True" translatable="yes"></property>
         <property name="resize_mode">queue</property>
         <property name="role"></property>
+        <property name="has_separator">False</property>
         <property name="events"></property>
         <property name="window_position">center-always</property>
         <property name="type_hint">dialog</property>
