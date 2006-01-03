@@ -24,9 +24,9 @@ PyGTK 2.8.1 or higher
 PostgresSQL 7.4.7
 SQLObject 0.7
 Gazpacho 0.6.2 
-Kiwi 1.9.1
-stoqlib 0.4.0
-Stoqdrivers 0.2.0
+Kiwi 1.9.3
+stoqlib 0.5.0
+Stoqdrivers 0.3.0
 zope.interface 3.0.0 or higher 
 dateutil (http://labix.org/python-dateutil)
 
@@ -38,24 +38,18 @@ pylib (http://codespeak.net/py/current/doc/test.html)
 
 Running Stoq
 ================
-To run Stoq you can either run it from the download directory or you can
-install it into your prefix.
-
-If you don't want to install it just type:
-
-[evandro@localhost gazpacho]$ bin/stoq
-
-Note that bin/stoq gives a list of available applications. You must also
-type the application name to run it properly like: bin/stoq pos
-
-You will probably need to set your PYTHONPATH if your system does not
-have pygtk 2.8.1 in the default python site-packages directory.
 
 If you want to install Stoq just follow the instructions in the INSTALL
 file.
 
+You will probably need to set your PYTHONPATH if your system does not
+have pygtk 2.8.1 in the default python site-packages directory.
+
 Once you have Stoq installed, then to run it:
 [evandro@localhost]$ stoq
+
+If you just type bin/stoq you will get a list of available applications. 
+You must also type the application name to run it properly like: bin/stoq pos
 
 Note that your path will need to containe 'yourprefix/bin'
 
