@@ -92,7 +92,7 @@ def _emit_reading(conn, cmd):
     try:
         getattr(printer, cmd)()
     except CouponOpenError:
-        return _cancel(printer)
+        return printer.cancel()
     except DriverError:
         return False
     return True
@@ -191,7 +191,7 @@ class FiscalCoupon:
                 if warning(
                     _("The printer has run out of paper"),
                     _("The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing." % printer.get_printer_name()),
+                      "before continuing." % self.printer.get_printer_name()),
                     buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
                              (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                     return False
@@ -200,7 +200,7 @@ class FiscalCoupon:
                 if warning(
                     _("The printer is offline"),
                     _("The printer %s is offline, turn it on and try again"
-                      % printer.get_printer_name()),
+                      % self.printer.get_printer_name()),
                     buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
                              (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                     return False
