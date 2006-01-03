@@ -32,6 +32,7 @@ stoq/gui/pos/pos.py:
 
 import gettext
 
+import gtk
 from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
