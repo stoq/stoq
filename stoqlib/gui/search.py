@@ -671,7 +671,7 @@ class SearchDialog(BasicDialog):
         instance.  Redefine this method in child when it's needed
         """
 
-    def on_cell_edited(self, *args):
+    def on_cell_edited(self, klist, obj, attr):
         """Override this method on child when it's needed to perform some
         tasks when editing a row.
         """
