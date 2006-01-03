@@ -31,11 +31,14 @@ stoq/gui/editors/profile.py:
 
 import gettext
 
+from kiwi.datatypes import ValidationError
+from sqlobject.sqlbuilder import func, AND
 from stoqlib.gui.editors import BaseEditor
 
 from stoq.domain.profile import UserProfile
 from stoq.gui.slaves.profile import UserProfileSettingsSlave
 from stoq.lib.applist import get_app_full_names
+from stoq.lib.runtime import get_connection
 
 
 _ = gettext.gettext
@@ -83,3 +86,16 @@ class UserProfileEditor(BaseEditor):
             vadj = self.scrolled_window.get_vadjustment()
             vadj.set_value(vadj.upper)
             widget.show()
+
+    #
+    # Kiwi handlers
+    #
+    
+    def on_profile_name__validate(self, widget, value):
+        conn = get_connection()
+        q1 = func.UPPER(UserProfile.q.name) == value.upper()
+        q2 = UserProfile.q.id != self.model.id
+        query = AND(q1, q2)
+        if UserProfile.select(query, connection=conn).count():
+            return ValidationError('This profile already exists!')
+
