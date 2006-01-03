@@ -33,11 +33,10 @@ import gettext
 from kiwi.datatypes import currency
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.gui.dialogs import BasicWrappingDialog, run_dialog
+from stoqlib.gui.dialogs import BasicWrappingDialog
+from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.domain.interfaces import IPaymentGroup
-from stoq.domain.payment.base import Payment
-from stoq.gui.editors.person import ClientEditor
 from stoq.lib.validators import get_formatted_price, get_price_format_str
 
 _ = gettext.gettext
