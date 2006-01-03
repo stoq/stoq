@@ -107,7 +107,7 @@ class Payment(Domain):
     def _create(self, id, **kw):
         if not 'value' in kw:
             raise TypeError('You must provide a value argument')
-        if not 'base_value' in kw:
+        if not 'base_value' in kw or not kw['base_value']:
             kw['base_value'] = kw['value']
         Domain._create(self, id, **kw)
     
