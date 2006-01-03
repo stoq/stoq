@@ -673,7 +673,7 @@ class PaymentMethodDetails(InheritableModel):
                          base_value=None):
         return payment_method.create_inpayment(payment_group, due_date,
                                                value, self, description,
-                                               base_value)
+                                               base_value=base_value)
 
     @argcheck(AbstractPaymentGroup, int, datetime, float)
     def setup_inpayments(self, payment_group, installments_number,
