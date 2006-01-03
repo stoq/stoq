@@ -32,6 +32,7 @@ stoq/gui/pos/pos.py:
 
 import gettext
 
+from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
