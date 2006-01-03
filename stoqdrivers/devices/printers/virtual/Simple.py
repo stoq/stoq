@@ -30,6 +30,8 @@ stoqdrivers/devices/printers/virtual/Simple.py:
     A simple implementation of a virtual printer.
 """
 
+import gettext
+
 from zope.interface import implements
 
 from stoqdrivers.devices.printers.capabilities import Capability
@@ -38,6 +40,8 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ItemAdditionError)
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 class CouponItem:
     def __init__(self, id, quantity, value):
@@ -70,11 +74,11 @@ class Simple:
 
     def _check_coupon_is_opened(self):
         if not self.is_coupon_opened:
-            raise CouponOpenError("There is no coupon opened!")
+            raise CouponOpenError(_("There is no coupon opened!"))
 
     def _check_coupon_is_closed(self):
         if self.is_coupon_opened:
-            raise CouponOpenError("There is a coupon already open")
+            raise CouponOpenError(_("There is a coupon already open"))
 
     #
     # ICouponPrinter implementation
@@ -93,8 +97,8 @@ class Simple:
                         taxcode, discount, charge):
         self._check_coupon_is_opened()
         if self.is_coupon_totalized:
-            raise ItemAdditionError("The coupon is already totalized, "
-                                    "you can't add items anymore.")
+            raise ItemAdditionError(_("The coupon is already totalized, "
+                                      "you can't add items anymore."))
         self.items_quantity += 1
         item_id = self.items_quantity
         self._items[item_id] = CouponItem(item_id, quantity, price)
@@ -103,11 +107,11 @@ class Simple:
     def coupon_cancel_item(self, item_id):
         self._check_coupon_is_opened()
         if not item_id in self._items:
-            raise CancelItemError("There is no item with this ID (%d)"
+            raise CancelItemError(_("There is no item with this ID (%d)")
                                   % item_id)
         elif self.is_coupon_totalized:
-            raise CancelItemError("The coupon is already totalized, "
-                                  "you can't cancel items anymore.")
+            raise CancelItemError(_("The coupon is already totalized, "
+                                    "you can't cancel items anymore."))
         del self._items[item_id]
 
     def coupon_cancel(self):
@@ -117,24 +121,24 @@ class Simple:
     def coupon_totalize(self, discount, charge, taxcode):
         self._check_coupon_is_opened()
         if not self.items_quantity:
-            raise CouponTotalizeError("The coupon can't be totalized, since "
-                                      "there is no items added")
+            raise CouponTotalizeError(_("The coupon can't be totalized, since "
+                                        "there is no items added"))
         elif self.is_coupon_totalized:
-            raise CouponTotalizeError("The coupon is already totalized")
+            raise CouponTotalizeError(_("The coupon is already totalized"))
 
         for item_id, item in self._items.items():
             self.totalized_value += item.get_total_value()
 
         if not self.totalized_value:
-            raise CouponTotalizeError("Coupon totalized at zero!")
+            raise CouponTotalizeError(_("Coupon totalized at zero!"))
 
         self.is_coupon_totalized = True
         return self.totalized_value
 
     def coupon_add_payment(self, payment_method, value, description):
         if not self.is_coupon_totalized:
-            raise PaymentAdditionError("Isn't possible add payments to the "
-                                       "coupon since it isn't totalized")
+            raise PaymentAdditionError(_("Isn't possible add payments to the "
+                                         "coupon since it isn't totalized"))
         self.payments_total += value
         self.has_payments = True
         return self.totalized_value - self.payments_total
@@ -142,14 +146,14 @@ class Simple:
     def coupon_close(self, message=''):
         self._check_coupon_is_opened()
         if not self.is_coupon_totalized:
-            raise CloseCouponError("Isn't possible close the coupon "
-                                      "since it isn't totalized yet!")
+            raise CloseCouponError(_("Isn't possible close the coupon "
+                                     "since it isn't totalized yet!"))
         elif not self.has_payments:
-            raise CloseCouponError("Isn't possible close the coupon since "
-                                   "there is no payments added.")
+            raise CloseCouponError(_("Isn't possible close the coupon "
+                                     "since there is no payments added."))
         elif self.totalized_value > self.payments_total:
-            raise CloseCouponError("The payments total value doesn't "
-                                   "match the totalized value.")
+            raise CloseCouponError(_("The payments total value doesn't "
+                                     "match the totalized value."))
         self._reset_flags()
 
     def get_capabilities(self):

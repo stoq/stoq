@@ -29,6 +29,7 @@ stoqdrivers/drivers/bematech/MP25.py:
     Drivers implementation for Bematech printers.
 """
 import struct
+import gettext
 
 from zope.interface import implements
 
@@ -45,6 +46,8 @@ from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 
 logger = Log(category='MP25')
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 # Data formatting functions
 def fmt_fl_7c_3d_nodot(value):
@@ -124,26 +127,26 @@ class Result:
 
 class DefaultResult(Result):
     status_1_return_codes = {
-        128 : (OutofPaperError, 'Printer is out of paper'),
-        64  : (AlmostOutofPaper, 'Printer almost out of paper'),
-        32  : (PrinterError, 'Printer clock error'),
-        16  : (PrinterError, 'Printer in error state'),
-        8   : (CommandError, 'First data value in CMD is not ESC (1BH)'),
-        4   : (CommandError, 'Nonexistent command'),
-        2   : (CouponOpenError, 'Printer has a coupon currently open'),
-        1   : (CommandError, 'Invalid number of parameters'),
+        128 : (OutofPaperError, _('Printer is out of paper')),
+        64  : (AlmostOutofPaper, _('Printer almost out of paper')),
+        32  : (PrinterError, _('Printer clock error')),
+        16  : (PrinterError, _('Printer in error state')),
+        8   : (CommandError, _('First data value in CMD is not ESC (1BH)')),
+        4   : (CommandError, _('Nonexistent command')),
+        2   : (CouponOpenError, _('Printer has a coupon currently open')),
+        1   : (CommandError, _('Invalid number of parameters')),
         }
 
     status_2_return_codes = {
-        128 : (CommandError, 'Invalid CMD parameter'),
-        64  : (HardwareFailure, 'Fiscal memory is full'),
-        32  : (HardwareFailure, 'Error in CMOS memory'),
-        16  : (PrinterError, 'Given tax is not programmed on the printer'),
+        128 : (CommandError, _('Invalid CMD parameter')),
+        64  : (HardwareFailure, _('Fiscal memory is full')),
+        32  : (HardwareFailure, _('Error in CMOS memory')),
+        16  : (PrinterError, _('Given tax is not programmed on the printer')),
         8   : (DriverError, 'No available tax slot'),
         4   : (DriverError, 'Cancel operation is not allowed'),
-        2   : (PrinterError, ('Owner data (CGC/IE) not programmed on the '
-			      'printer')),
-        1   : (CommandError, 'Command not executed'),
+        2   : (PrinterError, _('Owner data (CGC/IE) not programmed on the '
+                               'printer')),
+        1   : (CommandError, _('Command not executed')),
         }
     
     def __init__(self):
@@ -166,7 +169,8 @@ class DefaultResult(Result):
             self.ack, self.st1, self.st2 = struct.unpack(self.format,
                                                          self.data)
         except:
-            raise ValueError("Data received inconsistent with data expected")
+            raise ValueError("Data received inconsistent with data "
+                             "expected")
 
         assert self.ack == 0x06
         self.describe_data()

@@ -30,11 +30,13 @@ stoqdrivers/configparser.py:
     Useful routines when parsing the configuration file
 """
     
+import gettext
 import os
 from ConfigParser import ConfigParser
 
 from stoqdrivers.exceptions import ConfigError
 
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 class StoqdriversConfig:
 
@@ -75,8 +77,8 @@ class StoqdriversConfig:
         globetcpath = os.path.join(os.sep, 'etc', self.domain)
         if not (self._open_config(homepath) or self._open_config(etcpath) or
                 self._open_config(globetcpath)):
-            raise ConfigError(("Config file not found in: `%s', `%s' and "
-                               "`%s'" % (homepath, etcpath, globetcpath)))
+            raise ConfigError(_("Config file not found in: `%s', `%s' and "
+                                "`%s'") % (homepath, etcpath, globetcpath))
 
     def has_section(self, section):
         return self.config.has_section(section)
@@ -86,13 +88,13 @@ class StoqdriversConfig:
     
     def get_option(self, name, section='General'):
         if not self.config.has_section(section):
-            raise  ConfigError("Invalid section: %s" % section)
+            raise  ConfigError(_("Invalid section: %s") % section)
         elif not self.config.has_option(section, name):
-            raise ConfigError("%s does not have option: %s" %
-                              (self.filename, name))
+            raise ConfigError(_("%s does not have option: %s")
+                              % (self.filename, name))
         return self.config.get(section, name)
 
     def set_option(self, name, section='General'):
         if not self.config.has_section(section):
-            raise ConfigError("Invalid section: %s" % section)
+            raise ConfigError(_("Invalid section: %s") % section)
         self.config.set(section, name)

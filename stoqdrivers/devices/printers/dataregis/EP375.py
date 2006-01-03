@@ -30,6 +30,7 @@ stoqdrivers/devices/printers/dataregis/EP375.py:
 """
 
 import time
+import gettext
 
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
@@ -55,6 +56,8 @@ ACK = 0x06
 CR = 0x0D
 SUB = 0x1A
 
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+
 #
 # Class implementation to printer status management
 #
@@ -73,48 +76,52 @@ class EP375Status:
     PRINTER_IS_OK = 0x4B
 
     errors_dict = {
-        0x41: (PrinterError, "Fiscal memory has changed"),
-        0x61: (PrinterError, "No manufacture number"),
-        0x42: (CommError, "Print buffer is full"),
-        0x62: (CommandParametersError, "No item(s) to cancel found"),
-        0x43: (CommandError, "The requested command doesn't exist"), 
+        0x41: (PrinterError, _("Fiscal memory has changed")),
+        0x61: (PrinterError, _("No manufacture number")),
+        0x42: (CommError, _("Print buffer is full")),
+        0x62: (CommandParametersError, _("No item(s) to cancel found")),
+        0x43: (CommandError, _("The requested command doesn't exist")), 
         0x63: (DriverError, "Cancellation above the limit"),
         0x44: (DriverError, "Discount more than total value"),
         0x64: (DriverError, "Invalid date"),
-        0x45: (HardwareFailure, "Fiscal EPROM disconnected"),
-        0x65: (PrinterError, "Incorrect version of the basic software"),
-        0x46: (PrinterError, "Error on the fiscal variables"), 
-        0x66: (PrinterError, "No cliche"),
-        0x47: (PrinterError, ("No company data. Has the printer been "
-                              "initialized?")),
+        0x45: (HardwareFailure, _("Fiscal EPROM disconnected")),
+        0x65: (PrinterError, _("Incorrect version of the basic software")),
+        0x46: (PrinterError, _("Error on the fiscal variables")),
+        0x66: (PrinterError, _("No cliche")),
+        0x47: (PrinterError, _("No company data. Has the printer been "
+                               "initialized?")),
         0x67: (DriverError, "Invalid voucher amount or quantity"),
-        0x48: (DriverError, "Invalid managemental report number or quantity"),
+        0x48: (DriverError, ("Invalid managemental report number or "
+                             "quantity")),
         0x68: (DriverError, "There is no more copies for the tied coupon"),
-        0x49: (CommandError, "Invalid command"),
-        0x69: (CommandParametersError, "Invalid command parameters"),
+        0x49: (CommandError, _("Invalid command")),
+        0x69: (CommandParametersError, _("Invalid command parameters")),
         0x4a: (DriverError, "Sale subjects to ICMS without state registry"),
-        0x4d: (PrinterError, 'Fiscal memory without logotype'),
-        0x6d: (HardwareFailure, "Write error on the Fiscal Memory"),
-        0x4e: (CommandError, "Invalid state"), 
-        0x6e: (DriverError, "Invalid 'finalizadora' number"), 
-        0x50: (OutofPaperError, "Printer is running out of paper"),
-        0x70: (HardwareFailure, "Printer hardware failure"),
-        0x52: (PendingReduceZ, "Pending Reduce Z"),
-        0x53: (DriverError, "Sale subjects to ISSQN without state registry."), 
-        0x73: (PrinterError, ("Discount in subtotal with sale subjects to ICMS "
-                              "and ISSQN isn't allowed")),
+        0x4d: (PrinterError, _('Fiscal memory without logotype')),
+        0x6d: (HardwareFailure, _("Write error on the Fiscal Memory")),
+        0x4e: (CommandError, _("Invalid state")),
+        0x6e: (DriverError, "Invalid 'finalizadora' number"),
+        0x50: (OutofPaperError, _("Printer is running out of paper")),
+        0x70: (HardwareFailure, _("Printer hardware failure")),
+        0x52: (PendingReduceZ, _("Pending Reduce Z")),
+        0x53: (DriverError, ("Sale subjects to ISSQN without state "
+                             "registry.")),
+        0x73: (PrinterError, _("Discount in subtotal with sale subjects to "
+                               "ICMS and ISSQN isn't allowed")),
         0x54: (DriverError, "Wrong tribute index or number"),
         0x74: (DriverError, "Found the 'TOTAL' word and/or its variables"),
         0x55: (DriverError, "Invalid measurement unit"),
-        0x56: (DriverError, "Total item value is greater than maximum allowed"),
+        0x56: (DriverError, ("Total item value is greater than maximum "
+                             "allowed")),
         0x76: (DriverError, "Attempt to cancel coupon at zero"),
         0x77: (DriverError, "Total item value is zero"),
-        0x58: (PendingReadX, "Pending Read X"), 
-        0x59: (ReduceZError, "Attempt of reduce Z with date previous than last"),
-        0x79: (DriverError, ("Attempt of adjust the clock to date/time previous"
-                             "than the last reduce Z")),
-        0x7a: (HardwareFailure, "No more fiscal memory :("),
-        0x5a: (ReduceZError, "Reduce Z already done")
+        0x58: (PendingReadX, _("Pending Read X")),
+        0x59: (ReduceZError, _("Attempt of reduce Z with date previous than "
+                               "last")),
+        0x79: (DriverError, ("Attempt of adjust the clock to date/time "
+                             "previous than the last reduce Z")),
+        0x7a: (HardwareFailure, _("No more fiscal memory :(")),
+        0x5a: (ReduceZError, _("Reduce Z already done"))
         }
 
     def __init__(self, raw_status):
@@ -430,10 +437,10 @@ class EP375(SerialBase, BaseChequePrinter):
         status = self.get_status()
 
         if status.needs_reduce_Z():
-            raise PendingReduceZ("Pending Reduce Z")
+            raise PendingReduceZ(_("Pending Reduce Z"))
 
         if status.needs_read_X():
-            raise PendingReadX("Pending Read X")
+            raise PendingReadX(_("Pending Read X"))
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, surcharge):
@@ -473,8 +480,8 @@ class EP375(SerialBase, BaseChequePrinter):
         try:
             item = self.items_dict[item_id]
         except KeyError:
-            raise CommandParametersError("You have specified an invalid "
-                                         "item id to cancel!")
+            raise CommandParametersError(_("You have specified an invalid "
+                                           "item id to cancel!"))
         self.send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
 
     def coupon_cancel(self):
@@ -527,7 +534,7 @@ class EP375(SerialBase, BaseChequePrinter):
 
     def close_till(self):
         if not self.get_status().needs_reduce_Z():
-            raise ReduceZError('Reduce Z already done')
+            raise ReduceZError(_('Reduce Z already done'))
         else:
             self.send_command(self.CMD_REDUCE_Z)
 
@@ -576,7 +583,8 @@ class EP375(SerialBase, BaseChequePrinter):
 
     def print_cheque(self, bank, value, thirdparty, city, date):
         if not isinstance(bank, BankConfiguration):
-            raise TypeError("bank parameter must be a BankConfiguration instance")
+            raise TypeError("bank parameter must be a BankConfiguration "
+                            "instance")
         
         value = '%014d' % int(value * 1e2)
         thirdparty = '%-50s' % thirdparty[:50]

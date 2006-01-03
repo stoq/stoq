@@ -33,7 +33,7 @@ import sys
 import gettext
 import logging
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 log_level = logging.DEBUG
 

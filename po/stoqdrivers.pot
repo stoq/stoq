@@ -1,0 +1,376 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-01-03 18:44-0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Without write permission to the given file object,
+#. write to stdout
+#: ../stoqdrivers/log.py:72
+msgid ""
+">>> Given file object in read-only mode! Using standard output to write logs!"
+msgstr ""
+
+#: ../stoqdrivers/log.py:79
+msgid ""
+">>> Couldn't access specified file! Using standard output to write logs!"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:80
+#, python-format
+msgid "Config file not found in: `%s', `%s' and `%s'"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:91 ../stoqdrivers/configparser.py:99
+#, python-format
+msgid "Invalid section: %s"
+msgstr ""
+
+#: ../stoqdrivers/configparser.py:93
+#, python-format
+msgid "%s does not have option: %s"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/base.py:58
+msgid "There is no printer configured!"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/fiscal.py:117
+msgid "You must totalize the coupon before add payments."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/fiscal.py:137
+msgid "You must totalize the coupon before closing it"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/fiscal.py:140
+#, python-format
+msgid ""
+"Isn't possible close the coupon since the payments total (%.2f) doesn't "
+"match the totalized value (%.2f)."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/perto/Pay2023.py:247
+msgid "Coupon already opened."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:147
+msgid "Broken status reply"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:157
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:106
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:440
+msgid "Pending Reduce Z"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:159
+msgid "Mechanical failure"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:161
+msgid "Not properly authenticated"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:163
+msgid "No paper"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:165
+msgid "Offline"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:167
+msgid "Peripheral is not connected to AUX"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:179
+msgid "readX is not emitted yet"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:212
+msgid "Document is already open"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:263
+msgid "Coupon is not open"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:280
+msgid "Coupon already open"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:379
+msgid "There is a coupon opened"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/daruma/FS345.py:381
+msgid "Pending read X"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:130
+msgid "Printer is out of paper"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:131
+msgid "Printer almost out of paper"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:132
+msgid "Printer clock error"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:133
+msgid "Printer in error state"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:134
+msgid "First data value in CMD is not ESC (1BH)"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:135
+msgid "Nonexistent command"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:136
+msgid "Printer has a coupon currently open"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:137
+msgid "Invalid number of parameters"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:141
+msgid "Invalid CMD parameter"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:142
+msgid "Fiscal memory is full"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:143
+msgid "Error in CMOS memory"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:144
+msgid "Given tax is not programmed on the printer"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:147
+msgid "Owner data (CGC/IE) not programmed on the printer"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/bematech/MP25.py:149
+msgid "Command not executed"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:77
+msgid "There is no coupon opened!"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:81
+msgid "There is a coupon already open"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:100
+msgid "The coupon is already totalized, you can't add items anymore."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:110
+#, python-format
+msgid "There is no item with this ID (%d)"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:113
+msgid "The coupon is already totalized, you can't cancel items anymore."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:124
+msgid "The coupon can't be totalized, since there is no items added"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:127
+msgid "The coupon is already totalized"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:133
+msgid "Coupon totalized at zero!"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:140
+msgid "Isn't possible add payments to the coupon since it isn't totalized"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:149
+msgid "Isn't possible close the coupon since it isn't totalized yet!"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:152
+msgid "Isn't possible close the coupon since there is no payments added."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:155
+msgid "The payments total value doesn't match the totalized value."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:141
+msgid "A Read X is pending"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:142
+msgid "The command is invalid"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:145
+msgid "A coupon already exist"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:147
+msgid "Parameters invalid."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:149
+msgid "There is no coupon opened"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:150
+msgid "Reduce Z already done."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:152
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:155
+msgid "Printer clock isn't programmed yet."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:158
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:160
+msgid "Problem in fiscal printer"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:163
+msgid "There is no items added to coupon"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:165
+msgid "Out of paper"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:166
+msgid "A Reduce Z is pending"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:169
+msgid "Invalid state for command execution"
+msgstr ""
+
+#. if we catch InvalidState here, probably the printer is with
+#. a read X pending, so..
+#: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:414
+msgid "A read X is pending."
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:79
+msgid "Fiscal memory has changed"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:80
+msgid "No manufacture number"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:81
+msgid "Print buffer is full"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:82
+msgid "No item(s) to cancel found"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:83
+msgid "The requested command doesn't exist"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:87
+msgid "Fiscal EPROM disconnected"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:88
+msgid "Incorrect version of the basic software"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:89
+msgid "Error on the fiscal variables"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:90
+msgid "No cliche"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:91
+msgid "No company data. Has the printer been initialized?"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:97
+msgid "Invalid command"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:98
+msgid "Invalid command parameters"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:100
+msgid "Fiscal memory without logotype"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:101
+msgid "Write error on the Fiscal Memory"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:102
+msgid "Invalid state"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:104
+msgid "Printer is running out of paper"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:105
+msgid "Printer hardware failure"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:109
+msgid "Discount in subtotal with sale subjects to ICMS and ISSQN isn't allowed"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:118
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:443
+msgid "Pending Read X"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:119
+msgid "Attempt of reduce Z with date previous than last"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:123
+msgid "No more fiscal memory :("
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:124
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:537
+msgid "Reduce Z already done"
+msgstr ""
+
+#: ../stoqdrivers/devices/printers/dataregis/EP375.py:483
+msgid "You have specified an invalid item id to cancel!"
+msgstr ""

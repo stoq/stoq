@@ -31,6 +31,7 @@ stoqdrivers/devices/printers/sweda/IFS9000I.py:
 
 import string
 import datetime
+import gettext
 
 from zope.interface import implements
 
@@ -48,6 +49,8 @@ from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.devices.printers.capabilities import Capability
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 payment_methods = {
     MONEY_PM : "01",
@@ -135,35 +138,35 @@ class IFS9000I(SerialBase):
     unit_indicators[UNIT_LITERS] = ')'
     unit_indicators[UNIT_EMPTY]  = '^'
 
-    errors_dict = {'DIA ENCERRADO' : (PendingReadX, "A Read X is pending"),
-                   'ERRO-COMAND INVALIDO' : (CommandError, ("The command is "
+    errors_dict = {'DIA ENCERRADO': (PendingReadX, _("A Read X is pending")),
+                   'ERRO-COMAND INVALIDO': (CommandError, _("The command is "
                                                             "invalid")),
-                   'ERRO-OPERACAO NAO ENCERRADA' : (CouponOpenError, 
-                                                    "A coupon already exist"),
-                   'ERRO-PARAMETROS DO COMAND INVALIDOS' : (CommandParametersError,
-                                                            "Parameters invalid."),
-                   'ERRO-OPERACAO NAO ABERTA' : (CouponNotOpenError,
-                                                 "There is no coupon opened"),
-                   'JA  FEZ REDUÇÃO' : (ReduceZError, "Reduce Z already done."),
-                   '^RELOGIO ZERADO-PROGRAMAR' : (PrinterError,
-                                                  ("Printer clock isn't "
+                   'ERRO-OPERACAO NAO ENCERRADA': (CouponOpenError, 
+                                                   _("A coupon already exist")),
+                   'ERRO-PARAMETROS DO COMAND INVALIDOS': (CommandParametersError,
+                                                           _("Parameters invalid.")),
+                   'ERRO-OPERACAO NAO ABERTA': (CouponNotOpenError,
+                                                _("There is no coupon opened")),
+                   'JA  FEZ REDUÇÃO': (ReduceZError, _("Reduce Z already done.")),
+                   '^RELOGIO ZERADO-PROGRAMAR': (PrinterError,
+                                                 _("Printer clock isn't "
                                                    "programmed yet.")),
-                   'RELOGIO:ERRO-PROGRAMAR DATA/HORA' : (PrinterError,
-                                                         ("Printer clock isn't "
-                                                         "programmed yet.")),
-                   '^CHAMAR ASSISTENCIA TECNICA' : (HardwareFailure,
-                                                    "Problem in fiscal printer"),
-                   '^CMOS: ERRO-MEMÓRIA TAXAS/PARAMET' : (HardwareFailure,
-                                                          ("Problem in fiscal "
-                                                          "printer")),
-                   'ERRO-TOTAL: NAO HOUVE LANCAMENTO' : (CloseCouponError,
-                                                         ("There is no items "
+                   'RELOGIO:ERRO-PROGRAMAR DATA/HORA': (PrinterError,
+                                                        _("Printer clock isn't "
+                                                          "programmed yet.")),
+                   '^CHAMAR ASSISTENCIA TECNICA': (HardwareFailure,
+                                                   _("Problem in fiscal printer")),
+                   '^CMOS: ERRO-MEMÓRIA TAXAS/PARAMET': (HardwareFailure,
+                                                         _("Problem in fiscal "
+                                                           "printer")),
+                   'ERRO-TOTAL: NAO HOUVE LANCAMENTO': (CloseCouponError,
+                                                        _("There is no items "
                                                           "added to coupon")),
-                   'ERRO - VERIFICAR PAPEL' : (OutofPaperError, "Out of paper"),
-                   'ENCERRAR O DIA !' : (PendingReduceZ, ("A Reduce Z is "
+                   'ERRO - VERIFICAR PAPEL': (OutofPaperError, _("Out of paper")),
+                   'ENCERRAR O DIA !': (PendingReduceZ, _("A Reduce Z is "
                                                           "pending")),
-                   'ERRO-COMANDO NAO PERMITIDO' : (InvalidState,
-                                                   ("Invalid state for command "
+                   'ERRO-COMANDO NAO PERMITIDO': (InvalidState,
+                                                  _("Invalid state for command "
                                                     "execution"))}
 
     #
@@ -408,7 +411,7 @@ class IFS9000I(SerialBase):
         except InvalidState:
             # if we catch InvalidState here, probably the printer is with
             # a read X pending, so..
-            raise PendingReadX("A read X is pending.")
+            raise PendingReadX(_("A read X is pending."))
 
     def coupon_add_item(self, code, quantity, price, unit, description, 
                         taxcode, dicount, charge):

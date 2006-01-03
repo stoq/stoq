@@ -25,6 +25,8 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 
+import gettext
+
 from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
@@ -35,6 +37,8 @@ from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM)
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.devices.printers.capabilities import capcheck
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 #
 # Extra data types to argcheck
@@ -110,8 +114,8 @@ class FiscalPrinter(BasePrinter):
     def add_payment(self, payment_method, payment_value, payment_description=''):
         self.info('coupon_add_payment')
         if not self.has_been_totalized:
-            raise PaymentAdditionError("You must totalize the coupon "
-                                       "before add payments.")
+            raise PaymentAdditionError(_("You must totalize the coupon "
+                                         "before add payments."))
         result = self._driver.coupon_add_payment(payment_method, payment_value,
                                                  payment_description)
         self.payments_total_value += payment_value
@@ -130,12 +134,12 @@ class FiscalPrinter(BasePrinter):
     def close(self, promotional_message=''):
         self.info('coupon_close')
         if not self.has_been_totalized:
-            raise CloseCouponError("You must totalized the coupon before "
-                                   "closing it")
+            raise CloseCouponError(_("You must totalize the coupon before "
+                                     "closing it"))
         elif self.totalized_value > self.payments_total_value:
-            raise CloseCouponError("Isn't possible close the coupon since "
-                                   "the payments total (%.2f) doesn't "
-                                   "match the totalized value (%.2f)."
+            raise CloseCouponError(_("Isn't possible close the coupon since "
+                                     "the payments total (%.2f) doesn't "
+                                     "match the totalized value (%.2f).")
                                    % (self.payments_total_value,
                                       self.totalized_value))
         else:

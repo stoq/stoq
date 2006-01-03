@@ -28,7 +28,7 @@ stoqdrivers/devices/printers/daruma/FS345.py:
     
     Daruma printer drivers implementation
 """
-
+import gettext
 import time
 
 from zope.interface import implements
@@ -43,6 +43,8 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
                                     CouponOpenError)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 CMD_STATUS = '\x1d\xff'
 
@@ -142,7 +144,7 @@ class FS345(SerialBase):
     def _check_status(self, verbose=False):
         status = self._get_status()
         if status[0] != ':':
-            raise SystemExit('Broken status reply')
+            raise HardwareFailure('Broken status reply')
 
         if verbose:
             print '== STATUS =='
@@ -152,17 +154,17 @@ class FS345(SerialBase):
             print 'Cashier drawer is', ifset(status[1], 3, 'closed', 'open')
             
         if self.needs_reduce_z():
-            raise PendingReduceZ('Pending Reduce Z')
+            raise PendingReduceZ(_('Pending Reduce Z'))
         if self.status_check(status, 1, 2):
-            raise HardwareFailure('Mechanical failure')
+            raise HardwareFailure(_('Mechanical failure'))
         if not self.status_check(status, 1, 1):
-            raise AuthenticationFailure('Not properly authenticated')
+            raise AuthenticationFailure(_('Not properly authenticated'))
         if self.status_check(status, 1, 0):
-            raise OutofPaperError('No paper')
+            raise OutofPaperError(_('No paper'))
         if self.status_check(status, 2, 3):
-            raise PrinterOfflineError("Offline")
+            raise PrinterOfflineError(_("Offline"))
         if not self.status_check(status, 2, 2):
-             raise CommError("Peripheral is not connected to AUX")
+             raise CommError(_("Peripheral is not connected to AUX"))
         if self.status_check(status, 2, 0):
             self.warning('Almost out of paper')
 
@@ -174,7 +176,7 @@ class FS345(SerialBase):
             print 'Auto close CF?', ifset(S3, 0, 'no', 'yes')
 
         if self.needs_read_x(status):
-            raise PendingReadX("readX is not emitted yet")
+            raise PendingReadX(_("readX is not emitted yet"))
 
         return status
 
@@ -207,7 +209,7 @@ class FS345(SerialBase):
         elif error == 16:
             raise DriverError("Bad discount/markup parameter")
         elif error == 10:
-            raise CouponOpenError("Document is already open")
+            raise CouponOpenError(_("Document is already open"))
         else:
             raise DriverError("Unhandled error: %d" % error)
 
@@ -258,7 +260,7 @@ class FS345(SerialBase):
     # High level commands
     def _verify_coupon_open(self):
         if not self.status_check(self._get_status(), 4, 2):
-            raise CouponNotOpenError("Coupon is not open")
+            raise CouponNotOpenError(_("Coupon is not open"))
 
     def _is_open(self, status):
         return self.status_check(status, 4, 2)
@@ -275,7 +277,7 @@ class FS345(SerialBase):
     def coupon_open(self):
         status = self._check_status()
         if self._is_open(status):
-            raise CouponOpenError("Coupon already open")
+            raise CouponOpenError(_("Coupon already open"))
         self.send_command(CMD_OPEN_COUPON)
 
     def coupon_add_item(self, code, quantity, price, unit, description,
@@ -374,9 +376,9 @@ class FS345(SerialBase):
     def close_till(self):
         status = self._get_status()
         if self._is_open(status):
-            raise CouponOpenError("There is a coupon opened")
+            raise CouponOpenError(_("There is a coupon opened"))
         elif self.needs_read_x(status):
-            raise PendingReadX("Pending read X")
+            raise PendingReadX(_("Pending read X"))
 
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)

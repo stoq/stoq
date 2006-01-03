@@ -29,6 +29,7 @@ stoqdrivers/devices/printers/perto/Pay2023.py:
     PertoPay 2023 driver implementation.
 """
 
+import gettext
 from datetime import datetime
 
 from serial import EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
@@ -50,7 +51,10 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     CancelItemError, CouponOpenError,
                                     InvalidState, PendingReadX)
 from stoqdrivers.devices.printers.capabilities import Capability
-        
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+
+
 class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
 
@@ -240,7 +244,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                               IdConsumidor="\"%s\"" % document[:29],
                               NomeConsumidor="\"%s\"" % customer[:30])
         except InvalidState:
-            raise CouponOpenError("Coupon already opened.")
+            raise CouponOpenError(_("Coupon already opened."))
 
     def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
                         discount, surcharge):        
