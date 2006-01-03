@@ -113,7 +113,7 @@ class AbstractModel:
         """Get a persistent copy of an existent object. Remember that we can
         not use copy because this approach will not activate SQLObject
         methods which allow creating persitent objects. We also always
-        need a new id and _sys_data values for each copied object.
+        need a new id for each copied object.
         """
         if not isinstance(self, SQLObject):
             raise TypeError('Invalid type for parent class, got %s' %
@@ -128,7 +128,7 @@ class AbstractModel:
             # XXX SQLObject should provide a get_parent method.
             columns += self._parentClass.sqlmeta.columnList
         for column in columns:
-            if column.origName in ['_sys_data', 'childName']:
+            if column.origName == 'childName':
                 continue
             kwargs[column.origName] = getattr(self, column.origName)
         return klass(**kwargs)
