@@ -89,6 +89,7 @@ class FinishPurchaseStep(BaseWizardStep):
         return False
 
     def post_init(self):
+        self.salesperson_name.grab_focus()
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
@@ -214,6 +215,11 @@ class PurchaseProductStep(BaseWizardStep):
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self._update_widgets()
 
+    def _refresh_next(self, validation_value):
+        if not len(self.slave.klist):
+            validation_value = False
+        self.wizard.refresh_next(validation_value)
+
     def _setup_product_entry(self):
         products = self.table.get_available_sellables(self.conn)
         descriptions = [p.base_sellable_info.description for p in products]
@@ -252,6 +258,7 @@ class PurchaseProductStep(BaseWizardStep):
 
     def _update_total(self, *args):
         self.summary.update_total()
+        self.force_validation()
 
     def _add_item(self):
         if (self.proxy.model and self.proxy.model.product):
@@ -289,7 +296,7 @@ class PurchaseProductStep(BaseWizardStep):
         self.product.grab_focus()
         self.product_hbox.set_focus_chain([self.product, 
                                            self.add_item_button])
-        self.register_validate_function(self.wizard.refresh_next)
+        self.register_validate_function(self._refresh_next)
         self.force_validation()
 
     def setup_proxies(self):
