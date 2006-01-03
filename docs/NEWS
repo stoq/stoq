@@ -1,4 +1,31 @@
 
+Release 0.5.0,  03-January-2006
+    - Bug Fixes: 1990 1996 2098 2113 2129 2164 2171 2185 2186 2192 2197 
+                 2206 2209 2211 2213 2218 2219 2222 2223 2224 2229 2236 
+                 2245 2250 2272 2273 2276 2285 2286 2293 2330 2333 2344 
+                 2345 2359 2363 2364
+
+    - Fiscal printers support (Henrique Romano)
+    - Key actions and shortcuts improvements (Bruno Garcia)
+    - Employee roles improvements (Bruno Garcia)
+    - User editor implementation (Bruno Garcia)
+    - User profile editor implementation (Evandro Miquelito)
+    - User profile search dialog (Bruno Garcia)
+    - Till operations dialog improvements (Bruno Garcia)
+    - Product search dialog (Bruno Garcia)
+    - Transporter search dialog (Evandro Miquelito)
+    - Purchase wizard (Evandro Miquelito)
+    - Purchase confirmation (Evandro Miquelito)
+    - Employee role editor (Bruno Garcia)
+    - Employee role search dialog (Bruno Garcia)
+    - Doctests and lots of new pylib tests (Grazieno Pelegrino, Rudá
+                                            Filgueiras)
+    - Improvements on POS application main interface (Evandro Miquelito)
+    - Focus sequence improvements (Bruno Garcia)
+    - Gift certificate support (Evandro Miquelito)
+    - Sale details dialog (Bruno Garcia)
+
+
 Release 0.4.0,  28-October-2005
     - Bug Fixes: 2071, 2083, 2111, 2118, 2119, 2123, 2128, 2134, 2137,
                  2160, 2183, 2184, 2187, 2188, 2197, 2218, 2223
@@ -13,6 +40,7 @@ Release 0.4.0,  28-October-2005
     - Purchase application (Evandro Miquelito)
     - Some fixes in the installation process (Johan Dahlin)
     - CreditProviderSearch (Ariqueli Fonseca, Evandro Miquelito)
+
 
 Release 0.3.0,  7-October-2005
     - Bug Fixes: 1862, 1964, 2003, 2024, 2031, 2051, 2056, 2081, 2100,
