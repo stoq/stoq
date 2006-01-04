@@ -544,9 +544,14 @@ class GetSubTotalCommand(Command):
         Command.__init__(self, 29, "GetSubTotalCommand")
 
 
+#
+# This part will be improved when bug #2246 is fixed
+# Right now, we just set CHEQUE_PM with the same value
+# of MONEY_PM
+#
 payment_methods = {
     MONEY_PM : "01",
-    CHEQUE_PM : "02"
+    CHEQUE_PM : "01"
 }
 
 
