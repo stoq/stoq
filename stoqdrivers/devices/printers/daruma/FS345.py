@@ -355,7 +355,8 @@ class FS345(SerialBase):
 
         empty = " " *42
 
-        if self._customer or self._address or self._document:
+        if (self._customer_name or self._customer_address or
+            self._customer_document):
             self.send_command(CMD_IDENTIFY_CUSTOMER,
                               (("% 42s" % self._customer_name) + empty +
                                ("% 42s" % self._customer_address) + empty +
