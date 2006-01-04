@@ -1,3 +1,11 @@
+2006-01-04  Henrique Romano  <henrique@async.com.br>
+
+	* stoqdrivers/devices/scales/interface.py:
+	* stoqdrivers/devices/scales/toledo/PrixIII.py:
+	* stoqdrivers/exceptions.py:
+
+	Initial support for Toled Prix III scale (fix bug #2369)
+
 2006-01-02  Henrique Romano  <henrique@async.com.br>
 
 	* ChangeLog: initial revision of Changelog file.

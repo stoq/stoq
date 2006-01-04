@@ -105,4 +105,7 @@ class CapabilityError(Exception):
     "General capability error."
 
 class ItemAdditionError(DriverError):
-    "Error while adding an item."""
+    "Error while adding an item."
+
+class InvalidReply(DriverError):
+    "Invalid reply received"
