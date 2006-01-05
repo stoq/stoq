@@ -400,6 +400,7 @@ class ParameterAccess(ClassInittableObject):
         person_obj.addFacet(ICompany, cnpj=_('current_branch'), 
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
+        branch.manager = Person(connection=self.conn, name="Manager")
         self.set_schema(key, branch.id)               
 
     def ensure_current_warehouse(self):

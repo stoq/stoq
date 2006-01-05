@@ -172,7 +172,8 @@ def create_persons():
 
         person_obj.addFacet(IClient, connection=conn)
         person_obj.addFacet(ISupplier, connection=conn)
-        person_obj.addFacet(IBranch, connection=conn)
+        branch = person_obj.addFacet(IBranch, connection=conn)
+        branch.manager = Person(connection=conn, name="Manager")
 
         credit_provider = credit_provider_data[index]
         person_obj.addFacet(ICreditProvider, connection=conn,

@@ -40,7 +40,8 @@ from stoqlib.gui.dialogs import run_dialog
 
 from stoq.domain.person import Person
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
+from stoq.gui.editors.person import (BranchEditor,
+                                     ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor)
 from stoq.lib.validators import (validate_phone_number, format_phone_number,
                                  raw_phone_number)
@@ -134,7 +135,16 @@ class PersonRoleTypeStep(BaseWizardStep):
 
     def __init__(self, wizard, conn):
         BaseWizardStep.__init__(self, conn, wizard)
-        label = _('What kind of %s are you adding?')
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        if self.wizard.role_editor == BranchEditor:
+            label = _('Adding a new %s')
+            self.individual_check.set_sensitive(False)
+            self.company_check.set_sensitive(False)
+            self.company_check.set_active(True)
+        else:
+            label = _('What kind of %s are you adding?')
         role_name = self.wizard.get_role_name().lower()
         self.person_role_label.set_text(label % role_name)
         self.person_role_label.set_size('large')
@@ -153,9 +163,8 @@ class PersonRoleTypeStep(BaseWizardStep):
         phone_number = self.phone_number.get_text()
         if phone_number:
             phone_number = '%%%s%%' % raw_phone_number(phone_number)
-            q1 = LIKE(Person.q.phone_number, phone_number)
-            q2 = LIKE(Person.q.mobile_number, phone_number)
-            query = OR(q1, q2)
+            query = OR(LIKE(Person.q.phone_number, phone_number),
+                       LIKE(Person.q.mobile_number, phone_number))
             persons = Person.select(query, connection=self.conn)
         else:
             persons = None
@@ -188,14 +197,16 @@ class PersonRoleWizard(BaseWizard):
     size = (650, 450)
     
     def __init__(self, conn, role_editor):
+        if not issubclass(role_editor, BasePersonRoleEditor):
+            raise TypeError('Editor %s must be BasePersonRoleEditor '
+                            'instance' % role_editor)
         self.role_editor = role_editor
-        title = _('New %s') % self.get_role_name()
-        first_step = PersonRoleTypeStep(self, conn)
-        BaseWizard.__init__(self, conn, first_step, title=title)
+        
+        BaseWizard.__init__(self, conn, 
+                            PersonRoleTypeStep(self, conn),
+                            title=_('New %s') % self.get_role_name())
 
     def get_role_name(self):
-        if not self.role_editor:
-            raise ValueError('A role_editor attribute is required')
         if not self.role_editor.model_name:
             raise ValueError('Editor %s must define a model_name attribute '
                              % self.role_editor)
@@ -217,5 +228,6 @@ class PersonRoleWizard(BaseWizard):
 argcheck(BasePersonRoleEditor, object, Transaction, object)
 def run_person_role_dialog(role_editor, parent, conn, model=None):
     if not model:
-        return run_dialog(PersonRoleWizard, parent, conn, role_editor)
+        model = role_editor
+        role_editor = PersonRoleWizard
     return run_dialog(role_editor, parent, conn, model)

@@ -32,7 +32,7 @@ gui/search/person.py
 
 import gettext
 
-from sqlobject.sqlbuilder import LEFTJOINOn, AND
+from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
@@ -40,13 +40,14 @@ from stoq.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor,
-                                     TransporterEditor, EmployeeRoleEditor)
+                                     TransporterEditor, EmployeeRoleEditor, 
+                                     BranchEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
                                     IEmployee, IClient, ICreditProvider,
-                                    ITransporter)
+                                    ITransporter, IBranch)
 from stoq.domain.person import (Person, EmployeeRole)
 
 _ = gettext.gettext
@@ -309,3 +310,60 @@ class TransporterSearch(BasePersonSearch):
         if status != ALL_ITEMS_INDEX:
             query = AND(query, transporter_table.q.is_active == status)
         return query
+
+
+class BranchSearch(BasePersonSearch):
+    size = (750,500)
+    title = _('Branch Search')
+    editor_class = BranchEditor
+    table = Person.getAdapterClass(IBranch)
+    search_lbl_text = _('matching') 
+    result_strings = (_('branch'), _('branches'))
+
+    #
+    # SearchEditor Hooks
+    #
+
+    def get_columns(self):
+        return [ForeignKeyColumn(Person, 'name', _('Name'), data_type=str,
+                                 adapted=True),
+                ForeignKeyColumn(Person, 'phone_number', 
+                                 _('Phone Number'), data_type=str, 
+                                 width=150, adapted=True),
+                ForeignKeyColumn(Person, 'name', _('Manager'), data_type=str,
+                                 width=250, obj_field='manager'),
+                Column('status_str', _('Status'), data_type=str)]
+
+    def get_extra_query(self):
+        return OR(Person.q.id == self.table.q.managerID,
+                  Person.q.id == self.table.q._originalID)
+        
+    #
+    # SearchDialog Hooks
+    #
+
+    def get_filter_slave(self):        
+        statuses = [(value, key) for key, value in
+                    self.table.statuses.items()]
+        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        filter_label = _('Show branches with status')
+        self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
+        self.filter_slave.set_filter_label(filter_label)
+        return self.filter_slave
+        
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)
+        
+    def filter_results(self, branches):
+        status = self.filter_slave.get_selected_status()
+        if status == ALL_ITEMS_INDEX:
+            return branches
+        elif status == self.table.STATUS_ACTIVE:
+            return [branch for branch in branches if branch.is_active]
+        elif status == self.table.STATUS_INACTIVE:
+            return [branch for branch in branches if not branch.is_active]
+        else:
+            raise ValueError('Invalid status for User table. got %s'
+                             % status)
+        
