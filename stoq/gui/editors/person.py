@@ -51,10 +51,11 @@ from stoq.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
                                   PasswordEditorSlave)
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.slaves.transporter import TransporterDataSlave
-from stoq.domain.person import EmployeeRole, LoginInfo
+from stoq.gui.slaves.branch import BranchDetailsSlave
+from stoq.domain.person import EmployeeRole, LoginInfo, Person
 from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                     ISupplier, ITransporter, IUser, 
-                                    ICompany, IIndividual)
+                                    ICompany, IIndividual, IBranch)
 
 _ = gettext.gettext
 
@@ -332,3 +333,27 @@ class TransporterEditor(BasePersonRoleEditor):
                                                   self.model)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
+
+class BranchEditor(BasePersonRoleEditor):
+    model_name = _('Branch')
+    model_iface = IBranch
+    gladefile = 'BaseTemplate'
+    widgets = ('main_holder',)
+
+    #
+    # BaseEditor hooks
+    #
+
+    def create_model(self, conn):
+        person = BasePersonRoleEditor.create_model(self, conn)
+        branch = IBranch(person, connection=conn)
+        model =  branch or person.addFacet(IBranch, connection=conn)
+        model.manager = Person(connection=self.conn, name="")
+        return model    
+
+    def setup_slaves(self):
+        BasePersonRoleEditor.setup_slaves(self)
+        self.status_slave = BranchDetailsSlave(self.conn, self.model)
+        self.main_slave.attach_person_slave(self.status_slave)
+    
+

@@ -37,7 +37,8 @@ from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import rollback_and_begin, finish_transaction
 
-from stoq.gui.search.person import EmployeeRoleSearch, EmployeeSearch
+from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
+                                    BranchSearch)
 from stoq.gui.search.profile import UserProfileSearch
 from stoq.gui.application import AppWindow
 from stoq.gui.editors.person import UserEditor
@@ -169,6 +170,9 @@ class AdminApp(AppWindow):
     
     def _on_employee_role__action_clicked(self, *args):
         self.run_dialog(EmployeeRoleSearch)
+
+    def _on_branch_action_clicked(self, *args):
+        self.run_dialog(BranchSearch, hide_footer=True)
 
     def on_add_button__clicked(self, *args):
         conn = new_transaction()
