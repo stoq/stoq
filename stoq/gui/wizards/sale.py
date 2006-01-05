@@ -33,11 +33,11 @@ import gettext
 from stoqlib.gui.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.gui.lists import AdditionListSlave
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.datatypes import currency
 
 from stoq.gui.search.person import ClientSearch
-from stoqlib.gui.lists import AdditionListSlave
 from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave, 
                                      CardMethodSlave, 
