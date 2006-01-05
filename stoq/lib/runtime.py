@@ -58,10 +58,8 @@ def initialize_connection():
     
     address = config.get_database_address()
     rdbms = config.get_rdbms_name()
-    sys.stdout.flush()
     if get_test_mode():
         dbname = config.get_testdb()
-        sys.stdout.flush()
     else:
         dbname = config.get_dbname()
     dbusername = config.get_dbusername()
