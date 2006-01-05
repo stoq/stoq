@@ -50,7 +50,14 @@ class TestProfileSettings(BaseDomainTest):
 
     def test_update_profile_applications(self):
         profile = UserProfile(connection=self.conn, name='assistant')
-        update_profile_applications(self.conn)
+
+        profile.add_application_reference('warehouse',
+                                          has_permission=True)
+        items = ProfileSettings.selectBy(user_profile=profile,
+                                         connection=self.conn)
+        assert items.count() == 1
+
+        update_profile_applications(self.conn, profile)
         items = ProfileSettings.selectBy(user_profile=profile,
                                          connection=self.conn)
         assert items.count() == len(get_application_names())
