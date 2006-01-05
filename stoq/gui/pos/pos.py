@@ -59,6 +59,7 @@ from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.person import ClientSearch
+from stoq.gui.search.sale import SaleSearch
 from stoq.gui.pos.neworder import NewOrderEditor
 
 _ = gettext.gettext
@@ -390,7 +391,7 @@ class POSApp(AppWindow):
         self._new_order()
 
     def _on_sales_action__clicked(self, *args):
-        pass
+        self.run_dialog(SaleSearch)
                       
     def on_delivery_button__clicked(self, *args):
         if not self.order_list:
