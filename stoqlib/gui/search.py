@@ -359,10 +359,10 @@ class SearchBar(SlaveDelegate):
 
         attributes = [c.attribute for c in self.columns]
 
-        # We need this check since the id field is not actually an
-        # SQLObject column 
+        # Searching by id fields is evil, avoid it. 
         if 'id' in attributes:
-            self.int_fields.append(('id', self.table_type))
+            raise ValueError('Private field id should not be added to '
+                             'the search list')
         
         for k_column in self.columns:
             if isinstance(k_column, FacetColumn):
