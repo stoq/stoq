@@ -180,7 +180,8 @@ class Adaptable:
             
         adapterClass = self._facets.get(k)
         if adapterClass:
-            results = adapterClass.select("original_id = %d" % self.id,
+            query = adapterClass.q._originalID == self.id
+            results = adapterClass.select(query,
                                           connection=connection)
             
             assert not results.count() > 1 
