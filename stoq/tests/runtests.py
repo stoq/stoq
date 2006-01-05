@@ -35,10 +35,14 @@ import sys
 import doctest
 import py 
 
+from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
+# This must be called *before* anything else since it will switch to test
+# database and also change the runtime module behaviour
+set_test_mode(True)
+
 from stoq.examples.createall import create
 from stoq.lib.admin import setup_tables, ensure_admin_user
 from stoq.lib.parameters import ensure_system_parameters
-from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
 
 VERBOSE = '-v' in sys.argv
 
@@ -57,7 +61,6 @@ domain_tests_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
 doc_files = [filename for filename in os.listdir(domain_tests_dir)
                           if filename.endswith('.txt')]
 
-set_test_mode(True)
 for doc_file in doc_files:
     doc_file = os.path.join(domain_tests_dir, doc_file)
     doctest.testfile(doc_file, verbose=VERBOSE, module_relative=False)
