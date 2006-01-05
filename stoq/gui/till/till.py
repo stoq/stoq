@@ -222,8 +222,6 @@ class TillApp(AppWindow):
                                 edit_mode=True)
         if not finish_transaction(self.conn, model, keep_transaction=True):
             return
-        sale.confirm_sale()
-
         if not emit_coupon(sale, self.conn):
             return
         self.conn.commit()

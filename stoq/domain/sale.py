@@ -218,10 +218,9 @@ class Sale(Domain):
         calculated by:.
         Sale total = Sum(product and service prices) + charge + 
                      interest - discount"""
-        self.charge_value = self.charge_value or 0.0
-        self.discount_value = self.discount_value or 0.0
-        return (self.get_sale_subtotal() + self.charge_value - 
-                self.discount_value)
+        charge_value = self.charge_value or 0.0
+        discount_value = self.discount_value or 0.0
+        return self.get_sale_subtotal() + charge_value - discount_value
         
     def get_total_interest(self):
         raise NotImplementedError
