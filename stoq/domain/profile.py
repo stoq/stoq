@@ -81,17 +81,16 @@ class UserProfile(Domain):
         return True
 
 
-def update_profile_applications(conn):
+def update_profile_applications(conn, profile=None):
     """This method checks for all available applications and perform a
     comparision with the application names stored in user profiles. If a
     certain application is not there it is added.
     """
     app_list = [app_name for app_name in get_application_names()]
-    profiles = UserProfile.select(connection=conn)
+    profiles = profile and [profile] or UserProfile.select(connection=conn)
     for app_name in app_list:
         for profile in profiles:
             settings = profile.profile_settings
             app_names = [s.app_dir_name for s in settings]
-            if app_name in app_names:
-                continue
-            profile.add_application_reference(app_name)
+            if not app_name in app_names:
+                profile.add_application_reference(app_name)
