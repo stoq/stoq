@@ -1,3 +1,12 @@
+2006-01-06  Henrique Romano  <henrique@async.com.br>
+
+	reviewed by: Johan Dahlin <jdahlin@async.com.br>
+
+	* stoqdrivers/devices/printers/bematech/MP25.py:
+	* stoqdrivers/devices/serialbase.py:
+
+	Implements support for Bematech's extended protocol.
+	
 2006-01-04  Henrique Romano  <henrique@async.com.br>
 
 	* stoqdrivers/devices/scales/interface.py:

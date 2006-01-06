@@ -34,13 +34,13 @@ class SerialBase(Serial, Logger):
     # All commands will have this prefixed
     CMD_PREFIX = '\x1b'
     CMD_SUFFIX = ''
-    
+
     # used by readline()
     EOL_DELIMIT = '\r'
 
     # Set this attribute to avoid sending data to printer
     DEBUG_MODE = 0
-    
+
     def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                  parity=PARITY_NONE, stopbits=STOPBITS_ONE):
         Logger.__init__(self)
@@ -83,9 +83,12 @@ class SerialBase(Serial, Logger):
                 self.debug('<<< %r' % out)
                 return out
             out +=  c
-    
+
+    def write(self, data):
+        self.debug(">>> %r (%dbytes)" % (data, len(data)))
+        Serial.write(self, data)
+
     def writeline(self, data):
-        self.debug('>>> %r %d' % (data, len(data)))
         if self.DEBUG_MODE:
             return
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)

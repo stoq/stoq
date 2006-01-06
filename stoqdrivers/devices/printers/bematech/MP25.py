@@ -28,592 +28,282 @@ stoqdrivers/drivers/bematech/MP25.py:
     
     Drivers implementation for Bematech printers.
 """
-import struct
 import gettext
 
 from zope.interface import implements
 
-from stoqdrivers.log import Log
 from stoqdrivers.devices.serialbase import SerialBase
-from stoqdrivers.exceptions import (DriverError, OutofPaperError,
-                                    PrinterError, CommandError,
-                                    CouponOpenError, HardwareFailure,
-                                    AlmostOutofPaper)
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
-                                   TAX_EXEMPTION, TAX_SUBSTITUTION,
-                                   MONEY_PM, CHEQUE_PM)
+from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
+                                    CommandError, CouponOpenError,
+                                    HardwareFailure, AlmostOutofPaper,
+                                    PrinterOfflineError, PaymentAdditionError,
+                                    ItemAdditionError, CancelItemError,
+                                    CouponTotalizeError)
+from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
+                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
+                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
+                                   UNIT_EMPTY)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 
-logger = Log(category='MP25')
-
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
-
-# Data formatting functions
-def fmt_fl_7c_3d_nodot(value):
-    """Formats a float (or integer), returning a string with
-    7 characters, 3 representing decimals, and with dots stripped."""
-    return ('%07d' % int(float(value) * 1e3))
-
-def fmt_fl_8c_3d_nodot(value):
-    """Formats a float (or integer), returning a string with
-    8 characters, 3 representing decimals, and with dots stripped."""
-    return ('%08d' % int(float(value) * 1e3))
-
-def fmt_fl_14c_2d_nodot(value):
-    """Formats a float (or integer), returning a string with
-    14 characters, 2 representing decimals, and with dots stripped."""
-    return ('%014d' % int(float(value) * 1e2))
-
-def fmt_st(value):
-    return "%s" % value
-
-def pretty_print_data_stream(data_stream):
-    print "|".join([hex(ord(i)) for i in data_stream])
-
-# This is broken, have to educate myself about taxes
-tax_translate_dict = { TAX_IOF : "II",
-                       
-                       TAX_ICMS : "II",
-                       TAX_SUBSTITUTION : "II",
-                       TAX_EXEMPTION : "II",
-                       TAX_NONE : "II" }
-
-class Parameter:
-    def __init__(self, name, format, required=False, value=None,
-                 formatter=None):
-        self.name = name
-        self.format = format
-        self.required = required
-        self.formatter = formatter
-
-        if value:
-            self.set_value(value)
-        else:
-            self.value = ""
-
-    def set_value(self, value):
-        # Specialized Formatter Set
-        if self.formatter:
-            value = self.formatter(value)
-            # This is a hack, must decided on ONE way to check
-            # size and do formatting
-            if self.formatter == fmt_st:
-                self.format = "%ss" % len(value)
-
-        # Default string formatter
-        elif "s" in self.format:
-            string_format = "%%-%s" % self.format
-            value = string_format % value
-        
-        self.value = struct.pack(self.format, value)
-        logger.debug('Set parameter %s to "%s"' % (self.name,
-                                                   self.value))
-
-class ResultValue:
-    def __init__(self, name, format, offset=0):
-        self.name = name
-        self.format = format
-        self.offset = offset
-
-class Result:
-    def __init__(self, name, result_values=[]):
-        self.name = name
-        self.result_values = result_values
-
-    def handle(self, printer):
-        pass
-
-
-class DefaultResult(Result):
-    status_1_return_codes = {
-        128 : (OutofPaperError, _('Printer is out of paper')),
-        64  : (AlmostOutofPaper, _('Printer almost out of paper')),
-        32  : (PrinterError, _('Printer clock error')),
-        16  : (PrinterError, _('Printer in error state')),
-        8   : (CommandError, _('First data value in CMD is not ESC (1BH)')),
-        4   : (CommandError, _('Nonexistent command')),
-        2   : (CouponOpenError, _('Printer has a coupon currently open')),
-        1   : (CommandError, _('Invalid number of parameters')),
-        }
-
-    status_2_return_codes = {
-        128 : (CommandError, _('Invalid CMD parameter')),
-        64  : (HardwareFailure, _('Fiscal memory is full')),
-        32  : (HardwareFailure, _('Error in CMOS memory')),
-        16  : (PrinterError, _('Given tax is not programmed on the printer')),
-        8   : (DriverError, 'No available tax slot'),
-        4   : (DriverError, 'Cancel operation is not allowed'),
-        2   : (PrinterError, _('Owner data (CGC/IE) not programmed on the '
-                               'printer')),
-        1   : (CommandError, _('Command not executed')),
-        }
-    
-    def __init__(self):
-        Result.__init__(self, 'Default',
-                        [ResultValue('ack', 'B', 0),
-                         ResultValue('st1', 'B', 1),
-                         ResultValue('st2', 'B', 2)])
-
-    def update_format(self):
-        self.format = "".join([p.format for p in self.result_values])
-        self.data_size = struct.calcsize(self.format)
-        logger.debug('Result format for %s: %s' % (self.name, self.format))
-
-    def handle(self, printer):
-        self.update_format()
-
-        self.data = printer.read_insist(self.data_size)
-
-        try:
-            self.ack, self.st1, self.st2 = struct.unpack(self.format,
-                                                         self.data)
-        except:
-            raise ValueError("Data received inconsistent with data "
-                             "expected")
-
-        assert self.ack == 0x06
-        self.describe_data()
-        
-    def describe_data(self):
-        for key in self.status_1_return_codes.keys():
-            if self.st1 & key:
-                exception, message = self.status_1_return_codes[key]
-                logger.debug('Status ST1:%s' % message)
-                logger.warning(message)
-                raise exception(message)
-
-        if self.st1 == 0:
-            logger.debug('Status ST1:Success, no error returned')
-
-        for key in self.status_2_return_codes.keys():
-            if self.st2 & key:
-                exception, message = self.status_2_return_codes[key]
-                logger.debug('Status ST2:%s' % message)
-                logger.warning(message)
-                raise exception(message)
-
-        if self.st2 == 0:
-            logger.debug('Status ST2:Success, no error returned')
-
-
-class Command:
-    """A Printer command.
-
-    Has the capability to build command data streams.
-    """
-    
-    # The MP-25FI Supports two protocols (this is the first one, also supported
-    # by MP-20FI II)
-    #
-    # Graphical representation of a simple command (summarize, no parameters)
-    #
-    # 0x2|0x4|0x0|0x1b|0x6 |0x21|0x0
-    #  |   |   |   |    |    |    |
-    #  |   |   |   |    |    |    +--> CSH (most signifant byte of the sum of
-    #  |   |   |   |    |    |          bytes in CMD_PROTO+CMD+CMPARAMETERS)
-    #  |   |   |   |    |    +-------> CSL (least signifant byte of the sum
-    #  |   |   |   |    |               of bytes in CMD_PROTO+CMD+CMPARAMETERS)
-    #  |   |   |   |    +------------> CMD (summarize)
-    #  |   |   |   |  
-    #  |   |   |   +-----------------> CMD_PROTO (id for protocol one,presented
-    #  |   |   |                       as part of CMD, here called CMD_PROTO)
-    #  |   |   +---------------------> NBH (most significant byte of sum of 
-    #  |   |                           bytes that will be sent to the printer)
-    #  |   +-------------------------> NBL (least significant byte of sum of 
-    #  |                               bytes that will be sent to the printer)
-    #  +-----------------------------> STX (start of transmission)
-    #
-    # Note: CMD_PROTO is *not* in the manual, it's a made up name.
-    #
-    # Graphical representation of a slightly more complex command
-    # (get_variables, with parameter)
-    # 0x2|0x5|0x0|0x1b|0x23|0xd |0x4b|0x0
-    #  |   |   |   |    |    |    |    |
-    #  |   |   |   |    |    |    |    +--> CSH 
-    #  |   |   |   |    |    |    +-------> CSL
-    #  |   |   |   |    |    +------------> CMD_PARAM
-    #  |   |   |   |    +-----------------> CMD 
-    #  |   |   |   +----------------------> CMD_PROTO
-    #  |   |   +--------------------------> NBH 
-    #  |   +------------------------------> NBL 
-    #  +----------------------------------> STX
-    #
-    # Note: CMD_PARAM is also *not* in the manual, it's made up name.
-
-    STX_FMT = "B"
-    NBL_FMT = "B"
-    NBH_FMT = "B"
-    CMD_PROTO_FMT = "B"
-    CMD_FMT = "B"
-    CMD_PARAM_FMT = ""
-    CSL_FMT = "B"
-    CSH_FMT = "B"
-
-    # stx always is 0x2h
-    STX = 0x02
-    # CMD_PROTO is 0x1b for proto version 1
-    #              0x1c for proto version 2 (support not implemented here)
-    CMD_PROTO = 0x1b
-
-    def __init__(self, cmd_code, cmd_name="", cmd_parameters=[], result=None, **kwargs):
-        
-        self.code = cmd_code
-        self.name = cmd_name
-        self.parameters = cmd_parameters
-
-        self.update_command_format()
-
-        if result == None:
-            result = DefaultResult()
-        
-        self.result = result
-
-        # Parameter Index, for easier lookup
-        self.parameters_index = { }
-        for p in self.parameters:
-            self.parameters_index[p.name] = p
-
-        # Set values
-        for k, v in kwargs.items():
-            if self.parameters_index.has_key(k):
-                p = self.parameters_index[k]
-                p.set_value(v)
-
-    def check_required_parameters(self):
-        for p in self.parameters:
-            if p.required and not p.value:
-                raise ValueError("Required parameter not set: %s" % p.name)
-
-    def has_result(self):
-        if self.result:
-            return True
-        else:
-            return False
-
-    def set_parameter_value(self, parameter_name, value):
-        p = self.parameter_index[parameter_name]
-        p.set_value(value)
-
-    def update_command_format(self):
-        self.command_format = self.STX_FMT + \
-                              self.NBL_FMT + \
-                              self.NBH_FMT + \
-                              self.CMD_PROTO_FMT + \
-                              self.CMD_FMT + \
-                              "".join([p.format for p in self.parameters \
-                                       if (p.value or p.required)]) + \
-                              self.CSL_FMT + \
-                              self.CSH_FMT
-
-    def get_command_format(self):
-        self.update_command_format()
-        return self.command_format
-
-    def update_command(self):
-        """Updates self.command with a command build from the selected
-        parameters"""
-        
-        self.update_command_format()
-     
-        self.nbl = self.calculate_nbl()
-        self.nbh = self.calculate_nbh()
-        self.csl = self.calculate_csl()
-        self.csh = self.calculate_csh()
-
-        # Unfortunately we cannot use *args for the parameter data, and then
-        # supply the other arguments to pack (self.csl, self.csh). Or am I
-        # missing something?
-        fmt_up_to_cmd = self.command_format[:5]
-        data_up_to_cmd = struct.pack(fmt_up_to_cmd,
-                                     self.STX,
-                                     self.nbl,
-                                     self.nbh,
-                                     self.CMD_PROTO,
-                                     self.code)
-
-        fmt_parameter = self.command_format[5:-2]
-        data_parameter = struct.pack(fmt_parameter,
-                                     *[p.value for p in self.parameters\
-                                       if (p.value or p.required)])
-
-        fmt_trailer = self.command_format[-2:]
-        data_trailer = struct.pack(fmt_trailer,
-                                   self.csl,
-                                   self.csh)
-
-        self.command = data_up_to_cmd + data_parameter + data_trailer
-
-        logger.debug("command %s %s" % (self.name, 
-              "|".join([hex(ord(i)) for i in self.command])))
-
-    def get_command(self):
-        self.update_command()
-        return self.command
-        
-    def command_parameters_trailler_length(self):
-        """Returns the size of part of one command data stream, as shown
-        by the illustration bellow:
-
-        |STX|NBL|NBH|CMD|CSL|CSH|
-                     ^^^^^^^^^^^^
-
-        If parameters is passed, it's expected to be a string and produce
-        a correct result when used with a len(). If it's not passed, its
-        size is calculated from the self.parameters list.
-        """
-
-        len_parameters = len("".join([p.value for p in self.parameters if \
-                                      p.value]))
-        length = struct.calcsize(self.CMD_PROTO_FMT) + \
-                 struct.calcsize(self.CMD_FMT) + \
-                 len_parameters + \
-                 struct.calcsize(self.CSL_FMT) + \
-                 struct.calcsize(self.CSH_FMT)
-        return length
-
-    def calculate_nbl(self):
-        """Returns least significant byte of the total length of CMD,
-        CSL and CSH"""
-
-        length = self.command_parameters_trailler_length()
-        return length & 0x00FF
-        
-    def calculate_nbh(self):
-        """Returns most significant byte of the total length of CMD,
-       CSL and CSH"""
-        length = self.command_parameters_trailler_length()
-        return length & 0xFF00
-
-    def checksum_of_command_parameter(self):
-        """Returns the sum of individual bytes of one command data stream,
-        as shown by the illustration bellow:
-
-        |STX|NBL|NBH|CMD|CSL|CSH|
-                     ^^^
-        """
-        data = struct.pack(self.CMD_PROTO_FMT + self.CMD_FMT,
-                           self.CMD_PROTO, self.code) + \
-                           "".join([p.value for p in self.parameters if\
-                                    p.value])
-        total = 0
-        for byte in map(ord, data):
-            total = total + byte
-        return total
-    
-    def calculate_csl(self):
-        """Returns least significant byte of the sum of bytes in CMD"""
-        checksum = self.checksum_of_command_parameter()
-        return checksum & 0x00FF
-
-    def calculate_csh(self):
-        """Returns most significant byte of the sum of bytes in CMD"""
-        checksum = self.checksum_of_command_parameter()
-        return (checksum & 0xFF00) >> 8
-
-    def print_info(self):
-        print 'Command:', self.name
-        print ' code =', self.code
-        print ' parameters:'
-        for p in self.parameters:
-            print '  ', p.name, p.format, p.value, p.required
-        print ' data_full_stream', \
-              self.pretty_print_data_stream(self.update_command())
-
-    def pretty_format_data_stream(self, data_stream):
-        return "|".join([hex(ord(i)) for i in data_stream])
-
-    def pretty_print_data_stream(self, data_stream):
-        print self.pretty_format_data_stream(data_stream)
-
-
-# These are printer commands, represented as classes
-# To use then, instantiate it, and send them to send_command() method
-
-class SummarizeCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 6, "Summarize",
-                         **kwargs)
-
-class CloseTillCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 5, "CloseTillCommand",
-                         [Parameter('datetime', '13s')],
-                         **kwargs)
-
-class GetStatusCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 19, "GetStatus",
-                         **kwargs)
-
-class CouponOpenCommand(Command):
-    # Bematech seems have a off-by-one bug in these fields
-    # The documentation says CPF should be 28 chars long,
-    # but this breaks the other two fields. setting it to
-    # 29 char seems to fix this issue
-    def __init__(self, **kwargs):
-        Command.__init__(self, 0, "CouponOpen",
-                         [Parameter("cpf", "29s"),
-                          Parameter("name", "30s"),
-                          Parameter("address", "80s")],
-                         **kwargs)
-
-class CouponCancelCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 14, "CouponCancel",
-                         [Parameter("cpf", "28s"),
-                          Parameter("name", "30s"),
-                          Parameter("address", "80s")],
-                         **kwargs)
-
-
-class CouponAddItemCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 56, "CouponAddItem",
-                         [Parameter("code", "13s", True),
-                          Parameter("description", "29s", True),
-                          Parameter("taxcode", "2s", True, "II"),
-                          Parameter("quantity", "7s", True,
-                                    formatter=fmt_fl_7c_3d_nodot),
-                          Parameter("price", "8s", True,
-                                    formatter=fmt_fl_8c_3d_nodot),
-                          Parameter("discount", "4s", True, "0000")],
-                         **kwargs)
-
-class CouponAddItemWithUnitCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 63, "CouponAddItemWithUnit",
-                         [Parameter("tax", "2s", True, "II"),
-                          Parameter("price", "9s", True),
-                          Parameter("quantity", "7s", True),
-                          Parameter("discount_by_value", "10s", True,
-                                    "0000000000"),
-                          Parameter("extra_charge_by_percentage", "10s", True,
-                                    "0000000000"),
-                          Parameter("padding_not_used", "22s", True,
-                                    "0000000000000000000000"),
-                          Parameter("unit", "2s", True),
-                          Parameter("code", "49s", True),
-                          Parameter("description", "201s", True)],
-                         **kwargs)
-
-class StartClosingCouponCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 32, "StartClosingCoupon",
-                         [Parameter("charge_type", "1s", True),
-                          Parameter("charge_value", "4s", True)],
-                         **kwargs)
-
-class DiscountCouponCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 104, "DiscountCoupon",
-                         [Parameter("op_type", "1s", True),
-                          # Either percentage or value is required
-                          Parameter("percentage", "4s"),
-                          Parameter("value", "14s")],
-                         **kwargs)
-
-class TotalizeCouponCommand(Command):
-    def __init__(self):
-        Command.__init__(self, 106, "TotalizeCoupon")
-
-class CouponAddPayment(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 72, "CouponAddPayment",
-                         [Parameter("method", "2s", True),
-                          Parameter("value", "14s", True,
-                                    formatter=fmt_fl_14c_2d_nodot),
-                          Parameter("description", "80s")],
-                         **kwargs)
-
-class CouponCloseCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 34, "CouponClose",
-                         [Parameter("message", "492s", False,
-                                    formatter=fmt_st)],
-                         **kwargs)
-
-class CancelItemCommand(Command):
-    def __init__(self, **kwargs):
-        Command.__init__(self, 31, "CancelItem",
-                         [Parameter('item_number', '4s', True)],
-                         **kwargs)
-
-class GetSubTotalCommand(Command):
-    def __init__(self):
-        Command.__init__(self, 29, "GetSubTotalCommand")
-
 
 #
 # This part will be improved when bug #2246 is fixed
 # Right now, we just set CHEQUE_PM with the same value
 # of MONEY_PM
 #
-payment_methods = {
-    MONEY_PM : "01",
-    CHEQUE_PM : "01"
-}
+payment_methods = {MONEY_PM: "01",
+                   CHEQUE_PM: "01"}
 
+# This is broken, have to educate myself about taxes
+tax_translate_dict = {TAX_IOF: "II",
+                      TAX_ICMS: "II",
+                      TAX_SUBSTITUTION: "II",
+                      TAX_EXEMPTION: "II",
+                      TAX_NONE: "II"}
+
+unit_translate_dict = {UNIT_WEIGHT: "Kg",
+                       UNIT_METERS: "m ",
+                       UNIT_LITERS: "Lt",
+                       UNIT_EMPTY: "  "}
+
+CMD_READ_X = 6
+CMD_COUPON_CANCEL = 14
+CMD_CLOSE_TILL = 5
+CMD_ADD_ITEM = 63 
+CMD_COUPON_GET_SUBTOTAL = 29
+CMD_COUPON_OPEN = 0
+CMD_CANCEL_ITEM = 31
+CMD_COUPON_TOTALIZE = 32
+CMD_COUPON_CLOSE = 34
+CMD_ADD_PAYMENT = 72
+CMD_REDUCE_Z = 5
+CMD_GET_COUPON_ID = 30
+CMD_GET_VARIABLES = 35
+VAR_LAST_ITEM_ID = 12
+VAR_PAID_VALUE = 22
+NAK = 21
+ACK = 6
+STX = 2
+
+#
+# Helper functions
+#
+
+def bcd2dec(data):
+    return int(''.join(['%x' % ord(i) for i in data]))
+
+#
+# Driver implementation
+#
 
 class MP25(SerialBase):
-
     implements(ICouponPrinter)
+    CMD_PROTO = 0x1C
 
     printer_name = "Bematech MP25 FI"
-
+    
+    st1_codes = {
+        128: (OutofPaperError, _("Printer is out of paper")),
+        64: (AlmostOutofPaper, _("Printer almost out of paper")),
+        32: (PrinterError, _("Printer clock error")),
+        16: (PrinterError, _("Printer in error state")),
+        8: (CommandError, _("First data value in CMD is not ESC (1BH)")),
+        4: (CommandError, _("Nonexistent command")),
+        2: (CouponOpenError, _("Printer has a coupon currently open")),
+        1: (CommandError, _("Invalid number of parameters"))}
+    
+    st2_codes = {
+        128: (CommandError, _("Invalid CMD parameter")),
+        64: (HardwareFailure, _("Fiscal memory is full")),
+        32: (HardwareFailure, _("Error in CMOS memory")),
+        16: (PrinterError, _("Given tax is not programmed on the printer")),
+        8: (DriverError, _("No available tax slot")),
+        4: (DriverError, _("Cancel operation is not allowed")),
+        2: (PrinterError, _("Owner data (CGC/IE) not programmed on the printer")),
+        1: (CommandError, _("Command not executed"))}
+    
+    st3_codes = {
+        7: (CouponOpenError, _("Coupon already Open")),
+        8: (DriverError, _("Coupon is closed")), 
+        13: (PrinterOfflineError, _("Printer is offline")),
+        16: (DriverError, _("Surcharge or discount greater than coupon total "
+                            "value")),
+        17: (DriverError, _("Coupon with no items")),
+        20: (PaymentAdditionError, _("Payment method not recognized")),
+        22: (PaymentAdditionError, _("Isn't possible add more payments since "
+                                     "the coupon total value already was "
+                                     "reached")),
+        23: (DriverError, _("Coupon isn't totalized yet")),
+        43: (PrinterError, _("Printer not initialized")),
+        45: (PrinterError, _("Printer without serial number")),
+        52: (DriverError, _("Invalid start date")), 
+        53: (DriverError, _("Invalid final date")), 
+        85: (DriverError, _("Sale with null value")), 
+        91: (ItemAdditionError, _("Surcharge or discount greater than item "
+                                  "value")),
+        100: (DriverError, _("Invalid date")), 
+        115: (CancelItemError, _("Item doesn't exists or already was cancelled")),
+        118: (DriverError, _("Surcharge greater than item value")), 
+        119: (DriverError, _("Discount greater than item value")), 
+        129: (DriverError, _("Invalid month")), 
+        169: (CouponTotalizeError, _("Coupon already totalized")),
+        170: (PaymentAdditionError, _("Coupon not totalized yet")),
+        171: (DriverError, _("Surcharge on subtotal already effected")),
+        172: (DriverError, _("Discount on subtotal already effected")),
+        176: (DriverError, _("Invalid date"))}
+    
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
+        # XXX: Seems that Bematech doesn't contains any variable with the
+        # coupon remainder value, so I need to manage it by myself.
         self.remainder_value = 0.00
-
-    def _check(self):
-        """Check the printer status after sending a commit"""
-        pass
-
-    def _send_command(self, command):
         self.setTimeout(5)
         self.setWriteTimeout(5)
-        self.write(command.get_command())
-        command.result.handle(self)
+        self._customer_name = None
+        self._customer_document = None
+        self._customer_address = None
+
+    def _handle_error(self, reply):
+        """ Here are some notes about the return codes:
+
+        When using the first/simple protocol, the return code is composed of:
+
+        ACK/NAK + ST1 + ST2
+
+        If set, ST1 contains errors description related to the printer status
+        and some basic command errors, like 'package doesn't starts with 0x1B'.
+        ST2 contains more descriptive errors, but not enough for us
+        (eg: 'cancellation not allowed'). Also ST2 can contains a value that
+        represents 'command not executed' and is in this part that ST3 comes.
+
+        With the second protocol, we have:
+
+        ACK/NAK + ST1 + ST2 + STL + STH
+
+        Where STL and STH are used to compose ST3. ST3 has more detailed
+        errors and is used when ST2 is set to 1, representing 'command not
+        executed'.  In this case we get the value stored on ST3 and search
+        for a more descriptive error that will say why the command wasn't
+        executed.
+        """
+        if not reply:
+            raise DriverError
+        # NAK mens that the request was packaged erroneously or there was
+        # a timeout error while sending the data.
+        elif reply[0] == NAK:
+            raise DriverError
+        st1 = ord(reply[1])
+        st2 = ord(reply[2])
+        nbytes = MP25.CMD_PROTO == 0x1C and 5 or 3
+
+        def check_dict(d, value):
+            for key in d.keys():
+                if key & value:
+                    exc, arg = d[key]
+                    raise exc(arg)
+        # If st1 is just a warning "printer ALMOST out of paper", we don't
+        # can consider raising a exception here.
+        if st1 and not (st1 & 64):
+            check_dict(MP25.st1_codes, st1)
+        elif not st2:
+            return reply[nbytes:]
+        # If st2 == 1, it means "Command not executed" -- if so, then I
+        # will try get a more descriptive error from st3, if the extended
+        # protocol is being used.
+        if st2 == 1 and MP25.CMD_PROTO == 0x1C:
+            st3 = ord(reply[4]) | ord(reply[3])
+            try:
+                exc, arg = MP25.st3_codes[st3]
+                raise exc(arg)
+            except KeyError:
+                pass
+        check_dict(MP25.st2_codes, st2)
+
+    def _make_package(self, raw_data):
+        """ Receive a 'pre-package' (command + params, basically) and involves
+        it around STX, NBL, NBH, CSL and CSH:
+
+        +-----+-----+-----+-----------------+-----+-----+
+        | STX | NBL | NBH | 0x1C + raw_data | CSL | CSH |
+        +-----+-----+-----+-----------------+-----+-----+
+
+        Where:
+
+        STX: 'Transmission Start' indicator byte
+        NBL: LSB of checksum for raw_data+CSL+CSH
+        NBH: MSB of checksum for raw_data+CSL+CSH
+        CSL: LSB of checksum for raw_data
+        CSH: MSB of checksum for raw_data
+        """
+        raw_data = chr(MP25.CMD_PROTO) + raw_data
+        cs = sum([ord(i) for i in raw_data]) 
+        csl = chr(cs & 0xFF)
+        csh = chr(cs >> 8 & 0xFF)
+        nb = len(raw_data+csl+csh)
+        nbl = chr(nb & 0xFF)
+        nbh = chr(nb >> 8 & 0xFF)
+        return (chr(STX) + nbl + nbh + raw_data +
+                csl + csh)
+
+    def _send_packed(self, command):
+        """ Receive a command (and its parameter), pack it and send to the
+        printer.
+        """
+        self.write(self._make_package(command))
+
+    def _get_reply(self, extrabytes_num=0):
+        if MP25.CMD_PROTO == 0x1B:
+            data = self.read_insist(3 + extrabytes_num)
+        elif MP25.CMD_PROTO == 0x1C:
+            data = self.read_insist(5 + extrabytes_num)
+        else:
+            raise TypeError("Invalid protocol used, got %r" % MP25.CMD_PROTO)
+        self.debug("<<< %r (%dbytes)" % (data, len(data or '')))
+        return data
+
+    def _send_command(self, command):
+        self._send_packed(command)
+        return self._handle_error(self._get_reply())
 
     #
     # Helper methods
     #
 
     def get_coupon_subtotal(self):
-        self.write(GetSubTotalCommand().get_command())
+        # Return value:
+        # ACK/NAK + 7 Bytes (Subtotal in BCD format) + 3/2 Bytes (Status)
+        # Where status is composed of ST1 + ST2 + ST3 if the second protocol
+        # is used, or ST1 + ST2 if the first one is used instead.
+        # See man page #49
+        self._send_packed(chr(CMD_COUPON_GET_SUBTOTAL))
+        reply = self._get_reply(extrabytes_num=7)
+        self._handle_error(reply[0] + reply[8:])
+        subtotal = reply[1:8]
+        if subtotal:
+            return float(bcd2dec(subtotal)) / 1e2
+        return 0.0 # XXX: "**** BUSTED SUBTOTAL ****"
 
-        # Return value: 3 Bytes (Status) + 7 Bytes (Subtotal in BCD format)
-        # Man page #49
-        data = self.read_insist(10)
-        try:
-            ack, st1, st2, subtotal = struct.unpack("BBB7s", data)
-        except:
-            raise ValueError("Data received inconsistent with data expected")
-        
-        return float(''.join(['%x' % ord(i) for i in subtotal])) / 1e4
+    def get_last_item_id(self):
+        self._send_packed("%c%c" % (CMD_GET_VARIABLES, VAR_LAST_ITEM_ID))
+        reply = self._get_reply(extrabytes_num=2)
+        self._handle_error(reply[0] + reply[3:])
+        return bcd2dec(reply[1:3])
 
     #
     # This implements the ICouponPrinter Interface
     #
 
     def summarize(self):
-        """
-        Prints a summary of all sales of the day
-        """
-        self._send_command(SummarizeCommand())
+        """ Prints a summary of all sales of the day """
+        self._send_command(chr(CMD_READ_X))
 
     def close_till(self):
+        """ Close the till for the day, no other actions can be done after this
+        is called.
         """
-        Close the till for the day, no other actions can be done
-        after this is called
-        """
-        self._send_command(CloseTillCommand())
-
-    def get_status(self):
-        """
-        Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure
-        """
-        self._send_command(GetStatusCommand())
+        self._send_command(chr(CMD_REDUCE_Z))
 
     def coupon_identify_customer(self, customer, address, document):
         self._customer_name = customer
@@ -621,65 +311,65 @@ class MP25(SerialBase):
         self._customer_address = address
 
     def coupon_open(self):
-        """
-        This needs to be called before anything else
-        """
+        """ This needs to be called before anything else """
+        data = chr(CMD_COUPON_OPEN)
         if (self._customer_name or self._customer_address
             or self._customer_document):
-            self._send_command(CouponOpenCommand(cpf=self._customer_document,
-                                                 name=self._customer_name,
-                                                 address=self._customer_address))
-        else:
-            self._send_command(CouponOpenCommand())
-        self.item_counter = 0
+            data += ("%-29s%-30s%-80s" % (self._customer_document,
+                                          self._customer_name,
+                                          self._customer_address))
+        self._send_command(data)
 
     def coupon_cancel(self):
+        """ Can only be called when a coupon is opened. It needs to be possible
+        to open new coupons after this is called.
         """
-        Can only be called when a coupon is opened.
-        It needs to be possible to open new coupons after this is called.
-        """
-        self._send_command(CouponCancelCommand())
+        self._send_command(chr(CMD_COUPON_CANCEL))
 
     def coupon_close(self, message=""):
+        """  This can only be called when the coupon is open, has items added,
+        payments added and totalized is called. It needs to be possible to open
+        new coupons after this is called.
         """
-        This can only be called when the coupon is open,
-        has items added, payments added and totalized is called
-        It needs to be possible to open new coupons after this is called.
-        """
-        self._send_command(CouponCloseCommand(message=message))
-        self.item_counter = 0
+        self._send_command(chr(CMD_COUPON_CLOSE))
 
     def coupon_add_item(self, code, quantity, price, unit,
                         description, taxcode, discount, markup):
-
-        if discount or markup or unit:
-            # Use command #63, not done yet
-            pass
-
-        taxcode = tax_translate_dict[taxcode]
-
-        self._send_command(CouponAddItemCommand(code=code,
-                                               quantity=quantity,
-                                               price=price,
-                                               description=description,
-                                               taxcode=taxcode))
-        self.item_counter += 1
-        return self.item_counter
+        data = ("%c"       # command
+                "%02s"     # taxcode
+                "%09d"     # value
+                "%07d"     # quantity
+                "%010d"    # discount
+                "%010d"    # markup
+                "%022d"    # padding
+                "%2s"      # unit
+                "%-48s\0"  # code
+                "%-200s\0" # description
+                % (CMD_ADD_ITEM, tax_translate_dict[taxcode],
+                   int(float(price) * 1e3), int(float(quantity) * 1e3),
+                   (discount and int(float(discount) * 1e2) or 0),
+                   (markup and int(float(markup) * 1e2) or 0), 0,
+                   unit_translate_dict[unit], code, description))
+        self._send_command(data)
+        return self.get_last_item_id()
 
     def coupon_cancel_item(self, item_id=None):
         """ Cancel an item added to coupon; if no item id is specified, 
         cancel the last item added. """
         # We would can use an apropriate command to cancel the last 
         # item added (command #13, man page 34),  but as we already
-        # have an internal counter, I don't think that this is necessary.
+        # have an internal counter, I don't think that this is
+        # necessary.
         if not item_id:
-            item_id = self.item_counter
-        self._send_command(CancelItemCommand(item_number='%04d' % item_id))
+            item_id = self.get_last_item_id()
+        self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
     def coupon_add_payment(self, payment_method, value, description=''):
         pm = payment_methods[payment_method]
-        self._send_command(CouponAddPayment(method=pm, value=value,
-                                            description=description))
+        description = description and description[:80] or ""
+        val = "%014d" % int(float(value) * 1e2)
+        data = "%c%s%s%s" % (CMD_ADD_PAYMENT, pm, val, description)
+        self._send_command(data)
         self.remainder_value -= value
         if self.remainder_value < 0.0:
             self.remainder_value = 0.0
@@ -688,36 +378,35 @@ class MP25(SerialBase):
     def coupon_totalize(self, discount, markup, taxcode):
         if discount:
             type = 'D'
-            val = '%04d' % discount
+            val = '%04d' % int(float(discount) * 1e2)
         elif markup:
             type = 'A'
-            val = '%04d' % markup
+            val = '%04d' % int(float(markup) * 1e2)
         else:
-            type = 'A'
             # Just to use the StartClosingCoupon in case of no discount/markup
             # be specified.
+            type = 'A'
             val = '%04d' % 0
-
-        self ._send_command(StartClosingCouponCommand(charge_type=type,
-                                                      charge_value=val))
+        self._send_command(chr(CMD_COUPON_TOTALIZE) + type + val)
         totalized_value = self.get_coupon_subtotal()
         self.remainder_value = totalized_value
         return totalized_value
 
     def get_capabilities(self):
-        return dict(item_code=Capability(max_len=13),
-                    item_id=Capability(digits=4),
-                    items_quantity=Capability(min_size=1, digits=4,
-                                              decimals=3),
-                    item_price=Capability(digits=6, decimals=2),
-                    item_description=Capability(max_len=29),
-                    payment_value=Capability(digits=12, decimals=2),
-                    promotional_message=Capability(max_len=320),
-                    payment_description=Capability(max_len=48),
-                    customer_name=Capability(max_len=20),
-                    customer_id=Capability(max_len=22),
-                    customer_address=Capability(max_len=42))
-
+        return {
+            'item_code': Capability(max_len=13),
+            'item_id': Capability(digits=4),
+            'items_quantity': Capability(min_size=1, digits=4, decimals=3),
+            'item_price': Capability(digits=6, decimals=2),
+            'item_description': Capability(max_len=29),
+            'payment_value': Capability(digits=12, decimals=2),
+            'promotional_message': Capability(max_len=320),
+            'payment_description': Capability(max_len=48),
+            'customer_name': Capability(max_len=30),
+            'customer_id': Capability(max_len=28),
+            'customer_address': Capability(max_len=80)
+            }
+    
     #
     # Here ends the implementation of the ICouponPrinter Driver Interface
     #
