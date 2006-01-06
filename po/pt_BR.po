@@ -1,13 +1,28 @@
-# Portuguese translation of Stoq
-# Copyright (C) 2005 Async Open Source
-# This file is distributed under the same license as the PACKAGE package.
-# Bruno Rafael Garcia <brg@async.com.br>, 2006.
-#
+# # Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+# # All rights reserved
+# #
+# # This program is free software; you can redistribute it and/or modify
+# # it under the terms of the GNU General Public License as published by
+# # the Free Software Foundation; either version 2 of the License, or
+# # (at your option) any later version.
+# #
+# # This program is distributed in the hope that it will be useful,
+# # but WITHOUT ANY WARRANTY; without even the implied warranty of
+# # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# # GNU General Public License for more details.
+# #
+# # You should have received a copy of the GNU General Public License
+# # along with this program; if not, write to the Free Software
+# # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+# # USA.
+# #
+# # Author(s):   Bruno Rafael Garcia     <brg@async.com.br>
+# #
 msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-06 12:44-0200\n"
+"POT-Creation-Date: 2006-01-06 14:59-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -454,12 +469,12 @@ msgstr "Todas as Unidades"
 
 #: ../stoq/lib/drivers.py:83
 msgid "There is no printer configured"
-msgstr "Não há impressora comfigurada"
+msgstr "Não há impressora configurada"
 
 #: ../stoq/lib/drivers.py:84
 #, python-format
 msgid "There is no printer configured this station (\"%s\")"
-msgstr "Não há impressora comfigurada nessa estação (\"%s\")"
+msgstr "Não há impressora configurada nessa estação (\"%s\")"
 
 #: ../stoq/lib/drivers.py:192
 msgid "The printer has run out of paper"
@@ -2522,8 +2537,8 @@ msgid "Main address"
 msgstr "Endereço Principal"
 
 #: ../stoq/gui/editors/glade/ProductSupplierSlave.glade.h:2
-msgid "Supplied by : "
-msgstr "Fornecido por :"
+msgid "Supplied by: "
+msgstr "Fornecido por:"
 
 #: ../stoq/gui/editors/glade/PrinterSettingsEditor.glade.h:1
 msgid "Brand:"
