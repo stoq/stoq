@@ -83,12 +83,12 @@ class AdminApp(AppWindow):
         items = [(value, key) for key, value in table.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show:'))
+        self.filter_slave.set_filter_label(_('Show users with status'))
         self.search_bar = SearchBar(self, self.table,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave)
-        self.search_bar.set_result_strings('user', 'users')
-        self.search_bar.set_searchbar_labels(_('users Matching:'))
+        self.search_bar.set_result_strings(_('user'), _('users'))
+        self.search_bar.set_searchbar_labels(_('matching:'))
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
         self.attach_slave("search_bar_holder", self.search_bar)

@@ -52,7 +52,7 @@
                 <child>
                     <object class="GtkAction" id="EmployeeRole">
                         <property name="name">EmployeeRole</property>
-                        <property name="label" translatable="yes">Find Employee Roles...</property>
+                        <property name="label" translatable="yes">Employee Roles...</property>
                         <signal handler="_on_employee_role__action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;r</property>
                     </object>
@@ -60,7 +60,7 @@
                 <child>
                     <object class="GtkAction" id="EmployeeSearch">
                         <property name="name">EmployeeSearch</property>
-                        <property name="label" translatable="yes">Find Employees...</property>
+                        <property name="label" translatable="yes">Employees...</property>
                         <signal handler="_on_employees_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;p</property>
                     </object>
@@ -139,7 +139,7 @@
                 <child>
                     <object class="GtkAction" id="UserProfile">
                         <property name="name">UserProfile</property>
-                        <property name="label" translatable="yes">Find User Profiles...</property>
+                        <property name="label" translatable="yes">User Profiles...</property>
                         <signal handler="_on_user_profiles_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;f</property>
                     </object>

@@ -174,7 +174,7 @@ class TillOperationDialog(SlaveDelegate):
 
     def _reverse_selection(self):
         title = _('Reverse Selection')
-        size = (350, 150)
+        size = (360, 150)
         if self.selected > 1:
             transaction_string = _('transactions')
         else:
@@ -187,13 +187,14 @@ class TillOperationDialog(SlaveDelegate):
         else:
             item_string = _('item')
         if self.canceled_items > 0:
-            text += ('\nWarning: It has %d cancelled %s in your ' 
-                     'selection.' % (self.canceled_items, item_string))
+            text += _('\nWarning: It has %d cancelled %s in your ' 
+                      'selection.') % (self.canceled_items, item_string)
         is_initial_cash = self._check_initial_cash_amount()
         if is_initial_cash:
-            text = ("Your selection contains the initial cash amount payment"
-                   "\nIt's not possible to cancel the initial cash amount!")
-            size = (380, 150)
+            text = _("Your selection contains the initial cash amount "
+                     "payment."
+                     "\nIt's not possible to cancel this payment.")
+            size = (430, 150)
             notify_dialog(text, size=size)
             return
         if confirm_dialog(text, title=title, size=size):
@@ -209,7 +210,7 @@ class TillOperationDialog(SlaveDelegate):
         # use the payment_id.
         # Waiting for bug 2214.
         for item in self.selected_item:
-            if item.description == 'Initial cash amount':
+            if item.description == _('Initial cash amount'):
                 return True
         return False
     #

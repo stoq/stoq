@@ -152,7 +152,7 @@ class PasswordEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        title = _('Change "%s" Password' % self.user.username)
+        title = _('Change "%s" Password') % self.user.username
         return title
 
     def create_model(self, conn):
@@ -253,7 +253,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
   
     def __init__(self, conn, model):
         SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
-                                   name_entry_label='Role Name:')
+                                   name_entry_label=_('Role Name:'))
 
     #
     # BaseEditor Hooks

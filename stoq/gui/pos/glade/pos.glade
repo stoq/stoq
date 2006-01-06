@@ -40,7 +40,7 @@
                 <child>
                     <object class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
-                        <property name="label" translatable="yes">Find Clients...</property>
+                        <property name="label" translatable="yes">Clients...</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;p</property>
                     </object>
@@ -113,7 +113,7 @@
                 <child>
                     <object class="GtkAction" id="Sales">
                         <property name="name">Sales</property>
-                        <property name="label" translatable="yes">Find Sales...</property>
+                        <property name="label" translatable="yes">Sales...</property>
                         <signal handler="_on_sales_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;l</property>
                     </object>
@@ -268,7 +268,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                         <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">Items Matching:</property>
+                                        <property name="label" context="yes" translatable="yes">Item:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>

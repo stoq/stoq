@@ -105,13 +105,13 @@ class PurchaseApp(AppWindow):
         combo_items.append(first_item)
         self.filter_slave = FilterSlave(combo_items,
                                         selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show:'))
+        self.filter_slave.set_filter_label(_('Show orders with status'))
 
         self.search_bar = SearchBar(self, PurchaseOrder,
                                     self._get_columns(), 
                                     filter_slave=self.filter_slave,
                                     searching_by_date=True)
-        self.search_bar.set_searchbar_labels(_('orders matching:'))
+        self.search_bar.set_searchbar_labels(_('matching:'))
         self.search_bar.set_result_strings(_('order'), _('orders'))
 
         self.filter_slave.connect('status-changed',
@@ -140,7 +140,7 @@ class PurchaseApp(AppWindow):
         return [Column('order_number', title=_('Number'), sorted=True,
                        data_type=int, width=100, format='%03d'),
                 Column('open_date', title=_('Date Started'),
-                       data_type=datetime.date, width=100),
+                       data_type=datetime.date),
                 ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
                                  data_type=str,
                                  obj_field='supplier', adapted=True,
@@ -148,7 +148,7 @@ class PurchaseApp(AppWindow):
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),
                 Column('purchase_total', title=_('Ordered'), 
-                       data_type=currency, width=100),
+                       data_type=currency, width=120),
                 Column('received_total', title=_('Received'), 
                        data_type=currency)]
 
@@ -235,8 +235,8 @@ class PurchaseApp(AppWindow):
         qty = len(orders)
         invalid_qty = qty - len(valid_orders)
         if invalid_qty == qty:
-            notify_dialog('There are no orders with status pending in the '
-                          'selection')
+            notify_dialog(_('There are no orders with status pending in the '
+                            'selection'))
             return
         qty -= invalid_qty
         if not qty:
@@ -247,8 +247,8 @@ class PurchaseApp(AppWindow):
         else:
             msg = _('The selected order will be market as sent.')
         if invalid_qty:
-            msg += ('\nWarning: there are %d order(s) with status different '
-                    'than pending that will not be included.' 
+            msg += (_('\nWarning: there are %d order(s) with status different '
+                      'than pending that will not be included.') 
                     % invalid_qty)
         title = _('Send order to supplier')
         if not confirm_dialog(msg, title, ok_label="C_onfirm"):

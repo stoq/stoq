@@ -265,8 +265,8 @@ class POSApp(AppWindow):
         while not self.coupon.open():
             if warning(
                 _("It is not possible open a fiscal coupon"),
-                _("It is not possible start a new sale since a "
-                  "fiscal does not can be opened."),
+                _("It is not possible to start a new sale if the "
+                  "fiscal coupon cannot be opened."),
                 buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
                          (_("Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                 self.app.shutdown()

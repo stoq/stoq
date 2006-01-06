@@ -79,7 +79,7 @@ class WarehouseApp(AppWindow):
         value_format = '<b>%s</b>' % get_price_format_str()
         self.summary_label = SummaryLabel(klist=self.sellable_list,
                                           column='quantity',
-                                          label='<b>Stock Total:</b>',
+                                          label=_('<b>Stock Total:</b>'),
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)

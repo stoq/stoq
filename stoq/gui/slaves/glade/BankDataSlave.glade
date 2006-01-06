@@ -8,7 +8,9 @@
             <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHSeparator" id="hseparator1"/>
+                    <widget class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                    </widget>
                     <packing>
                         <property name="expand">False</property>
                     </packing>
@@ -22,8 +24,8 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Bank:</property>
-                                <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                         </child>
                         <child>
@@ -31,8 +33,8 @@
                                 <property name="data_type">str</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">name</property>
-                                <property name="width_request">90</property>
                                 <property name="visible">True</property>
+                                <property name="width_request">90</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>
@@ -41,9 +43,9 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                 <property name="data_type">str</property>
-                                <property name="label" context="yes" translatable="yes">Branch:</property>
-                                <property name="xalign">1.0</property>
+                                <property name="label" context="yes" translatable="yes">Bank Branch:</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="position">2</property>
@@ -54,8 +56,8 @@
                                 <property name="data_type">str</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">branch</property>
-                                <property name="width_request">90</property>
                                 <property name="visible">True</property>
+                                <property name="width_request">90</property>
                             </widget>
                             <packing>
                                 <property name="position">3</property>

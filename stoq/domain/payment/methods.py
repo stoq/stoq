@@ -218,8 +218,8 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         'allowed for this payment method')
         if not description:
             group_desc = payment_group.get_group_description()
-            description = '%s (1 of 1) from %s' % (self.description,
-                                                   group_desc)
+            description = _('%s (1 of 1) from %s') % (self.description,
+                                                      group_desc)
         payment = Payment(connection=conn, group=payment_group,
                           method=self, destination=destination,
                           method_details=method_details,
@@ -294,8 +294,8 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         self._check_installments_number(installments_number)
         due_date = datetime.today()
         group_desc = group.get_group_description()
-        description = '%s (1 of 1) from %s' % (self.description,
-                                               group_desc)
+        description = _('%s (1 of 1) from %s') % (self.description,
+                                                  group_desc)
         payment = group.add_payment(total, description, self, 
                                     self.destination, due_date)
         return payment
@@ -414,10 +414,10 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         group_desc = payment_group.get_group_description()
         for i in range(installments_number):
             due_date = first_duedate + timedelta((i * calc_interval))
-            description = '%s (%s of %s) from %s' % (self.description,
-                                                     i + 1, 
-                                                     installments_number,
-                                                     group_desc)
+            description = _('%s (%s of %s) from %s') % (self.description,
+                                                        i + 1, 
+                                                        installments_number,
+                                                        group_desc)
             payment = self.add_payment(payment_group, due_date, value,
                                        description=description, 
                                        iface=iface)
@@ -706,10 +706,10 @@ class PaymentMethodDetails(InheritableModel):
         group_desc = payment_group.get_group_description()
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
-            description = '%s (%s of %s) from %s' % (self.description,
-                                                     number + 1, 
-                                                     installments_number,
-                                                     group_desc)
+            description = _('%s (%s of %s) from %s') % (self.description,
+                                                        number + 1, 
+                                                        installments_number,
+                                                        group_desc)
             payment = self.create_inpayment(payment_group, due_date, 
                                             payment_value, method,
                                             description,
@@ -754,7 +754,7 @@ class CreditCardDetails(PaymentMethodDetails):
 
 
 class CardInstallmentsStoreDetails(PaymentMethodDetails):
-    payment_type_name = _('Installments Store')
+    payment_type_name = _('Installments store')
     interface_method = ICardPM
     description = _('Credit Card')
 
@@ -763,7 +763,7 @@ class CardInstallmentsStoreDetails(PaymentMethodDetails):
 
 
 class CardInstallmentsProviderDetails(PaymentMethodDetails):
-    payment_type_name = _('Installments Provider')
+    payment_type_name = _('Installments provider')
     interface_method = ICardPM
     description = _('Credit Card')
     

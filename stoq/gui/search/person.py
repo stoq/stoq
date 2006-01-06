@@ -85,7 +85,7 @@ class EmployeeSearch(BasePersonSearch):
     table = Person.getAdapterClass(IEmployee)
     search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
-    filter_label = _('Show employees with status:')
+    filter_label = _('Show employees with status')
                
     #
     # SearchDialog Hooks
@@ -129,7 +129,7 @@ class EmployeeRoleSearch(SearchEditor):
     title = _('Employee Role Search')
     editor_class = EmployeeRoleEditor
     table = EmployeeRole
-    size = (425, 390)
+    size = (450, 390)
 
     def __init__(self):
         SearchEditor.__init__(self,
@@ -163,7 +163,7 @@ class SupplierSearch(BasePersonSearch):
         return [Column('name', _('Name'), str, 
                        sorted=True, width=250), 
                 Column('phone_number', _('Phone Number'), str, 
-                       format_func=format_phone_number, width=130),
+                       format_func=format_phone_number),
                 FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
                             width=180),
                 FacetColumn(ICompany, 'cnpj', _('CNPJ'), str)]
@@ -238,7 +238,7 @@ class ClientSearch(BasePersonSearch):
                     client_table.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
-        filter_label = _('Show clients with status:')
+        filter_label = _('Show clients with status')
         self.filter_slave.set_filter_label(filter_label)
         return self.filter_slave
 
@@ -250,7 +250,7 @@ class ClientSearch(BasePersonSearch):
         return [Column('name', _('Name'), str, 
                        sorted=True, width=250), 
                 Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=130),
+                       format_func=format_phone_number),
                 FacetColumn(IIndividual, 'cpf', _('CPF'), str,
                             width=130),
                 FacetColumn(IIndividual, 'rg_number', _('RG'), str,
@@ -326,7 +326,7 @@ class BranchSearch(BasePersonSearch):
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), data_type=str,
-                                 adapted=True),
+                                 width=200, adapted=True),
                 ForeignKeyColumn(Person, 'phone_number', 
                                  _('Phone Number'), data_type=str, 
                                  width=150, adapted=True),

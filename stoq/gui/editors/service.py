@@ -80,7 +80,7 @@ class ServiceEditor(SellableEditor):
     model_type = Service
 
     def setup_widgets(self):
-        self.notes_lbl.set_text('Service details')
+        self.notes_lbl.set_text(_('Service details'))
         self.stock_total_lbl.hide()
         self.stock_lbl.hide()
 
