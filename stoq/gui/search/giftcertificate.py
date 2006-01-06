@@ -60,7 +60,7 @@ class GiftCertificateTypeSearch(SearchEditor):
                               title=self.title)
         self.search_bar.set_result_strings(_('gift certificate type'), 
                                            _('gift certificate types'))
-        self.search_bar.set_searchbar_labels(_('gift certificate types matching'))
+        self.search_bar.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
@@ -70,7 +70,8 @@ class GiftCertificateTypeSearch(SearchEditor):
         certificates = [(_('Active'), True), (_('Inactive'), False)]
         certificates.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(certificates, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show'))
+        self.filter_slave.set_filter_label(_('Show gift certificate types '
+                                             'with status'))
         return self.filter_slave
 
     def after_search_bar_created(self):
@@ -128,7 +129,7 @@ class GiftCertificateSearch(SearchEditor):
         self.hide_edit_button()
         self.search_bar.set_result_strings(_('gift certificate'), 
                                            _('gift certificates'))
-        self.search_bar.set_searchbar_labels(_('gift certificates matching'))
+        self.search_bar.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
@@ -139,7 +140,8 @@ class GiftCertificateSearch(SearchEditor):
                         for constant, value in self.table.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show'))
+        self.filter_slave.set_filter_label(_('Show gift certificates with '
+                                             'status'))
         return self.filter_slave
 
     def after_search_bar_created(self):

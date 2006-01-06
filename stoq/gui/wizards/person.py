@@ -91,7 +91,9 @@ class ExistingPersonStep(BaseWizardStep):
 
     def _setup_widgets(self, person_list):
         role_name = self.wizard.get_role_name().lower()
-        label = _("Existing %s") % role_name
+        label = _("Does the %s already exists?") % role_name
+        self.question_label.set_text(label)
+        label = _("Yes")
         self.existing_person_check.set_label(label)
         label = _("No, it's a new %s") % role_name
         self.new_person_check.set_label(label)

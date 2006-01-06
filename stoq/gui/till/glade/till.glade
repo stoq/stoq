@@ -137,7 +137,7 @@
                 <child>
                     <object class="GtkAction" id="TillOperations">
                         <property name="name">TillOperations</property>
-                        <property name="label" translatable="yes">Find Till Operations...</property>
+                        <property name="label" translatable="yes">Till Operations...</property>
                         <signal handler="_on_operations_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;o</property>
                     </object>

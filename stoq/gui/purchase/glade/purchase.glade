@@ -15,7 +15,7 @@
                 <child>
                     <object class="GtkAction" id="BaseCategories">
                         <property name="name">BaseCategories</property>
-                        <property name="label" translatable="yes">Find Base Categories...</property>
+                        <property name="label" translatable="yes">Base Categories...</property>
                         <signal handler="_on_base_categories_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;b</property>
                     </object>
@@ -23,7 +23,7 @@
                 <child>
                     <object class="GtkAction" id="Categories">
                         <property name="name">Categories</property>
-                        <property name="label" translatable="yes">Find Categories...</property>
+                        <property name="label" translatable="yes">Categories...</property>
                         <signal handler="_on_categories_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;g</property>
                     </object>
@@ -104,7 +104,7 @@
                 <child>
                     <object class="GtkAction" id="Products">
                         <property name="name">Products</property>
-                        <property name="label" translatable="yes">Find Products...</property>
+                        <property name="label" translatable="yes">Products...</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;d</property>
                     </object>
@@ -155,7 +155,7 @@
                 <child>
                     <object class="GtkAction" id="Services">
                         <property name="name">Services</property>
-                        <property name="label" translatable="yes">Find Services...</property>
+                        <property name="label" translatable="yes">Services...</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;s</property>
                     </object>
@@ -172,7 +172,7 @@
                 <child>
                     <object class="GtkAction" id="Suppliers">
                         <property name="name">Suppliers</property>
-                        <property name="label" translatable="yes">Find Suppliers...</property>
+                        <property name="label" translatable="yes">Suppliers...</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;u</property>
                     </object>
@@ -188,7 +188,7 @@
                 <child>
                     <object class="GtkAction" id="Transporter">
                         <property name="name">Transporter</property>
-                        <property name="label" translatable="yes">Find Transporters...</property>
+                        <property name="label" translatable="yes">Transporters...</property>
                         <signal handler="_on_transporters_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;t</property>
                     </object>

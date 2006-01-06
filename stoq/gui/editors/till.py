@@ -243,7 +243,6 @@ class CashAdvanceEditor(BaseEditor):
     model_name = _('Cash Advance')
     model_type = CashAdvanceInfo
     gladefile = 'CashAdvanceEditor'
-    size = (340, 180)
     label_widgets = ('employee_lbl',)
     entry_widgets = ('employee_combo',)
 
@@ -309,7 +308,6 @@ class CashAdvanceEditor(BaseEditor):
 class CashInEditor(BaseEditor):
     model_name = _('Cash In')
     gladefile = 'BaseTemplate'
-    size = (300, 150)
 
     # 
     # BaseEditorSlave Hooks
@@ -339,7 +337,6 @@ class CashOutEditor(BaseEditor):
     entry_widgets = ('reason',)
     widgets = label_widgets + entry_widgets
     title = _('Reverse Payment')
-    size = (350, 195)
     
     payment_iface = IOutPayment
     
@@ -378,7 +375,7 @@ class CashOutEditor(BaseEditor):
         reason = self.reason.get_text()
         if reason:
             # %s is the description used when removing money
-            payment_description = _('Cash out: %s' % reason)
+            payment_description = _('Cash out: %s') % reason
         else:
             payment_description = _('Cash out')
         self.cash_slave.model.description = payment_description

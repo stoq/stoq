@@ -65,7 +65,7 @@ class SaleSearch(SearchDialog):
 
     def _setup_widgets(self):
         self.search_bar.set_result_strings(_('sale'), _('sales'))
-        self.search_bar.set_searchbar_labels(_('sales matching:'))
+        self.search_bar.set_searchbar_labels(_('matching:'))
 
     #
     # SearchBar Hooks
@@ -74,13 +74,13 @@ class SaleSearch(SearchDialog):
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,
                        data_type=str, sorted=True),
-                Column('open_date', title=_('Date Started'), width=100,
+                Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 ForeignKeyColumn(Person, 'name', title=_('Client'),
-                                 data_type=str, expand=True, width=220,
+                                 data_type=str, expand=True, width=210,
                                  obj_field='client', adapted=True),
                 ForeignKeyColumn(Person, 'name', title=_('Salesperson'),
-                                 data_type=str, width=220,
+                                 data_type=str, width=210,
                                  obj_field='salesperson', adapted=True),
                 Column('status_name', title=_('Status'), width=80,
                        data_type=str),
@@ -123,7 +123,7 @@ class SaleSearch(SearchDialog):
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show:'))
+        self.filter_slave.set_filter_label(_('Show sales with status'))
         return self.filter_slave
 
     def after_search_bar_created(self):

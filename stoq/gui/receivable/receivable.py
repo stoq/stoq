@@ -96,12 +96,12 @@ class ReceivableApp(AppWindow):
         items = [(value, key) for key, value in Payment.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show:'))
+        self.filter_slave.set_filter_label(_('Show payments with status'))
         self.searchbar = SearchBar(self, Payment, self._get_columns(),
                                    filter_slave=self.filter_slave,
                                    searching_by_date=True)
         self.searchbar.set_result_strings(_('payment'), _('payments'))
-        self.searchbar.set_searchbar_labels(_('payments matching:'))
+        self.searchbar.set_searchbar_labels(_('matching:'))
         self.filter_slave.connect('status-changed', 
                                   self.searchbar.search_items)
         self.attach_slave('searchbar_holder', self.searchbar)

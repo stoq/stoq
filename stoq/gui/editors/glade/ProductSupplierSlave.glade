@@ -6,8 +6,8 @@
         <property name="default_width">440</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
-                <property name="border_width">5</property>
-                <property name="spacing">5</property>
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkHSeparator" id="hseparator1">
@@ -16,6 +16,7 @@
                 </child>
                 <child>
                     <widget class="GtkHBox" id="hbox1">
+                        <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkTable" id="table1">
@@ -25,8 +26,9 @@
                                 <child>
                                     <widget class="GtkLabel" id="label1">
                                         <property name="justify">right</property>
-                                        <property name="label" context="yes" translatable="yes">Supplied by : </property>
+                                        <property name="label" context="yes" translatable="yes">Supplied by: </property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">4</property>
@@ -41,8 +43,8 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="supplier_lbl">
                                 <property name="data_type">str</property>
                                 <property name="model_attribute">main_supplier_info.name</property>
-                                <property name="xalign">0.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
                             </widget>
                             <packing>
                                 <property name="position">1</property>

@@ -182,7 +182,7 @@ class Payment(Domain):
             payment = self.clone()
             # payment_id should be incremented automatically.
             # Waiting for bug 2214.
-            description = "Cancellation of payment number %s" % self.payment_id
+            description = _('Cancellation of payment number %s') % self.payment_id
             payment.description = description
             payment.value *= -1
             payment.due_date = datetime.datetime.now()

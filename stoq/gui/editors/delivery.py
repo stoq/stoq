@@ -98,7 +98,7 @@ class DeliveryEditor(BaseEditor):
         cols = [Column('address_string', title=_('Address'), data_type=str, 
                        expand=True),
                 Column('city', title=_('City'), width=100, data_type=str),
-                Column('state', title=_('State'), width=50, data_type=str)]
+                Column('state', title=_('State'), data_type=str)]
 
         addresses = self.model.sale.client.get_adapted().addresses
         result = run_dialog(SimpleListDialog, self, cols, 

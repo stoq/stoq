@@ -122,7 +122,7 @@ class SellableSearch(SearchDialog):
                              'this point')
         items.append(ALL_BRANCHES)
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show sale items at:'))
+        self.filter_slave.set_filter_label(_('Show sale items at'))
         return self.filter_slave
 
     def after_search_bar_created(self):

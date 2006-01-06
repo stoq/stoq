@@ -56,7 +56,7 @@ class ProductSearch(SearchEditor):
                               search_table=self.search_table,
                               title=self.title)
         self.search_bar.set_result_strings(_('product'), _('products'))
-        self.search_bar.set_searchbar_labels(_('products matching'))
+        self.search_bar.set_searchbar_labels(_('matching'))
 
     #
     # SearchDialog Hooks
@@ -67,7 +67,7 @@ class ProductSearch(SearchEditor):
                     self.search_table.statuses.items()]
         products.append((_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(products, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show'))
+        self.filter_slave.set_filter_label(_('Show products with status'))
         return self.filter_slave
 
     def after_search_bar_created(self):

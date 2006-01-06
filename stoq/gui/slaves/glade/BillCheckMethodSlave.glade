@@ -177,7 +177,6 @@
                                         <property name="is_focus">True</property>
                                         <property name="label" context="yes" translatable="yes">Reset List</property>
                                         <property name="visible">True</property>
-                                        <property name="width_request">90</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>

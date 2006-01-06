@@ -1,6 +1,9 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
+    <widget class="GtkSizeGroup" id="sizegroup1">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="CustomerStep">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -18,9 +21,9 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Client:</property>
-                                <property name="width_request">100</property>
-                                <property name="xalign">1.0</property>
+                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -65,9 +68,9 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Order Number:</property>
-                                <property name="width_request">100</property>
-                                <property name="xalign">1.0</property>
+                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -78,20 +81,12 @@
                                 <property name="data_type">str</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">order_number</property>
-                                <property name="width_request">80</property>
                                 <property name="visible">True</property>
+                                <property name="width_request">80</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
                                 <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkFixed" id="fixed1">
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="position">2</property>
                             </packing>
                         </child>
                     </widget>
@@ -109,9 +104,9 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Order Total:</property>
-                                <property name="width_request">100</property>
-                                <property name="xalign">1.0</property>
+                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -121,9 +116,9 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="order_total_lbl">
                                 <property name="data_type">float</property>
                                 <property name="model_attribute">total_sale_amount</property>
+                                <property name="visible">True</property>
                                 <property name="width_request">80</property>
                                 <property name="xalign">0.0</property>
-                                <property name="visible">True</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -151,9 +146,9 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                 <property name="data_type">str</property>
                                 <property name="label" context="yes" translatable="yes">Order Details:</property>
-                                <property name="width_request">100</property>
-                                <property name="xalign">1.0</property>
+                                <property name="sizegroup">sizegroup1</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>

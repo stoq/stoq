@@ -220,7 +220,7 @@ class ProductEditor(SellableEditor):
         self.attach_slave('product_supplier_holder', supplier_slave)
 
     def setup_widgets(self):
-        self.notes_lbl.set_text('Product details')
+        self.notes_lbl.set_text(_('Product details'))
         self.stock_total_lbl.show() 
         self.stock_lbl.show()
 
