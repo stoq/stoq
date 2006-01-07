@@ -35,36 +35,26 @@ stoqdrivers/devices/printers/interface.py:
 from zope.interface import Interface, Attribute
 
 class ICouponPrinter(Interface):
-    """
-    Describes coupon related tasks for a printer.
+    """ Describes coupon related tasks for a printer.
 
     Workflow
-    
-             --<--         --<--                      --<--
-            |     |       |     |                    |     |
-    open -> add_item ->  add_markup -> totalize -> add_payment -> close
 
-    General argument informations:
-
-        * The 'unit' arguments must be one of the UNIT_* constants
-          defined in BaseDriver class.
-
-        * The 'taxcode' arguments must be one of the TAX_* constants
-          defined in BaseDriver class.
+                                    --<--                     --<--
+                                   |     |                   |     |
+    [identify_customer] -> open -> add_item -> totalize -> add_payment -> close
     """
 
     printer_name = Attribute("The name of the printer that the driver "
                              "implements")
-
 
     #
     # Common API
     #
 
     def identify_customer(customer, address, document):
-        """ Identify the customer.  This method doesn't have mandatory
-        execution (you can identify the customer only if you like),
-        but when executed it must be called before calling any method.
+        """ Identify the customer.  This method doesn't have mandatory 
+        execution (you can identify the customer only if you like), but when
+        executed it must be called before calling any method.
 
         @param customer:
         @type customer:  string
@@ -79,8 +69,8 @@ class ICouponPrinter(Interface):
         identify_customer())
         """
 
-    def coupon_add_item(code, quantity, price, unit, description, 
-                        taxcode, discount, charge):
+    def coupon_add_item(code, quantity, price, unit, description, taxcode, 
+                        discount, charge):
         """ Adds an item to the coupon.
         
         @param code:         item code identifier 
@@ -89,8 +79,9 @@ class ICouponPrinter(Interface):
         @type  quantity:     number 
         @param price:        price
         @type  price:        number 
-        @param unit:         unit specifier
-        @type  unit:         a string of length 2
+        @param unit:         constant to describe the unit
+        @type unit:          integer constant one of: UNIT_LITERS,
+                             UNIT_EMPTY, UNIT_METERS, UNIT_WEIGHT
         @param description:  description of product
         @type  desription:   string
         @param taxcode:      constant to descrive the tax
@@ -118,9 +109,9 @@ class ICouponPrinter(Interface):
         """
 
     def coupon_totalize(discount, charge, taxcode):
-        """ Closes the coupon applies addition a discount or charge and tax
-        This can only be called when the coupon is open, has items added
-        and payments added.
+        """ Closes the coupon applies addition a discount or charge and tax.
+        This can only be called when the coupon is open, has items added and 
+        payments added.
         
         @param discount:     discount in %
         @type  discount      float 0..100
@@ -146,8 +137,8 @@ class ICouponPrinter(Interface):
         """
 
     def coupon_close(message=''):
-        """ It needs to be possible to open new coupons after this is
-        called. You must call coupon_totalize before calling this method.
+        """ It needs to be possible to open new coupons after this is called.
+        You must call coupon_totalize before calling this method.
         
         @param message:      promotional message
         @type message:       string
@@ -163,9 +154,8 @@ class ICouponPrinter(Interface):
         """
 
     def close_till():
-        """ Close the till for the day, no other actions can be done
-        after this is called
-        In Brazil this is 'reduce Z' operation
+        """ Close the till for the day, no other actions can be done after this
+        is called. In Brazil this is 'reduce Z' operation
         """
 
     #
@@ -173,13 +163,12 @@ class ICouponPrinter(Interface):
     #
 
     def get_status():
-        """ Returns a 3 sized tuple of boolean: Offline, OutOfPaper,
-        Failure.
+        """ Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure.
         """
 
     def get_capabilities():
-        """ Returns a capabilities dictionary, where the keys are the
-        strings below and its values are Capability instances
+        """ Returns a capabilities dictionary, where the keys are the strings
+        below and its values are Capability instances
 
         * item_code (str)
         * item_id (int)
@@ -198,11 +187,10 @@ class IChequePrinter(Interface):
     """ Interface specification for cheque printers. """
 
     def get_banks():
-        """ Returns a dictionary of all banks supported by the printer.
-        The dictionary's key is the bank name and its value are
-        BankConfiguration instances (this classe [BankConfiguration] is
-        used to store and manage the values of each section in the
-        configuration file).
+        """ Returns a dictionary of all banks supported by the printer. The 
+        dictionary's key is the bank name and its value are BankConfiguration
+        instances (this classe [BankConfiguration] is used to store and manage
+        the values of each section in the configuration file).
         """
 
     def print_cheque(bank, value, thirdparty, city, date=None):
