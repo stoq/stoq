@@ -38,7 +38,7 @@ from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
 from sqlobject.converters import registerConverter
 from sqlobject.styles import mixedToUnder
-from sqlobject.inheritance import InheritableSQLObject
+from sqlobject.inheritance import InheritableSQLObject, InheritableSQLMeta
 from stoqlib.exceptions import AdapterError
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.declarations import implementedBy
@@ -345,6 +345,9 @@ class Domain(BaseDomain, Adaptable):
     even just have a simple class without sublasses, this is the right
     choice.
     """
+    class sqlmeta(object):
+        cacheValues = False
+
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
@@ -354,6 +357,9 @@ class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
     """
+    class sqlmeta(InheritableSQLMeta):
+        cacheValues = False
+
     def __init__(self, *args, **kwargs):
         InheritableSQLObject.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
@@ -369,12 +375,16 @@ class Adapter:
 
 
 class ModelAdapter(BaseDomain, Adapter):
+    class sqlmeta(object):
+        cacheValues = False
+        
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
         BaseDomain.__init__(self, *args, **kwargs)
 
 
 class InheritableModelAdapter(InheritableModel, Adapter):
+
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
         InheritableModel.__init__(self, *args, **kwargs)
@@ -389,7 +399,6 @@ for klass in (InheritableModel, Domain, ModelAdapter):
                                         default=datetime.datetime.now))
     klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                                     forceDBName=True))
-    klass.sqlmeta.cacheValues = False
     # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
     # properly with parent tables for inherited tables. E.g:
     # list(AbstractSellable.select()) = list of AbstractSellable 
