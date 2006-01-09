@@ -7,8 +7,9 @@
                 <child>
                     <object class="GtkAction" id="BranchSearch">
                         <property name="name">BranchSearch</property>
-                        <property name="label" translatable="yes">Branches</property>
+                        <property name="label" translatable="yes">Branches...</property>
                         <signal handler="_on_branch_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;b</property>
                     </object>
                 </child>
                 <child>
