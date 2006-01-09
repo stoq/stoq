@@ -345,9 +345,6 @@ class Domain(BaseDomain, Adaptable):
     even just have a simple class without sublasses, this is the right
     choice.
     """
-    class sqlmeta(object):
-        cacheValues = False
-
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
@@ -357,9 +354,6 @@ class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
     """
-    class sqlmeta(InheritableSQLMeta):
-        cacheValues = False
-
     def __init__(self, *args, **kwargs):
         InheritableSQLObject.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
@@ -375,8 +369,6 @@ class Adapter:
 
 
 class ModelAdapter(BaseDomain, Adapter):
-    class sqlmeta(object):
-        cacheValues = False
         
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
@@ -393,6 +385,7 @@ class InheritableModelAdapter(InheritableModel, Adapter):
 
 
 for klass in (InheritableModel, Domain, ModelAdapter):
+    klass.sqlmeta.cacheValues = False
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
                                         default=datetime.datetime.now))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
