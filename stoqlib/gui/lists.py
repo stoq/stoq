@@ -40,7 +40,8 @@ from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.search import BaseListSlave
 from stoqlib.exceptions import SelectionError
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 class AdditionListSlave(SlaveDelegate):
     """
@@ -72,7 +73,7 @@ class AdditionListSlave(SlaveDelegate):
             raise TypeError("editor_class must be a BaseEditor subclass")
         
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                               widgets=self.widgets)
+                               widgets=self.widgets, domain='stoqlib')
         self.conn = conn
         self._editor_class = editor_class
         self._editor_kwargs = dict()
@@ -136,7 +137,7 @@ class AdditionListSlave(SlaveDelegate):
             raise SelectionError('There are no objects selected')
 
         if qty > 1:
-            msg = _('Delete these %d items?' % qty)
+            msg = _('Delete these %d items?') % qty
         else:
             msg = _('Delete this item?')
 

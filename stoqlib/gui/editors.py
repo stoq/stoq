@@ -31,7 +31,8 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 class BaseEditorSlave(SlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
