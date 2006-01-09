@@ -1,111 +1,110 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Portuguese translation of stoqlib
+# Copyright (C) 2006 Async Open Source
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Bruno Rafael Garcia <brg@async.com.br>, 2006.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: stoqlib 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-01-05 18:41-0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2005-12-01 18:33+0200\n"
+"Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
+"Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../stoqlib/gui/editors.py:168
 #, python-format
 msgid "Edit \"%s\" Details"
-msgstr ""
+msgstr "Editar Detalhes de \"%s\""
 
 #: ../stoqlib/gui/editors.py:171
 #, python-format
 msgid "Add %s"
-msgstr ""
+msgstr "Adicionar %s"
 
 #: ../stoqlib/gui/lists.py:140
 #, python-format
 msgid "Delete these %d items?"
-msgstr ""
+msgstr "Remover esses %d itens?"
 
 #: ../stoqlib/gui/lists.py:142
 msgid "Delete this item?"
-msgstr ""
+msgstr "Remover esse item?"
 
 #: ../stoqlib/gui/search.py:522
 msgid "result"
-msgstr ""
+msgstr "resultado"
 
 #: ../stoqlib/gui/search.py:522
 msgid "results"
-msgstr ""
+msgstr "resultados"
 
 #: ../stoqlib/gui/search.py:529
 #, python-format
 msgid "%d of %d %s shown"
-msgstr ""
+msgstr "%d de %d %s exibidos"
 
 #: ../stoqlib/gui/search.py:632
 msgid "Se_lect Items"
-msgstr ""
+msgstr "Selecionar Itens"
 
 #: ../stoqlib/gui/glade/SearchEntry.glade.h:1
 msgid "_Search"
-msgstr ""
+msgstr "Pesquisar"
 
 #: ../stoqlib/gui/glade/SearchEntry.glade.h:2
 msgid "matching:"
-msgstr ""
+msgstr "contendo:"
 
 #: ../stoqlib/gui/glade/DateSearchSlave.glade.h:1
 msgid "At any date"
-msgstr ""
+msgstr "Qualquer data"
 
 #: ../stoqlib/gui/glade/DateSearchSlave.glade.h:2
 msgid "From:"
-msgstr ""
+msgstr "De:"
 
 #: ../stoqlib/gui/glade/DateSearchSlave.glade.h:3
 msgid "Placed:"
-msgstr ""
+msgstr "Situado:"
 
 #: ../stoqlib/gui/glade/DateSearchSlave.glade.h:4
 msgid "to"
-msgstr ""
+msgstr "até"
 
 #: ../stoqlib/gui/glade/SearchEditor.glade.h:1
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:3
 msgid "_Edit..."
-msgstr ""
+msgstr "Editar..."
 
 #: ../stoqlib/gui/glade/SearchEditor.glade.h:2
 msgid "_New..."
-msgstr ""
+msgstr "Novo..."
 
 #: ../stoqlib/gui/glade/NoteSlave.glade.h:1
 msgid "Notes:"
-msgstr ""
+msgstr "Notas:"
 
 #: ../stoqlib/gui/glade/Warnbox.glade.h:1
 #: ../stoqlib/gui/glade/BasicDialog.glade.h:2
 msgid "label"
-msgstr ""
+msgstr "label"
 
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:1
 msgid "Add..."
-msgstr ""
+msgstr "Adicionar..."
 
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:2
 msgid "Delete"
-msgstr ""
+msgstr "Deletar"
 
 #: ../stoqlib/gui/glade/BasicDialog.glade.h:1
 msgid "header"
-msgstr ""
+msgstr "header"
 
 #: ../stoqlib/gui/glade/SimpleEntryEditor.glade.h:1
 msgid "label: "
-msgstr ""
+msgstr "label:"

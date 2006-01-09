@@ -52,7 +52,7 @@ from stoqlib.common import is_integer, is_float
 from stoqlib.database import get_model_connection, rollback_and_begin
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 #
@@ -116,7 +116,7 @@ class DateSearchSlave(SlaveDelegate):
 
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                               widgets=self.widgets)
+                               widgets=self.widgets, domain='stoqlib')
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
         self.model = DateInterval()
@@ -200,7 +200,7 @@ class SearchEntry(SlaveDelegate):
 
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                               widgets=self.widgets)
+                               widgets=self.widgets, domain='stoqlib')
         self.search_icon.set_from_stock("searchtool-icon1", 
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
@@ -571,7 +571,7 @@ class SearchEditorToolBar(SlaveDelegate):
     def __init__(self, parent):
         SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
                                gladefile=self.gladefile, 
-                               widgets=self.widgets)
+                               widgets=self.widgets, domain='stoqlib')
         self.parent = parent
 
     #
