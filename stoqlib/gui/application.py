@@ -58,7 +58,7 @@ class BaseApp:
 class BaseAppWindow(Delegate):
     """ Class to be inherited by applications main window.  """
     gladefile = toplevel_name = ''
-    widgets = ()
+
     def __init__(self, app, keyactions=None):
         Delegate.__init__(self, delete_handler=app.shutdown, 
                           keyactions=keyactions, widgets=self.widgets,
