@@ -45,7 +45,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
 from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
                                    TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
-                                   UNIT_EMPTY)
+                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.capabilities import Capability
@@ -449,8 +449,9 @@ class EP375(SerialBase, BaseChequePrinter):
             raise PendingReadX(_("Pending Read X"))
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, surcharge):
-
+                        taxcode, discount, surcharge, unit_desc=''):
+        if unit == UNIT_CUSTOM:
+            unit = UNIT_EMPTY
         if surcharge:
             cmd = self.CMD_ADD_ITEM_WITH_SURCHARGE
             D = surcharge

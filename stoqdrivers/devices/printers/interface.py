@@ -70,7 +70,7 @@ class ICouponPrinter(Interface):
         """
 
     def coupon_add_item(code, quantity, price, unit, description, taxcode, 
-                        discount, charge):
+                        discount, charge, unit_desc=''):
         """ Adds an item to the coupon.
         
         @param code:         item code identifier 
@@ -81,7 +81,8 @@ class ICouponPrinter(Interface):
         @type  price:        number 
         @param unit:         constant to describe the unit
         @type unit:          integer constant one of: UNIT_LITERS,
-                             UNIT_EMPTY, UNIT_METERS, UNIT_WEIGHT
+                             UNIT_EMPTY, UNIT_METERS, UNIT_WEIGHT,
+                             UNIT_CUSTOM.
         @param description:  description of product
         @type  desription:   string
         @param taxcode:      constant to descrive the tax
@@ -91,6 +92,9 @@ class ICouponPrinter(Interface):
         @type  discount      float 0..100
         @param charge:       charge in % 
         @type  charge        float 0..100
+        @param unit_desc:    A 2-byte string representing the unit
+                             that applies to the product.
+        @type unit_desc:     string
 
         @rtype:              integer
         @returns             identifier of added item

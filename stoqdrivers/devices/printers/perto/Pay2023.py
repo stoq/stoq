@@ -41,8 +41,8 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
 from stoqdrivers.devices.printers.cheque import BaseChequePrinter, BankConfiguration
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
-from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS,
-                                   UNIT_LITERS, UNIT_EMPTY)
+from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
+                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
                                     CommandParametersError, CommandError,
@@ -252,13 +252,18 @@ class Pay2023(SerialBase, BaseChequePrinter):
             raise CouponOpenError(_("Coupon already opened."))
 
     def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
-                        discount, surcharge):        
+                        discount, surcharge, unit_desc=""):
+        if unit == UNIT_CUSTOM:
+            unit = unit_desc
+        else:
+            unit = Pay2023.unit_dict[unit]
+        
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_ADD_ITEM,
                           CodAliquota=Pay2023.taxcode_dict[taxcode],
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
-                          Unidade="\"%02s\"" % Pay2023.unit_dict[unit],
+                          Unidade="\"%02s\"" % unit,
                           PrecoUnitario=self.format_value(price),
                           Quantidade="%.03f" % quantity)
         return self._get_last_item_id()

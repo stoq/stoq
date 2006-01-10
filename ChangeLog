@@ -1,5 +1,22 @@
 2006-01-10  Henrique Romano  <henrique@async.com.br>
 
+	reviewed by: Johan Dahlin <jdahlin@async.com.br>>
+
+	* stoqdrivers/constants.py:
+	* stoqdrivers/devices/printers/bematech/MP25.py:
+	* stoqdrivers/devices/printers/daruma/FS345.py:
+	* stoqdrivers/devices/printers/dataregis/EP375.py:
+	* stoqdrivers/devices/printers/fiscal.py:
+	* stoqdrivers/devices/printers/interface.py:
+	* stoqdrivers/devices/printers/perto/Pay2023.py:
+	* stoqdrivers/devices/printers/sweda/IFS9000I.py:
+	* stoqdrivers/devices/printers/virtual/Simple.py:
+
+	Fix for bug #2383: Implements support for product's 
+	custom unit.
+
+2006-01-10  Henrique Romano  <henrique@async.com.br>
+
 	reviewed by: Johan Dahlin <jdahlin@async.com.br>
 
 	* stoqdrivers/devices/printers/bematech/MP25.py:

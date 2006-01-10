@@ -34,7 +34,8 @@ from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     CouponOpenError)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
-                                   UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM)
+                                   UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
+                                   UNIT_CUSTOM)
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.devices.printers.capabilities import capcheck
 
@@ -55,7 +56,7 @@ class unit(number):
     @classmethod
     def value_check(cls, name, value):
         if value not in (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                         UNIT_EMPTY):
+                         UNIT_EMPTY, UNIT_CUSTOM):
             raise ValueError("%s must be one of UNIT_* constants" % name)
 
 class payment_method(number):
@@ -88,17 +89,25 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_open')
         return self._driver.coupon_open()
 
-    @capcheck(str, number, number, unit, str, taxcode, percent, percent)
+    @capcheck(str, number, number, unit, str, taxcode, percent, percent, str)
     def add_item(self, item_code, items_quantity, item_price, unit,
-                 item_description, taxcode, discount, charge):
+                 item_description, taxcode, discount, charge, unit_desc=''):
         if discount and charge:
             raise TypeError("discount and charge can not be used together")
-
+        elif unit != UNIT_CUSTOM and unit_desc:
+            raise ValueError("You can't specify the unit description if "
+                             "you aren't using UNIT_CUSTOM constant.")
+        elif unit == UNIT_CUSTOM and not unit_desc:
+            raise ValueError("You must specify the unit description when "
+                             "using UNIT_CUSTOM constant.")
+        elif unit == UNIT_CUSTOM and len(unit_desc) != 2:
+            raise ValueError("unit description must be 2-byte sized string")
         self.info('coupon_add_item')
         return self._driver.coupon_add_item(item_code, items_quantity,
                                             item_price, unit,
                                             item_description, taxcode,
-                                            discount, charge)
+                                            discount, charge,
+                                            unit_desc=unit_desc)
     @capcheck(percent, percent, taxcode)
     def totalize(self, discount, charge, taxcode):
         if discount and charge:
@@ -173,14 +182,12 @@ def test():
         except PendingReduceZ:
             p.close_till()
             return
-    i1 = p.add_item("123456", 2, 10.00, UNIT_EMPTY, "Hollywood mc",
-                    TAX_NONE, 0, 0)
-    i2 = p.add_item("654321", 5, 1.53, UNIT_LITERS, "Bohemia Beer",
-                    TAX_NONE, 0, 0)
-
+    i1 = p.add_item("123456", 2, 10.00, UNIT_CUSTOM, "Hollywood", TAX_NONE, 0,
+                    0, unit_desc="mc")
+    i2 = p.add_item("654321", 5, 1.53, UNIT_LITERS, "Bohemia Beer", TAX_NONE,
+                    0, 0)
     p.cancel_item(i1)
     coupon_total = p.totalize(1.0, 0, TAX_NONE)
-
     p.add_payment(MONEY_PM, 2.00, '')
     p.add_payment(MONEY_PM, 11.00, '')
     coupon_id = p.close()

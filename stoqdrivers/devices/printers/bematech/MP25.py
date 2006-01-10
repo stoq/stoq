@@ -42,7 +42,7 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
-                                   UNIT_EMPTY)
+                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 
@@ -343,8 +343,12 @@ class MP25(SerialBase):
         self._send_command(chr(CMD_COUPON_CLOSE))
         return self._get_coupon_number()
 
-    def coupon_add_item(self, code, quantity, price, unit,
-                        description, taxcode, discount, markup):
+    def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
+                        discount, markup, unit_desc=''):
+        if unit == UNIT_CUSTOM:
+            unit = unit_desc
+        else:
+            unit = unit_translate_dict[unit]
         data = ("%c"       # command
                 "%02s"     # taxcode
                 "%09d"     # value
@@ -358,8 +362,8 @@ class MP25(SerialBase):
                 % (CMD_ADD_ITEM, tax_translate_dict[taxcode],
                    int(float(price) * 1e3), int(float(quantity) * 1e3),
                    (discount and int(float(discount) * 1e2) or 0),
-                   (markup and int(float(markup) * 1e2) or 0), 0,
-                   unit_translate_dict[unit], code, description))
+                   (markup and int(float(markup) * 1e2) or 0), 0, unit,
+                   code, description))
         self._send_command(data)
         return self.get_last_item_id()
 

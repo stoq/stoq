@@ -34,7 +34,9 @@ import time
 from zope.interface import implements
 
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
-                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM)
+                                   TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
+                                   UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
+                                   UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure,
                                     AuthenticationFailure, CommError,
@@ -119,6 +121,12 @@ payment_methods = {
                     # consider the type 'B' as Cheque.
 }
 
+unit_translate_dict = {
+    UNIT_WEIGHT : 'Kg',
+    UNIT_LITERS : 'Lt',
+    UNIT_METERS : 'm ',
+    UNIT_EMPTY : '  '
+}
 
 class FS345(SerialBase):
     log_domain = 'fs345'
@@ -290,7 +298,7 @@ class FS345(SerialBase):
         self.send_command(CMD_OPEN_COUPON)
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, charge):
+                        taxcode, discount, charge, unit_desc=''):
         if taxcode == TAX_NONE:
             S = 'Nb'
         elif taxcode == TAX_SUBSTITUTION:
@@ -305,7 +313,10 @@ class FS345(SerialBase):
             d = 0
             E = discount
 
-        unit = '  '
+        if unit == UNIT_CUSTOM:
+            unit = unit_desc
+        else:
+            unit = unit_translate_dict[unit]
         data = '%2s%13s%d%04d%010d%08d%s%s\xff' % (S, code[:13], d,
                                                    int(E * 1e2),
                                                    int(price * 1e3),

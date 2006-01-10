@@ -37,7 +37,7 @@ from zope.interface import implements
 
 from stoqdrivers.common import is_float
 from stoqdrivers.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT, UNIT_METERS,
-                                   UNIT_LITERS, UNIT_EMPTY)
+                                   UNIT_LITERS, UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     PendingReadX, CommandError,
                                     CouponOpenError, CommandParametersError,
@@ -425,7 +425,9 @@ class IFS9000I(SerialBase):
             raise PendingReadX(_("A read X is pending."))
 
     def coupon_add_item(self, code, quantity, price, unit, description, 
-                        taxcode, dicount, charge):
+                        taxcode, dicount, charge, unit_desc=''):
+        if unit == UNIT_CUSTOM:
+            unit = UNIT_EMPTY
 
         if not self.unit_indicators.has_key(unit):
             raise ValueError('Invalid unit argument. Got %s' % unit)

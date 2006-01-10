@@ -94,7 +94,7 @@ class Simple:
         self.is_coupon_opened = True
 
     def coupon_add_item(self, code, quantity, price, unit, description, 
-                        taxcode, discount, charge):
+                        taxcode, discount, charge, unit_desc=''):
         self._check_coupon_is_opened()
         if self.is_coupon_totalized:
             raise ItemAdditionError(_("The coupon is already totalized, "

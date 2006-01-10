@@ -29,22 +29,20 @@ stoqdrivers/constants.py:
     StoqDrivers constants
 """
 
-
 # Constants for product unit labels
 (UNIT_WEIGHT,
  UNIT_METERS,
  UNIT_LITERS,
- UNIT_EMPTY)  = range(4)
+ UNIT_EMPTY,
+ UNIT_CUSTOM)  = range(5)
 
+# Constants for product tax
 (TAX_IOF,
  TAX_ICMS,
  TAX_SUBSTITUTION,
  TAX_EXEMPTION,
  TAX_NONE) = range(5)
 
-#
 # Constants for Payment Method
-#
-
 (MONEY_PM,
  CHEQUE_PM) = range(2)
