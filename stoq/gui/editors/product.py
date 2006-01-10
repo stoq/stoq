@@ -117,8 +117,10 @@ class ProductSupplierEditor(BaseEditor):
         self.supplier_combo.prefill(items)
 
     def list_suppliers(self):
-        cols = [Column('name', title=_('Supplier name'), width=350),
-                Column('base_cost', title=_('Base Cost'), width=120)]
+        cols = [Column('name', title=_('Supplier name'),
+                       data_type=str, width=350),
+                Column('base_cost', title=_('Base Cost'),
+                       data_type=float, width=120)]
 
         run_dialog(SimpleListDialog, self, cols, self.model.suppliers)
 
