@@ -79,8 +79,8 @@ CMD_COUPON_TOTALIZE = 32
 CMD_COUPON_CLOSE = 34
 CMD_ADD_PAYMENT = 72
 CMD_REDUCE_Z = 5
-CMD_GET_COUPON_ID = 30
 CMD_GET_VARIABLES = 35
+CMD_GET_COUPON_NUMBER = 30
 VAR_LAST_ITEM_ID = 12
 VAR_PAID_VALUE = 22
 NAK = 21
@@ -291,6 +291,15 @@ class MP25(SerialBase):
         self._handle_error(reply[0] + reply[3:])
         return bcd2dec(reply[1:3])
 
+    def _get_coupon_number(self):
+        self._send_packed(chr(CMD_GET_COUPON_NUMBER))
+        reply = self._get_reply(extrabytes_num=3)
+        self._handle_error(reply[0] + reply[4:])
+        coupon_number = reply[1:4]
+        if coupon_number:
+            return bcd2dec(coupon_number)
+        raise ValueError("Inconsistent package received from the printer")
+
     #
     # This implements the ICouponPrinter Interface
     #
@@ -332,6 +341,7 @@ class MP25(SerialBase):
         new coupons after this is called.
         """
         self._send_command(chr(CMD_COUPON_CLOSE))
+        return self._get_coupon_number()
 
     def coupon_add_item(self, code, quantity, price, unit,
                         description, taxcode, discount, markup):

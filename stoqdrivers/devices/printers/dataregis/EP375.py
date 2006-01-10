@@ -163,10 +163,6 @@ class EP375Status:
           | +----------> Printer is ready? ('S'/'N')
           +------------> Internal state (page 15)
         """
-
-        # Getting only the status itself
-        status = status[4:10]
-
         (self.internal_state,
          self.is_ready,
          self.technical_model,
@@ -244,6 +240,7 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_ADD_PAYMENT_WITH_CHARGE = 'c'
     CMD_CANCEL_ITEM = 'b'
     CMD_GET_REMAINING_VALUE = 'C'
+    CMD_GET_FISCAL_COUNTERS = 'o'
 
     payment_methods = {
         MONEY_PM : '00',
@@ -283,65 +280,73 @@ class EP375(SerialBase, BaseChequePrinter):
     # Helper methods
     #
 
-    def get_next_command_id(self):
+    def _get_next_command_id(self):
         self._command_id += 1
         return self._command_id
 
-    def get_next_coupon_item_id(self):
+    def _get_next_coupon_item_id(self):
         self._item_counter += 1
         return self._item_counter
 
-    def handle_error(self, reply):
-        """ This function just get the reply package and verifies if it
-        contains any errors, raising the properly exception.
-        """
-        #
-        # Managing the many data formats that the printer can returns
-        #
-        first_byte = ord(reply[0])
+    def _unpack(self, package):
+        if package[0] != EP375.CMD_PREFIX:
+            raise ValueError("Received inconsistent data")
+        n_params = ord(package[3])
+        params = package[4:4+n_params]
+        if len(params) != n_params:
+            raise ValueError("Received inconsistent data")
+        return params
 
-        if first_byte == ord(self.CMD_PREFIX):
-            #
-            # Reply format:
-            #     STX+CMD_COUNTER+CMD_ID+PARAMS_SZ+PARAMS+CHKSUM+SUB+CR
-            #
-            # Situation: Many messages can be sended when it starts with STX,
-            # its represents that the reply can't be sent in one unique package.
-            # To know if a reply/message is the last message, we need verify if
-            # the SUB character is in the end of the string, if so, it is the
-            # last reply's package.
-            #
-            result = [reply]
-            while not reply.endswith(chr(SUB)):
-                result.append(self.readline())
-            return result
-        elif first_byte == ACK:
-            #
-            # Reply format: ACK+CR
-            #
-            # When ACK+CR is received the command wasn't executed.  In this
-            # case, we need call get_status() and manage the reason.
-            #
-            self.get_status().parse_error()
-        elif first_byte == EOT:
-            #
-            # Reply format:  EOT + CR
-            # Situation: When the command doesn't need reply
-            #
-            result = None
-        elif first_byte == BS:
-            #
-            # Reply format:  BS + CR
-            # Situation: When the printer will send data yet -- a new
-            # call to self.readline is needed in this case.
-            #
-            return self.readline()
+    def _is_valid_package(self, package):
+        # minimum package size:
+        #     STX|CMD_COUNTER|CMD_ID|PARAMS_SZ|CHECKSUM => 5 bytes
+        if len(package) < 5:
+            return False
+        try:
+            params = self._unpack(package)
+        except ValueError:
+            return False
+        cmdid = package[2]
+        checksum = ord(package[4+len(params)])
+        new_checksum = ord(self._get_packed(cmdid, params)[-1])
+        return new_checksum == checksum
+
+    def _get_and_parse_error(self):
+        self._get_status().parse_error()
+
+    def _parse_reply(self, reply):
+        result = ""
+        firstbyte = ord(reply[0])
+        # When ACK+CR is received the command wasn't executed.  In this
+        # case, we need call the printer status and manage the reason.
+        if firstbyte == ACK:
+            return self._get_and_parse_error()
+        # When EOT is received, no reply is required (the printer will
+        # send us nothing)
+        elif firstbyte == EOT:
+            return ""
+        # When BS is received, the printer will send data yet, so we need
+        # only executed the loop below
+        elif firstbyte == BS:
+            pass
+        # Hmmm, if a broken package was sent we need manage this sending
+        # ACK to the printer ("hey printer, you give me a broken package")
+        # and so we need append the new reply in the current one and call
+        # recursively this method.
+        elif not self._is_valid_package(reply):
+            self.write(chr(ACK))
+            return self._parse_reply(reply + self.readline())
         else:
-            raise ValueError("Received inconsitent data")
-
+            result = self._unpack(reply)
+        while True:
+            lastbyte = ord(reply[-1])
+            if lastbyte == SUB:
+                break
+            reply = self.readline()
+            return result + self._parse_reply(reply)
         return result
 
-    def get_coupon_remaining_value(self):
+    def _get_coupon_remaining_value(self):
         #
         # reply format:
         #     STX | CMD_COUNTER | CMD_ID | PARAMS_SZ | PARAMS | CHECKSUM
@@ -352,12 +357,19 @@ class EP375(SerialBase, BaseChequePrinter):
         #     Y == 14 bytes representing the remaining value
         #     Z == the number of items in the coupon.
         #
-        result = self.send_command(self.CMD_GET_REMAINING_VALUE)
+        result = self._send_command(self.CMD_GET_REMAINING_VALUE)
         has_remaining_value = result[4] == 'S'
         if has_remaining_value:
             return float(result[5:19]) / 1e2
         else:
             return 0.0
+
+    def _get_fiscal_counters(self):
+        return self._send_command(self.CMD_GET_FISCAL_COUNTERS)
+
+    def _get_coupon_number(self):
+        result = self._get_fiscal_counters()
+        return int(result[43:49])
 
     #
     # SerialBase wrappers
@@ -372,51 +384,45 @@ class EP375(SerialBase, BaseChequePrinter):
         self.setDTR()
         return SerialBase.readline(self)
 
-
     #
     # Methods implementation to printer commands and reply management
     #
 
-    def get_command(self, command, *params):
-        """ Command format:
+    def _get_packed(self, command, *params):
+        """ Create a package for the command and its parameters. Package
+        format:
 
-        +---+-----------+------+---------+--------+--------+
-        |STX|CMD_COUNTER|CMD_ID|PARAMS_SZ|[PARAMS]|CHECKSUM|
-        +---+-----------+------+---------+--------+--------+
+                 +---+-----------+------+---------+--------+--------+
+        NAME:    |STX|CMD_COUNTER|CMD_ID|PARAMS_SZ|[PARAMS]|CHECKSUM|
+                 +---+-----------+------+---------+--------+--------+
+        N_BYTES:   1       1         1        1        ?        1
 
         Where:
 
         CMD_COUNTER: the counter for the respective command sent (can be 0)
-        CMD_ID: the ID of the command (1 byte)
+        CMD_ID: the ID of the command
         PARAMS_SZ: the number of parameters for the command
         PARAMS: the params listing (it's optional and only is used if
           PARAMS_SZ is greater than 0)
         CHECKSUM: the sum of all the bytes, starting at CMD_ID and ending
           at the last byte of PARAMS  (or PARAMS_SZ, if no parameters was
-           sent, of course).
+          sent, of course).
         """
         params = ''.join(params)
         data = '%s%c%s' % (command, len(params), params)
         checksum = sum([ord(d) for d in data]) & 0xff
-        package = '%c%s%c' % (self.get_next_command_id(), data, checksum)
-
+        package = '%c%s%c' % (self._get_next_command_id(),
+                              data, checksum)
         return package
 
-    def send_command(self, command, *params):
-        reply = self.writeline(self.get_command(command, *params))
-        result = self.handle_error(reply)
-
-        # If an exception is raised inside the handle_error method, it means
-        # that occurs an error in the command execution and the rest of this
-        # method must be ignored -- but, if the command was executed
-        # successfully, the printer waits for a EOT byte, meaning that the
-        # transmission is done.
+    def _send_command(self, command, *params):
+        reply = self.writeline(self._get_packed(command, *params))
+        result = self._parse_reply(reply)
         self.write(chr(EOT))
-
         return result
 
-    def get_status(self):
-        result = self.send_command(self.CMD_GET_STATUS)
+    def _get_status(self):
+        result = self._send_command(self.CMD_GET_STATUS)
         return EP375Status(result)
 
     #
@@ -434,7 +440,7 @@ class EP375(SerialBase, BaseChequePrinter):
         # coupon is opened when the first item is added, so simple checks
         # is done at this part.
         #
-        status = self.get_status()
+        status = self._get_status()
 
         if status.needs_reduce_Z():
             raise PendingReduceZ(_("Pending Reduce Z"))
@@ -470,10 +476,10 @@ class EP375(SerialBase, BaseChequePrinter):
 
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)
-        item_id = self.get_next_coupon_item_id()
+        item_id = self._get_next_coupon_item_id()
         self.items_dict[item_id] = item
 
-        self.send_command(cmd, item.get_packaged())
+        self._send_command(cmd, item.get_packaged())
         return item_id
 
     def coupon_cancel_item(self, item_id):
@@ -482,10 +488,10 @@ class EP375(SerialBase, BaseChequePrinter):
         except KeyError:
             raise CommandParametersError(_("You have specified an invalid "
                                            "item id to cancel!"))
-        self.send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
+        self._send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
 
     def coupon_cancel(self):
-        self.send_command(self.CMD_CANCEL_COUPON)
+        self._send_command(self.CMD_CANCEL_COUPON)
 
     def coupon_totalize(self, discount, charge, taxcode):
         # The callsite must check if discount and charge are used together,
@@ -498,7 +504,7 @@ class EP375(SerialBase, BaseChequePrinter):
         # add_payment calls
         self.coupon_discount, self.coupon_charge = discount, charge
 
-        coupon_total_value = (self.get_coupon_remaining_value() + charge
+        coupon_total_value = (self._get_coupon_remaining_value() + charge
                               - discount)
         return coupon_total_value
 
@@ -506,7 +512,7 @@ class EP375(SerialBase, BaseChequePrinter):
         pm = EP375.payment_methods[payment_method]
         value = "%014d" % int(value * 1e2)
 
-        if ((not self.get_status().has_been_totalized())
+        if ((not self._get_status().has_been_totalized())
             and self.coupon_discount or self.coupon_charge):
             if self.coupon_discount:
                 type = "D"
@@ -515,14 +521,13 @@ class EP375(SerialBase, BaseChequePrinter):
                 type = "A"
                 D = self.coupon_charge
             D = "%014d" % int(D * 1e2)
-            self.send_command(self.CMD_ADD_PAYMENT_WITH_CHARGE, pm, value, D,
-                              type)
+            self._send_command(self.CMD_ADD_PAYMENT_WITH_CHARGE, pm, value, D,
+                               type)
         else:
-            self.send_command(self.CMD_ADD_PAYMENT,
-                              EP375.payment_methods[payment_method],
-                              value)
+            self._send_command(self.CMD_ADD_PAYMENT,
+                               EP375.payment_methods[payment_method],  value)
 
-        return self.get_coupon_remaining_value()
+        return self._get_coupon_remaining_value()
 
     def coupon_close(self, message=''):
         # XXX: Here we have a problem -- what we can do with the 'message'?
@@ -530,16 +535,16 @@ class EP375(SerialBase, BaseChequePrinter):
         # adding an extra function "set_coupon_footer_message" to the API.
         # With this function this driver and all the another ones will allow
         # the "promotional_message" in the coupon.
-        return
+        return self._get_coupon_number()
 
     def close_till(self):
-        if not self.get_status().needs_reduce_Z():
+        if not self._get_status().needs_reduce_Z():
             raise ReduceZError(_('Reduce Z already done'))
         else:
-            self.send_command(self.CMD_REDUCE_Z)
+            self._send_command(self.CMD_REDUCE_Z)
 
     def summarize(self):
-        self.send_command(self.CMD_READ_X)
+        self._send_command(self.CMD_READ_X)
 
     def get_capabilities(self):
         # FIXME: As always, we have a problem here with Dataregis printer:
@@ -568,17 +573,11 @@ class EP375(SerialBase, BaseChequePrinter):
     #
 
     def send_cheque_command(self, command, *params):
-        reply = self.writeline(self.get_command(self.CMD_CHEQUE, command,
+        reply = self.writeline(self._get_packed(self.CMD_CHEQUE, command,
                                                 *params))
-        result = self.handle_error(reply)
-
-        # If an exception is raised inside the handle_error method, it means
-        # that occurs an error in the command execution and the rest of this
-        # method must be ignored -- but, if the command was executed
-        # successfully, the printer waits for a EOT byte, meaning that the
-        # transmission is done.
+        result = self._parse_reply(reply)
+        # The printer is waiting for a 'End of Transmition' byte
         self.write(chr(EOT))
-
         return result
 
     def print_cheque(self, bank, value, thirdparty, city, date):

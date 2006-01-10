@@ -142,6 +142,9 @@ class ICouponPrinter(Interface):
         
         @param message:      promotional message
         @type message:       string
+
+        @rtype:              integer
+        @returns:            identifier of the coupon.
         """
 
     #

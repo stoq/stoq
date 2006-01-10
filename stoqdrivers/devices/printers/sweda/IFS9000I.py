@@ -92,6 +92,7 @@ class IFS9000I(SerialBase):
     CMD_SETUP_CLOCK = '35'
     CMD_SETUP_PAYMENT_METHOD = '39'
     CMD_TRANSACTION_STATUS = '28'
+    CMD_GET_PRINTER_TOTALIZERS = '27'
     
     #
     # Settings for printer command parameters
@@ -345,6 +346,13 @@ class IFS9000I(SerialBase):
             return reply[2:]
         return None
 
+    def get_totalizers(self, type="1"):
+        reply = self.writeline(self.CMD_GET_PRINTER_TOTALIZERS + type)
+        if reply[0] == '+':
+            raise ValueError("Inconsistent package received while "
+                             "reading printer totalizers")
+        return reply[5:]
+
     def send_command(self, command, *params):
         """ Send a command to printer.
 
@@ -389,6 +397,9 @@ class IFS9000I(SerialBase):
             if value < 0.00:
                 return 0.00
         return rv
+
+    def _get_coupon_number(self):
+        return int(self.get_totalizers()[115:119])
 
     #
     # ICouponPrinter implementation
@@ -522,6 +533,7 @@ class IFS9000I(SerialBase):
 
     def coupon_close(self, message=''):
         self.send_command(self.CMD_COUPON_CLOSE)
+        return self._get_coupon_number()
 
     def close_till(self):
         # TODO Add a date optional argument here

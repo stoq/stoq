@@ -1,3 +1,18 @@
+2006-01-10  Henrique Romano  <henrique@async.com.br>
+
+	reviewed by: Johan Dahlin <jdahlin@async.com.br>
+
+	* stoqdrivers/devices/printers/bematech/MP25.py:
+	* stoqdrivers/devices/printers/daruma/FS345.py:
+	* stoqdrivers/devices/printers/dataregis/EP375.py:
+	* stoqdrivers/devices/printers/fiscal.py:
+	* stoqdrivers/devices/printers/interface.py:
+	* stoqdrivers/devices/printers/perto/Pay2023.py:
+	* stoqdrivers/devices/printers/sweda/IFS9000I.py:
+
+	Fix for bug #2362: close_coupon method must return
+	the COO (operation order counter).
+
 2006-01-06  Henrique Romano  <henrique@async.com.br>
 
 	reviewed by: Johan Dahlin <jdahlin@async.com.br>
@@ -6,7 +21,7 @@
 	* stoqdrivers/devices/serialbase.py:
 
 	Implements support for Bematech's extended protocol.
-	
+
 2006-01-04  Henrique Romano  <henrique@async.com.br>
 
 	* stoqdrivers/devices/scales/interface.py:

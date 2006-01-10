@@ -101,6 +101,7 @@ CMD_GET_REGISTRIES = 244
 # [ESC] 250 Leitura de datas de Controle Fiscal
 # [ESC] 251 Leitura das informações cadastrais do usuário
 # [ESC] V   Controle de horário de verão
+CMD_GET_TOTALIZERS = 244
 
 def isbitset(value, bit):
     # BCD crap
@@ -265,6 +266,14 @@ class FS345(SerialBase):
     def _is_open(self, status):
         return self.status_check(status, 4, 2)
 
+    # Helper commands
+
+    def _get_totalizers(self):
+        return self.send_command(CMD_GET_TOTALIZERS)
+
+    def _get_coupon_number(self):
+        return int(self._get_totalizers()[8:14])
+
     # 
     # API implementation
     #
@@ -370,6 +379,7 @@ class FS345(SerialBase):
             message = '\n'.join(l)
 
         self.send_command(CMD_CLOSE_COUPON, message + '\xff')
+        return self._get_coupon_number()
 
     def summarize(self):
         self.send_command(CMD_GET_X)

@@ -143,7 +143,7 @@ class FiscalPrinter(BasePrinter):
                                    % (self.payments_total_value,
                                       self.totalized_value))
         else:
-            self._driver.coupon_close(promotional_message)
+            return self._driver.coupon_close(promotional_message)
 
     def summarize(self):
         self.info('summarize')
@@ -173,7 +173,6 @@ def test():
         except PendingReduceZ:
             p.close_till()
             return
-
     i1 = p.add_item("123456", 2, 10.00, UNIT_EMPTY, "Hollywood mc",
                     TAX_NONE, 0, 0)
     i2 = p.add_item("654321", 5, 1.53, UNIT_LITERS, "Bohemia Beer",
@@ -184,8 +183,8 @@ def test():
 
     p.add_payment(MONEY_PM, 2.00, '')
     p.add_payment(MONEY_PM, 11.00, '')
-
-    p.close()
+    coupon_id = p.close()
+    print "+++ coupon %d created." % coupon_id
 
 if __name__ == '__main__':
     test()

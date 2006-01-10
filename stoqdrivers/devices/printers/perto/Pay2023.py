@@ -82,6 +82,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_GET_COUPON_TOTAL_VALUE = 'TotalDocLiquido'
     CMD_GET_COUPON_TOTAL_PAID_VALUE = 'TotalDocValorPago'
     CMD_PRINT_CHEQUE = 'ImprimeCheque'
+    CMD_GET_COO = "COO"
 
     errors_dict = {7003: OutofPaperError,
                    7004: OutofPaperError,
@@ -178,15 +179,19 @@ class Pay2023(SerialBase, BaseChequePrinter):
         # all the fuck*** time)
         return 0
 
-    def get_last_item_id(self):
-        name = "\"%s\"" % Pay2023.CMD_GET_LAST_ITEM_ID
+    def _get_integer_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_INTEGER_REGISTER_DATA,
-                                    NomeInteiro=name)
+                                    NomeInteiro="\"%s\"" % data_name)
         result = result[:-1]
         substr = "ValorInteiro"
         index = result.index(substr) + len(substr) + 1
-        value = int(result[index:])
-        return value
+        return int(result[index:])
+
+    def _get_last_item_id(self):
+        return self._get_integer_register_data(Pay2023.CMD_GET_LAST_ITEM_ID)
+
+    def _get_coupon_number(self):
+        return self._get_integer_register_data(Pay2023.CMD_GET_COO)
 
     def get_money_register_data(self, data_name):
         result = self._send_command(Pay2023.CMD_GET_MONEY_REGISTER_DATA,
@@ -256,7 +261,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                           Unidade="\"%02s\"" % Pay2023.unit_dict[unit],
                           PrecoUnitario=self.format_value(price),
                           Quantidade="%.03f" % quantity)
-        return self.get_last_item_id()
+        return self._get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
         self.send_command(Pay2023.CMD_CANCEL_ITEM, NumItem=item_id)
@@ -285,6 +290,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_COUPON_CLOSE,
                           TextoPromocional="\"%s\"" % message[:492])
+        return self._get_coupon_number()
 
     def summarize(self):
         self.send_command(Pay2023.CMD_READ_X)
