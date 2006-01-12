@@ -31,7 +31,6 @@ stoq/gui/editors/sellable.py:
 """
 
 import gettext
-import string
 
 from sqlobject.sqlbuilder import LIKE, func
 from stoqlib.gui.editors import BaseEditor
@@ -195,8 +194,11 @@ class SellableEditor(BaseEditor):
         if unit.index == -1:
             self._sellable.unit = None
         else:
-            query = LIKE(func.UPPER(SellableUnit.q.description),
-                         "%%%s%%" % string.upper(unit.description))
+            if unit.index == UNIT_CUSTOM:
+                query = LIKE(func.UPPER(SellableUnit.q.description),
+                             "%%%s%%" % unit.description.upper())
+            else:
+                query = SellableUnit.q.index == unit.index
             conn = new_transaction()
             result = SellableUnit.select(query, connection=conn)
             count = result.count()
