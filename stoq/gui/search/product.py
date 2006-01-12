@@ -52,8 +52,8 @@ class ProductSearch(SearchEditor):
     editor_class = ProductEditor
     
     def __init__(self, conn):
-        SearchEditor.__init__(self, self.table, self.editor_class,                       
-                              search_table=self.search_table,
+        SearchEditor.__init__(self, conn, self.table, self.editor_class,
+                              search_table=self.search_table, 
                               title=self.title)
         self.search_bar.set_result_strings(_('product'), _('products'))
         self.search_bar.set_searchbar_labels(_('matching'))
