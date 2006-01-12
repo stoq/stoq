@@ -46,7 +46,7 @@ class UserProfileSearch(SearchEditor):
     size = (465, 390)
 
     def __init__(self, conn):
-        SearchEditor.__init__(self, self.table, self.editor_class, 
+        SearchEditor.__init__(self, conn, self.table, self.editor_class, 
                               title=self.title)
         self._setup_widgets()
 

@@ -117,7 +117,10 @@ class CustomerStep(BaseWizardStep):
     #
 
     def on_add_button__clicked(self, *args):
-        person = run_dialog(ClientSearch, self, parent_conn=self.conn)
+        # Commit here and do not forget that SearchDialog synchronizes
+        # connection internally
+        self.conn.commit()
+        person = run_dialog(ClientSearch, self, self.conn)
         if person:
             self.model.update_client(person)
 

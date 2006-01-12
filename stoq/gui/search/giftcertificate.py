@@ -54,8 +54,8 @@ class GiftCertificateTypeSearch(SearchEditor):
     table = GiftCertificateType
     editor_class = GiftCertificateTypeEditor
     
-    def __init__(self, hide_footer=True):
-        SearchEditor.__init__(self, self.table, self.editor_class,
+    def __init__(self, conn, hide_footer=True):
+        SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               hide_footer=hide_footer,
                               title=self.title)
         self.search_bar.set_result_strings(_('gift certificate type'), 
@@ -122,8 +122,8 @@ class GiftCertificateSearch(SearchEditor):
     table = GiftCertificate.getAdapterClass(ISellable)
     editor_class = GiftCertificateEditor
     
-    def __init__(self, hide_footer=True):
-        SearchEditor.__init__(self, self.table, self.editor_class,
+    def __init__(self, conn, hide_footer=True):
+        SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               hide_footer=hide_footer,
                               title=self.title)
         self.hide_edit_button()

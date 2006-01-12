@@ -30,7 +30,7 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="klist">
+                            <widget class="kiwi+ui+widgets+list+List" id="payments">
                                 <property name="shadow_type">in</property>
                                 <property name="vscrollbar_policy">automatic</property>
                                 <property name="visible">True</property>

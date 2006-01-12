@@ -216,7 +216,7 @@
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkEventBox" id="search_bar_holder">
+                            <widget class="GtkEventBox" id="searchbar_holder">
                                 <property name="visible">True</property>
                                 <child>
                                     <placeholder/>
@@ -227,7 +227,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+list+List" id="users_list">
+                            <widget class="kiwi+ui+widgets+list+List" id="users">
                                 <property name="is_focus">True</property>
                                 <property name="shadow_type">in</property>
                                 <property name="visible">True</property>

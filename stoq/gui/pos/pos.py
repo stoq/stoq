@@ -42,7 +42,6 @@ from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
 
 from stoq.gui.application import AppWindow
-from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import (format_quantity, get_price_format_str)
 from stoq.lib.parameters import sysparam
 from stoq.lib.drivers import FiscalCoupon
@@ -73,30 +72,10 @@ class POSApp(AppWindow):
     product_widgets = ('product',)
     sellable_widgets = ('price',
                         'quantity')
-    widgets = (('order_list',
-                'list_vbox',
-                'add_button',
-                'advanced_search',
-                'client_edit_button',
-                'client_details_button',
-                'new_order_button',
-                'delivery_button',
-                'checkout_button',
-                'remove_item_button',
-                'pos_vbox',
-                'search_box',
-                'SalesMenu',
-                'CancelOrder',
-                'ResetOrder',
-                'client_data_hbox',
-                'footer_hbox')
-               + client_widgets
-               + product_widgets
-               + sellable_widgets)
+    klist_name = 'sellables'
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
-        self.conn = new_transaction()
         if not get_current_till_operation(self.conn):
             notify_dialog(_("You need to open the till before start doing "
                             "sales."), _("Error"))
@@ -110,7 +89,7 @@ class POSApp(AppWindow):
         self._update_widgets()
 
     def _clear_order(self):
-        self.order_list.clear()
+        self.sellables.clear()
         for widget in (self.search_box, self.client_data_hbox,
                        self.list_vbox, self.CancelOrder):
             widget.set_sensitive(False)
@@ -120,7 +99,7 @@ class POSApp(AppWindow):
         self.client_proxy.new_model(self.sale, relax_type=True)
 
     def _delete_sellable_item(self, item):
-        self.order_list.remove(item)
+        self.sellables.remove(item)
         table = type(item)
         table.delete(item.id, connection=self.conn)
 
@@ -144,9 +123,8 @@ class POSApp(AppWindow):
         if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
             self.price.set_sensitive(False)
         self.price.set_data_format(get_price_format_str())
-        self.order_list.set_columns(self._get_columns())
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_label = SummaryLabel(klist=self.order_list,
+        self.summary_label = SummaryLabel(klist=self.sellables,
                                           column='total',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
@@ -180,11 +158,11 @@ class POSApp(AppWindow):
             return
         self.coupon.add_item(sellable_item)
 
-    def _update_order_list(self, sellable, notify_on_entry=False):
+    def _update_list(self, sellable, notify_on_entry=False):
         table = type(sellable)
         if not ISellable.implementedBy(table):
             raise TypeError("The object must implement a sellable facet.")
-        sellables = [s.sellable for s in self.order_list]
+        sellables = [s.sellable for s in self.sellables]
         if sellable in sellables:
             if notify_on_entry:
                 msg = _("The item '%s' was already added to the order" 
@@ -192,7 +170,6 @@ class POSApp(AppWindow):
                 self.product.set_invalid(msg)
             return
         else:
-            sellable = table.get(sellable.id, connection=self.conn)
             quantity = self.sellable_proxy.model.quantity
             price = self.sellable_proxy.model.price
             sellable_item = sellable.add_sellable_item(self.sale,
@@ -202,8 +179,8 @@ class POSApp(AppWindow):
             model = self.run_dialog(ServiceItemEditor, self.conn, sellable_item)
             if not model:
                 return
-        self.order_list.append(sellable_item)
-        self.order_list.select(sellable_item)
+        self.sellables.append(sellable_item)
+        self.sellables.select(sellable_item)
         self.product.set_text('')
         self._coupon_add_item(sellable_item)
 
@@ -229,20 +206,20 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         if not sellable:
             return
-        self._update_order_list(sellable, notify_on_entry=True)
+        self._update_list(sellable, notify_on_entry=True)
         self.product.grab_focus()
 
     def select_first_item(self):
-        if len(self.order_list):
+        if self.sellables:
             # XXX Probably kiwi should handle this for us. Waiting for
             # support
-            self.order_list.select(self.order_list[0])
+            self.sellables.select(self.sellables[0])
 
     def _new_order(self):
         rollback_and_begin(self.conn)
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
         if self.sale:
-            self.order_list.clear()
+            self.sellables.clear()
             self.client_proxy.new_model(self.sale)
             self._update_widgets()
             self._update_totals()
@@ -272,19 +249,19 @@ class POSApp(AppWindow):
                 self.app.shutdown()
 
     def _update_widgets(self):
-        has_sellables = len(self.order_list[:]) >= 1
+        has_sellables = len(self.sellables) >= 1
         widgets = [self.checkout_button, self.remove_item_button]
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale is not None and self.sale.client is not None
         self.client_edit_button.set_sensitive(has_client)
         self.delivery_button.set_sensitive(has_client and has_sellables)
-        model = self.order_list.get_selected()
+        model = self.sellables.get_selected()
         self._update_totals()
         has_sellable_str = self.product.get_text() != ''
         self.add_button.set_sensitive(has_sellable_str)
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('sellable.code', title=_('Code'), sorted=True, 
                        data_type=str, width=90),
                 Column('sellable.base_sellable_info.description', 
@@ -298,7 +275,7 @@ class POSApp(AppWindow):
                        width=100)]
                        
     def _search_clients(self):
-        self.run_dialog(ClientSearch, hide_footer=True)
+        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     #
     # AppWindow Hooks
@@ -332,9 +309,14 @@ class POSApp(AppWindow):
         self.product.set_valid()
 
     def on_advanced_search__clicked(self, *args):
+        # Ouch!, commit now ? yes, because SearchDialog synchronizes self.conn
+        # internally. Actually this is not a problem since our sale object
+        # is not valid (_is_valid_model defaults to False) until we finish the 
+        # whole process trough SaleWizard.
+        self.conn.commit()
         items = self.run_dialog(SellableSearch, self.conn)
         for item in items:
-            self._update_order_list(item)
+            self._update_klist(item)
         self.select_first_item()
         self._update_totals()
 
@@ -351,7 +333,7 @@ class POSApp(AppWindow):
     def on_price__activate(self, *args):
         self.add_sellable_item()
 
-    def on_order_list__selection_changed(self, *args):
+    def on_sellables__selection_changed(self, *args):
         self._update_widgets()
 
     def on_client_edit_button__clicked(self, *args):
@@ -374,7 +356,7 @@ class POSApp(AppWindow):
         self.sellable_proxy.new_model(sellable_item)
 
     def on_remove_item_button__clicked(self, *args):
-        item = self.order_list.get_selected()
+        item = self.sellables.get_selected()
         if (not sysparam(self.conn).CONFIRM_SALES_ON_TILL
             and not self.coupon.remove_item(item)):
             return
@@ -391,14 +373,14 @@ class POSApp(AppWindow):
         self._new_order()
 
     def _on_sales_action__clicked(self, *args):
-        self.run_dialog(SaleSearch)
+        self.run_dialog(SaleSearch, self.conn)
                       
     def on_delivery_button__clicked(self, *args):
-        if not self.order_list:
+        if not self.sellables:
             notify_dialog(_("You don't have products to delivery."),
                           _("Error"))
             return
-        products = [obj for obj in self.order_list
+        products = [obj for obj in self.sellables
                         if isinstance(obj, ProductSellableItem)
                            and obj.delivery_data is None]
         if not products:
@@ -409,8 +391,8 @@ class POSApp(AppWindow):
                                   self.sale, products)
         if not service:
             return
-        self.order_list.append(service)
-        self.order_list.select(service)
+        self.sellables.append(service)
+        self.sellables.select(service)
         self._coupon_add_item(service)
 
     def _sale_checkout(self, *args):

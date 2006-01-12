@@ -26,7 +26,7 @@
 ##                  Bruno Rafael Garcia         <brg@async.com.br>
 ##
 """
-/stoq/gui/slaves/employee.py
+stoq/gui/slaves/employee.py
 
     Employee editor slaves implementation.
 """
