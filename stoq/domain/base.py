@@ -40,6 +40,7 @@ from sqlobject.converters import registerConverter
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from stoqlib.exceptions import AdapterError
+from stoqlib.database import Adapter
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.declarations import implementedBy
 from zope.interface.interface import Interface, InterfaceClass
@@ -362,11 +363,6 @@ class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
 #
 # Adapters
 #
-
-
-class Adapter:
-    pass
-
 
 class ModelAdapter(BaseDomain, Adapter):
         

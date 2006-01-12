@@ -35,7 +35,6 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
-from stoqlib.database import rollback_and_begin
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.search import SearchDialog
 
@@ -53,15 +52,10 @@ class SaleSearch(SearchDialog):
     size = (800, 600)
     search_table = Sale
 
-    def __init__(self):
-        SearchDialog.__init__(self, self.search_table, title=self.title,
-                              searching_by_date=True)
+    def __init__(self, conn):
+        SearchDialog.__init__(self, conn, self.search_table, 
+                              title=self.title, searching_by_date=True)
         self._setup_widgets()
-
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
 
     def _setup_widgets(self):
         self.search_bar.set_result_strings(_('sale'), _('sales'))
@@ -105,16 +99,6 @@ class SaleSearch(SearchDialog):
             return AND(q1, q2, q3)
         return AND(q1, q2)
 
-    def update_klist(self, sales=[]):
-        rollback_and_begin(self.conn)
-        self.klist.clear()
-        for sale in sales:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = Sale.get(sale.id, connection=self.conn)
-            self.klist.append(obj)
-        self._select_first_item(self.klist)
-            
     #
     # SearchDialog Hooks
     #

@@ -20,8 +20,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):       Henrique Romano     <henrique@async.com.br>
-##                  Bruno Rafael Garcia <brg@async.com.br>
+## Author(s):       Henrique Romano         <henrique@async.com.br>
+##                  Bruno Rafael Garcia     <brg@async.com.br>
+##                  Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 """
 stoq/gui/till/operations.py:
@@ -45,7 +46,6 @@ from stoqlib.gui.dialogs import (BasicWrappingDialog, run_dialog,
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.lib.runtime import new_transaction
 from stoq.domain.interfaces import IPaymentGroup
 from stoq.domain.sale import Sale
 from stoq.domain.till import get_current_till_operation
@@ -66,7 +66,7 @@ class TillOperationDialog(SlaveDelegate):
                'reverse_selection_button',
                'close_till_button', 
                'total_balance_label',
-               'klist')
+               'payments')
 
     title = _('Current Till Operation')
     size = (800, 500)
@@ -78,14 +78,12 @@ class TillOperationDialog(SlaveDelegate):
                                widgets=self.widgets)
         self.main_dialog = BasicWrappingDialog(self, self.title, size=self.size,
                                                hide_footer=True)
-        
         self.conn = conn
         self._setup_widgets()
         self._setup_slaves()
         self._update_widgets()
         self.main_dialog.set_title(self._get_title())
         self.search_bar.search_items()
-        self._select_first_item(self.klist)
         self._check_initial_cash_amount()
     
     def on_cancel(self):
@@ -101,15 +99,21 @@ class TillOperationDialog(SlaveDelegate):
     def _colorize(self, column_data):
         return column_data < 0
 
+    def _sync(self, *args):
+        rollback_and_begin(self.conn)
+
     def _setup_slaves(self):
-        self.search_bar = SearchBar(self, Payment, self._get_columns(), 
+        self.search_bar = SearchBar(self.conn, self, Payment, 
+                                    self._get_columns(), 
                                     searching_by_date=True)
         self.search_bar.set_searchbar_labels(_('Payments Matching'))
         self.search_bar.set_result_strings(_('payment'), _('payments'))
+        self.search_bar.connect('search-activate', self._update_list)
+        self.search_bar.connect('before-search-activate', self._sync)
         self.attach_slave('searchbar_holder', self.search_bar)
 
     def _update_widgets(self):
-        self.selected_item = self.klist.get_selected_rows()
+        self.selected_item = self.payments.get_selected_rows()
         self.canceled_items = 0
         self.selected = 0
         for item in self.selected_item:
@@ -120,30 +124,28 @@ class TillOperationDialog(SlaveDelegate):
         self.reverse_selection_button.set_sensitive(self.selected > 0)
 
     def _setup_widgets(self):      
-        self.klist.set_columns(self._get_columns())
-        self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.payments.set_columns(self._get_columns())
+        self.payments.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self._update_total()
 
     def _run_editor(self, editor_class):
-        conn = new_transaction()
-        model = run_dialog(editor_class, self, conn)
-        if finish_transaction(conn, model):
+        model = run_dialog(editor_class, self, self.conn)
+        if finish_transaction(self.conn, model, keep_transaction=True):
             self.search_bar.search_items()
+            self.payments.unselect_all()
             self._select_last_item()
 
     def _select_last_item(self): 
-        inserted_item_position = len(self.klist) - 1 
-        self.klist.select(self.klist[inserted_item_position])
+        inserted_item_position = len(self.payments) - 1 
+        self.payments.select(self.payments[inserted_item_position])
         
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX Probably kiwi should handle this for us. Waiting for
-            # support
-            list.select(list[0])
-    
-    def _update_total(self):    
+    def _update_list(self, slave, objs):
+        self.payments.add_list(objs)
+        self._update_total()
+        
+    def _update_total(self, *args):
         total_balance = 0.0
-        for item in self.klist: 
+        for item in self.payments: 
             total_balance += item.value
         total_balance_str = get_formatted_price(total_balance)
         self.total_balance_label.set_text(total_balance_str)
@@ -213,6 +215,7 @@ class TillOperationDialog(SlaveDelegate):
             if item.description == _('Initial cash amount'):
                 return True
         return False
+
     #
     # Searchbar callbacks
     # 
@@ -240,19 +243,11 @@ class TillOperationDialog(SlaveDelegate):
         # XXX We need some refactoring in SearchBar to avoid this hook
         return payments
 
-    def update_klist(self, items):
-        self.klist.clear()
-        rollback_and_begin(self.conn)
-        for item in items: 
-            item = Payment.get(item.id, connection=self.conn)
-            self.klist.append(item)
-        self._update_total()
-
     #
     # Kiwi handlers
     #
 
-    def on_klist__selection_changed(self, *args):
+    def on_payments__selection_changed(self, *args):
         self._update_widgets()
 
     def on_cash_out_button__clicked(self, button):

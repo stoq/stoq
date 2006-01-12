@@ -33,59 +33,44 @@ import gettext
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.search import SearchBar
-from stoqlib.gui.columns import AccessorColumn
-from stoqlib.database import rollback_and_begin
+from stoqlib.gui.columns import AccessorColumn, ForeignKeyColumn
 
-from stoq.gui.application import AppWindow
-from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.application import SearchableAppWindow
 from stoq.lib.validators import get_price_format_str
-from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.domain.person import Person
 from stoq.domain.product import Product
-from stoq.domain.sellable import AbstractSellable
+from stoq.domain.sellable import AbstractSellable, BaseSellableInfo
 from stoq.domain.interfaces import ISellable, IStorable, IBranch
 
 _ = gettext.gettext
 
 
-class WarehouseApp(AppWindow):
+class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     gladefile = "warehouse"
-    widgets = ('sellable_list', 
-               'list_vbox',
-               'retention_button',
-               'history_button',
-               'receive_action',
-               'transfer_action')
-    
+    searchbar_table = AbstractSellable
+    searchbar_result_strings = (_('product'), _('products'))
+    searchbar_labels = (_('Matching:'),)
+    filter_slave_label = _('Show products at:')
+    klist_selection_mode = gtk.SELECTION_MULTIPLE
+    klist_name = 'products'
 
     def __init__(self, app):
-        self.conn = new_transaction()
-        AppWindow.__init__(self, app)
-        self._setup_slaves()
+        SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_view()
 
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
-
     def _setup_widgets(self):
-        self.sellable_list.set_columns(self._get_columns())
-        self.sellable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_label = SummaryLabel(klist=self.sellable_list,
+        self.summary_label = SummaryLabel(klist=self.products,
                                           column='quantity',
                                           label=_('<b>Stock Total:</b>'),
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
-        self.search_bar.set_focus()
 
-    def _setup_slaves(self):
+    def get_filter_slave_items(self):
         table = Person.getAdapterClass(IBranch)
         items = [(o.get_adapted().name, o) 
                   for o in table.select(connection=self.conn)]
@@ -94,29 +79,36 @@ class WarehouseApp(AppWindow):
                                         'branch on your database.'
                                         'Found zero')
         items.append(ALL_BRANCHES)
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show products at:'))
-        self.search_bar = SearchBar(self, AbstractSellable,
-                                    self._get_columns(), 
-                                    filter_slave=self.filter_slave) 
-        self.filter_slave.connect('status-changed',
-                                  self._on_filter_slave_changed)
-        self.search_bar.set_searchbar_labels(_('Matching:'))
-        self.search_bar.set_result_strings(_('product'), _('products'))
-        self.attach_slave("search_bar_holder", self.search_bar)
+        return items
 
-    def _update_view(self):
-        has_stock = len(self.sellable_list) > 0
+    def _update_view(self, *args):
+        has_stock = len(self.products) > 0
         self.retention_button.set_sensitive(has_stock)
-        one_selected = len(self.sellable_list.get_selected_rows()) == 1
+        one_selected = len(self.products.get_selected_rows()) == 1
         self.history_button.set_sensitive(one_selected)
+        self._update_stock_total()
 
-    def _get_columns(self):
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_view()
+
+    def _update_stock_total(self):
+        self.summary_label.update_total()
+
+    def _update_filter_slave(self, slave):
+        self.searchbar.search_items()
+        self._update_stock_total()
+
+    def get_on_filter_slave_status_changed(self):
+        return self._update_filter_slave
+
+    def get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
                        data_type=str, width=100),
-                Column('base_sellable_info.description', 
-                       title=_('Description'),
-                       expand=True, data_type=str, searchable=True),
+                ForeignKeyColumn(BaseSellableInfo, 'description',
+                                 title=_('Description'), data_type=str,
+                                 obj_field='base_sellable_info', 
+                                 expand=True, searchable=True),
                 AccessorColumn('supplier', self._get_supplier, 
                                title=_('Supplier'), data_type=str),
                 AccessorColumn('quantity', self._get_stock_balance, 
@@ -149,9 +141,6 @@ class WarehouseApp(AppWindow):
         storable = self._get_storable(instance)
         return storable.get_full_balance(branch)
 
-    def _update_stock_total(self):
-        self.summary_label.update_total()
-
     #
     # Hooks
     #
@@ -159,21 +148,9 @@ class WarehouseApp(AppWindow):
     def get_extra_query(self):
         """Hook called by SearchBar"""
         # TODO search by supplier name too. Bug 2180
-        return
+        return (AbstractSellable.q.base_sellable_infoID ==
+                BaseSellableInfo.q.id)
         
-    def update_klist(self, sellables=None):
-        """Hook called by SearchBar"""
-        rollback_and_begin(self.conn)
-        self.sellable_list.clear()
-        for sellable in sellables:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = AbstractSellable.get(sellable.id, connection=self.conn)
-            self.sellable_list.append(obj)
-        self._select_first_item(self.sellable_list)
-        self._update_view()
-        self._update_stock_total()
-
     def filter_results(self, sellables):
         """Hook called by SearchBar"""
         table = Product.getAdapterClass(ISellable)
@@ -184,9 +161,6 @@ class WarehouseApp(AppWindow):
     # Callbacks
     #
 
-    def _on_filter_slave_changed(self, slave):
-        self.sellable_list.refresh()
-        self._update_stock_total()
 
-    def on_sellable_list__selection_changed(self, *args):
+    def on_products__selection_changed(self, *args):
         self._update_view()

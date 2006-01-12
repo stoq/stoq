@@ -56,9 +56,8 @@ class SellableSearch(SearchDialog):
  
     def __init__(self, conn, hide_footer=False):
         selection_mode = gtk.SELECTION_MULTIPLE
-        SearchDialog.__init__(self, self.search_table, 
+        SearchDialog.__init__(self, conn, self.search_table, 
                               hide_footer=hide_footer,
-                              parent_conn=conn, 
                               selection_mode=selection_mode)
         self.set_searchbar_labels(_('matching:'))
         self.set_ok_label(_('_Add sale items'))

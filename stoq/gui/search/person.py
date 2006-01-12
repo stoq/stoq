@@ -63,13 +63,11 @@ class BasePersonSearch(SearchEditor):
     search_lbl_text = None
     result_strings = None
    
-    def __init__(self, title='', hide_footer=False,
-                 parent_conn=None):
+    def __init__(self, conn, title='', hide_footer=False):
         self.title = title or self.title
-        SearchEditor.__init__(self, self.table, 
+        SearchEditor.__init__(self, conn, self.table, 
                               self.editor_class,
                               interface=self.interface,
-                              parent_conn=parent_conn,
                               hide_footer=hide_footer)
         self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
@@ -124,27 +122,6 @@ class EmployeeSearch(BasePersonSearch):
         return dict(join=LEFTJOINOn(self.table, EmployeeRole,
                                     self.table.q.roleID == 
                                     EmployeeRole.q.id))
-
-class EmployeeRoleSearch(SearchEditor):
-    title = _('Employee Role Search')
-    editor_class = EmployeeRoleEditor
-    table = EmployeeRole
-    size = (450, 390)
-
-    def __init__(self):
-        SearchEditor.__init__(self,
-                              EmployeeRoleSearch.table,
-                              EmployeeRoleSearch.editor_class)
-        self.set_searchbar_labels(_('Role Matching'))
-        self.set_result_strings(_('role'), _('roles'))
-        
-    
-    #
-    # SearchEditor Hooks
-    #
-    
-    def get_columns(self):
-        return [Column('name', _('Role'), str, sorted=True)] 
     
 
 class SupplierSearch(BasePersonSearch):
@@ -310,6 +287,27 @@ class TransporterSearch(BasePersonSearch):
         if status != ALL_ITEMS_INDEX:
             query = AND(query, transporter_table.q.is_active == status)
         return query
+
+
+class EmployeeRoleSearch(SearchEditor):
+    title = _('Employee Role Search')
+    editor_class = EmployeeRoleEditor
+    table = EmployeeRole
+    size = (425, 390)
+
+    def __init__(self, conn):
+        SearchEditor.__init__(self, conn, EmployeeRoleSearch.table,
+                              EmployeeRoleSearch.editor_class)
+        self.set_searchbar_labels(_('Role Matching'))
+        self.set_result_strings(_('role'), _('roles'))
+        
+    
+    #
+    # SearchEditor Hooks
+    #
+    
+    def get_columns(self):
+        return [Column('name', _('Role'), str, sorted=True)] 
 
 
 class BranchSearch(BasePersonSearch):

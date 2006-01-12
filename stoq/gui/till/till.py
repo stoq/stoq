@@ -37,7 +37,6 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from kiwi.ui.dialogs import messagedialog
-from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.exceptions import TillError
 from stoqlib.database import rollback_and_begin, finish_transaction
@@ -45,11 +44,10 @@ from stoqlib.database import rollback_and_begin, finish_transaction
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
-from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
-from stoq.gui.application import AppWindow
+from stoq.gui.application import SearchableAppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoq.gui.till.operation import TillOperationDialog
 from stoq.gui.wizards.sale import SaleWizard
@@ -57,35 +55,22 @@ from stoq.gui.wizards.sale import SaleWizard
 _ = gettext.gettext
 
 
-class TillApp(AppWindow):
+class TillApp(SearchableAppWindow):
 
     app_name = _('Till')
     gladefile = 'till'
-    widgets = ('searchbar_holder',
-               'sales_list',
-               'list_vbox',
-               'confirm_order_button',
-               'TillMenu',
-               'TillOpen',
-               'TillClose',
-               'TillOperations',
-               'CurrentTill',
-               'quit_action')
+    searchbar_table = Sale
+    searchbar_result_strings = (_('sale'), _('sales'))
+    searchbar_labels = (_('Sales Matching:'),)
+    klist_name = 'sales'
 
     def __init__(self, app):
-        AppWindow.__init__(self, app)
-        self.conn = new_transaction()
+        SearchableAppWindow.__init__(self, app)
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             self.confirm_order_button.hide()
-        self._setup_slaves()
         self._setup_widgets()
         self.searchbar.search_items()
         self._update_widgets()
-
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
 
     def get_title(self):
         today_format = _('%d of %B')
@@ -97,28 +82,25 @@ class TillApp(AppWindow):
 
     def _setup_widgets(self):
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_label = SummaryLabel(klist=self.sales_list,
+        self.summary_label = SummaryLabel(klist=self.sales,
                                           column='total_sale_amount',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
 
-    def _update_widgets(self):
+    def _update_widgets(self, *args):
         has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
         self.TillOperations.set_sensitive(has_till)
-        has_sales = len(self.sales_list) > 0
+        has_sales = len(self.sales) > 0
         self.confirm_order_button.set_sensitive(has_sales)
         self._update_total()
 
-    def _setup_slaves(self):
-        self.sales_list.set_columns(self._get_columns())
-        self.searchbar = SearchBar(self, Sale, self._get_columns())
-        self.searchbar.set_result_strings(_('sale'), _('sales'))
-        self.searchbar.set_searchbar_labels(_('Sales Matching:'))
-        self.attach_slave('searchbar_holder', self.searchbar)
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_widgets()
 
     def _format_order_number(self, order_number):
         # FIXME We will remove this method after bug 2214
@@ -126,7 +108,7 @@ class TillApp(AppWindow):
             return 0
         return order_number
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('order_number', title=_('Order'), width=100, 
                        format_func=self._format_order_number,
                        data_type=int, sorted=True),
@@ -144,20 +126,8 @@ class TillApp(AppWindow):
         q3 = Sale.q.status == Sale.STATUS_OPENED
         return AND(q1, q2, q3)
 
-    def update_klist(self, sales=[]):
-        rollback_and_begin(self.conn)
-        self.sales_list.clear()
-        for sale in sales:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = Sale.get(sale.id, connection=self.conn)
-            self.sales_list.append(obj)
-        self._select_first_item(self.sales_list)
-        self._update_widgets()
-
     def open_till(self):
         rollback_and_begin(self.conn)
-
         if get_current_till_operation(self.conn) is not None:
             raise TillError("You already have a till operation opened. "
                             "Close the current Till and open another one.")
@@ -216,7 +186,7 @@ class TillApp(AppWindow):
    
     def on_confirm_order_button__clicked(self, *args):
         rollback_and_begin(self.conn)
-        sale = self.sales_list.get_selected()
+        sale = self.sales.get_selected()
         title = _('Confirm Sale')
         model = self.run_dialog(SaleWizard, self.conn, sale, title=title,
                                 edit_mode=True)

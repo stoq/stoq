@@ -48,9 +48,8 @@ class BaseSellableCatSearch(SearchEditor):
     table = BaseSellableCategory
     editor_class = BaseSellableCategoryEditor
 
-    def __init__(self, parent_conn=None):
-        SearchEditor.__init__(self, self.table, self.editor_class,
-                              parent_conn=parent_conn, hide_footer=True)
+    def __init__(self, conn):
+        SearchEditor.__init__(self, conn, self.table, self.editor_class)
         self.set_searchbar_labels(_('Base Categories Matching:'))
         self.set_result_strings(_('base category'), _('base categories'))
                 
@@ -78,14 +77,12 @@ class SellableCatSearch(SearchEditor):
     size = (800, 500)
     title = _('Sellable Category Search')
 
-    def __init__(self, parent_conn=None):
+    def __init__(self, conn):
         editor = SellableCategoryEditor
         table = SellableCategory
         search_table = AbstractSellableCategory
-        SearchEditor.__init__(self, table, editor,
-                              search_table=search_table, 
-                              parent_conn=parent_conn,
-                              hide_footer=True)
+        SearchEditor.__init__(self, conn, table, editor,
+                              search_table=search_table)
         self.set_result_strings(_('category'), _('categories'))
         self.set_searchbar_labels(_('Categories Matching:'))
 

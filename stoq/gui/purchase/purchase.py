@@ -35,21 +35,19 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
-from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs import confirm_dialog, notify_dialog
-from stoqlib.database import rollback_and_begin, finish_transaction
+from stoqlib.database import finish_transaction, rollback_and_begin
 
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
-from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
-from stoq.gui.application import AppWindow
+from stoq.lib.runtime import new_transaction
+from stoq.gui.application import SearchableAppWindow
 from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.person import SupplierSearch, TransporterSearch
-from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.purchase import PurchaseWizard
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
@@ -58,74 +56,61 @@ from stoq.gui.search.product import ProductSearch
 _ = gettext.gettext
 
 
-class PurchaseApp(AppWindow):
+class PurchaseApp(SearchableAppWindow):
    
     app_name = _('Purchase')
     gladefile = "purchase"
-    widgets = ('purchase_list',
-               'edit_button',
-               'details_button',
-               'summary_hbox',
-               'send_to_supplier_action',
-               'print_button')
-               
+    searchbar_table = PurchaseOrder
+    searching_by_date = True
+    searchbar_result_strings = (_('order'), _('orders'))
+    searchbar_labels = (_('matching:'),)
+    filter_slave_label = _('Show orders with status')
+    klist_selection_mode = gtk.SELECTION_MULTIPLE
+    klist_name = 'orders'
+
     def __init__(self, app):
-        self.conn = new_transaction()
-        AppWindow.__init__(self, app)
+        SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
-        self._setup_slaves()
         self._update_view()
 
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
-
     def _setup_widgets(self):
-        self.purchase_list.set_columns(self._get_columns())
-        self.purchase_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_total = SummaryLabel(klist=self.purchase_list,
+        self.summary_total = SummaryLabel(klist=self.orders,
                                           column='purchase_total',
                                           label='<b>Totals:</b>',
                                           value_format=value_format)
         self.summary_total.show()
-        self.summary_received = SummaryLabel(klist=self.purchase_list,
+        self.summary_received = SummaryLabel(klist=self.orders,
                                              column='received_total',
                                              label='',
                                              value_format=value_format)
         self.summary_received.show()
         self.summary_hbox.pack_start(self.summary_total, False)
         self.summary_hbox.pack_end(self.summary_received, False)
-        
-    def _setup_slaves(self):
-        combo_items = [(text, value) 
-                        for value, text in PurchaseOrder.statuses.items()]
+
+    def get_filter_slave_items(self):
+        items = [(text, value) 
+                    for value, text in PurchaseOrder.statuses.items()]
         first_item = (_('Any'), ALL_ITEMS_INDEX)
-        combo_items.append(first_item)
-        self.filter_slave = FilterSlave(combo_items,
-                                        selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show orders with status'))
+        items.append(first_item)
+        return items
 
-        self.search_bar = SearchBar(self, PurchaseOrder,
-                                    self._get_columns(), 
-                                    filter_slave=self.filter_slave,
-                                    searching_by_date=True)
-        self.search_bar.set_searchbar_labels(_('matching:'))
-        self.search_bar.set_result_strings(_('order'), _('orders'))
+    def _update_totals(self):
+        self.summary_total.update_total()
+        self.summary_received.update_total()
+        self._update_view()
 
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
-        self.attach_slave("search_bar_holder", self.search_bar)
-        self.search_bar.set_focus()
-
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_totals()
+            
     def _update_view(self):
-        has_purchases = len(self.purchase_list) > 0
+        has_purchases = len(self.orders) > 0
         widgets = [self.edit_button, self.details_button, self.print_button,
                    self.send_to_supplier_action]
         for widget in widgets:
             widget.set_sensitive(has_purchases)
-        selection = self.purchase_list.get_selected_rows()
+        selection = self.orders.get_selected_rows()
         can_edit = one_selected = len(selection) == 1
         if one_selected:
             can_edit = (selection[0].status ==
@@ -136,7 +121,7 @@ class PurchaseApp(AppWindow):
         self.print_button.set_sensitive(has_item_selected)
         self.send_to_supplier_action.set_sensitive(has_item_selected)
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('order_number', title=_('Number'), sorted=True,
                        data_type=int, width=100, format='%03d'),
                 Column('open_date', title=_('Date Started'),
@@ -156,19 +141,6 @@ class PurchaseApp(AppWindow):
     # Hooks
     #
 
-    def update_klist(self, purchases=None):
-        """Hook called by SearchBar"""
-        rollback_and_begin(self.conn)
-        self.purchase_list.clear()
-        for purchase in purchases:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = PurchaseOrder.get(purchase.id, connection=self.conn)
-            self.purchase_list.append(obj)
-        self.summary_total.update_total()
-        self.summary_received.update_total()
-        self._select_first_item(self.purchase_list)
-        self._update_view()
 
     def get_extra_query(self):
         supplier_table = Person.getAdapterClass(ISupplier)
@@ -189,13 +161,13 @@ class PurchaseApp(AppWindow):
         return order
         
     def _edit_order(self):
-        order = self.purchase_list.get_selected_rows()
+        order = self.orders.get_selected_rows()
         qty = len(order)
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
         self._open_order(order[0], edit_mode=True)
-        self.search_bar.search_items()
+        self.searchbar.search_items()
 
     #
     # Callbacks
@@ -205,31 +177,28 @@ class PurchaseApp(AppWindow):
         # FIXME Remove this method after gazpacho bug fix.
         self._open_order()
 
-    def on_purchase_list__selection_changed(self, *args):
+    def on_orders__selection_changed(self, *args):
         self._update_view()
 
-    def on_purchase_list__double_click(self, *args):
+    def on_orders__double_click(self, *args):
         self._edit_order()
 
     def _on_suppliers_action_clicked(self, *args):
-        self.run_dialog(SupplierSearch, hide_footer=True)
+        self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
             
     def _on_products_action_clicked(self, *args):
-        # TODO bug 2206
-        conn = new_transaction()
-        model = self.run_dialog(ProductSearch, conn)
-        finish_transaction(conn, model)
+        self.run_dialog(ProductSearch, self.conn)
 
     def _on_order_action_clicked(self, *args):
         self._open_order()
-        self.search_bar.search_items()
+        self.searchbar.search_items()
 
     def on_edit_button__clicked(self, *args):
         self._edit_order()
 
     def _on_send_to_supplier_action_clicked(self, *args):
         rollback_and_begin(self.conn)
-        orders = self.purchase_list.get_selected_rows()
+        orders = self.orders.get_selected_rows()
         valid_orders = [order for order in orders 
                                   if order.status == PurchaseOrder.ORDER_PENDING]
         qty = len(orders)
@@ -256,13 +225,13 @@ class PurchaseApp(AppWindow):
         for order in valid_orders:
             order.confirm_order()
         self.conn.commit()
-        self.search_bar.search_items()
+        self.searchbar.search_items()
 
     def _on_base_categories_action_clicked(self, *args):
-        self.run_dialog(BaseSellableCatSearch)
+        self.run_dialog(BaseSellableCatSearch, self.conn)
 
     def _on_categories_action_clicked(self, *args):
-        self.run_dialog(SellableCatSearch)
+        self.run_dialog(SellableCatSearch, self.conn)
 
     def _on_services_action_clicked(self, *args): 
         conn = new_transaction()
@@ -270,4 +239,4 @@ class PurchaseApp(AppWindow):
         finish_transaction(conn, model)
 
     def _on_transporters_action_clicked(self, *args): 
-        self.run_dialog(TransporterSearch, hide_footer=True)
+        self.run_dialog(TransporterSearch, self.conn, hide_footer=True)

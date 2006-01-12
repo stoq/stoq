@@ -34,55 +34,42 @@ import datetime
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.gui.search import SearchBar
-from stoqlib.database import rollback_and_begin
 
 from stoq.domain.payment.base import Payment
-from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
-from stoq.gui.application import AppWindow
-from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
-class ReceivableApp(AppWindow):
+class ReceivableApp(SearchableAppWindow):
 
     app_name = _('Receivable')
     gladefile = 'receivable'
-    widgets = ('receivable_list',
-               'list_vbox',
-               'cancel_button',
-               'edit_button',
-               'add_button',
-               'details_button')
+    searchbar_table = Payment
+    searching_by_date = True
+    searchbar_result_strings = (_('payment'), _('payments'))
+    searchbar_labels = (_('matching:'),)
+    filter_slave_label = _('Show payments with status')
+    klist_selection_mode = gtk.SELECTION_MULTIPLE
+    klist_name = 'receivables'
 
     def __init__(self, app):
-        AppWindow.__init__(self, app)
-        self.conn = new_transaction()
-        self._setup_slaves()
+        SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
 
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
-
     def _setup_widgets(self):
-        self.receivable_list.set_columns(self._get_columns())
-        self.receivable_list.set_selection_mode(gtk.SELECTION_MULTIPLE)
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_label = SummaryLabel(klist=self.receivable_list,
+        self.summary_label = SummaryLabel(klist=self.receivables,
                                           column='value',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
-        self.searchbar.set_focus()
 
-    def _update_widgets(self):
-        has_sales = len(self.receivable_list) > 0
+    def _update_widgets(self, *args):
+        has_sales = len(self.receivables) > 0
         widgets = [self.cancel_button, self.details_button,
                    self.edit_button, self.add_button]
         for widget in widgets:
@@ -92,19 +79,14 @@ class ReceivableApp(AppWindow):
     def _update_total_label(self):
         self.summary_label.update_total()
 
-    def _setup_slaves(self):
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_widgets()
+
+    def get_filter_slave_items(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show payments with status'))
-        self.searchbar = SearchBar(self, Payment, self._get_columns(),
-                                   filter_slave=self.filter_slave,
-                                   searching_by_date=True)
-        self.searchbar.set_result_strings(_('payment'), _('payments'))
-        self.searchbar.set_searchbar_labels(_('matching:'))
-        self.filter_slave.connect('status-changed', 
-                                  self.searchbar.search_items)
-        self.attach_slave('searchbar_holder', self.searchbar)
+        return items
 
     def _get_payment_id(self, value):
         if not value:
@@ -115,7 +97,7 @@ class ReceivableApp(AppWindow):
     # SearchBar hooks
     #
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('payment_id', title=_('Number'), width=100, 
                        data_type=str, sorted=True,
                        format_func=self._get_payment_id),
@@ -134,17 +116,6 @@ class ReceivableApp(AppWindow):
         if status == ALL_ITEMS_INDEX:
             return
         return Payment.q.status == status
-
-    def update_klist(self, payments=[]):
-        rollback_and_begin(self.conn)
-        self.receivable_list.clear()
-        for payment in payments:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = Payment.get(payment.id, connection=self.conn)
-            self.receivable_list.append(obj)
-        self._select_first_item(self.receivable_list)
-        self._update_widgets()
 
     #
     # Kiwi callbacks

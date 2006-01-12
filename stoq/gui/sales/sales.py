@@ -28,69 +28,59 @@ stoq/gui/sales/sale.py:
     Implementation of sales application.
 """
 
-import gtk
 import gettext
 from datetime import date
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
-from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.database import rollback_and_begin
 
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
-from stoq.lib.runtime import new_transaction
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
-from stoq.gui.application import AppWindow
+from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
                                              GiftCertificateSearch)
-from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.sales.details import SaleDetailsDialog
 
 _ = gettext.gettext
 
-class SalesApp(AppWindow):
+class SalesApp(SearchableAppWindow):
 
     app_name = _('Sales')
-    gladefile = 'sales'
-    widgets = ('sales_list',
-               'list_vbox',
-               'cancel_button',
-               'installments_button',
-               'details_button')
+    gladefile = 'sales_app'
+    searchbar_table = Sale
+    searching_by_date = True
+    searchbar_result_strings = (_('sale'), _('sales'))
+    searchbar_labels = (_('matching:'),)
+    filter_slave_label = _('Show sales with status')
+    klist_name = 'sales'
 
     def __init__(self, app):
-        AppWindow.__init__(self, app)
-        self.conn = new_transaction()
-        self._setup_slaves()
+        SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
         
-    def _select_first_item(self, list):
-        if len(list):
-            # XXX this part will be removed after bug 2178
-            list.select(list[0])
-
     def _setup_widgets(self):
-        self.sales_list.set_columns(self._get_columns())
-        self.sales_list.set_selection_mode(gtk.SELECTION_BROWSE)
         value_format = '<b>%s</b>' % get_price_format_str()
-        self.summary_label = SummaryLabel(klist=self.sales_list,
+        self.summary_label = SummaryLabel(klist=self.sales,
                                           column='total_sale_amount',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
-        self.searchbar.set_focus()
+
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_widgets()
 
     def _update_widgets(self):
-        has_sales = len(self.sales_list) > 0
+        has_sales = len(self.sales) > 0
         widgets = [self.cancel_button, self.installments_button,
                    self.details_button]
         for widget in widgets:
@@ -100,22 +90,12 @@ class SalesApp(AppWindow):
     def _update_total_label(self):
         self.summary_label.update_total()
 
-    def _setup_slaves(self):
+    def get_filter_slave_items(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show sales with status'))
-        self.searchbar = SearchBar(self, Sale, self._get_columns(),
-                                   query_args=self._get_query_args(),
-                                   filter_slave=self.filter_slave,
-                                   searching_by_date=True)
-        self.searchbar.set_result_strings(_('sale'), _('sales'))
-        self.searchbar.set_searchbar_labels(_('matching:'))
-        self.filter_slave.connect('status-changed', 
-                                  self.searchbar.search_items)
-        self.attach_slave('searchbar_holder', self.searchbar)
+        return items
 
-    def _get_query_args(self):
+    def get_query_args(self):
         # It seems that there is a bug in SQLObject which doesn't allow us
         # to have and LEFTJoin and single joins at the same time.
         # See bug 2207
@@ -127,7 +107,7 @@ class SalesApp(AppWindow):
     # SearchBar hooks
     #
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('order_number', title=_('Number'), width=100, 
                        data_type=str, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120, 
@@ -153,36 +133,25 @@ class SalesApp(AppWindow):
             return AND(q1, q2, q3)
         return AND(q1, q2)
 
-    def update_klist(self, sales=[]):
-        rollback_and_begin(self.conn)
-        self.sales_list.clear()
-        for sale in sales:
-            # Since search bar change the connection internally we must get
-            # the objects back in our main connection
-            obj = Sale.get(sale.id, connection=self.conn)
-            self.sales_list.append(obj)
-            self._select_first_item(self.sales_list)
-        self._update_widgets()
-
     #
     # Kiwi callbacks
     #
 
     def _on_clients_action__clicked(self, *args):
-        self.run_dialog(ClientSearch, hide_footer=True)
+        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def _on_products_action__clicked(self, *args):
         self.run_dialog(SellableSearch, self.conn, hide_footer=True)
 
     def _on_credit_provider_action__clicked(self, *args):
-        self.run_dialog(CreditProviderSearch, hide_footer=True)
+        self.run_dialog(CreditProviderSearch, self.conn, hide_footer=True)
 
     def on_details_button__clicked(self, *args):
-        sale = self.sales_list.get_selected()
+        sale = self.sales.get_selected()
         self.run_dialog(SaleDetailsDialog, self.conn, sale)
 
     def _on_gift_certificate_types_action_clicked(self, *args):
-        self.run_dialog(GiftCertificateTypeSearch)
+        self.run_dialog(GiftCertificateTypeSearch, self.conn)
 
     def _on_gift_certificates_action_clicked(self, *args):
-        self.run_dialog(GiftCertificateSearch)
+        self.run_dialog(GiftCertificateSearch, self.conn)
