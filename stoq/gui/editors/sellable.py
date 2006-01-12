@@ -36,6 +36,7 @@ import string
 from sqlobject.sqlbuilder import LIKE, func
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.dialogs import run_dialog
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqdrivers.constants import UNIT_CUSTOM
 
 from stoq.domain.sellable import (SellableCategory, AbstractSellable,

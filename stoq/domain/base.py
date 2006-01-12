@@ -38,7 +38,7 @@ from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
 from sqlobject.converters import registerConverter
 from sqlobject.styles import mixedToUnder
-from sqlobject.inheritance import InheritableSQLObject, InheritableSQLMeta
+from sqlobject.inheritance import InheritableSQLObject
 from stoqlib.exceptions import AdapterError
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.declarations import implementedBy
