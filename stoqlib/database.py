@@ -28,17 +28,10 @@ database.py:
     Database access methods
 """
 
-_model_connection_func = None
+# This class will be moved to it's proper place after bug 2253
+class Adapter:
+    pass
 
-def get_model_connection():
-    global _model_connection_func
-    assert _model_connection_func
-    return _model_connection_func()
-
-def set_model_connection_func(func):
-    global _model_connection_func
-    assert func
-    _model_connection_func = func
 
 def rollback_and_begin(conn):
     conn.rollback()

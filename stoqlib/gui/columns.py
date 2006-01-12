@@ -24,10 +24,12 @@ gui/columns.py:
     Special columns definition for kiwi lists.
 """
 
-from twisted.python.components import Adapter
 from kiwi.accessors import kgetattr
 from kiwi.ui.widgets.list import Column
+
+from stoqlib.database import Adapter
  
+
 class FacetColumn(Column):
     def __init__(self, facet, *args, **kwargs):
         self._facet = facet
