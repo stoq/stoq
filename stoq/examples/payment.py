@@ -107,7 +107,6 @@ def create_payments():
 
     pm = sysparam(conn).BASE_PAYMENT_METHOD
     for iface in [ICheckPM, IBillPM]:
-        print 'original'
         method = iface(pm, connection=conn)
         method.max_installments_number = MAX_INSTALLMENTS_NUMBER
         
