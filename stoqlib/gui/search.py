@@ -35,12 +35,12 @@ import warnings
 
 import gtk
 import gobject
-from twisted.python.components import Adapter
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
+from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
                            SODateTimeCol, SODateCol)
@@ -49,7 +49,7 @@ import stoqlib
 from stoqlib.gui.dialogs import BasicDialog, run_dialog
 from stoqlib.exceptions import _warn
 from stoqlib.common import is_integer, is_float
-from stoqlib.database import get_model_connection, rollback_and_begin
+from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -276,9 +276,12 @@ class SearchBar(SlaveDelegate):
     """
     gladefile = 'SearchBarHolder'
     widgets = ('search_results_label',)
+
+    gsignal('before-search-activate')
+    gsignal('search-activate', object)
     
-    def __init__(self, parent, table_type, columns=None, query_args=None, 
-                 search_callback=None, filter_slave=None, 
+    def __init__(self, conn, parent, table_type, columns=None, 
+                 query_args=None, search_callback=None, filter_slave=None,
                  searching_by_date=False):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
@@ -297,11 +300,9 @@ class SearchBar(SlaveDelegate):
 
         entry_slave.connect('searchbutton-clicked', self.search_items)
         entry_slave.connect('searchentry-activate', self.search_items)
+        self.conn = conn
         self.attach_slave('place_holder', self._slave)
         self.searching_by_date = searching_by_date
-        # Since we need to synchronize transactions each time we search for
-        # objects we have to create a special transaction for the SearchBar
-        self.conn = get_model_connection()
         self._result_strings = None
         self.columns = columns
         self.table_type = table_type
@@ -505,10 +506,7 @@ class SearchBar(SlaveDelegate):
             kwargs.update(self.query_args)
         kwargs['distinct'] = True
         
-        # Synchronizing transaction.
-        # XXX Waiting for a SQLObject sync method
-        rollback_and_begin(self.conn)
-
+        self.emit('before-search-activate')
         if query:
             search_results = self.table_type.select(query, **kwargs)
         else:
@@ -534,15 +532,12 @@ class SearchBar(SlaveDelegate):
             msg = ''
 
         self.search_results_label.set_text(msg)
-        objs = self.parent.filter_results(objs)
+        results = self.parent.filter_results(objs)
         # Since SQLObject doesn't support distinct-counting of sliced
         # objects we need to send here a list instead of a SearchResults
-        self.parent.update_klist(list(objs))
-
-    def close_connection(self):
-        # XXX Waiting for SQLObject improvements. We need there a simple
-        # method do this in a simple way.
-        self.conn._connection.close()
+        if not isinstance(results, list):
+            results = list(results)
+        self.emit('search-activate', list(results))
 
     def search_items(self, *args):
         self._slave.start_animate_search_icon()
@@ -616,9 +611,8 @@ class SearchDialog(BasicDialog):
     title = ''
     size = ()
             
-    def __init__(self, table, search_table=None, parent_conn=None,
-                 hide_footer=True, title='', 
-                 selection_mode=gtk.SELECTION_BROWSE, 
+    def __init__(self, conn, table, search_table=None, hide_footer=True, 
+                 title='', selection_mode=gtk.SELECTION_BROWSE, 
                  searching_by_date=False):
         BasicDialog.__init__(self)
         title = title or self.title
@@ -632,11 +626,15 @@ class SearchDialog(BasicDialog):
         self.set_ok_label(_('Se_lect Items'))
         self.table = table
         self.search_table = search_table or self.table
-        self.parent_conn = parent_conn
-        self.conn = get_model_connection()
-        assert self.conn
+        self.conn = conn
+        if not isinstance(conn, Transaction):
+            raise TypeError('Invalid type for connection argument, got %s'
+                            % type(conn))
         self.searching_by_date = searching_by_date
         self.setup_slaves()
+
+    def _sync(self, *args):
+        rollback_and_begin(self.conn)
 
     def setup_slaves(self, **kwargs):
         self.disable_ok()
@@ -652,10 +650,12 @@ class SearchDialog(BasicDialog):
         columns = self.get_columns()
         query_args = self.get_query_args()
         use_dates = self.searching_by_date
-        self.search_bar = SearchBar(self, self.search_table, columns, 
-                                    query_args=query_args,
+        self.search_bar = SearchBar(self.conn, self, self.search_table,
+                                    columns, query_args=query_args,
                                     filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
+        self.search_bar.connect('before-search-activate', self._sync)
+        self.search_bar.connect('search-activate', self.update_klist)
         self.after_search_bar_created()
         self.attach_slave('header', self.search_bar)
 
@@ -696,36 +696,10 @@ class SearchDialog(BasicDialog):
         self.klist.clear()
         self.update_widgets()
 
-    def lookup_connection(self, obj, conn=None):
-        table = type(obj)
-        if conn:
-            return table.get(obj.id, connection=conn)
-        return table.get(obj.id, connection=self.parent_conn)
-        
-    def restore_model_connections(self, objs=None, conn=None):
-        objs = objs or self.klist[:]
-        if not objs:
-            return 
-        if isinstance(objs, list):
-            retval = []
-            for obj in objs[:]:
-                retval.append(self.lookup_connection(obj, conn))
-        else:
-            retval = self.lookup_connection(objs, conn)
-        return retval
-
     def confirm(self):
         objs = self.get_selection()
-        if self.parent_conn:
-            self.retval = self.restore_model_connections(objs)
-        else:
-            self.retval = objs
+        self.retval = objs
         self.close()
-
-    def close(self):
-        self.search_bar.close_connection()
-        self.conn._connection.close()
-        BasicDialog.close(self)
 
     def cancel(self, *args):
         self.retval = []
@@ -735,10 +709,13 @@ class SearchDialog(BasicDialog):
     # Hooks
     #
 
-    def update_klist(self, objs=None):
+    def get_selected_instance(self):
+        """Overwrite this method on parent when it's needed. It must returns
+        an object that we want to have selected on the list
+        """
+
+    def update_klist(self, slave, objs):
         """A hook called by SearchBar and BaseListSlave instances."""
-        self.klist.clear()
-        
         if not objs:
             self.disable_ok()
             self.update_widgets()
@@ -751,10 +728,22 @@ class SearchDialog(BasicDialog):
         else:
             msg = 'Invalid type for result objects: Type: %s'
             raise TypeError, msg % type(objs)
-            
+
         if count:
             self.klist.add_list(objs)
-            self.klist.select(objs[0])
+            selected = self.get_selected_instance()
+            if selected:
+                # XXX We must deal in a better way with performance here. 
+                # Waiting for bug 2275
+                objs = [obj for obj in self.klist 
+                                    if obj.id == selected.id]
+                if not len(objs) == 1:
+                    raise ValueError('Invalid selected object')
+                selected = objs[0]
+            else:
+                objs = iter(objs)
+                selected = objs.next()
+            self.klist.select(selected)
             self.enable_ok()
         self.update_widgets()
 
@@ -796,17 +785,18 @@ class SearchEditor(SearchDialog):
                 kiwi list to get adapter for the editor.
     """
 
-    def __init__(self, table, editor_class, interface=None,
-                 parent_conn=None, search_table=None, hide_footer=True,
+    def __init__(self, conn, table, editor_class, interface=None,
+                 search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  searching_by_date=False):
-        SearchDialog.__init__(self, table, search_table,
-                              parent_conn, hide_footer=hide_footer, 
-                              title=title, selection_mode=selection_mode,
+        SearchDialog.__init__(self, conn, table, search_table,
+                              hide_footer=hide_footer, title=title, 
+                              selection_mode=selection_mode,
                               searching_by_date=searching_by_date)
         self.interface = interface
         self.editor_class = editor_class
         self.accept_edit_data = True
+        self._selected = None
         self.klist.connect('double_click', self.edit)
         self.update_widgets()
 
@@ -825,6 +815,9 @@ class SearchEditor(SearchDialog):
     def hide_new_button(self):
         self.toolbar.new_button.hide()
 
+    def get_selected_instance(self):
+        return self._selected
+
     def run(self, obj=None):
         if obj: 
             if self.interface:
@@ -837,24 +830,19 @@ class SearchEditor(SearchDialog):
                 obj = self.table.get(id=obj.id, connection=self.conn)
         rv = self.run_editor(obj)
         if not rv:
-            self.conn.rollback()
-            self.conn.begin()
+            rollback_and_begin(self.conn)
             return
 
         self.conn.commit()
-        self.search_bar.search_items()
-        # Since SearchBar has its own transaction we need to bring all the
-        # objects in the list back to self.conn
-        objs = self.restore_model_connections(conn=self.conn)
-        self.klist.clear()
-        self.klist.add_list(objs)
-
         if self.interface and isinstance(rv, Adapter):
             # This SearchDialog has original objects in the kiwi list and
             # that's why I need to get them back here.
             rv = rv.get_adapted()
-        if rv in self.klist:
-            self.klist.select(rv)
+        if not isinstance(rv, self.search_table):
+            raise TypeError('Invalid type for selected object, it should '
+                            'be %s' % self.search_table)
+        self._selected = rv
+        self.search_bar.search_items()
 
     def run_editor(self, obj):
         return run_dialog(self.editor_class, self, self.conn, obj)
