@@ -39,8 +39,8 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.exceptions import _warn
 from kiwi.ui.dialogs import warning, error
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
-from stoqdrivers.constants import (UNIT_EMPTY, TAX_NONE, MONEY_PM,
-                                   CHEQUE_PM)
+from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
+                                   MONEY_PM, CHEQUE_PM)
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
@@ -147,11 +147,18 @@ class FiscalCoupon:
         sellable = item.sellable
         description = sellable.base_sellable_info.description
         # FIXME: TAX_NONE is a HACK, waiting for bug #2269
-        # FIXME: UNIT_EMPTY is temporary and will be remove when bug #2247
-        # is fixed.
+
+        unit_desc = ''
+        if not sellable.unit:
+            unit = UNIT_EMPTY
+        else:
+            if sellable.unit.index == UNIT_CUSTOM:
+                unit_desc = sellable.unit.description
+            unit = sellable.unit.index
         item_id = self.printer.add_item(sellable.code, item.quantity,
-                                        item.price, UNIT_EMPTY,
-                                        description, TAX_NONE, 0, 0)
+                                        item.price, unit, description,
+                                        TAX_NONE, 0, 0,
+                                        unit_desc=unit_desc)
         self._item_ids[item] = item_id
 
     def get_items(self):

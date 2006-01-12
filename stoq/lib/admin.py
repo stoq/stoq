@@ -30,6 +30,8 @@ tables, removing tables and configuring administration user.
 
 import sys
 
+from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
+
 from stoq.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam
 from stoq.domain.person import EmployeeRole, PersonAdaptToUser
@@ -37,6 +39,7 @@ from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
 from stoq.domain.interfaces import (IIndividual, IEmployee, IUser,
                                     ISalesPerson)
+from stoq.domain.sellable import SellableUnit
 
 def ensure_admin_user(name, username, password):
     print_msg("Creating administrator user...", break_line=False)
@@ -70,6 +73,18 @@ def ensure_admin_user(name, username, password):
     trans.commit()
     print_msg('done')
     return user
+
+def ensure_sellable_units():
+    """ Create native sellable units. """
+    print_msg("Creating sellable units... ", break_line=False)
+    trans = new_transaction()
+    unit_list = [("Kg", UNIT_WEIGHT),
+                 ("Lt", UNIT_LITERS),
+                 ("m ", UNIT_METERS)]
+    for desc, index in unit_list:
+        SellableUnit(description=desc, index=index, connection=trans)
+    trans.commit()
+    print_msg("done")
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
     if not list_tables and verbose:
