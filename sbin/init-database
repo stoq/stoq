@@ -43,7 +43,8 @@ from stoq.lib.runtime import set_test_mode, set_verbose, print_msg
 set_test_mode(TEST_MODE)
 
 from stoq.examples.createall import create
-from stoq.lib.admin import setup_tables, ensure_admin_user
+from stoq.lib.admin import (setup_tables, ensure_admin_user,
+                            ensure_sellable_units)
 from stoq.lib.parameters import ensure_system_parameters
 
 def main(args):
@@ -68,6 +69,7 @@ def main(args):
 
     ensure_system_parameters()
     ensure_admin_user(name, username, password)
+    ensure_sellable_units()
 
     if '-e' in args:
         create()

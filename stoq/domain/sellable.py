@@ -51,6 +51,14 @@ _ = gettext.gettext
 # Base Domain Classes
 #
 
+class SellableUnit(Domain):
+    """ A class used to represent the sellable unit.  The 'index' column
+    defines if this object is one of our 'primitive units' (unit registered
+    in database initialization time) or a user specified unit.
+    """
+    description = StringCol()
+    index = IntCol()
+
 class FancySellable:
     """A fancy class used by some kiwi entries."""
     # XXX Probably we could avoid this class with some kiwi improvements
@@ -174,8 +182,7 @@ class AbstractSellable(InheritableModelAdapter):
     status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
     cost = FloatCol(default=0.0)
-    # This field must be mandatory, waiting for bug 2247
-    unit = StringCol(default=None)
+    unit = ForeignKey("SellableUnit", default=None)
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')
     category = ForeignKey('SellableCategory', default=None)

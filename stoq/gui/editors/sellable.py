@@ -31,11 +31,15 @@ stoq/gui/editors/sellable.py:
 """
 
 import gettext
+import string
 
+from sqlobject.sqlbuilder import LIKE, func
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.dialogs import run_dialog
+from stoqdrivers.constants import UNIT_CUSTOM
 
-from stoq.domain.sellable import SellableCategory, AbstractSellable
+from stoq.domain.sellable import (SellableCategory, AbstractSellable,
+                                  SellableUnit)
 from stoq.domain.interfaces import ISellable, IStorable
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.giftcertificate import GiftCertificateItem
@@ -44,7 +48,6 @@ from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str
-
 
 _ = gettext.gettext
 
@@ -156,6 +159,8 @@ class SellableEditor(BaseEditor):
 
     gladefile = 'SellableEditor' 
     product_widgets = ('notes',)
+    sellable_unit_widgets = ("unit_combo",
+                             "unit_entry")
     sellable_widgets = ('code',
                         'description',
                         'category_combo',
@@ -165,6 +170,7 @@ class SellableEditor(BaseEditor):
     storable_widgets = ('stock_total_lbl',)
 
     def __init__(self, conn, model=None):
+        self._sellable = None
         BaseEditor.__init__(self, conn, model)
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
@@ -183,6 +189,35 @@ class SellableEditor(BaseEditor):
     def setup_widgets(self):
         raise NotImplementedError
 
+    def ensure_sellable_unit(self):
+        unit = self._sellable.unit
+        if unit.index == -1:
+            self._sellable.unit = None
+        else:
+            query = LIKE(func.UPPER(SellableUnit.q.description),
+                         "%%%s%%" % string.upper(unit.description))
+            conn = new_transaction()
+            result = SellableUnit.select(query, connection=conn)
+            count = result.count()
+            if not count:
+                return
+            elif count > 1:
+                raise DatabaseInconsistency("It is not possible to have "
+                                            "more than one SellableUnit "
+                                            "object representing the same "
+                                            "unit.")
+            self._sellable.unit = SellableUnit.get(result[0].id,
+                                                   connection=self.conn)
+        SellableUnit.delete(unit.id, connection=self.conn)
+
+    def update_unit_entry(self):
+        if (self._sellable and self._sellable.unit
+            and self._sellable.unit.index == UNIT_CUSTOM):
+            enabled = True
+        else:
+            enabled = False
+        self.unit_entry.set_sensitive(enabled)
+
     #
     # BaseEditor hooks
     #
@@ -197,45 +232,59 @@ class SellableEditor(BaseEditor):
         items = [('%s %s' % (obj.base_category.category_data.description, 
                              obj.category_data.description), obj)
                  for obj in category_list]
-
         self.category_combo.prefill(items)
+        query = SellableUnit.q.index != UNIT_CUSTOM
+        primitive_units = SellableUnit.select(query, connection=self.conn)
+        items = [(_("No unit"), -1)]
+        items.extend([(obj.description, obj.index)
+                          for obj in primitive_units])
+        items.append((_("Specify:"), UNIT_CUSTOM))
+        self.unit_combo.prefill(items)
 
     def setup_proxies(self):
         self.set_widget_formats()
         self.setup_combos()
-
         self.main_proxy = self.add_proxy(self.model,
                                          SellableEditor.product_widgets)
-
-        sellable = ISellable(self.model, connection=self.conn)
-        self.sellable_proxy = self.add_proxy(sellable,
+        self._sellable = ISellable(self.model, connection=self.conn)
+        self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
         storable = IStorable(self.model, connection=self.conn)
         self.storable_proxy = self.add_proxy(storable,
                                              SellableEditor.storable_widgets)
+        if self._sellable.unit:
+            self._sellable.unit = self._sellable.unit.clone()
+        else:
+            self._sellable.unit = SellableUnit(description=None, index=None,
+                                               connection=self.conn)
+        self.unit_proxy = self.add_proxy(self._sellable.unit,
+                                         SellableEditor.sellable_unit_widgets)
+        self.update_unit_entry()
 
     #
     # Kiwi handlers
     #
+
+    def on_unit_combo__changed(self, *args):
+        self.update_unit_entry()
 
     def on_sale_price_button__clicked(self, button):
         self.edit_sale_price()
 
     def validate_confirm(self, *args):
         code = self.code.get_text()
-        if self.edit_mode and code == self._original_code:
-            return True
-        conn = new_transaction() 
-        query = AbstractSellable.q.code == code
-        qty = AbstractSellable.select(query, connection=conn).count()
-        if qty:
-            msg = _('This code already exists!')
-            self.code.set_invalid(msg)
-            value_ok = False
-        else:
-            value_ok = True
-        conn._connection.close()
-        return value_ok
+        confirmed = True
+        if code != self._original_code:
+            conn = new_transaction() 
+            qty = AbstractSellable.selectBy(code=code, connection=conn).count()
+            if qty:
+                msg = _('This code already exists!')
+                self.code.set_invalid(msg)
+                confirmed = False
+            conn._connection.close()
+        if confirmed:
+            self.ensure_sellable_unit()
+        return confirmed
 
 
 class SellableItemEditor(BaseEditor):
