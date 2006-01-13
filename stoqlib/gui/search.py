@@ -41,7 +41,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
-from sqlobject.sqlbuilder import LIKE, AND, func, OR
+from sqlobject.sqlbuilder import LIKE, AND, func, OR, SQLOp
 from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
@@ -260,32 +260,28 @@ class SearchEntry(SlaveDelegate):
 
 
 class SearchBar(SlaveDelegate):
-    """ A portable search bar slave for dialogs.
+    """A portable search bar slave for dialogs and applications"""
 
-    table_type  =  The table type which we want to query on.
-    fields      =  A list of tuples. Each tuple has its first element as 
-                   a tuple of the object column names and the second element
-                   is the table type of these columns.
-                   E.g: [(('name', phone_number), Person), 
-                         (('street', 'number'), Address)]
-
-    Each parent must define a hook 'update_klist(objs)' which will be 
-    called after the search.
-
-    """
     gladefile = 'SearchBarHolder'
     widgets = ('search_results_label',)
 
     gsignal('before-search-activate')
     gsignal('search-activate', object)
     
-    def __init__(self, conn, parent, table_type, columns=None, 
-                 query_args=None, search_callback=None, filter_slave=None,
+    def __init__(self, conn, table_type, columns=None, query_args=None, 
+                 search_callback=None, filter_slave=None, 
                  searching_by_date=False):
+        """
+        @param conn: a sqlobject Transaction instance
+        @param table_type: an AbstractModel subclass
+        @param columns: a list of instances inherited by kiwi Column
+        @param query_args: a list of strings that are argument which will be
+                           sent to the sqlobject select method
+
+        """
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
-        self.parent = parent
         self.search_results_label.set_text('')
         self.search_results_label.set_size('small')
         if searching_by_date:
@@ -300,6 +296,8 @@ class SearchBar(SlaveDelegate):
         entry_slave.connect('searchbutton-clicked', self.search_items)
         entry_slave.connect('searchentry-activate', self.search_items)
         self.conn = conn
+        self._extra_query = None
+        self._filter_results_callback = None
         self.attach_slave('place_holder', self._slave)
         self.searching_by_date = searching_by_date
         self._result_strings = None
@@ -308,24 +306,6 @@ class SearchBar(SlaveDelegate):
         self.query_args = query_args
         self._slave_callback = search_callback
         self._split_field_types()
-
-    def set_focus(self):
-        if self.searching_by_date:
-            self._slave.get_slave().search_entry.grab_focus()
-        else:
-            self._slave.search_entry.grab_focus()
-
-    def set_result_strings(self, singular_form, plural_form):
-        """This method defines strings to be used in the
-        search_results_label of SearchEntry class.
-        """
-        self._result_strings = singular_form, plural_form
-
-    def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
-        if self.searching_by_date:
-            self._slave.set_search_label(search_entry_lbl, date_search_lbl)
-        else:
-            self._slave.set_search_label(search_entry_lbl)
 
     #
     # Preparing query fields and groups
@@ -385,6 +365,7 @@ class SearchBar(SlaveDelegate):
                 self._set_field_types(columns, attributes, 
                                       table_type._parentClass)
 
+    @argcheck(str, list)
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % string.upper(search_str)
         for field_name, table_type in self.str_fields:
@@ -392,6 +373,7 @@ class SearchBar(SlaveDelegate):
             q = LIKE(func.UPPER(table_field), search_str)
             query.append(q)
 
+    @argcheck(str, list)
     def _set_query_float(self, search_str, query):
         search_str = float(search_str)
         for field_name, table_type in self.float_fields:
@@ -399,6 +381,7 @@ class SearchBar(SlaveDelegate):
             q = table_field == search_str
             query.append(q)
            
+    @argcheck(str, list)
     def _set_query_int(self, search_str, query):
         search_str = int(search_str)
         for field_name, table_type in self.int_fields:
@@ -485,9 +468,8 @@ class SearchBar(SlaveDelegate):
         if search_str or search_dates:
             query = AND(query, self._build_query(search_str, search_dates))
         
-        extra_query = self.parent.get_extra_query()
-        if extra_query:
-            query = AND(query, extra_query) 
+        if self._extra_query:
+            query = AND(query, self._extra_query) 
 
         kwargs = {'connection': self.conn}
         if self.query_args:
@@ -512,24 +494,76 @@ class SearchBar(SlaveDelegate):
             self._result_strings = _('result'), _('results')
             warnings.warn('You must define result strings before performing '
                           'searches in the SearchBar')
-        singular_str, plural_str = self._result_strings
-        if total == 1:
-            msg = '%d %s' % (total, singular_str)
-        elif total > max_search_results:
-            msg = _('%d of %d %s shown') % (max_search_results, total,
-                                            plural_str)
-        elif total > 1:
-            msg = '%d %s' % (total, plural_str)
-        else:
-            msg = ''
-
+            
+        msg = self._get_search_results_msg(total, max_search_results)
         self.search_results_label.set_text(msg)
-        results = self.parent.filter_results(objs)
+
+        if self._filter_results_callback:
+            results = self._filter_results_callback(objs)
+        else:
+            results = objs
         # Since SQLObject doesn't support distinct-counting of sliced
         # objects we need to send here a list instead of a SearchResults
         if not isinstance(results, list):
             results = list(results)
         self.emit('search-activate', list(results))
+
+    def _get_search_results_msg(self, search_total, max_results):
+        singular_str, plural_str = self._result_strings
+        if search_total == 1:
+            msg = '%d %s' % (search_total, singular_str)
+        elif search_total > max_results:
+            msg = _('%d of %d %s shown') % (max_results, search_total,
+                                            plural_str)
+        elif search_total > 1:
+            msg = '%d %s' % (search_total, plural_str)
+        else:
+            msg = ''
+        return msg
+
+    #
+    # Public API
+    #
+
+    @argcheck(SQLOp)
+    def register_extra_query(self, query):
+        """Register an extra query that will be added in the main query of
+        SearchBar
+        
+        @param query: a sqlbuilder query
+        """
+        self._extra_query = query
+
+    def register_filter_results_callback(self, callback):
+        """Register a filter results callback that will be called right
+        after fetching the data from database. 
+        
+        @param callback: The callback must have only one argument of 
+                         type SelectResults or InheritableSelectResults.
+                         This callback will process the results and filter
+                         possible invalid data and must *always* return the
+                         filtered list of objects.
+        """
+        self._filter_results_callback = callback
+
+    def set_focus(self):
+        if self.searching_by_date:
+            self._slave.get_slave().search_entry.grab_focus()
+        else:
+            self._slave.search_entry.grab_focus()
+
+    def set_result_strings(self, singular_form, plural_form):
+        """This method defines strings to be used in the
+        search_results_label of SearchEntry class.
+        """
+        self._result_strings = singular_form, plural_form
+
+    def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
+        if self.searching_by_date:
+            self._slave.set_search_label(search_entry_lbl, date_search_lbl)
+        else:
+            self._slave.set_search_label(search_entry_lbl)
+
 
     def search_items(self, *args):
         self._slave.start_animate_search_icon()
@@ -643,10 +677,14 @@ class SearchDialog(BasicDialog):
         columns = self.get_columns()
         query_args = self.get_query_args()
         use_dates = self.searching_by_date
-        self.search_bar = SearchBar(self.conn, self, self.search_table,
+        self.search_bar = SearchBar(self.conn, self.search_table,
                                     columns, query_args=query_args,
                                     filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
+        extra_query = self.get_extra_query()
+        if extra_query:
+            self.search_bar.register_extra_query(extra_query)
+        self.search_bar.register_filter_results_callback(self.filter_results)
         self.search_bar.connect('before-search-activate', self._sync)
         self.search_bar.connect('search-activate', self.update_klist)
         self.after_search_bar_created()
