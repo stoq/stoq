@@ -59,7 +59,7 @@ def format_quantity(quantity):
     if (quantity * 100 % 100) == 0:
         return '%.0f' % quantity
     precision = sysparam(conn).STOCK_BALANCE_PRECISION
-    return '%. *f' % (precision, quantity)
+    return '%.*f' % (precision, quantity)
 
 def get_price_format_str():
     conn = get_connection()
