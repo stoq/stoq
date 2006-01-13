@@ -316,7 +316,7 @@ class POSApp(AppWindow):
         self.conn.commit()
         items = self.run_dialog(SellableSearch, self.conn)
         for item in items:
-            self._update_klist(item)
+            self._update_list(item)
         self.select_first_item()
         self._update_totals()
 
