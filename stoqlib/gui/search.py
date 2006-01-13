@@ -273,6 +273,7 @@ class SearchBar(SlaveDelegate):
 
     Each parent must define a hook 'update_klist(objs)' which will be 
     called after the search.
+
     """
     gladefile = 'SearchBarHolder'
     widgets = ('search_results_label',)
@@ -407,10 +408,7 @@ class SearchBar(SlaveDelegate):
             q = table_field == search_str
             query.append(q)
 
-    # FIXME waiting for bug fix in kiwi, we must check the two last
-    # arguments for datetime.date instead of object. This fails when setting
-    # None as default value
-    @argcheck(list, object, object)
+    @argcheck(list, datetime.datetime, datetime.datetime)
     def _set_query_dates(self, query, start_date=None, end_date=None):
         values = start_date, end_date
         for value in values:
@@ -438,13 +436,16 @@ class SearchBar(SlaveDelegate):
     # Building query
     #
 
-    # FIXME waiting for bug fix in kiwi. argcheck should accept None for
-    # search_dates argument.
-    @argcheck(str, object)
+    @argcheck(str, tuple)
     def _build_query(self, search_str, search_dates=None):
         """Here we build queries after check the search string type. 
         Queries are always optimized for field types to avoid database 
-        input syntax errors and also make smart searches."""
+        input syntax errors and also make smart searches.
+        
+        @param search_str: the string we are trying to find in the database
+        @param search_dates: a tuple with two datetime.datetime instances
+                             meaning a 'start date' and 'end date'
+        """
         query = []
         if search_str:
             if is_integer(search_str):
@@ -606,6 +607,7 @@ class SearchDialog(BasicDialog):
 
     Some important parameters:
     table = the table type which we will query on to get the objects.
+
     """
     main_label_text = ''
     title = ''
