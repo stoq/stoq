@@ -223,11 +223,15 @@ class SearchableAppWindow(AppWindow):
         if not self.searchbar_table:
             return
         filter_slave = self._get_filter_slave()
-        self.searchbar = SearchBar(self.conn, self, self.searchbar_table, 
+        self.searchbar = SearchBar(self.conn, self.searchbar_table, 
                                    self.get_columns(), 
                                    filter_slave=filter_slave,
                                    searching_by_date=self.searchbar_use_dates,
                                    query_args=self.get_query_args())
+        extra_query = self.get_extra_query()
+        if extra_query:
+            self.searchbar.register_extra_query(extra_query)
+        self.searchbar.register_filter_results_callback(self.filter_results)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
         self.searchbar.connect('before-search-activate', self.on_searchbar_before_activate)

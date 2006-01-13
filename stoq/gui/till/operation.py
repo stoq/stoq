@@ -103,9 +103,10 @@ class TillOperationDialog(SlaveDelegate):
         rollback_and_begin(self.conn)
 
     def _setup_slaves(self):
-        self.search_bar = SearchBar(self.conn, self, Payment, 
+        self.search_bar = SearchBar(self.conn, Payment, 
                                     self._get_columns(), 
                                     searching_by_date=True)
+        self.search_bar.register_extra_query(self.get_extra_query())
         self.search_bar.set_searchbar_labels(_('Payments Matching'))
         self.search_bar.set_result_strings(_('payment'), _('payments'))
         self.search_bar.connect('search-activate', self._update_list)
@@ -238,11 +239,6 @@ class TillOperationDialog(SlaveDelegate):
         q2 = IN(Payment.q.status, statuses)
         return AND(q1, q2)
        
-       
-    def filter_results(self, payments): 
-        # XXX We need some refactoring in SearchBar to avoid this hook
-        return payments
-
     #
     # Kiwi handlers
     #
