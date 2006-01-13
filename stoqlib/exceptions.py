@@ -27,10 +27,6 @@ exceptions.py:
 import sys 
 
 
-def _warn(msg):
-    sys.stderr.write("Application warning: "+msg+"\n")
-
-
 class ConfigError(Exception):
     """Error for config files which don't have a certain section"""
 
