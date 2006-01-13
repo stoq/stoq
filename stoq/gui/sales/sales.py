@@ -55,7 +55,7 @@ class SalesApp(SearchableAppWindow):
     app_name = _('Sales')
     gladefile = 'sales_app'
     searchbar_table = Sale
-    searching_by_date = True
+    searchbar_use_dates = True
     searchbar_result_strings = (_('sale'), _('sales'))
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show sales with status')
