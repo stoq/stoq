@@ -40,6 +40,7 @@ from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.devices import printers
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+from stoqdrivers.utils import get_module_list
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
@@ -100,23 +101,17 @@ def get_supported_printers():
             continue
 
         result[brand] = []
-        for model in os.listdir(brand_dir):
-            if not model.endswith(".py") or model.startswith('__init__.py'):
-                continue
-            if not os.path.isfile(os.path.join(brand_dir, model)):
-                continue
-
-            model_name = model[:-3]
+        for module_name in get_module_list(brand_dir):
             try:
-                obj = namedAny(("stoqdrivers.devices.printers.%s.%s.%s"
-                                % (brand, model_name, model_name)))
+                obj = namedAny("stoqdrivers.devices.printers.%s.%s.%s"
+                               % (brand, module_name, module_name))
             except AttributeError:
                 raise ImportError("Can't find class %s for module %s"
-                                  % (model_name, model_name))
+                                  % (module_name, module_name))
             if not (IChequePrinter.implementedBy(obj) or
                     ICouponPrinter.implementedBy(obj)):
                 raise TypeError("The driver %s %s doesn't implements a "
                                 "valid interface" % (brand, model_name))
             result[brand].append(obj)
-
     return result
+

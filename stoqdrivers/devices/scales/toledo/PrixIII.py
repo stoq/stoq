@@ -72,6 +72,8 @@ class PrixIII(SerialBase):
 
     implements(IScale)
 
+    scale_name = "Toledo Prix III"
+
     def __init__(self, device):
         SerialBase.__init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                             stopbits=STOPBITS_ONE, parity=PARITY_EVEN)

@@ -21,34 +21,23 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano  <henrique@async.com.br>
-##
+## Author(s): Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/scales/interface.py:
+stoqdrivers/utils.py:
 
-    Printer Driver API
+    Functions for general use.
 """
 
-from zope.interface import Interface, Attribute
+import os
 
-class IScaleInfo(Interface):
-    """ This interface list the data that read by the scale
+def get_module_list(dirname):
+    """ Given a directory name, returns a list of all Python modules in it
     """
-    weight = Attribute("The weight read")
-    price_per_kg = Attribute("The KG read")
-    total_price = Attribute("The total price. It is equivalent to "
-                            "price_per_kg * weight")
-    code = Attribute("The product code")
-
-class IScale(Interface):
-    """ This interface describes how to interacts with scales.
-    """
-
-    scale_name = Attribute("The name of the scale that the driver "
-                           "implements")
-
-    def read_data():
-        """ Read informations of the scale, returning an object
-        that implements IScaleInfo interface.
-        """
+    modules = []
+    for entry in os.listdir(dirname):
+        if (not entry.endswith(".py") or entry.startswith("__init__.py")
+            or not os.path.isfile(os.path.join(dirname, entry))):
+            continue
+        modules.append(entry[:-3])
+    return modules
