@@ -408,13 +408,6 @@ class SearchBar(SlaveDelegate):
 
     @argcheck(list, datetime.datetime, datetime.datetime)
     def _set_query_dates(self, query, start_date=None, end_date=None):
-        values = start_date, end_date
-        for value in values:
-            # XXX Remove this check after kiwi bug fix in argcheck
-            if value and not isinstance(value, datetime.date):
-                raise ValueError('Argument for date search must be date '
-                                 'or datetime, got %s instead' % 
-                                 type(value))
         for field_name, table_type in self.dtime_fields:
             table_field = getattr(table_type.q, field_name) 
             q1 = q2 = None
