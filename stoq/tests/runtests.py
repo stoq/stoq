@@ -35,6 +35,7 @@ import sys
 import doctest
 import py 
 
+from kiwi import environ
 from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
 # This must be called *before* anything else since it will switch to test
 # database and also change the runtime module behaviour
@@ -46,25 +47,67 @@ from stoq.lib.parameters import ensure_system_parameters
 
 VERBOSE = '-v' in sys.argv
 
-set_verbose(False)
-setup_tables(delete_only=True, list_tables=True, verbose=True)
-set_verbose(VERBOSE)
-setup_tables(verbose=True)
-ensure_system_parameters()
-ensure_admin_user("Superuser", "administrator", "")
 
-create()
-if VERBOSE:
-    print_immediately('Performing domain module tests... ')
-domain_tests_dir = os.path.abspath(os.path.join(os.path.dirname(sys.argv[0]),
-                                                '..', '..', 'docs', 'domain'))
-doc_files = [filename for filename in os.listdir(domain_tests_dir)
-                          if filename.endswith('.txt')]
+def setup():
+    set_verbose(False)
+    setup_tables(delete_only=True, list_tables=True, verbose=True)
+    set_verbose(VERBOSE)
+    setup_tables(verbose=True)
+    ensure_system_parameters()
+    ensure_admin_user("Superuser", "administrator", "")
 
-for doc_file in doc_files:
-    doc_file = os.path.join(domain_tests_dir, doc_file)
-    doctest.testfile(doc_file, verbose=VERBOSE, module_relative=False)
-if VERBOSE:
-    print_immediately('done')
+    create()
+    
+def test_gui():
+    if VERBOSE:
+        print_immediately('Performing gui module tests... ')
+        
+    root = os.path.abspath(os.path.join(sys.argv[0], '..', '..', '..'))
+    oldpwd = os.getcwd()
+    os.chdir(root)
+    
+    # Running kiwi-ui tests
+    gui_tests_dir = os.path.abspath(os.path.join(root, 'stoq', 'tests', 'gui'))
+    gui_tests = [filename
+                 for filename in os.listdir(gui_tests_dir)
+                     if filename.endswith('.py') and filename[0] != '_']
+    for test_file in gui_tests:
+        if VERBOSE:
+            print 'RUNNING', test_file
+            print '='*79
+        environ.app = None
+        execfile(os.path.join(gui_tests_dir, test_file))
+        if VERBOSE:
+            print '='*79
+    os.chdir(oldpwd)
 
-py.test.cmdline.main()
+    if VERBOSE:
+        print_immediately('gui tests ok')
+
+def test_domain():
+    if VERBOSE:
+        print_immediately('Performing domain tests... ')
+
+    # Running doctests
+    domain_tests_dir = os.path.abspath(os.path.join(
+        os.path.dirname(sys.argv[0]),
+        '..', '..', 'docs', 'domain'))
+    doc_files = [filename for filename in os.listdir(domain_tests_dir)
+                              if filename.endswith('.txt')]
+
+    for doc_file in doc_files:
+        doc_file = os.path.join(domain_tests_dir, doc_file)
+        doctest.testfile(doc_file, verbose=VERBOSE, module_relative=False)
+
+    if '-v' in sys.argv:
+        sys.argv.remove('-v')
+    py.test.cmdline.main()
+
+    if VERBOSE:
+        print_immediately('domain tests ok')
+
+setup()
+
+test_domain()
+test_gui()
+
