@@ -45,7 +45,7 @@ class IScale(Interface):
     """ This interface describes how to interacts with scales.
     """
 
-    scale_name = Attribute("The name of the scale that the driver "
+    model_name = Attribute("The name of the scale that the driver "
                            "implements")
 
     def read_data():
