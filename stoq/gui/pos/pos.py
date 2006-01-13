@@ -42,7 +42,7 @@ from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
 
 from stoq.gui.application import AppWindow
-from stoq.lib.validators import (format_quantity, get_price_format_str)
+from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.lib.parameters import sysparam
 from stoq.lib.drivers import FiscalCoupon
 from stoq.domain.sellable import AbstractSellable, FancySellable
