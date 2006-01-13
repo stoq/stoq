@@ -23,7 +23,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoq/domain/drivers.py
+stoq/domain/devices.py
 
    Domain classes related to stoqdrivers package.
 """
@@ -36,29 +36,39 @@ from stoq.domain.base import Domain
 
 _ = gettext.gettext
 
-class PrinterSettings(Domain):
-    brand = StringCol(default=None)
-    model = StringCol(default=None)
-    device = IntCol(default=None)
-    host = StringCol(default=None)
+class DeviceSettings(Domain):
+    type = IntCol()
+    brand = StringCol()
+    model = StringCol()
+    device = IntCol()
+    host = StringCol()
 
     (DEVICE_SERIAL1,
      DEVICE_SERIAL2,
      DEVICE_PARALLEL) = range(1, 4)
 
+    (SCALE_DEVICE,
+     PRINTER_DEVICE) = range(1, 3)
+
     device_descriptions = {DEVICE_SERIAL1: _('Serial port 1'),
                            DEVICE_SERIAL2: _('Serial port 2'),
                            DEVICE_PARALLEL: _('Parallel port')}
 
-    device_names = {DEVICE_SERIAL1: '/dev/ttyS0',
-                    DEVICE_SERIAL2: '/dev/ttyS1',
-                    DEVICE_PARALLEL: '/dev/parport'}
+    port_names = {DEVICE_SERIAL1: '/dev/ttyS0',
+                  DEVICE_SERIAL2: '/dev/ttyS1',
+                  DEVICE_PARALLEL: '/dev/parport'}
+
+    device_types = {SCALE_DEVICE: _('Scale'),
+                    PRINTER_DEVICE: _('Printer')}
 
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)
 
     def get_device_description(self, device=None):
-        return PrinterSettings.device_descriptions[device or self.device]
+        return DeviceSettings.device_descriptions[device or self.device]
 
-    def get_device_name(self, device=None):
-        return PrinterSettings.device_names[device or self.device]
+    def get_port_name(self, device=None):
+        return DeviceSettings.port_names[device or self.device]
+
+    def get_device_type_name(self, type=None):
+        return DeviceSettings.device_types[type or self.type]
