@@ -53,14 +53,12 @@ class TestProfileSettings(BaseDomainTest):
 
         profile.add_application_reference('warehouse',
                                           has_permission=True)
-        items = ProfileSettings.selectBy(user_profile=profile,
-                                         connection=self.conn)
-        assert items.count() == 1
+        items = profile.profile_settings
+        assert len(items) == 1
 
         update_profile_applications(self.conn, profile)
-        items = ProfileSettings.selectBy(user_profile=profile,
-                                         connection=self.conn)
-        assert items.count() == len(get_application_names())
+        items = profile.profile_settings
+        assert len(items) == len(get_application_names())
         
     def test_create_profile_template(self):
         profile_name = 'Boss'
@@ -69,9 +67,8 @@ class TestProfileSettings(BaseDomainTest):
                                                           profile_name,
                                                           has_full_permission=
                                                           True)
-        items = ProfileSettings.selectBy(user_profile=self.boss_profile,
-                                         connection=self.conn)
-        assert items.count() == len(get_application_names())
+        items = self.boss_profile.profile_settings
+        assert len(items) == len(get_application_names())
 
     def test_check_app_permission(self):
         assert self.boss_profile.check_app_permission('pos') is True
