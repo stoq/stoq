@@ -57,15 +57,13 @@ class UserProfile(Domain):
         for app_dir in get_application_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
-                            app_dir_name=app_dir,
-                            user_profile=profile)
+                            app_dir_name=app_dir, user_profile=profile)
         return profile
 
     def add_application_reference(self, app_name, has_permission=False):
         conn = self.get_connection()
         ProfileSettings(connection=conn, app_dir_name=app_name,
-                        has_permission=has_permission,
-                        user_profile=self)
+                        has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
         settings = [s for s in self.profile_settings 
@@ -76,8 +74,8 @@ class UserProfile(Domain):
         if len(settings) > 1:
             raise DatabaseInconsistency("You should have only one "
                                         "ProfileSettings instance for "
-                                        "directory name %s, got %d" %
-                                        (app_name, len(settings)))
+                                        "directory name %s, got %d" 
+                                        % (app_name, len(settings)))
         return True
 
 
