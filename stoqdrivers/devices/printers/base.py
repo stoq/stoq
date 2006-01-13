@@ -86,6 +86,9 @@ class BasePrinter(Logger):
             raise TypeError("The driver %s doesn't implements a known "
                             "interface" % self._driver)
 
+    def get_printer_name(self):
+        return self._driver.model_name
+
 def get_virtual_printer():
     from stoqdrivers.devices.printers.fiscal import FiscalPrinter
     return FiscalPrinter(brand='virtual', model='Simple')
