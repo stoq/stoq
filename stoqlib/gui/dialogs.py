@@ -25,13 +25,14 @@ gui/dialogs.py:
 """
 
 import traceback
+import warnings
 import sys
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
 
-from stoqlib.exceptions import _warn, ModelDataError
+from stoqlib.exceptions import ModelDataError
 from stoqlib.gui.gtkadds import change_button_appearance
 
 
@@ -226,7 +227,7 @@ class BasicPluggableDialog(BasicDialog):
                     hide_footer=False):
         """May be called by refresh by subdialogs, as necessary"""
         if self.slave:
-            _warn("%s had self.slave set to %s!" % (self, self.slave))
+            warnings.warn("%s had self.slave set to %s!" % (self, self.slave))
         self.slave = slave
         self.attach_slave("main", slave)
         if self.warnbox:

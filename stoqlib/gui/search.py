@@ -47,7 +47,6 @@ from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
 
 import stoqlib
 from stoqlib.gui.dialogs import BasicDialog, run_dialog
-from stoqlib.exceptions import _warn
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
@@ -255,8 +254,7 @@ class SearchEntry(SlaveDelegate):
     def stop_animate_search_icon(self):
         self.search_button.show()
         if self._animate_search_icon_id == -1:
-            # TODO: it's wierd that _warn method is private. Need some refactoring
-            _warn("Search icon animation hasn't started")
+            warnings.warn("Search icon animation hasn't started")
         gobject.source_remove(self._animate_search_icon_id)
         self.search_icon.hide()
 
