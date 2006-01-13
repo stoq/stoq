@@ -32,5 +32,5 @@ stoqdrivers/devices/printers/daruma/FS600MFD.py:
 from stoqdrivers.devices.printers.daruma.FS345 import FS345
 
 class FS600MFD(FS345):
-    printer_name = "Daruma FS 600 MFD"
+    model_name = "Daruma FS 600 MFD"
 

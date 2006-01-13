@@ -58,7 +58,7 @@ _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
 
-    printer_name = "Pertopay Fiscal 2023"
+    model_name = "Pertopay Fiscal 2023"
 
     CHEQUE_CONFIGFILE = 'perto.ini'
 

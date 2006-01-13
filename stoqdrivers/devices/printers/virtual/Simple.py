@@ -53,7 +53,7 @@ class CouponItem:
 class Simple:
     implements(IChequePrinter, ICouponPrinter)
 
-    printer_name = "Virtual Printer"
+    model_name = "Virtual Printer"
 
     def __init__(self, brand=None, model=None, device=None,
                  config_file=None):

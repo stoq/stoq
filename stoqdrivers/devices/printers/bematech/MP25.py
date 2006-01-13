@@ -103,7 +103,7 @@ class MP25(SerialBase):
     implements(ICouponPrinter)
     CMD_PROTO = 0x1C
 
-    printer_name = "Bematech MP25 FI"
+    model_name = "Bematech MP25 FI"
     
     st1_codes = {
         128: (OutofPaperError, _("Printer is out of paper")),

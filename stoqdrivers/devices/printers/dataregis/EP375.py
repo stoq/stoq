@@ -213,7 +213,7 @@ class EP375(SerialBase, BaseChequePrinter):
 
     implements(ICouponPrinter, IChequePrinter)
 
-    printer_name = "Dataregis 375 EP"
+    model_name = "Dataregis 375 EP"
 
     CHEQUE_CONFIGFILE = "dataregis.ini"
 

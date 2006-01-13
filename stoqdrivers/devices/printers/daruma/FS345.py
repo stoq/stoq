@@ -133,7 +133,7 @@ class FS345(SerialBase):
 
     implements(ICouponPrinter)
 
-    printer_name = "Daruma FS 345"
+    model_name = "Daruma FS 345"
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra

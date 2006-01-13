@@ -44,9 +44,9 @@ class ICouponPrinter(Interface):
     [identify_customer] -> open -> add_item -> totalize -> add_payment -> close
     """
 
-    printer_name = Attribute("The name of the printer that the driver "
-                             "implements")
-
+    model_name = Attribute("The name of the printer that the driver "
+                           "implements")
+    
     #
     # Common API
     #

@@ -62,7 +62,7 @@ class IFS9000I(SerialBase):
 
     implements(ICouponPrinter)
 
-    printer_name = "Sweda IFS 9000 I"
+    model_name = "Sweda IFS 9000 I"
 
     CMD_PREFIX = "."
     CMD_SUFFIX = EOL_DELIMIT = '}'
