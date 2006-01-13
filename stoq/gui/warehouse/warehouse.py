@@ -58,6 +58,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self.table = Product.getAdapterClass(ISellable)
         self._setup_widgets()
         self._update_view()
 
@@ -132,7 +133,8 @@ class WarehouseApp(SearchableAppWindow):
 
     def _get_storable(self, instance):
         adapted = instance.get_adapted()
-        return IStorable(adapted)
+        conn = adapted.get_connection()
+        return IStorable(adapted, connection=conn)
 
     def _get_stock_balance(self, instance):
         branch = self.filter_slave.get_selected_status()
@@ -153,9 +155,8 @@ class WarehouseApp(SearchableAppWindow):
         
     def filter_results(self, sellables):
         """Hook called by SearchBar"""
-        table = Product.getAdapterClass(ISellable)
         return [sellable for sellable in sellables 
-                        if isinstance(sellable, table)]
+                        if isinstance(sellable, self.table)]
         
     #
     # Callbacks
