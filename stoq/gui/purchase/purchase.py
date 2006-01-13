@@ -61,7 +61,7 @@ class PurchaseApp(SearchableAppWindow):
     app_name = _('Purchase')
     gladefile = "purchase"
     searchbar_table = PurchaseOrder
-    searching_by_date = True
+    searchbar_use_dates = True
     searchbar_result_strings = (_('order'), _('orders'))
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show orders with status')

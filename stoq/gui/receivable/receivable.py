@@ -47,7 +47,7 @@ class ReceivableApp(SearchableAppWindow):
     app_name = _('Receivable')
     gladefile = 'receivable'
     searchbar_table = Payment
-    searching_by_date = True
+    searchbar_use_dates = True
     searchbar_result_strings = (_('payment'), _('payments'))
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show payments with status')
