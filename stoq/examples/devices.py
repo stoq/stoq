@@ -24,24 +24,24 @@
 ## Author(s): Henrique Romano <henrique@async.com.br>
 ##
 """
-stoq/examples/drivers.py:
+stoq/examples/devices.py:
 
-    Create a PrinterSetting object that use a VirtualPrinter by default.
+    Create a DeviceSettings object that use a VirtualPrinter by default.
 """
 
 import socket
 
 from stoq.lib.runtime import new_transaction, print_msg
-from stoq.domain.drivers import PrinterSettings
+from stoq.domain.devices import DeviceSettings
 
-def create_printer_setting():
-    print_msg("Creating default printer settings...", break_line=False)
+def create_device_settings():
+    print_msg("Creating default device settings...", break_line=False)
     conn = new_transaction()
-    printer = PrinterSettings(connection=conn)
-    printer.host = socket.gethostname()
-    printer.device = PrinterSettings.DEVICE_SERIAL1
-    printer.brand = 'virtual'
-    printer.model = 'Simple'
+    printer = DeviceSettings(host=socket.gethostname(),
+                             device=DeviceSettings.DEVICE_SERIAL1,
+                             brand='virtual', model='Simple',
+                             type=DeviceSettings.PRINTER_DEVICE,
+                             connection=conn)
     conn.commit()
     print_msg("done.")
 

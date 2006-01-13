@@ -35,7 +35,7 @@ import warnings
 
 import gtk
 from zope.interface import implements
-from sqlobject.sqlbuilder import OR
+from sqlobject.sqlbuilder import OR, AND
 from stoqlib.exceptions import DatabaseInconsistency
 from kiwi.ui.dialogs import warning, error
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
@@ -44,7 +44,7 @@ from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
-from stoq.domain.drivers import PrinterSettings
+from stoq.domain.devices import DeviceSettings
 from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
                                     IMoneyPM, ICheckPM, IContainer)
 
@@ -52,13 +52,15 @@ _ = gettext.gettext
 _printer = None
 
 def get_printer_settings_by_hostname(conn, hostname):
-    """ Returns the PrinterSettings object associated with the given
-    hostname or None if there is not settings for it.
+    """ Returns the DeviceSettings object representing the printer currently
+    associated with the given hostname or None if there is not settings for
+    it.
     """
     ipaddr = socket.gethostbyname(hostname)
-    query = OR(PrinterSettings.q.host == hostname,
-               PrinterSettings.q.host == ipaddr)
-    result = PrinterSettings.select(query, connection=conn)
+    query = OR(DeviceSettings.q.host == hostname,
+               DeviceSettings.q.host == ipaddr)
+    query = AND(query, DeviceSettings.q.type == DeviceSettings.PRINTER_DEVICE)
+    result = DeviceSettings.select(query, connection=conn)
     result_quantity = result.count()
     if result_quantity > 1:
         raise DatabaseInconsistency("It's not possible to have more than one "
@@ -78,7 +80,7 @@ def _get_fiscalprinter(conn):
     setting = get_printer_settings_by_hostname(conn, socket.gethostname())
     if setting:
         _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
-                                 device=setting.get_device_name())
+                                 device=setting.get_port_name())
     else:
         error(_("There is no printer configured"),
               _("There is no printer configured this station (\"%s\")"

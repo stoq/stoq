@@ -41,7 +41,7 @@ from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
 from stoq.gui.search.profile import UserProfileSearch
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.editors.person import UserEditor
-from stoq.gui.editors.printers import PrinterSettingsDialog
+from stoq.gui.editors.devices import DeviceSettingsDialog
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.runtime import new_transaction
 from stoq.lib.defaults import ALL_ITEMS_INDEX
@@ -147,7 +147,7 @@ class AdminApp(SearchableAppWindow):
         conn = new_transaction()
         model = run_person_role_dialog(UserEditor, self, conn)
         if finish_transaction(conn, model):
-            self.search_bar.search_items()
+            self.search_bar.search7_items()
             model = self.table.get(model.id, connection=self.conn)
             self.users.select(model)
         
@@ -161,5 +161,5 @@ class AdminApp(SearchableAppWindow):
         model = self.run_dialog(PasswordEditor, self.conn, user)
         finish_transaction(self.conn, model, keep_transaction=True)
 
-    def on_printers_setup__activate(self, *args):
-        self.run_dialog(PrinterSettingsDialog, self.conn)
+    def on_drivers_setup__activate(self, *args):
+        self.run_dialog(DeviceSettingsDialog, self.conn)
