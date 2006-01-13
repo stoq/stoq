@@ -30,11 +30,12 @@ import gettext
 import os
 import sys
 import binascii
+import warnings
 import time
 
 import gtk
 import gobject
-from stoqlib.exceptions import (DatabaseError, _warn, UserProfileError,
+from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import set_max_search_results
@@ -84,7 +85,8 @@ class AppConfig:
             if os.path.exists(dir):
                 self.config_data.check_permissions(dir, executable=True)
                 os.remove(dir)
-                _warn('A %s file already exist and was removed.' % dir)
+                warnings.warn('A %s file already exist and was removed.'
+                              % dir)
             os.mkdir(dir)
             return
         self.config_data.check_permissions(dir, executable=True)

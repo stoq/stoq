@@ -31,12 +31,12 @@ stoq/lib/drivers.py
 
 import gettext
 import socket
+import warnings
 
 import gtk
 from zope.interface import implements
 from sqlobject.sqlbuilder import OR
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.exceptions import _warn
 from kiwi.ui.dialogs import warning, error
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
@@ -252,9 +252,9 @@ class FiscalCoupon:
                     # method diferent than money and cheque.  This will be improved
                     # when bug #2246 is fixed.
                 else:
-                    _warn(_("The payment type %s isn't supported yet. The default, "
-                            "MONEY_PM, will be used.") 
-                          % payment.method.description)
+                    warnings.warn(_("The payment type %s isn't supported "
+                                    "yet. The default, MONEY_PM, will be "
+                                    "used.") % payment.method.description)
                     money_type = MONEY_PM
                 self.printer.add_payment(money_type, payment.base_value, '')
         return True
