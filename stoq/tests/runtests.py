@@ -47,6 +47,7 @@ from stoq.lib.parameters import ensure_system_parameters
 
 VERBOSE = '-v' in sys.argv
 
+DEFAULT_SEPARATORS = 79
 
 def setup():
     set_verbose(False)
@@ -55,7 +56,6 @@ def setup():
     setup_tables(verbose=True)
     ensure_system_parameters()
     ensure_admin_user("Superuser", "administrator", "")
-
     create()
     
 def test_gui():
@@ -67,18 +67,19 @@ def test_gui():
     os.chdir(root)
     
     # Running kiwi-ui tests
-    gui_tests_dir = os.path.abspath(os.path.join(root, 'stoq', 'tests', 'gui'))
+    gui_tests_dir = os.path.abspath(os.path.join(root, 'stoq', 
+                                                 'tests', 'gui'))
     gui_tests = [filename
                  for filename in os.listdir(gui_tests_dir)
                      if filename.endswith('.py') and filename[0] != '_']
     for test_file in gui_tests:
         if VERBOSE:
             print 'RUNNING', test_file
-            print '='*79
+            print '=' * DEFAULT_SEPARATORS
         environ.app = None
         execfile(os.path.join(gui_tests_dir, test_file))
         if VERBOSE:
-            print '='*79
+            print '=' * DEFAULT_SEPARATORS
     os.chdir(oldpwd)
 
     if VERBOSE:
@@ -90,8 +91,7 @@ def test_domain():
 
     # Running doctests
     domain_tests_dir = os.path.abspath(os.path.join(
-        os.path.dirname(sys.argv[0]),
-        '..', '..', 'docs', 'domain'))
+             os.path.dirname(sys.argv[0]), '..', '..', 'docs', 'domain'))
     doc_files = [filename for filename in os.listdir(domain_tests_dir)
                               if filename.endswith('.txt')]
 
