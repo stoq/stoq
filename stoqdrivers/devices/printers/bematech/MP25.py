@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s):   Cleber Rodrigues      <cleber@globalred.com.br>
+##              Henrique Romano       <henrique@async.com.br>
 ##
 """
 stoqdrivers/drivers/bematech/MP25.py:
