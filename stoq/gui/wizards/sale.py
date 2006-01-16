@@ -666,7 +666,8 @@ class SaleWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first_step, model,
                             edit_mode=edit_mode)
         group = self.get_payment_group()
-        group.clear_preview_payments()
+        if not self.edit_mode:
+            group.clear_preview_payments()
 
     #
     # WizardStep hooks
