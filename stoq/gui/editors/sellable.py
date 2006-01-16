@@ -69,8 +69,6 @@ class SellablePriceEditor(BaseEditor):
 
     general_widgets = ('base_markup',)
 
-    widgets = proxy_widgets + general_widgets
-
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
         self.update_markup()

@@ -70,11 +70,16 @@ class ProductSupplierInfo(Domain):
                         base_cost is available. The purchaser in this case 
                         must decide how to define the main cost based in 
                         the base cost avarage of all suppliers.
+        - I(icms): a Brazil-specific attribute that means 
+                   'Imposto sobre circulacao de mercadorias e prestacao '
+                   'de servicos'
     """
     
     base_cost = FloatCol(default=0.0)
     notes = StringCol(default='')
     is_main_supplier = BoolCol(default=False)
+    # This is Brazil-specific information
+    icms = FloatCol(default=0.0)
     supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 

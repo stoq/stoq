@@ -61,7 +61,6 @@ class ProductSupplierSlave(BaseEditorSlave):
 
     gladefile = 'ProductSupplierSlave'
     proxy_widgets = 'supplier_lbl',
-    widgets = ('supplier_button', ) + proxy_widgets
     model_type = Product
 
     def __init__(self, parent, conn, model, on_supplier_changed=None):
@@ -94,10 +93,8 @@ class ProductSupplierEditor(BaseEditor):
 
     proxy_widgets = ('supplier_combo',
                      'base_cost',
+                     'icms',
                      'notes')
-
-    widgets = ('supplier_list_button',
-               'new_supplier_button') + proxy_widgets
 
     def __init__(self, conn, model=None):
         BaseEditor.__init__(self, conn, model)
@@ -106,6 +103,7 @@ class ProductSupplierEditor(BaseEditor):
 
     def set_widget_formats(self):
         self.base_cost.set_data_format(get_price_format_str())
+        self.icms.set_data_format(get_price_format_str())
 
     def setup_combos(self):
         table = PersonAdaptToSupplier
@@ -236,11 +234,12 @@ class ProductEditor(SellableEditor):
            self.sellable_proxy.model.cost = base_cost or 0.0
            self.sellable_proxy.update('cost')
 
-        if self.sellable_proxy.model.price:
+        if self.sellable_proxy.model.base_sellable_info.price:
            return
         cost = self.sellable_proxy.model.cost or 0.0
         markup = self.sellable_proxy.model.get_suggested_markup() or 0.0
-        self.sellable_proxy.model.price = cost + ((markup / 100) * cost)
+        price = cost + ((markup / 100) * cost)
+        self.sellable_proxy.model.base_sellable_info.price = price
         self.sellable_proxy.update('price')
 
     def create_model(self, conn):
