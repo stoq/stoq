@@ -37,9 +37,9 @@ from stoq.domain.interfaces import IPaymentGroup
 class PurchasePaymentSlave(BaseEditorSlave):
     gladefile = 'PurchasePaymentSlave'
     model_iface = IPaymentGroup
-    widgets = ('interval_type_combo',
-               'intervals',
-               'installments_number')
+    proxy_widgets = ('interval_type_combo',
+                     'intervals',
+                     'installments_number')
 
     def _setup_widgets(self):
         items = [(desc, constant) 
@@ -53,4 +53,4 @@ class PurchasePaymentSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                                    PurchasePaymentSlave.widgets)
+                                    PurchasePaymentSlave.proxy_widgets)

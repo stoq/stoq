@@ -206,9 +206,6 @@ class PurchaseProductStep(BaseWizardStep):
     gladefile = 'PurchaseProductStep'
     model_type = PurchaseOrder
     proxy_widgets = ('product',)
-    widgets = ('add_item_button',
-               'product_button',
-               'product_hbox') + proxy_widgets
 
     def __init__(self, wizard, previous, conn, model):
         self.table = Product.getAdapterClass(ISellable)

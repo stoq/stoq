@@ -48,10 +48,6 @@ class DiscountChargeSlave(BaseEditorSlave):
                      'charge_value',
                      'discount_perc',
                      'charge_perc')
-    widgets = ('discount_perc_ck',
-               'discount_value_ck',
-               'charge_perc_ck',
-               'charge_value_ck') + proxy_widgets
     gsignal('discount-changed')
 
     def __init__(self, conn, model, model_type):

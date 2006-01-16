@@ -91,7 +91,6 @@ class AddressEditor(BaseEditor):
     gladefile = 'AddressEditor'
 
     proxy_widgets = ('is_main_address_checkbutton', )
-    widgets = proxy_widgets + ('main_holder', )
 
     def __init__(self, conn, model=None, person=None):
         self.person = person

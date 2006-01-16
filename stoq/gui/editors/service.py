@@ -48,10 +48,10 @@ class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
     model_type = ServiceSellableItem
     gladefile = 'ServiceItemEditor'
-    widgets = ('service_name_label', 
-               'price', 
-               'estimated_fix_date',
-               'notes')
+    proxy_widgets = ('service_name_label', 
+                     'price', 
+                     'estimated_fix_date',
+                     'notes')
     size = (500, 250)
 
     def __init__(self, conn, model):
@@ -61,18 +61,16 @@ class ServiceItemEditor(BaseEditor):
     def set_widgets_format(self):
         self.price.set_data_format(get_price_format_str())
 
-
     #
     # BaseEditor hooks
     # 
-
 
     def get_title_model_attribute(self, model):
         return model.sellable.base_sellable_info.description
 
     def setup_proxies(self):
         self.set_widgets_format()
-        self.add_proxy(self.model, ServiceItemEditor.widgets)
+        self.add_proxy(self.model, ServiceItemEditor.proxy_widgets)
 
 
 class ServiceEditor(SellableEditor):
@@ -84,17 +82,12 @@ class ServiceEditor(SellableEditor):
         self.stock_total_lbl.hide()
         self.stock_lbl.hide()
 
-
-
     #
     # BaseEditor hooks
     #
 
-
-
     def create_model(self, conn):
         model = Service(connection=conn)
-
         sellable_info = BaseSellableInfo(connection=conn, 
                                          description='', price=0.0)
         model.addFacet(ISellable, code='', base_sellable_info=sellable_info,

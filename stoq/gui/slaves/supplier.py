@@ -39,13 +39,13 @@ from stoq.domain.interfaces import ISupplier
 class SupplierDetailsSlave(BaseEditorSlave):
     model_iface = ISupplier
     gladefile = 'SupplierDetailsSlave'
-    widgets = ('statuses_combo', 'product_desc')
+    proxy_widgets = ('statuses_combo', 'product_desc')
 
     def setup_proxies(self):
         items = [(value, constant) 
                     for constant, value in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
-                                    SupplierDetailsSlave.widgets)
+                                    SupplierDetailsSlave.proxy_widgets)
 
 

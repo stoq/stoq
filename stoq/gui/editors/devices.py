@@ -42,14 +42,15 @@ from stoq.domain.devices import DeviceSettings
 
 _ = gettext.gettext
 
+
 class DeviceSettingsEditor(BaseEditor):
     gladefile = 'DeviceSettingsEditor'
     model_type = DeviceSettings
-    widgets = ('type_combo',
-               'brand_combo',
-               'device_combo',
-               'model_combo',
-               'host')
+    proxy_widgets = ('type_combo',
+                     'brand_combo',
+                     'device_combo',
+                     'model_combo',
+                     'host')
 
     def __init__(self, conn, model=None):
         self.printers_dict = get_supported_printers()
@@ -121,7 +122,8 @@ class DeviceSettingsEditor(BaseEditor):
     
     def setup_proxies(self):
         self.setup_widgets()
-        self.proxy = self.add_proxy(model=self.model, widgets=self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    DeviceSettingsEditor.proxy_widgets)
 
     def create_model(self, conn):
         return DeviceSettings(host='', device=None, brand=None, model=None,
@@ -150,6 +152,7 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_brand_combo__state_changed(self, *args):
         self.update_model_combo()
+
 
 class DeviceSettingsDialog(AdditionListDialog):
     size = (600, 500)
@@ -183,4 +186,3 @@ class DeviceSettingsDialog(AdditionListDialog):
         for item in items:
             table.delete(item.id, connection=self.conn)
         self.conn.commit()
-

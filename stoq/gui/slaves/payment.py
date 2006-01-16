@@ -74,12 +74,6 @@ class PaymentListSlave(BaseEditorSlave):
     """
 
     gladefile = 'PaymentListSlave'
-    widgets = ('list_vbox',
-               'scrolled_window',
-               'add_button',
-               'remove_button',
-               'status_label',
-               'total_label')
 
     gsignal('remove-slave')
     gsignal('add-slave')
@@ -211,8 +205,8 @@ class PaymentListSlave(BaseEditorSlave):
 class BankDataSlave(BaseEditorSlave):
     gladefile = 'BankDataSlave'
     model_type = BankAccount
-    widgets = ('bank',
-               'branch')
+    proxy_widgets = ('bank',
+                     'branch')
 
 
 
@@ -223,7 +217,7 @@ class BankDataSlave(BaseEditorSlave):
 
 
     def setup_proxies(self):
-        self.add_proxy(self.model, BankDataSlave.widgets)
+        self.add_proxy(self.model, BankDataSlave.proxy_widgets)
 
 
 
@@ -235,7 +229,6 @@ class BillDataSlave(BaseEditorSlave):
     payment_widgets = ('due_date',
                        'value',
                        'payment_number')
-    widgets = ('payment_number_label',) + payment_widgets
     gsignal('paymentvalue-changed')
 
     def __init__(self, conn, payment_group, due_date, value, model=None):
@@ -601,9 +594,9 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     """
     gladefile = 'CreditProviderMethodSlave'
     model_type = CreditProviderGroupData
-    widgets = ('payment_type',
-               'credit_provider',
-               'installments_number')
+    proxy_widgets = ('payment_type',
+                     'credit_provider',
+                     'installments_number')
     _payment_types = None
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
@@ -701,7 +694,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                                    CreditProviderMethodSlave.widgets)
+                                    CreditProviderMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
         providers = self._get_credit_providers()
@@ -769,7 +762,6 @@ class FinanceMethodSlave(CreditProviderMethodSlave):
 
 class MultipleMethodSlave:
     gladefile = 'MultipleMethodSlave'
-    widgets = ('method_combo','payment_number')
     # Bug 2161 will implement this class
     # XXX We must clean all the payments created for this payment group when
     # creating this slave since there is no way to filter them by payment

@@ -55,7 +55,6 @@ _ = gettext.gettext
 
 class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
-    widgets = ('place_holder',)
     model_type = None
 
     def __init__(self, wizard, conn, previous, role_type, person=None):
@@ -79,10 +78,6 @@ class RoleEditorStep(BaseWizardStep):
 class ExistingPersonStep(BaseWizardStep):
     gladefile = 'ExistingPersonStep'
     model_type = None
-    widgets = ('new_person_check',
-               'existing_person_check',
-               'person_list',
-               'question_label')
 
     def __init__(self, wizard, conn, previous, role_type, person_list):
         self.role_type = role_type
@@ -130,10 +125,6 @@ class ExistingPersonStep(BaseWizardStep):
 class PersonRoleTypeStep(BaseWizardStep):
     gladefile = 'PersonRoleTypeStep'
     model_type = None
-    widgets = ('person_role_label', 
-               'company_check',
-               'individual_check',
-               'phone_number')
 
     def __init__(self, wizard, conn):
         BaseWizardStep.__init__(self, conn, wizard)

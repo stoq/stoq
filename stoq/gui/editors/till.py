@@ -47,12 +47,13 @@ from stoq.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 
+
 class TillOpeningEditor(BaseEditor):
     model_name = _('Till Opening')
     model_type = Till
     gladefile = 'TillOpening'
-    widgets = ('open_date', 
-               'initial_cash_amount')
+    proxy_widgets = ('open_date', 
+                     'initial_cash_amount')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
@@ -80,7 +81,7 @@ class TillOpeningEditor(BaseEditor):
         self._setup_widgets()
         self._initialize_till_operation()
         self.add_proxy(self.model,
-                       TillOpeningEditor.widgets)
+                       TillOpeningEditor.proxy_widgets)
 
 
 class TillClosingEditor(BaseEditor):
@@ -89,11 +90,6 @@ class TillClosingEditor(BaseEditor):
     gladefile = 'TillClosing'
     proxy_widgets = ('final_cash_amount',
                      'balance_to_send')
-    widgets = ('closing_date_lbl',
-               'total_balance_lbl',
-               'initial_cash_amount_lbl',
-               'debits_lbl',
-               'credits_lbl') + proxy_widgets
     size = (350, 290)
 
     def __init__(self, conn, model):
@@ -196,7 +192,6 @@ class BaseCashSlave(BaseEditorSlave):
     label_widgets = ('date',
                      'date_lbl',
                      'cash_amount_lbl')
-    widgets = proxy_widgets + label_widgets
 
     def __init__(self, conn, payment_description, 
                  payment_iface=IInPayment):
@@ -335,7 +330,6 @@ class CashOutEditor(BaseEditor):
     gladefile = 'CashOutEditor'
     label_widgets = ('reason_lbl',)
     entry_widgets = ('reason',)
-    widgets = label_widgets + entry_widgets
     title = _('Reverse Payment')
     
     payment_iface = IOutPayment

@@ -177,7 +177,6 @@ class PersonEditorTemplate(BaseEditorSlave):
 class IndividualEditorTemplate(BaseEditorSlave):
     model_iface = IIndividual
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
 
     def __init__(self, conn, model=None, person_slave=None):
@@ -242,7 +241,6 @@ class IndividualEditorTemplate(BaseEditorSlave):
 class CompanyEditorTemplate(BaseEditorSlave):
     model_iface = ICompany
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     def __init__(self, conn, model=None, person_slave=None):
         self._person_slave = person_slave
