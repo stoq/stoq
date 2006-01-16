@@ -43,15 +43,14 @@ from stoq.lib.defaults import get_country_states
 class IndividualDocuments(BaseEditorSlave):
     model_iface = IIndividual
     gladefile = 'IndividualDocuments'
-
-    widgets = ('cpf',
-               'rg_expedition_date',
-               'rg_expedition_local',
-               'rg_number')
+    proxy_widgets = ('cpf',
+                     'rg_expedition_date',
+                     'rg_expedition_local',
+                     'rg_number')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
-                                    IndividualDocuments.widgets)
+                                    IndividualDocuments.proxy_widgets)
 
 class IndividualDetailsSlave(BaseEditorSlave):
     model_iface = IIndividual
@@ -71,12 +70,6 @@ class IndividualDetailsSlave(BaseEditorSlave):
         'spouse_name',
         'marital_status',
         )
-
-    widgets = (
-        'spouse_lbl',
-        'male_check',
-        'female_check'
-        ) + proxy_widgets + birth_loc_widgets
 
     def setup_entries_completion(self):
         cities = [sysparam(self.conn).CITY_SUGGESTED]
@@ -171,6 +164,3 @@ class IndividualDetailsSlave(BaseEditorSlave):
             self.model.gender = self.model_type.GENDER_FEMALE
         self.ensure_city_location()
         return self.model
-
-
-

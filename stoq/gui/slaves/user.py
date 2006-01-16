@@ -111,7 +111,6 @@ class UserDetailsSlave(BaseEditorSlave):
     
     size_group_widgets = ('username_lbl',
                           'profile_lbl') + proxy_widgets
-    widgets = ('profile_button',) + proxy_widgets + size_group_widgets
 
     def __init__(self, conn, model, show_password_fields=True):
         self.show_password_fields = show_password_fields

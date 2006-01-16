@@ -48,8 +48,6 @@ class FilterSlave(SlaveDelegate):
                   statuses tuple argument.
     """
     gladefile = 'FilterSlave'
-    widgets = ('filter_combo',
-               'filter_label')
     gsignal('status-changed')
 
 

@@ -58,11 +58,6 @@ class DeliveryEditor(BaseEditor):
     delivery_widgets = ('delivery_address',)
     sellableitem_widgets = ('price',
                             'delivery_date')
-    widgets = (('change_address_button', 
-                'additional_info_button',
-                'additional_info_label',
-                'addition_list_holder') + sellableitem_widgets +
-                delivery_widgets)
 
     def __init__(self, conn, model, sale=None, products=None):
         if not model:
@@ -148,7 +143,6 @@ class DeliveryEditor(BaseEditor):
                              main_address.get_city(), 
                              main_address.get_state()))
         delivery.delivery_address = address_string
-
         return model
 
     def setup_proxies(self):

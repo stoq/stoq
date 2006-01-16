@@ -40,7 +40,6 @@ class UserProfileSettingsSlave(BaseEditorSlave):
     model_type = ProfileSettings
     gladefile = 'UserProfileSettingsSlave'
     proxy_widgets = ('has_permission', )
-    widgets = ('profile_name', ) + proxy_widgets
 
     def __init__(self, conn, profile, app_name, app_full_name, model=None):
         self.profile = profile

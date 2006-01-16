@@ -110,10 +110,6 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                            'military_doc_serie',
                            'military_doc_number')
 
-    widgets = (right_widgets_group + left_widgets_group + employee_widgets + 
-               bank_account_widgets + work_permit_widgets + voter_widgets + 
-               military_widgets)
-
     def setup_widgets(self):
         self.right_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self.left_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
@@ -159,14 +155,14 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 class EmployeeStatusSlave(BaseEditorSlave):
     gladefile = 'EmployeeStatusSlave'
     model_iface = IEmployee
-    widgets = ('statuses_combo',)
+    proxy_widgets = ('statuses_combo',)
 
     def setup_proxies(self):
         items = [(v, c) 
                     for c, v in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
-                                    EmployeeStatusSlave.widgets)
+                                    EmployeeStatusSlave.proxy_widgets)
 
 class EmployeeRoleSlave(BaseEditorSlave):
     gladefile = 'EmployeeRoleSlave'

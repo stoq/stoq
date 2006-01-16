@@ -38,7 +38,7 @@ class ClientStatusSlave(BaseEditorSlave):
     model_iface = IClient
     gladefile = 'ClientStatusSlave'
 
-    widgets = ('statuses_combo',)
+    proxy_widgets = ('statuses_combo',)
 
     # 
     # BaseEditorSlave hooks
@@ -50,6 +50,6 @@ class ClientStatusSlave(BaseEditorSlave):
                     for constant, value in table.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
-                                    ClientStatusSlave.widgets)
+                                    ClientStatusSlave.proxy_widgets)
 
 

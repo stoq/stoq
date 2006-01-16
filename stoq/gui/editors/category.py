@@ -20,6 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
+## Author(s):   Evandro Vale Miquelito  <evandro@async.com.br>
+##
 """
 stoq/gui/editors/category.py:
 
@@ -42,9 +44,9 @@ class BaseSellableCategoryEditor(BaseEditor):
     gladefile = 'BaseSellableCategoryDataSlave'
     model_type = BaseSellableCategory
     model_name = _('Base Category')
-    widgets = ('description',
-               'markup',
-               'commission')
+    proxy_widgets = ('description',
+                     'markup',
+                     'commission')
     size = (400, 175)
 
     def create_model(self, conn):
@@ -58,17 +60,17 @@ class BaseSellableCategoryEditor(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(model=self.model,
-                       widgets=BaseSellableCategoryEditor.widgets)
+                       widgets=BaseSellableCategoryEditor.proxy_widgets)
 
 
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
     model_type = SellableCategory
     model_name = _('Category')
-    widgets = ('description',
-               'suggested_markup',
-               'base_category',
-               'commission')
+    proxy_widgets = ('description',
+                     'suggested_markup',
+                     'base_category',
+                     'commission')
 
     def create_model(self, conn):
         category_data = AbstractSellableCategory(description='',
@@ -87,13 +89,11 @@ class SellableCategoryEditor(BaseEditor):
         base_category_list = table.select(connection=self.conn)
         items = [(base_cat.category_data.description, base_cat)
                  for base_cat in base_category_list]
-
         self.base_category.prefill(items)
 
     def setup_proxies(self):
         # We need to prefill combobox before to set a proxy, since we want
         # the attribute 'group' be set properly in the combo.
         self.setup_combo()
-
         self.add_proxy(model=self.model,
-                       widgets=SellableCategoryEditor.widgets)
+                       widgets=SellableCategoryEditor.proxy_widgets)

@@ -64,7 +64,6 @@ class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
     model_iface = IClient
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     #
     # BaseEditor hooks
@@ -85,7 +84,6 @@ class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
     model_iface = IUser
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder',)
     USER_TAB_POSITION = 0
 
     #
@@ -179,7 +177,6 @@ class CreditProviderEditor(BasePersonRoleEditor):
     model_name = _('Credit Provider')
     model_iface = ICreditProvider
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     #
     # BaseEditor hooks
@@ -206,7 +203,6 @@ class EmployeeEditor(BasePersonRoleEditor):
     model_name = _('Employee')
     model_iface = IEmployee
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     #
     # BaseEditor hooks
@@ -292,7 +288,6 @@ class SupplierEditor(BasePersonRoleEditor):
     model_name = _('Supplier')
     model_iface = ISupplier
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     #
     # BaseEditor hooks
@@ -314,7 +309,6 @@ class TransporterEditor(BasePersonRoleEditor):
     model_name = _('Transporter')
     model_iface = ITransporter
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder', )
 
     #
     # BaseEditor hooks
@@ -338,7 +332,6 @@ class BranchEditor(BasePersonRoleEditor):
     model_name = _('Branch')
     model_iface = IBranch
     gladefile = 'BaseTemplate'
-    widgets = ('main_holder',)
 
     #
     # BaseEditor hooks

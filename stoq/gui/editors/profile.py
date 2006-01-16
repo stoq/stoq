@@ -48,8 +48,6 @@ class UserProfileEditor(BaseEditor):
     model_type = UserProfile
     gladefile = 'UserProfileEditor'
     proxy_widgets = ('profile_name', )
-    widgets = ('scrolled_window',
-               'applications_vbox') + proxy_widgets
 
     #
     # BaseEditor Hooks

@@ -35,11 +35,11 @@ from stoq.domain.person import PersonAdaptToCompany
 class CompanyDocumentsSlave(BaseEditorSlave):
     model_type = PersonAdaptToCompany
     gladefile = 'CompanyDocumentsSlave'
-    widgets = ('cnpj', 
-               'fancy_name',
-               'state_registry')
+    proxy_widgets = ('cnpj', 
+                     'fancy_name',
+                     'state_registry')
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
-                                    CompanyDocumentsSlave.widgets)
+                                    CompanyDocumentsSlave.proxy_widgets)
 
