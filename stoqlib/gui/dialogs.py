@@ -291,7 +291,7 @@ class BasicWrappingDialog(BasicPluggableDialog):
         # This helps kiwis ui test, set the name of ourselves to
         # the classname of the slave, which is much more helpful than
         # just "BasicWrappingDialog"
-        self.get_toplevel().set_name(self.__class__.__name__)
+        self.get_toplevel().set_name(slave.__class__.__name__)
         slave.run = self.run
         slave.set_transient_for = self.set_transient_for
 
