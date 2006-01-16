@@ -353,7 +353,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
-        self._setup_widgets()
         self.update_view()
 
     def _refresh_next(self, validation_ok=True):
@@ -524,14 +523,15 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
 
     def setup_proxies(self):
+        self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     BasePaymentMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
-        check_group = self.method.get_check_group_data(self.sale)
+        group = self.wizard.get_payment_group()
+        check_group = self.method.get_check_group_data(group)
         if check_group:
             return check_group
-        group = self.wizard.get_payment_group()
         return BillCheckGroupData(connection=conn, group=group,
                                   first_duedate=datetime.today())
 

@@ -458,6 +458,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
             raise DatabaseInconsistency('You should have only one check '
                                         'group item, found %d items' %
                                         count)
+        else:
+            # No check group found
+            return
 
 
 class PMAdaptToCheckPM(AbstractCheckBillAdapter):
