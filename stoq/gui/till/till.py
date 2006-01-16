@@ -180,11 +180,7 @@ class TillApp(SearchableAppWindow):
             sale.till = new_till
         self.conn.commit()
 
-    #
-    # Kiwi callbacks
-    #
-   
-    def on_confirm_order_button__clicked(self, *args):
+    def _confirm_order(self):
         rollback_and_begin(self.conn)
         sale = self.sales.get_selected()
         title = _('Confirm Sale')
@@ -196,6 +192,13 @@ class TillApp(SearchableAppWindow):
             return
         self.conn.commit()
         self.searchbar.search_items()
+
+    #
+    # Kiwi callbacks
+    #
+   
+    def on_confirm_order_button__clicked(self, *args):
+        self._confirm_order()
 
     def _on_close_till_action__clicked(self, *args):
         if not emit_reduce_Z(self.conn):
@@ -230,3 +233,5 @@ class TillApp(SearchableAppWindow):
         dialog.connect('close-till', self.close_till)
         self.run_dialog(dialog, self.conn)
 
+    def on_sales__double_click(self, *args):
+        self._confirm_order()
