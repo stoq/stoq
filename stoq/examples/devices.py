@@ -46,4 +46,4 @@ def create_device_settings():
     print_msg("done.")
 
 if __name__ == "__main__":
-    create_printer_setting()
+    create_device_settings()

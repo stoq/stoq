@@ -30,13 +30,11 @@ stoq/gui/editors/devices.py:
 
 import gettext
 
-import gtk
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.devices.printers.base import get_supported_printers
 from stoqdrivers.devices.scales.base import get_supported_scales
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.lists import AdditionListDialog
-from stoqlib.gui.search import SearchEditor
 
 from stoq.domain.devices import DeviceSettings
 
