@@ -1,3 +1,15 @@
+2006-01-16  Henrique Romano  <henrique@async.com.br>
+
+	reviewed by: Evandro Vale Miquelito <evandro@async.com.br>
+
+	* stoqdrivers/constants.py:
+	* stoqdrivers/devices/base.py:
+	* stoqdrivers/devices/printers/base.py:
+	* stoqdrivers/devices/scales/base.py:
+	* stoqdrivers/devices/scales/scales.py:
+
+	BaseDevice implementation and code update, fix bug #2386
+	
 2006-01-10  Henrique Romano  <henrique@async.com.br>
 
 	reviewed by: Johan Dahlin <jdahlin@async.com.br>>

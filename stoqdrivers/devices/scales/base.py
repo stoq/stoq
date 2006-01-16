@@ -32,10 +32,23 @@ stoqdrivers/devices/scales/base.py:
 import os
 
 from kiwi.python import namedAny
+from zope.interface import providedBy
 
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.devices import scales
 from stoqdrivers.devices.scales.interface import IScale
+from stoqdrivers.devices.base import BaseDevice
+from stoqdrivers.constants import SCALE_DEVICE
+
+class BaseScale(BaseDevice):
+    device_dirname = "scales"
+    device_type = SCALE_DEVICE
+
+    def check_interfaces(self):
+        driver_interfaces = providedBy(self._driver)
+        if not IScale in driver_interfaces:
+            raise TypeError("This driver doesn't implements a valid "
+                            "interface")
 
 def get_supported_scales():
     scales_dir = os.path.dirname(scales.__file__)

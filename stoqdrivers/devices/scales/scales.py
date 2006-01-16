@@ -21,33 +21,32 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+## Author(s):   Henrique Romano  <henrique@async.com.br>
 ##
 """
-stoqdrivers/constants.py:
-    
-    StoqDrivers constants
+stoqdrivers/devices/scales/scales.py:
+
+    Base class implementation for all the scales drivers.
 """
 
-# Constants for product unit labels
-(UNIT_WEIGHT,
- UNIT_METERS,
- UNIT_LITERS,
- UNIT_EMPTY,
- UNIT_CUSTOM)  = range(5)
+from stoqdrivers.devices.scales.base import BaseScale
 
-# Constants for product tax
-(TAX_IOF,
- TAX_ICMS,
- TAX_SUBSTITUTION,
- TAX_EXEMPTION,
- TAX_NONE) = range(5)
+#
+# Scale interface
+#
 
-# Constants for Payment Method
-(MONEY_PM,
- CHEQUE_PM) = range(2)
+class Scale(BaseScale):
+    def read_data(self):
+        return self._driver.read_data()
 
-# Constants for device types
-(PRINTER_DEVICE,
- SCALE_DEVICE) = range(2)
+def test():
+    scale = Scale()
+    print "Waiting for scale reply... "
+    data = scale.read_data()
+    print "...ok"
+    print "Weight: %.02f" % data.weight
+    print "Price per Kg: %.02f" % data.price_per_kg
+    print "Total price: %.02f" % data.total_price
 
+if __name__ == "__main__":
+    test()

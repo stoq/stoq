@@ -36,58 +36,25 @@ from kiwi.python import namedAny
 
 from stoqdrivers.log import Logger
 from stoqdrivers.configparser import StoqdriversConfig
-from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.devices import printers
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+from stoqdrivers.devices.base import BaseDevice
 from stoqdrivers.utils import get_module_list
+from stoqdrivers.constants import PRINTER_DEVICE
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
-class BasePrinter(Logger):
-    log_domain = "stoqdrivers"
-    
-    def __init__(self, brand=None, model=None, device=None, config_file=None):
-        Logger.__init__(self)
-        self.brand, self.model, self.device = brand, model, device
-        self._load_configuration(config_file)
+class BasePrinter(BaseDevice):
+    device_dirname = "printers"
+    device_type = PRINTER_DEVICE
 
-    def _load_configuration(self, config_file):
-        if not self.model or not self.brand or not self.device:
-            self.config = StoqdriversConfig(config_file)
-            if not self.config.has_section("Printer"):
-                raise ConfigError(_("There is no printer configured!"))
-            self.brand = self.config.get_option("brand", "Printer")
-            self.device = self.config.get_option("device", "Printer")
-            self.model = self.config.get_option("model", "Printer")
-
-        name = 'stoqdrivers.devices.printers.%s.%s' % (self.brand, self.model)
-        try:
-            module = __import__(name, None, None, 'stoqdevices')
-        except ImportError, reason:
-            raise CriticalError("Could not load driver %s %s: %s"
-                                % (self.brand.capitalize(),
-                                   self.model.upper(), reason))
-
-        class_name = self.model
-
-        driver_class = getattr(module, class_name, None)
-        if not driver_class:
-            raise CriticalError("Printer driver %s needs a class called %s"
-                                % (name, class_name))
-
-        self._driver = driver_class(device=self.device)
-
-        self.debug(("Config data: brand=%s,device=%s,model=%s\n"
-                    % (self.brand, self.device, self.model)))
-
+    def check_interfaces(self):
         driver_interfaces = providedBy(self._driver)
-        if not (ICouponPrinter in driver_interfaces):
-            raise TypeError("The driver %s doesn't implements a known "
-                            "interface" % self._driver)
-
-    def get_printer_name(self):
-        return self._driver.model_name
+        if (not ICouponPrinter in driver_interfaces
+            or not IChequePrinter in driver_interfaces):
+            raise TypeError("This driver doesn't implements a valid "
+                            "interface")
 
 def get_virtual_printer():
     from stoqdrivers.devices.printers.fiscal import FiscalPrinter
