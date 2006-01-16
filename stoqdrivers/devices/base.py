@@ -32,6 +32,7 @@ stoqdrivers/devices/base.py:
 import gettext
 
 from kiwi.python import namedAny
+import gobject
 
 from stoqdrivers.log import Logger
 from stoqdrivers.configparser import StoqdriversConfig
@@ -96,3 +97,12 @@ class BaseDevice(Logger):
         driver implements a valid interface for the current operation state.
         """
         raise NotImplementedError
+
+    def notify_read(self, func):
+        """ This function can be called when the callsite must know when data
+        is coming from the serial port.   It is necessary that a gobject main
+        loop is already running before calling this method.
+        """
+        gobject.io_add_watch(self._driver.fd, gobject.IO_IN,
+                             lambda fd, cond: func(self, cond))
+
