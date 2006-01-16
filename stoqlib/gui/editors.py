@@ -39,12 +39,10 @@ class BaseEditorSlave(SlaveDelegate):
     setting up focus sequence, required attributes and validated attrs.
 
     @cvar gladefile:
-    @vcar widgets:
     @cvar model_type:
     @cvar model_iface: 
     """
     gladefile = None
-    widgets = ()
     model_type = None
     model_iface = None
     
@@ -78,8 +76,7 @@ class BaseEditorSlave(SlaveDelegate):
         else:
             model = None
         self.model = model 
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.setup_proxies()
         self.setup_slaves()
 
@@ -181,7 +178,6 @@ class BaseEditor(BaseEditorSlave):
 class SimpleEntryEditor(BaseEditor):
     """Editor that offers a generic entry to input a string value."""
     gladefile = "SimpleEntryEditor"
-    widgets = ('name_entry', 'name_entry_label')
     
     def __init__(self, conn, model, attr_name, name_entry_label='Name:',
                  title=''):
