@@ -33,13 +33,15 @@ stoq/examples/products.py:
 
 import random
 
+from stoqdrivers.constants import UNIT_CUSTOM
+
 from stoq.domain.product import Product, ProductSupplierInfo
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
                                   AbstractSellableCategory,
-                                  BaseSellableInfo)
+                                  BaseSellableInfo, SellableUnit)
 from stoq.lib.runtime import new_transaction, print_msg
 
 
@@ -83,6 +85,10 @@ def create_products():
         raise ValueError('You must have at least four suppliers on your '
                          'database at this point.')
 
+    units = SellableUnit.select(connection=conn)
+    if units.count() < MAX_PRODUCT_NUMBER:
+        SellableUnit(connection=conn, description='Cx', index=UNIT_CUSTOM)
+        units = SellableUnit.select(connection=conn)
 
     # Creating products and facets
     for index in range(MAX_PRODUCT_NUMBER):
@@ -124,8 +130,10 @@ def create_products():
         
         cost = random.randrange(*COST_RANGE)
         code = codes[index]
+        unit = units[index]
+
         product_obj.addFacet(ISellable, connection=conn, category=cat, 
-                             code=code, cost=cost, 
+                             code=code, cost=cost, unit=unit,
                              base_sellable_info=sellable_info)
 
         storable = product_obj.addFacet(IStorable, connection=conn)
