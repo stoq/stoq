@@ -53,8 +53,8 @@ class BasePrinter(BaseDevice):
         driver_interfaces = providedBy(self._driver)
         if (not ICouponPrinter in driver_interfaces
             or not IChequePrinter in driver_interfaces):
-            raise TypeError("This driver doesn't implements a valid "
-                            "interface")
+            raise TypeError("The driver `%r' doesn't implements a valid "
+                            "interface" % self._driver)
 
 def get_virtual_printer():
     from stoqdrivers.devices.printers.fiscal import FiscalPrinter
@@ -78,10 +78,6 @@ def get_supported_printers():
             except AttributeError:
                 raise ImportError("Can't find class %s for module %s"
                                   % (module_name, module_name))
-            if not (IChequePrinter.implementedBy(obj) or
-                    ICouponPrinter.implementedBy(obj)):
-                raise TypeError("The driver %s %s doesn't implements a "
-                                "valid interface" % (brand, model_name))
             result[brand].append(obj)
     return result
 

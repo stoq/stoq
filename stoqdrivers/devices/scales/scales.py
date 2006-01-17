@@ -41,6 +41,7 @@ class Scale(BaseScale):
 
 def test():
     scale = Scale()
+
     print "Waiting for scale reply... "
     data = scale.read_data()
     print "...ok"
