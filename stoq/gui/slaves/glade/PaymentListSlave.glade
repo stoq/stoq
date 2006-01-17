@@ -38,7 +38,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkImage" id="GtkImage1">
+                                    <widget class="GtkImage" id="image1">
                                         <property name="stock">gtk-add</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -53,7 +53,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkImage" id="GtkImage1">
+                                    <widget class="GtkImage" id="image2">
                                         <property name="stock">gtk-remove</property>
                                         <property name="visible">True</property>
                                     </widget>
