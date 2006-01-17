@@ -106,6 +106,7 @@ def create_purchases():
                               branch=branch,
                               order_number=index + 1,
                               **purchase_args)
+        order.set_valid()
 
 
         indexes = sellable_index, sellable_index + 1
