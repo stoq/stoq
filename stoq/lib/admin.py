@@ -28,12 +28,10 @@ Helper functions related to administration of the database, creating
 tables, removing tables and configuring administration user.
 """
 
-import sys
-
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoq.lib.runtime import new_transaction, print_msg
-from stoq.lib.parameters import sysparam
+from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.domain.person import EmployeeRole, PersonAdaptToUser
 from stoq.domain.profile import UserProfile
 from stoq.domain.tables import get_table_types
@@ -106,4 +104,15 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
             print_msg('<created>:  %s' % catalog)
 
     trans.commit()
-    sys.stdout.flush()
+    print_msg('done')
+
+def initialize_system(user, username, password, delete_only=False,
+                     list_tables=False, verbose=False):
+    """Call all the necessary methods to startup Stoq applications for 
+    every purpose: production usage, testing or demonstration
+    """
+    setup_tables(delete_only=delete_only, list_tables=list_tables,
+                 verbose=verbose)
+    ensure_system_parameters()
+    ensure_admin_user(user, username, password)
+    ensure_sellable_units()

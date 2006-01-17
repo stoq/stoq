@@ -42,8 +42,7 @@ from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
 set_test_mode(True)
 
 from stoq.examples.createall import create
-from stoq.lib.admin import setup_tables, ensure_admin_user
-from stoq.lib.parameters import ensure_system_parameters
+from stoq.lib.admin import initialize_system, setup_tables
 
 VERBOSE = '-v' in sys.argv
 
@@ -53,9 +52,7 @@ def setup():
     set_verbose(False)
     setup_tables(delete_only=True, list_tables=True, verbose=True)
     set_verbose(VERBOSE)
-    setup_tables(verbose=True)
-    ensure_system_parameters()
-    ensure_admin_user("Superuser", "administrator", "")
+    initialize_system("Superuser", "administrator", "", verbose=True)
     create()
     
 def test_gui():
