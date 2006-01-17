@@ -1,175 +1,175 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface>
-    <object class="GtkUIManager" id="uimanager">
+    <widget class="GtkUIManager" id="uimanager">
         <child>
-            <object class="GtkActionGroup" id="DefaultActions">
+            <widget class="GtkActionGroup" id="DefaultActions">
                 <child>
-                    <object class="GtkAction" id="About">
+                    <widget class="GtkAction" id="About">
                         <property name="name">About</property>
                         <property name="label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="CancelOrder">
+                    <widget class="GtkAction" id="CancelOrder">
                         <property name="name">CancelOrder</property>
                         <property name="label" translatable="yes">Cancel Order</property>
                         <signal handler="_on_cancel_order_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;o</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="ChangeUser">
+                    <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
                         <property name="accelerator">&lt;control&gt;h</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="ClearCookie">
+                    <widget class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
                         <property name="label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
                         <property name="accelerator">&lt;control&gt;e</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Clients">
+                    <widget class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients...</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;p</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="ConfirmOrder">
+                    <widget class="GtkAction" id="ConfirmOrder">
                         <property name="name">ConfirmOrder</property>
                         <property name="label" translatable="yes">_Confirm Order</property>
                         <property name="stock_id">gtk-apply</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Copy">
+                    <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
                         <property name="tooltip">Copy selected object into the clipboard</property>
                         <property name="stock_id">gtk-copy</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Cut">
+                    <widget class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="label" translatable="yes">C_ut</property>
                         <property name="tooltip">Cut selected object into the clipboard</property>
                         <property name="stock_id">gtk-cut</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="EditMenu">
+                    <widget class="GtkAction" id="EditMenu">
                         <property name="name">EditMenu</property>
                         <property name="label" translatable="yes">_Edit</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="FileMenu">
+                    <widget class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Open">
+                    <widget class="GtkAction" id="Open">
                         <property name="name">Open</property>
                         <property name="tooltip">Open a file</property>
                         <property name="stock_id">gtk-open</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Paste">
+                    <widget class="GtkAction" id="Paste">
                         <property name="name">Paste</property>
                         <property name="tooltip">Paste object from the Clipboard</property>
                         <property name="stock_id">gtk-paste</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Quit">
+                    <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="ResetOrder">
+                    <widget class="GtkAction" id="ResetOrder">
                         <property name="name">ResetOrder</property>
                         <property name="label" translatable="yes">_New Order...</property>
                         <property name="tooltip">Reset the order</property>
                         <signal handler="_on_resetorder_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;r</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Sales">
+                    <widget class="GtkAction" id="Sales">
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Sales...</property>
                         <signal handler="_on_sales_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;control&gt;l</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="SalesMenu">
+                    <widget class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
                         <property name="label" translatable="yes">Sal_es</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="Save">
+                    <widget class="GtkAction" id="Save">
                         <property name="name">Save</property>
                         <property name="tooltip">Save a file</property>
                         <property name="stock_id">gtk-save</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="SaveAs">
+                    <widget class="GtkAction" id="SaveAs">
                         <property name="name">SaveAs</property>
                         <property name="label" translatable="yes">Save _as</property>
                         <property name="tooltip">Save with a differente name</property>
                         <property name="stock_id">gtk-save-as</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="SearchMenu">
+                    <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">Se_arch</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="StoreCookie">
+                    <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="help_menu">
+                    <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
-                    </object>
+                    </widget>
                 </child>
                 <child>
-                    <object class="GtkAction" id="users_menu">
+                    <widget class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
-                    </object>
+                    </widget>
                 </child>
-            </object>
+            </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
 <menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
-    </object>
+    </widget>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>
         <property name="height_request">570</property>
