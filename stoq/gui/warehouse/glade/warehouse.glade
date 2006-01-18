@@ -8,17 +8,19 @@
                     <object class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
+                        <property name="short_label">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
-                        <property name="accelerator">&lt;control&gt;h</property>
+                        <property name="accelerator">&lt;Control&gt;h</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
                         <property name="label" translatable="yes">Clear Cookie</property>
+                        <property name="short_label">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;e</property>
+                        <property name="accelerator">&lt;Control&gt;e</property>
                     </object>
                 </child>
                 <child>
@@ -32,6 +34,7 @@
                     <object class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="label" translatable="yes">C_ut</property>
+                        <property name="short_label">C_ut</property>
                         <property name="tooltip">Cut selected object into the clipboard</property>
                         <property name="stock_id">gtk-cut</property>
                     </object>
@@ -40,12 +43,14 @@
                     <object class="GtkAction" id="EditMenu">
                         <property name="name">EditMenu</property>
                         <property name="label" translatable="yes">_Edit</property>
+                        <property name="short_label">_Edit</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
+                        <property name="short_label">_File</property>
                     </object>
                 </child>
                 <child>
@@ -81,6 +86,7 @@
                     <object class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
                         <property name="label" translatable="yes">_Warehouse</property>
+                        <property name="short_label">_Warehouse</property>
                     </object>
                 </child>
                 <child>
@@ -94,6 +100,7 @@
                     <object class="GtkAction" id="SaveAs">
                         <property name="name">SaveAs</property>
                         <property name="label" translatable="yes">Save _as</property>
+                        <property name="short_label">Save _as</property>
                         <property name="tooltip">Save with a differente name</property>
                         <property name="stock_id">gtk-save-as</property>
                     </object>
@@ -102,21 +109,24 @@
                     <object class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">S_earch</property>
+                        <property name="short_label">S_earch</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">_Store Cookie</property>
+                        <property name="short_label">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
-                        <property name="accelerator">&lt;control&gt;k</property>
+                        <property name="accelerator">&lt;Control&gt;k</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
+                        <property name="short_label">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </object>
@@ -125,20 +135,24 @@
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
+                        <property name="short_label">_Help</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="receive_action">
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">Receive</property>
+                        <property name="short_label">Receive</property>
                         <property name="stock_id">gtk-redo</property>
-                        <property name="accelerator">&lt;control&gt;r</property>
+                        <signal handler="_on_receive_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;r</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="retention_action">
                         <property name="name">retention_action</property>
                         <property name="label" translatable="yes">_Retention</property>
+                        <property name="short_label">_Retention</property>
                         <property name="stock_id">gtk-go-up</property>
                     </object>
                 </child>
@@ -146,14 +160,16 @@
                     <object class="GtkAction" id="transfer_action">
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
+                        <property name="short_label">Transfer</property>
                         <property name="stock_id">gtk-copy</property>
-                        <property name="accelerator">&lt;control&gt;t</property>
+                        <property name="accelerator">&lt;Control&gt;t</property>
                     </object>
                 </child>
                 <child>
                     <object class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
+                        <property name="short_label">_User</property>
                     </object>
                 </child>
             </object>
@@ -221,8 +237,8 @@
                                     <widget class="kiwi+ui+widgets+list+List" id="products">
                                         <property name="is_focus">True</property>
                                         <property name="shadow_type">in</property>
-                                        <property name="vscrollbar_policy">automatic</property>
                                         <property name="visible">True</property>
+                                        <property name="vscrollbar_policy">automatic</property>
                                     </widget>
                                 </child>
                                 <child>

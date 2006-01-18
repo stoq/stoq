@@ -33,7 +33,7 @@ import datetime
 import gettext
 
 from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 
@@ -58,6 +58,7 @@ class SellableUnit(Domain):
     """
     description = StringCol()
     index = IntCol()
+
 
 class FancySellable:
     """A fancy class used by some kiwi entries."""
@@ -274,23 +275,18 @@ class AbstractSellable(InheritableModelAdapter):
     def get_unit_description(self):
         return self.unit and self.unit.description or ""
 
-    #
-    # Auxiliary methods
-    #
-
     def get_status_string(self):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Invalid status for product got '
                                         '%d' % self.status)
         return self.statuses[self.status]
 
-    def _set_code(self, code):
-        conn = get_connection()
-        query = AbstractSellable.q.code == code
-        # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing code. Waiting for kiwi support 
-        if not AbstractSellable.select(query, connection=conn).count():
-            self._SO_set_code(code)
+    def get_suggested_markup(self):
+        return self.category and self.category.get_markup() 
+
+    #
+    # Classmethods
+    #
 
     @classmethod
     def get_available_sellables_query(cls, conn):
@@ -318,8 +314,52 @@ class AbstractSellable(InheritableModelAdapter):
         query = cls.q.status == cls.STATUS_SOLD
         return cls.select(query, connection=conn)
 
-    def get_suggested_markup(self):
-        return self.category and self.category.get_markup() 
+
+    @classmethod
+    def _get_sellables_by_code(cls, conn, code, extra_query, 
+                              notify_callback):
+        query = AND(cls.q.code == code, extra_query)
+        sellables = cls.select(query, connection=conn)
+        qty = sellables.count()
+        if not qty:
+            msg = _("The sellable with code '%s' doesn't exists" % code)
+            notify_callback(msg)
+            return
+        if qty != 1:
+            raise DatabaseInconsistency('You should have only one '
+                                        'sellable with code %s' 
+                                        % code)
+        return sellables[0]
+
+    @classmethod
+    def get_availables_by_code(cls, conn, code, notify_callback):
+        """Returns a list of avaliable sellables that can be sold. 
+        A sellable that can be sold can have only one possible 
+        status: STATUS_AVAILABLE
+        
+        """
+        extra_query = cls.q.status == cls.q.STATUS_AVAILABLE
+        return cls._get_sellables_by_code(conn, code, extra_query, 
+                                          notify_callback)
+
+    @classmethod
+    def get_availables_and_sold_by_code(cls, conn, code, notify_callback):
+        statuses = [cls.q.STATUS_AVAILABLE, cls.q.STATUS_SOLD]
+        extra_query = IN(cls.q.status, statuses)
+        return cls._get_sellables_by_code(conn, code, extra_query, 
+                                          notify_callback)
+
+    #
+    # General methods
+    #
+
+    def _set_code(self, code):
+        conn = get_connection()
+        query = AbstractSellable.q.code == code
+        # FIXME We should raise a proper stoqlib exception here if we find
+        # an existing code. Waiting for kiwi support 
+        if not AbstractSellable.select(query, connection=conn).count():
+            self._SO_set_code(code)
 
     def set_default_commission(self):
         if not self.category:

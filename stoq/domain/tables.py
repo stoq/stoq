@@ -164,6 +164,9 @@ TABLES = [
                                             "PurchaseOrderAdaptToPaymentGroup",
                                             "PurchaseItem",
                                             )),
+     ('stoq.domain.receiving',             ("ReceivingOrder",
+                                            "ReceivingOrderItem",
+                                            )),
      ('stoq.domain.devices',               ("DeviceSettings",
                                             ))
 ]

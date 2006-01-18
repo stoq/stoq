@@ -41,6 +41,7 @@ from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.interfaces import (IContainer, ICheckPM, IBillPM, IMoneyPM,
                                     IPaymentGroup)
 from stoq.lib.parameters import sysparam
+from stoq.lib.validators import compare_float_numbers
 
 _ = gettext.gettext
 
@@ -74,6 +75,18 @@ class PurchaseItem(Domain):
 
     def get_total(self):
         return self.quantity * self.cost
+
+    def has_been_received(self):
+        return compare_float_numbers(self.quantity_received, self.quantity)
+
+    def get_pending_quantity(self):
+        if not self.has_been_received:
+            return 0
+        quantity = self.quantity - self.quantity_received
+        if quantity < 0:
+            raise DatabaseInconsistency('Quantity received is greater '
+                                        'than the quantity ordered')
+        return quantity
 
     #
     # SQLObject callbacks
@@ -240,6 +253,9 @@ class PurchaseOrder(Domain):
     def get_items(self):
         return PurchaseItem.selectBy(order=self,
                                      connection=self.get_connection())
+    def get_pending_items(self):
+        return [item for item in self.get_items() 
+                        if not item.has_been_received()]
 
     @argcheck(PurchaseItem)
     def add_item(self, item):

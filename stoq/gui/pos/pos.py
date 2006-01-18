@@ -36,7 +36,6 @@ import gtk
 from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
@@ -150,20 +149,9 @@ class POSApp(AppWindow):
     def _update_totals(self, *args):
         self.summary_label.update_total()
 
-    def _get_sellable_by_code(self, code):
-        sellable = AbstractSellable.selectBy(code=code,
-                                             connection=self.conn)
-        qty = sellable.count()
-        if not qty:
-            msg = _("The item '%s' doesn't exists" % code)
-            self.product.set_invalid(msg)
-            return
-        if qty != 1:
-            raise DatabaseInconsistency('You should have only one '
-                                        'sellable with code %s' 
-                                        % code)
-        return sellable[0]
-
+    def _product_notify(self, msg):
+        self.product.set_invalid(msg)
+        
     def _coupon_add_item(self, sellable_item):
         if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             return
@@ -202,12 +190,13 @@ class POSApp(AppWindow):
             sellable = None
         if not sellable:
             code = self.product.get_text()
-            sellable = self._get_sellable_by_code(code)
+            table = AbstractSellable
+            sellable = table.get_availables_by_code(self.conn, code,
+                                                    self._product_notify)
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions
                 self.product.set_text(sellable.get_short_description())
-
         self.add_button.set_sensitive(sellable is not None)
         return sellable
 
@@ -220,6 +209,7 @@ class POSApp(AppWindow):
             return
         self._update_list(sellable, notify_on_entry=True)
         self.warning_box.hide()
+        self.product.grab_focus()
 
     def select_first_item(self):
         if self.sellables:

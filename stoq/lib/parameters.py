@@ -163,6 +163,14 @@ Current System parameters:
                                       clients when there is overpaid values
                                       in sales with gift certificates as 
                                       payment method.
+
+    * RECEIVE_PRODUCTS_WITHOUT_ORDER(integer): Can we receive products
+                                               without having a purchase 
+                                               order created for them ? If
+                                               yes, the first step of
+                                               ReceivalWizard will accept
+                                               going to the second step
+                                               with no order selected.
 """
     
 import gettext
@@ -255,6 +263,8 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', int, 
                                initial=False),
                  ParameterAttr('RETURN_MONEY_ON_SALES', int, 
+                               initial=True),
+                 ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', int, 
                                initial=True),
 
                  # Adding objects

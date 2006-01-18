@@ -34,8 +34,10 @@ import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.columns import AccessorColumn, ForeignKeyColumn
+from stoqlib.database import rollback_and_begin
 
 from stoq.gui.application import SearchableAppWindow
+from stoq.gui.wizards.receiving import ReceivingOrderWizard
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.domain.person import Person
@@ -165,3 +167,9 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_products__selection_changed(self, *args):
         self._update_view()
+
+    def _on_receive_action_clicked(self, *args):
+        model = self.run_dialog(ReceivingOrderWizard, self.conn)
+        if not model:
+            rollback_and_begin(self.conn)
+        self.conn.commit()
