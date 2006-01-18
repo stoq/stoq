@@ -68,6 +68,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">start_date</property>
                                 <property name="visible">True</property>
+                                <property name="width_chars">11</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -93,6 +94,7 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">end_date</property>
                                 <property name="visible">True</property>
+                                <property name="width_chars">11</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
