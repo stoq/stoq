@@ -37,7 +37,7 @@ import gtk
 from zope.interface import implements
 from sqlobject.sqlbuilder import OR, AND
 from stoqlib.exceptions import DatabaseInconsistency
-from kiwi.ui.dialogs import warning, error, info
+from kiwi.ui.dialogs import warning, error
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
