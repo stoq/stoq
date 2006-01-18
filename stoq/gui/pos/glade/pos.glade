@@ -614,7 +614,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="image5">
-                                                                        <property name="file">receive_order16px.png</property>
+                                                                        <property name="file">confirm16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
