@@ -45,8 +45,7 @@ logfile=~/.%(DOMAIN)s/application.log
 
 [Database]
 # Choose here the relational database management system you would like to
-# use. Available are: MySQL, PostgreSQL, SQLite, Firebird, Sybase, and 
-# MAX DB (also known as SAP DB).
+# use. Available are: postgres
 rdbms=%(RDBMS)s
 
 # This is used by the client to find the server. 
@@ -207,19 +206,27 @@ dbusername=%(DBUSERNAME)s"""
     # Database config accessors
     #
 
-    def get_database_address(self):
-        return self.get_option('address', section='Database')
+    def get_connection_uri(self, test_mode=False):
+        # Here we construct a uri for database access like:
+        # 'postgresql://username@localhost/dbname'
         
-    def get_rdbms_name(self):
-        return self.get_option('rdbms', section='Database')
+        scheme = self.get_option('rdbms', section='Database')
+        if test_mode:
+            dbname = self.get_option('testdb', section='Database')
+        else:
+            dbname = self.get_option('dbname', section='Database')
 
-    def get_dbname(self):
-        return self.get_option('dbname', section='Database')
+        if scheme == 'postgres':
+            if self.has_option('dbusername', section='Database'):
+                dbusername = self.get_option('dbusername', section='Database')
+            else:
+                dbusername = os.getlogin()
 
-    def get_testdb(self):
-        return self.get_option('testdb', section='Database')
-
-    def get_dbusername(self):
-        return self.get_option('dbusername', section='Database')
-
-
+            authority = '%s@%s' % (
+                dbusername,
+                self.get_option('address', section='Database'))
+            path = '/' + dbname
+        else:
+            raise ConfigError("Unsupported database type: %s" % scheme)
+        
+        return '%s://%s%s' % (scheme, authority, path)

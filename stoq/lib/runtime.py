@@ -49,32 +49,22 @@ def initialize_connection():
     msg = 'The connection for this application was already set.'
     assert not _connection, msg
 
-    domain = 'stoq'
-    config = StoqConfigParser(domain, extra_sections=['Database'])
+    config = StoqConfigParser('stoq', extra_sections=['Database'])
     # HACK: This is needed by epydoc for reasons which are not certain,
     #       it needs to be investigated futher.
     if not config:
         return
-    
-    address = config.get_database_address()
-    rdbms = config.get_rdbms_name()
-    if get_test_mode():
-        dbname = config.get_testdb()
-    else:
-        dbname = config.get_dbname()
-    dbusername = config.get_dbusername()
 
-    # Here we define a full address for database access like:
-    # 'postgresql://username@localhost/dbname'
-    conn = connectionForURI('%s://%s@%s/%s' % (rdbms, 
-                            dbusername, address, dbname))
+    conn_uri = config.get_connection_uri(test_mode=get_test_mode())
+    conn = connectionForURI(conn_uri)
+
     # Stoq applications always use transactions explicitly
     conn.autoCommit = False
     _connection = conn
 
 
 def get_connection():
-    # There is no sense to have more than one database connection for an 
+    # There is no sense to have more than one database connection for an
     # Stoq application. That's why we always reuse the same _connection
     # variable.
     global _connection
