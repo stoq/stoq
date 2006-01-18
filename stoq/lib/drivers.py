@@ -37,8 +37,9 @@ import gtk
 from zope.interface import implements
 from sqlobject.sqlbuilder import OR, AND
 from stoqlib.exceptions import DatabaseInconsistency
-from kiwi.ui.dialogs import warning, error
+from kiwi.ui.dialogs import warning, error, info
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
                                    MONEY_PM, CHEQUE_PM)
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
@@ -50,24 +51,36 @@ from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
 
 _ = gettext.gettext
 _printer = None
+_scale = None
+
+def get_device_settings_by_hostname(conn, hostname, device_type):
+    ipaddr = socket.gethostbyname(hostname)
+    query = OR(DeviceSettings.q.host == hostname,
+               DeviceSettings.q.host == ipaddr)
+    query = AND(query, DeviceSettings.q.type == device_type)
+    result = DeviceSettings.select(query, connection=conn)
+    result_quantity = result.count()
+    if result_quantity > 1:
+        raise DatabaseInconsistency("It's not possible to have more than "
+                                    "one setting for the same device type"
+                                    " and the same machine")
+    return result_quantity and result[0] or None    
 
 def get_printer_settings_by_hostname(conn, hostname):
     """ Returns the DeviceSettings object representing the printer currently
     associated with the given hostname or None if there is not settings for
     it.
     """
-    ipaddr = socket.gethostbyname(hostname)
-    query = OR(DeviceSettings.q.host == hostname,
-               DeviceSettings.q.host == ipaddr)
-    query = AND(query, DeviceSettings.q.type == DeviceSettings.PRINTER_DEVICE)
-    result = DeviceSettings.select(query, connection=conn)
-    result_quantity = result.count()
-    if result_quantity > 1:
-        raise DatabaseInconsistency("It's not possible to have more than one "
-                                    "printer setting for the same machine")
-    elif result_quantity == 0:
-        return None
-    return result[0]
+    return get_device_settings_by_hostname(conn, hostname,
+                                           DeviceSettings.PRINTER_DEVICE)
+
+def get_scale_settings_by_hostname(conn, hostname):
+    """ Return the DeviceSettings object representing the scale currently
+    associated with the given hostname or None if there is no
+    settings for it.
+    """
+    return get_device_settings_by_hostname(conn, hostname,
+                                           DeviceSettings.SCALE_DEVICE)
 
 def _get_fiscalprinter(conn):
     """ Returns a FiscalPrinter instance pre-configured to the current
@@ -87,6 +100,23 @@ def _get_fiscalprinter(conn):
                 % socket.gethostname()))
     return _printer
 
+def _get_scale(conn):
+    """ Returns a Scale instance pre-configured for the current
+    workstation.
+    """
+    global _scale
+    if _scale:
+        return _scale
+    setting = get_scale_settings_by_hostname(conn, socket.gethostname())
+    if setting:
+        _scale = Scale(brand=setting.brand, model=setting.model,
+                       device=setting.get_port_name())
+    else:
+        error(_("There is no scale configured"),
+              _("There is no scale configured for this station (\"%s\")"
+                % socket.gethostname()))
+    return _scale
+    
 def _emit_reading(conn, cmd):
     printer = _get_fiscalprinter(conn)
     if not printer:
@@ -122,6 +152,20 @@ def emit_coupon(sale, conn):
     if not coupon.setup_payments():
         return False
     return coupon.close()
+
+def read_scale_info(conn):
+    """ Read informations from the scale configured for this station.
+    """
+    scale = _get_scale(conn)
+    dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE)
+    dlg.set_markup("<span size=\"medium\"><b>%s</b></span>"
+                   % _("Waiting Scale Reading..."))
+    dlg.set_position(gtk.WIN_POS_CENTER)
+    def notifyfunc(scale, dummy):
+        dlg.destroy()
+    scale.notify_read(notifyfunc)
+    dlg.run()
+    return scale.read_data()
 
 #
 # Class definitions

@@ -64,10 +64,13 @@ class FancySellable:
     # XXX Probably we could avoid this class with some kiwi improvements
     # waiting for bug 2365.
 
-    def __init__(self, price=0.0, quantity=1.0):
+    def __init__(self, price=0.0, quantity=1.0, unit=None):
         self.price = price
         self.quantity = quantity
+        self.unit = unit
 
+    def get_unit_description(self):
+        return self.unit and self.unit.description or ""
 
 class AbstractSellableCategory(Domain):
     description = StringCol()
@@ -267,6 +270,9 @@ class AbstractSellable(InheritableModelAdapter):
 
     def get_short_description(self):
         return '%s %s' % (self.code, self.base_sellable_info.description)
+
+    def get_unit_description(self):
+        return self.unit and self.unit.description or ""
 
     #
     # Auxiliary methods
