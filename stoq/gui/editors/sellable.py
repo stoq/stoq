@@ -35,8 +35,8 @@ import gettext
 from sqlobject.sqlbuilder import LIKE, func
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.dialogs import run_dialog
+from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqdrivers.constants import UNIT_CUSTOM
 
 from stoq.domain.sellable import (SellableCategory, AbstractSellable,
                                   SellableUnit)
@@ -177,6 +177,9 @@ class SellableEditor(BaseEditor):
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
             widget.set_data_format('%.02f')
+        self.requires_weighing_label.set_size("small")
+        text = "<b>%s</b>" % _("This unit type requires weighing")
+        self.requires_weighing_label.set_text(text)
 
     def edit_sale_price(self):
         sellable = ISellable(self.model, connection=self.conn)
@@ -219,6 +222,13 @@ class SellableEditor(BaseEditor):
             enabled = False
         self.unit_entry.set_sensitive(enabled)
 
+    def update_requires_weighing_label(self):
+        if (self._sellable is not None
+            and self._sellable.unit.index == UNIT_WEIGHT):
+            self.requires_weighing_label.show()
+        else:
+            self.requires_weighing_label.hide()
+
     #
     # BaseEditor hooks
     #
@@ -260,6 +270,7 @@ class SellableEditor(BaseEditor):
                                                connection=self.conn)
         self.unit_proxy = self.add_proxy(self._sellable.unit,
                                          SellableEditor.sellable_unit_widgets)
+        self.update_requires_weighing_label()
         self.update_unit_entry()
 
     #
@@ -267,6 +278,7 @@ class SellableEditor(BaseEditor):
     #
 
     def on_unit_combo__changed(self, *args):
+        self.update_requires_weighing_label()
         self.update_unit_entry()
 
     def on_sale_price_button__clicked(self, button):

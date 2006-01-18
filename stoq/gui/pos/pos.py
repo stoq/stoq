@@ -40,11 +40,12 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
+from stoqdrivers.constants import UNIT_WEIGHT
 
 from stoq.gui.application import AppWindow
 from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.lib.parameters import sysparam
-from stoq.lib.drivers import FiscalCoupon
+from stoq.lib.drivers import FiscalCoupon, read_scale_info
 from stoq.domain.sellable import AbstractSellable, FancySellable
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem, FancyProduct
@@ -60,6 +61,7 @@ from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.person import ClientSearch
 from stoq.gui.search.sale import SaleSearch
 from stoq.gui.pos.neworder import NewOrderEditor
+from stoq.gui.slaves.price import PriceSlave
 
 _ = gettext.gettext
 
@@ -70,8 +72,8 @@ class POSApp(AppWindow):
     gladefile = "pos"
     client_widgets =  ('client',)
     product_widgets = ('product',)
-    sellable_widgets = ('price',
-                        'quantity')
+    sellable_widgets = ('quantity',
+                        'sellable_unit_label')
     klist_name = 'sellables'
 
     def __init__(self, app):
@@ -105,8 +107,10 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
-        self.sellable_proxy = self.add_proxy(FancySellable(),
+        model = FancySellable()
+        self.sellable_proxy = self.add_proxy(model, 
                                              widgets=POSApp.sellable_widgets)
+        self.price_slave.set_model(model)
         self.product_proxy = self.add_proxy(FancyProduct(),
                                             POSApp.product_widgets)
 
@@ -120,9 +124,13 @@ class POSApp(AppWindow):
         self.product.set_completion_strings(strings, list(sellables))
 
     def _setup_widgets(self):
-        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
-            self.price.set_sensitive(False)
-        self.price.set_data_format(get_price_format_str())
+        can_edit = sysparam(self.conn).EDIT_SELLABLE_PRICE
+        self.price_slave = PriceSlave(can_edit=can_edit)
+        self.attach_slave("price_holder", self.price_slave)
+        if can_edit:
+            widget = self.price_slave.get_widget()
+            widget.connect("activate", self.on_price_activate)
+
         value_format = '<b>%s</b>' % get_price_format_str()
         self.summary_label = SummaryLabel(klist=self.sellables,
                                           column='total',
@@ -133,6 +141,9 @@ class POSApp(AppWindow):
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
         self._setup_entry_completion()
+        self.sellable_unit_label.set_size("small")
+        self.sellable_unit_label.set_bold(True)
+        self.warning_label.set_size("small")
         # Waiting for bug 2319
         self.client_details_button.set_sensitive(False)
 
@@ -196,6 +207,7 @@ class POSApp(AppWindow):
                 # Waiting for a select method on kiwi entry using entry
                 # completions
                 self.product.set_text(sellable.get_short_description())
+
         self.add_button.set_sensitive(sellable is not None)
         return sellable
 
@@ -207,7 +219,7 @@ class POSApp(AppWindow):
         if not sellable:
             return
         self._update_list(sellable, notify_on_entry=True)
-        self.product.grab_focus()
+        self.warning_box.hide()
 
     def select_first_item(self):
         if self.sellables:
@@ -261,6 +273,27 @@ class POSApp(AppWindow):
         has_sellable_str = self.product.get_text() != ''
         self.add_button.set_sensitive(has_sellable_str)
 
+    def _read_scale(self):
+        data = read_scale_info(self.conn)
+        self.quantity.set_value(data.weight)
+        sellable = self._get_sellable()
+        current_price = sellable.base_sellable_info.price
+        scale_price = data.price_per_kg
+        if scale_price != 0.0 and current_price != scale_price:
+            if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
+                msg = _("The price supplied by the scale doesn't match the "
+                        "current one registered in the system and will be "
+                        "ignored")
+            else:
+                msg = _("The price supplied by the scale is different that "
+                        "the current one registered in the system")
+                self.sellable_proxy.model.price = scale_price
+                self.price_slave.update()
+                self.warning_label.set_text(msg)
+                self.warning_box.show()
+        else:
+            self.warning_box.hide()
+
     def get_columns(self):
         return [Column('sellable.code', title=_('Code'), sorted=True, 
                        data_type=str, width=90),
@@ -277,13 +310,18 @@ class POSApp(AppWindow):
     def _search_clients(self):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
+    # Not connect by Kiwi, since the 'price' entry widget belongs to
+    # PriceSlave
+    def on_price_activate(self, *args):
+        self.add_sellable_item()
+
     #
     # AppWindow Hooks
     #
 
     def setup_focus(self): 
         self.search_box.set_focus_chain([self.product, self.quantity, 
-                                         self.price, self.add_button])
+                                         self.add_button])
 
     #
     # Callbacks
@@ -324,14 +362,16 @@ class POSApp(AppWindow):
         self.add_sellable_item()
 
     def on_product__activate(self, *args):
-        self._get_sellable()
+        sellable = self._get_sellable()
+        if sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT:
+            self._read_scale()
         self.quantity.grab_focus()
 
     def on_quantity__activate(self, *args):
-        self.add_sellable_item()
-
-    def on_price__activate(self, *args):
-        self.add_sellable_item()
+        if sysparam(self.conn).EDIT_SELLABLE_PRICE:
+            self.price_slave.get_widget().grab_focus()
+        else:
+            self.add_sellable_item()
 
     def on_sellables__selection_changed(self, *args):
         self._update_widgets()
@@ -350,9 +390,13 @@ class POSApp(AppWindow):
         self._update_widgets()
         sellable = self.product_proxy.model.product
         if not (sellable and self.product.get_text()):
-            self.sellable_proxy.new_model(FancySellable())
+            model = FancySellable()
+            self.sellable_proxy.new_model(model)
+            self.price_slave.set_model(model)
             return
-        sellable_item = FancySellable(price=sellable.get_price())
+        sellable_item = FancySellable(price=sellable.get_price(),
+                                      unit=sellable.unit)
+        self.price_slave.set_model(sellable_item)
         self.sellable_proxy.new_model(sellable_item)
 
     def on_remove_item_button__clicked(self, *args):
