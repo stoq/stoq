@@ -645,7 +645,7 @@ class SearchDialog(BasicDialog):
         title = title or self.title
         avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
         if selection_mode not in avaliable_modes:
-            raise ValueError('Invalid selection mode %' % selection_mode)
+            raise ValueError('Invalid selection mode %d' % selection_mode)
         self.selection_mode = selection_mode
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text, 
@@ -819,14 +819,18 @@ class SearchEditor(SearchDialog):
     def __init__(self, conn, table, editor_class, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 searching_by_date=False):
+                 searching_by_date=False, hide_toolbar=False):
         SearchDialog.__init__(self, conn, table, search_table,
                               hide_footer=hide_footer, title=title, 
                               selection_mode=selection_mode,
                               searching_by_date=searching_by_date)
         self.interface = interface
         self.editor_class = editor_class
-        self.accept_edit_data = True
+        if hide_toolbar:
+            self.accept_edit_data = False
+            self.toolbar.get_toplevel().hide()
+        else:
+            self.accept_edit_data = True
         self._selected = None
         self.klist.connect('double_click', self.edit)
         self.update_widgets()
