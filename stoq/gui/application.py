@@ -228,9 +228,9 @@ class SearchableAppWindow(AppWindow):
                                    filter_slave=filter_slave,
                                    searching_by_date=self.searchbar_use_dates,
                                    query_args=self.get_query_args())
-        extra_query = self.get_extra_query()
+        extra_query = self.get_extra_query
         if extra_query:
-            self.searchbar.register_extra_query(extra_query)
+            self.searchbar.register_extra_query_callback(extra_query)
         self.searchbar.register_filter_results_callback(self.filter_results)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
