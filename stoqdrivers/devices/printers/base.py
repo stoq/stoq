@@ -52,7 +52,7 @@ class BasePrinter(BaseDevice):
     def check_interfaces(self):
         driver_interfaces = providedBy(self._driver)
         if (not ICouponPrinter in driver_interfaces
-            or not IChequePrinter in driver_interfaces):
+            and not IChequePrinter in driver_interfaces):
             raise TypeError("The driver `%r' doesn't implements a valid "
                             "interface" % self._driver)
 
