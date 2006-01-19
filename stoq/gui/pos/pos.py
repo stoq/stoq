@@ -345,6 +345,8 @@ class POSApp(AppWindow):
         # whole process trough SaleWizard.
         self.conn.commit()
         items = self.run_dialog(SellableSearch, self.conn)
+        if not items:
+            return
         for item in items:
             self._update_list(item)
         self.select_first_item()
