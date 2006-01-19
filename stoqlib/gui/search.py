@@ -296,7 +296,7 @@ class SearchBar(SlaveDelegate):
         entry_slave.connect('searchbutton-clicked', self.search_items)
         entry_slave.connect('searchentry-activate', self.search_items)
         self.conn = conn
-        self._extra_query = None
+        self._extra_query_callback = None
         self._filter_results_callback = None
         self.attach_slave('place_holder', self._slave)
         self.searching_by_date = searching_by_date
@@ -468,8 +468,10 @@ class SearchBar(SlaveDelegate):
         if search_str or search_dates:
             query = AND(query, self._build_query(search_str, search_dates))
         
-        if self._extra_query:
-            query = AND(query, self._extra_query) 
+        if self._extra_query_callback:
+            extra_query = self._extra_query_callback()
+            if extra_query:
+                query = AND(query, extra_query)
 
         kwargs = {'connection': self.conn}
         if self.query_args:
@@ -525,14 +527,13 @@ class SearchBar(SlaveDelegate):
     # Public API
     #
 
-    @argcheck(SQLOp)
-    def register_extra_query(self, query):
+    def register_extra_query_callback(self, query):
         """Register an extra query that will be added in the main query of
         SearchBar
         
         @param query: a sqlbuilder query
         """
-        self._extra_query = query
+        self._extra_query_callback = query
 
     def register_filter_results_callback(self, callback):
         """Register a filter results callback that will be called right
@@ -681,9 +682,9 @@ class SearchDialog(BasicDialog):
                                     columns, query_args=query_args,
                                     filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
-        extra_query = self.get_extra_query()
+        extra_query = self.get_extra_query
         if extra_query:
-            self.search_bar.register_extra_query(extra_query)
+            self.search_bar.register_extra_query_callback(extra_query)
         self.search_bar.register_filter_results_callback(self.filter_results)
         self.search_bar.connect('before-search-activate', self._sync)
         self.search_bar.connect('search-activate', self.update_klist)
@@ -748,6 +749,7 @@ class SearchDialog(BasicDialog):
     def update_klist(self, slave, objs):
         """A hook called by SearchBar and BaseListSlave instances."""
         if not objs:
+            self.klist.clear()
             self.disable_ok()
             self.update_widgets()
             return
@@ -816,7 +818,7 @@ class SearchEditor(SearchDialog):
                 kiwi list to get adapter for the editor.
     """
 
-    def __init__(self, conn, table, editor_class, interface=None,
+    def __init__(self, conn, table, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  searching_by_date=False, hide_toolbar=False):
@@ -825,12 +827,14 @@ class SearchEditor(SearchDialog):
                               selection_mode=selection_mode,
                               searching_by_date=searching_by_date)
         self.interface = interface
-        self.editor_class = editor_class
         if hide_toolbar:
             self.accept_edit_data = False
             self.toolbar.get_toplevel().hide()
         else:
             self.accept_edit_data = True
+            if not editor_class:
+                raise ValueError('An editor_class argument is required')
+        self.editor_class = editor_class
         self._selected = None
         self.klist.connect('double_click', self.edit)
         self.update_widgets()
