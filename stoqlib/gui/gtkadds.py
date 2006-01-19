@@ -32,10 +32,7 @@ def register_iconsets():
     icon_info = [('searchtool-icon1', "searchtool-animation1.png"),
                  ('searchtool-icon2', "searchtool-animation2.png"),
                  ('searchtool-icon3', "searchtool-animation3.png"),
-                 ('searchtool-icon4', "searchtool-animation4.png"),
-                 ('stoq-user-small', "user-small.png"),
-                 ('stoq-users', "users.png"),
-                 ('stoq-sales', "sales.xpm")]
+                 ('searchtool-icon4', "searchtool-animation4.png")]
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
     for stock_id, filename in icon_info:
