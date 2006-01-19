@@ -161,5 +161,5 @@ class AdminApp(SearchableAppWindow):
         model = self.run_dialog(PasswordEditor, self.conn, user)
         finish_transaction(self.conn, model, keep_transaction=True)
 
-    def on_drivers_setup__activate(self, *args):
+    def on_devices_setup_activate(self, *args):
         self.run_dialog(DeviceSettingsDialog, self.conn)
