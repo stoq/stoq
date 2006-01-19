@@ -63,7 +63,8 @@ class FilterSlave(SlaveDelegate):
         self.filter_combo.prefill(statuses)
         if len(statuses) == 1:
             self.filter_combo.set_sensitive(False)
-        selected = selected or statuses[0]
+        if selected is None:
+            selected = statuses[0][0]
         self.filter_combo.select_item_by_data(selected)
 
     def get_selected_status(self):
