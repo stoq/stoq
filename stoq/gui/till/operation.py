@@ -106,7 +106,7 @@ class TillOperationDialog(SlaveDelegate):
         self.search_bar = SearchBar(self.conn, Payment, 
                                     self._get_columns(), 
                                     searching_by_date=True)
-        self.search_bar.register_extra_query(self.get_extra_query())
+        self.search_bar.register_extra_query_callback(self.get_extra_query)
         self.search_bar.set_searchbar_labels(_('Payments Matching'))
         self.search_bar.set_result_strings(_('payment'), _('payments'))
         self.search_bar.connect('search-activate', self._update_list)
