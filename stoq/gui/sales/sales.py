@@ -46,6 +46,7 @@ from stoq.gui.search.person import ClientSearch, CreditProviderSearch
 from stoq.gui.search.sellable import SellableSearch
 from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
                                              GiftCertificateSearch)
+from stoq.gui.slaves.sale import SaleListToolbar
 from stoq.gui.sales.details import SaleDetailsDialog
 
 _ = gettext.gettext
@@ -65,6 +66,7 @@ class SalesApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self._setup_widgets()
         self._update_widgets()
+        self._setup_slaves()
         
     def _setup_widgets(self):
         value_format = '<b>%s</b>' % get_price_format_str()
@@ -75,16 +77,15 @@ class SalesApp(SearchableAppWindow):
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
 
+    def _setup_slaves(self):
+        slave = SaleListToolbar(self.conn, self.sales)
+        self.attach_slave("list_toolbar_holder", slave)
+
     def on_searchbar_activate(self, slave, objs):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
         self._update_widgets()
 
     def _update_widgets(self):
-        has_sales = len(self.sales) > 0
-        widgets = [self.cancel_button, self.installments_button,
-                   self.details_button]
-        for widget in widgets:
-            widget.set_sensitive(has_sales)
         self._update_total_label()
 
     def _update_total_label(self):
@@ -145,10 +146,6 @@ class SalesApp(SearchableAppWindow):
 
     def _on_credit_provider_action__clicked(self, *args):
         self.run_dialog(CreditProviderSearch, self.conn, hide_footer=True)
-
-    def on_details_button__clicked(self, *args):
-        sale = self.sales.get_selected()
-        self.run_dialog(SaleDetailsDialog, self.conn, sale)
 
     def _on_gift_certificate_types_action_clicked(self, *args):
         self.run_dialog(GiftCertificateTypeSearch, self.conn)
