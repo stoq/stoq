@@ -36,6 +36,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.lists import AdditionListSlave
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.datatypes import currency
+from kiwi.python import Settable
 
 from stoq.gui.search.person import ClientSearch
 from stoq.gui.slaves.sale import DiscountChargeSlave
@@ -49,7 +50,7 @@ from stoq.domain.person import Person
 from stoq.domain.sale import Sale
 from stoq.domain.payment.base import AbstractPaymentGroup
 from stoq.domain.giftcertificate import (GiftCertificate,
-                                         FancyGiftCertificate)
+                                         get_volatile_gift_certificate)
 from stoq.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
                                     ICheckPM, ICardPM, IBillPM, 
                                     IFinancePM, ISellable,
@@ -282,7 +283,7 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
 
 class GiftCertificateOverpaidStep(BaseWizardStep):
     gladefile = 'GiftCertificateOverpaidStep'
-    model_type = FancyGiftCertificate
+    model_type = Settable
     proxy_widgets = ('certificate_number',)
 
     def __init__(self, wizard, previous, conn, sale, overpaid_value):
@@ -326,7 +327,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
     #
 
     def create_model(self, conn):
-        return FancyGiftCertificate()
+        return get_volatile_gift_certificate()
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -378,7 +379,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
 
 class GiftCertificateSelectionStep(BaseWizardStep):
     gladefile = 'GiftCertificateSelectionStep'
-    model_type = FancyGiftCertificate
+    model_type = Settable
     proxy_widgets = ('certificate_number',)
 
     def __init__(self, wizard, previous, conn, sale):
@@ -417,7 +418,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
     #
 
     def create_model(self, conn):
-        return self.model_type()
+        return get_volatile_gift_certificate()
 
     def setup_proxies(self):
         self._setup_widgets()
