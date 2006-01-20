@@ -789,7 +789,7 @@ class LoginInfo:
 class EmployeeRoleHistory(Domain):
     """Base class to store the employee role history."""
 
-    began = DateTimeCol(default=datetime.datetime.now())
+    began = DateTimeCol(default=datetime.datetime.now)
     ended = DateTimeCol(default=None)
     salary = FloatCol()
     role = ForeignKey('EmployeeRole')
