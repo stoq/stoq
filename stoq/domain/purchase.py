@@ -81,7 +81,7 @@ class PurchaseItem(Domain):
 
     def get_pending_quantity(self):
         if not self.has_been_received:
-            return 0
+            return 0.0
         quantity = self.quantity - self.quantity_received
         if quantity < 0:
             raise DatabaseInconsistency('Quantity received is greater '
