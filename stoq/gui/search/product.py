@@ -59,6 +59,19 @@ class ProductSearch(SellableSearch):
                  selection_mode=gtk.SELECTION_BROWSE, 
                  hide_cost_column=False, use_product_statuses=None,
                  hide_price_column=False):
+        """
+        @param conn: a sqlobject Transaction instance
+        @param hide_footer: do I have to hide the dialog footer?
+        @param hide_toolbar: do I have to hide the dialog toolbar?
+        @param selection_mode: the kiwi list selection mode
+        @param hide_cost_column: if it's True, no need to show the 
+                                 column 'cost'
+        @param use_product_statuses: a list instance that, if provided, will
+                                     overwrite the statuses list defined in 
+                                     get_filter_slave method
+        @param hide_price_column: if it's True no need to show the 
+                                  column 'price'
+        """
         self.use_product_statuses = use_product_statuses
         SellableSearch.__init__(self, conn, hide_footer=hide_footer, 
                                 hide_toolbar=hide_toolbar,
