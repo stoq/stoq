@@ -43,11 +43,11 @@ from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch
-from stoq.gui.search.sellable import SellableSearch
+from stoq.gui.search.product import ProductSearch
+from stoq.gui.search.service import ServiceSearch
 from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
                                              GiftCertificateSearch)
 from stoq.gui.slaves.sale import SaleListToolbar
-from stoq.gui.sales.details import SaleDetailsDialog
 
 _ = gettext.gettext
 
@@ -142,7 +142,8 @@ class SalesApp(SearchableAppWindow):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
     def _on_products_action__clicked(self, *args):
-        self.run_dialog(SellableSearch, self.conn, hide_footer=True)
+        self.run_dialog(ProductSearch, self.conn, hide_footer=True,
+                        hide_toolbar=True, hide_cost_column=True)
 
     def _on_credit_provider_action__clicked(self, *args):
         self.run_dialog(CreditProviderSearch, self.conn, hide_footer=True)
@@ -152,3 +153,7 @@ class SalesApp(SearchableAppWindow):
 
     def _on_gift_certificates_action_clicked(self, *args):
         self.run_dialog(GiftCertificateSearch, self.conn)
+
+    def _on_services_action_clicked(self, *args):
+        self.run_dialog(ServiceSearch, self.conn, hide_cost_column=True,
+                        hide_toolbar=True)
