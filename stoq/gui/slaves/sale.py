@@ -21,6 +21,7 @@
 ## USA.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
 ##
 """
 stoq/gui/slaves/sale.py
@@ -28,11 +29,15 @@ stoq/gui/slaves/sale.py
     Slaves for sale management
 """
 
+import gtk
 from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
+from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.dialogs import run_dialog
 
 from stoq.lib.validators import get_price_format_str
+from stoq.gui.sales.details import SaleDetailsDialog
 
 
 class DiscountChargeSlave(BaseEditorSlave):
@@ -123,3 +128,58 @@ class DiscountChargeSlave(BaseEditorSlave):
 
     def on_discount_value_ck__toggled(self, *args):
         self.update_widget_status()
+
+class SaleListToolbar(SlaveDelegate):
+    """ A simple sale toolbar with common operations like, returning a sale,
+    changing installments and showing its details.
+    """
+    gladefile = "SaleListToolbar"
+    
+    def __init__(self, conn, klist, parent=None):
+        SlaveDelegate.__init__(self, gladefile=SaleListToolbar.gladefile,
+                               toplevel_name=SaleListToolbar.gladefile)
+        if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
+            raise TypeError("Only SELECTION_BROWSE mode for the "
+                            "list is supported on this slave")
+        self.conn, self.klist, self.parent = conn, klist, parent
+        self.klist.connect("selection-changed",
+                           self.on_klist_selection_changed)
+        self.klist.connect("double-click", self.on_klist_double_clicked)
+        self._update_buttons(False)
+
+    def hide_return_sale_button(self):
+        self.return_sale_button.hide()
+
+    def hide_change_installments_button(self):
+        self.change_installments_button.hide()
+
+    def _update_buttons(self, enabled):
+        for w in (self.return_sale_button,
+                  self.change_installments_button,
+                  self.details_button):
+            w.set_sensitive(enabled)
+
+    def _run_details_dialog(self, sale):
+        run_dialog(SaleDetailsDialog, self.parent, self.conn, sale)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_klist_selection_changed(self, widget, sale):
+        self._update_buttons(bool(sale and not isinstance(sale, list)))
+
+    def on_klist_double_clicked(self, widget, sale):
+        self._run_details_dialog(sale)
+
+    def on_return_sale_button__clicked(self, *args):
+        # TODO: implements this method
+        pass
+
+    def on_change_installments_button__clicked(self, *args):
+        # TODO: this method will be implemented on bug #2189
+        pass
+
+    def on_details_button__clicked(self, *args):
+        self._run_details_dialog(self.klist.get_selected())
+

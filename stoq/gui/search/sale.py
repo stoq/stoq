@@ -43,6 +43,7 @@ from stoq.domain.person import Person
 from stoq.domain.sale import Sale
 from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.slaves.filter import FilterSlave
+from stoq.gui.slaves.sale import SaleListToolbar
 
 _ = gettext.gettext
 
@@ -56,6 +57,13 @@ class SaleSearch(SearchDialog):
         SearchDialog.__init__(self, conn, self.search_table, 
                               title=self.title, searching_by_date=True)
         self._setup_widgets()
+        self._setup_slaves()
+
+    def _setup_slaves(self):
+        slave = SaleListToolbar(self.conn, self.klist, self)
+        slave.hide_change_installments_button()
+        slave.hide_return_sale_button()
+        self.attach_slave("extra_holder", slave)
 
     def _setup_widgets(self):
         self.search_bar.set_result_strings(_('sale'), _('sales'))
@@ -113,5 +121,3 @@ class SaleSearch(SearchDialog):
     def after_search_bar_created(self):
         self.filter_slave.connect('status-changed', 
                                   self.search_bar.search_items)
-        
-
