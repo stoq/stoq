@@ -33,7 +33,7 @@ stoq/tests/domain/runtests.py:
 import os
 import sys
 import doctest
-import py 
+import py
 
 from kiwi import environ
 from stoq.lib.runtime import print_immediately, set_test_mode, set_verbose
@@ -54,17 +54,17 @@ def setup():
     set_verbose(VERBOSE)
     initialize_system("Superuser", "administrator", "", verbose=True)
     create()
-    
+
 def test_gui():
     if VERBOSE:
         print_immediately('Performing gui module tests... ')
-        
+
     root = os.path.abspath(os.path.join(sys.argv[0], '..', '..', '..'))
     oldpwd = os.getcwd()
     os.chdir(root)
-    
+
     # Running kiwi-ui tests
-    gui_tests_dir = os.path.abspath(os.path.join(root, 'stoq', 
+    gui_tests_dir = os.path.abspath(os.path.join(root, 'stoq',
                                                  'tests', 'gui'))
     gui_tests = [filename
                  for filename in os.listdir(gui_tests_dir)
