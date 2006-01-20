@@ -259,20 +259,13 @@ class Adaptable:
         @param facet:
         @param ifaces: optional list of interfaces to attach
         """
-
         if not hasattr(cls, '_facets'):
             cls._facets = {}
 
         if not ifaces:
-            ifaces = list(implementedBy(facet))
-            if len(ifaces) > 1:
-                warnings.warn(
-                    '%s has more than one iface, %s will be ignored' % (
-                    qual(cls),
-                    ', '.join(map(qual, ifaces[1:]))),
-                    DeprecationWarning, stacklevel=2)
-            del ifaces[1:]
-            
+            raise ValueError("It is not possible to register a facet "
+                             "without specifing an interface")
+
         for iface in ifaces:
             if qual(iface) in cls._facets.keys():
                 raise TypeError(
