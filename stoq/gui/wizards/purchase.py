@@ -209,7 +209,7 @@ class PurchaseProductStep(AbstractProductStep):
         AbstractProductStep.__init__(self, wizard, previous, conn, model)
         self.product_button.hide()
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('sellable.base_sellable_info.description', 
                        title=_('Description'), 
                        data_type=str, expand=True, searchable=True),
@@ -223,11 +223,11 @@ class PurchaseProductStep(AbstractProductStep):
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
-    def _get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity):
         return PurchaseItem(connection=self.conn, sellable=sellable, 
                             order=self.model, cost=cost, quantity=quantity)
 
-    def _get_saved_items(self):
+    def get_saved_items(self):
         return list(self.model.get_items())
 
     #
