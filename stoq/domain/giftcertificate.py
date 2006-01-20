@@ -31,6 +31,7 @@ stoq/domain/giftcertificate.py:
 import gettext
 
 from sqlobject import StringCol, ForeignKey, BoolCol
+from kiwi.python import Settable
 
 from stoq.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                   OnSaleInfo)
@@ -43,17 +44,6 @@ _ = gettext.gettext
 #
 # Base Domain Classes
 #
-
-class FancyGiftCertificate:
-    """This class must be used when creating a single gift certificate or a
-    range of multiple gift certificates 
-    """
-    first_number = None
-    last_number = None
-    gift_certificate_type = None
-
-    def __init__(self, number=None):
-        self.number = number
 
 
 class GiftCertificateType(Domain):
@@ -115,3 +105,12 @@ class GiftCertificateAdaptToSellable(AbstractSellable):
         self.status = self.STATUS_CLOSED
 
 GiftCertificate.registerFacet(GiftCertificateAdaptToSellable, ISellable)
+
+
+#
+# General methods
+#
+
+def get_volatile_gift_certificate():
+    return Settable(number=None, first_number=None, last_number=None,
+                    gift_certificate_type=None)

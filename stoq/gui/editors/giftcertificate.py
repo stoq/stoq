@@ -31,14 +31,15 @@ stoq/gui/editors/giftcertificate.py
 import gettext
 
 from stoqlib.gui.editors import BaseEditor
+from kiwi.python import Settable
 
 from stoq.lib.validators import get_price_format_str
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoq.domain.interfaces import ISellable
 from stoq.domain.sellable import BaseSellableInfo
-from stoq.domain.giftcertificate import (GiftCertificate, 
-                                         FancyGiftCertificate,
-                                         GiftCertificateType)
+from stoq.domain.giftcertificate import (GiftCertificate,
+                                         GiftCertificateType,
+                                         get_volatile_gift_certificate)
 
 _ = gettext.gettext
 
@@ -92,7 +93,7 @@ class GiftCertificateEditor(BaseEditor):
     product through POS application.
     """
     model_name = 'Gift Certificate'
-    model_type = FancyGiftCertificate
+    model_type = Settable
     gladefile = 'GiftCertificateEditor'
     title = _('Add Gift Certificates')
     size = (515, 240)
@@ -127,7 +128,7 @@ class GiftCertificateEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        return FancyGiftCertificate()
+        return get_volatile_gift_certificate()
 
     def setup_proxies(self):
         table = GiftCertificateType

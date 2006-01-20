@@ -36,6 +36,7 @@ import gtk
 from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.python import Settable
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
@@ -48,7 +49,7 @@ from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
 from stoq.domain.sellable import AbstractSellable, FancySellable
 from stoq.domain.service import ServiceSellableItem
-from stoq.domain.product import ProductSellableItem, FancyProduct
+from stoq.domain.product import ProductSellableItem
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.interfaces import ISellable, IClient
@@ -111,7 +112,7 @@ class POSApp(AppWindow):
         self.sellable_proxy = self.add_proxy(model, 
                                              widgets=POSApp.sellable_widgets)
         self.price_slave.set_model(model)
-        self.product_proxy = self.add_proxy(FancyProduct(),
+        self.product_proxy = self.add_proxy(Settable(product=None),
                                             POSApp.product_widgets)
 
     def _setup_entry_completion(self):
