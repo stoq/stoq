@@ -30,7 +30,6 @@ stoq/domain/base.py:
 """
 
 import datetime
-import warnings
 
 from kiwi.datatypes import currency
 from kiwi.python import qual
@@ -42,7 +41,6 @@ from sqlobject.inheritance import InheritableSQLObject
 from stoqlib.exceptions import AdapterError
 from stoqlib.database import Adapter
 from zope.interface.adapter import AdapterRegistry
-from zope.interface.declarations import implementedBy
 from zope.interface.interface import Interface, InterfaceClass
 
 from stoq.lib.runtime import get_connection
