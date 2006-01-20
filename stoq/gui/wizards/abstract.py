@@ -127,7 +127,7 @@ class AbstractProductStep(BaseWizardStep):
             cost = self.proxy.model.cost
         else:
             cost = product.cost
-        quantity = self.proxy.model.quantity or 1.0
+        quantity = self.proxy.model and self.proxy.model.quantity or 1.0
         order_item = self._get_order_item(product, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
