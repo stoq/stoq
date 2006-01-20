@@ -72,7 +72,7 @@ class ReceivingOrder(Domain):
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
-    invoice_number = StringCol(default=None)
+    invoice_number = StringCol(default='')
     invoice_total = FloatCol(default=0.0)
     notes = StringCol(default='')
     freight_total = FloatCol(default=0.0)
@@ -109,15 +109,9 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
                             receiving_items that will be created
     """
     conn = purchase_order.get_connection()
-    receiving_items = []
-    for item in purchase_order.get_pending_items():
-        quantity = item.get_pending_quantity()
-        cost = item.cost
-        sellable = item.sellable
-        rec_item = ReceivingOrderItem(connection=conn,
-                                      quantity_received=quantity, cost=cost,
-                                      sellable=sellable, 
-                                      receiving_order=receiving_order)
-        receiving_items.append(rec_item)
-    return receiving_items
-
+    return [ReceivingOrderItem(connection=conn,
+                               quantity_received=item.get_pending_quantity(),
+                               cost=item.cost,
+                               sellable=item.sellable, 
+                               receiving_order=receiving_order)
+            for item in purchase_order.get_pending_items()]
