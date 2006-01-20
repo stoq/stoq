@@ -336,6 +336,11 @@ class AbstractSellable(InheritableModelAdapter):
         """Returns a list of avaliable sellables that can be sold. 
         A sellable that can be sold can have only one possible 
         status: STATUS_AVAILABLE
+
+        @param conn: a sqlobject Transaction instance
+        @param code: a string representing a sellable code
+        @notify_callback: a function which is a callback that will be called
+                          if the sellable code doesn't exists
         
         """
         extra_query = cls.q.status == cls.q.STATUS_AVAILABLE
@@ -344,6 +349,16 @@ class AbstractSellable(InheritableModelAdapter):
 
     @classmethod
     def get_availables_and_sold_by_code(cls, conn, code, notify_callback):
+        """Returns a list of avaliable sellables and also sellables that 
+        can be sold.  Here we will get sellables with the following
+        statuses: STATUS_AVAILABLE, STATUS_SOLD
+
+        @param conn: a sqlobject Transaction instance
+        @param code: a string representing a sellable code
+        @notify_callback: a function which is a callback that will be called
+                          if the sellable code doesn't exists
+        
+        """
         statuses = [cls.q.STATUS_AVAILABLE, cls.q.STATUS_SOLD]
         extra_query = IN(cls.q.status, statuses)
         return cls._get_sellables_by_code(conn, code, extra_query, 
