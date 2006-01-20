@@ -69,7 +69,7 @@ class ReceivingOrderProductStep(AbstractProductStep):
         AbstractProductStep.__init__(self, wizard, previous, conn, model)
         self.add_product_button.hide()
 
-    def _get_columns(self):
+    def get_columns(self):
         return [Column('sellable.base_sellable_info.description', 
                        title=_('Description'), 
                        data_type=str, expand=True, searchable=True),
@@ -83,12 +83,12 @@ class ReceivingOrderProductStep(AbstractProductStep):
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
-    def _get_order_item(self, sellable, cost, quantity):
+    def get_order_item(self, sellable, cost, quantity):
         return ReceivingOrderItem(connection=self.conn, sellable=sellable,
                                   receiving_order=self.model, 
                                   cost=cost, quantity_received=quantity)
 
-    def _get_saved_items(self):
+    def get_saved_items(self):
         if not self.model.purchase:
             return []
         return get_receiving_items_by_purchase_order(self.model.purchase,
@@ -238,6 +238,5 @@ class ReceivingOrderWizard(BaseWizard):
         if not self.model.get_valid():
             self.model.set_valid()
         self.retval = self.model
-        # TODO waiting for support in domain classes
         self.model.confirm()
         self.close()

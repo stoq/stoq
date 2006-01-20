@@ -74,10 +74,7 @@ class AbstractProductStep(BaseWizardStep):
         descriptions = [p.base_sellable_info.description for p in products]
         self.product.set_completion_strings(descriptions, list(products))
 
-    def _get_fake_model(self, quantity=1.0, cost=0.0, product=None):
-        return Settable(quantity=quantity, cost=cost, product=product)
-
-    def _get_columns(self):
+    def get_columns(self):
         raise NotImplementedError('This method must be defined on child')
 
     def _update_widgets(self):
@@ -128,14 +125,14 @@ class AbstractProductStep(BaseWizardStep):
         else:
             cost = product.cost
         quantity = self.proxy.model and self.proxy.model.quantity or 1.0
-        order_item = self._get_order_item(product, cost, quantity)
+        order_item = self.get_order_item(product, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
         self.proxy.new_model(None, relax_type=True)
         self.product.set_text('')
         self.product.grab_focus()
 
-    def _get_order_item(self):
+    def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')
 
     def _add_item(self):
@@ -147,7 +144,7 @@ class AbstractProductStep(BaseWizardStep):
             return
         self._update_list(product)
 
-    def _get_saved_items(self):
+    def get_saved_items(self):
         raise NotImplementedError('This method must be defined on child')
 
     #
@@ -175,8 +172,8 @@ class AbstractProductStep(BaseWizardStep):
         self.product_proxy = self.add_proxy(Settable(product=None), widgets)
 
     def setup_slaves(self):
-        items = self._get_saved_items()
-        self.slave = AdditionListSlave(self.conn, self._get_columns(), 
+        items = self.get_saved_items()
+        self.slave = AdditionListSlave(self.conn, self.get_columns(), 
                                        klist_objects=items)
         self.slave.hide_add_button()
         self.slave.hide_edit_button()
@@ -222,7 +219,7 @@ class AbstractProductStep(BaseWizardStep):
             self.proxy.new_model(None, relax_type=True)
             return
         cost = product.cost
-        model = self._get_fake_model(cost=cost, product=product)
+        model = Settable(quantity=1.0, cost=cost, product=product)
         self.proxy.new_model(model)
 
     def on_quantity__activate(self, *args):
