@@ -37,21 +37,20 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs import confirm_dialog, notify_dialog
-from stoqlib.database import finish_transaction, rollback_and_begin
+from stoqlib.database import rollback_and_begin
 
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.defaults import ALL_ITEMS_INDEX
-from stoq.lib.runtime import new_transaction
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.editors.service import ServiceEditor
 from stoq.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.wizards.purchase import PurchaseWizard
 from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
 from stoq.gui.search.product import ProductSearch
+from stoq.gui.search.service import ServiceSearch
 
 _ = gettext.gettext
 
@@ -187,7 +186,7 @@ class PurchaseApp(SearchableAppWindow):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
             
     def _on_products_action_clicked(self, *args):
-        self.run_dialog(ProductSearch, self.conn)
+        self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
     def _on_order_action_clicked(self, *args):
         self._open_order()
@@ -234,9 +233,7 @@ class PurchaseApp(SearchableAppWindow):
         self.run_dialog(SellableCatSearch, self.conn)
 
     def _on_services_action_clicked(self, *args): 
-        conn = new_transaction()
-        model = self.run_dialog(ServiceEditor, conn)
-        finish_transaction(conn, model)
+        self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
 
     def _on_transporters_action_clicked(self, *args): 
         self.run_dialog(TransporterSearch, self.conn, hide_footer=True)

@@ -45,9 +45,10 @@ from stoq.lib.runtime import get_current_user
 from stoq.lib.validators import format_quantity
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder
+from stoq.domain.product import Product
 from stoq.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                    get_receiving_items_by_purchase_order)
-from stoq.domain.interfaces import IUser, ISupplier
+from stoq.domain.interfaces import IUser, ISupplier, ISellable
 from stoq.gui.search.product import ProductSearch
 from stoq.gui.wizards.abstract import AbstractProductStep
 
@@ -106,10 +107,14 @@ class ReceivingOrderProductStep(AbstractProductStep):
     def on_product_button__clicked(self, *args):
         # We are going to call a SearchEditor subclass which means
         # database synchronization... Outch, time to commit !
+        table = Product.getAdapterClass(ISellable)
+        product_statuses = [table.STATUS_AVAILABLE, table.STATUS_SOLD]
         self.conn.commit()
         products = run_dialog(ProductSearch, self, self.conn,
                               hide_footer=False, hide_toolbar=True,
-                              selection_mode=gtk.SELECTION_MULTIPLE)
+                              hide_price_column=True,
+                              selection_mode=gtk.SELECTION_MULTIPLE,
+                              use_product_statuses=product_statuses)
         for product in products:
             self._update_list(product)
 
@@ -184,7 +189,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.searchbar = SearchBar(self.conn, PurchaseOrder, 
                                    self._get_columns(), 
                                    searching_by_date=True)
-        self.searchbar.register_extra_query(self._get_extra_query())
+        self.searchbar.register_extra_query_callback(self._get_extra_query)
         self.searchbar.set_result_strings(_('order'), _('orders'))
         self.searchbar.set_searchbar_labels(_('Orders Maching:'))
         self.searchbar.connect('before-search-activate', 

@@ -11,6 +11,7 @@
                 <property name="xscale">0.0</property>
                 <child>
                     <widget class="GtkHButtonBox" id="hbuttonbox1">
+                        <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkButton" id="return_sale_button">
@@ -44,9 +45,10 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="GtkButton" id="change_installments_button">
+                            <widget class="GtkButton" id="edit_button">
                                 <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Change Installments</property>
+                                <property name="label" context="yes" translatable="yes">_Edit</property>
+                                <property name="use_underline">True</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

@@ -150,12 +150,12 @@ class SaleListToolbar(SlaveDelegate):
     def hide_return_sale_button(self):
         self.return_sale_button.hide()
 
-    def hide_change_installments_button(self):
-        self.change_installments_button.hide()
+    def hide_edit_button(self):
+        self.edit_button.hide()
 
     def _update_buttons(self, enabled):
         for w in (self.return_sale_button,
-                  self.change_installments_button,
+                  self.edit_button,
                   self.details_button):
             w.set_sensitive(enabled)
 
@@ -176,10 +176,9 @@ class SaleListToolbar(SlaveDelegate):
         # TODO: implements this method
         pass
 
-    def on_change_installments_button__clicked(self, *args):
+    def on_edit_button__clicked(self, *args):
         # TODO: this method will be implemented on bug #2189
         pass
 
     def on_details_button__clicked(self, *args):
         self._run_details_dialog(self.klist.get_selected())
-
