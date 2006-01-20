@@ -31,7 +31,6 @@ stoq/gui/pos/pos.py:
 """
 
 import gettext
-import socket
 
 import gtk
 from kiwi.ui.dialogs import warning
@@ -46,7 +45,7 @@ from stoq.gui.application import AppWindow
 from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.lib.parameters import sysparam
 from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
-                              get_scale_settings_by_hostname)
+                              get_current_scale_settings)
 from stoq.domain.sellable import AbstractSellable, FancySellable
 from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem, FancyProduct
@@ -359,9 +358,8 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         # If the sellable has a weight unit specified and we have a scale
         # configured for this station, go and check out what the printer says.
-        hostname = socket.gethostname()
         if (sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT
-            and get_scale_settings_by_hostname(self.conn, hostname)):
+            and get_current_scale_settings(self.conn)):
             self._read_scale()
         self.quantity.grab_focus()
 

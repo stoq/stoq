@@ -82,6 +82,9 @@ def get_scale_settings_by_hostname(conn, hostname):
     return get_device_settings_by_hostname(conn, hostname,
                                            DeviceSettings.SCALE_DEVICE)
 
+def get_current_scale_settings(conn):
+    return get_scale_settings_by_hostname(conn, socket.gethostname())
+
 def _get_fiscalprinter(conn):
     """ Returns a FiscalPrinter instance pre-configured to the current
     workstation.
