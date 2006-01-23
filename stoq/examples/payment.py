@@ -69,7 +69,7 @@ def get_percentage_commission():
 
 def create_payments():
     conn = new_transaction()
-    print_msg("Creating Payments... ", break_line=False)
+    print_msg("Creating payments... ", break_line=False)
 
     table = Person.getAdapterClass(ICreditProvider) 
     
