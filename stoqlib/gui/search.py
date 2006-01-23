@@ -37,7 +37,7 @@ import gtk
 import gobject
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, List
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
@@ -57,43 +57,6 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 #
 # Slaves for search dialogs.
 #
-
-
-class BaseListSlave(SlaveDelegate):
-    """ Base slave for dialogs that need a Kiwi List. If the 'parent' class
-    send a 'parent' argument, the method update_widgets will be called when 
-    the list be selected ou double clicked. """
-
-    gladefile = 'BaseListSlave'
-    widgets = ('klist', )
-    
-    def __init__(self, parent=None, columns=None, objects=None):
-        SlaveDelegate.__init__(self, widgets=self.widgets, 
-                               gladefile=self.gladefile)
-
-        if not columns and (not parent or not hasattr(parent, 'get_columns')):
-            raise TypeError("You must supply columns via parameter of in"
-                            " parent.")
-        columns = columns or parent.get_columns()
-
-        self.parent = parent
-        
-        self.klist.set_columns(columns)
-        if objects:
-            self.klist.add_list(objects)
-
-    def update_widgets(self):
-        # 'parent' argument isn't mandatory, if it's None, 'update_widgets()'
-        # of parent class isn't called.
-        if self.parent:
-            self.parent.update_widgets()
-
-    def on_klist__selection_changed(self, *args):
-        self.update_widgets()
-
-    def on_klist__double_click(self, *args):
-        self.update_widgets()
-
 
 class DateInterval:
     """A basic class for a range of dates used by DateSearchSlave as the
@@ -588,24 +551,20 @@ class SearchEditorToolBar(SlaveDelegate):
 
     toplevel_name = 'ToolBar'
     gladefile = 'SearchEditor'
-    widgets = ('new_button', 'edit_button', 'toolbar_holder')
-    
-    def __init__(self, parent):
-        SlaveDelegate.__init__(self, toplevel_name=self.toplevel_name,
-                               gladefile=self.gladefile, 
-                               widgets=self.widgets, domain='stoqlib')
-        self.parent = parent
+    domain = 'stoqlib'
+
+    gsignal('edit')
+    gsignal('add')
 
     #
     # Kiwi handlers
     #
 
-    def on_edit_button__clicked(self, widget):
-        self.parent.edit(widget)
+    def on_edit_button__clicked(self, button):
+        self.emit('edit')
 
-    def on_new_button__clicked(self, *args):
-        self.parent.new()
-
+    def on_new_button__clicked(self, button):
+        self.emit('add')
 
 #
 # Base dialogs for search.
@@ -666,14 +625,15 @@ class SearchDialog(BasicDialog):
 
     def setup_slaves(self, **kwargs):
         self.disable_ok()
-        self.klist_slave = BaseListSlave(parent=self)
-        self.attach_slave('main', self.klist_slave)
-        self.klist = self.klist_slave.klist
+
+        self.klist = List(self.get_columns(), mode=self.selection_mode)
+        # XXX: I think that BasicDialog must redesigned, if so we don't
+        # need this ".remove" crap
+        self.main.remove(self.main_label)
+        self.main.add(self.klist)
+        self.klist.show()
+
         self.klist.connect('cell_edited', self.on_cell_edited)
-        # We can not change this through gazpacho because BaseListSlave 
-        # can be used for some other classes which should always redefine
-        # this mode
-        self.klist.set_selection_mode(self.selection_mode)
 
         columns = self.get_columns()
         query_args = self.get_query_args()
@@ -747,7 +707,7 @@ class SearchDialog(BasicDialog):
         """
 
     def update_klist(self, slave, objs):
-        """A hook called by SearchBar and BaseListSlave instances."""
+        """A hook called by SearchBar and instances."""
         if not objs:
             self.klist.clear()
             self.disable_ok()
@@ -829,30 +789,32 @@ class SearchEditor(SearchDialog):
         self.interface = interface
         if hide_toolbar:
             self.accept_edit_data = False
-            self.toolbar.get_toplevel().hide()
+            self._toolbar.get_toplevel().hide()
         else:
             self.accept_edit_data = True
             if not editor_class:
                 raise ValueError('An editor_class argument is required')
         self.editor_class = editor_class
         self._selected = None
-        self.klist.connect('double_click', self.edit)
+        self.klist.connect('double_click', self._on_toolbar__edit)
         self.update_widgets()
 
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
-        self.toolbar = SearchEditorToolBar(self)
-        self.attach_slave('extra_holder', self.toolbar)
+        self._toolbar = SearchEditorToolBar()
+        self.attach_slave('extra_holder', self._toolbar)
+        self._toolbar.connect("edit", self._on_toolbar__edit)
+        self._toolbar.connect("add", self._on_toolbar__new)
 
     def update_widgets(self, *args):
-        self.toolbar.edit_button.set_sensitive(len(self.klist))
+        self._toolbar.edit_button.set_sensitive(len(self.klist))
 
     def hide_edit_button(self):
         self.accept_edit_data = False
-        self.toolbar.edit_button.hide()
+        self._toolbar.edit_button.hide()
 
     def hide_new_button(self):
-        self.toolbar.new_button.hide()
+        self._toolbar.new_button.hide()
 
     def get_selected_instance(self):
         return self._selected
@@ -886,7 +848,7 @@ class SearchEditor(SearchDialog):
     def run_editor(self, obj):
         return run_dialog(self.editor_class, self, self.conn, obj)
 
-    def edit(self, widget, obj=None):
+    def _on_toolbar__edit(self, toolbar, obj=None):
         if not self.accept_edit_data:
             return
         if obj is None:
@@ -901,13 +863,13 @@ class SearchEditor(SearchDialog):
                 assert obj, msg % 0
         obj = self.get_model(obj)
         self.run(obj) 
-    
+
+    def _on_toolbar__new(self, toolbar):
+        self.run()
+
     #
     # Hooks
     #
-
-    def new(self):
-        self.run()
 
     def get_model(self, model):
         """This hook must be redefined on child when changing the type of
