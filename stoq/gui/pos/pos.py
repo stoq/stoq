@@ -70,6 +70,7 @@ _ = gettext.gettext
 class POSApp(AppWindow):
    
     app_name = _('Point of Sales')
+    app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
     client_widgets =  ('client',)
     product_widgets = ('product',)

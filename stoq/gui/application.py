@@ -85,6 +85,7 @@ class AppWindow(BaseAppWindow):
     """
 
     app_name = None
+    app_icon_name = None
     klist_name = 'klist'
     klist_selection_mode = gtk.SELECTION_BROWSE
 

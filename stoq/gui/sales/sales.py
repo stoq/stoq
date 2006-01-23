@@ -54,6 +54,7 @@ _ = gettext.gettext
 class SalesApp(SearchableAppWindow):
 
     app_name = _('Sales')
+    app_icon_name = 'stoq-sales-app'
     gladefile = 'sales_app'
     searchbar_table = Sale
     searchbar_use_dates = True

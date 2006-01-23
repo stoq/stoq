@@ -55,6 +55,7 @@ _ = gettext.gettext
 class AdminApp(SearchableAppWindow):
    
     app_name = _('Administrative')
+    app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
     table = searchbar_table = Person.getAdapterClass(IUser)
     searchbar_result_strings = (_('user'), _('users'))

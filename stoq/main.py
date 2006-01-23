@@ -24,21 +24,23 @@ from stoq.lib.applist import get_application_names
 def main(args):
     apps = get_application_names()
     
-    if len(args) < 2:
-       raise SystemExit("Usage: stoq <application>. "
-                        "Valid applications are: %s""" % apps)
+    if len(args) >= 2:
+        appname = args[1].strip()
+        if appname.endswith('/'):
+            appname = appname[:-1]
 
-    appname = args[1].strip()
-    if appname.endswith('/'):
-        appname = appname[:-1]
-
-    if not appname in apps:
-        raise SystemExit("'%s' is not an application. "
-                         "Valid applications are: %s" % (appname, apps))
+        if not appname in apps:
+            raise SystemExit("'%s' is not an application. "
+                             "Valid applications are: %s" % (appname, apps))
+    else:
+        appname = None
     
     from stoq.lib.stoqconfig import AppConfig
     config = AppConfig("stoq")
-    config.setup_app(appname, splash=True)
+    if appname:
+        config.setup_app(appname, splash=True)
+    else:
+        appname = config.setup_app(splash=True)
 
     module = __import__("stoq.gui.%s.app" % appname,
                         globals(), locals(), appname)

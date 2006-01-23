@@ -58,6 +58,7 @@ _ = gettext.gettext
 class PurchaseApp(SearchableAppWindow):
    
     app_name = _('Purchase')
+    app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"
     searchbar_table = PurchaseOrder
     searchbar_use_dates = True
