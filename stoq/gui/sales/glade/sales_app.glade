@@ -28,7 +28,7 @@
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients</property>
                         <property name="short_label">Clients</property>
-                        <property name="stock_id">stoq-config-users48px</property>
+                        <property name="stock_id">clients</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
                     </widget>
                 </child>
@@ -113,7 +113,7 @@
                         <property name="name">Products</property>
                         <property name="label" translatable="yes">Products</property>
                         <property name="short_label">Products</property>
-                        <property name="stock_id">stoq-products24px</property>
+                        <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
                     </widget>
                 </child>
@@ -152,7 +152,7 @@
                         <property name="name">Services</property>
                         <property name="label" translatable="yes">Services</property>
                         <property name="short_label">Services</property>
-                        <property name="stock_id">stoq-gconf-editor48px</property>
+                        <property name="stock_id">stoq-services</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
