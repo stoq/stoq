@@ -395,7 +395,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">icon-printer16px.png</property>
+                                                                        <property name="file">kfind16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>

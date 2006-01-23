@@ -28,7 +28,7 @@
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients</property>
                         <property name="short_label">Clients</property>
-                        <property name="stock_id">clients</property>
+                        <property name="stock_id">stoq-clients</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
                     </widget>
                 </child>
