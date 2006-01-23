@@ -49,13 +49,19 @@ def get_application_names():
         applications.append(appname)
     return applications
 
-def get_app_full_names():
+def get_app_descriptions():
+    """@returns: a list of tuples with some important Stoq application
+    informations. Each tuple has the following data: 
+        * Application name
+        * Application full name
+        * Application icon name
+    """
     # Import these modules here to reduce the startup time
     import inspect
     from stoq.gui.application import AppWindow
 
     applications = get_application_names()
-    app_full_names = []
+    app_desc = []
     for appname in applications:
         module = __import__("stoq.gui.%s.%s" % (appname, appname),
                             globals(), locals(), appname)
@@ -65,8 +71,9 @@ def get_app_full_names():
             if not issubclass(member, AppWindow):
                 continue
             app_full_name = getattr(member, 'app_name', None)
+            app_icon_name = getattr(member, 'app_icon_name', None)
             if not app_full_name:
                 raise ValueError('App %s must have an app_name attribute'
                                  % member)
-            app_full_names.append((appname, app_full_name))
-    return app_full_names
+            app_desc.append((appname, app_full_name, app_icon_name))
+    return app_desc

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,8 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
+##
+##  Author(s):  Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 """
 lib/config.py:
@@ -61,6 +63,7 @@ class AppConfig:
 
     splash = 0
     _applications = None
+    RETRY_NUMBER = 3
     
     def __init__(self, domain):
         self.domain = domain
@@ -72,13 +75,9 @@ class AppConfig:
     def log(self, s):
         sys.stderr.write("%s: %s\n" % (log_header(), s))
 
-
-
     #
     # Application list accessors
     #
-
-
 
     def check_dir_and_create(self, dir):
         if not os.path.isdir(dir):
@@ -91,16 +90,11 @@ class AppConfig:
             return
         self.config_data.check_permissions(dir, executable=True)
 
-
-
     #
     # Application setup. 
     #
 
-
-
-
-    def setup_app(self, appname, splash=False):
+    def setup_app(self, appname=None, splash=False):
         try:
             check_tables()
         except DatabaseError, e:
@@ -122,9 +116,6 @@ class AppConfig:
             logfile = os.path.expanduser(option)
             sys.stderr = open(logfile, 'a', 0)
 
-        # Log startup time
-        self.init_log()
-        self.log("Stoq: initializing application %s" % appname)
 
         # Registering some new important stock icons
         register_iconsets()
@@ -132,15 +123,13 @@ class AppConfig:
         conn = get_connection()
         max_search_results = sysparam(conn).MAX_SEARCH_RESULTS
         set_max_search_results(max_search_results)
-        assert self.validate_user()
-
-
+        if not self.validate_user():
+            LoginError('Could not authenticate in the system')
+        return self.appname
 
     #
     # User validation and AppHelper setup
     #
-
-
 
     def _lookup_user(self, username, password):
         # This function is really just a post-validation item. 
@@ -176,18 +165,20 @@ class AppConfig:
         retry = 0
         retry_msg = None
         dialog = None
-        while retry < 3:
+        choose_applications = self.appname is None
+        while retry < self.RETRY_NUMBER:
             # Try and grab credentials from cookie or dialog
-            ret = self.check_cookie()
-                
-            if ret:
-                msg = "Logging in using cookie credentials"
-                self.log(msg)
+            if not choose_applications:
+                ret = self.check_cookie()
             else:
+                ret = None
+            has_cookie_file = ret is not None
+                
+            if not ret:
                 self.splash = 0 
                 if not dialog:
-                    dialog = LoginDialog(_("Access Control"))
-
+                    dialog = LoginDialog(_("Access Control"),
+                                         choose_applications)
                 ret = dialog.run(msg=retry_msg)
 
             # user cancelled (escaped) the login dialog
@@ -195,7 +186,12 @@ class AppConfig:
                 self.abort_mission()
 
             # Use credentials
-            username, password = ret
+            if not (isinstance(ret, (tuple, list)) and len(ret) == 3):
+                raise ValueError('Invalid return value, got %s'
+                                 % str(ret))
+            username, password, appname = ret
+            if choose_applications:
+                self.appname =  appname
             if not username:
                 retry_msg = _("specify an username")
                 continue
@@ -213,7 +209,13 @@ class AppConfig:
                     dialog.destroy()
                 self.abort_mission(str(e))
             else:
-                self.log("Authenticated user %s" % username)
+                self.init_log()
+                # Log startup time
+                self.log("Stoq: initializing application %s" % self.appname)
+                if has_cookie_file:
+                    self.log("Logging in using cookie credentials")
+                else:
+                    self.log("Authenticated user %s" % username)
                 if dialog:
                     dialog.destroy()
                 return True
@@ -222,13 +224,9 @@ class AppConfig:
             dialog.destroy()
         self.abort_mission("Depleted attempts of authentication")
         return False
-        
-
     #
     # Cookie handling
     #
-
-
 
     def get_cookiefile(self):
         cookiefile = os.path.join(self.config_data.get_homepath(), "cookie")
@@ -254,7 +252,7 @@ class AppConfig:
         try:
             username, text = cookiedata.split(":")
             password = binascii.a2b_base64(text)
-            return username, password
+            return username, password, self.appname
         except (ValueError, binascii.Error):
             print "Warning: invalid cookie file, erasing"
             os.remove(cookiefile)
@@ -268,27 +266,18 @@ class AppConfig:
         fd.write("%s:%s" % (username, text))
         fd.close()
 
-
-
     #
     # Exit strategies
     #
-
-
 
     def abort_mission(self, msg=None, title=None):
         if msg:
             notify_dialog(msg, title)
         raise SystemExit
 
-
-
-
 #
 # Splash screen code
 #
-
-
 
 def show_splash(splash_path):
     msg = "The stoq directory %s doesn't exists." % splash_path
@@ -323,13 +312,9 @@ def hide_splash(*args):
 
 splash_win = None
 
-
-
 #
 # Exception and log stuff
 #
-
-
 
 def log_header():
     now = time.strftime("%Y-%m-%d %H:%M")

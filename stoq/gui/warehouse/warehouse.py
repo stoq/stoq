@@ -50,6 +50,7 @@ _ = gettext.gettext
 
 class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
+    app_icon_name = 'stoq-warehouse-app' 
     gladefile = "warehouse"
     searchbar_table = AbstractSellable
     searchbar_result_strings = (_('product'), _('products'))

@@ -58,6 +58,7 @@ _ = gettext.gettext
 class TillApp(SearchableAppWindow):
 
     app_name = _('Till')
+    app_icon_name = 'stoq-till-app'
     gladefile = 'till'
     searchbar_table = Sale
     searchbar_result_strings = (_('sale'), _('sales'))

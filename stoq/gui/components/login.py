@@ -33,34 +33,64 @@ import gtk
 import gobject
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
+from kiwi.ui.widgets.list import Column
+from kiwi.python import Settable
 from stoqlib.gui.dialogs import RunnableView
+
+from stoq.lib.applist import get_app_descriptions
 
 _ = gettext.gettext
 
+
 class LoginDialog(Delegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
-    widgets = ('logo_container',
-               'username',
-               'password',
-               'ok_button',
-               'cancel_button',
-               'notification_label')
+    size = (280, 230)
     
-    def __init__(self, title=None):
+    def __init__(self, title=None, choose_applications=True):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
         Delegate.__init__(self, gladefile=self.gladefile, 
                           widgets=self.widgets, 
                           keyactions=self.keyactions,
-                          delete_handler=self.close)
+                          delete_handler=gtk.main_quit)
         if title:
             self.set_title(title)
+        self.choose_applications = choose_applications
+        if self.choose_applications:
+            self.size = 450, 250
+            self.setup_applist()
         self.setup_widgets()
 
+    def _get_columns(self):
+        return [Column('icon_name', use_stock=True, 
+                       justify=gtk.JUSTIFY_LEFT, expand=True,
+                       icon_size=gtk.ICON_SIZE_LARGE_TOOLBAR),
+                Column('app_full_name', data_type=str, 
+                       expand=True)]
+
+    def setup_applist(self):
+        self.klist.get_treeview().set_headers_visible(False)
+        self.klist.set_columns(self._get_columns())
+
+        apps = get_app_descriptions()
+        # sorting by app_full_name
+        apps = [(app_full_name, app_name, app_icon_name) 
+                    for app_name, app_full_name, app_icon_name in apps]
+        apps.sort()
+        for app_full_name, app_name, app_icon_name in apps:
+            model = Settable(app_name=app_name, app_full_name=app_full_name, 
+                             icon_name=app_icon_name)
+            self.klist.append(model)
+        if not len(self.klist):
+            raise ValueError('Application list should have items at '
+                             'this point')
+        self.klist.select(self.klist[0])
+        self.app_list.show()
+
     def setup_widgets(self):
+        self.get_toplevel().set_size_request(*self.size)
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
-        # Interestingly enough, loading an XPM is slower than a JPG here
-        filename = environ.find_resource("pixmaps", "logo.xpm")
+        filename = environ.find_resource("pixmaps", "stoq_logo.png")
         
         gtkimage = gtk.Image()
         gtkimage.set_from_file(filename)
@@ -79,7 +109,7 @@ class LoginDialog(Delegate, RunnableView):
         
     def on_delete_event(self, window, event):
         self.close()
-        
+
     def on_ok_button__clicked(self, button):
         self._do_login()
 
@@ -100,7 +130,12 @@ class LoginDialog(Delegate, RunnableView):
     def _do_login(self):
         username = self.username.get_text().strip()
         password = self.password.get_text().strip()
-        self.retval = username, password
+        if self.choose_applications:
+            selected = self.klist.get_selected()
+            app_name = selected.app_name
+        else:
+            app_name = None
+        self.retval = username, password, app_name
         self.set_field_sensitivity(False)
         self.notification_label.set_color('black')
         msg = _(" Authenticating user...")

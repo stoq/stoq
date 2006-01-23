@@ -37,7 +37,7 @@ from stoqlib.gui.editors import BaseEditor
 
 from stoq.domain.profile import UserProfile
 from stoq.gui.slaves.profile import UserProfileSettingsSlave
-from stoq.lib.applist import get_app_full_names
+from stoq.lib.applist import get_app_descriptions
 from stoq.lib.runtime import get_connection
 
 
@@ -64,8 +64,8 @@ class UserProfileEditor(BaseEditor):
                                     UserProfileEditor.proxy_widgets)
 
     def setup_slaves(self):
-        apps = get_app_full_names()
-        for app_name, app_full_name in apps:
+        apps = get_app_descriptions()
+        for app_name, app_full_name, app_icon_name in apps:
             model = None
             if self.edit_mode:
                 settings = self.model.profile_settings

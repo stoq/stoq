@@ -45,6 +45,7 @@ _ = gettext.gettext
 class ReceivableApp(SearchableAppWindow):
 
     app_name = _('Receivable')
+    app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
     searchbar_table = Payment
     searchbar_use_dates = True
