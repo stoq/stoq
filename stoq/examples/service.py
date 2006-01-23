@@ -40,7 +40,7 @@ PRICE_RANGE = 100, 200
 COST_RANGE = 1, 99
 
 def create_services():
-    print_msg('creating services...', break_line=False)
+    print_msg('Creating services...', break_line=False)
     conn = new_transaction()
     
 
