@@ -32,6 +32,7 @@ import gettext
 from datetime import datetime
 
 from kiwi.utils import gsignal
+from kiwi.ui.views import SlaveView
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.editors import BaseEditorSlave
 
@@ -52,37 +53,30 @@ from stoq.domain.payment.methods import (BillCheckGroupData, CheckData,
 
 _ = gettext.gettext
 
-
-
 class PaymentListSlave(BaseEditorSlave):
     """A basic payment list slave. Each element of this list is a payment
     method slave which hold informations about payments. Available slaves
     are: BillDataSlave and CheckDataSlave
 
     Notes:
-        - update_widget_handler: is a callback function which is called 
-                                 right after a slave is added or removed 
-                                 in the list.
         - get_payment_slave: is a hook method which must be defined in
                              parents. The result of this function must 
                              be a BaseEditorSlave instance.
-        - on_remove_item: is a hook method which must be defined in parent
-                          and will be called right after remove slaves from 
-                          the list
-        - get_interest_total: a hook method defined in parents which must
-                              return the total amount of interest
     """
 
     gladefile = 'PaymentListSlave'
 
     gsignal('remove-slave')
     gsignal('add-slave')
+    gsignal('remove-item', SlaveView)
 
-    def __init__(self, parent, conn, payment_method, sale_total):
+    def __init__(self, parent, conn, payment_method, sale_total,
+                 interest_total):
         self.parent = parent
         self.payment_method = payment_method
         self.sale_total = sale_total
         self.max_installments_number = None
+        self._interest_total = interest_total
         # This dict stores a reference of each toplevel widget with its own
         # kiwi object, the slave.
         self.payment_slaves = {}
@@ -103,7 +97,7 @@ class PaymentListSlave(BaseEditorSlave):
         del self.payment_slaves[widget]
         self.list_vbox.remove(widget)
         self._update_view()
-        self.parent.on_remove_item(slave)
+        self.emit("remove-item", slave)
 
     def get_total_difference(self):
         """Get the difference for the total of check payments invoiced. If
@@ -115,8 +109,7 @@ class PaymentListSlave(BaseEditorSlave):
         values = [s.get_payment_value() for s in slaves 
                         if s.get_payment_value() is not None]
         slaves_total = sum(values)
-        interest_total = self.parent.get_interest_total()
-        slaves_total -= interest_total
+        slaves_total -= self._interest_total
         if compare_float_numbers(slaves_total, self.sale_total):
             return 0.0
         return self.sale_total - slaves_total
@@ -185,13 +178,9 @@ class PaymentListSlave(BaseEditorSlave):
         widget = vbox_children[-1]
         self._remove_payment_slave(widget)
 
-
-
     #
     # Kiwi callbacks
     #
-
-
 
     def on_add_button__clicked(self, *args):
         self.add_slave()
@@ -201,25 +190,18 @@ class PaymentListSlave(BaseEditorSlave):
         self.remove_last_payment_slave()
         self.emit('remove-slave')
 
-
 class BankDataSlave(BaseEditorSlave):
     gladefile = 'BankDataSlave'
     model_type = BankAccount
     proxy_widgets = ('bank',
                      'branch')
 
-
-
     #
     # BaseEditorSlave hooks
     #
 
-
-
     def setup_proxies(self):
         self.add_proxy(self.model, BankDataSlave.proxy_widgets)
-
-
 
 class BillDataSlave(BaseEditorSlave):
     """A slave to set payment information of bill payment method"""
@@ -248,13 +230,9 @@ class BillDataSlave(BaseEditorSlave):
     def get_payment_value(self):
         return self.model.value
 
-
-
     #
     # BaseEditorSlave hooks
     #
-
-
 
     def create_model(self, conn):
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
@@ -267,31 +245,22 @@ class BillDataSlave(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, BillDataSlave.payment_widgets)
-
-
     
     #
     # Kiwi callbacks
     #
 
-
-
     def after_value__changed(self, *args):
         self.emit('paymentvalue-changed')
-
 
 class CheckDataSlave(BillDataSlave):
     """A slave to set payment information of check payment method."""
     slave_holder = 'bank_data_slave'
     model_type = CheckData
 
-
-
     #
     # BaseEditorSlave hooks
     #
-
-
 
     def get_payment_value(self):
         return self.model.payment.value
@@ -314,7 +283,6 @@ class CheckDataSlave(BillDataSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model.payment, BillDataSlave.payment_widgets)
-
 
 class BasePaymentMethodSlave(BaseEditorSlave):
     """A base payment method slave for Bill and Check methods."""
@@ -382,11 +350,14 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.prefill(items)
 
         self.payment_list = PaymentListSlave(self, self.conn, 
-                                             self.method, self.total_value)
+                                             self.method, self.total_value,
+                                             self.interest_total)
         self.payment_list.connect('add-slave',
                                   self.update_installments_number)
         self.payment_list.connect('remove-slave',
                                   self.update_installments_number)
+        self.payment_list.connect("remove-item",
+                                  self._on_payment_list__remove_item)
         self.payment_list.register_max_installments_number(max)
         if self.get_slave(BasePaymentMethodSlave.slave_holder):
             self.detach_slave(BasePaymentMethodSlave.slave_holder)
@@ -438,20 +409,32 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         for inpayment in inpayments:
             slave = self.get_slave_by_inpayment(inpayment)
             self.payment_list.add_slave(slave)
-
+ 
     def get_slave_by_inpayment(self, inpayment):
         raise NotImplementedError
-      
 
+    # 
+    #  Callbacks
+    # 
+
+    def _on_payment_list__remove_item(self, payment_list, slave):
+        if not isinstance(slave.model, slave.model_type):
+            raise TypeError('Slave model attribute should be of type '
+                            '%s, got %s' % (slave.model_type, 
+                                            type(slave.model)))
+        
+        if isinstance(slave.model, CheckData):
+            payment = slave.model.payment
+        else:
+            payment = slave.model
+        inpayment = IInPayment(payment)
+        assert inpayment, ('This payment should have a IInPayment facet '
+                           'at this point')
+        self.method.delete_inpayment(inpayment)
 
     #
     # PaymentListSlave hooks and callbacks
     #
-
-
-
-    def get_interest_total(self):
-        return self.interest_total
     
     def get_payment_slave(self, model=None):
         if not self._data_slave_class:
@@ -478,42 +461,18 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.model.installments_number = inst_number
         self.proxy.update('installments_number')
 
-    def on_remove_item(self, slave):
-        if not isinstance(slave.model, slave.model_type):
-            raise TypeError('Slave model attribute should be of type '
-                            '%s, got %s' % (slave.model_type, 
-                                            type(slave.model)))
-        
-        if isinstance(slave.model, CheckData):
-            payment = slave.model.payment
-        else:
-            payment = slave.model
-        inpayment = IInPayment(payment)
-        assert inpayment, ('This payment should have a IInPayment facet '
-                           'at this point')
-        self.method.delete_inpayment(inpayment)
-
-
-
     #
     # PaymentMethodStep hooks
     #
-
-
     
     def finish(self):
         # Since payments are created during this step there is no need to
         # perform tasks here
         return
 
-
-
-
     #
     # BaseEditor Slave hooks
     #   
-
-
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -528,13 +487,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         return BillCheckGroupData(connection=conn, group=group,
                                   first_duedate=datetime.today())
 
-    
-
     #
     # Kiwi callbacks
     #
-
-
 
     def after_installments_number__value_changed(self, *args):
         # Call this callback *after* the value changed because we need to
@@ -568,7 +523,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.reset_btn_validation_ok = is_valid
         self.update_view()
 
-
 class CheckMethodSlave(BasePaymentMethodSlave):
     _data_slave_class = CheckDataSlave
 
@@ -577,15 +531,12 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         check_data = self.method.get_check_data_by_payment(adapted)
         return self.get_payment_slave(check_data)
 
-
 class BillMethodSlave(BasePaymentMethodSlave):
     _data_slave_class = BillDataSlave
-
 
     def get_slave_by_inpayment(self, inpayment):
         adapted = inpayment.get_adapted()
         return self.get_payment_slave(adapted)
-    
 
 class CreditProviderMethodSlave(BaseEditorSlave):
     """A base payment method slave for card and finance methods.
@@ -672,24 +623,16 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         payment_type.setup_inpayments(group, inst_number, first_due_date,
                                       self.total_value)
 
-
-
     #
     # PaymentMethodStep hooks
     #
-
-
     
     def finish(self):
         self._setup_payments()
 
-
-
     #
     # BaseEditor Slave hooks
     #   
-
-
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -709,20 +652,15 @@ class CreditProviderMethodSlave(BaseEditorSlave):
                                        payment_type=payment_type,
                                        provider=provider)
 
-    
-
     #
     # Kiwi callbacks
     #
-
-
 
     def on_payment_type__content_changed(self, *args):
         self._setup_max_installments()
         
     def on_credit_provider__content_changed(self, *args):
         self._setup_payment_types()
-
 
 class CardMethodSlave(CreditProviderMethodSlave):
         
@@ -739,7 +677,6 @@ class CardMethodSlave(CreditProviderMethodSlave):
         payment_types = self._get_payment_types(selected)
         items = [(p.payment_type_name, p) for p in payment_types]
         self.payment_type.prefill(items)
-
 
 class FinanceMethodSlave(CreditProviderMethodSlave):
     _payment_types = FinanceDetails,
@@ -758,7 +695,6 @@ class FinanceMethodSlave(CreditProviderMethodSlave):
         payment_type = payment_types[0]
         names = payment_type.payment_type_names
         self.payment_type.prefill([(name, payment_type) for name in names])
-
 
 class MultipleMethodSlave:
     gladefile = 'MultipleMethodSlave'
