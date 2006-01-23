@@ -40,7 +40,13 @@ def register_iconsets():
                  ("stoq-receiving", "emblem-documentation48px.png"),
                  ("stoq-transfer", "a-convert48px.png"),
                  ("stoq-clients", "config-users48px.png"),
-                 ("stoq-services", "gconf-editor48px.png")]
+                 ("stoq-services", "gconf-editor48px.png"),
+                 ("stoq-admin-app", "admin_24.png"),
+                 ("stoq-pos-app", "pos_24.png"),
+                 ("stoq-till-app", "till_24.png"),
+                 ("stoq-warehouse-app", "warehouse_24.png"),
+                 ("stoq-purchase-app", "gnome-gnomine48px.png"),
+                 ("stoq-sales-app", "gnome-log48px.png")]
                  
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
