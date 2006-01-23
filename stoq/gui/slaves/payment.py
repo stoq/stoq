@@ -420,7 +420,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
         intervals = self.model.intervals
-        interest = self.model.interest
+        interest = self.model.interest / 100 * self.total_value
         self.payment_list.clear_list()
         method = self.method
         inpayments, interest = method.setup_inpayments(group, inst_number,

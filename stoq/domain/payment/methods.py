@@ -76,6 +76,8 @@ class BillCheckGroupData(Domain):
     """Stores general information for payment groups which store checks.
 
     B{Importante attributes}:
+        - I{interest}: a percentage that represents the interest. This value
+                       must be betwen 0 and 100.
         - I{interval_types}: a useful attribute when generating multiple 
                              payments. callsites you ensure to use it 
                              properly sending valid constants which define 
