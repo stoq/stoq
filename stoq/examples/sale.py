@@ -88,7 +88,7 @@ def get_all_products(conn):
 
 def create_sales():
     conn = new_transaction()
-    print_msg("Creating Sale... ", break_line=False)
+    print_msg("Creating sales... ", break_line=False)
 
     till = get_till(conn)
 
