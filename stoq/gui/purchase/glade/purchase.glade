@@ -106,7 +106,7 @@
                         <property name="name">ProductButton</property>
                         <property name="label" translatable="yes">Products</property>
                         <property name="short_label">Products</property>
-                        <property name="stock_id">products_24</property>
+                        <property name="stock_id">stoq-products24px</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                     </widget>
                 </child>
@@ -199,7 +199,7 @@
                         <property name="name">SuppliersButton</property>
                         <property name="label" translatable="yes">Suppliers</property>
                         <property name="short_label">Suppliers</property>
-                        <property name="stock_id">kuser48px</property>
+                        <property name="stock_id">stoq-kuser48px</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                     </widget>
                 </child>
@@ -395,7 +395,7 @@
                                                                 <property name="visible">True</property>
                                                                 <child>
                                                                     <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">kfind16px.png</property>
+                                                                        <property name="file">icon-printer16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
                                                                 </child>
