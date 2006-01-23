@@ -9,7 +9,7 @@
                         <property name="name">Bill</property>
                         <property name="label" translatable="yes">Bills</property>
                         <property name="short_label">Bills</property>
-                        <property name="stock_id">gnome-money48px</property>
+                        <property name="stock_id">stoq-gnome-money48px</property>
                         <signal handler="_on_bills_action_clicked" name="activate"/>
                     </widget>
                 </child>
@@ -37,7 +37,7 @@
                         <property name="name">Conference</property>
                         <property name="label" translatable="yes">_Conference</property>
                         <property name="short_label">_Conference</property>
-                        <property name="stock_id">gtk-stock-book48px</property>
+                        <property name="stock_id">stoq-gtk-stock-book48px</property>
                         <signal handler="_on_conference_action_clicked" name="activate"/>
                     </widget>
                 </child>

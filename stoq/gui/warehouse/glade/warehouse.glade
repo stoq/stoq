@@ -143,7 +143,7 @@
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">Receive</property>
                         <property name="short_label">Receive</property>
-                        <property name="stock_id">emblem-documentation48px</property>
+                        <property name="stock_id">stoq-emblem-documentation48px</property>
                         <signal handler="_on_receive_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;r</property>
                     </widget>
@@ -161,7 +161,7 @@
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
                         <property name="short_label">Transfer</property>
-                        <property name="stock_id">a-convert48px</property>
+                        <property name="stock_id">stoq-a-convert48px</property>
                         <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
                 </child>
