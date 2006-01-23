@@ -163,7 +163,7 @@ class SearchEntry(SlaveDelegate):
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile, 
                                widgets=self.widgets, domain='stoqlib')
-        self.search_icon.set_from_stock("searchtool-icon1", 
+        self.search_icon.set_from_stock("stoq-searchtool-icon1", 
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
             self.attach_slave('filter_area', filter_slave)
@@ -195,10 +195,10 @@ class SearchEntry(SlaveDelegate):
 
     def _animate_search_icon(self):
         dir = stoqlib.__path__[0] + '/gui/pixmaps'
-        stocklist = ["searchtool-icon2",
-                     "searchtool-icon3",
-                     "searchtool-icon4",
-                     "searchtool-icon1"]
+        stocklist = ["stoq-searchtool-icon2",
+                     "stoq-searchtool-icon3",
+                     "stoq-searchtool-icon4",
+                     "stoq-searchtool-icon1"]
         
         while True:
             for stock in stocklist:

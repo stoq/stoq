@@ -29,18 +29,18 @@ from kiwi.environ import environ
 
 # register stoq stock icons
 def register_iconsets():
-    icon_info = [("searchtool-icon1", "searchtool-animation1.png"),
-                 ("searchtool-icon2", "searchtool-animation2.png"),
-                 ("searchtool-icon3", "searchtool-animation3.png"),
-                 ("searchtool-icon4", "searchtool-animation4.png"),
-                 ("products_24", "products_24.png"),
-                 ("kuser48px", "kuser48px.png"),
-                 ("gnome-money48px", "gnome-money48px.png"),
-                 ("gtk-stock-book48px", "gtk-stock-book48px.png"),
-                 ("emblem-documentation48px", "emblem-documentation48px.png"),
-                 ("a-convert48px", "a-convert48px.png"),
-                 ("config-users48px", "config-users48px.png"),
-                 ("gconf-editor48px", "gconf-editor48px.png")]
+    icon_info = [("stoq-searchtool-icon1", "searchtool-animation1.png"),
+                 ("stoq-searchtool-icon2", "searchtool-animation2.png"),
+                 ("stoq-searchtool-icon3", "searchtool-animation3.png"),
+                 ("stoq-searchtool-icon4", "searchtool-animation4.png"),
+                 ("stoq-products", "products_24.png"),
+                 ("stoq-suppliers", "kuser48px.png"),
+                 ("stoq-bills", "gnome-money48px.png"),
+                 ("stoq-conference", "gtk-stock-book48px.png"),
+                 ("stoq-receiving", "emblem-documentation48px.png"),
+                 ("stoq-transfer", "a-convert48px.png"),
+                 ("stoq-clients", "config-users48px.png"),
+                 ("stoq-services", "gconf-editor48px.png")]
                  
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
