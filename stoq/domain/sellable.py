@@ -154,8 +154,8 @@ class OnSaleInfo(Domain):
 
 
 class BaseSellableInfo(Domain):
-    price = FloatCol()
-    description = StringCol()
+    price = FloatCol(default=0.0)
+    description = StringCol(default='')
     max_discount = FloatCol(default=0.0)
     commission = FloatCol(default=None)
 
@@ -182,7 +182,7 @@ class AbstractSellable(InheritableModelAdapter):
                 STATUS_CLOSED: _("Closed"),
                 STATUS_BLOCKED: _("Blocked")}
 
-    code = StringCol(alternateID=True)
+    code = StringCol(alternateID=True, default="")
     status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
     cost = FloatCol(default=0.0)

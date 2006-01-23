@@ -34,6 +34,7 @@ import gettext
 
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
+from kiwi.utils import gsignal
 from stoqlib.gui.lists import SimpleListDialog
 from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.dialogs import run_dialog
@@ -55,26 +56,30 @@ _ = gettext.gettext
 
 
 class ProductSupplierSlave(BaseEditorSlave):
-    """ A basic slave for suppliers selection.
-    Parents which use this slave must implement a hook method called
-    update_price. """
-
+    """ A basic slave for suppliers selection.  This slave emits the
+    'cost-changed' signal when the supplier's product cost has
+    changed.
+    """
     gladefile = 'ProductSupplierSlave'
     proxy_widgets = 'supplier_lbl',
     model_type = Product
 
-    def __init__(self, parent, conn, model, on_supplier_changed=None):
-        self.parent = parent
-        BaseEditorSlave.__init__(self, conn, model)
+    gsignal("cost-changed")
 
     def on_supplier_button__clicked(self, button):
         self.edit_supplier()
  
     def edit_supplier(self):
+        main_supplier = self.model.get_main_supplier_info()
+        if not main_supplier:
+            current_cost = 0.0
+        else:
+            current_cost =  main_supplier.base_cost
         result = run_dialog(ProductSupplierEditor, self, self.conn, self.model)
         if not result:
             return
-        self.parent.update_prices()
+        if result.base_cost != current_cost:
+            self.emit("cost-changed")
         self.proxy.update('main_supplier_info.name')
 
     def setup_proxies(self):
@@ -216,7 +221,9 @@ class ProductEditor(SellableEditor):
     model_type = Product
 
     def setup_slaves(self):
-        supplier_slave = ProductSupplierSlave(self, self.conn, self.model)
+        supplier_slave = ProductSupplierSlave(self.conn, self.model)
+        supplier_slave.connect("cost-changed",
+                               self._on_supplier_slave__cost_changed)
         self.attach_slave('product_supplier_holder', supplier_slave)
 
     def setup_widgets(self):
@@ -224,11 +231,25 @@ class ProductEditor(SellableEditor):
         self.stock_total_lbl.show() 
         self.stock_lbl.show()
 
+    def create_model(self, conn):
+        model = Product(connection=conn)
+        sellable_info = BaseSellableInfo(connection=conn)
+
+        model.addFacet(ISellable, base_sellable_info=sellable_info,
+                       connection=conn)
+        model.addFacet(IStorable, connection=conn)
+        supplier = sysparam(conn).SUGGESTED_SUPPLIER
+        supplier_info = ProductSupplierInfo(connection=conn,
+                                            is_main_supplier=True,
+                                            supplier=supplier,
+                                            product=model)
+        return model
+
     #
-    # ProductSupplierSlave hooks
+    # Callbacks
     #
 
-    def update_prices(self):
+    def _on_supplier_slave__cost_changed(self, slave):
         if not self.sellable_proxy.model.cost and self.model.suppliers:
            base_cost = self.model.get_main_supplier_info().base_cost
            self.sellable_proxy.model.cost = base_cost or 0.0
@@ -241,18 +262,3 @@ class ProductEditor(SellableEditor):
         price = cost + ((markup / 100) * cost)
         self.sellable_proxy.model.base_sellable_info.price = price
         self.sellable_proxy.update('price')
-
-    def create_model(self, conn):
-        model = Product(connection=conn)
-        sellable_info = BaseSellableInfo(connection=conn, 
-                                         description='', price=0.0)
-        
-        model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
-                       connection=conn)
-        model.addFacet(IStorable, connection=conn)
-        supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        supplier_info = ProductSupplierInfo(connection=conn,
-                                            is_main_supplier=True,
-                                            supplier=supplier,
-                                            product=model)
-        return model
