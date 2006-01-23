@@ -33,11 +33,11 @@ import gettext
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
+from kiwi.ui.widgets.list import List
 
 from stoqlib.gui.dialogs import run_dialog, confirm_dialog
 from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
 from stoqlib.gui.editors import BaseEditor
-from stoqlib.gui.search import BaseListSlave
 from stoqlib.exceptions import SelectionError
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -249,26 +249,25 @@ class AdditionListDialog(BasicPluggableDialog):
 class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
-    def __init__(self, columns, objects, parent=None, hide_cancel_btn=True,
+    def __init__(self, columns, objects, hide_cancel_btn=True,
                  title='', selection_mode=gtk.SELECTION_MULTIPLE):
         BasicDialog.__init__(self)
         BasicDialog._initialize(self, size=self.size, title=title)
-
         if hide_cancel_btn:
             self.cancel_button.hide()
+        self.setup_slave(columns, objects, selection_mode)
 
-        self.setup_slave(columns, objects, parent, selection_mode)
-
-    def setup_slave(self, columns, objects, parent, selection_mode):
-        self.list_slave = BaseListSlave(parent, columns, objects)
-        self.list_slave.klist.set_selection_mode(selection_mode)
-        self.attach_slave('main', self.list_slave)
+    def setup_slave(self, columns, objects, selection_mode):
+        self.main.remove(self.main_label)
+        self._klist = List(columns, objects, selection_mode)
+        self.main.add(self._klist)
+        self._klist.show()
 
     def get_selection(self):
-        mode = self.list_slave.klist.get_selection_mode() 
+        mode = self._klist.get_selection_mode() 
         if mode == gtk.SELECTION_MULTIPLE:
-            return self.list_slave.klist.get_selected_rows()
-        selection = self.list_slave.klist.get_selected()
+            return self.klist.get_selected_rows()
+        selection = self.klist.get_selected()
         if not selection:
             return []
         return [selection]
