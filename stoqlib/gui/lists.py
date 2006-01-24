@@ -266,8 +266,8 @@ class SimpleListDialog(BasicDialog):
     def get_selection(self):
         mode = self._klist.get_selection_mode() 
         if mode == gtk.SELECTION_MULTIPLE:
-            return self.klist.get_selected_rows()
-        selection = self.klist.get_selected()
+            return self._klist.get_selected_rows()
+        selection = self._klist.get_selected()
         if not selection:
             return []
         return [selection]
