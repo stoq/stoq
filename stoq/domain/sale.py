@@ -91,6 +91,7 @@ class Sale(Domain):
                 STATUS_CANCELLED:       _("Cancelled"),
                 STATUS_REVIEWING:       _("Reviewing")}
 
+    coupon_id = IntCol(default=None)
     order_number = StringCol(default='')
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
