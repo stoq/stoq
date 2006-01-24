@@ -23,7 +23,7 @@ from stoq.lib.applist import get_application_names
 
 def main(args):
     apps = get_application_names()
-    
+
     if len(args) >= 2:
         appname = args[1].strip()
         if appname.endswith('/'):
@@ -34,7 +34,7 @@ def main(args):
                              "Valid applications are: %s" % (appname, apps))
     else:
         appname = None
-    
+
     from stoq.lib.stoqconfig import AppConfig
     config = AppConfig("stoq")
     if appname:
