@@ -29,16 +29,14 @@ stoq/domain/payment/destination.py:
 """
 
 from sqlobject import StringCol, ForeignKey
+from zope.interface import implements
 
 from stoq.domain.base import InheritableModel
-
-
+from stoq.domain.interfaces import IDescribable
 
 #
 # Domain Classes
 # 
-
-
 
 class PaymentDestination(InheritableModel):
     """PaymentDestination is the location where all the paid payments live.
@@ -49,6 +47,8 @@ class PaymentDestination(InheritableModel):
         - I{account}: if this payment destination represents a bank account,
                       use it here.
     """
+    implements(IDescribable)
+
     description = StringCol()
     account = ForeignKey('BankAccount', default=None)
     notes = StringCol(default='')
@@ -56,6 +56,12 @@ class PaymentDestination(InheritableModel):
     def get_balance(self, start_date=None, end_date=None):
         raise NotImplementedError
 
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.description
 
 class StoreDestination(PaymentDestination):
     """A StoreDestination is a payment destination which lives in a Store.

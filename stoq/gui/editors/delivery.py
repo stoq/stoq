@@ -81,6 +81,24 @@ class DeliveryEditor(BaseEditor):
         else:
             self.additional_info_label.hide()
 
+    def _check_products(self):
+        if not self.products:
+            raise TypeError("This editor (%r) requires a list of "
+                            "ProductAdaptToSellableItem objects, "
+                            "since you don't have a model defined"
+                            % self)
+
+    def _check_sale(self):
+        if not self.sale:
+            raise TypeError("This editor (%r) requires a valid "
+                            "Sale object, since you don't have "
+                            "a model defined." % self)
+
+    def _check_client_addresses(self):
+        if not self.sale.client.get_adapted().get_main_address():
+            raise TypeError("The client "%r" doesn't have a main "
+                            "address" % self.sale.client)
+
     #
     # Callbacks
     #
@@ -118,25 +136,15 @@ class DeliveryEditor(BaseEditor):
         return self.model_name
 
     def create_model(self, conn):
-        if not self.products:
-            raise TypeError('This editor (%r) requires a list of '
-                            'ProductAdaptToSellableItem objects, since you '
-                            'don\'t have a model defined.' % self)
-        if not self.sale:
-            raise TypeError('This editor (%r) requires a valid Sale object, '
-                            'since you don\'t have a model defined.' % self)
-        if not self.sale.client.get_adapted().get_main_address():
-            raise TypeError('The client "%r" doesn\'t have a main address'
-                            % self.sale.client)
+        self._check_products()
+        self._check_sale()
+        self._check_client_addresses()
 
         sale = Sale.get(self.sale.id, connection=conn)
         service = sysparam(conn).DELIVERY_SERVICE
-        sellable = ISellable(service, connection=conn)
-
-        model = sellable.add_sellable_item(sale)
+        model = service.add_sellable_item(sale)
         delivery = model.addFacet(IDelivery, connection=conn)
         map(delivery.add_item, self.products)
-
         main_address = sale.client.get_adapted().get_main_address()
         address_string = ("%s - %s/%s" 
                           % (main_address.get_address_string(),

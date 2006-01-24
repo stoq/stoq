@@ -45,8 +45,9 @@ from stoq.lib.validators import raw_phone_number
 from stoq.domain.base import CannotAdapt, Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,
-                                    ISalesPerson, IBankBranch,
-                                    ICreditProvider, IActive, ITransporter)
+                                    ISalesPerson, IBankBranch, IActive,
+                                    ICreditProvider, ITransporter,
+                                    IDescribable)
 
 _ = gettext.gettext
 
@@ -58,8 +59,17 @@ _ = gettext.gettext
 
 class EmployeeRole(Domain):
     """Base class to store the employee roles."""
+
+    implements(IDescribable)
     
     name = StringCol(alternateID=True)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.name
 
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
@@ -349,13 +359,21 @@ class PersonAdaptToCompany(ModelAdapter):
         - I{fancy_name}: Represents the fancy name of a company.
     """
     
-    implements(ICompany)
+    implements(ICompany, IDescribable)
 
     # Cnpj and state_registry are
     # Brazil-specific information.
     cnpj  = StringCol(default='')
     fancy_name = StringCol(default='')
     state_registry = StringCol(default='')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_adapted().name
+
                     
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
@@ -427,7 +445,7 @@ class PersonAdaptToSupplier(ModelAdapter):
         - I{product_desc}: Basic description of the products of a supplier.
     """
     
-    implements(ISupplier)
+    implements(ISupplier, IDescribable)
 
     (STATUS_ACTIVE, 
      STATUS_INACTIVE, 
@@ -448,6 +466,14 @@ class PersonAdaptToSupplier(ModelAdapter):
     def get_active_suppliers(cls, conn):
         query = cls.q.status == cls.STATUS_ACTIVE
         return cls.select(query, connection=conn)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_adapted().name
+
                     
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
@@ -542,7 +568,7 @@ Person.registerFacet(PersonAdaptToUser, IUser)
 class PersonAdaptToBranch(ModelAdapter):
     """A branch facet of a person."""
     
-    implements(IBranch, IActive)
+    implements(IBranch, IActive, IDescribable)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -568,6 +594,13 @@ class PersonAdaptToBranch(ModelAdapter):
         if self.is_active:
             return _('Active')
         return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_adapted().name
 
     #
     # Auxiliar methods

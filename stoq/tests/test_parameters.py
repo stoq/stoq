@@ -37,7 +37,7 @@ from stoq.domain.person import Person, EmployeeRole
 from stoq.domain.sellable import BaseSellableCategory
 from stoq.domain.payment.methods import PaymentMethod
 from stoq.domain.payment.destination import PaymentDestination
-from stoq.domain.service import Service
+from stoq.domain.service import ServiceAdaptToSellable
 
 class TestParameter:
 
@@ -96,7 +96,7 @@ class TestParameter:
 
     def test_DeliveryService(self):
         service = self.sparam.DELIVERY_SERVICE
-        assert isinstance(service, Service)      
+        assert isinstance(service, ServiceAdaptToSellable)
 
     # System constants based on stoq.lib.parameters
 

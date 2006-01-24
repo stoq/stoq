@@ -40,7 +40,7 @@ from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoq.lib.validators import is_date_in_interval, get_formatted_price
 from stoq.lib.runtime import get_connection
 from stoq.lib.parameters import sysparam
-from stoq.domain.interfaces import ISellable, IContainer
+from stoq.domain.interfaces import ISellable, IContainer, IDescribable
 from stoq.domain.base import (Domain, InheritableModelAdapter,
                               InheritableModel)
 
@@ -88,8 +88,14 @@ class AbstractSellableCategory(Domain):
 class BaseSellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
 
+    implements(IDescribable)
+
     def get_commission(self):
         return self.category_data.get_commission()
+
+    #
+    # IDescribable implementation
+    #
 
     def get_description(self):
         return self.category_data.description
@@ -154,6 +160,8 @@ class OnSaleInfo(Domain):
 
 
 class BaseSellableInfo(Domain):
+    implements(IDescribable)
+
     price = FloatCol(default=0.0)
     description = StringCol(default='')
     max_discount = FloatCol(default=0.0)
@@ -164,11 +172,17 @@ class BaseSellableInfo(Domain):
             return 0.0
         return self.commission
 
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.description
 
 class AbstractSellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
-    implements(ISellable, IContainer)
+    implements(ISellable, IContainer, IDescribable)
 
     sellableitem_table = None
     (STATUS_AVAILABLE,
@@ -260,6 +274,13 @@ class AbstractSellable(InheritableModelAdapter):
                                        sale=sale, sellable=self,
                                        price=price, **kwargs)
     #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.base_sellable_info.get_description()
+
+    #
     # Accessors
     #
 
@@ -291,8 +312,7 @@ class AbstractSellable(InheritableModelAdapter):
     @classmethod
     def get_available_sellables_query(cls, conn):
         service = sysparam(conn).DELIVERY_SERVICE
-        delivery = ISellable(service, connection=conn)
-        q1 = cls.q.id != delivery.id
+        q1 = cls.q.id != service.id
         q2 = cls.q.status == cls.STATUS_AVAILABLE
         return AND(q1, q2)
 
