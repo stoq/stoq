@@ -58,7 +58,7 @@ def setup(options):
     initialize_system("Superuser", "administrator", "", verbose=True)
     create()
 
-def test_gui(options, tests):
+def test_gui(options, tests=None):
     from stoq.lib.runtime import new_transaction
 
     if options.verbose:
