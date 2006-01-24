@@ -168,18 +168,20 @@ class AppConfig:
         choose_applications = self.appname is None
         while retry < self.RETRY_NUMBER:
             # Try and grab credentials from cookie or dialog
-            if not choose_applications:
-                ret = self.check_cookie()
-            else:
-                ret = None
+            ret = self.check_cookie()
             has_cookie_file = ret is not None
                 
             if not ret:
                 self.splash = 0 
-                if not dialog:
-                    dialog = LoginDialog(_("Access Control"),
-                                         choose_applications)
-                ret = dialog.run(msg=retry_msg)
+                username = password = appname = None
+            else:
+                username, password, appname = ret
+
+            if not dialog:
+                dialog = LoginDialog(_("Access Control"),
+                                     choose_applications)
+            if not ret or choose_applications:
+                ret = dialog.run(username, password, msg=retry_msg)
 
             # user cancelled (escaped) the login dialog
             if not ret:
