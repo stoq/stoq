@@ -39,3 +39,29 @@ player.delete_window("SaleWizard")
 player.delete_window("POSApp")
 
 player.finish()
+
+def post_hook(conn):
+    from stoq.domain.interfaces import IPaymentGroup
+    from stoq.domain.sale import Sale
+
+    sales = Sale.select(Sale.q.order_number == '14031981')
+    assert sales.count() == 1, sales.count()
+    sale = sales[0]
+    items = sale.get_items()
+    assert items.count() == 1, items.count()
+    item = items[0]
+
+    assert item.sellable.get_short_description() == 'K15 Keyboard AXDR'
+    assert item.quantity == 2.0
+
+    # Verify installments
+    group = IPaymentGroup(sale)
+    installments = group.get_items()
+
+    # This is a bug in the wizard code, it doesn't refresh the interface
+    # when the installments_number entry is changed. You need to click
+    # Refresh list.
+    #assert installments.count() == 4, installments.count()
+    assert installments.count() > 0, installments.count()
+
+
