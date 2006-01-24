@@ -30,7 +30,6 @@ gui/components/login.py:
 import gettext
 
 import gtk
-import gobject
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
 from kiwi.ui.widgets.list import Column
@@ -151,8 +150,6 @@ class LoginDialog(Delegate, RunnableView):
             self.notification_label.set_text(msg)
         self._initialize(username, password)
         self.show()
-        if username and password:
-            gobject.idle_add(self._do_login)
         gtk.main()
         return self.retval
 
