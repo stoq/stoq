@@ -283,7 +283,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('METHOD_MONEY', 
                                'payment.methods.PMAdaptToMoneyPM'),
                  ParameterAttr('DELIVERY_SERVICE', 
-                               'service.Service'),
+                               'service.ServiceAdaptToSellable'),
                  ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE', 
                                'giftcertificate.GiftCertificateType'),
                  ParameterAttr('CURRENT_WAREHOUSE', 
@@ -464,10 +464,10 @@ class ParameterAccess(ClassInittableObject):
 
         sellable_info = BaseSellableInfo(connection=self.conn, 
                                          description=_('Delivery'), price=0.0)
-        service.addFacet(ISellable, code='SD',
-                         base_sellable_info=sellable_info,
-                         connection=self.conn)
-        self.set_schema(key, service.id)
+        sellable = service.addFacet(ISellable, code='SD',
+                                    base_sellable_info=sellable_info,
+                                    connection=self.conn)
+        self.set_schema(key, sellable.id)
 
     def ensure_default_gift_certificate_type(self):
         """Creates a initial gift certificate that will be tied with return

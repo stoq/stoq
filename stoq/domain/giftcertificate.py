@@ -32,11 +32,12 @@ import gettext
 
 from sqlobject import StringCol, ForeignKey, BoolCol
 from kiwi.python import Settable
+from zope.interface import implements
 
 from stoq.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                   OnSaleInfo)
 from stoq.domain.base import Domain
-from stoq.domain.interfaces import ISellable
+from stoq.domain.interfaces import ISellable, IDescribable
 
 
 _ = gettext.gettext
@@ -50,6 +51,8 @@ class GiftCertificateType(Domain):
     """A gift certificate item represent a sale item with a special
     property: it can be used as a payment method for another sale.
     """
+    implements(IDescribable)
+
     is_active = BoolCol(default=True)
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')
@@ -60,6 +63,13 @@ class GiftCertificateType(Domain):
             if not 'on_sale_info' in kw:
                 kw['on_sale_info'] = OnSaleInfo(connection=conn)
         Domain._create(self, id, **kw)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.base_sellable_info.get_description()
 
     def get_status_string(self):
         if self.is_active:

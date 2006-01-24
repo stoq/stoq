@@ -486,3 +486,12 @@ class ITransporter(ConnInterface):
                                    'this transporter')
     freight_percentage = Attribute('The percentage amount of freight '
                                    'charged by this transporter')
+
+class IDescribable(ConnInterface):
+    """It defines that a object can be described through get_description
+    method.
+    """
+
+    def get_description():
+        """ Returns a description that identifies the object """
+

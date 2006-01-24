@@ -52,7 +52,8 @@ from stoq.domain.base import (Domain, InheritableModel,
                               InheritableModelAdapter)
 from stoq.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM, 
                                     IBillPM, IFinancePM, ICardPM, 
-                                    ICreditProvider, IActive, IOutPayment)
+                                    ICreditProvider, IActive, IOutPayment,
+                                    IDescribable)
 
 _ = gettext.gettext
 
@@ -158,14 +159,13 @@ class PaymentMethod(Domain):
     def get_total_by_date(self, start_date=None, end_date=None):
         raise NotImplementedError('This method must be implemented on child')
 
-
 #
 # Adapters for PaymentMethod class
 #
 
 
 class AbstractPaymentMethodAdapter(InheritableModelAdapter):
-    implements(IActive)
+    implements(IActive, IDescribable)
 
     description = None
 
@@ -178,6 +178,13 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     def inactivate(self):
         assert self.is_active, ('This provider is already inactive')
         self.is_active = False
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.description
 
     #
     # Auxiliar methods
