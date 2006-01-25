@@ -151,6 +151,7 @@ TABLES = [
                                             "ServiceAdaptToSellable",
                                             "ServiceSellableItem",
                                             "ServiceSellableItemAdaptToDelivery",
+                                            "DeliveryItem",
                                             )),
      ('stoq.domain.product',               ("Product",
                                             "ProductSupplierInfo", 
