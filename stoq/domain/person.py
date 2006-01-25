@@ -35,7 +35,7 @@ stoq/domain/person.py:
 import gettext
 import datetime
 
-from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol, 
+from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol,
                        ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import DatabaseInconsistency
@@ -52,8 +52,8 @@ from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
 _ = gettext.gettext
 
 
-# 
-# Base Domain Classes 
+#
+# Base Domain Classes
 #
 
 
@@ -61,7 +61,7 @@ class EmployeeRole(Domain):
     """Base class to store the employee roles."""
 
     implements(IDescribable)
-    
+
     name = StringCol(alternateID=True)
 
     #
@@ -74,13 +74,13 @@ class EmployeeRole(Domain):
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
-    """Work permit data for employees. 
-    
+    """Work permit data for employees.
+
     B{Important Attributes}:
         - I{pis_*}: is a reference to PIS ("Programa de Integração Social"),
                     that is a Brazil-specific information.
     """
-    
+
     number = StringCol(default=None)
     series_number = StringCol(default=None)
     pis_number = StringCol(default=None)
@@ -89,10 +89,10 @@ class WorkPermitData(Domain):
 
 
 class MilitaryData(Domain):
-    """ Military data for employees. This is Brazil-specific 
-    information. 
+    """ Military data for employees. This is Brazil-specific
+    information.
     """
-    
+
     number = StringCol(default=None)
     series_number = StringCol(default=None)
     category = StringCol(default=None)
@@ -100,7 +100,7 @@ class MilitaryData(Domain):
 
 class VoterData(Domain):
     """Voter data for employees. This is Brazil-specific information."""
-    
+
     number = StringCol(default=None)
     section = StringCol(default=None)
     zone = StringCol(default=None)
@@ -110,7 +110,7 @@ class CityLocation(Domain):
     """Base class to store the locations. Used to store a person's address
     or birth location.
     """
-    
+
     country = StringCol(default=None)
     city = StringCol(default=None)
     state = StringCol(default=None)
@@ -123,11 +123,11 @@ class Address(Domain):
     """Class to store person's addresses.
 
     B{Important Attributes}:
-       - I{is_main_address}: defines if this object stores information 
+       - I{is_main_address}: defines if this object stores information
                              for the main address
-  
+
     """
-    
+
     street = StringCol(default='')
     number = IntCol(default=None)
     district = StringCol(default='')
@@ -157,7 +157,7 @@ class Address(Domain):
 
 class Liaison(Domain):
     """Base class to store the person's contact informations."""
-    
+
     name = StringCol(default='')
     phone_number = StringCol(default='')
     person = ForeignKey('Person')
@@ -166,12 +166,12 @@ class Liaison(Domain):
 class Calls(Domain):
     """Person's calls information.
 
-    Calls are information associated to a person(Clients, suppliers, 
-    employees, etc) that can be financial problems registries, 
-    collection letters information, some problems with a product 
+    Calls are information associated to a person(Clients, suppliers,
+    employees, etc) that can be financial problems registries,
+    collection letters information, some problems with a product
     delivered, etc.
     """
-    
+
     date = DateTimeCol()
     message = StringCol()
     person = ForeignKey('Person')
@@ -184,7 +184,7 @@ class Person(Domain):
     """
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
-    
+
     name = StringCol()
     phone_number = StringCol(default='')
     mobile_number = StringCol(default='')
@@ -210,7 +210,7 @@ class Person(Domain):
             value = ''
         value = raw_phone_number(value)
         self._SO_set_mobile_number(value)
-    
+
     #
     # Acessors
     #
@@ -218,7 +218,7 @@ class Person(Domain):
     def get_main_address(self):
         if not self.addresses:
             return
-        address = [address for address in self.addresses 
+        address = [address for address in self.addresses
                               if address.is_main_address]
         if not address:
             msg = ('This person have addresses but none of them is a '
@@ -261,7 +261,7 @@ class Person(Domain):
     def facet_ICreditProvider_add(self, **kwargs):
         self.check_individual_or_company_facets()
         return PersonAdaptToCreditProvider(self, **kwargs)
-    
+
     def facet_IEmployee_add(self, **kwargs):
         individual = IIndividual(self)
         if not individual:
@@ -273,7 +273,7 @@ class Person(Domain):
     def facet_IUser_add(self, **kwargs):
         self.check_individual_or_company_facets()
         return PersonAdaptToUser(self, **kwargs)
-    
+
     def facet_IBranch_add(self, **kwargs):
         from stoq.domain.product import storables_set_branch
         company = ICompany(self)
@@ -295,20 +295,20 @@ class Person(Domain):
                 raise CannotAdapt(msg)
         return PersonAdaptToSalesPerson(self, **kwargs)
 
-# 
+#
 # Adapters
 #
 
 class PersonAdaptToIndividual(ModelAdapter):
-    """An individual facet of a person. 
-    
+    """An individual facet of a person.
+
     B{Important attributes}:
-        - I{rg_*}: Is a reference to RG ("Registro Geral"), this is 
+        - I{rg_*}: Is a reference to RG ("Registro Geral"), this is
                    Brazil-specific information.
         - I{cpf}: ("Cadastro de Pessoa Fisica"), this is a Brazil-specific
                   information.
     """
-    
+
     implements(IIndividual)
 
     (STATUS_SINGLE,
@@ -319,8 +319,8 @@ class PersonAdaptToIndividual(ModelAdapter):
     marital_statuses = {STATUS_SINGLE: _("Single"),
                         STATUS_MARRIED: _("Married"),
                         STATUS_DIVORCED: _("Divorced"),
-                        STATUS_WIDOWED: _("Widowed")}    
-    
+                        STATUS_WIDOWED: _("Widowed")}
+
     (GENDER_MALE,
      GENDER_FEMALE) = range(2)
 
@@ -344,21 +344,21 @@ class PersonAdaptToIndividual(ModelAdapter):
     #
 
     def get_marital_statuses(self):
-        return [(self.marital_statuses[i], i) 
+        return [(self.marital_statuses[i], i)
                 for i in self.marital_statuses.keys()]
-                    
+
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
-                    
+
 class PersonAdaptToCompany(ModelAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
-        - I{cnpj}: ("Cadastro Nacional de Pessoa Juridica"), this is 
+        - I{cnpj}: ("Cadastro Nacional de Pessoa Juridica"), this is
                    Brazil-specific information.
         - I{fancy_name}: Represents the fancy name of a company.
     """
-    
+
     implements(ICompany, IDescribable)
 
     # Cnpj and state_registry are
@@ -374,17 +374,17 @@ class PersonAdaptToCompany(ModelAdapter):
     def get_description(self):
         return self.get_adapted().name
 
-                    
+
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
 
 class PersonAdaptToClient(ModelAdapter):
     """A client facet of a person."""
-    
+
     implements(IClient, IActive)
-    
-    (STATUS_SOLVENT, 
-     STATUS_INDEBTED, 
+
+    (STATUS_SOLVENT,
+     STATUS_INDEBTED,
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
 
@@ -434,34 +434,34 @@ class PersonAdaptToClient(ModelAdapter):
         if extra_query:
             query = AND(query, extra_query)
         return cls.select(query, connection=conn)
-                    
+
 Person.registerFacet(PersonAdaptToClient, IClient)
 
 
 class PersonAdaptToSupplier(ModelAdapter):
-    """A supplier facet of a person. 
-    
+    """A supplier facet of a person.
+
     B{Notes}:
         - I{product_desc}: Basic description of the products of a supplier.
     """
-    
+
     implements(ISupplier, IDescribable)
 
-    (STATUS_ACTIVE, 
-     STATUS_INACTIVE, 
+    (STATUS_ACTIVE,
+     STATUS_INACTIVE,
      STATUS_BLOCKED) = range(3)
-    
+
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive'),
                 STATUS_BLOCKED:     _('Blocked')}
-    
+
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = StringCol(default='')
 
     #
     # Auxiliar methods
     #
-    
+
     @classmethod
     def get_active_suppliers(cls, conn):
         query = cls.q.status == cls.STATUS_ACTIVE
@@ -474,19 +474,19 @@ class PersonAdaptToSupplier(ModelAdapter):
     def get_description(self):
         return self.get_adapted().name
 
-                    
+
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
 
 class PersonAdaptToEmployee(ModelAdapter):
     """An employee facet of a person."""
-    
+
     implements(IEmployee)
 
-    (STATUS_NORMAL, 
-     STATUS_AWAY, 
-     STATUS_VACATION, 
-     STATUS_OFF) = range(4)      
+    (STATUS_NORMAL,
+     STATUS_AWAY,
+     STATUS_VACATION,
+     STATUS_OFF) = range(4)
 
     statuses = {STATUS_NORMAL: _('Normal'),
                 STATUS_AWAY: _('Away'),
@@ -526,17 +526,17 @@ class PersonAdaptToEmployee(ModelAdapter):
             raise DatabaseInconsistency('Invalid status for employee, '
                                         'got %d' % self.status)
         return self.statuses[self.status]
-                    
+
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 
 class PersonAdaptToUser(ModelAdapter):
     """An user facet of a person."""
-    
+
     implements(IUser, IActive)
-    
+
     (STATUS_ACTIVE,
-     STATUS_INACTIVE) = range(2) 
+     STATUS_INACTIVE) = range(2)
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive')}
 
@@ -561,13 +561,13 @@ class PersonAdaptToUser(ModelAdapter):
         if self.is_active:
             return _('Active')
         return _('Inactive')
-                    
+
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 
 class PersonAdaptToBranch(ModelAdapter):
     """A branch facet of a person."""
-    
+
     implements(IBranch, IActive, IDescribable)
 
     (STATUS_ACTIVE,
@@ -605,18 +605,18 @@ class PersonAdaptToBranch(ModelAdapter):
     #
     # Auxiliar methods
     #
-    
+
     @classmethod
     def get_active_branches(cls, conn):
         query = cls.q.is_active == True
         return cls.select(query, connection=conn)
-                    
+
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
 
 class PersonAdaptToBankBranch(ModelAdapter):
     """A bank branch facet of a person."""
-    
+
     implements(IBankBranch, IActive)
 
     is_active= BoolCol(default=True)
@@ -639,7 +639,7 @@ Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
 class PersonAdaptToCreditProvider(ModelAdapter):
     """A credit provider facet of a person."""
-    
+
     implements(ICreditProvider, IActive)
 
     (PROVIDER_CARD,
@@ -661,11 +661,11 @@ class PersonAdaptToCreditProvider(ModelAdapter):
     @classmethod
     def get_card_providers(cls, conn):
         return cls._get_providers(conn, cls.PROVIDER_CARD)
-        
+
     @classmethod
     def get_finance_companies(cls, conn):
         return cls._get_providers(conn, cls.PROVIDER_FINANCE)
-    
+
     #
     # IActive implementation
     #
@@ -717,12 +717,12 @@ class PersonAdaptToSalesPerson(ModelAdapter):
 
     implements(ISalesPerson, IActive)
 
-    (COMMISSION_GLOBAL, 
-     COMMISSION_BY_SALESPERSON, 
+    (COMMISSION_GLOBAL,
+     COMMISSION_BY_SALESPERSON,
      COMMISSION_BY_SELLABLE,
-     COMMISSION_BY_PAYMENT_METHOD, 
-     COMMISSION_BY_BASE_SELLABLE_CATEGORY, 
-     COMMISSION_BY_SELLABLE_CATEGORY, 
+     COMMISSION_BY_PAYMENT_METHOD,
+     COMMISSION_BY_BASE_SELLABLE_CATEGORY,
+     COMMISSION_BY_SELLABLE_CATEGORY,
      COMMISSION_BY_SALE_TOTAL) = range(7)
 
     comission_types = {COMMISSION_GLOBAL: _('Globally'),
@@ -766,13 +766,13 @@ class PersonAdaptToSalesPerson(ModelAdapter):
         if self.is_active:
             return _('Active')
         return _('Inactive')
-                    
+
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 
 class PersonAdaptToTransporter(ModelAdapter):
     """A transporter facet of a person."""
-    
+
     implements(ITransporter, IActive)
 
     is_active = BoolCol(default=True)
@@ -809,12 +809,12 @@ class PersonAdaptToTransporter(ModelAdapter):
 Person.registerFacet(PersonAdaptToTransporter, ITransporter)
 
 class LoginInfo:
-    """ This class is used by password editor only for validation of the 
+    """ This class is used by password editor only for validation of the
         fields.
     """
 
     PASSWORD_LEN = 6
-    
+
     current_password = None
     new_password = None
     confirm_password = None
