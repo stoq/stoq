@@ -148,7 +148,7 @@ class AdminApp(SearchableAppWindow):
         conn = new_transaction()
         model = run_person_role_dialog(UserEditor, self, conn)
         if finish_transaction(conn, model):
-            self.search_bar.search7_items()
+            self.searchbar.search_items()
             model = self.table.get(model.id, connection=self.conn)
             self.users.select(model)
         
