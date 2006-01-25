@@ -2044,7 +2044,7 @@ msgstr "País:"
 
 #: ../stoq/gui/slaves/glade/AddressSlave.glade.h:4
 msgid "District:"
-msgstr "Distrito:"
+msgstr "Bairro:"
 
 #: ../stoq/gui/slaves/glade/AddressSlave.glade.h:6
 msgid "Postal Code:"
