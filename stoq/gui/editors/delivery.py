@@ -41,9 +41,9 @@ from stoqlib.gui.dialogs import run_dialog
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.sellable import AbstractSellable
-from stoq.domain.service import ServiceSellableItem
+from stoq.domain.service import ServiceSellableItem, DeliveryItem
 from stoq.domain.sale import Sale
-from stoq.domain.interfaces import ISellable, IDelivery
+from stoq.domain.interfaces import IDelivery
 from stoq.gui.editors.sellable import SellableItemEditor
 
 _ = gettext.gettext
@@ -53,24 +53,26 @@ class DeliveryEditor(BaseEditor):
     model_name = _('Delivery')
     model_type = ServiceSellableItem
     gladefile = 'DeliveryEditor'
+    title = _('New Delivery')
     size = (600, 500)
 
     delivery_widgets = ('delivery_address',)
     sellableitem_widgets = ('price',
                             'delivery_date')
 
-    def __init__(self, conn, model, sale=None, products=None):
-        if not model:
-            self.title = _('New Delivery ')
-        else:
-            self.title = _('Edit Delivery')
+    def __init__(self, conn, sale=None, products=None):
         self.products = products
         self.sale = sale
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn)
         self.additional_info_label.set_size('small')
         self.additional_info_label.set_color('Red')
+        self.register_validate_function(self._validate_widgets)
         self.update_widgets()
 
+    def _validate_widgets(self, validation_value):
+        if not self.delivery.get_items().count():
+            validation_value = False
+        self.refresh_ok(validation_value)
 
     def set_widgets_format(self):
         self.price.set_data_format(get_price_format_str())
@@ -99,6 +101,15 @@ class DeliveryEditor(BaseEditor):
             raise TypeError("The client "%r" doesn't have a main "
                             "address" % self.sale.client)
 
+    def _create_delivery_items(self):
+        delivery_items = []
+        for product in self.products:
+            if product.has_been_totally_delivered():
+                continue
+            item = self.delivery.add_item(product)
+            delivery_items.append(item)
+        self.delivery_items = delivery_items
+
     #
     # Callbacks
     #
@@ -106,6 +117,7 @@ class DeliveryEditor(BaseEditor):
     def before_delete_items(self, slave, items):
         delivery = IDelivery(self.model, connection=self.conn)
         delivery.remove_items(items)
+        self.force_validation()
 
     def on_change_address_button__clicked(self, button):
         cols = [Column('address_string', title=_('Address'), data_type=str, 
@@ -143,14 +155,15 @@ class DeliveryEditor(BaseEditor):
         sale = Sale.get(self.sale.id, connection=conn)
         service = sysparam(conn).DELIVERY_SERVICE
         model = service.add_sellable_item(sale)
-        delivery = model.addFacet(IDelivery, connection=conn)
-        map(delivery.add_item, self.products)
+        self.delivery = model.addFacet(IDelivery, connection=conn)
+        self._create_delivery_items()
+
         main_address = sale.client.get_adapted().get_main_address()
         address_string = ("%s - %s/%s" 
                           % (main_address.get_address_string(),
                              main_address.get_city(), 
                              main_address.get_state()))
-        delivery.delivery_address = address_string
+        self.delivery.delivery_address = address_string
         return model
 
     def setup_proxies(self):
@@ -174,16 +187,17 @@ class DeliveryEditor(BaseEditor):
         items = delivery.get_items()
         self.slave = AdditionListSlave(self.conn, columns,
                                        SellableItemEditor, items)
+        self.slave.register_editor_kwargs(model_type=DeliveryItem,
+                                          restrict_increase_qty=True)
         self.slave.hide_add_button()
         self.slave.connect('before-delete-items', self.before_delete_items)
         self.attach_slave('addition_list_holder', self.slave)
 
     def on_cancel(self):
-        if not self.edit_mode:
-            delivery = IDelivery(self.model, connection=self.conn)
-            for item in delivery.get_items():
-                item.unset_delivery_data()
-            table = type(delivery)
-            table.delete(delivery.id, connection=self.conn)
-            self.model_type.delete(self.model.id, connection=self.conn)
+        delivery = IDelivery(self.model, connection=self.conn)
+        delivery.remove_items(delivery.get_items())
+        table = type(delivery)
+        table.delete(delivery.id, connection=self.conn)
+        self.model_type.delete(self.model.id, connection=self.conn)
         return BaseEditor.on_cancel(self)
+

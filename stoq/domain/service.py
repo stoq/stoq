@@ -30,9 +30,11 @@ stoq/domain/service.py:
 """
 
 import gettext
+import datetime
 
-from stoqlib.exceptions import SellError
-from sqlobject import StringCol, DateTimeCol
+from stoqlib.exceptions import SellError, DatabaseInconsistency
+from sqlobject import StringCol, DateTimeCol, FloatCol, ForeignKey
+from kiwi.argcheck import argcheck
 from zope.interface import implements
 
 from stoq.domain.base import Domain, ModelAdapter
@@ -59,7 +61,7 @@ class ServiceSellableItem(AbstractSellableItem):
     """A service implementation as a sellable item."""
 
     notes = StringCol(default=None)
-    estimated_fix_date = DateTimeCol(default=None)
+    estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
     completion_date = DateTimeCol(default=None)
     
     
@@ -74,6 +76,22 @@ class ServiceSellableItem(AbstractSellableItem):
             msg = '%s is already sold' % self.get_adapted()
             raise SellError(msg)
 
+class DeliveryItem(Domain):
+    """Class responsible to store all the products for a certain delivery"""
+    
+    quantity = FloatCol()
+    sellable = ForeignKey('AbstractSellable')
+    delivery = ForeignKey('ServiceSellableItemAdaptToDelivery')
+
+    #
+    # Accessors
+    #
+
+    def get_price(self):
+        return self.sellable.get_price()
+
+    def get_total(self):
+        return self.get_price() * self.quantity
 
 #
 # Adapters
@@ -95,15 +113,43 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
         if not isinstance(item, ProductSellableItem):
             raise TypeError("Received a %s object, expected %s." 
                             % (type(item), ProductSellableItem))
-        item.delivery_data = self
+
+        conn = self.get_connection()
+        obj = item.sellable
+        sellable = type(obj).get(obj.id, connection=conn)
+        quantity = item.quantity - item.get_quantity_delivered()
+        return DeliveryItem(connection=conn, sellable=sellable, 
+                            delivery=self, quantity=quantity)
 
     def get_items(self):
-        return ProductSellableItem.selectBy(connection=self.get_connection(),
-                                            delivery_dataID=self.id)
+        return DeliveryItem.selectBy(connection=self.get_connection(),
+                                     deliveryID=self.id)
 
     def remove_items(self, items):
         for item in items:
-            item.delivery_data = None
+            if not isinstance(item, DeliveryItem):
+                raise TypeError('Invalid type for delivery item, it should '
+                                'be DeliveryItem, got %s instead' 
+                                % type(item))
+            conn = item.get_connection()
+            DeliveryItem.delete(item.id, connection=conn)
+
+    #
+    # General methods
+    #
+
+    @argcheck(AbstractSellable)
+    def get_item_by_sellable(self, sellable):
+        items = [item for item in self.get_items() 
+                    if item.sellable.id == sellable.id]
+        qty = len(items)
+        if not qty:
+            return
+        if qty > 1:
+            raise DatabaseInconsistency('You should have only one item for '
+                                        'this sellable, fot %d instead' 
+                                        % qty)
+        return items[0]
 
 ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery,
                                   IDelivery)

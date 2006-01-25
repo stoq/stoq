@@ -44,6 +44,7 @@ from stoq.domain.interfaces import ISellable, IStorable
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.giftcertificate import GiftCertificateItem
 from stoq.domain.purchase import PurchaseItem
+from stoq.domain.service import DeliveryItem
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
@@ -308,14 +309,18 @@ class SellableItemEditor(BaseEditor):
                      'total_label')
     model_names = {ProductSellableItem: _('Product Item'),
                    GiftCertificateItem: _('Gift Certificate'),
+                   DeliveryItem: _('Delivery Item'),
                    PurchaseItem: _('Gift Certificate')}
 
     def __init__(self, conn, model_type=ProductSellableItem, model=None,
-                 value_attr=None):
+                 value_attr=None, restrict_increase_qty=False):
         self.model_name = self._get_model_name(model_type)
         self.model_type = model_type
         self.value_attr = value_attr
         BaseEditor.__init__(self, conn, model)
+        if restrict_increase_qty:
+            quantity = self.model.quantity
+            self.quantity.set_range(1, self.model.quantity)
 
     def _get_model_name(self, model_type):
         if not self.model_names.has_key(model_type):

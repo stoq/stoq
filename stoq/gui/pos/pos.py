@@ -37,13 +37,14 @@ from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
-from stoqlib.database import rollback_and_begin
+from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
 
 from stoq.gui.application import AppWindow
 from stoq.lib.validators import format_quantity, get_price_format_str
+from stoq.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
@@ -52,7 +53,7 @@ from stoq.domain.service import ServiceSellableItem
 from stoq.domain.product import ProductSellableItem
 from stoq.domain.person import Person
 from stoq.domain.till import get_current_till_operation
-from stoq.domain.interfaces import ISellable, IClient
+from stoq.domain.interfaces import ISellable, IClient, IDelivery
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor
@@ -104,6 +105,12 @@ class POSApp(AppWindow):
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
+        if isinstance(item, ServiceSellableItem):
+            delivery = IDelivery(item, connection=self.conn)
+            if delivery:
+                delivery.remove_items(delivery.get_items())
+                table = type(delivery)
+                table.delete(delivery.id, connection=self.conn)
         table = type(item)
         table.delete(item.id, connection=self.conn)
 
@@ -424,15 +431,23 @@ class POSApp(AppWindow):
             return
         products = [obj for obj in self.sellables
                         if isinstance(obj, ProductSellableItem)
-                           and obj.delivery_data is None]
+                           and not obj.has_been_totally_delivered()]
         if not products:
             notify_dialog(_("All the products already have delivery "
                             "instructions"), _("Error"))
             return
-        service = self.run_dialog(DeliveryEditor, self.conn, None, 
-                                  self.sale, products)
-        if not service:
+
+        # We must commit now since we would like to have some of the
+        # instances created in self.conn in a new transaction
+        self.conn.commit()
+        conn = new_transaction()
+        service = self.run_dialog(DeliveryEditor, conn, self.sale, 
+                                  products)
+        if not finish_transaction(conn, service):
             return
+        # Synchronize self.conn and bring the new delivery instances to it
+        self.conn.commit()
+        service = type(service).get(service.id, connection=self.conn)
         self.sellables.append(service)
         self.sellables.select(service)
         self._coupon_add_item(service)

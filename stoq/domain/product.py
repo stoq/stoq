@@ -39,8 +39,10 @@ from stoq.domain.sellable import (AbstractSellable,
                                   AbstractSellableItem)
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
-from stoq.domain.interfaces import ISellable, IStorable, IContainer
+from stoq.domain.interfaces import (ISellable, IStorable, IContainer,
+                                    IDelivery)
 from stoq.lib.parameters import sysparam
+from stoq.lib.validators import compare_float_numbers
 
 _ = gettext.gettext
 
@@ -143,9 +145,6 @@ class ProductSellableItem(AbstractSellableItem):
 
     implements(IContainer)
 
-    delivery_data = ForeignKey('ServiceSellableItemAdaptToDelivery',
-                               default=None)
-
     #
     # IContainer implementation
     #
@@ -210,8 +209,34 @@ class ProductSellableItem(AbstractSellableItem):
             sellable_item.set_sold()
 
     #
-    # Auxiliary methods
+    # General methods
     #            
+
+    def get_quantity_delivered(self):
+        # Avoiding circular imports here
+        from stoq.domain.service import ServiceSellableItem
+        conn = self.get_connection()
+        q1 = AbstractSellableItem.q.saleID == self.sale.id
+        q2 = AbstractSellableItem.q.id == ServiceSellableItem.q.id
+        query = AND(q1, q2)
+        services = AbstractSellableItem.select(query, connection=conn)
+        if not services.count():
+            return 0.0
+        delivered_qty = 0
+        for service in services:
+            delivery = IDelivery(service, connection=conn)
+            if not delivery:
+                continue
+            item = delivery.get_item_by_sellable(self.sellable)
+            if not item:
+                continue
+            delivered_qty += item.quantity
+        return delivered_qty
+
+    def has_been_totally_delivered(self):
+        return compare_float_numbers(self.get_quantity_delivered(),
+                                     self.quantity)
+
 
     def add_stock_reference(self, branch, quantity=0.0, 
                             logic_quantity=0.0):
@@ -220,8 +245,6 @@ class ProductSellableItem(AbstractSellableItem):
                                      logic_quantity=logic_quantity, 
                                      branch=branch, product_item=self)
 
-    def unset_delivery_data(self):
-        self.delivery_data = None
 
 class ProductStockItem(AbstractStockItem):
     """Class that makes a reference to the product stock of a 
