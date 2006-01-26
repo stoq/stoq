@@ -22,7 +22,7 @@
 ##
 """
 stoq/domain/product.py:
-    
+
     Base classes to manage product's informations
 """
 
@@ -35,7 +35,7 @@ from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoq.domain.base import Domain, ModelAdapter
-from stoq.domain.sellable import (AbstractSellable, 
+from stoq.domain.sellable import (AbstractSellable,
                                   AbstractSellableItem)
 from stoq.domain.person import PersonAdaptToBranch
 from stoq.domain.stock import AbstractStockItem
@@ -53,23 +53,23 @@ _ = gettext.gettext
 
 
 class ProductSupplierInfo(Domain):
-    """This class store information of the suppliers of a product. 
+    """This class store information of the suppliers of a product.
     Each product can has more than one supplier.
 
-    B{Important attributes}: 
-        - I{is_main_supplier}: defines if this object stores information 
+    B{Important attributes}:
+        - I{is_main_supplier}: defines if this object stores information
                                for the main supplier.
-        - I{base_cost}: the cost which helps the purchaser to define the 
-                        main cost of a certain product. Each product can 
-                        have multiple suppliers and for each supplier a 
-                        base_cost is available. The purchaser in this case 
-                        must decide how to define the main cost based in 
+        - I{base_cost}: the cost which helps the purchaser to define the
+                        main cost of a certain product. Each product can
+                        have multiple suppliers and for each supplier a
+                        base_cost is available. The purchaser in this case
+                        must decide how to define the main cost based in
                         the base cost avarage of all suppliers.
-        - I(icms): a Brazil-specific attribute that means 
+        - I(icms): a Brazil-specific attribute that means
                    'Imposto sobre circulacao de mercadorias e prestacao '
                    'de servicos'
     """
-    
+
     base_cost = FloatCol(default=0.0)
     notes = StringCol(default='')
     is_main_supplier = BoolCol(default=False)
@@ -91,31 +91,31 @@ class ProductSupplierInfo(Domain):
 
 class Product(Domain):
     """Class responsible to store basic products informations."""
-    
+
     notes = StringCol(default='')
     suppliers = MultipleJoin('ProductSupplierInfo')
 
     #
     # Facet hooks
     #
-    
+
     def facet_IStorable_add(self, **kwargs):
         storable = ProductAdaptToStorable(self, **kwargs)
         storable.fill_stocks()
         return storable
 
-    #   
+    #
     # Acessors
-    #   
-        
+    #
+
     def get_main_supplier_name(self):
         supplier_info = self.get_main_supplier_info()
         return supplier_info.get_name()
-        
+
     def get_main_supplier_info(self):
         if not self.suppliers:
             return
-        supplier_data = [supplier_info for supplier_info in self.suppliers 
+        supplier_data = [supplier_info for supplier_info in self.suppliers
                                         if supplier_info.is_main_supplier]
         assert not len(supplier_data) > 1
         return supplier_data[0]
@@ -123,14 +123,14 @@ class Product(Domain):
 
 class ProductStockReference(Domain):
     """Stock informations for products.
-    
+
     B{Important attributes}:
         - I{logic_quantity}: Represents the current quantity of a product
-                             in the warehouse reserved for this store. 
-                             For example: you can have decentralized 
+                             in the warehouse reserved for this store.
+                             For example: you can have decentralized
                              servers, in this case the quantity of the
                              product in the stock will be shared between the
-                             stores, or a centralized server wich contains 
+                             stores, or a centralized server wich contains
                              all the product.
     """
 
@@ -152,7 +152,7 @@ class ProductSellableItem(AbstractSellableItem):
     def add_item(self, item):
         raise NotImplementedError('This method should be replaced by '
                                   'add_stock_reference')
-        
+
     def get_items(self):
         conn = self.get_connection()
         return ProductStockReference.selectBy(connection=conn,
@@ -168,11 +168,11 @@ class ProductSellableItem(AbstractSellableItem):
     #
     # Basic methods
     #
-    
+
     def sell(self, conn, branch, order_product=False):
         sparam = sysparam(conn)
-        if not (branch and 
-                branch.id == sparam.CURRENT_BRANCH.id or 
+        if not (branch and
+                branch.id == sparam.CURRENT_BRANCH.id or
                 branch.id == sparam.CURRENT_WAREHOUSE.id):
             msg = ("Stock still doesn't support sales for "
                    "branch companies different than the "
@@ -182,14 +182,14 @@ class ProductSellableItem(AbstractSellableItem):
         if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
             msg = _("This company doesn't allow order products")
             raise SellError(msg)
-        
+
         adapted = self.get_adapted()
         sellable_item = ISellable(adapted)
         sellable_item.setConnection(conn)
         if not sellable_item.can_be_sold():
             msg = '%s is already sold' % adapted
             raise SellError(msg)
-            
+
         if order_product:
             # If order_product is True we will not update the stock for this
             # product
@@ -210,7 +210,7 @@ class ProductSellableItem(AbstractSellableItem):
 
     #
     # General methods
-    #            
+    #
 
     def get_quantity_delivered(self):
         # Avoiding circular imports here
@@ -238,16 +238,16 @@ class ProductSellableItem(AbstractSellableItem):
                                      self.quantity)
 
 
-    def add_stock_reference(self, branch, quantity=0.0, 
+    def add_stock_reference(self, branch, quantity=0.0,
                             logic_quantity=0.0):
         conn = self.get_connection()
-        return ProductStockReference(connection=conn, quantity=quantity, 
-                                     logic_quantity=logic_quantity, 
+        return ProductStockReference(connection=conn, quantity=quantity,
+                                     logic_quantity=logic_quantity,
                                      branch=branch, product_item=self)
 
 
 class ProductStockItem(AbstractStockItem):
-    """Class that makes a reference to the product stock of a 
+    """Class that makes a reference to the product stock of a
     certain branch company."""
 
     storable = ForeignKey('ProductAdaptToStorable')
@@ -269,7 +269,7 @@ Product.registerFacet(ProductAdaptToSellable, ISellable)
 
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
-    
+
     implements(IStorable, IContainer)
 
     def __init__(self, _original=None, *args, **kwargs):
@@ -331,7 +331,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def decrease_stock(self, quantity, branch=None):
         if not self._has_qty_available(quantity, branch):
-            # Of course that here we must use the logic quantity balance 
+            # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
             logic_qty = self.get_logic_balance(branch)
             balance = self.get_full_balance(branch) - logic_qty
@@ -411,7 +411,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     #
     # Auxiliary methods
-    #            
+    #
 
     def _check_logic_quantity(self):
         if not sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
