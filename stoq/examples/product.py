@@ -50,33 +50,33 @@ MAX_PRODUCT_NUMBER = 4
 PRICE_RANGE = 100, 200
 QUANTITY_RANGE = 1, 50
 COST_RANGE = 1, 99
-    
+
 MARKUP_RANGE = 30, 80
 COMMISION_RANGE = 1, 40
-    
+
 
 def get_commission_and_markup():
     commission = round(random.uniform(*COMMISION_RANGE), 2)
     markup = round(random.uniform(*MARKUP_RANGE), 2)
     return commission, markup
-    
+
 def create_products():
     print_msg('Creating products...', break_line=False)
     conn = new_transaction()
 
-    base_category_data= ['Keyboard', 
-                         'Mouse', 
-                         'Monitor', 
+    base_category_data= ['Keyboard',
+                         'Mouse',
+                         'Monitor',
                          'Processor']
 
-    category_data = ['Generic', 
-                     'Optical', 
-                     'LCD', 
+    category_data = ['Generic',
+                     'Optical',
+                     'LCD',
                      'AMD Durom']
 
-    codes = ['K15', 'M73', 'M025', 'P83'] 
+    codes = ['K15', 'M73', 'M025', 'P83']
 
-    descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG', 
+    descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG',
                     'Monitor LCD SXDF', 'Processor AMD Durom 1.2Ghz']
 
     supplier_table = Person.getAdapterClass(ISupplier)
@@ -98,9 +98,9 @@ def create_products():
         supplier = suppliers[index]
         supplier_info = ProductSupplierInfo(connection=conn,
                                             supplier=supplier,
-                                            is_main_supplier=True, 
+                                            is_main_supplier=True,
                                             product=product_obj)
-        
+
         base_cat_desc = base_category_data[index]
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
@@ -111,7 +111,7 @@ def create_products():
         base_cat = BaseSellableCategory(connection=conn,
                                         category_data=abstract_data)
 
-        cat_desc = category_data[index] 
+        cat_desc = category_data[index]
         commission, markup = get_commission_and_markup()
         table = AbstractSellableCategory
         abstract_data = table(connection=conn, description=cat_desc,
@@ -121,18 +121,18 @@ def create_products():
         cat = SellableCategory(connection=conn,
                                base_category=base_cat,
                                category_data=abstract_data)
-    
+
         description = descriptions[index]
         price = random.randrange(*PRICE_RANGE)
-        sellable_info = BaseSellableInfo(connection=conn, 
-                                         description=description, 
+        sellable_info = BaseSellableInfo(connection=conn,
+                                         description=description,
                                          price=price)
-        
+
         cost = random.randrange(*COST_RANGE)
         code = codes[index]
         unit = units[index]
 
-        product_obj.addFacet(ISellable, connection=conn, category=cat, 
+        product_obj.addFacet(ISellable, connection=conn, category=cat,
                              code=code, cost=cost, unit=unit,
                              base_sellable_info=sellable_info)
 
@@ -143,7 +143,7 @@ def create_products():
             stock_item.quantity = random.randint(*QUANTITY_RANGE)
             stock_item.stock_cost = random.randrange(*COST_RANGE)
             stock_item.logic_quantity = stock_item.quantity * 2
-        
+
     conn.commit()
     print_msg('done.')
 
