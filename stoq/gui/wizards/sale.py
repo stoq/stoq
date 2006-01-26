@@ -594,8 +594,7 @@ class SalesPersonStep(BaseWizardStep):
             self.proxy.update(field_name)
 
     def setup_combo(self):
-        table = Person.getAdapterClass(ISalesPerson)
-        salespersons = table.select(connection=self.conn)
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.get_adapted().name, s) for s in salespersons]
         self.salesperson_combo.prefill(items)
 

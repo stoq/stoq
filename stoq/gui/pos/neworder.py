@@ -62,8 +62,7 @@ class NewOrderEditor(BaseEditor):
         # Waiting for bug 2319
         self.details_button.set_sensitive(False)
         self._setup_client_entry()
-        salesperson_table = Person.getAdapterClass(ISalesPerson)
-        salespersons = salesperson_table.select(connection=self.conn)
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
         items = [(s.get_adapted().name, s) for s in salespersons]
         self.salesperson.prefill(items)
         self._update_client_widgets()

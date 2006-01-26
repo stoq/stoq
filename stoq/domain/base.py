@@ -341,6 +341,30 @@ class Domain(BaseDomain, Adaptable):
         BaseDomain.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
 
+    @classmethod
+    def iselect(cls, iface, *args, **kwargs):
+        """
+        Like select, but search on the adapter implementing the interface iface
+        associated with the domain class cls.
+
+        @param iface: interface
+        @returns: a SQLObject search result
+        """
+        adapter = cls.getAdapterClass(iface)
+        return adapter.select(*args, **kwargs)
+
+    @classmethod
+    def iget(self, iface, object_id, **kwargs):
+        """
+        Like get, but gets on the adapter implementing the interface iface
+        associated with the domain class cls.
+
+        @param iface: interface
+        @param object_id: id of object
+        @returns: the SQLObject
+        """
+        adapter = cls.getAdapterClass(iface)
+        return adapter.get(object_id, **kwargs)
 
 class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other

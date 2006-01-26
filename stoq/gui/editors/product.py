@@ -39,10 +39,10 @@ from stoqlib.gui.lists import SimpleListDialog
 from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.dialogs import run_dialog
 
-from stoq.domain.person import PersonAdaptToSupplier
+from stoq.domain.person import Person
 from stoq.domain.sellable import BaseSellableInfo
 from stoq.domain.product import ProductSupplierInfo, Product
-from stoq.domain.interfaces import ISellable, IStorable
+from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.lib.validators import get_price_format_str
 from stoq.lib.parameters import sysparam
@@ -111,8 +111,7 @@ class ProductSupplierEditor(BaseEditor):
         self.icms.set_data_format(get_price_format_str())
 
     def setup_combos(self):
-        table = PersonAdaptToSupplier
-        supplier_list = table.select(connection=self.conn)
+        supplier_list = Person.iselect(ISupplier, connection=self.conn)
         items = [(obj.get_adapted().name, obj) for obj in supplier_list]
 
         assert items, ("There is no suppliers in database!")
