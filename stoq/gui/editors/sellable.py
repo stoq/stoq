@@ -239,8 +239,7 @@ class SellableEditor(BaseEditor):
         return sellable.base_sellable_info.description
 
     def setup_combos(self):
-        table = SellableCategory
-        category_list = table.select(connection=self.conn)
+        category_list = SellableCategory.select(connection=self.conn)
         items = [('%s %s' % (obj.base_category.category_data.description, 
                              obj.category_data.description), obj)
                  for obj in category_list]
