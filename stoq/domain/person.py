@@ -314,12 +314,16 @@ class PersonAdaptToIndividual(ModelAdapter):
     (STATUS_SINGLE,
      STATUS_MARRIED,
      STATUS_DIVORCED,
-     STATUS_WIDOWED) = range(4)
+     STATUS_WIDOWED,
+     STATUS_SEPARATED,
+     STATUS_COHABITATION) = range(6)
 
     marital_statuses = {STATUS_SINGLE: _("Single"),
                         STATUS_MARRIED: _("Married"),
                         STATUS_DIVORCED: _("Divorced"),
-                        STATUS_WIDOWED: _("Widowed")}
+                        STATUS_WIDOWED: _("Widowed"),
+                        STATUS_SEPARATED: _('Separated'),
+                        STATUS_COHABITATION: _('Cohabitation')}
 
     (GENDER_MALE,
      GENDER_FEMALE) = range(2)
