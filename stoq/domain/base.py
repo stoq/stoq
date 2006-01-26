@@ -22,7 +22,7 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##                  Johan Dahlin                <jdahlin@async.com.br>
-##              
+##
 """
 stoq/domain/base.py:
 
@@ -122,7 +122,7 @@ class AbstractModel:
         columns = self.sqlmeta.columnList
 
         if issubclass(klass, InheritableSQLObject):
-            # This is an InheritableSQLObject object and we also 
+            # This is an InheritableSQLObject object and we also
             # need to copy data from the parent.
             # XXX SQLObject should provide a get_parent method.
             columns += self._parentClass.sqlmeta.columnList
@@ -176,19 +176,19 @@ class Adaptable:
             if connection:
                 adapter._connection = connection
             return adapter
-            
+
         adapterClass = self._facets.get(k)
         if adapterClass:
             query = adapterClass.q._originalID == self.id
             results = adapterClass.select(query,
                                           connection=connection)
-            
-            assert not results.count() > 1 
+
+            assert not results.count() > 1
             if results.count() == 1:
                 adapter = results[0]
                 self._adapterCache[k] = adapter
         return adapter
-        
+
     def addFacet(self, iface, *args, **kwargs):
         if isinstance(self, Adapter):
             raise TypeError("An adapter can not be adapted to another "
@@ -202,7 +202,7 @@ class Adaptable:
                                (self.__class__.__name__, iface.__name__))
 
         facets = self.__class__._facets
-        
+
         funcName = 'facet_%s_add' % iface.__name__
         func = getattr(self, funcName, None)
         if func:
@@ -216,8 +216,8 @@ class Adaptable:
                                iface))
         if adapter:
             self._adapterCache[k] = adapter
-            
-        return adapter 
+
+        return adapter
 
     def removeFacet(self, iface, *args, **kwargs):
         """
@@ -230,7 +230,7 @@ class Adaptable:
         if not iface in facets:
             raise AdapterError('%s does not have a facet for interface %s' %
                                (self.__class__.__name__, iface.__name__))
-        
+
         funcName = 'facet_%s_remove' % iface.__name__
         func = getattr(self, funcName, None)
         if func:
@@ -245,10 +245,10 @@ class Adaptable:
     def registerFacet(cls, facet, *ifaces):
         """
         Registers a facet for class cls.
-        
+
         The 'facet' argument is an adapter class which will be registered
         using its interfaces specified in __implements__ argument.
-        Unless it already exists in the facet, a foreign key with the name 
+        Unless it already exists in the facet, a foreign key with the name
         '_original' will be assigned.
 
         Notes: the assigned key will have the name of the class cls.
@@ -295,17 +295,17 @@ class ConnMetaInterface(MetaInterface):
     def __call__(self, adaptable, persist=None,
                  registry=None, connection=None):
         """
-        Try to adapt `adaptable' to self; return `default' if it 
+        Try to adapt `adaptable' to self; return `default' if it
         was passed, otherwise raise L{CannotAdapt}.
         """
         if not isinstance(adaptable, (Domain, InheritableModel)):
             raise TypeError('Adaptable argument must be of type Domain '
-                            'or InheritableModel, got %s instead' 
+                            'or InheritableModel, got %s instead'
                             % type(adaptable))
         default = _Nothing
         registry = getRegistry()
         # should this be `implements' of some kind?
-        if ((persist is None or persist) 
+        if ((persist is None or persist)
             and hasattr(adaptable, '_getComponent')):
             adapter = adaptable._getComponent(self, registry,
                                               connection=connection)
@@ -356,7 +356,7 @@ class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
 #
 
 class ModelAdapter(BaseDomain, Adapter):
-        
+
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
         BaseDomain.__init__(self, *args, **kwargs)
@@ -379,9 +379,9 @@ for klass in (InheritableModel, Domain, ModelAdapter):
                                         default=datetime.datetime.now))
     klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                                     forceDBName=True))
-    # FIXME Waiting for SQLObject bug fix. Select method doesn't work 
+    # FIXME Waiting for SQLObject bug fix. Select method doesn't work
     # properly with parent tables for inherited tables. E.g:
-    # list(AbstractSellable.select()) = list of AbstractSellable 
+    # list(AbstractSellable.select()) = list of AbstractSellable
     # objects instead child table objects.
     # lazyUpdate = True
 
