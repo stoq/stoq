@@ -205,6 +205,12 @@ class Person(Domain):
         value = raw_phone_number(value)
         self._SO_set_phone_number(value)
 
+    def _set_fax_number(self, value):
+        if value is None:
+            value = ''
+        value = raw_phone_number(value)
+        self._SO_set_fax_number(value)
+
     def _set_mobile_number(self, value):
         if value is None:
             value = ''
