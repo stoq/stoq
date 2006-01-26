@@ -354,7 +354,7 @@ class Domain(BaseDomain, Adaptable):
         return adapter.select(*args, **kwargs)
 
     @classmethod
-    def iget(self, iface, object_id, **kwargs):
+    def iget(cls, iface, object_id, **kwargs):
         """
         Like get, but gets on the adapter implementing the interface iface
         associated with the domain class cls.
