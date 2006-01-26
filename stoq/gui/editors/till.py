@@ -263,9 +263,8 @@ class CashAdvanceEditor(BaseEditor):
         self._setup_size_group(self.label_size_group, 
                                self.cash_slave.label_widgets,
                                self.cash_slave)
-        employees_table = Person.getAdapterClass(IEmployee)
-        employees = [(p.get_adapted().name, p) for p in
-                          employees_table.select(connection=self.conn)]
+        employees = [(p.get_adapted().name, p) 
+                     for p in Person.iselect(IEmployee, connection=self.conn)]
         self.employee_combo.prefill(employees)
         self.employee_combo.set_active(0)
         
@@ -310,8 +309,8 @@ class CashInEditor(BaseEditor):
  
     def setup_slaves(self):
         current_till = get_current_till_operation(self.conn)
-        branch_table = Person.getAdapterClass(IBranch)
-        branch = branch_table.get(current_till.branch.id, connection=self.conn)
+        branch = Person.iget(IBranch, current_till.branch.id, 
+                             connection=self.conn)
         branch_name = branch.get_adapted().name 
         payment_description = (_('Cash in for branch: %s') %
                                branch_name)

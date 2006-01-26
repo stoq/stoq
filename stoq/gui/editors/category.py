@@ -85,8 +85,7 @@ class SellableCategoryEditor(BaseEditor):
         return model.get_description()
 
     def setup_combo(self):
-        table = BaseSellableCategory
-        base_category_list = table.select(connection=self.conn)
+        base_category_list = BaseSellableCategory.select(connection=self.conn)
         items = [(base_cat.category_data.description, base_cat)
                  for base_cat in base_category_list]
         self.base_category.prefill(items)

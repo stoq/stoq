@@ -75,9 +75,8 @@ class WarehouseApp(SearchableAppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
 
     def get_filter_slave_items(self):
-        table = Person.getAdapterClass(IBranch)
         items = [(o.get_adapted().name, o) 
-                  for o in table.select(connection=self.conn)]
+                  for o in Person.iselect(IBranch, connection=self.conn)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'

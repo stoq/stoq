@@ -224,8 +224,7 @@ class ReceivingOrderWizard(BaseWizard):
 
     def _create_model(self, conn):
         current_user = get_current_user()
-        table = Person.getAdapterClass(IUser)
-        current_user = table.get(current_user.id, connection=conn)
+        current_user = Person.iget(IUser, current_user.id, connection=conn)
         branch = sysparam(conn).CURRENT_BRANCH
         return ReceivingOrder(responsible=current_user, supplier=None,
                               branch=branch, connection=conn)

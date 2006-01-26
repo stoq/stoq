@@ -174,7 +174,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def on_username__validate(self, widget, value):
         user_table = Person.getAdapterClass(IUser)
         query = func.UPPER(user_table.q.username) == value.upper()
-        users = user_table.select(query, connection=self.conn)
+        users = Person.iselect(IUser, query, connection=self.conn)
         users_count = users.count()
         if not users_count:
             return
