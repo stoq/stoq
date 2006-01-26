@@ -189,7 +189,7 @@ class AbstractSellable(InheritableModelAdapter):
      STATUS_SOLD,
      STATUS_CLOSED,
      STATUS_BLOCKED) = range(4)
-    
+
 
     statuses = {STATUS_AVAILABLE: _("Available"),
                 STATUS_SOLD: _("Sold"),
@@ -262,7 +262,7 @@ class AbstractSellable(InheritableModelAdapter):
         return self.base_sellable_info.price
 
     def add_sellable_item(self, sale, quantity=1.0, price=None, **kwargs):
-        """Add a new sellable item instance tied to the current 
+        """Add a new sellable item instance tied to the current
         sellable object
         """
         if not self.sellableitem_table:
@@ -303,7 +303,7 @@ class AbstractSellable(InheritableModelAdapter):
         return self.statuses[self.status]
 
     def get_suggested_markup(self):
-        return self.category and self.category.get_markup() 
+        return self.category and self.category.get_markup()
 
     #
     # Classmethods
@@ -318,8 +318,8 @@ class AbstractSellable(InheritableModelAdapter):
 
     @classmethod
     def get_available_sellables(cls, conn):
-        """Returns sellable objects which can be added in a sale. By 
-        default a delivery sellable can not be added manually by users 
+        """Returns sellable objects which can be added in a sale. By
+        default a delivery sellable can not be added manually by users
         since a separated dialog is responsible for that.
         """
         query = cls.get_available_sellables_query(conn)
@@ -327,8 +327,8 @@ class AbstractSellable(InheritableModelAdapter):
 
     @classmethod
     def get_sold_sellables(cls, conn):
-        """Returns sellable objects which can be added in a sale. By 
-        default a delivery sellable can not be added manually by users 
+        """Returns sellable objects which can be added in a sale. By
+        default a delivery sellable can not be added manually by users
         since a separated dialog is responsible for that.
         """
         query = cls.q.status == cls.STATUS_SOLD
@@ -336,7 +336,7 @@ class AbstractSellable(InheritableModelAdapter):
 
 
     @classmethod
-    def _get_sellables_by_code(cls, conn, code, extra_query, 
+    def _get_sellables_by_code(cls, conn, code, extra_query,
                               notify_callback):
         query = AND(cls.q.code == code, extra_query)
         sellables = cls.select(query, connection=conn)
@@ -347,29 +347,29 @@ class AbstractSellable(InheritableModelAdapter):
             return
         if qty != 1:
             raise DatabaseInconsistency('You should have only one '
-                                        'sellable with code %s' 
+                                        'sellable with code %s'
                                         % code)
         return sellables[0]
 
     @classmethod
     def get_availables_by_code(cls, conn, code, notify_callback):
-        """Returns a list of avaliable sellables that can be sold. 
-        A sellable that can be sold can have only one possible 
+        """Returns a list of avaliable sellables that can be sold.
+        A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
         @param conn: a sqlobject Transaction instance
         @param code: a string representing a sellable code
         @notify_callback: a function which is a callback that will be called
                           if the sellable code doesn't exists
-        
+
         """
         extra_query = cls.q.status == cls.q.STATUS_AVAILABLE
-        return cls._get_sellables_by_code(conn, code, extra_query, 
+        return cls._get_sellables_by_code(conn, code, extra_query,
                                           notify_callback)
 
     @classmethod
     def get_availables_and_sold_by_code(cls, conn, code, notify_callback):
-        """Returns a list of avaliable sellables and also sellables that 
+        """Returns a list of avaliable sellables and also sellables that
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_SOLD
 
@@ -377,11 +377,11 @@ class AbstractSellable(InheritableModelAdapter):
         @param code: a string representing a sellable code
         @notify_callback: a function which is a callback that will be called
                           if the sellable code doesn't exists
-        
+
         """
         statuses = [cls.q.STATUS_AVAILABLE, cls.q.STATUS_SOLD]
         extra_query = IN(cls.q.status, statuses)
-        return cls._get_sellables_by_code(conn, code, extra_query, 
+        return cls._get_sellables_by_code(conn, code, extra_query,
                                           notify_callback)
 
     #
@@ -392,7 +392,7 @@ class AbstractSellable(InheritableModelAdapter):
         conn = get_connection()
         query = AbstractSellable.q.code == code
         # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing code. Waiting for kiwi support 
+        # an existing code. Waiting for kiwi support
         if not AbstractSellable.select(query, connection=conn).count():
             self._SO_set_code(code)
 
@@ -401,5 +401,5 @@ class AbstractSellable(InheritableModelAdapter):
             self.commission = 0.0
         else:
             commission = self.category.base_category.get_commission()
-            self.commission = (self.category.get_commission() 
-                               or commission) 
+            self.commission = (self.category.get_commission()
+                               or commission)
