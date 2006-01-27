@@ -146,6 +146,7 @@ class BaseEditor(BaseEditorSlave):
     header = ''
     size = ()
     title = None
+    hide_footer = False
 
     def __init__(self, conn, model=None):
         BaseEditorSlave.__init__(self, conn, model)
@@ -154,6 +155,8 @@ class BaseEditor(BaseEditorSlave):
         self.main_dialog = BasicWrappingDialog(self,
                                                self.get_title(model),
                                                self.header, self.size)
+        if self.hide_footer:
+            self.main_dialog.hide_footer()
         self.register_validate_function(self.refresh_ok)
         self.force_validation()
 

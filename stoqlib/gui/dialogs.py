@@ -162,8 +162,7 @@ be subclassed and customized."""
             self.header_label.hide()
             self.top_separator.hide()
         if hide_footer:
-            self.ok_button.hide()
-            self.cancel_button.hide()
+            self.hide_footer()
         self.ok_button.set_use_underline(True)
 
     def setup_keyactions(self):
@@ -176,6 +175,10 @@ be subclassed and customized."""
     def cancel(self, *args):
         self.retval = False
         self.close()
+
+    def hide_footer(self):
+        self.ok_button.hide()
+        self.cancel_button.hide()
 
     def enable_ok(self):
         self.ok_button.set_sensitive(True)
