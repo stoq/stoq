@@ -120,7 +120,7 @@
                 <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
-                        <property name="label" translatable="yes">Sair</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="short_label">Quit</property>
                         <property name="tooltip">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
@@ -177,7 +177,7 @@
                 <child>
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
-                        <property name="label" translatable="yes">Sobre</property>
+                        <property name="label" translatable="yes">About</property>
                         <property name="short_label">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
