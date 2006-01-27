@@ -92,6 +92,9 @@ class WarehouseApp(SearchableAppWindow):
         self._update_stock_total()
 
     def on_searchbar_activate(self, slave, objs):
+        # We are going to improve accessor columns soon, so we will not need
+        # to clear the list here any more. Bug 2275
+        self._klist.clear()
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
         self._update_view()
 
