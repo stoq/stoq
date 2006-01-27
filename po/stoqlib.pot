@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-05 18:41-0200\n"
+"POT-Creation-Date: 2006-01-27 16:41-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -35,20 +35,20 @@ msgstr ""
 msgid "Delete this item?"
 msgstr ""
 
-#: ../stoqlib/gui/search.py:522
+#: ../stoqlib/gui/search.py:459
 msgid "result"
 msgstr ""
 
-#: ../stoqlib/gui/search.py:522
+#: ../stoqlib/gui/search.py:459
 msgid "results"
 msgstr ""
 
-#: ../stoqlib/gui/search.py:529
+#: ../stoqlib/gui/search.py:481
 #, python-format
 msgid "%d of %d %s shown"
 msgstr ""
 
-#: ../stoqlib/gui/search.py:632
+#: ../stoqlib/gui/search.py:613
 msgid "Se_lect Items"
 msgstr ""
 

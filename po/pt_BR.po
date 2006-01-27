@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-05 18:41-0200\n"
+"POT-Creation-Date: 2006-01-27 16:41-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -34,20 +34,20 @@ msgstr "Remover esses %d itens?"
 msgid "Delete this item?"
 msgstr "Remover esse item?"
 
-#: ../stoqlib/gui/search.py:522
+#: ../stoqlib/gui/search.py:459
 msgid "result"
 msgstr "resultado"
 
-#: ../stoqlib/gui/search.py:522
+#: ../stoqlib/gui/search.py:459
 msgid "results"
 msgstr "resultados"
 
-#: ../stoqlib/gui/search.py:529
+#: ../stoqlib/gui/search.py:481
 #, python-format
 msgid "%d of %d %s shown"
 msgstr "%d de %d %s exibidos"
 
-#: ../stoqlib/gui/search.py:632
+#: ../stoqlib/gui/search.py:613
 msgid "Se_lect Items"
 msgstr "Selecionar Itens"
 
