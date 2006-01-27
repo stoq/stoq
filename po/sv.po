@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-11 19:04-0300\n"
+"POT-Creation-Date: 2006-01-27 16:41-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,25 +15,76 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/gui/lists.py:156
-msgid "Are you sure you want delete these items?"
-msgstr "Är du säker på att du vill radera dessa föremål?"
+#: ../stoqlib/gui/editors.py:168
+#, python-format
+msgid "Edit \"%s\" Details"
+msgstr ""
 
-#: ../stoqlib/gui/lists.py:158
-msgid "Are you sure you want delete this item?"
-msgstr "Är du säker på att du vill radera detta föremål?"
+#: ../stoqlib/gui/editors.py:171
+#, python-format
+msgid "Add %s"
+msgstr ""
 
-#: ../stoqlib/gui/search.py:405
-msgid "Select Items"
+#: ../stoqlib/gui/lists.py:140
+#, python-format
+msgid "Delete these %d items?"
+msgstr ""
+
+#: ../stoqlib/gui/lists.py:142
+msgid "Delete this item?"
+msgstr ""
+
+#: ../stoqlib/gui/search.py:459
+msgid "result"
+msgstr ""
+
+#: ../stoqlib/gui/search.py:459
+msgid "results"
+msgstr ""
+
+#: ../stoqlib/gui/search.py:481
+#, python-format
+msgid "%d of %d %s shown"
+msgstr ""
+
+#: ../stoqlib/gui/search.py:613
+#, fuzzy
+msgid "Se_lect Items"
 msgstr "Välj föremål"
 
-#: ../stoqlib/gui/glade/SearchBar.glade.h:1
-msgid "Search Item:"
-msgstr "Välj föremål:"
-
-#: ../stoqlib/gui/glade/SearchSlave.glade.h:1
-msgid "Search"
+#: ../stoqlib/gui/glade/SearchEntry.glade.h:1
+#, fuzzy
+msgid "_Search"
 msgstr "Sök"
+
+#: ../stoqlib/gui/glade/SearchEntry.glade.h:2
+msgid "matching:"
+msgstr ""
+
+#: ../stoqlib/gui/glade/DateSearchSlave.glade.h:1
+msgid "At any date"
+msgstr ""
+
+#: ../stoqlib/gui/glade/DateSearchSlave.glade.h:2
+msgid "From:"
+msgstr ""
+
+#: ../stoqlib/gui/glade/DateSearchSlave.glade.h:3
+msgid "Placed:"
+msgstr ""
+
+#: ../stoqlib/gui/glade/DateSearchSlave.glade.h:4
+msgid "to"
+msgstr ""
+
+#: ../stoqlib/gui/glade/SearchEditor.glade.h:1
+#: ../stoqlib/gui/glade/AdditionListSlave.glade.h:3
+msgid "_Edit..."
+msgstr ""
+
+#: ../stoqlib/gui/glade/SearchEditor.glade.h:2
+msgid "_New..."
+msgstr ""
 
 #: ../stoqlib/gui/glade/NoteSlave.glade.h:1
 msgid "Notes:"
@@ -44,6 +95,14 @@ msgstr "Noteringar:"
 msgid "label"
 msgstr "ettiket"
 
+#: ../stoqlib/gui/glade/AdditionListSlave.glade.h:1
+msgid "Add..."
+msgstr ""
+
+#: ../stoqlib/gui/glade/AdditionListSlave.glade.h:2
+msgid "Delete"
+msgstr ""
+
 #: ../stoqlib/gui/glade/BasicDialog.glade.h:1
 msgid "header"
 msgstr "huvud"
@@ -51,3 +110,12 @@ msgstr "huvud"
 #: ../stoqlib/gui/glade/SimpleEntryEditor.glade.h:1
 msgid "label: "
 msgstr "ettiket:"
+
+#~ msgid "Are you sure you want delete these items?"
+#~ msgstr "Är du säker på att du vill radera dessa föremål?"
+
+#~ msgid "Are you sure you want delete this item?"
+#~ msgstr "Är du säker på att du vill radera detta föremål?"
+
+#~ msgid "Search Item:"
+#~ msgstr "Välj föremål:"
