@@ -48,6 +48,7 @@ from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.person import Person
 from stoq.domain.profile import UserProfile
 from stoq.domain.interfaces import IUser
+from stoq.gui.components.parameters import ParametersListingDialog
 
 _ = gettext.gettext
 
@@ -164,3 +165,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_devices_setup_activate(self, *args):
         self.run_dialog(DeviceSettingsDialog, self.conn)
+
+    def on_system_parameters_activate(self, *args):
+        self.run_dialog(ParametersListingDialog, self.conn)
