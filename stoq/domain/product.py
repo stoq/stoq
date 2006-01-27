@@ -410,7 +410,7 @@ class ProductAdaptToStorable(ModelAdapter):
         return '%.*f' % (int(self.precision), full_balance)
 
     #
-    # Auxiliary methods
+    # General methods
     #
 
     def _check_logic_quantity(self):
