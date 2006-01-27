@@ -38,19 +38,22 @@ from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.search import SearchBar
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.editors import NoteEditor
 from sqlobject.sqlbuilder import AND
 
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_current_user
-from stoq.lib.validators import format_quantity
+from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.product import Product
 from stoq.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                    get_receiving_items_by_purchase_order)
-from stoq.domain.interfaces import IUser, ISupplier, ISellable
+from stoq.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
+from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.gui.search.product import ProductSearch
 from stoq.gui.wizards.abstract import AbstractProductStep
+from stoq.gui.purchase.details import PurchaseDetailsDialog
 
 _ = gettext.gettext
 
@@ -58,6 +61,108 @@ _ = gettext.gettext
 #
 # Wizard Steps
 #
+
+
+class ReceivingInvoiceStep(BaseWizardStep):
+    gladefile = 'ReceivingInvoiceStep'
+    model_type = ReceivingOrder
+    proxy_widgets = ('transporter',
+                     'products_total',
+                     'order_total',
+                     'freight',
+                     'ipi',
+                     'supplier',
+                     'order_number',
+                     'invoice_total',
+                     'invoice_number',
+                     'icms_total')
+
+    def _update_totals(self, *args):
+        self.proxy.update_many(['products_total_str', 'order_total_str'])
+
+    # We will avoid duplicating code like when setting up entry completions
+    # on bug 2275.
+    def _setup_transporter_entry(self):
+        table = Person.getAdapterClass(ITransporter)
+        transporters = table.get_active_transporters(self.conn)
+        names = [t.get_adapted().name for t in transporters]
+        self.transporter.set_completion_strings(names, list(transporters))
+
+    def _setup_supplier_entry(self):
+        table = Person.getAdapterClass(ISupplier)
+        suppliers = table.get_active_suppliers(self.conn)
+        names = [t.get_adapted().name for t in suppliers]
+        self.supplier.set_completion_strings(names, list(suppliers))
+
+    def _setup_widgets(self):
+        if self.model.purchase:
+            self.supplier.set_sensitive(False)
+        self._setup_transporter_entry()
+        self._setup_supplier_entry()
+        format_str = get_price_format_str()
+        for widget in [self.freight, self.icms_total, self.invoice_total, 
+                       self.ipi]:
+            widget.set_data_format(format_str)
+        
+    #
+    # WizardStep hooks
+    #
+
+    def has_next_step(self):
+        return False
+
+    def post_init(self):
+        self.transporter.grab_focus()
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    ReceivingInvoiceStep.proxy_widgets)
+        if self.wizard.edit_mode:
+            return
+        self.model.invoice_total = self.model.get_order_total()
+        self.proxy.update('invoice_total')
+        purchase = self.model.purchase
+        if purchase:
+            transporter = purchase.transporter
+            self.model.transporter = transporter
+            self.proxy.update('transporter')
+            self.model.supplier = purchase.supplier
+            self.proxy.update('supplier')
+            if purchase.freight:
+                freight_value = (self.model.get_products_total() *
+                                 purchase.freight / 100.0)
+                self.model.freight_total = freight_value
+                self.proxy.update('freight_total')
+
+    def setup_slaves(self):
+        slave_holder = 'discount_charge_holder'
+        if self.get_slave(slave_holder):
+            return
+        if not self.wizard.edit_mode:
+            self.model.reset_discount_and_charge()
+        self.discount_charge_slave = DiscountChargeSlave(self.conn, self.model,
+                                                         ReceivingOrder)
+        self.attach_slave(slave_holder, self.discount_charge_slave)
+        self.discount_charge_slave.connect('discount-changed', 
+                                           self._update_totals)
+        self._update_totals()
+
+    #
+    # Callbacks
+    #
+
+    def after_ipi__changed(self, *args):
+        self._update_totals()
+
+    def after_freight__changed(self, *args):
+        self._update_totals()
+
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_('Additional Information'))
 
 
 class ReceivingOrderProductStep(AbstractProductStep):
@@ -98,7 +203,8 @@ class ReceivingOrderProductStep(AbstractProductStep):
     #
 
     def next_step(self):
-        return
+        return ReceivingInvoiceStep(self.conn, self.wizard, 
+                                    self.model, self)
 
     #
     # callbacks
@@ -135,8 +241,8 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(validation_value)
 
     def _get_columns(self):
-        return [Column('order_number', title=_('Number'), sorted=True,
-                       data_type=int, width=100, format='%03d'),
+        return [Column('order_number_str', title=_('Number'), sorted=True,
+                       data_type=str, width=100),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
                 ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
@@ -207,7 +313,12 @@ class PurchaseSelectionStep(BaseWizardStep):
         self._update_view()
 
     def on_details_button__clicked(self, *args):
-        pass
+        order = self.orders.get_selected()
+        if not order:
+            raise ValueError('You should have one order selected '
+                             'at this point, got nothing')
+        run_dialog(PurchaseDetailsDialog, self, self.conn, model=order)
+
 
 #
 # Main wizard

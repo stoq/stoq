@@ -32,16 +32,17 @@ import gettext
 import datetime
 
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import format_price
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
 from zope.interface import implements
 
 from stoq.domain.base import Domain
 from stoq.domain.payment.base import AbstractPaymentGroup
-from stoq.domain.interfaces import (IContainer, ICheckPM, IBillPM, IMoneyPM,
+from stoq.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                     IPaymentGroup)
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import compare_float_numbers
+from stoq.lib.columns import PriceCol
 
 _ = gettext.gettext
 
@@ -66,7 +67,14 @@ class PurchaseItem(Domain):
                             'argument since it is set automatically')
         if not 'sellable' in kw:
             raise TypeError('You must provide a sellable argument')
+        if not 'order' in kw:
+            raise TypeError('You must provide a order argument')
+
         kw['base_cost'] = kw['sellable'].cost
+        
+        if kw['sellable'].id in [item.sellable.id 
+                                   for item in kw['order'].get_items()]:
+            raise ValueError('This product was already added to the order')
         Domain._create(self, id, **kw)
 
     #
@@ -76,37 +84,20 @@ class PurchaseItem(Domain):
     def get_total(self):
         return self.quantity * self.cost
 
+    def get_received_total(self):
+        return self.quantity_received * self.cost
+
     def has_been_received(self):
-        return compare_float_numbers(self.quantity_received, self.quantity)
+        return self.quantity_received >= self.quantity
 
     def get_pending_quantity(self):
         if not self.has_been_received:
             return 0.0
-        quantity = self.quantity - self.quantity_received
-        if quantity < 0:
-            raise DatabaseInconsistency('Quantity received is greater '
-                                        'than the quantity ordered')
-        return quantity
-
-    #
-    # SQLObject callbacks
-    #
-
-    def _set_quantity_received(self, value):
-        # When adding a new PurchaseItem instance we need this check since 
-        # we don't have this attribute before calling this method 
-        if hasattr(self, 'quantity_received'):
-            total = value + self.quantity_received
-            if total > self.quantity:
-                raise ValueError('Attribute quantity_received can not be '
-                                 'greater than quantity attribute') 
-        self._SO_set_quantity_received(value)
+        return self.quantity - self.quantity_received
 
 
 class PurchaseOrder(Domain):
     """Purchase and order definition."""
-
-    implements(IContainer)
 
     (ORDER_CANCELLED,
      ORDER_QUOTING,
@@ -139,8 +130,8 @@ class PurchaseOrder(Domain):
     salesperson_name = StringCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
     freight = FloatCol(default=0.0)
-    charge_value = FloatCol(default=0.0)
-    discount_value = FloatCol(default=0.0)
+    charge_value = PriceCol(default=0.0)
+    discount_value = PriceCol(default=0.0)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -155,7 +146,7 @@ class PurchaseOrder(Domain):
         Domain._create(self, id, **kw)
 
     #
-    # Auxiliar methods
+    # General methods
     #
 
     def confirm_order(self, confirm_date=datetime.datetime.now()):
@@ -172,29 +163,6 @@ class PurchaseOrder(Domain):
             group.create_preview_outpayments()
         self.status = self.ORDER_CONFIRMED
         self.confirm_date = confirm_date
-
-    def get_purchase_subtotal(self):
-        return sum([item.get_total() for item in self.get_items()], 0.0)
-
-    def get_purchase_total(self):
-        subtotal = self.get_purchase_subtotal()
-        total = subtotal - self.discount_value + self.charge_value
-        if total < 0:
-            raise ValueError('Purchase total can not be lesser than zero')
-        return total
-
-    def get_received_total(self):
-        return sum([item.cost * item.quantity_received 
-                        for item in self.get_items()])
-
-    def get_remaining_total(self):
-        return self.get_purchase_total() - self.get_received_total()
-        
-    def get_status_str(self):
-        if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Got an unexpected status value: '
-                                        '%s' % self.status)
-        return self.statuses[self.status]
 
     def _get_percentage_value(self, percentage):
         if not percentage:
@@ -246,21 +214,95 @@ class PurchaseOrder(Domain):
     def reset_discount_and_charge(self):
         self.discount_value = self.charge_value = 0.0
 
+    def can_close(self):
+        for item in self.get_items():
+            if not item.has_been_received():
+                return False
+        return True
+
+    def close(self):
+        if not self.status == self.ORDER_CONFIRMED:
+            raise ValueError('Invalid status, it should be confirmed'
+                             'got %s instead' % self.get_status_str())
+        self.status = self.ORDER_CLOSED
+
+    def increase_quantity_received(self, sellable, 
+                                   quantity_received):
+        items = [item for item in self.get_items()
+                    if item.sellable.id == sellable.id]
+        qty = len(items)
+        if not qty:
+            raise ValueError('There is no purchase item for '
+                             'sellable %r' % sellable)
+        if qty > 1:
+            raise DatabaseInconsistency('It should have only one item for '
+                                        'this sellable, got %d instead'
+                                        % qty)
+        item = items[0]
+        item.quantity_received += quantity_received
+
     #
-    # IContainer implementation
+    # Accessors
     #
 
-    def get_items(self):
-        return PurchaseItem.selectBy(order=self,
-                                     connection=self.get_connection())
+    def get_freight_type_name(self):
+        if not self.freight_type in self.freight_types.keys():
+            raise DatabaseInconsistency('Invalid freight_type, got %d'
+                                        % self.freight_type)
+        return self.freight_types[self.freight_type]
+
+    def get_branch_name(self):
+        return self.branch.get_adapted().name
+
+    def get_supplier_name(self):
+        return self.supplier.get_adapted().name
+
+    def get_transporter_name(self):
+        if not self.transporter:
+            return ""
+        return self.transporter.get_adapted().name
+
+    def get_order_number_str(self):
+        if self.order_number:
+            return '%03d' % self.order_number
+        return ""
+
+    def get_status_str(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Got an unexpected status value: '
+                                        '%s' % self.status)
+        return self.statuses[self.status]
+
+    def get_purchase_subtotal(self):
+        return sum([item.get_total() for item in self.get_items()], 0.0)
+
+    def get_purchase_subtotal_str(self):
+        return format_price(self.get_purchase_subtotal())
+
+    def get_purchase_total(self):
+        subtotal = self.get_purchase_subtotal()
+        total = subtotal - self.discount_value + self.charge_value
+        if total < 0:
+            raise ValueError('Purchase total can not be lesser than zero')
+        return total
+
+    def get_purchase_total_str(self):
+        return format_price(self.get_purchase_total())
+
+    def get_received_total(self):
+        return sum([item.cost * item.quantity_received 
+                        for item in self.get_items()])
+
+    def get_remaining_total(self):
+        return self.get_purchase_total() - self.get_received_total()
+
     def get_pending_items(self):
         return [item for item in self.get_items() 
                         if not item.has_been_received()]
 
-    @argcheck(PurchaseItem)
-    def add_item(self, item):
-        item.order = self
-        return item
+    def get_items(self):
+        return PurchaseItem.selectBy(order=self,
+                                     connection=self.get_connection())
 
     @argcheck(PurchaseItem)
     def remove_item(self, item):
