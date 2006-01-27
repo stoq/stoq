@@ -170,7 +170,7 @@
                 <child>
                     <object class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
-                        <property name="label" translatable="yes">Ajuda</property>
+                        <property name="label" translatable="yes">Help</property>
                         <property name="short_label">_Help</property>
                     </object>
                 </child>
