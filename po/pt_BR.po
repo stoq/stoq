@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 15:31-0200\n"
+"POT-Creation-Date: 2006-01-27 16:38-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -99,7 +99,7 @@ msgstr "Viúvo(a)"
 
 #: ../stoq/domain/person.py:331
 msgid "Separated"
-msgstr ""
+msgstr "Separado"
 
 #: ../stoq/domain/person.py:332
 msgid "Cohabitation"
@@ -297,7 +297,7 @@ msgid "Reviewing"
 msgstr "Revisão"
 
 #: ../stoq/domain/sale.py:142 ../stoq/gui/pos/glade/NewOrderEditor.glade.h:1
-#: ../stoq/gui/pos/glade/pos.glade.h:4
+#: ../stoq/gui/pos/glade/pos.glade.h:3
 msgid "Anonymous"
 msgstr "Anônimo"
 
@@ -365,7 +365,7 @@ msgstr "Vale compra"
 
 #: ../stoq/domain/payment/base.py:248
 msgid "Multiple"
-msgstr ""
+msgstr "Múltiplo"
 
 #: ../stoq/domain/payment/methods.py:230 ../stoq/domain/payment/methods.py:306
 #, python-format
@@ -444,7 +444,7 @@ msgstr "Não há balança configurada nessa estação (\"%s\")"
 
 #: ../stoq/lib/drivers.py:165
 msgid "Waiting Scale Reading..."
-msgstr ""
+msgstr "Aguardando pesagem da balança..."
 
 #: ../stoq/lib/drivers.py:248
 msgid "The printer has run out of paper"
@@ -520,33 +520,397 @@ msgstr ""
 "'stoq'\n"
 "usuário> "
 
+#: ../stoq/lib/parameters.py:56 ../stoq/lib/parameters.py:59
+#: ../stoq/lib/parameters.py:130 ../stoq/lib/parameters.py:134
+#: ../stoq/lib/parameters.py:138 ../stoq/lib/parameters.py:168
+#: ../stoq/lib/parameters.py:178
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:2
+msgid "General"
+msgstr "Geral"
+
+#: ../stoq/lib/parameters.py:56
+msgid "Current Branch"
+msgstr "Unidade atual da empresa"
+
+#: ../stoq/lib/parameters.py:57
+msgid "The current branch associated with the current system installation."
+msgstr ""
+"A unidade atual da empresa associada com a instalação atual do sistema."
+
+#: ../stoq/lib/parameters.py:59
+msgid "Current Warehouse"
+msgstr "Al_moxarifado _atual"
+
+#: ../stoq/lib/parameters.py:60
+msgid "The company's warehouse"
+msgstr "O almoxaridado da empresa"
+
+#: ../stoq/lib/parameters.py:61 ../stoq/lib/parameters.py:100
+#: ../stoq/lib/parameters.py:103 ../stoq/lib/parameters.py:117
+#: ../stoq/lib/parameters.py:122 ../stoq/lib/parameters.py:142
+#: ../stoq/lib/parameters.py:153 ../stoq/lib/parameters.py:163
+#: ../stoq/lib/parameters.py:172 ../stoq/lib/parameters.py:189
+#: ../stoq/lib/parameters.py:222 ../stoq/gui/sales/sales.py:56
+msgid "Sales"
+msgstr "Vendas"
+
+#: ../stoq/lib/parameters.py:62
+msgid "Default Salesperson Role"
+msgstr "Cargo padrão para vendedor:"
+
+#: ../stoq/lib/parameters.py:63
+msgid ""
+"Defines which of the employee roles existent in the system is the "
+"salesperson role"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:67 ../stoq/lib/parameters.py:72
+#: ../stoq/lib/parameters.py:209 ../stoq/lib/parameters.py:230
+#: ../stoq/gui/purchase/purchase.py:61
+msgid "Purchase"
+msgstr "Compras"
+
+#: ../stoq/lib/parameters.py:68
+msgid "Suggested Supplier"
+msgstr "Fornecedor Sugerido"
+
+#: ../stoq/lib/parameters.py:69
+msgid ""
+"The supplier suggested when we are adding a new product's supplier in the "
+"system"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:73
+msgid "Default Base Sellable Category"
+msgstr "Padrão para categoria de base de vendáveis"
+
+#: ../stoq/lib/parameters.py:75
+msgid ""
+"A default base sellable category which we always get as a suggestion when "
+"adding a new Sellable on the system"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:80 ../stoq/lib/parameters.py:90
+#: ../stoq/lib/parameters.py:96 ../stoq/lib/parameters.py:151
+#: ../stoq/lib/parameters.py:198
+msgid "Financial"
+msgstr "Financeiro"
+
+#: ../stoq/lib/parameters.py:81
+msgid "Default Payment Destination"
+msgstr "Destino padrão de pagamento"
+
+#: ../stoq/lib/parameters.py:83
+msgid ""
+"A default payment destination which will be used for all the created "
+"payments until the user change the destination of each payment method."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:91
+msgid "Base Payment Method"
+msgstr "Forma de pagamento de base"
+
+#: ../stoq/lib/parameters.py:92
+msgid ""
+"The base payment method which can easily be converted to other methods like "
+"check and bill."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:96
+msgid "Money Payment Method"
+msgstr "Forma de pagamento dinheiro"
+
+#: ../stoq/lib/parameters.py:97
+msgid "Definition of the money payment method. This parameter is not editable"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:100
+msgid "Delivery Service"
+msgstr "Serviço de entrega"
+
+#: ../stoq/lib/parameters.py:101
+msgid "The default delivery service in the system."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:104
+msgid "Default Gift Certificate Type"
+msgstr "Tipo de Vale Compra Padrão"
+
+#: ../stoq/lib/parameters.py:106
+msgid ""
+"The default gift certificate type used when canceling sales and during "
+"renegotiations."
+msgstr ""
+"O tipo de vale compra padrão usado quando calculamos vendas e durante "
+"renegociações"
+
+#: ../stoq/lib/parameters.py:111 ../stoq/lib/parameters.py:147
+#: ../stoq/lib/parameters.py:158 ../stoq/gui/search/sellable.py:113
+msgid "Stock"
+msgstr "Estoque"
+
+#: ../stoq/lib/parameters.py:111
+msgid "Use Logic Quantity"
+msgstr "Usar quantidade lógica"
+
+#: ../stoq/lib/parameters.py:112
+msgid ""
+"An integer that defines if the company can work or not with logic quantities "
+"during stock operations. See StockItem documentation."
+msgstr ""
+"Um inteiro que define se a empresa pode trabalhar ou não com quantidade "
+"logica durante operações de estoque. Veja a documentação de StockItem."
+
+#: ../stoq/lib/parameters.py:117
+msgid "Client Maximum Late Days"
+msgstr "Máximo de dias de atraso de clientes."
+
+#: ../stoq/lib/parameters.py:118
+msgid ""
+"An integer that represents a maximum number of days which a certain client "
+"can have unpaid payments with normal status."
+msgstr ""
+"Um inteiro que representa o número máximo de dias que um determinado cliente "
+"pode ficar com situação financeira normal havendo parcelas em atraso."
+
+#: ../stoq/lib/parameters.py:123
+msgid "Accept Order Products"
+msgstr "Aceitar encomenda de produtos"
+
+#: ../stoq/lib/parameters.py:124
+msgid ""
+"Can this company make sales for products that doesn't actually exist in the "
+"stock ? If this parameter is True we can order products."
+msgstr ""
+"Esta empresa pode fazer venda de produtos que não existem no estoque? Se "
+"este parâmetro está setado então pode-se encomendar produtos"
+
+#: ../stoq/lib/parameters.py:130
+msgid "City Suggested"
+msgstr "Cidade sugerida"
+
+#: ../stoq/lib/parameters.py:131
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"city."
+msgstr ""
+"Quando adicionando novos endereços para uma determinada pessoa essa cidade "
+"será sempre sugerida."
+
+#: ../stoq/lib/parameters.py:134
+msgid "State Suggested"
+msgstr "Estado sugerido"
+
+#: ../stoq/lib/parameters.py:135
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"state."
+msgstr ""
+"Quando adicionando um novo endereço para uma determinada pessoa esse estado "
+"será sempre sugerido."
+
+#: ../stoq/lib/parameters.py:138
+msgid "Country Suggested"
+msgstr "País sugerido"
+
+#: ../stoq/lib/parameters.py:139
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"country."
+msgstr ""
+"Quando adicionando um novo endereço para uma determinada pessoa esse país "
+"será sempre sugerido"
+
+#: ../stoq/lib/parameters.py:143
+msgid "Sellable Price Precision"
+msgstr "Precisão para preço de vendáveis"
+
+#: ../stoq/lib/parameters.py:144
+msgid "Precision for the price attribute of a sellable object."
+msgstr "Precisão para o campo preço de items vendáveis"
+
+#: ../stoq/lib/parameters.py:148
+msgid "Stock Balance Precision"
+msgstr "Precisão de balanço de estoque"
+
+#: ../stoq/lib/parameters.py:149
+msgid "precision for product stock balances."
+msgstr "Precisão para balanço de produtos em estoque"
+
+#: ../stoq/lib/parameters.py:151
+msgid "Payment Precision"
+msgstr "Pagamentos contendo:"
+
+#: ../stoq/lib/parameters.py:152
+msgid "Precision for payment values."
+msgstr "Precisão para valores de pagamentos"
+
+#: ../stoq/lib/parameters.py:153
+msgid "Has Delivery Mode"
+msgstr "Item de Entrega"
+
+#: ../stoq/lib/parameters.py:154
+msgid ""
+"Does this branch work with delivery service? If not, the delivery option "
+"will be disable on Point of Sales Application."
+msgstr ""
+"Esta unidade da empresa pode trabalhar com serviços de entrega? Em caso "
+"negativo, a opção de entrega será desabilitada na aplicação de Ponto de Venda"
+
+#: ../stoq/lib/parameters.py:158
+msgid "Has Stock Mode"
+msgstr "Possui modo de estoque"
+
+#: ../stoq/lib/parameters.py:159
+msgid ""
+"Does this branch work with storable items? If the answer is negative, we "
+"will disable stock operations in the system."
+msgstr ""
+"Esta unidade da empresa trabalha com produtos estocáveis? Em caso negativo, "
+"as operações de estoque serão desabilitadas."
+
+#: ../stoq/lib/parameters.py:164
+msgid "Edit Sellable Price"
+msgstr "Alterar preço de venda de vendáveis"
+
+#: ../stoq/lib/parameters.py:165
+msgid ""
+"Can we change the price attribute of a SellableItem object during a sale?"
+msgstr "Podemos alterar o campo preço de items vendáveis durante uma venda?"
+
+#: ../stoq/lib/parameters.py:168
+msgid "Max Search Results"
+msgstr "Resultado máximo de pesquisas"
+
+#: ../stoq/lib/parameters.py:169
+msgid ""
+"The maximum number of results we must show after searching in any dialog."
+msgstr ""
+"O número máximo de resultados que exibiremos após uma pesquisa em qualquer "
+"diálogo"
+
+#: ../stoq/lib/parameters.py:173
+msgid "Mandatory Interest Charge"
+msgstr "Cobrança obrigatória de juros"
+
+#: ../stoq/lib/parameters.py:174
+msgid ""
+"Once this paramter is set, the charge of monthly interest will be mandatory "
+"for every payment"
+msgstr ""
+"Uma vez que este parâmetro esteja definido, a cobrança mensal de juros será "
+"obrigatória para todo pagamento."
+
+#: ../stoq/lib/parameters.py:179
+msgid "Comparison Float Tolerance "
+msgstr "Tolerância para comparação de valores fracionários"
+
+#: ../stoq/lib/parameters.py:181
+msgid ""
+"This is useful when performing comparison between two float numbers. If abs"
+"(numberA - numberB) = This  parameter value, the two numbers can be "
+"considerer equals"
+msgstr ""
+"Este parâmetro é útil quando efetuando comparações entre dois números "
+"fracionários. Se abs(numeroA - numeroB) = este parâmetro, então os dois "
+"números serão considerados iguais."
+
+#: ../stoq/lib/parameters.py:190
+msgid "Confirm Sales on Till"
+msgstr "Confirmar vendas na aplicação de caixa"
+
+#: ../stoq/lib/parameters.py:191
+msgid ""
+"Once this parameter is set, the sales confirmation are only made on till "
+"application and the fiscal coupon will be printed on that application "
+"instead of Point of Sales"
+msgstr ""
+"Uma vez que este parâmetro esteja setado, a confirmação de vendas será "
+"exclusivamente feita na aplicação de caixa e o cupom fiscal será também "
+"impresso nesta aplicação ao invés da aplicação de Ponto de Venda."
+
+#: ../stoq/lib/parameters.py:199
+msgid "Set Payment Methods on Till"
+msgstr "Definir formas de pagamento na aplicação de Caixa"
+
+#: ../stoq/lib/parameters.py:201
+msgid ""
+"Do not show payment method definitions step on SaleWizard through POS "
+"application if CONFIRM_SALES_ON_TILL is set. This step will only be show on "
+"Till application."
+msgstr ""
+"Não exiba o passo de definição de formas de pagamento do Wizard de vendas na "
+"aplicação POS caso este parâmetro esteja setado. Este passo será então "
+"exibido na aplicação de caixa."
+
+#: ../stoq/lib/parameters.py:210
+msgid "Use Purchase Preview Payments"
+msgstr "Usar Pagamentos previstos para Compras"
+
+#: ../stoq/lib/parameters.py:212
+msgid ""
+"Generate preview payments for new purchases which are not received yet. Once "
+"the order is received the preview payments will be also confirmed as valid "
+"payments with STATUS_TO_PAY"
+msgstr ""
+"Gerar pagamentos previstos para novas compras ainda não recebidas. Uma vez "
+"que o pedido de compra for recebido os pagamentos previstos serão então "
+"marcados com a situação A PAGAR"
+
+#: ../stoq/lib/parameters.py:223
+msgid "Return Money On Sales"
+msgstr "Devolver dinheiro durante a venda"
+
+#: ../stoq/lib/parameters.py:224
+msgid ""
+"Once this parameter is set the salesperson can return money to clients when "
+"there is overpaid values in sales with gift certificates as payment method."
+msgstr ""
+"Uma vez que este parâmetro esteja setado será possível devolver dinheiro "
+"para clientes quando houver valores sobrepagos em vendas usando vale compras "
+"como forma de pagamento."
+
+#: ../stoq/lib/parameters.py:231
+msgid "Receive Products Without Order"
+msgstr "Receber produtos sem pedido de compra"
+
+#: ../stoq/lib/parameters.py:233
+msgid ""
+"Can we receive products without having a purchase order created for them ? "
+"If yes, the first step of ReceivalWizard will accept going to the second "
+"step with no order selected."
+msgstr ""
+"Podemos receber produtos sem haver um pedido de compra para os mesmos? Em "
+"caso positivo, o primeiro passo do Wizard de recebimento de compras irá "
+"aceitar passar para o segundo passo sem a seleção de um pedido de compra."
+
 #. XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
 #. what is the cnpj of this company I need to put something there because
 #. this is a mandatory field. I think use a simple string could help user
 #. to fix this field later.
-#: ../stoq/lib/parameters.py:410
+#: ../stoq/lib/parameters.py:481
 msgid "current_branch"
-msgstr "current_branch"
+msgstr "Unidade da empresa atual"
 
 #. XXX See ensure_current_branch comment: we have the same problem with
 #. cnpj here.
-#: ../stoq/lib/parameters.py:424
+#: ../stoq/lib/parameters.py:495
 msgid "current_warehouse"
-msgstr "current_warehouse"
+msgstr "Almoxarifado atual"
 
-#: ../stoq/lib/parameters.py:436
+#: ../stoq/lib/parameters.py:507
 msgid "Default Store Destination"
 msgstr "Destino padrão da loja"
 
-#: ../stoq/lib/parameters.py:466 ../stoq/gui/editors/delivery.py:53
+#: ../stoq/lib/parameters.py:538 ../stoq/gui/editors/delivery.py:53
 msgid "Delivery"
 msgstr "Entrega"
 
-#: ../stoq/lib/parameters.py:481
+#: ../stoq/lib/parameters.py:553
 msgid "General Gift Certificate"
 msgstr "Vale compra Geral"
 
-#: ../stoq/lib/parameters.py:509
+#: ../stoq/lib/parameters.py:581
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr "Não há nenhum dado do parametro %s definido na base de dados."
@@ -596,7 +960,7 @@ msgstr "Dados de Pessoa Física"
 msgid "Additional Contacts"
 msgstr "Contatos Adicionais"
 
-#: ../stoq/gui/slaves/liaison.py:56 ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/slaves/liaison.py:56 ../stoq/gui/admin/admin.py:91
 #: ../stoq/gui/search/person.py:105 ../stoq/gui/search/person.py:140
 #: ../stoq/gui/search/person.py:180 ../stoq/gui/search/person.py:227
 #: ../stoq/gui/search/person.py:273 ../stoq/gui/search/person.py:326
@@ -641,10 +1005,6 @@ msgstr "Cargo"
 msgid "Salary"
 msgstr "Salario"
 
-#: ../stoq/gui/purchase/purchase.py:61
-msgid "Purchase"
-msgstr "Compras"
-
 #: ../stoq/gui/purchase/purchase.py:66 ../stoq/gui/wizards/receiving.py:299
 msgid "order"
 msgstr "pedido"
@@ -653,7 +1013,7 @@ msgstr "pedido"
 msgid "orders"
 msgstr "pedidos"
 
-#: ../stoq/gui/purchase/purchase.py:67 ../stoq/gui/admin/admin.py:62
+#: ../stoq/gui/purchase/purchase.py:67 ../stoq/gui/admin/admin.py:63
 #: ../stoq/gui/sales/sales.py:62 ../stoq/gui/search/sellable.py:70
 #: ../stoq/gui/search/sale.py:70 ../stoq/gui/search/person.py:84
 #: ../stoq/gui/search/person.py:164 ../stoq/gui/search/person.py:205
@@ -665,7 +1025,7 @@ msgstr "contendo:"
 msgid "Show orders with status"
 msgstr "Exibir pedidos com situação"
 
-#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:72
+#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:73
 #: ../stoq/gui/sales/sales.py:97 ../stoq/gui/search/giftcertificate.py:71
 #: ../stoq/gui/search/giftcertificate.py:141 ../stoq/gui/search/product.py:96
 #: ../stoq/gui/search/service.py:74 ../stoq/gui/search/sale.py:116
@@ -692,7 +1052,7 @@ msgstr "Data de Abertura"
 msgid "Supplier"
 msgstr "Fornecedor"
 
-#: ../stoq/gui/purchase/purchase.py:134 ../stoq/gui/admin/admin.py:93
+#: ../stoq/gui/purchase/purchase.py:134 ../stoq/gui/admin/admin.py:94
 #: ../stoq/gui/sales/details.py:110 ../stoq/gui/sales/sales.py:123
 #: ../stoq/gui/search/giftcertificate.py:164 ../stoq/gui/search/product.py:139
 #: ../stoq/gui/search/service.py:109 ../stoq/gui/search/sale.py:87
@@ -780,7 +1140,7 @@ msgstr "Custo"
 
 #: ../stoq/gui/purchase/details.py:95 ../stoq/gui/purchase/details.py:109
 #: ../stoq/gui/sales/details.py:121 ../stoq/gui/sales/sales.py:125
-#: ../stoq/gui/search/sale.py:89 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/search/sale.py:89 ../stoq/gui/till/till.py:122
 #: ../stoq/gui/wizards/purchase.py:223 ../stoq/gui/wizards/receiving.py:188
 #: ../stoq/gui/pos/pos.py:307
 msgid "Total"
@@ -789,6 +1149,16 @@ msgstr "Total"
 #: ../stoq/gui/purchase/details.py:102
 msgid "Quantity Received"
 msgstr "Quantidade Recebida"
+
+#: ../stoq/gui/editors/parameters.py:95
+#: ../stoq/gui/components/parameters.py:105 ../stoq/gui/wizards/person.py:91
+msgid "Yes"
+msgstr "Sim"
+
+#: ../stoq/gui/editors/parameters.py:101
+#: ../stoq/gui/components/parameters.py:105
+msgid "No"
+msgstr "Não"
 
 #: ../stoq/gui/editors/contact.py:43
 msgid "Liaison"
@@ -914,11 +1284,11 @@ msgstr "Ajustes de preço"
 
 #: ../stoq/gui/editors/sellable.py:182
 msgid "This unit type requires weighing"
-msgstr ""
+msgstr "Este tipo de unidade requer pesagem"
 
 #: ../stoq/gui/editors/sellable.py:249
 msgid "No unit"
-msgstr ""
+msgstr "Sem unidade"
 
 #: ../stoq/gui/editors/sellable.py:252
 msgid "Specify:"
@@ -1012,7 +1382,7 @@ msgid "Additional Addresses"
 msgstr "Endereços Adicionais"
 
 #: ../stoq/gui/editors/person.py:64 ../stoq/gui/sales/sales.py:117
-#: ../stoq/gui/search/sale.py:81 ../stoq/gui/till/till.py:118
+#: ../stoq/gui/search/sale.py:81 ../stoq/gui/till/till.py:119
 msgid "Client"
 msgstr "Cliente"
 
@@ -1073,27 +1443,27 @@ msgstr "Transportadora"
 msgid "Branch"
 msgstr "Unidade"
 
-#: ../stoq/gui/admin/admin.py:57
+#: ../stoq/gui/admin/admin.py:58
 msgid "Administrative"
 msgstr "Administrativo"
 
-#: ../stoq/gui/admin/admin.py:61
+#: ../stoq/gui/admin/admin.py:62
 msgid "user"
 msgstr "usuário"
 
-#: ../stoq/gui/admin/admin.py:61
+#: ../stoq/gui/admin/admin.py:62
 msgid "users"
 msgstr "usuários"
 
-#: ../stoq/gui/admin/admin.py:63
+#: ../stoq/gui/admin/admin.py:64
 msgid "Show users with status"
 msgstr "Exibir usuários com situação"
 
-#: ../stoq/gui/admin/admin.py:85
+#: ../stoq/gui/admin/admin.py:86
 msgid "Login Name"
 msgstr "Usuário"
 
-#: ../stoq/gui/admin/admin.py:87 ../stoq/gui/search/profile.py:62
+#: ../stoq/gui/admin/admin.py:88 ../stoq/gui/search/profile.py:62
 msgid "Profile"
 msgstr "Perfil"
 
@@ -1128,10 +1498,6 @@ msgstr "Valor"
 #: ../stoq/gui/wizards/sale.py:410 ../stoq/gui/pos/pos.py:303
 msgid "Price"
 msgstr "Preço"
-
-#: ../stoq/gui/sales/sales.py:56
-msgid "Sales"
-msgstr "Vendas"
 
 #: ../stoq/gui/sales/sales.py:61 ../stoq/gui/search/sale.py:69
 #: ../stoq/gui/till/till.py:64
@@ -1321,10 +1687,6 @@ msgstr "item"
 msgid "sale items"
 msgstr "itens"
 
-#: ../stoq/gui/search/sellable.py:113
-msgid "Stock"
-msgstr "Estoque"
-
 #: ../stoq/gui/search/sellable.py:135
 msgid "Show sale items at"
 msgstr "Exibir itens à venda em"
@@ -1497,6 +1859,22 @@ msgstr "Exibir unidades com situação"
 msgid " Authenticating user..."
 msgstr " Autenticando usuário..."
 
+#: ../stoq/gui/components/parameters.py:57
+msgid "Stoq System Parameters"
+msgstr "Parâmetros de Sistema do Stoq"
+
+#: ../stoq/gui/components/parameters.py:85
+msgid "Group"
+msgstr "Grupo"
+
+#: ../stoq/gui/components/parameters.py:87
+msgid "Parameter Name"
+msgstr "Nome do Parâmetro"
+
+#: ../stoq/gui/components/parameters.py:89
+msgid "Current Value"
+msgstr "Valor Atual"
+
 #: ../stoq/gui/till/operation.py:61
 msgid "Till Operations"
 msgstr "Operações de Caixa"
@@ -1574,23 +1952,23 @@ msgstr "Caixa"
 msgid "Sales Matching:"
 msgstr "Vendas contendo:"
 
-#: ../stoq/gui/till/till.py:113
+#: ../stoq/gui/till/till.py:114
 msgid "Order"
 msgstr "Pedido"
 
-#: ../stoq/gui/till/till.py:116
+#: ../stoq/gui/till/till.py:117
 msgid "Date"
 msgstr "Data"
 
-#: ../stoq/gui/till/till.py:187
+#: ../stoq/gui/till/till.py:188
 msgid "Confirm Sale"
 msgstr "Confirmar a Venda"
 
-#: ../stoq/gui/till/till.py:206
+#: ../stoq/gui/till/till.py:207
 msgid "It's not possible to emit a reduce Z"
 msgstr "Não é possível emitir uma redução Z"
 
-#: ../stoq/gui/till/till.py:207
+#: ../stoq/gui/till/till.py:208
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
@@ -1598,19 +1976,19 @@ msgstr ""
 "Não é possível enviar uma redução Z para a impressora configurada.\n"
 "Deseja ignorar esse erro e continuar?"
 
-#: ../stoq/gui/till/till.py:210 ../stoq/gui/till/till.py:224
+#: ../stoq/gui/till/till.py:211 ../stoq/gui/till/till.py:225
 msgid "Cancel Operation"
 msgstr "Cancelar Operação"
 
-#: ../stoq/gui/till/till.py:211 ../stoq/gui/till/till.py:225
+#: ../stoq/gui/till/till.py:212 ../stoq/gui/till/till.py:226
 msgid "Ignore this error"
 msgstr "Ignorar esse erro"
 
-#: ../stoq/gui/till/till.py:220
+#: ../stoq/gui/till/till.py:221
 msgid "It's not possible to emit a read X"
 msgstr "Não é possível emitir uma leitura X"
 
-#: ../stoq/gui/till/till.py:221
+#: ../stoq/gui/till/till.py:222
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
@@ -1702,10 +2080,6 @@ msgstr "Confirmação de Venda"
 msgid "Does the %s already exists?"
 msgstr "O %s já existe?"
 
-#: ../stoq/gui/wizards/person.py:91
-msgid "Yes"
-msgstr "Sim"
-
 #: ../stoq/gui/wizards/person.py:93
 #, python-format
 msgid "No, it's a new %s"
@@ -1796,12 +2170,15 @@ msgid ""
 "The price supplied by the scale doesn't match the current one registered in "
 "the system and will be ignored"
 msgstr ""
+"O preço fornecido pela balança difere do preço registrado no sistema e será "
+"ignorado."
 
 #: ../stoq/gui/pos/pos.py:288
 msgid ""
 "The price supplied by the scale is different that the current one registered "
 "in the system"
 msgstr ""
+"O preço fornecido pela balança é diferente do valor registrado no sistema"
 
 #: ../stoq/gui/pos/pos.py:429
 msgid "You don't have products to delivery."
@@ -2195,8 +2572,8 @@ msgid "Number of installments:"
 msgstr "Número de Parcelas:"
 
 #: ../stoq/gui/slaves/glade/TransporterDataSlave.glade.h:5
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:1
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:9
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:1
 msgid "Freight:"
 msgstr "Frete:"
 
@@ -2331,11 +2708,11 @@ msgstr "Detalhes do Usuário"
 
 #: ../stoq/gui/slaves/glade/SaleListToolbar.glade.h:2
 msgid "Return Sale"
-msgstr ""
+msgstr "Devolução de Venda"
 
 #: ../stoq/gui/slaves/glade/SaleListToolbar.glade.h:3
 #: ../stoq/gui/purchase/glade/purchase.glade.h:20
-#: ../stoq/gui/admin/glade/admin.glade.h:19
+#: ../stoq/gui/admin/glade/admin.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:14
 #: ../stoq/gui/till/glade/till.glade.h:13
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
@@ -2346,6 +2723,7 @@ msgstr "Editar"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:1
 #: ../stoq/gui/admin/glade/admin.glade.h:1
+#: ../stoq/gui/sales/glade/sales_app.glade.h:1
 #: ../stoq/gui/till/glade/till.glade.h:2
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:1
 #: ../stoq/gui/receivable/glade/receivable.glade.h:1
@@ -2377,17 +2755,17 @@ msgstr "Categorias..."
 #: ../stoq/gui/purchase/glade/purchase.glade.h:7
 #: ../stoq/gui/admin/glade/admin.glade.h:6
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:3
-#: ../stoq/gui/pos/glade/pos.glade.h:7
+#: ../stoq/gui/pos/glade/pos.glade.h:6
 msgid "Change User..."
 msgstr "Trocar de Usuário..."
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:8
 #: ../stoq/gui/admin/glade/admin.glade.h:7
-#: ../stoq/gui/sales/glade/sales_app.glade.h:2
+#: ../stoq/gui/sales/glade/sales_app.glade.h:3
 #: ../stoq/gui/till/glade/till.glade.h:4
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:4
 #: ../stoq/gui/receivable/glade/receivable.glade.h:4
-#: ../stoq/gui/pos/glade/pos.glade.h:9
+#: ../stoq/gui/pos/glade/pos.glade.h:8
 msgid "Clear Cookie"
 msgstr "Limpar Cookie"
 
@@ -2396,7 +2774,7 @@ msgid "Print Order"
 msgstr "Imprimir Pedido"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:11
-#: ../stoq/gui/sales/glade/sales_app.glade.h:7
+#: ../stoq/gui/sales/glade/sales_app.glade.h:8
 msgid "Products"
 msgstr "Produtos"
 
@@ -2437,7 +2815,7 @@ msgid "Transporters..."
 msgstr "Transportadoras..."
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:21
-#: ../stoq/gui/admin/glade/admin.glade.h:20
+#: ../stoq/gui/admin/glade/admin.glade.h:21
 #: ../stoq/gui/receivable/glade/receivable.glade.h:12
 msgid "_Edit..."
 msgstr "Editar..."
@@ -2463,18 +2841,18 @@ msgid "_Order"
 msgstr "Pedido"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:25
-#: ../stoq/gui/admin/glade/admin.glade.h:21
+#: ../stoq/gui/admin/glade/admin.glade.h:22
 msgid "_Receive"
 msgstr "Receber"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:26
-#: ../stoq/gui/admin/glade/admin.glade.h:22
+#: ../stoq/gui/admin/glade/admin.glade.h:23
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
 msgid "_Store Cookie"
 msgstr "Gravar Cookie"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:27
-#: ../stoq/gui/admin/glade/admin.glade.h:23
+#: ../stoq/gui/admin/glade/admin.glade.h:24
 #: ../stoq/gui/sales/glade/sales_app.glade.h:17
 #: ../stoq/gui/till/glade/till.glade.h:17
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
@@ -2518,9 +2896,9 @@ msgid "Open Date:"
 msgstr "Data de Abertura:"
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:12
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:7
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:11
 #: ../stoq/gui/wizards/glade/CustomerStep.glade.h:4
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:7
 msgid "Order Number:"
 msgstr "Número do Pedido:"
 
@@ -2542,15 +2920,15 @@ msgstr "Vendedor:"
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:18
 #: ../stoq/gui/sales/glade/SaleDetailsDialog.glade.h:9
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:9
 #: ../stoq/gui/wizards/glade/PurchasePaymentStep.glade.h:3
 #: ../stoq/gui/wizards/glade/SalesPersonStep.glade.h:7
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:9
 msgid "Subtotal:"
 msgstr "Subtotal:"
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:19
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:10
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:12
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:10
 msgid "Supplier:"
 msgstr "Fornecedor:"
 
@@ -2568,8 +2946,8 @@ msgid "Total:"
 msgstr "Total:"
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:22
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:11
 #: ../stoq/gui/wizards/glade/FinishPurchaseStep.glade.h:5
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:11
 msgid "Transporter:"
 msgstr "Transportadora:"
 
@@ -2830,7 +3208,7 @@ msgstr "Tipo de Vale Compra:"
 msgid "Add..."
 msgstr "Adicionar..."
 
-#: ../stoq/gui/admin/glade/admin.glade.h:3 ../stoq/gui/pos/glade/pos.glade.h:5
+#: ../stoq/gui/admin/glade/admin.glade.h:3 ../stoq/gui/pos/glade/pos.glade.h:4
 msgid "Arquivo"
 msgstr "Arquivo"
 
@@ -2855,10 +3233,12 @@ msgid "Employees..."
 msgstr "Empregados..."
 
 #: ../stoq/gui/admin/glade/admin.glade.h:11
+#: ../stoq/gui/pos/glade/pos.glade.h:13
 msgid "Help"
 msgstr "_Ajuda"
 
 #: ../stoq/gui/admin/glade/admin.glade.h:12
+#: ../stoq/gui/sales/glade/sales_app.glade.h:9
 #: ../stoq/gui/till/glade/till.glade.h:8
 #: ../stoq/gui/receivable/glade/receivable.glade.h:6
 msgid "Quit"
@@ -2878,58 +3258,54 @@ msgid "Settin_gs"
 msgstr "Configurações"
 
 #: ../stoq/gui/admin/glade/admin.glade.h:17
+msgid "System _Parameters"
+msgstr "_Parâmetros de Sistema"
+
+#: ../stoq/gui/admin/glade/admin.glade.h:18
 msgid "User Profiles..."
 msgstr "Perfis de Usuário..."
 
-#: ../stoq/gui/admin/glade/admin.glade.h:18
+#: ../stoq/gui/admin/glade/admin.glade.h:19
 msgid "_Admin"
 msgstr "Admin"
 
-#: ../stoq/gui/admin/glade/admin.glade.h:24
+#: ../stoq/gui/admin/glade/admin.glade.h:25
 msgid "admin"
 msgstr "administrador"
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:1
+#: ../stoq/gui/sales/glade/sales_app.glade.h:2
 #: ../stoq/gui/till/glade/till.glade.h:3
 #: ../stoq/gui/receivable/glade/receivable.glade.h:3
 msgid "Change User"
 msgstr "Trocar de Usuário"
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:3
+#: ../stoq/gui/sales/glade/sales_app.glade.h:4
 msgid "Clients"
 msgstr "Clientes"
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:4
+#: ../stoq/gui/sales/glade/sales_app.glade.h:5
 msgid "Credit Providers..."
 msgstr "Fornecedores de Crédito..."
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:5
+#: ../stoq/gui/sales/glade/sales_app.glade.h:6
 msgid "Gift Certificate Types..."
 msgstr "Tipo de Vale Compra..."
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:6
+#: ../stoq/gui/sales/glade/sales_app.glade.h:7
 msgid "Gift Certificates..."
 msgstr "Vale Compra..."
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:8
+#: ../stoq/gui/sales/glade/sales_app.glade.h:10
 msgid "S_ales"
 msgstr "Vendas"
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:9
-msgid "Quit"
-msgstr "Salar"
-
-#: ../stoq/gui/sales/glade/sales_app.glade.h:10
+#: ../stoq/gui/sales/glade/sales_app.glade.h:11
 msgid "Searc_h"
 msgstr "_Pesquisar"
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:11
+#: ../stoq/gui/sales/glade/sales_app.glade.h:12
 msgid "Services"
 msgstr "Serviços"
-
-#: ../stoq/gui/sales/glade/sales_app.glade.h:12
-msgid "About"
-msgstr "Sobre"
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:13
 #: ../stoq/gui/till/glade/till.glade.h:11
@@ -2941,7 +3317,7 @@ msgstr "Gravar Cookie"
 #: ../stoq/gui/sales/glade/SaleDetailsDialog.glade.h:1
 #: ../stoq/gui/wizards/glade/CustomerStep.glade.h:2
 #: ../stoq/gui/pos/glade/NewOrderEditor.glade.h:3
-#: ../stoq/gui/pos/glade/pos.glade.h:11
+#: ../stoq/gui/pos/glade/pos.glade.h:10
 msgid "Client:"
 msgstr "Cliente:"
 
@@ -2964,6 +3340,26 @@ msgstr "Senha:"
 #: ../stoq/gui/components/glade/LoginDialog.glade.h:4
 msgid "_Username:"
 msgstr "Usuário:"
+
+#: ../stoq/gui/components/glade/ParametersListingDialog.glade.h:1
+msgid "Edit..."
+msgstr "Editar..."
+
+#: ../stoq/gui/components/glade/ParametersListingDialog.glade.h:2
+msgid "System Parameters Listing"
+msgstr "Listagem de Parâmetros de Sistema"
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:1
+msgid "Current Value:"
+msgstr "Valor Atual:"
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:3
+msgid "Group:"
+msgstr "Grupo:"
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:4
+msgid "Parameter Name:"
+msgstr "Nome do Parâmetro:"
 
 #: ../stoq/gui/till/glade/till.glade.h:1
 msgid " Confirm _Order..."
@@ -3017,31 +3413,6 @@ msgstr "Fechar Caixa..."
 #: ../stoq/gui/till/glade/TillOperationDialog.glade.h:6
 msgid "_Reverse Selection"
 msgstr "Cancelar"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:2
-msgid "ICMS Total:"
-msgstr "ICMS Total:"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:3
-msgid "IPI:"
-msgstr "IPI"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:4
-msgid "Invoice Number:"
-msgstr "Número da Nota Fiscal:"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:5
-msgid "Invoice Total:"
-msgstr "Total da Nota Fiscal:"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:6
-msgid "Notes..."
-msgstr "Notas:"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:8
-#: ../stoq/gui/wizards/glade/CustomerStep.glade.h:5
-msgid "Order Total:"
-msgstr "Total do Pedido:"
 
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:4
 msgid "A_dd/Edit Supplier..."
@@ -3109,6 +3480,11 @@ msgstr "Adicionar/Editar Cliente"
 msgid "Order Details:"
 msgstr "Detalhes do Pedido:"
 
+#: ../stoq/gui/wizards/glade/CustomerStep.glade.h:5
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:8
+msgid "Order Total:"
+msgstr "Total do Pedido:"
+
 #: ../stoq/gui/wizards/glade/ExistingPersonStep.glade.h:1
 msgid "Existing client"
 msgstr "Cliente Existente"
@@ -3145,6 +3521,26 @@ msgstr "Número do Vale Compra:"
 #: ../stoq/gui/wizards/glade/GiftCertificateSelectionStep.glade.h:3
 msgid "Select Gift Certificates"
 msgstr "Selecionar Vale Compra"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:2
+msgid "ICMS Total:"
+msgstr "ICMS Total:"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:3
+msgid "IPI:"
+msgstr "IPI"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:4
+msgid "Invoice Number:"
+msgstr "Número da Nota Fiscal:"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:5
+msgid "Invoice Total:"
+msgstr "Total da Nota Fiscal:"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:6
+msgid "Notes..."
+msgstr "Notas:"
 
 #: ../stoq/gui/wizards/glade/GiftCertificateOverpaidStep.glade.h:2
 #, no-c-format
@@ -3213,7 +3609,7 @@ msgid "receivable"
 msgstr "recebimento"
 
 #: ../stoq/gui/pos/glade/NewOrderEditor.glade.h:2
-#: ../stoq/gui/pos/glade/pos.glade.h:10
+#: ../stoq/gui/pos/glade/pos.glade.h:9
 msgid "Client _Details"
 msgstr "Detalhes do Cliente"
 
@@ -3221,23 +3617,19 @@ msgstr "Detalhes do Cliente"
 msgid "_Add/Edit Client..."
 msgstr "Adicionar/Editar Cliente..."
 
-#: ../stoq/gui/pos/glade/pos.glade.h:3
-msgid "Ajuda"
-msgstr ""
-
-#: ../stoq/gui/pos/glade/pos.glade.h:6
+#: ../stoq/gui/pos/glade/pos.glade.h:5
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/glade/pos.glade.h:8
+#: ../stoq/gui/pos/glade/pos.glade.h:7
 msgid "Chec_kout..."
 msgstr "Confirmar Venda..."
 
-#: ../stoq/gui/pos/glade/pos.glade.h:12
+#: ../stoq/gui/pos/glade/pos.glade.h:11
 msgid "Clients..."
 msgstr "Clientes..."
 
-#: ../stoq/gui/pos/glade/pos.glade.h:13
+#: ../stoq/gui/pos/glade/pos.glade.h:12
 msgid "Deli_very..."
 msgstr "Entrega..."
 
