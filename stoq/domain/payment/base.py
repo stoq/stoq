@@ -235,9 +235,17 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      METHOD_CHECK,
      METHOD_BILL,
      METHOD_CARD,
-     METHOD_FINANCIER,
+     METHOD_FINANCE,
      METHOD_GIFT_CERTIFICATE,
      METHOD_MULTIPLE) = range(7)
+
+    method_names = {METHOD_MONEY:              _('Money'),
+                    METHOD_CHECK:              _('Check'),
+                    METHOD_BILL:               _('Bill'),
+                    METHOD_CARD:               _('Card'),
+                    METHOD_FINANCE:            _('Finance'),
+                    METHOD_GIFT_CERTIFICATE:   _('Gift Certificate'),
+                    METHOD_MULTIPLE:           _('Multiple')}
 
     implements(IPaymentGroup, IContainer)
 
@@ -299,7 +307,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                 self.METHOD_CHECK: ICheckPM,
                 self.METHOD_BILL: IBillPM,
                 self.METHOD_CARD: ICardPM,
-                self.METHOD_FINANCIER: IFinancePM,
+                self.METHOD_FINANCE: IFinancePM,
                 self.METHOD_MULTIPLE: None}
                 
     def get_method_id_by_iface(self, iface):
@@ -326,6 +334,13 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def get_default_payment_method(self):
         """This hook must be redefined in a subclass when it's necessary"""
         return self.default_method
+
+    def get_default_payment_method_name(self):
+        """This hook must be redefined in a subclass when it's necessary"""
+        if not self.default_method in self.method_names.keys():
+            raise DatabaseInconsistency('Invalid payment method, got %d' 
+                                        % self.default_method)
+        return self.method_names[self.default_method]
 
     def setup_inpayments(self):
         methods = self.get_available_methods()
