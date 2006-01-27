@@ -96,7 +96,8 @@ class TillApp(SearchableAppWindow):
         self.TillOpen.set_sensitive(not has_till)
         self.TillOperations.set_sensitive(has_till)
         has_sales = len(self.sales) > 0
-        self.confirm_order_button.set_sensitive(has_sales)
+        is_sensitive = bool(has_sales and self.sales.get_selected())
+        self.confirm_order_button.set_sensitive(is_sensitive)
         self._update_total()
 
     def on_searchbar_activate(self, slave, objs):
@@ -236,3 +237,6 @@ class TillApp(SearchableAppWindow):
 
     def on_sales__double_click(self, *args):
         self._confirm_order()
+
+    def on_sales__selection_changed(self, klist, data):
+        self.confirm_order_button.set_sensitive(bool(data))
