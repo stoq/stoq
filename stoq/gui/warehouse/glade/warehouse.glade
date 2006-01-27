@@ -206,7 +206,6 @@
                 </child>
                 <child>
                     <widget class="GtkVBox" id="vbox2">
-                        <property name="border_width">5</property>
                         <property name="spacing">2</property>
                         <property name="visible">True</property>
                         <child>
@@ -272,7 +271,8 @@
                                                             <widget class="GtkHBox" id="GtkHBox1">
                                                                 <property name="visible">True</property>
                                                                 <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
+                                                                    <widget
+                                                                    class="GtkImage" id="GtkImage5">
                                                                         <property name="file">kfind16px.png</property>
                                                                         <property name="visible">True</property>
                                                                     </widget>
