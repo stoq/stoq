@@ -7,7 +7,7 @@ from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
      listpackages)
 
 PACKAGE = 'stoq'
-VERSION = '0.2.0'
+VERSION = '0.6.0'
  
 class StoqInstallData(install_data):
     def run(self):
