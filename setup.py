@@ -26,6 +26,7 @@ from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
 from stoqlib.__version__ import version
 
 PACKAGE = 'stoqlib'
+VERSION = '0.6.0'
 
 class StoqLibInstallData(install_data):
     def run(self):
@@ -39,7 +40,7 @@ class StoqLibInstallLib(TemplateInstallLib):
                             glade='$datadir/glade')
     
 setup(name=PACKAGE,
-      version='.'.join(map(str, version)),
+      version=VERSION,
       author="Async Open Source",
       author_email="evandro@async.com.br",
       url="http://www.async.com.br/projects/",
