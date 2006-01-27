@@ -1,8 +1,8 @@
 
 Release 0.6.0,  27-January-2006
     - Bug Fixes: 2135 2166 2177 2178 2247 2252 2256 2266 2268 2271 2272 
-                 2310 2320 2325 2370 2374 2376 2380 2383 2385 2388 2393 
-                 2395 2401 2402 2403
+                 2310 2325 2370 2374 2376 2380 2383 2385 2388 2393 2395 
+                 2401 2402 2403
 
     - Portuguese translation (Bruno Garcia)
     - Improvements on icons of all applications (Evandro Miquelito)
@@ -17,7 +17,6 @@ Release 0.6.0,  27-January-2006
     - Database configuration options improvements (Johan Dahlin)
     - New tests added (Grazieno Pelegrino and Rudá Porto)
     - New branch company editor (Bruno Garcia)
-    - Check printers support (Henrique Romano)
     - Scales support (Henrique Romano)
     - Wizards improvements on edit mode (Evandro Miquelito)
     - Sales search dialog improvements (Henrique Romano)
