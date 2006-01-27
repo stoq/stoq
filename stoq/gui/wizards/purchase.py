@@ -287,6 +287,13 @@ class StartPurchaseStep(BaseWizardStep):
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()
         self.freight.set_sensitive(has_freight)
+        self._update_freight()
+
+    def _update_freight(self):
+        if self.cif_radio.get_active():
+            self.model.freight_type = self.model_type.FREIGHT_CIF
+        else:
+            self.model.freight_type = self.model_type.FREIGHT_FOB
 
     #
     # WizardStep hooks
@@ -302,10 +309,6 @@ class StartPurchaseStep(BaseWizardStep):
         self.force_validation()
 
     def next_step(self):
-        if self.cif_radio.get_active():
-            self.model.freight_type = self.model_type.FREIGHT_CIF
-        else:
-            self.model.freight_type = self.model_type.FREIGHT_FOB
         return PurchaseProductStep(self.wizard, self, self.conn, 
                                    self.model)
 
