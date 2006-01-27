@@ -81,3 +81,19 @@ def get_supported_printers():
             result[brand].append(obj)
     return result
 
+def get_supported_printers_by_iface(interface):
+    """ Returns all the printers that supports the interface.  The result
+    format is the same for get_supported_printers."""
+    if not interface in (ICouponPrinter, IChequePrinter):
+        raise TypeError("Interface specified (`%r') is not a valid "
+                        "printer interface" % interface)
+    all_printers_supported = get_supported_printers()
+    result = {}
+    for model, driver_list in all_printers_supported.items():
+        drivers = []
+        for driver in driver_list:
+            if interface.implementedBy(driver):
+                drivers.append(driver)
+        if drivers:
+            result[model] = drivers
+    return result
