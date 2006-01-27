@@ -23,7 +23,7 @@ Python 2.4 or higher
 PyGTK 2.8.1 or higher
 PostgresSQL 7.4.7 or higher
 SQLObject 0.7.0
-Gazpacho 0.6.2 
+Gazpacho 0.6.5
 Kiwi 1.9.4
 stoqlib 0.6.0
 Stoqdrivers 0.2.0
