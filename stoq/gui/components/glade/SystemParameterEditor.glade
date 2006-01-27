@@ -1,0 +1,125 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="SystemParameterEditor">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <property name="visible">True</property>
+        <property name="width_request">450</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="border_width">6</property>
+                <property name="column_spacing">5</property>
+                <property name="n_columns">2</property>
+                <property name="n_rows">3</property>
+                <property name="row_spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Group:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label2">
+                        <property name="label" context="yes" translatable="yes">Parameter Name:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="yalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label3">
+                        <property name="label" context="yes" translatable="yes">Current Value:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                        <property name="data_type">str</property>
+                        <property name="label" context="yes" translatable="yes">General</property>
+                        <property name="model_attribute">field_name</property>
+                        <property name="use_markup">False</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="vbox1">
+                        <property name="spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="parameter_name">
+                                <property name="data_type">str</property>
+                                <property name="model_attribute">short_desc</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="parameter_desc">
+                                <property name="can_focus">True</property>
+                                <property name="data_type">str</property>
+                                <property name="model_attribute">long_desc</property>
+                                <property name="selectable">True</property>
+                                <property name="visible">True</property>
+                                <property name="wrap">True</property>
+                                <property name="xalign">0.0</property>
+                                <property name="yalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkAlignment" id="container">
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
