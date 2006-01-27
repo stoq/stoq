@@ -113,7 +113,7 @@ class SystemParameterEditor(BaseEditor):
     #
 
     def get_title(self, model):
-        return "Edit '%s' Parameter" % self._parameter_details.short_desc
+        return _("Edit '%s' Parameter") % self._parameter_details.short_desc
 
     def setup_proxies(self):
         self.add_proxy(self._parameter_details,
