@@ -29,14 +29,20 @@ stoq/domain/receiving.py:
 """
 
 import datetime
+import gettext
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
+from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 
 from stoq.domain.base import Domain
-from stoq.domain.interfaces import IContainer
+from stoq.domain.interfaces import IStorable
 from stoq.domain.purchase import PurchaseOrder
+from stoq.lib.validators import get_formatted_price
+from stoq.lib.columns import PriceCol
+
+_ = gettext.gettext
 
 
 class ReceivingOrderItem(Domain):
@@ -64,8 +70,6 @@ class ReceivingOrderItem(Domain):
 class ReceivingOrder(Domain):
     """Receiving order definition."""
 
-    implements(IContainer)
-
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
         
@@ -73,13 +77,15 @@ class ReceivingOrder(Domain):
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     invoice_number = StringCol(default='')
-    invoice_total = FloatCol(default=0.0)
+    invoice_total = PriceCol(default=0.0)
     notes = StringCol(default='')
-    freight_total = FloatCol(default=0.0)
+    freight_total = PriceCol(default=0.0)
+    charge_value = FloatCol(default=0.0)
+    discount_value = FloatCol(default=0.0)
 
     # This is Brazil-specific information
-    icms_total = FloatCol(default=0.0)
-    ipi_total = FloatCol(default=0.0)
+    icms_total = PriceCol(default=0.0)
+    ipi_total = PriceCol(default=0.0)
 
     responsible = ForeignKey('PersonAdaptToUser')
     supplier = ForeignKey('PersonAdaptToSupplier')
@@ -93,9 +99,111 @@ class ReceivingOrder(Domain):
         Domain._create(self, id, **kw)
 
     def confirm(self):
-        # Update all the items of the purchaseorder, updating its quantity
-        # attribute
-        pass
+        conn = self.get_connection()
+        for item in self.get_items():
+            sellable = item.sellable
+            adapted = item.sellable.get_adapted()
+            storable = IStorable(adapted, connection=conn)
+            if not storable:
+                raise DatabaseInconsistency('Sellable %r must have a '
+                                            'storable facet at this point'
+                                            % sellable)
+            quantity = item.quantity_received
+            storable.increase_stock(quantity, self.branch)
+            if self.purchase:
+                self.purchase.increase_quantity_received(sellable, quantity)
+        if self.purchase and self.purchase.can_close():
+            self.purchase.close()
+
+    def get_items(self):
+        conn = self.get_connection()
+        return ReceivingOrderItem.selectBy(receiving_order=self,
+                                           connection=conn)
+
+    #
+    # Accessors
+    #
+    
+    def get_products_total(self):
+        return sum([item.get_total() for item in self.get_items()], 0.0)
+
+    def get_products_total_str(self):
+        return get_formatted_price(self.get_products_total())
+
+    def get_order_total(self):
+        products_total = self.get_products_total()
+        order_total = (products_total + self.charge_value -
+                       self.discount_value + self.icms_total +
+                       self.ipi_total + self.freight_total)
+        if order_total < 0:
+            raise DatabaseInconsistency('Order total must be greater '
+                                        'than zero')
+        return order_total
+
+    def get_order_total_str(self):
+        return get_formatted_price(self.get_order_total())
+
+    def get_order_number(self):
+        if not self.purchase:
+            return _('No order set')
+        return self.purchase.get_order_number_str()
+        
+    #
+    # General methods
+    #
+
+    def reset_discount_and_charge(self):
+        self.discount_value = self.charge_value = 0.0
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return 0.0
+        subtotal = self.get_products_total()
+        return subtotal * (percentage/100.0)
+
+    def _set_discount_by_percentage(self, value):
+        """Sets a discount by percentage.
+        Note that percentage must be added as an absolute value not as a 
+        factor like 1.05 = 5 % of charge
+        The correct form is 'percentage = 3' for a discount of 3 %
+        """
+        self.discount_value = self._get_percentage_value(value)
+
+    def _get_discount_by_percentage(self):
+        discount_value = self.discount_value
+        if not discount_value:
+            return 0.0
+        subtotal = self.get_products_total()
+        assert subtotal > 0, ('the subtotal should not be zero '
+                              'at this point')
+        total = subtotal - discount_value
+        percentage = (1 - total / float(subtotal)) * 100
+        return percentage
+
+    discount_percentage = property(_get_discount_by_percentage,
+                                   _set_discount_by_percentage)
+
+    def _set_charge_by_percentage(self, value):
+        """Sets a charge by percentage.
+        Note that charge must be added as an absolute value not as a 
+        factor like 0.97 = 3 % of discount.
+        The correct form is 'percentage = 3' for a charge of 3 %
+        """
+        self.charge_value = self._get_percentage_value(value)
+
+    def _get_charge_by_percentage(self):
+        charge_value = self.charge_value
+        if not charge_value:
+            return 0.0
+        subtotal = self.get_products_total()
+        assert subtotal > 0, ('the subtotal should not be zero '
+                              'at this point')
+        total = subtotal + charge_value
+        percentage = ((total / float(subtotal)) - 1) * 100
+        return percentage
+
+    charge_percentage = property(_get_charge_by_percentage,
+                                 _set_charge_by_percentage)
 
 
 @argcheck(PurchaseOrder, ReceivingOrder)

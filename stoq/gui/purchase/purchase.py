@@ -51,6 +51,7 @@ from stoq.gui.search.category import (BaseSellableCatSearch,
                                       SellableCatSearch)
 from stoq.gui.search.product import ProductSearch
 from stoq.gui.search.service import ServiceSearch
+from stoq.gui.purchase.details import PurchaseDetailsDialog
 
 _ = gettext.gettext
 
@@ -122,8 +123,8 @@ class PurchaseApp(SearchableAppWindow):
         self.send_to_supplier_action.set_sensitive(has_item_selected)
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), sorted=True,
-                       data_type=int, width=100, format='%03d'),
+        return [Column('order_number_str', title=_('Number'), sorted=True,
+                       data_type=str, width=100),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date),
                 ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
@@ -177,11 +178,22 @@ class PurchaseApp(SearchableAppWindow):
         # FIXME Remove this method after gazpacho bug fix.
         self._open_order()
 
+    def _run_details_dialog(self, *args):
+        orders = self.orders.get_selected_rows()
+        qty = len(orders)
+        if qty != 1:
+            raise ValueError('You should have only one order selected '
+                             'at this point, got %d' % qty)
+        self.run_dialog(PurchaseDetailsDialog, self.conn, model=orders[0])
+
+    def on_details_button__clicked(self, *args):
+        self._run_details_dialog()
+
     def on_orders__selection_changed(self, *args):
         self._update_view()
 
     def on_orders__double_click(self, *args):
-        self._edit_order()
+        self._run_details_dialog()
 
     def _on_suppliers_action_clicked(self, *args):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
