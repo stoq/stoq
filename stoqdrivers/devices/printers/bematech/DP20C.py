@@ -44,6 +44,8 @@ class DP20C(SerialBase, BaseChequePrinter):
 
     implements(IChequePrinter)
 
+    model_name = "Bematech DP20C"
+
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
         BaseChequePrinter.__init__(self)
