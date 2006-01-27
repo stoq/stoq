@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 15:31-0200\n"
+"POT-Creation-Date: 2006-01-27 16:38-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -284,7 +284,7 @@ msgid "Reviewing"
 msgstr ""
 
 #: ../stoq/domain/sale.py:142 ../stoq/gui/pos/glade/NewOrderEditor.glade.h:1
-#: ../stoq/gui/pos/glade/pos.glade.h:4
+#: ../stoq/gui/pos/glade/pos.glade.h:3
 msgid "Anonymous"
 msgstr ""
 
@@ -496,33 +496,363 @@ msgid ""
 "username> "
 msgstr ""
 
+#: ../stoq/lib/parameters.py:56 ../stoq/lib/parameters.py:59
+#: ../stoq/lib/parameters.py:130 ../stoq/lib/parameters.py:134
+#: ../stoq/lib/parameters.py:138 ../stoq/lib/parameters.py:168
+#: ../stoq/lib/parameters.py:178
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:2
+msgid "General"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:56
+msgid "Current Branch"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:57
+msgid "The current branch associated with the current system installation."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:59
+msgid "Current Warehouse"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:60
+msgid "The company's warehouse"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:61 ../stoq/lib/parameters.py:100
+#: ../stoq/lib/parameters.py:103 ../stoq/lib/parameters.py:117
+#: ../stoq/lib/parameters.py:122 ../stoq/lib/parameters.py:142
+#: ../stoq/lib/parameters.py:153 ../stoq/lib/parameters.py:163
+#: ../stoq/lib/parameters.py:172 ../stoq/lib/parameters.py:189
+#: ../stoq/lib/parameters.py:222 ../stoq/gui/sales/sales.py:56
+#, fuzzy
+msgid "Sales"
+msgstr "_Försäljning"
+
+#: ../stoq/lib/parameters.py:62
+msgid "Default Salesperson Role"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:63
+msgid ""
+"Defines which of the employee roles existent in the system is the "
+"salesperson role"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:67 ../stoq/lib/parameters.py:72
+#: ../stoq/lib/parameters.py:209 ../stoq/lib/parameters.py:230
+#: ../stoq/gui/purchase/purchase.py:61
+#, fuzzy
+msgid "Purchase"
+msgstr "Pris"
+
+#: ../stoq/lib/parameters.py:68
+msgid "Suggested Supplier"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:69
+msgid ""
+"The supplier suggested when we are adding a new product's supplier in the "
+"system"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:73
+msgid "Default Base Sellable Category"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:75
+msgid ""
+"A default base sellable category which we always get as a suggestion when "
+"adding a new Sellable on the system"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:80 ../stoq/lib/parameters.py:90
+#: ../stoq/lib/parameters.py:96 ../stoq/lib/parameters.py:151
+#: ../stoq/lib/parameters.py:198
+msgid "Financial"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:81
+msgid "Default Payment Destination"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:83
+msgid ""
+"A default payment destination which will be used for all the created "
+"payments until the user change the destination of each payment method."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:91
+msgid "Base Payment Method"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:92
+msgid ""
+"The base payment method which can easily be converted to other methods like "
+"check and bill."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:96
+msgid "Money Payment Method"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:97
+msgid "Definition of the money payment method. This parameter is not editable"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:100
+#, fuzzy
+msgid "Delivery Service"
+msgstr "Utdelning"
+
+#: ../stoq/lib/parameters.py:101
+msgid "The default delivery service in the system."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:104
+msgid "Default Gift Certificate Type"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:106
+msgid ""
+"The default gift certificate type used when canceling sales and during "
+"renegotiations."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:111 ../stoq/lib/parameters.py:147
+#: ../stoq/lib/parameters.py:158 ../stoq/gui/search/sellable.py:113
+msgid "Stock"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:111
+#, fuzzy
+msgid "Use Logic Quantity"
+msgstr "Antal"
+
+#: ../stoq/lib/parameters.py:112
+msgid ""
+"An integer that defines if the company can work or not with logic quantities "
+"during stock operations. See StockItem documentation."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:117
+msgid "Client Maximum Late Days"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:118
+msgid ""
+"An integer that represents a maximum number of days which a certain client "
+"can have unpaid payments with normal status."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:123
+#, fuzzy
+msgid "Accept Order Products"
+msgstr "Ingen produkt vald"
+
+#: ../stoq/lib/parameters.py:124
+msgid ""
+"Can this company make sales for products that doesn't actually exist in the "
+"stock ? If this parameter is True we can order products."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:130
+msgid "City Suggested"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:131
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"city."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:134
+msgid "State Suggested"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:135
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"state."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:138
+msgid "Country Suggested"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:139
+msgid ""
+"When adding a new address for a certain person we will always suggest this "
+"country."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:143
+msgid "Sellable Price Precision"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:144
+msgid "Precision for the price attribute of a sellable object."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:148
+msgid "Stock Balance Precision"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:149
+msgid "precision for product stock balances."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:151
+msgid "Payment Precision"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:152
+msgid "Precision for payment values."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:153
+#, fuzzy
+msgid "Has Delivery Mode"
+msgstr "Utdelning"
+
+#: ../stoq/lib/parameters.py:154
+msgid ""
+"Does this branch work with delivery service? If not, the delivery option "
+"will be disable on Point of Sales Application."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:158
+msgid "Has Stock Mode"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:159
+msgid ""
+"Does this branch work with storable items? If the answer is negative, we "
+"will disable stock operations in the system."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:164
+#, fuzzy
+msgid "Edit Sellable Price"
+msgstr "Pris"
+
+#: ../stoq/lib/parameters.py:165
+msgid ""
+"Can we change the price attribute of a SellableItem object during a sale?"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:168
+msgid "Max Search Results"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:169
+msgid ""
+"The maximum number of results we must show after searching in any dialog."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:173
+msgid "Mandatory Interest Charge"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:174
+msgid ""
+"Once this paramter is set, the charge of monthly interest will be mandatory "
+"for every payment"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:179
+msgid "Comparison Float Tolerance "
+msgstr ""
+
+#: ../stoq/lib/parameters.py:181
+msgid ""
+"This is useful when performing comparison between two float numbers. If abs"
+"(numberA - numberB) = This  parameter value, the two numbers can be "
+"considerer equals"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:190
+msgid "Confirm Sales on Till"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:191
+msgid ""
+"Once this parameter is set, the sales confirmation are only made on till "
+"application and the fiscal coupon will be printed on that application "
+"instead of Point of Sales"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:199
+msgid "Set Payment Methods on Till"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:201
+msgid ""
+"Do not show payment method definitions step on SaleWizard through POS "
+"application if CONFIRM_SALES_ON_TILL is set. This step will only be show on "
+"Till application."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:210
+msgid "Use Purchase Preview Payments"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:212
+msgid ""
+"Generate preview payments for new purchases which are not received yet. Once "
+"the order is received the preview payments will be also confirmed as valid "
+"payments with STATUS_TO_PAY"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:223
+msgid "Return Money On Sales"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:224
+msgid ""
+"Once this parameter is set the salesperson can return money to clients when "
+"there is overpaid values in sales with gift certificates as payment method."
+msgstr ""
+
+#: ../stoq/lib/parameters.py:231
+msgid "Receive Products Without Order"
+msgstr ""
+
+#: ../stoq/lib/parameters.py:233
+msgid ""
+"Can we receive products without having a purchase order created for them ? "
+"If yes, the first step of ReceivalWizard will accept going to the second "
+"step with no order selected."
+msgstr ""
+
 #. XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
 #. what is the cnpj of this company I need to put something there because
 #. this is a mandatory field. I think use a simple string could help user
 #. to fix this field later.
-#: ../stoq/lib/parameters.py:410
+#: ../stoq/lib/parameters.py:481
 msgid "current_branch"
 msgstr ""
 
 #. XXX See ensure_current_branch comment: we have the same problem with
 #. cnpj here.
-#: ../stoq/lib/parameters.py:424
+#: ../stoq/lib/parameters.py:495
 msgid "current_warehouse"
 msgstr ""
 
-#: ../stoq/lib/parameters.py:436
+#: ../stoq/lib/parameters.py:507
 msgid "Default Store Destination"
 msgstr ""
 
-#: ../stoq/lib/parameters.py:466 ../stoq/gui/editors/delivery.py:53
+#: ../stoq/lib/parameters.py:538 ../stoq/gui/editors/delivery.py:53
 msgid "Delivery"
 msgstr "Utdelning"
 
-#: ../stoq/lib/parameters.py:481
+#: ../stoq/lib/parameters.py:553
 msgid "General Gift Certificate"
 msgstr ""
 
-#: ../stoq/lib/parameters.py:509
+#: ../stoq/lib/parameters.py:581
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr ""
@@ -572,7 +902,7 @@ msgstr ""
 msgid "Additional Contacts"
 msgstr ""
 
-#: ../stoq/gui/slaves/liaison.py:56 ../stoq/gui/admin/admin.py:90
+#: ../stoq/gui/slaves/liaison.py:56 ../stoq/gui/admin/admin.py:91
 #: ../stoq/gui/search/person.py:105 ../stoq/gui/search/person.py:140
 #: ../stoq/gui/search/person.py:180 ../stoq/gui/search/person.py:227
 #: ../stoq/gui/search/person.py:273 ../stoq/gui/search/person.py:326
@@ -618,11 +948,6 @@ msgstr "Ta bort"
 msgid "Salary"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:61
-#, fuzzy
-msgid "Purchase"
-msgstr "Pris"
-
 #: ../stoq/gui/purchase/purchase.py:66 ../stoq/gui/wizards/receiving.py:299
 #, fuzzy
 msgid "order"
@@ -633,7 +958,7 @@ msgstr "Kod"
 msgid "orders"
 msgstr "Kod"
 
-#: ../stoq/gui/purchase/purchase.py:67 ../stoq/gui/admin/admin.py:62
+#: ../stoq/gui/purchase/purchase.py:67 ../stoq/gui/admin/admin.py:63
 #: ../stoq/gui/sales/sales.py:62 ../stoq/gui/search/sellable.py:70
 #: ../stoq/gui/search/sale.py:70 ../stoq/gui/search/person.py:84
 #: ../stoq/gui/search/person.py:164 ../stoq/gui/search/person.py:205
@@ -646,7 +971,7 @@ msgstr ""
 msgid "Show orders with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:72
+#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:73
 #: ../stoq/gui/sales/sales.py:97 ../stoq/gui/search/giftcertificate.py:71
 #: ../stoq/gui/search/giftcertificate.py:141 ../stoq/gui/search/product.py:96
 #: ../stoq/gui/search/service.py:74 ../stoq/gui/search/sale.py:116
@@ -673,7 +998,7 @@ msgstr ""
 msgid "Supplier"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:134 ../stoq/gui/admin/admin.py:93
+#: ../stoq/gui/purchase/purchase.py:134 ../stoq/gui/admin/admin.py:94
 #: ../stoq/gui/sales/details.py:110 ../stoq/gui/sales/sales.py:123
 #: ../stoq/gui/search/giftcertificate.py:164 ../stoq/gui/search/product.py:139
 #: ../stoq/gui/search/service.py:109 ../stoq/gui/search/sale.py:87
@@ -760,7 +1085,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase/details.py:95 ../stoq/gui/purchase/details.py:109
 #: ../stoq/gui/sales/details.py:121 ../stoq/gui/sales/sales.py:125
-#: ../stoq/gui/search/sale.py:89 ../stoq/gui/till/till.py:121
+#: ../stoq/gui/search/sale.py:89 ../stoq/gui/till/till.py:122
 #: ../stoq/gui/wizards/purchase.py:223 ../stoq/gui/wizards/receiving.py:188
 #: ../stoq/gui/pos/pos.py:307
 msgid "Total"
@@ -770,6 +1095,16 @@ msgstr "Totalt"
 #, fuzzy
 msgid "Quantity Received"
 msgstr "Antal"
+
+#: ../stoq/gui/editors/parameters.py:95
+#: ../stoq/gui/components/parameters.py:105 ../stoq/gui/wizards/person.py:91
+msgid "Yes"
+msgstr ""
+
+#: ../stoq/gui/editors/parameters.py:101
+#: ../stoq/gui/components/parameters.py:105
+msgid "No"
+msgstr ""
 
 #: ../stoq/gui/editors/contact.py:43
 msgid "Liaison"
@@ -1000,7 +1335,7 @@ msgid "Additional Addresses"
 msgstr ""
 
 #: ../stoq/gui/editors/person.py:64 ../stoq/gui/sales/sales.py:117
-#: ../stoq/gui/search/sale.py:81 ../stoq/gui/till/till.py:118
+#: ../stoq/gui/search/sale.py:81 ../stoq/gui/till/till.py:119
 msgid "Client"
 msgstr ""
 
@@ -1062,30 +1397,30 @@ msgstr ""
 msgid "Branch"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:57
+#: ../stoq/gui/admin/admin.py:58
 msgid "Administrative"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:61
+#: ../stoq/gui/admin/admin.py:62
 #, fuzzy
 msgid "user"
 msgstr "_Användare"
 
-#: ../stoq/gui/admin/admin.py:61
+#: ../stoq/gui/admin/admin.py:62
 #, fuzzy
 msgid "users"
 msgstr "_Användare"
 
-#: ../stoq/gui/admin/admin.py:63
+#: ../stoq/gui/admin/admin.py:64
 #, fuzzy
 msgid "Show users with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/admin/admin.py:85
+#: ../stoq/gui/admin/admin.py:86
 msgid "Login Name"
 msgstr ""
 
-#: ../stoq/gui/admin/admin.py:87 ../stoq/gui/search/profile.py:62
+#: ../stoq/gui/admin/admin.py:88 ../stoq/gui/search/profile.py:62
 #, fuzzy
 msgid "Profile"
 msgstr "Pris"
@@ -1121,11 +1456,6 @@ msgstr ""
 #: ../stoq/gui/wizards/sale.py:410 ../stoq/gui/pos/pos.py:303
 msgid "Price"
 msgstr "Pris"
-
-#: ../stoq/gui/sales/sales.py:56
-#, fuzzy
-msgid "Sales"
-msgstr "_Försäljning"
 
 #: ../stoq/gui/sales/sales.py:61 ../stoq/gui/search/sale.py:69
 #: ../stoq/gui/till/till.py:64
@@ -1334,10 +1664,6 @@ msgstr "_Försäljning"
 msgid "sale items"
 msgstr "_Försäljning"
 
-#: ../stoq/gui/search/sellable.py:113
-msgid "Stock"
-msgstr ""
-
 #: ../stoq/gui/search/sellable.py:135
 #, fuzzy
 msgid "Show sale items at"
@@ -1515,6 +1841,22 @@ msgstr "Ingen produkt vald"
 msgid " Authenticating user..."
 msgstr ""
 
+#: ../stoq/gui/components/parameters.py:57
+msgid "Stoq System Parameters"
+msgstr ""
+
+#: ../stoq/gui/components/parameters.py:85
+msgid "Group"
+msgstr ""
+
+#: ../stoq/gui/components/parameters.py:87
+msgid "Parameter Name"
+msgstr ""
+
+#: ../stoq/gui/components/parameters.py:89
+msgid "Current Value"
+msgstr ""
+
 #: ../stoq/gui/till/operation.py:61
 msgid "Till Operations"
 msgstr ""
@@ -1588,41 +1930,41 @@ msgstr ""
 msgid "Sales Matching:"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:113
+#: ../stoq/gui/till/till.py:114
 msgid "Order"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:116
+#: ../stoq/gui/till/till.py:117
 msgid "Date"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:187
+#: ../stoq/gui/till/till.py:188
 msgid "Confirm Sale"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:206
+#: ../stoq/gui/till/till.py:207
 msgid "It's not possible to emit a reduce Z"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:207
+#: ../stoq/gui/till/till.py:208
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:210 ../stoq/gui/till/till.py:224
+#: ../stoq/gui/till/till.py:211 ../stoq/gui/till/till.py:225
 msgid "Cancel Operation"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:211 ../stoq/gui/till/till.py:225
+#: ../stoq/gui/till/till.py:212 ../stoq/gui/till/till.py:226
 msgid "Ignore this error"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:220
+#: ../stoq/gui/till/till.py:221
 msgid "It's not possible to emit a read X"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:221
+#: ../stoq/gui/till/till.py:222
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
@@ -1714,10 +2056,6 @@ msgstr "Checkout"
 #: ../stoq/gui/wizards/person.py:89
 #, python-format
 msgid "Does the %s already exists?"
-msgstr ""
-
-#: ../stoq/gui/wizards/person.py:91
-msgid "Yes"
 msgstr ""
 
 #: ../stoq/gui/wizards/person.py:93
@@ -2210,8 +2548,8 @@ msgid "Number of installments:"
 msgstr ""
 
 #: ../stoq/gui/slaves/glade/TransporterDataSlave.glade.h:5
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:1
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:9
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:1
 msgid "Freight:"
 msgstr ""
 
@@ -2350,7 +2688,7 @@ msgstr ""
 
 #: ../stoq/gui/slaves/glade/SaleListToolbar.glade.h:3
 #: ../stoq/gui/purchase/glade/purchase.glade.h:20
-#: ../stoq/gui/admin/glade/admin.glade.h:19
+#: ../stoq/gui/admin/glade/admin.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:14
 #: ../stoq/gui/till/glade/till.glade.h:13
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
@@ -2361,6 +2699,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:1
 #: ../stoq/gui/admin/glade/admin.glade.h:1
+#: ../stoq/gui/sales/glade/sales_app.glade.h:1
 #: ../stoq/gui/till/glade/till.glade.h:2
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:1
 #: ../stoq/gui/receivable/glade/receivable.glade.h:1
@@ -2392,17 +2731,17 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:7
 #: ../stoq/gui/admin/glade/admin.glade.h:6
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:3
-#: ../stoq/gui/pos/glade/pos.glade.h:7
+#: ../stoq/gui/pos/glade/pos.glade.h:6
 msgid "Change User..."
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:8
 #: ../stoq/gui/admin/glade/admin.glade.h:7
-#: ../stoq/gui/sales/glade/sales_app.glade.h:2
+#: ../stoq/gui/sales/glade/sales_app.glade.h:3
 #: ../stoq/gui/till/glade/till.glade.h:4
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:4
 #: ../stoq/gui/receivable/glade/receivable.glade.h:4
-#: ../stoq/gui/pos/glade/pos.glade.h:9
+#: ../stoq/gui/pos/glade/pos.glade.h:8
 msgid "Clear Cookie"
 msgstr ""
 
@@ -2412,7 +2751,7 @@ msgid "Print Order"
 msgstr "_Nollställ order"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:11
-#: ../stoq/gui/sales/glade/sales_app.glade.h:7
+#: ../stoq/gui/sales/glade/sales_app.glade.h:8
 msgid "Products"
 msgstr ""
 
@@ -2455,7 +2794,7 @@ msgid "Transporters..."
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:21
-#: ../stoq/gui/admin/glade/admin.glade.h:20
+#: ../stoq/gui/admin/glade/admin.glade.h:21
 #: ../stoq/gui/receivable/glade/receivable.glade.h:12
 msgid "_Edit..."
 msgstr ""
@@ -2482,18 +2821,18 @@ msgid "_Order"
 msgstr "_Nollställ order"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:25
-#: ../stoq/gui/admin/glade/admin.glade.h:21
+#: ../stoq/gui/admin/glade/admin.glade.h:22
 msgid "_Receive"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:26
-#: ../stoq/gui/admin/glade/admin.glade.h:22
+#: ../stoq/gui/admin/glade/admin.glade.h:23
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
 msgid "_Store Cookie"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:27
-#: ../stoq/gui/admin/glade/admin.glade.h:23
+#: ../stoq/gui/admin/glade/admin.glade.h:24
 #: ../stoq/gui/sales/glade/sales_app.glade.h:17
 #: ../stoq/gui/till/glade/till.glade.h:17
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
@@ -2537,9 +2876,9 @@ msgid "Open Date:"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:12
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:7
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:11
 #: ../stoq/gui/wizards/glade/CustomerStep.glade.h:4
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:7
 msgid "Order Number:"
 msgstr ""
 
@@ -2561,15 +2900,15 @@ msgstr ""
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:18
 #: ../stoq/gui/sales/glade/SaleDetailsDialog.glade.h:9
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:9
 #: ../stoq/gui/wizards/glade/PurchasePaymentStep.glade.h:3
 #: ../stoq/gui/wizards/glade/SalesPersonStep.glade.h:7
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:9
 msgid "Subtotal:"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:19
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:10
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:12
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:10
 msgid "Supplier:"
 msgstr ""
 
@@ -2589,8 +2928,8 @@ msgid "Total:"
 msgstr "Totalt"
 
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:22
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:11
 #: ../stoq/gui/wizards/glade/FinishPurchaseStep.glade.h:5
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:11
 msgid "Transporter:"
 msgstr ""
 
@@ -2854,7 +3193,7 @@ msgstr ""
 msgid "Add..."
 msgstr ""
 
-#: ../stoq/gui/admin/glade/admin.glade.h:3 ../stoq/gui/pos/glade/pos.glade.h:5
+#: ../stoq/gui/admin/glade/admin.glade.h:3 ../stoq/gui/pos/glade/pos.glade.h:4
 msgid "Arquivo"
 msgstr ""
 
@@ -2881,11 +3220,13 @@ msgid "Employees..."
 msgstr ""
 
 #: ../stoq/gui/admin/glade/admin.glade.h:11
+#: ../stoq/gui/pos/glade/pos.glade.h:13
 #, fuzzy
 msgid "Help"
 msgstr "_Hjälp"
 
 #: ../stoq/gui/admin/glade/admin.glade.h:12
+#: ../stoq/gui/sales/glade/sales_app.glade.h:9
 #: ../stoq/gui/till/glade/till.glade.h:8
 #: ../stoq/gui/receivable/glade/receivable.glade.h:6
 #, fuzzy
@@ -2907,63 +3248,58 @@ msgid "Settin_gs"
 msgstr ""
 
 #: ../stoq/gui/admin/glade/admin.glade.h:17
+msgid "System _Parameters"
+msgstr ""
+
+#: ../stoq/gui/admin/glade/admin.glade.h:18
 #, fuzzy
 msgid "User Profiles..."
 msgstr "Pris"
 
-#: ../stoq/gui/admin/glade/admin.glade.h:18
+#: ../stoq/gui/admin/glade/admin.glade.h:19
 msgid "_Admin"
 msgstr ""
 
-#: ../stoq/gui/admin/glade/admin.glade.h:24
+#: ../stoq/gui/admin/glade/admin.glade.h:25
 msgid "admin"
 msgstr ""
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:1
+#: ../stoq/gui/sales/glade/sales_app.glade.h:2
 #: ../stoq/gui/till/glade/till.glade.h:3
 #: ../stoq/gui/receivable/glade/receivable.glade.h:3
 msgid "Change User"
 msgstr ""
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:3
+#: ../stoq/gui/sales/glade/sales_app.glade.h:4
 msgid "Clients"
 msgstr ""
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:4
+#: ../stoq/gui/sales/glade/sales_app.glade.h:5
 msgid "Credit Providers..."
 msgstr ""
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:5
+#: ../stoq/gui/sales/glade/sales_app.glade.h:6
 msgid "Gift Certificate Types..."
 msgstr ""
 
-#: ../stoq/gui/sales/glade/sales_app.glade.h:6
+#: ../stoq/gui/sales/glade/sales_app.glade.h:7
 msgid "Gift Certificates..."
-msgstr ""
-
-#: ../stoq/gui/sales/glade/sales_app.glade.h:8
-#, fuzzy
-msgid "S_ales"
-msgstr "_Försäljning"
-
-#: ../stoq/gui/sales/glade/sales_app.glade.h:9
-msgid "Sair"
 msgstr ""
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:10
 #, fuzzy
-msgid "Searc_h"
-msgstr "_Sök"
+msgid "S_ales"
+msgstr "_Försäljning"
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:11
 #, fuzzy
-msgid "Services"
-msgstr "Pris"
+msgid "Searc_h"
+msgstr "_Sök"
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:12
 #, fuzzy
-msgid "Sobre"
-msgstr "Kod"
+msgid "Services"
+msgstr "Pris"
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:13
 #: ../stoq/gui/till/glade/till.glade.h:11
@@ -2975,7 +3311,7 @@ msgstr ""
 #: ../stoq/gui/sales/glade/SaleDetailsDialog.glade.h:1
 #: ../stoq/gui/wizards/glade/CustomerStep.glade.h:2
 #: ../stoq/gui/pos/glade/NewOrderEditor.glade.h:3
-#: ../stoq/gui/pos/glade/pos.glade.h:11
+#: ../stoq/gui/pos/glade/pos.glade.h:10
 msgid "Client:"
 msgstr ""
 
@@ -2997,6 +3333,26 @@ msgstr ""
 
 #: ../stoq/gui/components/glade/LoginDialog.glade.h:4
 msgid "_Username:"
+msgstr ""
+
+#: ../stoq/gui/components/glade/ParametersListingDialog.glade.h:1
+msgid "Edit..."
+msgstr ""
+
+#: ../stoq/gui/components/glade/ParametersListingDialog.glade.h:2
+msgid "System Parameters Listing"
+msgstr ""
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:1
+msgid "Current Value:"
+msgstr ""
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:3
+msgid "Group:"
+msgstr ""
+
+#: ../stoq/gui/components/glade/SystemParameterEditor.glade.h:4
+msgid "Parameter Name:"
 msgstr ""
 
 #: ../stoq/gui/till/glade/till.glade.h:1
@@ -3051,34 +3407,6 @@ msgstr ""
 
 #: ../stoq/gui/till/glade/TillOperationDialog.glade.h:6
 msgid "_Reverse Selection"
-msgstr ""
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:2
-#, fuzzy
-msgid "ICMS Total:"
-msgstr "Totalt"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:3
-msgid "IPI:"
-msgstr ""
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:4
-msgid "Invoice Number:"
-msgstr ""
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:5
-#, fuzzy
-msgid "Invoice Total:"
-msgstr "Totalt"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:6
-#, fuzzy
-msgid "Notes..."
-msgstr "_Försäljning"
-
-#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:8
-#: ../stoq/gui/wizards/glade/CustomerStep.glade.h:5
-msgid "Order Total:"
 msgstr ""
 
 #: ../stoq/gui/wizards/glade/StartPurchaseStep.glade.h:4
@@ -3147,6 +3475,11 @@ msgstr ""
 msgid "Order Details:"
 msgstr ""
 
+#: ../stoq/gui/wizards/glade/CustomerStep.glade.h:5
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:8
+msgid "Order Total:"
+msgstr ""
+
 #: ../stoq/gui/wizards/glade/ExistingPersonStep.glade.h:1
 msgid "Existing client"
 msgstr ""
@@ -3184,6 +3517,29 @@ msgstr ""
 #: ../stoq/gui/wizards/glade/GiftCertificateSelectionStep.glade.h:3
 msgid "Select Gift Certificates"
 msgstr ""
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:2
+#, fuzzy
+msgid "ICMS Total:"
+msgstr "Totalt"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:3
+msgid "IPI:"
+msgstr ""
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:4
+msgid "Invoice Number:"
+msgstr ""
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:5
+#, fuzzy
+msgid "Invoice Total:"
+msgstr "Totalt"
+
+#: ../stoq/gui/wizards/glade/ReceivingInvoiceStep.glade.h:6
+#, fuzzy
+msgid "Notes..."
+msgstr "_Försäljning"
 
 #: ../stoq/gui/wizards/glade/GiftCertificateOverpaidStep.glade.h:2
 #, no-c-format
@@ -3253,7 +3609,7 @@ msgid "receivable"
 msgstr ""
 
 #: ../stoq/gui/pos/glade/NewOrderEditor.glade.h:2
-#: ../stoq/gui/pos/glade/pos.glade.h:10
+#: ../stoq/gui/pos/glade/pos.glade.h:9
 msgid "Client _Details"
 msgstr ""
 
@@ -3261,25 +3617,21 @@ msgstr ""
 msgid "_Add/Edit Client..."
 msgstr ""
 
-#: ../stoq/gui/pos/glade/pos.glade.h:3
-msgid "Ajuda"
-msgstr ""
-
-#: ../stoq/gui/pos/glade/pos.glade.h:6
+#: ../stoq/gui/pos/glade/pos.glade.h:5
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/glade/pos.glade.h:8
+#: ../stoq/gui/pos/glade/pos.glade.h:7
 #, fuzzy
 msgid "Chec_kout..."
 msgstr "Checkout"
 
-#: ../stoq/gui/pos/glade/pos.glade.h:12
+#: ../stoq/gui/pos/glade/pos.glade.h:11
 msgid "Clients..."
 msgstr ""
 
-#: ../stoq/gui/pos/glade/pos.glade.h:13
+#: ../stoq/gui/pos/glade/pos.glade.h:12
 #, fuzzy
 msgid "Deli_very..."
 msgstr "Utdelning"
@@ -3333,6 +3685,10 @@ msgstr "Ta bort"
 #, fuzzy
 msgid "_Search"
 msgstr "_Sök"
+
+#, fuzzy
+#~ msgid "Sobre"
+#~ msgstr "Kod"
 
 #, fuzzy
 #~ msgid "Sellables"
