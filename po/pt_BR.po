@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 16:38-0200\n"
+"POT-Creation-Date: 2006-01-27 17:19-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -2015,6 +2015,10 @@ msgstr "Informação Adicional:"
 #: ../stoq/gui/wizards/receiving.py:300
 msgid "Orders Maching:"
 msgstr "Vendas contendo:"
+
+#: ../stoq/gui/wizards/receiving.py:328
+msgid "Receiving Order"
+msgstr "Recebimento de Compra"
 
 #: ../stoq/gui/wizards/abstract.py:87
 msgid "Edit Product..."
