@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 16:38-0200\n"
+"POT-Creation-Date: 2006-01-27 17:21-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1929,6 +1929,10 @@ msgstr ""
 
 #: ../stoq/gui/wizards/receiving.py:300
 msgid "Orders Maching:"
+msgstr ""
+
+#: ../stoq/gui/wizards/receiving.py:328
+msgid "Receiving Order"
 msgstr ""
 
 #: ../stoq/gui/wizards/abstract.py:87

@@ -325,7 +325,7 @@ class PurchaseSelectionStep(BaseWizardStep):
 #
 
 class ReceivingOrderWizard(BaseWizard):
-    title = "Receiving Order"
+    title = _("Receiving Order")
     size = (750, 500)
     
     def __init__(self, conn):

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 16:38-0200\n"
+"POT-Creation-Date: 2006-01-27 17:19-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1994,6 +1994,11 @@ msgstr ""
 msgid "Orders Maching:"
 msgstr "Pris"
 
+#: ../stoq/gui/wizards/receiving.py:328
+#, fuzzy
+msgid "Receiving Order"
+msgstr "_Nollställ order"
+
 #: ../stoq/gui/wizards/abstract.py:87
 msgid "Edit Product..."
 msgstr ""
@@ -3705,9 +3710,6 @@ msgstr "_Sök"
 #, fuzzy
 #~ msgid "Sa_les"
 #~ msgstr "_Försäljning"
-
-#~ msgid "_Reset Order"
-#~ msgstr "_Nollställ order"
 
 #, fuzzy
 #~ msgid "no description."
