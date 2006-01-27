@@ -412,7 +412,7 @@ class ParameterAccess(ClassInittableObject):
         for obj in constants:
             if self.get_parameter_by_field(obj.key, obj.type):
                 continue
-            if obj.type is int:
+            if obj.type is bool:
                 # Convert Bool to int here
                 value = int(obj.initial)
             else:
