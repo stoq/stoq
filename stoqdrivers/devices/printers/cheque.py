@@ -100,7 +100,7 @@ class BaseChequePrinter(BasePrinter):
             except ConfigError, errmsg:
                 raise ConfigError("In section `%s' of `%s': %s"
                                   % (section, filename, errmsg))
-            self._banks[bank.name] = bank
+            self._banks[int(section)] = bank
         return self._banks
 
     @argcheck(dict)
