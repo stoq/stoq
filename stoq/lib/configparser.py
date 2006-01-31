@@ -25,7 +25,7 @@ lib/configparser.py:
 
     Routines for parse the configuration file.
 """
-    
+
 import gettext
 import os
 from ConfigParser import ConfigParser
@@ -48,7 +48,7 @@ logfile=~/.%(DOMAIN)s/application.log
 # use. Available are: postgres
 rdbms=%(RDBMS)s
 
-# This is used by the client to find the server. 
+# This is used by the client to find the server.
 address=%(ADDRESS)s
 
 # The name of Stoq database in rdbms.
@@ -73,19 +73,19 @@ dbusername=%(DBUSERNAME)s"""
 
         sections indicates extra sections that can be parsed from this
         configuration file.
-        
+
         """
 
         if not filename:
             filename = domain + '.conf'
-            
+
         self.domain = domain
         self.filename = filename
-        
+
         if extra_sections:
             for section in extra_sections:
                 self.sections.append(section)
-                                     
+
         self.config = ConfigParser()
         self._load_config()
 
@@ -100,7 +100,7 @@ dbusername=%(DBUSERNAME)s"""
             exception = "%s is not executable."
         if exception:
             raise FilePermissionError, exception % origin
-    
+
     def get_homepath(self):
         return os.path.join(os.getenv('HOME'), '.' + self.domain)
 
@@ -109,26 +109,26 @@ dbusername=%(DBUSERNAME)s"""
         # 1) $HOME/.$domain/$filename
         # 2) $PREFIX/etc/$domain/$filename
         # 3) /etc/$filename
-        
+
         # This is a bit hackish:
         # $prefix / lib / $DOMAIN / lib / config.py
         #    -4      -3     -2      -1       0
         filename = os.path.abspath(__file__)
         stripped = filename.split(os.sep)[:-4]
         self.prefix = os.path.join(os.sep, *stripped)
-        
+
         homepath = self.get_homepath()
         etcpath = os.path.join(self.prefix, 'etc', self.domain)
         globetcpath = os.path.join(os.sep, 'etc', self.domain)
         if not (self._open_config(homepath) or
                 self._open_config(etcpath) or
                 self._open_config(globetcpath)):
-            
+
             path = os.path.join(homepath, self.filename)
             assert not os.path.exists(path)
 
             self.install_default(homepath)
-            
+
             assert self._open_config(homepath)
 
     def ask_configuration_data(self):
@@ -139,7 +139,7 @@ dbusername=%(DBUSERNAME)s"""
         # firebird, mysql, sybase and sqllite but these databases are not
         # tested yet.
         rdbms = 'postgres'
-            
+
         msg = _("What is the database address used by the client to "
                 "find the server ? default is 'localhost'\naddress> ")
         address = raw_input(msg) or 'localhost'
@@ -147,7 +147,7 @@ dbusername=%(DBUSERNAME)s"""
         msg = _("What is the database name in the database system ? "
                 "default is 'stoq'\ndatabase> ")
         dbname = raw_input(msg) or 'stoq'
-        # XXX Users don't care about tests and that's why by default 
+        # XXX Users don't care about tests and that's why by default
         # the test database is the same of dbname and we don't ask them for
         # the test database name. Developers must set manually in the
         # stoq.conf file the desired dbtest name.
@@ -170,13 +170,13 @@ dbusername=%(DBUSERNAME)s"""
         fd = open(os.path.join(path, self.filename), 'w')
         fd.write(self.config_template % config_data)
         fd.close()
-        
+
     def _open_config(self, path):
         filename = os.path.join(path, self.filename)
         if not os.path.exists(filename):
             return 0
         self.config.read(filename)
-        
+
         for section in self.sections:
             if not self.config.has_section(section):
                 msg = "file does not have section: %s" % section
@@ -185,15 +185,15 @@ dbusername=%(DBUSERNAME)s"""
 
     def has_option(self, name, section='General'):
         return self.config.has_option(section, name)
-    
+
     def get_option(self, name, section='General'):
         if not section in self.sections:
             raise  ConfigError, 'Invalid section: %s' % section
-        
+
         if self.config.has_option(section, name):
             return self.config.get(section, name)
 
-        raise NoConfigurationError, ('%s does not have option: %s' % 
+        raise NoConfigurationError, ('%s does not have option: %s' %
                                      (self.filename, name))
 
     def set_option(self, name, section='General'):
@@ -201,7 +201,7 @@ dbusername=%(DBUSERNAME)s"""
             raise ConfigError, 'Invalid section: %s' % section
 
         self.config.set(section, name)
-        
+
     #
     # Database config accessors
     #
@@ -209,7 +209,7 @@ dbusername=%(DBUSERNAME)s"""
     def get_connection_uri(self, test_mode=False):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
-        
+
         scheme = self.get_option('rdbms', section='Database')
         if test_mode:
             dbname = self.get_option('testdb', section='Database')
@@ -228,5 +228,5 @@ dbusername=%(DBUSERNAME)s"""
             path = '/' + dbname
         else:
             raise ConfigError("Unsupported database type: %s" % scheme)
-        
+
         return '%s://%s%s' % (scheme, authority, path)
