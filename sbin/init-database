@@ -24,8 +24,8 @@
 """
 sbin/init-database:
 
-    Script to delete all the tables in an existent database or simple 
-    create all the tables in an empty database. Note that you must have a 
+    Script to delete all the tables in an existent database or simple
+    create all the tables in an empty database. Note that you must have a
     database already created to run this script properly.
 """
 
@@ -37,7 +37,7 @@ TEST_MODE = '-t' in sys.argv
 
 from stoq.lib.runtime import set_test_mode, set_verbose, print_msg
 
-# XXX This function must be called right before any other stoq domain 
+# XXX This function must be called right before any other stoq domain
 # module since initialize_connection has been called after
 # importing these modules
 set_test_mode(TEST_MODE)
@@ -69,4 +69,4 @@ def main(args):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-    
+
