@@ -32,7 +32,6 @@ gui/components/parameters.py:
 import gettext
 
 import gtk
-from kiwi.ui.delegates import Delegate
 from kiwi.ui.widgets.list import Column, List
 from kiwi.argcheck import argcheck
 from stoqlib.gui.dialogs import BasicDialog
@@ -42,7 +41,7 @@ from stoqlib.gui.dialogs import run_dialog
 from stoqlib.database import rollback_and_begin
 from zope.interface import providedBy
 
-from stoq.lib.parameters import ParameterData, sysparam, get_parameter_details
+from stoq.lib.parameters import ParameterData, sysparam
 from stoq.domain.base import AbstractModel
 from stoq.domain.interfaces import IDescribable
 from stoq.gui.editors.parameters import SystemParameterEditor
