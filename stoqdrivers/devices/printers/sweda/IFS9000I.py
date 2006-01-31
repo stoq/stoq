@@ -25,8 +25,8 @@
 ##
 """
 stoqdrivers/devices/printers/sweda/IFS9000I.py:
-    
-    Sweda IFS9000I printer driver implementation. 
+
+    Sweda IFS9000I printer driver implementation.
 """
 
 import string
@@ -55,7 +55,7 @@ _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 payment_methods = {
     MONEY_PM : "01",
     # FIXME: This value will changed after bug #2246 is fixed
-    CHEQUE_PM : "01" 
+    CHEQUE_PM : "01"
 }
 
 class IFS9000I(SerialBase):
@@ -71,7 +71,7 @@ class IFS9000I(SerialBase):
     #
     # Printer command set
     #
-    
+
     CMD_COUPON_OPEN = '17'
     CMD_COUPON_ADD_ITEM = '01'
     CMD_ITEM_ADD_DISCOUNT = '02'
@@ -93,7 +93,7 @@ class IFS9000I(SerialBase):
     CMD_SETUP_PAYMENT_METHOD = '39'
     CMD_TRANSACTION_STATUS = '28'
     CMD_GET_PRINTER_TOTALIZERS = '27'
-    
+
     #
     # Settings for printer command parameters
     #
@@ -142,7 +142,7 @@ class IFS9000I(SerialBase):
     errors_dict = {'DIA ENCERRADO': (PendingReadX, _("A Read X is pending")),
                    'ERRO-COMAND INVALIDO': (CommandError, _("The command is "
                                                             "invalid")),
-                   'ERRO-OPERACAO NAO ENCERRADA': (CouponOpenError, 
+                   'ERRO-OPERACAO NAO ENCERRADA': (CouponOpenError,
                                                    _("A coupon already exist")),
                    'ERRO-PARAMETROS DO COMAND INVALIDOS': (CommandParametersError,
                                                            _("Parameters invalid.")),
@@ -218,7 +218,7 @@ class IFS9000I(SerialBase):
         self.writeline(command)
 
     def setup_sale_parameters(self, use_cents, has_title):
-        command = self.CMD_SET_SALE_PARAMETERS 
+        command = self.CMD_SET_SALE_PARAMETERS
         if use_cents:
             use_cents = 'S'
         else:
@@ -237,7 +237,7 @@ class IFS9000I(SerialBase):
         # XXX Warning: never call this command more than 5 times, otherwise
         # the fiscal print will not work anymore
         command = self.CMD_ADD_USER_SETTINGS
-        cnpj = self._format_string(user_cnpj, self.CUSTOMER_CNPJ_LEN, 
+        cnpj = self._format_string(user_cnpj, self.CUSTOMER_CNPJ_LEN,
                                    'user_cnpj')
         state_reg = self._format_string(user_state_reg,
                                         self.CUSTOMER_STATE_REGISTER_LEN,
@@ -257,7 +257,7 @@ class IFS9000I(SerialBase):
 
         # Set taxes table
         self.writeline('33T010500')
-        
+
         # Set non-fiscal operation label
         label = '&NAO FISCAL    '
         assert len(label) == 15
@@ -279,7 +279,7 @@ class IFS9000I(SerialBase):
         value_str = str(value)
         if not value_str.isdigit():
             raise ValueError('Argument %s must be integer' % arg_name)
-            
+
     def _check_float(self, value, arg_name):
         if not is_float(value):
             raise ValueError('Argument %s must be float' % arg_name)
@@ -309,36 +309,36 @@ class IFS9000I(SerialBase):
         """
         self._check_float(value, arg_name)
         value = '%.*f' % (dec_separator, value)
-        
+
         # As we are going do remove the period character we can here allow
         # char_len + 1 as the maximum number of chars per argument
         value = self._format_string(value, char_len + 1, arg_name)
         value = string.replace(value, ' ', '0')
         value = string.replace(value, '.', '')
 
-        # The first character for total and price arguments must 
+        # The first character for total and price arguments must
         # be always zero
         value = '0' * zero_digits + value
         return value
 
     def _format_price(self, price, arg_name):
         return self._format_float(price, arg_name, self.PRICE_CHAR_LEN,
-                                  self.PRICE_DEC_SEPARATOR, 
+                                  self.PRICE_DEC_SEPARATOR,
                                   self.PRICE_ZERO_DIGITS)
 
     def _format_quantity(self, quantity, arg_name):
         return self._format_float(quantity, arg_name, self.QTY_CHAR_LEN,
-                                  self.QTY_DEC_SEPARATOR, 
+                                  self.QTY_DEC_SEPARATOR,
                                   self.QTY_ZERO_DIGITS)
 
     def _format_total(self, total, arg_name):
         return self._format_float(total, arg_name, self.TOTAL_CHAR_LEN,
-                                  self.TOTAL_DEC_SEPARATOR, 
+                                  self.TOTAL_DEC_SEPARATOR,
                                   self.TOTAL_ZERO_DIGITS)
 
     #
     # Helper methods
-    # 
+    #
 
     def get_transaction_status(self):
         reply = self.writeline(self.CMD_TRANSACTION_STATUS)
@@ -357,7 +357,7 @@ class IFS9000I(SerialBase):
         """ Send a command to printer.
 
         command: Is the command in string format
-        params: a list of parameter to this command (all parameters 
+        params: a list of parameter to this command (all parameters
         must be string)
         """
         reply = self.writeline(command + ''.join(params))
@@ -424,7 +424,7 @@ class IFS9000I(SerialBase):
             # a read X pending, so..
             raise PendingReadX(_("A read X is pending."))
 
-    def coupon_add_item(self, code, quantity, price, unit, description, 
+    def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, dicount, charge, unit_desc=''):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
@@ -442,7 +442,7 @@ class IFS9000I(SerialBase):
 
         total = orig_qty * orig_price
         total = self._format_total(total, 'total')
-        
+
         # TODO We need to allow using other tax codes here
         if taxcode == TAX_SUBSTITUTION:
             taxcode = 'F'
@@ -458,21 +458,21 @@ class IFS9000I(SerialBase):
         else:
             second_desc = ''
         description = self._format_string(description,
-                                          self.DESCRIPTION_CHAR_LEN, 
+                                          self.DESCRIPTION_CHAR_LEN,
                                           'description')
         if second_desc:
             second_desc = self._format_string(second_desc,
-                                              self.SECONDDESC_CHAR_LEN, 
+                                              self.SECONDDESC_CHAR_LEN,
                                               'second_desc')
-        self.send_command(self.CMD_COUPON_ADD_ITEM, code, quantity, 
-                          price, total, unit_code, description, taxcode, 
+        self.send_command(self.CMD_COUPON_ADD_ITEM, code, quantity,
+                          price, total, unit_code, description, taxcode,
                           second_desc)
 
         return self.get_last_item_id()
 
     def coupon_cancel_item(self, item_id):
         self._check_integer(item_id, 'item_id')
-        item_id = self._format_string(item_id, self.ITEM_NUMBER_CHAR_LEN, 
+        item_id = self._format_string(item_id, self.ITEM_NUMBER_CHAR_LEN,
                                       'item_id')
         item_id = string.replace(item_id, ' ', '0')
 
@@ -480,7 +480,7 @@ class IFS9000I(SerialBase):
 
     def coupon_add_charge(self, item_id, value, description):
         """ Valid charge types are: "51": "charge"
-                                   "52": "charge IOF" 
+                                   "52": "charge IOF"
         The arguments item_id and descriptions only exit for API
         compatibility
         """
@@ -495,7 +495,7 @@ class IFS9000I(SerialBase):
         # We are always using a discount by value for API compatibility
         percentage = '0' * self.PERCENTAGE_CHAR_LEN
         charge_total = self._format_float(self.charge_total, 'value',
-                                          self.CHARGE_CHAR_LEN, 
+                                          self.CHARGE_CHAR_LEN,
                                           self.CHARGE_DEC_SEPARATOR,
                                           self.CHARGE_ZERO_DIGITS)
         # It means always print a total after adding the charge
