@@ -1,0 +1,3 @@
+recursive-include stoq/gui *.glade
+recursive-include pixmaps *.png *.jpg
+recursive-include locale stoq.mo
