@@ -40,12 +40,12 @@ from stoq.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor,
-                                     TransporterEditor, EmployeeRoleEditor, 
+                                     TransporterEditor, EmployeeRoleEditor,
                                      BranchEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.validators import format_phone_number
-from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier, 
+from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier,
                                     IEmployee, IClient, ICreditProvider,
                                     ITransporter, IBranch)
 from stoq.domain.person import (Person, EmployeeRole)
@@ -62,18 +62,18 @@ class BasePersonSearch(SearchEditor):
     editor_class = None
     search_lbl_text = None
     result_strings = None
-   
+
     def __init__(self, conn, title='', hide_footer=False):
         self.title = title or self.title
-        SearchEditor.__init__(self, conn, self.table, 
+        SearchEditor.__init__(self, conn, self.table,
                               self.editor_class,
                               interface=self.interface,
                               hide_footer=hide_footer)
         self.set_searchbar_labels(self.search_lbl_text)
         self.set_result_strings(*self.result_strings)
- 
+
     def run_editor(self, obj):
-        return run_person_role_dialog(self.editor_class, self, 
+        return run_person_role_dialog(self.editor_class, self,
                                       self.conn, obj)
 
 
@@ -84,12 +84,12 @@ class EmployeeSearch(BasePersonSearch):
     search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
     filter_label = _('Show employees with status')
-               
+
     #
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):        
+    def get_filter_slave(self):
         employees = [(value, key) for key, value in
                      self.table.statuses.items()]
         employees.append((_('Any'), ALL_ITEMS_INDEX))
@@ -97,14 +97,14 @@ class EmployeeSearch(BasePersonSearch):
         self.filter_slave.set_filter_label(self.filter_label)
         return self.filter_slave
 
-    def after_search_bar_created(self): 
-        self.filter_slave.connect('status-changed', 
-                                   self.search_bar.search_items)        
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                   self.search_bar.search_items)
 
     def get_columns(self):
-        return [ForeignKeyColumn(Person, 'name', _('Name'), str, 
+        return [ForeignKeyColumn(Person, 'name', _('Name'), str,
                                  width=250, adapted=True),
-                ForeignKeyColumn(EmployeeRole, 'name', _('Role'), 
+                ForeignKeyColumn(EmployeeRole, 'name', _('Role'),
                                  str, width=250, obj_field='role'),
                 Column('registry_number', _('Registry Number'), str,
                        width=150),
@@ -120,9 +120,9 @@ class EmployeeSearch(BasePersonSearch):
 
     def get_query_args(self):
         return dict(join=LEFTJOINOn(self.table, EmployeeRole,
-                                    self.table.q.roleID == 
+                                    self.table.q.roleID ==
                                     EmployeeRole.q.id))
-    
+
 
 class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
@@ -137,9 +137,9 @@ class SupplierSearch(BasePersonSearch):
     #
 
     def get_columns(self):
-        return [Column('name', _('Name'), str, 
-                       sorted=True, width=250), 
-                Column('phone_number', _('Phone Number'), str, 
+        return [Column('name', _('Name'), str,
+                       sorted=True, width=250),
+                Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number),
                 FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
                             width=180),
@@ -148,11 +148,11 @@ class SupplierSearch(BasePersonSearch):
     def get_extra_query(self):
         supplier_table = Person.getAdapterClass(ISupplier)
         return Person.q.id == supplier_table.q._originalID
-        
+
     def get_query_args(self):
         company_table = Person.getAdapterClass(ICompany)
         return dict(join=LEFTJOINOn(Person, company_table,
-                                    Person.q.id == 
+                                    Person.q.id ==
                                     company_table.q._originalID))
 
 
@@ -177,15 +177,15 @@ class CreditProviderSearch(BasePersonSearch):
                                   self.search_bar.search_items)
 
     def get_columns(self):
-        return [Column('name', title=_('Name'), 
+        return [Column('name', title=_('Name'),
                        data_type=str, sorted=True, width=250),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=130),
-                FacetColumn(ICreditProvider, 'short_name', 
-                            title=_('Short Name'), data_type=str, 
+                FacetColumn(ICreditProvider, 'short_name',
+                            title=_('Short Name'), data_type=str,
                             width=150),
-                FacetColumn(ICreditProvider, 'provider_type_str', 
-                            title=_('Provider Type'), data_type=str, 
+                FacetColumn(ICreditProvider, 'provider_type_str',
+                            title=_('Provider Type'), data_type=str,
                             width=200)]
 
     def get_extra_query(self):
@@ -195,7 +195,7 @@ class CreditProviderSearch(BasePersonSearch):
         if status != ALL_ITEMS_INDEX:
             query = AND(query, provider_table.q.provider_type == status)
         return query
-    
+
 
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
@@ -204,7 +204,7 @@ class ClientSearch(BasePersonSearch):
     interface = IClient
     search_lbl_text = _('matching:')
     result_strings = _('client'), _('clients')
-    
+
     #
     # SearchDialog Hooks
     #
@@ -224,8 +224,8 @@ class ClientSearch(BasePersonSearch):
                                   self.search_bar.search_items)
 
     def get_columns(self):
-        return [Column('name', _('Name'), str, 
-                       sorted=True, width=250), 
+        return [Column('name', _('Name'), str,
+                       sorted=True, width=250),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number),
                 FacetColumn(IIndividual, 'cpf', _('CPF'), str,
@@ -245,7 +245,7 @@ class ClientSearch(BasePersonSearch):
     def get_query_args(self):
         individual_table = Person.getAdapterClass(IIndividual)
         return dict(join=LEFTJOINOn(Person, individual_table,
-                                    Person.q.id == 
+                                    Person.q.id ==
                                     individual_table.q._originalID))
 
 
@@ -258,7 +258,7 @@ class TransporterSearch(BasePersonSearch):
     result_strings = _('transporter'), _('transporters')
 
     def get_filter_slave(self):
-        items = [(_('Active Transporters'), True), 
+        items = [(_('Active Transporters'), True),
                  (_('Inactive Transporters'), False)]
         items.append((_('Any Transporters'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
@@ -270,14 +270,14 @@ class TransporterSearch(BasePersonSearch):
                                   self.search_bar.search_items)
 
     def get_columns(self):
-        return [Column('name', title=_('Name'), 
+        return [Column('name', title=_('Name'),
                        data_type=str, sorted=True, width=350),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=180),
-                FacetColumn(ITransporter, 'freight_percentage', 
+                FacetColumn(ITransporter, 'freight_percentage',
                             title=_('Freight (%)'), data_type=float,
                             width=150),
-                FacetColumn(ITransporter, 'status_string', 
+                FacetColumn(ITransporter, 'status_string',
                             title=_('Status'), data_type=str)]
 
     def get_extra_query(self):
@@ -300,14 +300,14 @@ class EmployeeRoleSearch(SearchEditor):
                               EmployeeRoleSearch.editor_class)
         self.set_searchbar_labels(_('Role Matching'))
         self.set_result_strings(_('role'), _('roles'))
-        
-    
+
+
     #
     # SearchEditor Hooks
     #
-    
+
     def get_columns(self):
-        return [Column('name', _('Role'), str, sorted=True)] 
+        return [Column('name', _('Role'), str, sorted=True)]
 
 
 class BranchSearch(BasePersonSearch):
@@ -315,7 +315,7 @@ class BranchSearch(BasePersonSearch):
     title = _('Branch Search')
     editor_class = BranchEditor
     table = Person.getAdapterClass(IBranch)
-    search_lbl_text = _('matching') 
+    search_lbl_text = _('matching')
     result_strings = (_('branch'), _('branches'))
 
     #
@@ -325,8 +325,8 @@ class BranchSearch(BasePersonSearch):
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), data_type=str,
                                  width=200, adapted=True),
-                ForeignKeyColumn(Person, 'phone_number', 
-                                 _('Phone Number'), data_type=str, 
+                ForeignKeyColumn(Person, 'phone_number',
+                                 _('Phone Number'), data_type=str,
                                  width=150, adapted=True),
                 ForeignKeyColumn(Person, 'name', _('Manager'), data_type=str,
                                  width=250, obj_field='manager'),
@@ -335,12 +335,12 @@ class BranchSearch(BasePersonSearch):
     def get_extra_query(self):
         return OR(Person.q.id == self.table.q.managerID,
                   Person.q.id == self.table.q._originalID)
-        
+
     #
     # SearchDialog Hooks
     #
 
-    def get_filter_slave(self):        
+    def get_filter_slave(self):
         statuses = [(value, key) for key, value in
                     self.table.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
@@ -348,11 +348,11 @@ class BranchSearch(BasePersonSearch):
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(filter_label)
         return self.filter_slave
-        
+
     def after_search_bar_created(self):
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
-        
+
     def filter_results(self, branches):
         status = self.filter_slave.get_selected_status()
         if status == ALL_ITEMS_INDEX:
@@ -364,4 +364,4 @@ class BranchSearch(BasePersonSearch):
         else:
             raise ValueError('Invalid status for User table. got %s'
                              % status)
-        
+
