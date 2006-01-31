@@ -76,9 +76,10 @@ class PurchaseApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         value_format = '<b>%s</b>' % get_price_format_str()
+        label = '<b>%s</b>' % _('Totals:')
         self.summary_total = SummaryLabel(klist=self.orders,
                                           column='purchase_total',
-                                          label='<b>Totals:</b>',
+                                          label=label,
                                           value_format=value_format)
         self.summary_total.show()
         self.summary_received = SummaryLabel(klist=self.orders,

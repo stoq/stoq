@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-31 15:46-0200\n"
+"POT-Creation-Date: 2006-01-31 16:37-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -971,7 +971,12 @@ msgstr ""
 msgid "Show orders with status"
 msgstr "Ingen produkt vald"
 
-#: ../stoq/gui/purchase/purchase.py:95 ../stoq/gui/admin/admin.py:73
+#: ../stoq/gui/purchase/purchase.py:79
+#, fuzzy
+msgid "Totals:"
+msgstr "Totalt"
+
+#: ../stoq/gui/purchase/purchase.py:96 ../stoq/gui/admin/admin.py:73
 #: ../stoq/gui/sales/sales.py:97 ../stoq/gui/search/giftcertificate.py:71
 #: ../stoq/gui/search/giftcertificate.py:141 ../stoq/gui/search/product.py:96
 #: ../stoq/gui/search/service.py:74 ../stoq/gui/search/sale.py:116
@@ -980,25 +985,25 @@ msgstr "Ingen produkt vald"
 msgid "Any"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:126 ../stoq/gui/sales/sales.py:113
+#: ../stoq/gui/purchase/purchase.py:127 ../stoq/gui/sales/sales.py:113
 #: ../stoq/gui/search/giftcertificate.py:156 ../stoq/gui/search/sale.py:77
 #: ../stoq/gui/till/operation.py:166 ../stoq/gui/wizards/receiving.py:244
 #: ../stoq/gui/wizards/sale.py:406 ../stoq/gui/receivable/receivable.py:102
 msgid "Number"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:128 ../stoq/gui/sales/sales.py:115
+#: ../stoq/gui/purchase/purchase.py:129 ../stoq/gui/sales/sales.py:115
 #: ../stoq/gui/search/sale.py:79 ../stoq/gui/wizards/receiving.py:246
 msgid "Date Started"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:130 ../stoq/gui/editors/person.py:288
+#: ../stoq/gui/purchase/purchase.py:131 ../stoq/gui/editors/person.py:288
 #: ../stoq/gui/search/product.py:131 ../stoq/gui/wizards/receiving.py:248
 #: ../stoq/gui/warehouse/warehouse.py:119
 msgid "Supplier"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:134 ../stoq/gui/admin/admin.py:94
+#: ../stoq/gui/purchase/purchase.py:135 ../stoq/gui/admin/admin.py:94
 #: ../stoq/gui/sales/details.py:110 ../stoq/gui/sales/sales.py:123
 #: ../stoq/gui/search/giftcertificate.py:164 ../stoq/gui/search/product.py:139
 #: ../stoq/gui/search/service.py:109 ../stoq/gui/search/sale.py:87
@@ -1008,30 +1013,30 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:136 ../stoq/gui/wizards/receiving.py:252
+#: ../stoq/gui/purchase/purchase.py:137 ../stoq/gui/wizards/receiving.py:252
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:14
 msgid "Ordered"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:138 ../stoq/gui/wizards/receiving.py:254
+#: ../stoq/gui/purchase/purchase.py:139 ../stoq/gui/wizards/receiving.py:254
 #: ../stoq/gui/purchase/glade/PurchaseDetailsDialog.glade.h:16
 msgid "Received"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:219
+#: ../stoq/gui/purchase/purchase.py:220
 msgid "There are no orders with status pending in the selection"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:227
+#: ../stoq/gui/purchase/purchase.py:228
 #, python-format
 msgid "The %d selected orders will be market as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:229
+#: ../stoq/gui/purchase/purchase.py:230
 msgid "The selected order will be market as sent."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:231
+#: ../stoq/gui/purchase/purchase.py:232
 #, python-format
 msgid ""
 "\n"
@@ -1039,7 +1044,7 @@ msgid ""
 "not be included."
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:234
+#: ../stoq/gui/purchase/purchase.py:235
 msgid "Send order to supplier"
 msgstr ""
 
@@ -2686,7 +2691,7 @@ msgid "Manager:"
 msgstr ""
 
 #: ../stoq/gui/slaves/glade/SaleListToolbar.glade.h:1
-#: ../stoq/gui/purchase/glade/purchase.glade.h:12
+#: ../stoq/gui/purchase/glade/purchase.glade.h:9
 #: ../stoq/gui/sales/glade/SaleDetailsDialog.glade.h:2
 #: ../stoq/gui/receivable/glade/receivable.glade.h:8
 msgid "Details"
@@ -2749,115 +2754,55 @@ msgstr ""
 msgid "Clear Cookie"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:9
-#: ../stoq/gui/sales/glade/sales_app.glade.h:5
-#: ../stoq/gui/till/glade/till.glade.h:6
-#: ../stoq/gui/receivable/glade/receivable.glade.h:5
-#: ../stoq/gui/pos/glade/pos.glade.h:13
-msgid "Copy selected object into the clipboard"
-msgstr ""
-
 #: ../stoq/gui/purchase/glade/purchase.glade.h:10
-#: ../stoq/gui/sales/glade/sales_app.glade.h:6
-#: ../stoq/gui/till/glade/till.glade.h:7
-#: ../stoq/gui/receivable/glade/receivable.glade.h:6
-msgid "Create a new file"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:11
-#: ../stoq/gui/sales/glade/sales_app.glade.h:8
-#: ../stoq/gui/till/glade/till.glade.h:9
-#: ../stoq/gui/receivable/glade/receivable.glade.h:7
-#: ../stoq/gui/pos/glade/pos.glade.h:14
-msgid "Cut selected object into the clipboard"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:13
-#: ../stoq/gui/sales/glade/sales_app.glade.h:11
-#: ../stoq/gui/till/glade/till.glade.h:11
-#: ../stoq/gui/receivable/glade/receivable.glade.h:9
-#: ../stoq/gui/pos/glade/pos.glade.h:19
-msgid "Open a file"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:14
-#: ../stoq/gui/sales/glade/sales_app.glade.h:12
-#: ../stoq/gui/till/glade/till.glade.h:12
-#: ../stoq/gui/receivable/glade/receivable.glade.h:10
-#: ../stoq/gui/pos/glade/pos.glade.h:20
-msgid "Paste object from the Clipboard"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:15
 #, fuzzy
 msgid "Print Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:16
+#: ../stoq/gui/purchase/glade/purchase.glade.h:11
 #: ../stoq/gui/sales/glade/sales_app.glade.h:13
 msgid "Products"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:17
+#: ../stoq/gui/purchase/glade/purchase.glade.h:12
 msgid "Products..."
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:18
-#: ../stoq/gui/sales/glade/sales_app.glade.h:15
-#: ../stoq/gui/till/glade/till.glade.h:14
-#: ../stoq/gui/receivable/glade/receivable.glade.h:12
-#: ../stoq/gui/pos/glade/pos.glade.h:22
-msgid "Quit the program"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:19
+#: ../stoq/gui/purchase/glade/purchase.glade.h:13
 #: ../stoq/gui/admin/glade/admin.glade.h:14
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:10
 #: ../stoq/gui/pos/glade/pos.glade.h:28
 msgid "Save _as"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:20
-#: ../stoq/gui/sales/glade/sales_app.glade.h:17
-#: ../stoq/gui/till/glade/till.glade.h:17
-#: ../stoq/gui/receivable/glade/receivable.glade.h:13
-#: ../stoq/gui/pos/glade/pos.glade.h:29
-msgid "Save a file"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:21
-#: ../stoq/gui/pos/glade/pos.glade.h:30
-msgid "Save with a differente name"
-msgstr ""
-
-#: ../stoq/gui/purchase/glade/purchase.glade.h:22
+#: ../stoq/gui/purchase/glade/purchase.glade.h:14
 #: ../stoq/gui/pos/glade/pos.glade.h:31
 #, fuzzy
 msgid "Se_arch"
 msgstr "_Sök"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:23
+#: ../stoq/gui/purchase/glade/purchase.glade.h:15
 msgid "Send to Supplier..."
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:24
+#: ../stoq/gui/purchase/glade/purchase.glade.h:16
 #, fuzzy
 msgid "Services..."
 msgstr "Pris"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:25
+#: ../stoq/gui/purchase/glade/purchase.glade.h:17
 msgid "Suppliers"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:26
+#: ../stoq/gui/purchase/glade/purchase.glade.h:18
 msgid "Suppliers..."
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:27
+#: ../stoq/gui/purchase/glade/purchase.glade.h:19
 msgid "Transporters..."
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:28
+#: ../stoq/gui/purchase/glade/purchase.glade.h:20
 #: ../stoq/gui/admin/glade/admin.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:22
 #: ../stoq/gui/till/glade/till.glade.h:21
@@ -2867,13 +2812,13 @@ msgstr ""
 msgid "_Edit"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:29
+#: ../stoq/gui/purchase/glade/purchase.glade.h:21
 #: ../stoq/gui/admin/glade/admin.glade.h:21
 #: ../stoq/gui/receivable/glade/receivable.glade.h:20
 msgid "_Edit..."
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:30
+#: ../stoq/gui/purchase/glade/purchase.glade.h:22
 #: ../stoq/gui/sales/glade/sales_app.glade.h:23
 #: ../stoq/gui/till/glade/till.glade.h:22
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:13
@@ -2882,7 +2827,7 @@ msgstr ""
 msgid "_File"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:31
+#: ../stoq/gui/purchase/glade/purchase.glade.h:23
 #: ../stoq/gui/sales/glade/sales_app.glade.h:24
 #: ../stoq/gui/till/glade/till.glade.h:23
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:14
@@ -2891,23 +2836,23 @@ msgstr ""
 msgid "_Help"
 msgstr "_Hjälp"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:32
+#: ../stoq/gui/purchase/glade/purchase.glade.h:24
 #, fuzzy
 msgid "_Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:33
+#: ../stoq/gui/purchase/glade/purchase.glade.h:25
 #: ../stoq/gui/admin/glade/admin.glade.h:22
 msgid "_Receive"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:34
+#: ../stoq/gui/purchase/glade/purchase.glade.h:26
 #: ../stoq/gui/admin/glade/admin.glade.h:23
 #: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
 msgid "_Store Cookie"
 msgstr ""
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:35
+#: ../stoq/gui/purchase/glade/purchase.glade.h:27
 #: ../stoq/gui/admin/glade/admin.glade.h:24
 #: ../stoq/gui/sales/glade/sales_app.glade.h:25
 #: ../stoq/gui/till/glade/till.glade.h:25
@@ -2917,7 +2862,7 @@ msgstr ""
 msgid "_User"
 msgstr "_Användare"
 
-#: ../stoq/gui/purchase/glade/purchase.glade.h:36
+#: ../stoq/gui/purchase/glade/purchase.glade.h:28
 #: ../stoq/gui/wizards/glade/PurchaseSelectionStep.glade.h:3
 msgid "purchase"
 msgstr ""
@@ -3350,8 +3295,28 @@ msgstr ""
 msgid "Clients"
 msgstr ""
 
+#: ../stoq/gui/sales/glade/sales_app.glade.h:5
+#: ../stoq/gui/till/glade/till.glade.h:6
+#: ../stoq/gui/receivable/glade/receivable.glade.h:5
+#: ../stoq/gui/pos/glade/pos.glade.h:13
+msgid "Copy selected object into the clipboard"
+msgstr ""
+
+#: ../stoq/gui/sales/glade/sales_app.glade.h:6
+#: ../stoq/gui/till/glade/till.glade.h:7
+#: ../stoq/gui/receivable/glade/receivable.glade.h:6
+msgid "Create a new file"
+msgstr ""
+
 #: ../stoq/gui/sales/glade/sales_app.glade.h:7
 msgid "Credit Providers..."
+msgstr ""
+
+#: ../stoq/gui/sales/glade/sales_app.glade.h:8
+#: ../stoq/gui/till/glade/till.glade.h:9
+#: ../stoq/gui/receivable/glade/receivable.glade.h:7
+#: ../stoq/gui/pos/glade/pos.glade.h:14
+msgid "Cut selected object into the clipboard"
 msgstr ""
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:9
@@ -3362,10 +3327,38 @@ msgstr ""
 msgid "Gift Certificates..."
 msgstr ""
 
+#: ../stoq/gui/sales/glade/sales_app.glade.h:11
+#: ../stoq/gui/till/glade/till.glade.h:11
+#: ../stoq/gui/receivable/glade/receivable.glade.h:9
+#: ../stoq/gui/pos/glade/pos.glade.h:19
+msgid "Open a file"
+msgstr ""
+
+#: ../stoq/gui/sales/glade/sales_app.glade.h:12
+#: ../stoq/gui/till/glade/till.glade.h:12
+#: ../stoq/gui/receivable/glade/receivable.glade.h:10
+#: ../stoq/gui/pos/glade/pos.glade.h:20
+msgid "Paste object from the Clipboard"
+msgstr ""
+
+#: ../stoq/gui/sales/glade/sales_app.glade.h:15
+#: ../stoq/gui/till/glade/till.glade.h:14
+#: ../stoq/gui/receivable/glade/receivable.glade.h:12
+#: ../stoq/gui/pos/glade/pos.glade.h:22
+msgid "Quit the program"
+msgstr ""
+
 #: ../stoq/gui/sales/glade/sales_app.glade.h:16
 #, fuzzy
 msgid "S_ales"
 msgstr "_Försäljning"
+
+#: ../stoq/gui/sales/glade/sales_app.glade.h:17
+#: ../stoq/gui/till/glade/till.glade.h:17
+#: ../stoq/gui/receivable/glade/receivable.glade.h:13
+#: ../stoq/gui/pos/glade/pos.glade.h:29
+msgid "Save a file"
+msgstr ""
 
 #: ../stoq/gui/sales/glade/sales_app.glade.h:18
 #: ../stoq/gui/till/glade/till.glade.h:18
@@ -3744,6 +3737,10 @@ msgstr "_Försäljning"
 #, fuzzy
 msgid "Sales..."
 msgstr "_Försäljning"
+
+#: ../stoq/gui/pos/glade/pos.glade.h:30
+msgid "Save with a differente name"
+msgstr ""
 
 #: ../stoq/gui/pos/glade/pos.glade.h:33
 msgid "_Add"
