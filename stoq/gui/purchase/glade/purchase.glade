@@ -8,7 +8,7 @@
                     <widget class="GtkAction" id="AddOrder">
                         <property name="name">AddOrder</property>
                         <property name="label" translatable="yes">Add Order...</property>
-                        <property name="short_label">Add Order...</property>
+                        <property name="short_label" translatable="yes">Add Order...</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;a</property>
                     </widget>
@@ -17,7 +17,7 @@
                     <widget class="GtkAction" id="BaseCategories">
                         <property name="name">BaseCategories</property>
                         <property name="label" translatable="yes">Base Categories...</property>
-                        <property name="short_label">Base Categories...</property>
+                        <property name="short_label" translatable="yes">Base Categories...</property>
                         <signal handler="_on_base_categories_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;b</property>
                     </widget>
@@ -26,7 +26,7 @@
                     <widget class="GtkAction" id="Categories">
                         <property name="name">Categories</property>
                         <property name="label" translatable="yes">Categories...</property>
-                        <property name="short_label">Categories...</property>
+                        <property name="short_label" translatable="yes">Categories...</property>
                         <signal handler="_on_categories_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;g</property>
                     </widget>
@@ -35,7 +35,7 @@
                     <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
-                        <property name="short_label">Change User...</property>
+                        <property name="short_label" translatable="yes">Change User...</property>
                         <property name="stock_id">gtk-refresh</property>
                         <property name="accelerator">&lt;Control&gt;h</property>
                     </widget>
@@ -44,7 +44,7 @@
                     <widget class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
                         <property name="label" translatable="yes">Clear Cookie</property>
-                        <property name="short_label">Clear Cookie</property>
+                        <property name="short_label" translatable="yes">Clear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;e</property>
@@ -53,7 +53,7 @@
                 <child>
                     <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
-                        <property name="tooltip">Copy selected object into the clipboard</property>
+                        <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
                         <property name="stock_id">gtk-copy</property>
                     </widget>
                 </child>
@@ -61,8 +61,8 @@
                     <widget class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="label" translatable="yes">C_ut</property>
-                        <property name="short_label">C_ut</property>
-                        <property name="tooltip">Cut selected object into the clipboard</property>
+                        <property name="short_label" translatable="yes">C_ut</property>
+                        <property name="tooltip" translatable="yes">Cut selected object into the clipboard</property>
                         <property name="stock_id">gtk-cut</property>
                     </widget>
                 </child>
@@ -70,34 +70,34 @@
                     <widget class="GtkAction" id="EditMenu">
                         <property name="name">EditMenu</property>
                         <property name="label" translatable="yes">_Edit</property>
-                        <property name="short_label">_Edit</property>
+                        <property name="short_label" translatable="yes">_Edit</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
-                        <property name="short_label">_File</property>
+                        <property name="short_label" translatable="yes">_File</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
-                        <property name="tooltip">Create a new file</property>
+                        <property name="tooltip" translatable="yes">Create a new file</property>
                         <property name="stock_id">gtk-new</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Open">
                         <property name="name">Open</property>
-                        <property name="tooltip">Open a file</property>
+                        <property name="tooltip" translatable="yes">Open a file</property>
                         <property name="stock_id">gtk-open</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Paste">
                         <property name="name">Paste</property>
-                        <property name="tooltip">Paste object from the Clipboard</property>
+                        <property name="tooltip" translatable="yes">Paste object from the Clipboard</property>
                         <property name="stock_id">gtk-paste</property>
                     </widget>
                 </child>
@@ -105,7 +105,7 @@
                     <widget class="GtkAction" id="ProductButton">
                         <property name="name">ProductButton</property>
                         <property name="label" translatable="yes">Products</property>
-                        <property name="short_label">Products</property>
+                        <property name="short_label" translatable="yes">Products</property>
                         <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                     </widget>
@@ -114,7 +114,7 @@
                     <widget class="GtkAction" id="Products">
                         <property name="name">Products</property>
                         <property name="label" translatable="yes">Products...</property>
-                        <property name="short_label">Products...</property>
+                        <property name="short_label" translatable="yes">Products...</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
@@ -123,7 +123,7 @@
                     <widget class="GtkAction" id="Purchase">
                         <property name="name">Purchase</property>
                         <property name="label" translatable="yes">Add Order</property>
-                        <property name="short_label">Add Order</property>
+                        <property name="short_label" translatable="yes">Add Order</property>
                         <property name="stock_id">gtk-new</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
                     </widget>
@@ -132,13 +132,13 @@
                     <widget class="GtkAction" id="PurchaseMenu">
                         <property name="name">PurchaseMenu</property>
                         <property name="label" translatable="yes">_Order</property>
-                        <property name="short_label">_Order</property>
+                        <property name="short_label" translatable="yes">_Order</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
-                        <property name="tooltip">Quit the program</property>
+                        <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
                     </widget>
@@ -146,7 +146,7 @@
                 <child>
                     <widget class="GtkAction" id="Save">
                         <property name="name">Save</property>
-                        <property name="tooltip">Save a file</property>
+                        <property name="tooltip" translatable="yes">Save a file</property>
                         <property name="stock_id">gtk-save</property>
                     </widget>
                 </child>
@@ -154,8 +154,8 @@
                     <widget class="GtkAction" id="SaveAs">
                         <property name="name">SaveAs</property>
                         <property name="label" translatable="yes">Save _as</property>
-                        <property name="short_label">Save _as</property>
-                        <property name="tooltip">Save with a differente name</property>
+                        <property name="short_label" translatable="yes">Save _as</property>
+                        <property name="tooltip" translatable="yes">Save with a differente name</property>
                         <property name="stock_id">gtk-save-as</property>
                     </widget>
                 </child>
@@ -163,14 +163,14 @@
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">Se_arch</property>
-                        <property name="short_label">Se_arch</property>
+                        <property name="short_label" translatable="yes">Se_arch</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Services">
                         <property name="name">Services</property>
                         <property name="label" translatable="yes">Services...</property>
-                        <property name="short_label">Services...</property>
+                        <property name="short_label" translatable="yes">Services...</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
@@ -179,7 +179,7 @@
                     <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">_Store Cookie</property>
-                        <property name="short_label">_Store Cookie</property>
+                        <property name="short_label" translatable="yes">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;k</property>
@@ -189,7 +189,7 @@
                     <widget class="GtkAction" id="Suppliers">
                         <property name="name">Suppliers</property>
                         <property name="label" translatable="yes">Suppliers...</property>
-                        <property name="short_label">Suppliers...</property>
+                        <property name="short_label" translatable="yes">Suppliers...</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
@@ -198,7 +198,7 @@
                     <widget class="GtkAction" id="SuppliersButton">
                         <property name="name">SuppliersButton</property>
                         <property name="label" translatable="yes">Suppliers</property>
-                        <property name="short_label">Suppliers</property>
+                        <property name="short_label" translatable="yes">Suppliers</property>
                         <property name="stock_id">stoq-suppliers</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                     </widget>
@@ -207,7 +207,7 @@
                     <widget class="GtkAction" id="Transporter">
                         <property name="name">Transporter</property>
                         <property name="label" translatable="yes">Transporters...</property>
-                        <property name="short_label">Transporters...</property>
+                        <property name="short_label" translatable="yes">Transporters...</property>
                         <signal handler="_on_transporters_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
@@ -216,7 +216,7 @@
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
-                        <property name="short_label">About</property>
+                        <property name="short_label" translatable="yes">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </widget>
@@ -225,14 +225,14 @@
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
-                        <property name="short_label">_Help</property>
+                        <property name="short_label" translatable="yes">_Help</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="receive_action">
                         <property name="name">receive_action</property>
                         <property name="label" translatable="yes">_Receive</property>
-                        <property name="short_label">_Receive</property>
+                        <property name="short_label" translatable="yes">_Receive</property>
                         <property name="stock_id">gtk-redo</property>
                         <property name="accelerator">&lt;Control&gt;r</property>
                     </widget>
@@ -241,7 +241,7 @@
                     <widget class="GtkAction" id="send_to_supplier_action">
                         <property name="name">send_to_supplier_action</property>
                         <property name="label" translatable="yes">Send to Supplier...</property>
-                        <property name="short_label">Send to Supplier...</property>
+                        <property name="short_label" translatable="yes">Send to Supplier...</property>
                         <signal handler="_on_send_to_supplier_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
@@ -250,7 +250,7 @@
                     <widget class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
-                        <property name="short_label">_User</property>
+                        <property name="short_label" translatable="yes">_User</property>
                     </widget>
                 </child>
             </widget>
