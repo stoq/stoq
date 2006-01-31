@@ -8,7 +8,6 @@
                     <widget class="GtkAction" id="AddOrder">
                         <property name="name">AddOrder</property>
                         <property name="label" translatable="yes">Add Order...</property>
-                        <property name="short_label">Add Order...</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;a</property>
                     </widget>
@@ -105,7 +104,6 @@
                     <widget class="GtkAction" id="ProductButton">
                         <property name="name">ProductButton</property>
                         <property name="label" translatable="yes">Products</property>
-                        <property name="short_label">Products</property>
                         <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                     </widget>
@@ -114,7 +112,6 @@
                     <widget class="GtkAction" id="Products">
                         <property name="name">Products</property>
                         <property name="label" translatable="yes">Products...</property>
-                        <property name="short_label">Products...</property>
                         <signal handler="_on_products_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
@@ -123,7 +120,6 @@
                     <widget class="GtkAction" id="Purchase">
                         <property name="name">Purchase</property>
                         <property name="label" translatable="yes">Add Order</property>
-                        <property name="short_label">Add Order</property>
                         <property name="stock_id">gtk-new</property>
                         <signal handler="_on_order_action_clicked" name="activate"/>
                     </widget>
@@ -189,7 +185,6 @@
                     <widget class="GtkAction" id="Suppliers">
                         <property name="name">Suppliers</property>
                         <property name="label" translatable="yes">Suppliers...</property>
-                        <property name="short_label">Suppliers...</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
@@ -198,7 +193,6 @@
                     <widget class="GtkAction" id="SuppliersButton">
                         <property name="name">SuppliersButton</property>
                         <property name="label" translatable="yes">Suppliers</property>
-                        <property name="short_label">Suppliers</property>
                         <property name="stock_id">stoq-suppliers</property>
                         <signal handler="_on_suppliers_action_clicked" name="activate"/>
                     </widget>
