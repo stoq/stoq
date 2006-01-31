@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-31 15:21-0200\n"
+"POT-Creation-Date: 2006-01-31 15:46-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2681,7 +2681,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:9
 #: ../stoq/gui/sales/glade/sales_app.glade.h:5
 #: ../stoq/gui/till/glade/till.glade.h:6
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:5
 #: ../stoq/gui/receivable/glade/receivable.glade.h:5
 #: ../stoq/gui/pos/glade/pos.glade.h:13
 msgid "Copy selected object into the clipboard"
@@ -2690,7 +2689,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:10
 #: ../stoq/gui/sales/glade/sales_app.glade.h:6
 #: ../stoq/gui/till/glade/till.glade.h:7
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:6
 #: ../stoq/gui/receivable/glade/receivable.glade.h:6
 msgid "Create a new file"
 msgstr ""
@@ -2698,7 +2696,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:11
 #: ../stoq/gui/sales/glade/sales_app.glade.h:8
 #: ../stoq/gui/till/glade/till.glade.h:9
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:7
 #: ../stoq/gui/receivable/glade/receivable.glade.h:7
 #: ../stoq/gui/pos/glade/pos.glade.h:14
 msgid "Cut selected object into the clipboard"
@@ -2707,7 +2704,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:13
 #: ../stoq/gui/sales/glade/sales_app.glade.h:11
 #: ../stoq/gui/till/glade/till.glade.h:11
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:9
 #: ../stoq/gui/receivable/glade/receivable.glade.h:9
 #: ../stoq/gui/pos/glade/pos.glade.h:19
 msgid "Open a file"
@@ -2716,7 +2712,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:14
 #: ../stoq/gui/sales/glade/sales_app.glade.h:12
 #: ../stoq/gui/till/glade/till.glade.h:12
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:10
 #: ../stoq/gui/receivable/glade/receivable.glade.h:10
 #: ../stoq/gui/pos/glade/pos.glade.h:20
 msgid "Paste object from the Clipboard"
@@ -2738,7 +2733,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:18
 #: ../stoq/gui/sales/glade/sales_app.glade.h:15
 #: ../stoq/gui/till/glade/till.glade.h:14
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:11
 #: ../stoq/gui/receivable/glade/receivable.glade.h:12
 #: ../stoq/gui/pos/glade/pos.glade.h:22
 msgid "Quit the program"
@@ -2746,7 +2740,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:19
 #: ../stoq/gui/admin/glade/admin.glade.h:14
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:10
 #: ../stoq/gui/pos/glade/pos.glade.h:28
 msgid "Save _as"
 msgstr ""
@@ -2754,14 +2748,12 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:17
 #: ../stoq/gui/till/glade/till.glade.h:17
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
 #: ../stoq/gui/receivable/glade/receivable.glade.h:13
 #: ../stoq/gui/pos/glade/pos.glade.h:29
 msgid "Save a file"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:21
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:18
 #: ../stoq/gui/pos/glade/pos.glade.h:30
 msgid "Save with a differente name"
 msgstr ""
@@ -2795,7 +2787,7 @@ msgstr ""
 #: ../stoq/gui/admin/glade/admin.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:22
 #: ../stoq/gui/till/glade/till.glade.h:21
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:20
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
 #: ../stoq/gui/receivable/glade/receivable.glade.h:19
 #: ../stoq/gui/pos/glade/pos.glade.h:35
 msgid "_Edit"
@@ -2810,7 +2802,7 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:30
 #: ../stoq/gui/sales/glade/sales_app.glade.h:23
 #: ../stoq/gui/till/glade/till.glade.h:22
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:21
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:13
 #: ../stoq/gui/receivable/glade/receivable.glade.h:21
 #: ../stoq/gui/pos/glade/pos.glade.h:37
 msgid "_File"
@@ -2819,7 +2811,7 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:31
 #: ../stoq/gui/sales/glade/sales_app.glade.h:24
 #: ../stoq/gui/till/glade/till.glade.h:23
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:22
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:14
 #: ../stoq/gui/receivable/glade/receivable.glade.h:22
 #: ../stoq/gui/pos/glade/pos.glade.h:38
 msgid "_Help"
@@ -2836,7 +2828,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:34
 #: ../stoq/gui/admin/glade/admin.glade.h:23
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:24
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
 msgid "_Store Cookie"
 msgstr ""
 
@@ -2844,7 +2836,7 @@ msgstr ""
 #: ../stoq/gui/admin/glade/admin.glade.h:24
 #: ../stoq/gui/sales/glade/sales_app.glade.h:25
 #: ../stoq/gui/till/glade/till.glade.h:25
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:25
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
 #: ../stoq/gui/receivable/glade/receivable.glade.h:24
 #: ../stoq/gui/pos/glade/pos.glade.h:42
 msgid "_User"
@@ -3377,7 +3369,7 @@ msgid "STOQ - Till Application"
 msgstr ""
 
 #: ../stoq/gui/till/glade/till.glade.h:16
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:15
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:9
 msgid "S_earch"
 msgstr ""
 
@@ -3551,31 +3543,31 @@ msgstr ""
 msgid "There is %s overpaid."
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:8
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:5
 msgid "History"
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:6
 msgid "Receive"
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:13
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:7
 msgid "Retention..."
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:14
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:8
 msgid "STOQ - Warehouse Application"
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:19
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:11
 msgid "Transfer"
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:23
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:15
 msgid "_Retention"
 msgstr ""
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:26
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:18
 msgid "_Warehouse"
 msgstr ""
 

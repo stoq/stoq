@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-31 15:21-0200\n"
+"POT-Creation-Date: 2006-01-31 15:46-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -562,7 +562,7 @@ msgstr "Cargo padrão para vendedor:"
 msgid ""
 "Defines which of the employee roles existent in the system is the "
 "salesperson role"
-msgstr ""
+msgstr "Define qual cargo de empregado é equivalente ao cargo de vendedor"
 
 #: ../stoq/lib/parameters.py:67 ../stoq/lib/parameters.py:72
 #: ../stoq/lib/parameters.py:209 ../stoq/lib/parameters.py:230
@@ -578,7 +578,7 @@ msgstr "Fornecedor Sugerido"
 msgid ""
 "The supplier suggested when we are adding a new product's supplier in the "
 "system"
-msgstr ""
+msgstr "O fornecedor sugerido quando associamos um fornecedor à um produto"
 
 #: ../stoq/lib/parameters.py:73
 msgid "Default Base Sellable Category"
@@ -589,6 +589,8 @@ msgid ""
 "A default base sellable category which we always get as a suggestion when "
 "adding a new Sellable on the system"
 msgstr ""
+"Uma categoria de base é uma categoria que sempre iremos sugerir quando "
+"adicionarmos uma nova categoria no sistema"
 
 #: ../stoq/lib/parameters.py:80 ../stoq/lib/parameters.py:90
 #: ../stoq/lib/parameters.py:96 ../stoq/lib/parameters.py:151
@@ -605,6 +607,9 @@ msgid ""
 "A default payment destination which will be used for all the created "
 "payments until the user change the destination of each payment method."
 msgstr ""
+"O destino de pagamento padrão que será usado por todos os novos pagamentos "
+"criados até que o usuário defina destinos destinos para cada forma de "
+"pagamento."
 
 #: ../stoq/lib/parameters.py:91
 msgid "Base Payment Method"
@@ -615,6 +620,8 @@ msgid ""
 "The base payment method which can easily be converted to other methods like "
 "check and bill."
 msgstr ""
+"A forma de pagamento de base e que pode facilmente ser convertida para "
+"outras formas de pagamento como cheque e boleto."
 
 #: ../stoq/lib/parameters.py:96
 msgid "Money Payment Method"
@@ -623,6 +630,8 @@ msgstr "Forma de pagamento dinheiro"
 #: ../stoq/lib/parameters.py:97
 msgid "Definition of the money payment method. This parameter is not editable"
 msgstr ""
+"Definição da forma de pagamento dinheiro. Este parâmetro não pode ser "
+"editado."
 
 #: ../stoq/lib/parameters.py:100
 msgid "Delivery Service"
@@ -630,7 +639,7 @@ msgstr "Serviço de entrega"
 
 #: ../stoq/lib/parameters.py:101
 msgid "The default delivery service in the system."
-msgstr ""
+msgstr "O serviço de entrega padrão no sistema."
 
 #: ../stoq/lib/parameters.py:104
 msgid "Default Gift Certificate Type"
@@ -2775,7 +2784,6 @@ msgstr "Limpar Cookie"
 #: ../stoq/gui/purchase/glade/purchase.glade.h:9
 #: ../stoq/gui/sales/glade/sales_app.glade.h:5
 #: ../stoq/gui/till/glade/till.glade.h:6
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:5
 #: ../stoq/gui/receivable/glade/receivable.glade.h:5
 #: ../stoq/gui/pos/glade/pos.glade.h:13
 msgid "Copy selected object into the clipboard"
@@ -2784,7 +2792,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:10
 #: ../stoq/gui/sales/glade/sales_app.glade.h:6
 #: ../stoq/gui/till/glade/till.glade.h:7
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:6
 #: ../stoq/gui/receivable/glade/receivable.glade.h:6
 msgid "Create a new file"
 msgstr "Novo"
@@ -2792,7 +2799,6 @@ msgstr "Novo"
 #: ../stoq/gui/purchase/glade/purchase.glade.h:11
 #: ../stoq/gui/sales/glade/sales_app.glade.h:8
 #: ../stoq/gui/till/glade/till.glade.h:9
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:7
 #: ../stoq/gui/receivable/glade/receivable.glade.h:7
 #: ../stoq/gui/pos/glade/pos.glade.h:14
 msgid "Cut selected object into the clipboard"
@@ -2801,7 +2807,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:13
 #: ../stoq/gui/sales/glade/sales_app.glade.h:11
 #: ../stoq/gui/till/glade/till.glade.h:11
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:9
 #: ../stoq/gui/receivable/glade/receivable.glade.h:9
 #: ../stoq/gui/pos/glade/pos.glade.h:19
 msgid "Open a file"
@@ -2810,7 +2815,6 @@ msgstr ""
 #: ../stoq/gui/purchase/glade/purchase.glade.h:14
 #: ../stoq/gui/sales/glade/sales_app.glade.h:12
 #: ../stoq/gui/till/glade/till.glade.h:12
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:10
 #: ../stoq/gui/receivable/glade/receivable.glade.h:10
 #: ../stoq/gui/pos/glade/pos.glade.h:20
 msgid "Paste object from the Clipboard"
@@ -2832,7 +2836,6 @@ msgstr "Produtos..."
 #: ../stoq/gui/purchase/glade/purchase.glade.h:18
 #: ../stoq/gui/sales/glade/sales_app.glade.h:15
 #: ../stoq/gui/till/glade/till.glade.h:14
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:11
 #: ../stoq/gui/receivable/glade/receivable.glade.h:12
 #: ../stoq/gui/pos/glade/pos.glade.h:22
 msgid "Quit the program"
@@ -2840,7 +2843,7 @@ msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:19
 #: ../stoq/gui/admin/glade/admin.glade.h:14
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:10
 #: ../stoq/gui/pos/glade/pos.glade.h:28
 msgid "Save _as"
 msgstr "Save _as"
@@ -2848,14 +2851,12 @@ msgstr "Save _as"
 #: ../stoq/gui/purchase/glade/purchase.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:17
 #: ../stoq/gui/till/glade/till.glade.h:17
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
 #: ../stoq/gui/receivable/glade/receivable.glade.h:13
 #: ../stoq/gui/pos/glade/pos.glade.h:29
 msgid "Save a file"
 msgstr ""
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:21
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:18
 #: ../stoq/gui/pos/glade/pos.glade.h:30
 msgid "Save with a differente name"
 msgstr ""
@@ -2889,7 +2890,7 @@ msgstr "Transportadoras..."
 #: ../stoq/gui/admin/glade/admin.glade.h:20
 #: ../stoq/gui/sales/glade/sales_app.glade.h:22
 #: ../stoq/gui/till/glade/till.glade.h:21
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:20
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
 #: ../stoq/gui/receivable/glade/receivable.glade.h:19
 #: ../stoq/gui/pos/glade/pos.glade.h:35
 msgid "_Edit"
@@ -2904,7 +2905,7 @@ msgstr "Editar..."
 #: ../stoq/gui/purchase/glade/purchase.glade.h:30
 #: ../stoq/gui/sales/glade/sales_app.glade.h:23
 #: ../stoq/gui/till/glade/till.glade.h:22
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:21
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:13
 #: ../stoq/gui/receivable/glade/receivable.glade.h:21
 #: ../stoq/gui/pos/glade/pos.glade.h:37
 msgid "_File"
@@ -2913,7 +2914,7 @@ msgstr "_File"
 #: ../stoq/gui/purchase/glade/purchase.glade.h:31
 #: ../stoq/gui/sales/glade/sales_app.glade.h:24
 #: ../stoq/gui/till/glade/till.glade.h:23
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:22
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:14
 #: ../stoq/gui/receivable/glade/receivable.glade.h:22
 #: ../stoq/gui/pos/glade/pos.glade.h:38
 msgid "_Help"
@@ -2930,7 +2931,7 @@ msgstr "Receber"
 
 #: ../stoq/gui/purchase/glade/purchase.glade.h:34
 #: ../stoq/gui/admin/glade/admin.glade.h:23
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:24
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:16
 msgid "_Store Cookie"
 msgstr "Gravar Cookie"
 
@@ -2938,7 +2939,7 @@ msgstr "Gravar Cookie"
 #: ../stoq/gui/admin/glade/admin.glade.h:24
 #: ../stoq/gui/sales/glade/sales_app.glade.h:25
 #: ../stoq/gui/till/glade/till.glade.h:25
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:25
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:17
 #: ../stoq/gui/receivable/glade/receivable.glade.h:24
 #: ../stoq/gui/pos/glade/pos.glade.h:42
 msgid "_User"
@@ -3471,7 +3472,7 @@ msgid "STOQ - Till Application"
 msgstr "STOQ- Aplicação de Caixa"
 
 #: ../stoq/gui/till/glade/till.glade.h:16
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:15
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:9
 msgid "S_earch"
 msgstr "Pesquisar"
 
@@ -3645,31 +3646,31 @@ msgstr "Devolver o valor em dinheiro"
 msgid "There is %s overpaid."
 msgstr "Há pago %s"
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:8
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:5
 msgid "History"
 msgstr "Histórico"
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:12
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:6
 msgid "Receive"
-msgstr "Recebido"
+msgstr "Receber"
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:13
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:7
 msgid "Retention..."
 msgstr "Retenção..."
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:14
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:8
 msgid "STOQ - Warehouse Application"
 msgstr "STOQ - Aplicação de Almoxarifado"
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:19
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:11
 msgid "Transfer"
 msgstr "Transferência"
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:23
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:15
 msgid "_Retention"
 msgstr "Retenção..."
 
-#: ../stoq/gui/warehouse/glade/warehouse.glade.h:26
+#: ../stoq/gui/warehouse/glade/warehouse.glade.h:18
 msgid "_Warehouse"
 msgstr "Almoxarifado"
 
@@ -3732,7 +3733,7 @@ msgstr "Novo Pedido..."
 
 #: ../stoq/gui/pos/glade/pos.glade.h:24
 msgid "Reset the order"
-msgstr ""
+msgstr "Reiniciar pedido"
 
 #: ../stoq/gui/pos/glade/pos.glade.h:25
 msgid "STOQ - POS Application"
