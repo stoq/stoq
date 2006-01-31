@@ -50,7 +50,7 @@ _ = gettext.gettext
 
 class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
-    app_icon_name = 'stoq-warehouse-app' 
+    app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
     searchbar_table = AbstractSellable
     searchbar_result_strings = (_('product'), _('products'))
@@ -75,7 +75,7 @@ class WarehouseApp(SearchableAppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
 
     def get_filter_slave_items(self):
-        items = [(o.get_adapted().name, o) 
+        items = [(o.get_adapted().name, o)
                   for o in Person.iselect(IBranch, connection=self.conn)]
         if not items:
             raise DatabaseInconsistency('You should have at least one '
@@ -113,11 +113,11 @@ class WarehouseApp(SearchableAppWindow):
                        data_type=str, width=100),
                 ForeignKeyColumn(BaseSellableInfo, 'description',
                                  title=_('Description'), data_type=str,
-                                 obj_field='base_sellable_info', 
+                                 obj_field='base_sellable_info',
                                  expand=True, searchable=True),
-                AccessorColumn('supplier', self._get_supplier, 
+                AccessorColumn('supplier', self._get_supplier,
                                title=_('Supplier'), data_type=str),
-                AccessorColumn('quantity', self._get_stock_balance, 
+                AccessorColumn('quantity', self._get_stock_balance,
                                title=_('Quantity'), data_type=float)]
     #
     # Accessor
@@ -133,7 +133,7 @@ class WarehouseApp(SearchableAppWindow):
             raise DatabaseInconsistency('A ProductSupplierInfo object must '
                                         'have a supplier set. Found None '
                                         'instead')
-        person = main_supplier_info.supplier.get_adapted() 
+        person = main_supplier_info.supplier.get_adapted()
         return person.name
 
     def _get_storable(self, instance):
@@ -157,12 +157,12 @@ class WarehouseApp(SearchableAppWindow):
         # TODO search by supplier name too. Bug 2180
         return (AbstractSellable.q.base_sellable_infoID ==
                 BaseSellableInfo.q.id)
-        
+
     def filter_results(self, sellables):
         """Hook called by SearchBar"""
-        return [sellable for sellable in sellables 
+        return [sellable for sellable in sellables
                         if isinstance(sellable, self.table)]
-        
+
     #
     # Callbacks
     #
