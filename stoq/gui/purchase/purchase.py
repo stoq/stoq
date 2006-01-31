@@ -130,7 +130,7 @@ class PurchaseApp(SearchableAppWindow):
                 ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
                                  data_type=str,
                                  obj_field='supplier', adapted=True,
-                                 searchable=True, width=270),
+                                 searchable=True, width=220),
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),
                 Column('purchase_total', title=_('Ordered'), 
