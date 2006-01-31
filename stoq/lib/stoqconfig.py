@@ -27,7 +27,7 @@ lib/config.py:
 
     Configuration file for stoq applications
 """
-    
+
 import gettext
 import os
 import sys
@@ -64,14 +64,14 @@ class AppConfig:
     splash = 0
     _applications = None
     RETRY_NUMBER = 3
-    
+
     def __init__(self, domain):
         self.domain = domain
         self.config_data = StoqConfigParser(self.domain)
 
     def init_log(self):
         sys.stderr.write("-"*76 + "\n")
-       
+
     def log(self, s):
         sys.stderr.write("%s: %s\n" % (log_header(), s))
 
@@ -91,7 +91,7 @@ class AppConfig:
         self.config_data.check_permissions(dir, executable=True)
 
     #
-    # Application setup. 
+    # Application setup.
     #
 
     def setup_app(self, appname=None, splash=False):
@@ -99,7 +99,7 @@ class AppConfig:
             check_tables()
         except DatabaseError, e:
             self.abort_mission(str(e), _('Database Error'))
-        
+
         self.appname = appname
         self.splash = splash
 
@@ -132,14 +132,14 @@ class AppConfig:
     #
 
     def _lookup_user(self, username, password):
-        # This function is really just a post-validation item. 
+        # This function is really just a post-validation item.
         table = PersonAdaptToUser
         res = table.select(table.q.username == '%s' % username)
 
         msg = _("Invalid user or password")
         if not res.count():
             raise LoginError(msg)
-            
+
         if res.count() != 1:
             raise DatabaseInconsistency("It should exists only one instance "
                                         "in database for this username, got "
@@ -155,9 +155,9 @@ class AppConfig:
             msg = _("This user lacks credentials \nfor application %s")
             raise UserProfileError(msg % self.appname)
         return user
-    
+
     def check_user(self, username, password):
-        user = self._lookup_user(username, password) 
+        user = self._lookup_user(username, password)
         set_current_user(user)
 
     def validate_user(self):
@@ -170,9 +170,9 @@ class AppConfig:
             # Try and grab credentials from cookie or dialog
             ret = self.check_cookie()
             has_cookie_file = ret is not None
-                
+
             if not ret:
-                self.splash = 0 
+                self.splash = 0
                 username = password = appname = None
             else:
                 username, password, appname = ret
@@ -197,7 +197,7 @@ class AppConfig:
             if not username:
                 retry_msg = _("specify an username")
                 continue
-                
+
             try:
                 self.check_user(username, password)
             except (LoginError, UserProfileError), e:
@@ -306,7 +306,7 @@ def show_splash(splash_path):
     global splash_win
     splash_win = w
 
-    
+
 def hide_splash(*args):
     global splash_win
     if splash_win:
