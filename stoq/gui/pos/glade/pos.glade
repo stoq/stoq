@@ -431,7 +431,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkHBox" id="warning_box">
-                                        <property name="visible">True</property>
+                                        <property name="visible">False</property>
                                         <child>
                                             <widget class="GtkAlignment" id="alignment1">
                                                 <property name="visible">True</property>
