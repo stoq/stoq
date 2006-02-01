@@ -3,7 +3,8 @@
 from sys import path
 path.insert(0, '..')
 
-from stoqlib.reporting import print_preview, build_report, ReportTemplate
+from stoqlib.reporting import print_preview, build_report
+from stoqlib.reporting.printing import ReportTemplate
 
 # Classe utilizada como "container", simplesmente utilizada para
 # guardar/unificar dados.
