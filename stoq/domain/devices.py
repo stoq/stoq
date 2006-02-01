@@ -48,7 +48,8 @@ class DeviceSettings(Domain):
      DEVICE_PARALLEL) = range(1, 4)
 
     (SCALE_DEVICE,
-     PRINTER_DEVICE) = range(1, 3)
+     FISCAL_PRINTER_DEVICE,
+     CHEQUE_PRINTER_DEVICE) = range(1, 4)
 
     device_descriptions = {DEVICE_SERIAL1: _('Serial port 1'),
                            DEVICE_SERIAL2: _('Serial port 2'),
@@ -59,7 +60,8 @@ class DeviceSettings(Domain):
                   DEVICE_PARALLEL: '/dev/parport'}
 
     device_types = {SCALE_DEVICE: _('Scale'),
-                    PRINTER_DEVICE: _('Printer')}
+                    FISCAL_PRINTER_DEVICE: _('Fiscal Printer'),
+                    CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
 
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)

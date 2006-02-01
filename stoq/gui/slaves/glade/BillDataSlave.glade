@@ -7,11 +7,12 @@
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="border_width">5</property>
+                <property name="visible">True</property>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="payment_number_label">
                         <property name="data_type">str</property>
-                        <property name="xalign">0.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
@@ -19,29 +20,31 @@
                 </child>
                 <child>
                     <widget class="GtkVBox" id="vbox2">
-                        <property name="border_width">5</property>
-                        <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkHBox" id="hbox1">
-                                <property name="border_width">5</property>
+                                <property name="border_width">3</property>
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Duedate:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="due_date">
                                         <property name="data_type">date</property>
                                         <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">due_date</property>
-                                        <property name="width_request">90</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">90</property>
                                     </widget>
                                     <packing>
                                         <property name="position">1</property>
@@ -51,10 +54,11 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">$:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">2</property>
                                     </packing>
                                 </child>
@@ -62,9 +66,10 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="value">
                                         <property name="data_type">float</property>
                                         <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">value</property>
-                                        <property name="width_request">90</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">90</property>
                                     </widget>
                                     <packing>
                                         <property name="position">3</property>
@@ -74,10 +79,11 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                         <property name="data_type">str</property>
                                         <property name="label" context="yes" translatable="yes">Payment #:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">4</property>
                                     </packing>
                                 </child>
@@ -86,22 +92,17 @@
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">payment_number</property>
-                                        <property name="width_request">90</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">90</property>
                                     </widget>
                                     <packing>
                                         <property name="position">5</property>
                                     </packing>
                                 </child>
-                                <child>
-                                    <widget class="GtkLabel" id="label1">
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="position">6</property>
-                                    </packing>
-                                </child>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
                         </child>
                         <child>
                             <widget class="GtkEventBox" id="bank_data_slave">

@@ -196,7 +196,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
             raise ValueError('The number of installments argument can not '
                              'be greater than %d for method %s' %
                              (max, self.description))
-        
+
     def get_payment_number_by_group(self, payment_group):
         q1 = Payment.q.groupID == payment_group.id
         q2 = Payment.q.methodID == self.id

@@ -279,8 +279,7 @@ class Sale(Domain):
         self.update_gift_certificates()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
-        
-        
+
 #
 # Adapters
 #
@@ -304,7 +303,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_thirdparty(self):
         sale = self.get_adapted()
-        return sale.client.get_adapted()
+        client = sale.client
+        return client and client.get_adapted() or None
 
     def set_thirdparty(self):
         raise NotImplementedError

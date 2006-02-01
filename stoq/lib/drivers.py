@@ -34,11 +34,12 @@ import socket
 import warnings
 
 import gtk
-from zope.interface import implements
+from zope.interface import implements, providedBy
 from sqlobject.sqlbuilder import OR, AND
 from stoqlib.exceptions import DatabaseInconsistency
-from kiwi.ui.dialogs import warning, error
+from kiwi.ui.dialogs import warning, error, info
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
                                    MONEY_PM, CHEQUE_PM)
@@ -48,6 +49,7 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 from stoq.domain.devices import DeviceSettings
 from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
                                     IMoneyPM, ICheckPM, IContainer)
+from stoq.lib.parameters import sysparam
 
 _ = gettext.gettext
 _printer = None
@@ -64,15 +66,26 @@ def get_device_settings_by_hostname(conn, hostname, device_type):
         raise DatabaseInconsistency("It's not possible to have more than "
                                     "one setting for the same device type"
                                     " and the same machine")
-    return result_quantity and result[0] or None    
+    return result_quantity and result[0] or None
 
-def get_printer_settings_by_hostname(conn, hostname):
+def get_fiscal_printer_settings_by_hostname(conn, hostname):
     """ Returns the DeviceSettings object representing the printer currently
     associated with the given hostname or None if there is not settings for
     it.
     """
     return get_device_settings_by_hostname(conn, hostname,
-                                           DeviceSettings.PRINTER_DEVICE)
+                                           DeviceSettings.FISCAL_PRINTER_DEVICE)
+
+def get_current_cheque_printer_settings(conn):
+    res = get_device_settings_by_hostname(conn, socket.gethostname(),
+                                          DeviceSettings.CHEQUE_PRINTER_DEVICE)
+    if not res:
+        return None
+    elif not isinstance(res, DeviceSettings):
+        raise TypeError("Invalid setting returned by "
+                        "get_current_cheque_printer_settings")
+    return ChequePrinter(brand=res.brand, model=res.model,
+                         device=res.get_port_name())
 
 def get_scale_settings_by_hostname(conn, hostname):
     """ Return the DeviceSettings object representing the scale currently
@@ -93,7 +106,8 @@ def _get_fiscalprinter(conn):
     if _printer:
         return _printer
 
-    setting = get_printer_settings_by_hostname(conn, socket.gethostname())
+    setting = get_fiscal_printer_settings_by_hostname(conn,
+                                                      socket.gethostname())
     if setting:
         _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
                                  device=setting.get_port_name())
@@ -119,7 +133,7 @@ def _get_scale(conn):
               _("There is no scale configured for this station (\"%s\")"
                 % socket.gethostname()))
     return _scale
-    
+
 def _emit_reading(conn, cmd):
     printer = _get_fiscalprinter(conn)
     if not printer:
@@ -158,7 +172,7 @@ def emit_coupon(sale, conn):
 
 def read_scale_info(conn):
     """ Read informations from the scale configured for this station.
-    """
+    """ 
     scale = _get_scale(conn)
     dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE)
     dlg.set_markup("<span size=\"medium\"><b>%s</b></span>"
@@ -170,6 +184,38 @@ def read_scale_info(conn):
     dlg.run()
     return scale.read_data()
 
+def print_cheques_for_payment_group(conn, group):
+    """ Given a instance that implements the IPaymentGroup interface, iterate
+    over all its items printing a cheque for them.
+    """
+    payments = group.get_items()
+    printer = get_current_cheque_printer_settings(conn)
+    if not printer:
+        return
+    printer_banks = printer.get_banks()
+    current_branch = sysparam(conn).CURRENT_BRANCH
+    main_address = current_branch.get_adapted().get_main_address()
+    if not main_address:
+        raise ValueError("The cheque can not be printed since there is no "
+                         "main address defined for the current branch.")
+    city = main_address.city_location.city
+    for idx, payment in enumerate(payments):
+        method = payment.method
+        if not ICheckPM in  providedBy(method):
+            continue
+        check_data = method.get_check_data_by_payment(payment)
+        bank_id = check_data.bank_data.bank_id
+        try:
+            bank = printer_banks[bank_id]
+        except KeyError:
+            continue
+        thirdparty = group.get_thirdparty()
+        info(_("Insert Cheque %d") % (idx+1),
+                buttons=((gtk.STOCK_OK, gtk.RESPONSE_OK),),
+                default=gtk.RESPONSE_OK)
+        thirdparty = thirdparty and thirdparty.name or ""
+        printer.print_cheque(bank, payment.value, thirdparty, city)
+
 #
 # Class definitions
 #
@@ -179,7 +225,7 @@ class FiscalCoupon:
     AbstractSellable object.
     """
     implements(IContainer)
-    
+
     #
     # IContainer implementation
     #
@@ -189,7 +235,9 @@ class FiscalCoupon:
         self.conn = conn
         self.printer = _get_fiscalprinter(conn)
         if not self.printer:
-            raise ValueError
+            raise ValueError("It is not possible to emit coupon "
+                             "since there is no fiscal printer "
+                             "configured for this station")
         self._item_ids = {}
 
     def add_item(self, item):
@@ -288,7 +336,7 @@ class FiscalCoupon:
             raise ValueError("The sale object must have a PaymentGroup facet at "
                              "this point.")
         if group.default_method == group.METHOD_GIFT_CERTIFICATE:
-            self.printer.add_payment(MONEY_PM, 
+            self.printer.add_payment(MONEY_PM,
                                      sale.get_total_sale_amount(), '')
         else:
             for payment in group.get_items():
@@ -316,4 +364,5 @@ class FiscalCoupon:
             return False
         self.sale.coupon_id = coo
         return True
+
 

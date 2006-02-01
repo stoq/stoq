@@ -46,6 +46,7 @@ from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import (get_price_format_str,
                                  compare_float_numbers, get_formatted_price)
+from stoq.lib.drivers import print_cheques_for_payment_group
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
 from stoq.domain.payment.base import AbstractPaymentGroup
@@ -158,10 +159,13 @@ class PaymentMethodStep(BaseWizardStep):
         if not self.slaves_dict.has_key(slave_class):
             slave = slave_class(*slave_args)
             self.slaves_dict[slave_class] = slave
+            if slave_class is BillMethodSlave:
+                slave.bank_label.hide()
+                slave.bank_combo.hide()
         else:
             slave = self.slaves_dict[slave_class]
         self.method_slave = slave
-
+ 
     def _update_payment_method(self, iface):
         if not self.renegotiation_mode:
             self.group.set_method(iface)
@@ -172,8 +176,8 @@ class PaymentMethodStep(BaseWizardStep):
 
     def _update_payment_method_slave(self):
         selected = self.method_combo.get_selected_data()
-        slave_args = (self.wizard, self, self.conn, self.model, selected,
-                      self.outstanding_value)
+        slave_args = (self.wizard, self, self.conn, self.model,
+                      selected, self.outstanding_value)
         if not self.method_dict.has_key(selected):
             raise ValueError('Invalid payment method type: %s' 
                              % type(selected))
@@ -656,7 +660,7 @@ class SalesPersonStep(BaseWizardStep):
 
 class SaleWizard(BaseWizard):
     size = (600, 400)
-    
+
     def __init__(self, conn, model, title=_('Sale Checkout'),
                  edit_mode=False, skip_payment_step=False):
         self.title = title
@@ -680,6 +684,8 @@ class SaleWizard(BaseWizard):
                 certificate.group = group
         if self.edit_mode or not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             self.model.confirm_sale()
+            print_cheques_for_payment_group(self.conn,
+                                            self.get_payment_group())
         else:
             self.model.validate()
             # TODO We should here update the stocks and mark them as 
