@@ -64,7 +64,7 @@ class ISellable(ConnInterface):
     @itype commission float
     @itype on_sale_price float
     """
-    
+
     status = Attribute('status the sellable is in')
     price = Attribute('price of sellable')
     description = Attribute('full description of sallable')
@@ -95,12 +95,12 @@ class ISellable(ConnInterface):
 
 
 class IStorable(ConnInterface):
-    """Storable documentation for a certain product or a sellable item. 
+    """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
 
     def fill_stocks(conn):
-        """Fill the stock references of the current product to point to 
+        """Fill the stock references of the current product to point to
         stock correct information in all the branches"""
 
     def increase_stock(quantity, branch=None):
@@ -109,7 +109,7 @@ class IStorable(ConnInterface):
 
     def increase_logic_stock(quantity, branch=None):
         """When receiving a product, update the stock logic quantity
-        reference for this new item. If no branch company is supplied, 
+        reference for this new item. If no branch company is supplied,
         update all branches."""
 
     def decrease_stock(quantity, branch=None):
@@ -122,13 +122,13 @@ class IStorable(ConnInterface):
 
     def get_full_balance(branch=None):
         """Return the stock balance for the current product. If a branch
-        company is supplied, get the stock balance for this branch, 
-        otherwise, get the stock balance for all the branches. 
+        company is supplied, get the stock balance for this branch,
+        otherwise, get the stock balance for all the branches.
         We get also the sum of logic_quantity attributes"""
 
     def get_logic_balance(branch=None):
         """Return the stock logic balance for the current product. If a branch
-        company is supplied, get the stock balance for this branch, 
+        company is supplied, get the stock balance for this branch,
         otherwise, get the stock balance for all the branches."""
 
     def get_average_stock_price():
@@ -139,8 +139,8 @@ class IStorable(ConnInterface):
     def ensure_qty_requested(quantity, branch):
         """Check if the quantity requested in a sale is valid and update the
         stock of the sellable item"""
-        
-        
+
+
 class IIndividual(ConnInterface):
     """Being or characteristic of a single person, concerning one
     person exclusively
@@ -154,7 +154,7 @@ class IIndividual(ConnInterface):
     @itype mother_name string
     @itype rg_expedition_local string
     """
-    
+
     cpf = Attribute('A Brazilian government register number which allow to '
                     'store credit informations')
     rg_number = Attribute('A Brazilian government register which identify an '
@@ -190,7 +190,7 @@ class IClient(ConnInterface):
 
 
 class ISupplier(ConnInterface):
-    """A company or an individual that produces, provides, or furnishes 
+    """A company or an individual that produces, provides, or furnishes
     an item or service"""
 
     product_desc = Attribute('A short description telling which products '
@@ -199,8 +199,8 @@ class ISupplier(ConnInterface):
 
 
 class IEmployee(ConnInterface):
-    """An individual who performs work for an employer under a verbal 
-    or written understanding where the employer gives direction as to 
+    """An individual who performs work for an employer under a verbal
+    or written understanding where the employer gives direction as to
     what tasks are done"""
 
     admission_date = Attribute('admission_date',
@@ -216,7 +216,7 @@ class IEmployee(ConnInterface):
                                 'str')
     dependent_person_number = Attribute('dependent_person_number',
                                         'integer')
-    
+
     # This is Brazil-specif information
     workpermit_data = Attribute('workpermit_data',
                                 'WorkPermitData')
@@ -244,7 +244,7 @@ class IBranch(ConnInterface):
     organization"""
 
     manager = Attribute('An employee which is in charge of this branch')
-    
+
 class ISalesPerson(ConnInterface):
     """An employee in charge of make sales"""
 
@@ -277,7 +277,7 @@ class IPaymentGroup(ConnInterface):
     close_date = Attribute('The close date of the payment group.')
     notes = Attribute('Extra notes for the payment group.')
     payments = Attribute('A list of payments associated to this payment '
-                         'group') 
+                         'group')
     thirdparty = Attribute('The thirdparty associated to this payment group.')
 
     def set_thirdparty(person):
@@ -334,7 +334,7 @@ class IFinancePM(ConnInterface):
 
     def get_finance_companies():
         """Get all the finance companies for a certain method"""
-    
+
 
 class ICardPM(ConnInterface):
     """Defines a card payment method"""
@@ -363,10 +363,10 @@ class ITillOperation(ConnInterface):
 
 
 class IRenegotiationGiftCertificate(ConnInterface):
-    """ A renegotiation information between a sale and a gift certificate. 
+    """ A renegotiation information between a sale and a gift certificate.
     When paying a sale through gift certificates it's possible to have
-    overpaid values. In this case we have to create a new gift 
-    certificate with it's value and store here a general information about 
+    overpaid values. In this case we have to create a new gift
+    certificate with it's value and store here a general information about
     this process.
 
     @itype status enum
@@ -386,9 +386,9 @@ class IRenegotiationGiftCertificate(ConnInterface):
         """Confirm this object means conclude the renegotiation
         process and create a new gift certification with the overpaid value.
         """
-        
+
 class IRenegotiationSaleReturnMoney(ConnInterface):
-    """ A renegotiation information between a sale and a gift certificate. 
+    """ A renegotiation information between a sale and a gift certificate.
     When paying a sale through gift certificates it's possible to have
     overpaid values. In this case we have to create a new outpayment related
     to the return value and store here a general information about this
@@ -410,9 +410,9 @@ class IRenegotiationSaleReturnMoney(ConnInterface):
 
 
 class IRenegotiationOutstandingValue(ConnInterface):
-    """When using gift certificates as a payment method in a sale it's 
-    possible to have an outstanding value remaining to be paid. 
-    In this case, objects which implement this interface store information 
+    """When using gift certificates as a payment method in a sale it's
+    possible to have an outstanding value remaining to be paid.
+    In this case, objects which implement this interface store information
     about this process.
 
     @itype status enum
@@ -421,7 +421,7 @@ class IRenegotiationOutstandingValue(ConnInterface):
     """
 
     outstanding_value = Attribute('The value of the new inpayment and '
-                                  'which also represents the outstanding ' 
+                                  'which also represents the outstanding '
                                   'value in the sale.')
     status = Attribute('status of the object is in')
     payment_method = Attribute('The payment method of this renegotiation')
