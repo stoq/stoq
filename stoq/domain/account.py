@@ -26,7 +26,7 @@ stoq/domain/account.py:
     Domain classes to manage bank accounts.
 """
 
-from sqlobject import StringCol 
+from sqlobject import StringCol, IntCol
 
 from stoq.domain.base import Domain
 
@@ -55,10 +55,10 @@ class BankAccount(Domain):
     """A bank account definition.
 
     B{Important atributes}:
-        - I{name}: an identifier for this bank account.
+        - I{bank_id}: the bank identifier.
         - I{branch}: the bank branch where this account lives.
         - I{account}: an identifier of this account in the branch.
     """
-    name = StringCol(default=None)
+    bank_id = IntCol(default=0)
     branch = StringCol(default=None)
     account = StringCol(default=None)

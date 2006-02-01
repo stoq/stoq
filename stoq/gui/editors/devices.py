@@ -31,10 +31,14 @@ stoq/gui/editors/devices.py:
 import gettext
 
 from kiwi.ui.widgets.list import Column
-from stoqdrivers.devices.printers.base import get_supported_printers
-from stoqdrivers.devices.scales.base import get_supported_scales
 from stoqlib.gui.editors import BaseEditor
 from stoqlib.gui.lists import AdditionListDialog
+from stoqdrivers.devices.printers.base import (get_supported_printers,
+                                               get_supported_printers_by_iface)
+from stoqdrivers.devices.scales.base import get_supported_scales
+from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IChequePrinter)
+from zope.interface import providedBy
 
 from stoq.domain.devices import DeviceSettings
 
@@ -65,7 +69,8 @@ class DeviceSettingsEditor(BaseEditor):
     def setup_device_types_combo(self):
         items = [(_("Choose..."), None)]
         device_types = (DeviceSettings.SCALE_DEVICE,
-                        DeviceSettings.PRINTER_DEVICE)
+                        DeviceSettings.FISCAL_PRINTER_DEVICE,
+                        DeviceSettings.CHEQUE_PRINTER_DEVICE)
         items.extend([(self.model.get_device_type_name(t), t)
                       for t in device_types])
         self.type_combo.prefill(items)
@@ -77,11 +82,12 @@ class DeviceSettingsEditor(BaseEditor):
     def _get_supported_types(self):
         if self.model.type == DeviceSettings.SCALE_DEVICE:
             supported_types = get_supported_scales()
-        elif self.model.type == DeviceSettings.PRINTER_DEVICE:
-            supported_types = get_supported_printers()
+        elif self.model.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
+            supported_types = get_supported_printers_by_iface(ICouponPrinter)
+        elif self.model.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
+            supported_types = get_supported_printers_by_iface(IChequePrinter)
         else:
-            raise TypeError("The selected device type "
-                            "isn't supported")
+            raise TypeError("The selected device type isn't supported")
         return supported_types
 
     def _get_supported_brands(self):
@@ -150,7 +156,6 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_brand_combo__state_changed(self, *args):
         self.update_model_combo()
-
 
 class DeviceSettingsDialog(AdditionListDialog):
     size = (600, 500)

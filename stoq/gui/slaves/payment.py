@@ -43,13 +43,14 @@ from stoq.lib.validators import (get_price_format_str, get_formatted_price,
 from stoq.domain.account import BankAccount
 from stoq.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
 from stoq.domain.payment.base import Payment
-from stoq.domain.payment.methods import (BillCheckGroupData, CheckData, 
-                                         CreditProviderGroupData, 
+from stoq.domain.payment.methods import (BillCheckGroupData, CheckData,
+                                         CreditProviderGroupData,
                                          DebitCardDetails, CreditCardDetails,
                                          CardInstallmentsStoreDetails,
                                          CardInstallmentsProviderDetails,
-                                         FinanceDetails, 
+                                         FinanceDetails,
                                          PaymentMethodDetails)
+from stoq.lib.drivers import get_current_cheque_printer_settings
 
 _ = gettext.gettext
 
@@ -103,10 +104,11 @@ class PaymentListSlave(BaseEditorSlave):
         """Get the difference for the total of check payments invoiced. If
         the difference is zero the entire sale total value is invoiced.
         If the difference is greater than zero, there is an outstanding
-        amount to invoice. If the value is negative, there is a overpaid 
-        value."""
+        amount to invoice. If the value is negative, there is a overpaid
+        value.
+        """
         slaves = self.payment_slaves.values()
-        values = [s.get_payment_value() for s in slaves 
+        values = [s.get_payment_value() for s in slaves
                         if s.get_payment_value() is not None]
         slaves_total = sum(values)
         slaves_total -= self._interest_total
@@ -119,7 +121,7 @@ class PaymentListSlave(BaseEditorSlave):
         if not difference:
             label_name = difference = ''
         elif difference < 0:
-            difference *= -1 
+            difference *= -1
             label_name = _('Overpaid:')
         else:
             label_name = _('Outstanding:')
@@ -190,21 +192,30 @@ class PaymentListSlave(BaseEditorSlave):
         self.remove_last_payment_slave()
         self.emit('remove-slave')
 
+
 class BankDataSlave(BaseEditorSlave):
+    """  A simple slave that contains only a hbox with fields to bank name and
+    its branch. This slave is used by payment method slaves that has reference
+    to a BankAccount object.
+    """
     gladefile = 'BankDataSlave'
     model_type = BankAccount
     proxy_widgets = ('bank',
                      'branch')
+
+    def __init__(self, conn, model):
+       BaseEditorSlave.__init__(self, conn, model)
 
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
-        self.add_proxy(self.model, BankDataSlave.proxy_widgets)
+        proxy = self.add_proxy(self.model, BankDataSlave.proxy_widgets)
 
 class BillDataSlave(BaseEditorSlave):
-    """A slave to set payment information of bill payment method"""
+    """ A slave to set payment information of bill payment method.
+    """
 
     gladefile = 'BillDataSlave'
     model_type = Payment
@@ -238,14 +249,13 @@ class BillDataSlave(BaseEditorSlave):
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         bill_method = IBillPM(base_method)
         inpayment = bill_method.create_inpayment(self._payment_group,
-                                                 self._due_date,
-                                                 self._value)
+                                                 self._due_date, self._value)
         return inpayment.get_adapted()
 
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, BillDataSlave.payment_widgets)
-    
+
     #
     # Kiwi callbacks
     #
@@ -253,10 +263,17 @@ class BillDataSlave(BaseEditorSlave):
     def after_value__changed(self, *args):
         self.emit('paymentvalue-changed')
 
+
 class CheckDataSlave(BillDataSlave):
     """A slave to set payment information of check payment method."""
     slave_holder = 'bank_data_slave'
     model_type = CheckData
+
+    def __init__(self, conn, payment_group, due_date, value, model=None,
+                 default_bank=None):
+        self._default_bank = default_bank
+        BillDataSlave.__init__(self, conn, payment_group, due_date,
+                               value, model)
 
     #
     # BaseEditorSlave hooks
@@ -275,6 +292,8 @@ class CheckDataSlave(BillDataSlave):
         return check_method.get_check_data_by_payment(adapted)
 
     def setup_slaves(self):
+        if self._default_bank and not self.model.bank_data.bank_id:
+            self.model.bank_data.bank_id = self._default_bank
         bank_data_slave = BankDataSlave(self.conn, self.model.bank_data)
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
@@ -310,7 +329,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.payment_group = self.wizard.get_payment_group()
         self.payment_list = None
         self.reset_btn_validation_ok = True
-        self.total_value = outstanding_value or self.sale.get_total_sale_amount()
+        self.total_value = (outstanding_value or
+                            self.sale.get_total_sale_amount())
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
@@ -348,7 +368,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         items = [(label, constant) for constant, label 
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
-
         self.payment_list = PaymentListSlave(self, self.conn, 
                                              self.method, self.total_value,
                                              self.interest_total)
@@ -413,6 +432,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def get_slave_by_inpayment(self, inpayment):
         raise NotImplementedError
 
+    def get_extra_slave_args(self):
+        """  This method can be redefined in child when extra parameters needs
+        to be passed to the slave class. This method must return always a list
+        with the parameters.
+        """
+        return []
+
     # 
     #  Callbacks
     # 
@@ -446,8 +472,9 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             total = self.total_value
         else:
             total = 0.0
+        extra_params = self.get_extra_slave_args()
         slave = self._data_slave_class(self.conn, group, due_date, total,
-                                       model)
+                                       model, *extra_params)
         slave.connect('paymentvalue-changed', 
                       self._on_slave__paymentvalue_changed)
         return slave
@@ -464,7 +491,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     #
     # PaymentMethodStep hooks
     #
-    
+
     def finish(self):
         # Since payments are created during this step there is no need to
         # perform tasks here
@@ -472,7 +499,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     #
     # BaseEditor Slave hooks
-    #   
+    #
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -493,21 +520,21 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def after_installments_number__value_changed(self, *args):
         # Call this callback *after* the value changed because we need to
-        # have the same value for the length of the payments list 
+        # have the same value for the length of the payments list
         inst_number = self.model.installments_number
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
         self.update_view()
-        
+
     def after_first_duedate__changed(self, *args):
         self.update_view()
-    
+
     def on_intervals__value_changed(self, *args):
         self.update_view()
 
     def on_interval_type_combo__changed(self, *args):
         self.update_view()
-    
+
     def on_reset_button__clicked(self, *args):
         self._setup_payments()
 
@@ -531,6 +558,28 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         check_data = self.method.get_check_data_by_payment(adapted)
         return self.get_payment_slave(check_data)
 
+    def get_extra_slave_args(self):
+        """ If there is any selected item in the banks combo, return this
+        as extra parameter to the slave (CheckDataSlave). """
+        if (self.bank_combo.get_property("visible")
+            and self.bank_combo.get_model_items()):
+            bank_id = self.bank_combo.get_selected_data()
+            if bank_id:
+                return [bank_id]
+        return []
+
+    def _setup_widgets(self):
+        printer = get_current_cheque_printer_settings(self.conn)
+        if not printer:
+            self.bank_combo.hide()
+            self.bank_label.hide()
+            return
+        banks = printer.get_banks()
+        items = [("%s - %s" % (code, bank.name), code)
+                     for code, bank in banks.items()]
+        self.bank_combo.prefill(items)
+        BasePaymentMethodSlave._setup_widgets(self)
+
 class BillMethodSlave(BasePaymentMethodSlave):
     _data_slave_class = BillDataSlave
 
@@ -538,10 +587,13 @@ class BillMethodSlave(BasePaymentMethodSlave):
         adapted = inpayment.get_adapted()
         return self.get_payment_slave(adapted)
 
+#
+# Classes related to "credit provider" payment method
+#
+
 class CreditProviderMethodSlave(BaseEditorSlave):
     """A base payment method slave for card and finance methods.
-   
-   Available slaves are: CardMethodSlave, FinanceMethodSlave 
+    Available slaves are: CardMethodSlave, FinanceMethodSlave
     """
     gladefile = 'CreditProviderMethodSlave'
     model_type = CreditProviderGroupData
@@ -561,7 +613,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
-        # this will be properly updated after changing data in payment_type
+        # this will be properly updated after changing data in payment_type 
         # widget
         self.installments_number.set_range(1, 1)
 
@@ -593,8 +645,8 @@ class CreditProviderMethodSlave(BaseEditorSlave):
                              'stored in the database before start doing '
                              'sales')
         payment_info = objs[0]
-        pmdetails_objs = [obj for obj in objs 
-                                if obj.is_active and 
+        pmdetails_objs = [obj for obj in objs
+                                if obj.is_active and
                                     isinstance(obj, self._payment_types)]
         if not pmdetails_objs:
             raise ValueError('You must have payment_types information '
@@ -626,13 +678,13 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     #
     # PaymentMethodStep hooks
     #
-    
+
     def finish(self):
         self._setup_payments()
 
     #
     # BaseEditor Slave hooks
-    #   
+    #
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -658,19 +710,19 @@ class CreditProviderMethodSlave(BaseEditorSlave):
 
     def on_payment_type__content_changed(self, *args):
         self._setup_max_installments()
-        
+
     def on_credit_provider__content_changed(self, *args):
         self._setup_payment_types()
 
 class CardMethodSlave(CreditProviderMethodSlave):
-        
+
     _payment_types = (CardInstallmentsStoreDetails,
                       CardInstallmentsProviderDetails, DebitCardDetails,
                       CreditCardDetails)
-        
+
     def _get_credit_providers(self):
         return self.method.get_credit_card_providers()
-        
+
     def _setup_payment_types(self):
         self.payment_type.clear()
         selected = self.credit_provider.get_selected_data()
@@ -680,10 +732,10 @@ class CardMethodSlave(CreditProviderMethodSlave):
 
 class FinanceMethodSlave(CreditProviderMethodSlave):
     _payment_types = FinanceDetails,
-        
+
     def _get_credit_providers(self):
         return self.method.get_finance_companies()
-        
+
     def _setup_payment_types(self):
         self.payment_type.clear()
         selected = self.credit_provider.get_selected_data()

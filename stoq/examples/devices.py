@@ -40,7 +40,7 @@ def create_device_settings():
     printer = DeviceSettings(host=socket.gethostname(),
                              device=DeviceSettings.DEVICE_SERIAL1,
                              brand='virtual', model='Simple',
-                             type=DeviceSettings.PRINTER_DEVICE,
+                             type=DeviceSettings.FISCAL_PRINTER_DEVICE,
                              connection=conn)
     conn.commit()
     print_msg("done.")

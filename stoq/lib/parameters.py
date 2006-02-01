@@ -469,11 +469,20 @@ class ParameterAccess(ClassInittableObject):
         self.set_schema(key, role.id, is_editable=False)
 
     def ensure_current_branch(self):
-        from stoq.domain.person import Person, PersonAdaptToBranch
+        from stoq.domain.person import (Person, PersonAdaptToBranch, Address,
+                                        CityLocation)
         key = "CURRENT_BRANCH"
         if self.get_parameter_by_field(key, PersonAdaptToBranch):
             return
+
         person_obj = Person(name=key, connection=self.conn)
+        city_location = CityLocation(city="Sao Carlos", state="SP",
+                                     country="Brasil", connection=self.conn)
+        main_address = Address(street="Orlando Damiano", number=2212,
+                               district="Jd Macarengo", postal_code="11223344",
+                               is_main_address=True, person=person_obj,
+                               city_location=city_location,
+                               connection=self.conn)
         # XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
         # what is the cnpj of this company I need to put something there because
         # this is a mandatory field. I think use a simple string could help user

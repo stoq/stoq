@@ -13,41 +13,51 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
+                        <property name="padding">6</property>
                     </packing>
                 </child>
                 <child>
                     <widget class="GtkHBox" id="hbox1">
-                        <property name="border_width">5</property>
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">str</property>
-                                <property name="label" context="yes" translatable="yes">Bank:</property>
+                            <widget class="GtkAlignment" id="alignment1">
                                 <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                        <property name="data_type">str</property>
+                                        <property name="label" context="yes" translatable="yes">Bank ID:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                </child>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="bank">
-                                <property name="data_type">str</property>
+                                <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">name</property>
+                                <property name="model_attribute">bank_id</property>
                                 <property name="visible">True</property>
-                                <property name="width_request">90</property>
+                                <property name="width_chars">10</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                 <property name="data_type">str</property>
-                                <property name="label" context="yes" translatable="yes">Bank Branch:</property>
+                                <property name="label" context="yes" translatable="yes">Branch Number:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">2</property>
                             </packing>
                         </child>
@@ -57,9 +67,10 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">branch</property>
                                 <property name="visible">True</property>
-                                <property name="width_request">90</property>
+                                <property name="width_chars">10</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">3</property>
                             </packing>
                         </child>
@@ -68,11 +79,13 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">4</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
+                        <property name="expand">False</property>
                         <property name="position">1</property>
                     </packing>
                 </child>
