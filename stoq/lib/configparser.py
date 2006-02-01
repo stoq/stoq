@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -60,9 +60,9 @@ testdb=%(TESTDB)s
 # The database username in rdbms.
 dbusername=%(DBUSERNAME)s"""
 
-    sections = ['General']
+    sections = ['General', 'Database']
 
-    def __init__(self, domain, filename=None, extra_sections=[]):
+    def __init__(self, domain, filename=None):
         """
         domain is the name given to the application system; it should
         be a name that describes the whole system, such as the company
@@ -81,10 +81,6 @@ dbusername=%(DBUSERNAME)s"""
 
         self.domain = domain
         self.filename = filename
-
-        if extra_sections:
-            for section in extra_sections:
-                self.sections.append(section)
 
         self.config = ConfigParser()
         self._load_config()
@@ -202,6 +198,27 @@ dbusername=%(DBUSERNAME)s"""
 
         self.config.set(section, name)
 
+    def set_database(self, database):
+        """
+        Overrides the default database configuration option.
+        @param database: the database
+        """
+        self.config.set('Database', 'dbname', database)
+
+    def set_username(self, username):
+        """
+        Overrides the default username configuration option.
+        @param username: the username
+        """
+        self.config.set('Database', 'dbusername', username)
+
+    def set_hostname(self, hostname):
+        """
+        Overrides the default hostname configuration option.
+        @param hostname: the hostname
+        """
+        self.config.set('Database', 'address', hostname)
+
     #
     # Database config accessors
     #
@@ -230,3 +247,5 @@ dbusername=%(DBUSERNAME)s"""
             raise ConfigError("Unsupported database type: %s" % scheme)
 
         return '%s://%s%s' % (scheme, authority, path)
+
+config = StoqConfigParser('stoq')
