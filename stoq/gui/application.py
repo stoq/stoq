@@ -49,7 +49,7 @@ __program_name__    = "Stoq"
 __website__         = 'http://www.stoq.com.br'
 __version__         = "0.6.0"
 __release_date__    = (2006, 27, 1)
-    
+
 
 class App(BaseApp):
 
@@ -72,16 +72,16 @@ class App(BaseApp):
 class AppWindow(BaseAppWindow):
     """ Base class for the main window of applications.
 
-    @cvar app_name: This attribute is used when generating titles for 
-                    applications.  It's also useful if we get a list of 
-                    available applications with the application names 
+    @cvar app_name: This attribute is used when generating titles for
+                    applications.  It's also useful if we get a list of
+                    available applications with the application names
                     translated. This list is going to be used when
                     creating new user profiles.
 
     @cvar klist_name: The name of the kiwi list instance used by our
                        application
     @cvar klist_selection_mode: The selection mode for the kiwi list
-    
+
     """
 
     app_name = None
@@ -93,7 +93,7 @@ class AppWindow(BaseAppWindow):
         self.app = app
         BaseAppWindow.__init__(self, app)
         self.widgets = self.widgets + ['users_menu', 'help_menu',
-                                       'StoreCookie', 'ClearCookie', 
+                                       'StoreCookie', 'ClearCookie',
                                        'ChangeUser']
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
@@ -152,7 +152,7 @@ class AppWindow(BaseAppWindow):
         # License
         license = app.find_resource('docs', 'COPYING')
         about.set_license(file(license).read())
-        
+
         # Authors & Contributors
         authors = app.find_resource('docs', 'AUTHORS')
         lines = [a.strip() for a in file(authors).readlines()]
@@ -163,7 +163,7 @@ class AppWindow(BaseAppWindow):
 
         about.run()
         about.destroy()
-        
+
     #
     # Public API
     #
@@ -188,7 +188,7 @@ class AppWindow(BaseAppWindow):
 
     def on_StoreCookie__activate(self, action):
         self._store_cookie()
-        
+
     def on_ClearCookie__activate(self, action):
         self._clear_cookie()
 
@@ -207,7 +207,7 @@ class SearchableAppWindow(AppWindow):
     @cvar searchbar_labels: A label that will be showed in the search bar
     @cvar filter_slave_label: A label for the filter_slave attached in
                                searchbar
-    
+
     """
 
     searchbar_table = None
@@ -224,8 +224,8 @@ class SearchableAppWindow(AppWindow):
         if not self.searchbar_table:
             return
         filter_slave = self._get_filter_slave()
-        self.searchbar = SearchBar(self.conn, self.searchbar_table, 
-                                   self.get_columns(), 
+        self.searchbar = SearchBar(self.conn, self.searchbar_table,
+                                   self.get_columns(),
                                    filter_slave=filter_slave,
                                    searching_by_date=self.searchbar_use_dates,
                                    query_args=self.get_query_args())
@@ -254,11 +254,11 @@ class SearchableAppWindow(AppWindow):
                              'attribute')
         self.filter_slave.set_filter_label(self.filter_slave_label)
         return self.filter_slave
-        
+
     #
     # Callbacks
     #
-    
+
     def on_searchbar_before_activate(self, *args):
         rollback_and_begin(self.conn)
 
@@ -281,7 +281,7 @@ class SearchableAppWindow(AppWindow):
         @returns: a sqlbuilder operator that will be added in the searchbar
                   main query
         """
-    
+
 
     def get_filter_slave_items(self):
         """Define this method on parent when a FilterSlave is needed to be
