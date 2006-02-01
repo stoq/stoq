@@ -28,7 +28,7 @@
 ##
 """
 stoqdrivers/devices/printers/interface.py:
-    
+
     Printer Driver API
 """
 
@@ -46,13 +46,13 @@ class ICouponPrinter(Interface):
 
     model_name = Attribute("The name of the printer that the driver "
                            "implements")
-    
+
     #
     # Common API
     #
 
     def identify_customer(customer, address, document):
-        """ Identify the customer.  This method doesn't have mandatory 
+        """ Identify the customer.  This method doesn't have mandatory
         execution (you can identify the customer only if you like), but when
         executed it must be called before calling any method.
 
@@ -69,16 +69,16 @@ class ICouponPrinter(Interface):
         identify_customer())
         """
 
-    def coupon_add_item(code, quantity, price, unit, description, taxcode, 
+    def coupon_add_item(code, quantity, price, unit, description, taxcode,
                         discount, charge, unit_desc=''):
         """ Adds an item to the coupon.
-        
-        @param code:         item code identifier 
+
+        @param code:         item code identifier
         @type  code:         string
         @param quantity:     quantity
-        @type  quantity:     number 
+        @type  quantity:     number
         @param price:        price
-        @type  price:        number 
+        @type  price:        number
         @param unit:         constant to describe the unit
         @type unit:          integer constant one of: UNIT_LITERS,
                              UNIT_EMPTY, UNIT_METERS, UNIT_WEIGHT,
@@ -90,7 +90,7 @@ class ICouponPrinter(Interface):
                              TAX_SUBSTITUTION, TAX_EXEMPTION
         @param discount:     discount in %
         @type  discount      float 0..100
-        @param charge:       charge in % 
+        @param charge:       charge in %
         @type  charge        float 0..100
         @param unit_desc:    A 2-byte string representing the unit
                              that applies to the product.
@@ -99,11 +99,11 @@ class ICouponPrinter(Interface):
         @rtype:              integer
         @returns             identifier of added item
         """
-        
+
     def coupon_cancel_item(item_id):
         """ Cancels an item, item_id must be a value returned by
         coupon_add_item
-        
+
         @param item_id:  the item id
         """
 
@@ -114,12 +114,12 @@ class ICouponPrinter(Interface):
 
     def coupon_totalize(discount, charge, taxcode):
         """ Closes the coupon applies addition a discount or charge and tax.
-        This can only be called when the coupon is open, has items added and 
+        This can only be called when the coupon is open, has items added and
         payments added.
-        
+
         @param discount:     discount in %
         @type  discount      float 0..100
-        @param charge:       charge in % 
+        @param charge:       charge in %
         @type  charge        float 0..100
         @param tax_code:     currently unused
 
@@ -143,7 +143,7 @@ class ICouponPrinter(Interface):
     def coupon_close(message=''):
         """ It needs to be possible to open new coupons after this is called.
         You must call coupon_totalize before calling this method.
-        
+
         @param message:      promotional message
         @type message:       string
 
@@ -194,7 +194,7 @@ class IChequePrinter(Interface):
     """ Interface specification for cheque printers. """
 
     def get_banks():
-        """ Returns a dictionary of all banks supported by the printer. The 
+        """ Returns a dictionary of all banks supported by the printer. The
         dictionary's key is the bank name and its value are BankConfiguration
         instances (this classe [BankConfiguration] is used to store and manage
         the values of each section in the configuration file).
