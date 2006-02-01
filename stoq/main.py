@@ -33,7 +33,7 @@ def run_app(options, config, appname):
         raise RuntimeError(
             "Application %s must have a app.main() function")
 
-    module.main(config)
+    module.main(appconf)
 
     import gtk
     gtk.main()
