@@ -196,7 +196,7 @@ class Person(Domain):
     calls = MultipleJoin('Calls')
 
     #
-    # SQLObject callbacks
+    # SQLObject accessors
     #
 
     def _set_phone_number(self, value):
