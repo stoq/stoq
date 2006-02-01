@@ -41,47 +41,47 @@ from stoq.domain.sellable import SellableUnit
 
 def ensure_admin_user(name, username, password):
     print_msg("Creating administrator user...", break_line=False)
-    trans = new_transaction()
+    conn = new_transaction()
 
     # XXX Person for administrator user is the same of Current Branch. I'm not 
     # sure if it's the best approach but for sure it's better than 
     # create another one just for this user.
-    company = sysparam(trans).CURRENT_BRANCH
+    company = sysparam(conn).CURRENT_BRANCH
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
-    role = EmployeeRole(name='Administrator role', connection=trans)
-    user = person_obj.addFacet(IIndividual, connection=trans)
+    role = EmployeeRole(name='Administrator role', connection=conn)
+    user = person_obj.addFacet(IIndividual, connection=conn)
     user = person_obj.addFacet(IEmployee, role=role,
-                               connection=trans)
+                               connection=conn)
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.
-    person_obj.addFacet(ISalesPerson, connection=trans)
+    person_obj.addFacet(ISalesPerson, connection=conn)
 
-    profile = UserProfile.create_profile_template(trans, 'Administrator',
+    profile = UserProfile.create_profile_template(conn, 'Administrator',
                                                   has_full_permission=True)
     
     user = person_obj.addFacet(IUser, username=username, password=password,
-                               profile=profile, connection=trans)
+                               profile=profile, connection=conn)
     catalog = PersonAdaptToUser
     ret = catalog.select(catalog.q.username == 'administrator',
-                         connection=trans)
+                         connection=conn)
     assert ret, ret.count() == 1
     assert ret[0].password == password
-    trans.commit()
+    conn.commit()
     print_msg('done')
     return user
 
 def ensure_sellable_units():
     """ Create native sellable units. """
     print_msg("Creating sellable units... ", break_line=False)
-    trans = new_transaction()
+    conn = new_transaction()
     unit_list = [("Kg", UNIT_WEIGHT),
                  ("Lt", UNIT_LITERS),
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
-        SellableUnit(description=desc, index=index, connection=trans)
-    trans.commit()
+        SellableUnit(description=desc, index=index, connection=conn)
+    conn.commit()
     print_msg("done")
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
@@ -91,19 +91,19 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
         print_msg('Setting up tables... ')
 
     catalog_types = get_table_types()
-    trans = new_transaction()
+    conn = new_transaction()
     for catalog in catalog_types:
-        if trans.tableExists(catalog.get_db_table_name()):
-            catalog.dropTable(ifExists=True, cascade=True, connection=trans)
+        if conn.tableExists(catalog.get_db_table_name()):
+            catalog.dropTable(ifExists=True, cascade=True, connection=conn)
             if list_tables:
                 print_msg('<removed>:  %s' % catalog)
         if delete_only:
             continue
-        catalog.createTable(connection=trans)
+        catalog.createTable(connection=conn)
         if list_tables:
             print_msg('<created>:  %s' % catalog)
 
-    trans.commit()
+    conn.commit()
     print_msg('done')
 
 def initialize_system(user, username, password, delete_only=False,
