@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import sys
 
 from sqlobject import connectionForURI
 
-from stoq.lib.configparser import StoqConfigParser
+from stoq.lib.configparser import config
 
 _connection = None
 _current_user = None
@@ -48,12 +48,6 @@ def initialize_connection():
     global _connection
     msg = 'The connection for this application was already set.'
     assert not _connection, msg
-
-    config = StoqConfigParser('stoq', extra_sections=['Database'])
-    # HACK: This is needed by epydoc for reasons which are not certain,
-    #       it needs to be investigated futher.
-    if not config:
-        return
 
     conn_uri = config.get_connection_uri(test_mode=get_test_mode())
     conn = connectionForURI(conn_uri)

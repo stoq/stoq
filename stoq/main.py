@@ -1,7 +1,7 @@
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 #
-# Copyright (C) 2005 Async Open Source
+# Copyright (C) 2005,2006 Async Open Source
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,38 +19,66 @@
 # USA.
 #
 
+import optparse
+
 from stoq.lib.applist import get_application_names
 
-def main(args):
-    apps = get_application_names()
-
-    if len(args) >= 2:
-        appname = args[1].strip()
-        if appname.endswith('/'):
-            appname = appname[:-1]
-
-        if not appname in apps:
-            raise SystemExit("'%s' is not an application. "
-                             "Valid applications are: %s" % (appname, apps))
-    else:
-        appname = None
-
+def run_app(options, config, appname):
     from stoq.lib.stoqconfig import AppConfig
-    config = AppConfig("stoq")
-    if appname:
-        config.setup_app(appname, splash=True)
-    else:
-        appname = config.setup_app(splash=True)
 
-    module = __import__("stoq.gui.%s.app" % appname,
-                        globals(), locals(), appname)
+    appconf = AppConfig()
+    appname = appconf.setup_app(appname, splash=True)
+    module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
     if not hasattr(module, "main"):
         raise RuntimeError(
             "Application %s must have a app.main() function")
 
-    if not 'noexec' in args:
-        module.main(config)
+    module.main(config)
 
     import gtk
     gtk.main()
-    config.log("Shutting down application")
+    appconf.log("Shutting down application")
+
+def main(args):
+    parser = optparse.OptionParser()
+    parser.add_option('-n', '--hostname',
+                      action="store",
+                      dest="hostname",
+                      help='Database host to connect to')
+    parser.add_option('-d', '--database',
+                      action="store",
+                      dest="database",
+                      help='Database name to use')
+    parser.add_option('-u', '--username',
+                      action="store",
+                      dest="username",
+                      help='Database username')
+    parser.add_option('-c', '--clean',
+                      action="store",
+                      dest="clean",
+                      help='Clean database before running')
+
+    options, args = parser.parse_args(args)
+
+    if len(args) < 2:
+        appname = None
+    else:
+        appname = args[1].strip()
+        if appname.endswith('/'):
+            appname = appname[:-1]
+
+        apps = get_application_names()
+        if not appname in apps:
+            raise SystemExit("'%s' is not an application. "
+                                 "Valid applications are: %s" % (appname, apps))
+
+    from stoq.lib.configparser import config
+
+    if options.hostname:
+        config.set_database(options.hostname)
+    if options.database:
+        config.set_database(options.database)
+    if options.username:
+        config.set_database(options.username)
+
+    run_app(options, config, appname)
