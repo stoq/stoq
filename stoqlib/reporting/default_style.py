@@ -1,43 +1,48 @@
 # -*- Mode: Python; coding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
-#
-# Copyright (C) 2005 Async Open Source
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
 
-""" Este módulo disponibiliza estilos de parágrafos e define estilos padrões
-à serem utilizados em páginas, tabelas e textos. Os estilos de parágrafos 
-definidos aqui tem como objetivo básico extender os estilos fornecidos pelo
-ReportLab. É possível também criar seus próprios estilos seguindo o padrão 
-utilizado neste módulo, ou seja, simplesmente crie uma instância de
-ParagraphStyle e adicione-a à STYLE_SHEET, um exemplo de como é possível 
-fazer isso é disponibilizado junto à distribuição e é incluído no diretório
-"examples/", com o nome "contract_example.py".
+##
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+## USA.
+##
+"""
+stoqlib/reporting/default_style.py:
 
-Os estilos de parágrafo disponibilizados são:
+    Este módulo disponibiliza estilos de parágrafos e define estilos padrões
+    à serem utilizados em páginas, tabelas e textos. Os estilos de parágrafos 
+    definidos aqui tem como objetivo básico extender os estilos fornecidos
+    pelo ReportLab. É possível também criar seus próprios estilos seguindo o
+    padrão utilizado neste módulo, ou seja, simplesmente crie uma instância
+    de ParagraphStyle e adicione-a à STYLE_SHEET, um exemplo de como é
+    possível fazer isso é disponibilizado junto à distribuição e é incluído
+    no diretório stoqlib/reporting/examples/, com o nome contract_example.py.
 
-    - Normal: Fonte Helvetica, tamanho 10, alinhamento à esquerda
-    - Normal-Bold: Fonte Helvetia-Bold, tamanho 10, alinhamento à esquerda
-    - Normal-AlignRight: Fonte Helvetica, tamanho 10, alinhamento à esquerda
-    - Title: Fonte Helvetica-Bold, tamanho 12, alinhamento à esquerda
-    - Title-Note: Fonte Helvetica-Bold, tamanho 8, alinhamento à esquerda
-    - Title-AlignCenter: Fonte Helvetica-Bold; tamanho 14, 
-      alinhamento ao centro
-    - Title-AlignRight: Fonte Helvetica-Bold, tamamho 12, 
-      alinhamento à direita
+    Os estilos de parágrafo disponibilizados são:
+
+      - Normal: Fonte Helvetica, tamanho 10, alinhamento à esquerda
+      - Normal-Bold: Fonte Helvetia-Bold, tamanho 10, alinhamento à esquerda
+      - Normal-AlignRight: Fonte Helvetica, tamanho 10, alinhamento à esquerda
+      - Title: Fonte Helvetica-Bold, tamanho 12, alinhamento à esquerda
+      - Title-Note: Fonte Helvetica-Bold, tamanho 8, alinhamento à esquerda
+      - Title-AlignCenter: Fonte Helvetica-Bold; tamanho 14, 
+        alinhamento ao centro
+      - Title-AlignRight: Fonte Helvetica-Bold, tamamho 12, 
+        alinhamento à direita
 """
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
