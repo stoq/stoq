@@ -29,14 +29,16 @@ stoqlib/reporting/template.py:
 """
 
 from reportlab.lib import pagesizes
-from reportlab import platypus
+from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
+                                KeepTogether, PageBreak, Spacer)
+from reportlab.platypus.flowables import Preformatted, Paragraph
 
 from stoqlib.reporting import tables, flowables
 from stoqlib.reporting.default_style import (DOC_DEFAULTS, SPACING,
                                              STYLE_SHEET, TABLE_STYLE,
                                              DEFAULT_MARGIN, TABLE_LINE)
 
-class BaseReportTemplate(platypus.BaseDocTemplate):
+class BaseReportTemplate(BaseDocTemplate):
     """ 
     Classe responsável pela implementação dos métodos para inserção de
     elementos no relatório.
@@ -73,8 +75,8 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         if landscape:
             pagesize = pagesizes.landscape(pagesize)
 
-        platypus.BaseDocTemplate.__init__(self, filename, pagesize=pagesize,
-                                          title=report_name, **doc_kwargs)
+        BaseDocTemplate.__init__(self, filename, pagesize=pagesize,
+                                 title=report_name, **doc_kwargs)
         self.flowables = []
         self.grouping = 0
         # Group of flowables wich shouldn't be separated on different pages
@@ -104,7 +106,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         self._calc()
 
         self.setup_page_templates()
-        platypus.BaseDocTemplate.build(self, self.flowables)
+        BaseDocTemplate.build(self, self.flowables)
 
     #
     # Doc structure
@@ -126,14 +128,12 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
             height -= self.footer_height
             frame_y += self.footer_height
 
-        main_frame = platypus.Frame(self.leftMargin, frame_y,
-                                    self.width, height,
-                                    bottomPadding=SPACING,
-                                    topPadding=SPACING)
+        main_frame = Frame(self.leftMargin, frame_y, self.width, height,
+                           bottomPadding=SPACING, topPadding=SPACING)
 
-        template = platypus.PageTemplate(id='Normal', frames=main_frame,
-                                         pagesize=self.pagesize,
-                                         onPage=self.paint_page_canvas)
+        template = PageTemplate(id='Normal', frames=main_frame,
+                                pagesize=self.pagesize,
+                                onPage=self.paint_page_canvas)
         self.addPageTemplates([template])
 
     #
@@ -177,7 +177,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         if not min_flowables:
             self.grouping = 0
             if self._together_flowables:
-                self.add(platypus.KeepTogether(self._together_flowables))
+                self.add(KeepTogether(self._together_flowables))
             self._together_flowables = []
 
     def get_usable_width(self):
@@ -211,7 +211,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         
     def add_page_break(self):
         """ Adiciona uma simples quebra de página. """
-        self.add(platypus.PageBreak())
+        self.add(PageBreak())
 
     def add_document_break(self):
         """
@@ -234,7 +234,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         se queremos um espaçamento horizontal, neste caso, height=X e with=-1;
         espaçamento vertical é o padrão. 
         """
-        self.add(platypus.Spacer(width, height))
+        self.add(Spacer(width, height))
 
     def add_signatures(self, labels, *args, **kwargs):
         """
@@ -272,7 +272,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         classe Preformatted do ReportLab. 
         """
         style = STYLE_SHEET[style]
-        self.add(platypus.flowables.Preformatted(text, style, *args, **kwargs))
+        self.add(Preformatted(text, style, *args, **kwargs))
 
     def add_paragraph(self, text, style='Normal', **kwargs):
         """ 
@@ -283,12 +283,13 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
             definidos no módulo default_style.
         """
         style = STYLE_SHEET[style]
-        self.add(platypus.Paragraph(text, style, **kwargs))
+        self.add(Paragraph(text, style, **kwargs))
 
     def add_report_table(self, data, header=None, style=TABLE_STYLE,
                          margins=DEFAULT_MARGIN, align=flowables.CENTER,
                          extra_row=None, table_line=TABLE_LINE,
-                         highlight=tables.HIGHLIGHT_ODD, *args, **kwargs):
+                         highlight=tables.HIGHLIGHT_ODD, use_paragraph=True,
+                         *args, **kwargs):
         """
         Insercão de uma tabela relatório na lista de elementos. Os
         parâmetros para este tipo de tabela, são:
@@ -314,8 +315,15 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
             - highlight: habilita (constante HIGHLIGHT_ODD) ou desabilita
             (HIGHLIGHT_NEVER) o uso do estilo zebrado nas linhas da tabela.
             O padrão é habilitado (HIGHLIGHT_ODD).
+            - use_paragraph: define se as colunas devem ser encapsuladas
+            dentro de parágrafos (use essa opção se você deseja que linhas
+            sejam quebradas ao ultrapassar o comprimento destinado à elas).
         """
         self.add_blank_space(margins)
+
+        if use_paragraph:
+            data = [[Paragraph(col, par_style) for col in line]
+                        for line in data]
         table_builder = tables.ReportTableBuilder(data, style, header,
                                                   table_line,
                                                   extra_row=extra_row)
@@ -332,8 +340,7 @@ class BaseReportTemplate(platypus.BaseDocTemplate):
         Inserção de uma tabela coluna na lista de elementos. Os parâmetros
         para este tipo de tabela, são:
 
-            - data: uma lista de listas, onde cada lista internO ideal seria ter a opcao de definir o comportamento: truncar os caracteres OU
-rolar para linha abaixo.a representa
+            - data: uma lista de listas, onde cada lista interna representa
             uma lista e cada elemento representa o valor à ser inserido em
             uma coluna.
             - columns: uma lista de instâncias TableColumn representando as
