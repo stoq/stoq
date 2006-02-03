@@ -27,6 +27,7 @@ gui/editors.py:
 import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
@@ -40,19 +41,19 @@ class BaseEditorSlave(SlaveDelegate):
 
     @cvar gladefile:
     @cvar model_type:
-    @cvar model_iface: 
+    @cvar model_iface:
     """
     gladefile = None
     model_type = None
     model_iface = None
-    
+
     def __init__(self, conn, model=None):
         """
         @param conn: a connection
-        @param model: 
+        @param model:
         """
-        
-        # The model attribute represents the 
+
+        # The model attribute represents the
         self.conn = conn
         self.edit_mode = model is not None
         if self.model_iface:
@@ -65,7 +66,7 @@ class BaseEditorSlave(SlaveDelegate):
             if not self.model_type:
                 # XXX: Some code use model type
                 self.model_type = type(model)
-                
+
         elif self.model_type:
             model = model or self.create_model(self.conn)
             if model and not isinstance(model, self.model_type):
@@ -75,7 +76,7 @@ class BaseEditorSlave(SlaveDelegate):
                     model))
         else:
             model = None
-        self.model = model 
+        self.model = model
         SlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.setup_proxies()
         self.setup_slaves()
@@ -89,7 +90,7 @@ class BaseEditorSlave(SlaveDelegate):
         """
         raise TypeError("%r needs a model, got None. Perhaps you want to "
                         "implement create_model?" % self)
-    
+
     def setup_proxies(self):
         """
         A subclass can override this
@@ -124,11 +125,11 @@ class BaseEditorSlave(SlaveDelegate):
 
 class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of
-    BaseEditorSlave, a windows title and OK/Cancel buttons. 
+    BaseEditorSlave, a windows title and OK/Cancel buttons.
 
-    model_name      =  the model type name of the model we are editing. 
+    model_name      =  the model type name of the model we are editing.
                        This value will be showed in the title of
-                       the editor and can not be merely the attribute 
+                       the editor and can not be merely the attribute
                        __name__ of the object for usability reasons.
                        Callsites will decide what could be the best name
                        applicable in each situation.
@@ -138,7 +139,7 @@ class BaseEditor(BaseEditorSlave):
                                 Subclasses will choose the right attribute
                                 acording to the editor features and
                                 with usability in mind.
-                                The editor title has this format: 
+                                The editor title has this format:
                                 'Edit "title_model_attr" Details'
     """
 
@@ -181,7 +182,7 @@ class BaseEditor(BaseEditorSlave):
 class SimpleEntryEditor(BaseEditor):
     """Editor that offers a generic entry to input a string value."""
     gladefile = "SimpleEntryEditor"
-    
+
     def __init__(self, conn, model, attr_name, name_entry_label='Name:',
                  title=''):
         self.title = title
@@ -210,13 +211,13 @@ class NoteEditor(BaseEditor):
 
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
-        
+
     def _setup_widgets(self):
         if self.label_text:
             self.notes_label.set_text(self.label_text)
         self.notes.set_accepts_tab(False)
 
-    # 
+    #
     # BaseEditor hooks
     #
 
