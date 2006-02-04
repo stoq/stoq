@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- Mode: Python; encoding: iso-8859-1 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 #
 # Copyright (C) 2005 Async Open Source
@@ -26,15 +26,22 @@ gui/dialogs.py:
 
 import traceback
 import warnings
+import shutil
+import gettext
 import sys
+import os
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
+from kiwi.ui.dialogs import error, ask_overwrite
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.gui.gtkadds import change_button_appearance
+from stoqlib.reporting import print_file
+from stoqlib.reporting.template import BaseDocTemplate
 
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 #
 # Helper classes
@@ -46,15 +53,15 @@ class Warnbox(SlaveDelegate):
     widgets = ("error_icon", "alert_icon", "label")
 
     def __init__(self):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets)
-    
+
     def setup_label(self, message):
         self.label.set_bold(True)
         self.label.set_color('red')
         self.label.set_justify(gtk.JUSTIFY_LEFT)
         self.label.set_text(message)
-    
+
     def error(self, message):
         self.alert_icon.hide()
         self.error_icon.show()
@@ -280,7 +287,7 @@ class BasicPluggableDialog(BasicDialog):
 # Wrapping variants, which take a slave as a parameter and set it up to
 # have a "normal" dialog API, which follows the BasicPluggableDialog
 # interface for stoqlib.services run_dialog compatibility.
-#       
+#
 
 
 class BasicWrappingDialog(BasicPluggableDialog):
@@ -326,6 +333,60 @@ offers a single OK button."""
                                ok_label=ok_label)
         self.cancel_button.hide()
 
+class PrintDialog(BasicDialog):
+    """ A simple report print dialog, with options to preview or print the
+    report on a file.
+    """
+
+    title = _("Print Dialog")
+
+    def __init__(self, report_class, *args, **kwargs):
+        if not issubclass(report_class, BaseDocTemplate):
+            raise TypeError("Invalid report class type specified: %r"
+                            % report_class)
+        BasicDialog.__init__(self)
+        self._args = args
+        self._report_class = report_class
+        self._kwargs = kwargs
+        self._initialize()
+        self.register_validate_function(self.refresh_ok)
+        self.force_validation()
+
+    def _initialize(self, *args, **kwargs):
+        BasicDialog._initialize(self, title=PrintDialog.title, *args,
+                                **kwargs)
+        self._setup_slaves()
+
+    def refresh_ok(self, validation_value):
+        if validation_value:
+            self.enable_ok()
+        else:
+            self.disable_ok()
+
+    def _setup_slaves(self):
+        # XXX Avoiding circular import
+        from stoqlib.gui.slaves import PrintDialogSlave
+        self.print_slave = PrintDialogSlave(self._report_class, *self._args,
+                                            **self._kwargs)
+        self.attach_slave('main', self.print_slave)
+
+    def confirm(self):
+        printer = self.print_slave.get_printer_name()
+        reportfile = self.print_slave.get_report_file()
+        if not printer:
+            filename = self.print_slave.get_filename()
+            assert filename
+            if os.path.exists(filename):
+                if not ask_overwrite(filename):
+                    return
+            try:
+                shutil.copy(reportfile, filename)
+            except IOError, e:
+                error("The file can't be saved", e.strerror)
+        else:
+            print_file(reportfile, printer)
+        os.unlink(reportfile)
+        BasicDialog.confirm(self)
 
 #
 # Auxiliar methods
@@ -338,18 +399,18 @@ def get_dialog(parent, dialog, *args, **kwargs):
     - dialog: the dialog class or instance;
     - *args, **kwargs: the arguments which should be used on dialog
       instantiation;
-    """    
+    """
     if callable(dialog):
         dialog = dialog(*args, **kwargs)
-    
+
     # If parent is a BaseView, use GTK+ calls to get the toplevel
     # window. This is a bit of a hack :-/
-    if isinstance(parent, BaseView):     
+    if isinstance(parent, BaseView):
         parent = parent.toplevel.get_toplevel()
         if parent:
             dialog.set_transient_for(parent)
     return dialog
-        
+
 def run_dialog(dialog, parent, *args, **kwargs):
     """Run a gtk DialogBox. If  dialog is a class, the dialog will be
     instantiated before runing the dialog.
@@ -371,13 +432,13 @@ def _conflict_dialog(e):
            "(This problem was registered and will be evaluated.)")
     notify_dialog(msg)
 
-def notify_if_raises(win, check_func, exceptions=ModelDataError, 
+def notify_if_raises(win, check_func, exceptions=ModelDataError,
                      text="An error ocurred: %s"):
     try:
         check_func()
     except exceptions, e:
         notify_dialog(text % e)
-        return True 
+        return True
     return False
 
 def notify_dialog(msg, title=None, size=None, ok_label=None):
@@ -385,5 +446,5 @@ def notify_dialog(msg, title=None, size=None, ok_label=None):
                ok_label=ok_label)
 
 def confirm_dialog(msg, title=None, size=None, ok_label=None):
-    return run_dialog(ConfirmDialog, None, text=msg, title=title, 
+    return run_dialog(ConfirmDialog, None, text=msg, title=title,
                       size=size, ok_label=ok_label)

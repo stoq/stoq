@@ -24,17 +24,27 @@ gui/slaves.py:
    Basic slave definitions
 """
 
+import gettext
+import commands
+
+import gtk
+from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.dialogs import save
+from kiwi.python import Settable
+
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.reporting import print_preview, build_report
+
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class NoteSlave(BaseEditorSlave):
+    """ Slave store general notes. The model must have an attribute 'notes'
+    to work.
     """
-    Slave store general notes. The model must have an attribute 'notes' to work.
-    """
-
     gladefile = 'NoteSlave'
     widgets = ('notes',)
-    
-    def __init__(self, conn, model): 
+
+    def __init__(self, conn, model):
         self.model = model
         self.model_type = self.model_type or type(model)
         BaseEditorSlave.__init__(self, conn, self.model)
@@ -43,3 +53,85 @@ class NoteSlave(BaseEditorSlave):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, self.widgets)
 
+class PrintDialogSlave(BaseEditorSlave):
+    gladefile = 'PrintDialogSlave'
+    proxy_widgets = ('printer_combo',
+                     'filename_entry')
+    model_type = Settable
+
+    def __init__(self, report_class, *report_args, **report_kwargs):
+        self._available_printers = []
+        BaseEditorSlave.__init__(self, None, None)
+        self._report_class = report_class
+        self._report_kwargs = report_kwargs
+        self._report_args = report_args
+        self._update_view()
+
+    def get_printer_name(self):
+        if self.printer_radio.get_active():
+            return self.model.printer_name
+        return None
+
+    def get_filename(self):
+        if self.file_radio.get_active():
+            return self.model.filename
+        return None
+
+    def get_report_file(self):
+        return build_report(self._report_class, *self._report_args,
+                            **self._report_kwargs)
+
+    def _setup_printer_combo(self):
+        self._available_printers = self._get_available_printers()
+        if self._available_printers:
+            self.printer_combo.prefill(self._available_printers)
+
+    def _get_available_printers(self):
+        printers = commands.getouput("lpstat -d -a").split('\n')
+        if printers:
+            default_printer = printers[0].split(":", 1)[1].strip()
+            return [p.split()[0].strip() for p in printers[1:]]
+        return []
+
+    def _setup_widgets(self):
+        self._setup_printer_combo()
+
+    def _update_view(self):
+        if self._available_printers:
+            is_active = self.printer_radio.get_active()
+            self.filename_entry.set_sensitive(not is_active)
+            self.file_selection_button.set_sensitive(not is_active)
+            self.printer_combo.set_sensitive(is_active)
+        else:
+            self.printer_radio.set_sensitive(False)
+            self.printer_combo.set_sensitive(False)
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def create_model(self, dummy):
+        return Settable(printer_name=None, filename='relat1.pdf')
+
+    def get_title(self, dummy):
+        return _("Print Dialog")
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, PrintDialogSlave.proxy_widgets)
+        self._setup_widgets()
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_printer_radio__toggled(self, widget):
+        self._update_view()
+
+    def on_file_selection_button__clicked(self, *args):
+        filename = save(_("Select the file"))
+        if not filename:
+            return
+        self.filename_entry.set_text(filename)
+
+    def on_print_preview_button__clicked(self, *args):
+        print_preview(self.get_report_file())

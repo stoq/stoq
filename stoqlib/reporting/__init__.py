@@ -37,7 +37,7 @@ __email__ = "async@async.com.br"
 __license__ = "GNU LGPL 2.1"
 
 # Editores padrões à serem utilizados para visualização de documentos
-PROGRAMS = [('gv', '-media', 'automatic'), 'xpdf', 'ggv']
+PROGRAMS = ['xpdf', 'ggv']
 
 def build_report(report_class, *args):
     """ Função responsável pela construção do relatório.
