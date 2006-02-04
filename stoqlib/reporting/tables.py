@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,8 +23,7 @@
 """
 stoqlib/reporting/tables.py:
 
-    Este módulo implementa as classes para inserção de todos os tipos de
-    tabelas disponiblizados pelo Stoqlib Reporting. 
+    Stoqlib Reporting tables implementation.
 """
 import operator
 
@@ -50,13 +49,10 @@ HIGHLIGHT_ALWAYS = 3
 HIGHLIGHT_NEVER = 4
 
 class Table(RTable):
-    """ Sobrescreve alguns métodos da classe Table de ReportLab. """
+    """ Extension of Reportlab Table """
     def __init__(self, data, *args, **kwargs):
-        """
-        Sobrescreve alguns métodos de Table do ReportLab. Isso é feito para,
-        essencialmente, reforçar algumas checagens, como, por exemplo, a 
-        verificação do tamanho horizontal ocupado pela tabela e fornecer um
-        maior feedback ao usuário no caso de algum problema.
+        """ This class extend Reportlab table supplying extra checks on its
+        methods, what is an extra utility to the developer.
         """
         # Reportlab's Table class doesn't provide a better API to set
         # alignment, so we need to handle this specially. We need to be
@@ -75,10 +71,8 @@ class Table(RTable):
         self.hAlign = align
 
     def wrap(self, avail_width, avail_height):
-        """
-        Método utilizado para checar o tamanho horizontal ocupado pela tabela,
-        informando ao usuário, em caso de erro, o número de pontos
-        ultrapassados.
+        """ Calculate the space required by the table. Internal use by
+        Reportlab.
         """
         # If Reportlab doesn't try to calculate the table width before drawning
         # it out of the sheet, we do it for Reportlab.
@@ -92,17 +86,9 @@ class Table(RTable):
         return RTable.wrap(self, avail_width, avail_height)
 
     def identity(self):
-        """
-        Chamado quando uma representação da instância é necessária. Retorna a 
-        representação da instância através do método __repr__()
-        """
         return self.__repr__()
 
     def __repr__(self):
-        """
-        Retorna uma representação da instância, requisitada, por exemplo, 
-        através de print(). 
-        """
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
 
 #
@@ -110,13 +96,8 @@ class Table(RTable):
 #
 
 class AbstractTableBuilder:
-    """ Classe abstrata para criação de um elemento tabela. """
+    """ Abstract class for table creation """
     def __init__(self, data, style=None, extra_row=None):
-        """ 
-        Classe abstrata para criação de um elemento tabela. Todas as classes 
-        dos vários tipos de tabelas fornecidos pelo Stoqlib Reporting herdam 
-        desta classe. 
-        """
         self.style = TableStyle(parent=style)
         self.data = data
         self.extra_rows = []
@@ -124,56 +105,46 @@ class AbstractTableBuilder:
             self.add_row(extra_row)
 
     def create_table(self, *args, **kwargs):
-        """
-        Método responsável pela criação do elemento tabela. Esse método faz
-        uma chamada ao método update_style() da classe filha para que
-        múltiplos tipos de tabelas diferentes possam usar uma mesma classe
-        base e aplicar os estilos próprios de cada um. Retorna uma
-        instância/elemento Table.
-
-        Este método é geral e, nem sempre, as classes filhas precisam dele. Em
-        algumas situações, temos a classe filha implementando seu próprio
-        método, necessário caso processamento extra seja necessário.
-        """
+        """ The table creation core """
         self.update_style()
         return Table(self.get_data(), style=self.style, *args, **kwargs)
 
     def add_row(self, row_data):
-        """ 
-        Adiciona as linhas extras à lista de linhas passada para a classe, de
-        forma a termos somente uma lista de linhas.
-        """
+        """ Just add an extra row to the table """
         self.extra_rows.append(row_data)
 
+    #
+    # Hooks
+    #
+
     def get_data(self):
-        """ 
-        Método utilizado quando uma classe filha não o implementa. Agrupa as
-        linhas passadas ao callsite (classe filha) e as linhas extras em uma
-        única lista.
+        """ Returns all the table lines plus the extra row, if any.
         """
         return self.data + self.extra_rows
 
     def update_style(self):
+        """ Implement this method on subclass to define your own table styles.
         """
-        Definido apenas para evitar o levantamento de excessão caso a classe
-        filha não implemente o método update_style()
-        """
-        pass
 
 class DataTableBuilder(AbstractTableBuilder):
-    """ Classe que cria um elemento tabela simples. """
+    """ Data table builder """
+
     def __init__(self, data, style=None):
         """
-        Classe que cria um elemento tabela simples. É chamada internamente
-        pelo método add_data_table() e é responsável, basicamente, pela
-        definição de estilos à serem utilizados na tabela.
+        @param data:   The table rows.
+        @type:         list
+
+        @param style:  The table style.
+        @type:         TableStyle
         """
         AbstractTableBuilder.__init__(self, data, style)
 
+    #
+    # AbstractTableBuilder Hooks
+    #
+
     def update_style(self):
-        """ Esse método é chamado antes da criação da tabela para definir os
-        estilos à serem utilizados em linhas e colunas. 
-        """
+        """ Apply the data table style. """
         style = self.style
         columns = max(map(len, self.data))
         for i in range(columns):
@@ -189,35 +160,50 @@ class DataTableBuilder(AbstractTableBuilder):
                     style.add('RIGHTPADDING', (i-1,0), (i-1,-1), 10)
 
     def get_data(self):
-        """ Retorna os dados, isto é, a lista de linhas da tabela. """
+        """ Returns all the table rows. """
         return self.data
 
 class ReportTableBuilder(AbstractTableBuilder):
-    """ Classe que cria um elemento tabela relatório. """
+    """ Report table builder """
     highlight = HIGHLIGHT_ODD
     def __init__(self, data, style=None, header=None, table_line=TABLE_LINE,
                  extra_row=None):
-        """ 
-        Classe que cria um elemento tabela relatório. A instânciação desta
-        classe é feita internamente pelo método add_report_table().
-        É de responsabilidade desta classe aplicar os estilos da tabela, assim
-        como criar uma única lista de linhas considerando cabeçalho, linhas e
-        linha extra como somente uma lista de linhas.
-        """
         self.header = header
         self.table_line = table_line
-        AbstractTableBuilder.__init__(self, data, style=style, 
+        AbstractTableBuilder.__init__(self, data, style=style,
                                       extra_row=extra_row)
 
     def set_highlight(self, highlight):
-        """ Habilita o estilo zebrado nas linhas da tabela. """
+        """ Set the table highlight type:
+
+        @param highlight: The highlight type
+        @type:         One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER, HIGHLIGHT_ALWAYS
+                       constants
+        """
         self.highlight = highlight
 
-    def update_style(self):
-        """ 
-        Método utilizado para aplicar os estilos à serem utilizados nas linhas
-        da tabela.
+    def create_table(self, *args, **kwargs):
+        """ Override the AbstractTableBuilder create_table method to allow
+        pass extra parameters to Table class.
         """
+        if self.header:
+            kwargs['repeatRows'] = 1
+        self.update_style()
+        data = self.get_data()
+        return Table(data, style=self.style, *args, **kwargs)
+
+    #
+    # AbstractTableBuilder Hooks
+    #
+
+    def get_data(self):
+        """ Return all the table rows """
+        if self.header:
+            self.data.insert(0, self.header)
+        return AbstractTableBuilder.get_data(self)
+
+    def update_style(self):
+        """ Apply the report table style. """
         style = self.style
         border_reach = len(self.data)
         if self.header:
@@ -228,61 +214,42 @@ class ReportTableBuilder(AbstractTableBuilder):
             style.add('BACKGROUND', (0,0), (-1,0), TABLE_HEADER_BACKGROUND)
         else:
             border_reach -= 1
- 
         if self.highlight != HIGHLIGHT_NEVER:
             for i in range(0, len(self.data), 2):
                 if self.header:
                     i += 1
                 style.add('BACKGROUND', (0,i), (-1,i), HIGHLIGHT_COLOR)
-
         style.add('BOX', (0,0), (-1, border_reach), *self.table_line)
 
-    def create_table(self, *args, **kwargs):
-        """
-        Aplica os estilos da tabela fazendo uma chamada ao método 
-        update_style(), obtêm as linhas da tabela através de get_rows() e
-        retorna uma instância do elemento Table.
-        """
-        if self.header:
-            kwargs['repeatRows'] = 1
-        self.update_style()
-        data = self.get_data()
-        return Table(data, style=self.style, *args, **kwargs)
-
-    def get_data(self):
-        """
-        Retorna uma lista de linhas, considerando linha extra e cabeçalho como
-        linhas normais.
-        """
-        if self.header:
-            self.data.insert(0, self.header)
-        return AbstractTableBuilder.get_data(self)
-
 class ColumnTableBuilder(ReportTableBuilder):
-    """ Classe que cria um elemento tabela coluna. """
+    """ Column table builder """
     # Note that extra_row needs to be formatted according to the column
     # specification provided.
     def __init__(self, data, columns, style=None, progress_handler=None,
                  table_line=TABLE_LINE, do_header=1, extra_row=None):
         """
-        Classe que cria um elemento tabela coluna. Os parâmetros são:
+        @param data:   A list of lists, where each nested list represents a
+                       row (naturally, each column of this nested list is a
+                       table column).
+        @type:         list
 
-            - data: uma lista de listas, onde cada lista interna representa
-            uma lista e cada elemento representa o valor à ser inserido em
-            uma coluna.
-            - columns: uma lista de instâncias TableColumn representando as
-            colunas da tabela.
-            - style: estilo de tabela a ser utilizado.
-            - table_line: define o tipo de linha da tabela. Em Stoqlib
-            Reporting, definimos dois tipos: TABLE_LINE e TABLE_LINE_BLANK
-            que representam uma tabela com linhas simples e uma tabela sem
-            linhas.
-            - do_header: definido como True se a tabela deve possuir um
-            cabeçalho.
-            - extra_row: uma lista de colunas representando uma linha extra.
-            Nem todos os elementos precisam estar preenchidos, mas é 
-            necessário que eles existam, isto é, é necessário que o tamanho
-            desta lista seja o mesmo das listas internas do parâmetro 'data'
+        @param columns: A list of TableColumn instances representing the
+                       table columns
+        @type:         list
+
+        @param style:  The table style.
+        @type          TableStyle
+
+        @param table_line: Define the type of the line that is inserted between
+                       the table rows.
+        @type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
+
+        @param do_header: Must the table header be drawed? Defaults to True
+        @type:         bool
+
+        @param extra_row: An list of strings to be inserted right after the
+                       table.
+        @type:         list
         """
         self.columns = columns
         self.progress_handler = progress_handler
@@ -292,32 +259,27 @@ class ColumnTableBuilder(ReportTableBuilder):
             header = None
         if extra_row:
             extra_row = self.get_row_data(extra_row)
-        ReportTableBuilder.__init__(self, self.build_data(data), style, 
+        ReportTableBuilder.__init__(self, self.build_data(data), style,
                                     header, table_line, extra_row)
 
     def create_table(self, *args, **kwargs):
-        """ 
-        Método responsável pela criação da tabela. Cria uma lista com os
-        tamanhos de cada coluna e faz uma chamada ao método create_table() de
-        ReportTableBuilder para a criação da tabela em si.
-        """
+        """ Override ReportTableBuilder create_table method to allow specify
+        the columns width. """
         col_widths = [col.width for col in self.columns]
         return ReportTableBuilder.create_table(self, colWidths=col_widths)
 
-    def update_style(self):
-        """ 
-        Aplica os estilos da tabela e percorre as colunas aplicando seus
-        respectivos estilos. 
-        """
-        ReportTableBuilder.update_style(self)
-        col_idx = 0
-        for col in self.columns:
-            col.update_style(self.style, col_idx)
-            col_idx += 1
+    def get_row_data(self, values):
+        """ Returns all the row columns formatted """
+        # In TableColumns, values is actually a list or tuple; we iterate
+        # through that tuple and return the corresponding string_data
+        return [column.get_string_data(value)
+                    for (column, value) in zip(self.columns, values)]
 
     def build_data(self, data):
-        """
-        Cria a lista de linhas, formatando cada coluna de cada lista interna.
+        """ Create the table rows list.
+
+        @param data:   the row list passed by the user when creating the table
+        @type:         list
         """
         prepared = []
         row_idx = 0
@@ -331,68 +293,61 @@ class ColumnTableBuilder(ReportTableBuilder):
                 self.progress_handler(row_idx, list_len)
         return prepared
 
-    def get_row_data(self, value):
-        """ Retorna, formatadas, as colunas de uma linha. """
-        # In TableColumns, value is actually a list or tuple; we iterate
-        # through that tuple and return the corresponding string_data
-        ret = []
-        for i in range(len(value)):
-            item = value[i]
-            ret.append(self.columns[i].get_string_data(item))
-        return ret
-
     def _get_header(self):
-        """
-        Retorna uma lista com o nome das colunas, baseado nas instâncias
-        passada à classe pela lista de colunas TableColumn.
-        """
+        """ Returns a list with the column names. """
         headers = []
         for col in self.columns:
             if col.name is None:
-                raise RuntimeError, 'Column name can not be None for ' \
-                                    'ColumnTableBuilder instance' 
+                raise ValueError("Column name can not be None for "
+                                 "ColumnTableBuilder instance")
             headers.append(col.name)
         return headers
 
+    #
+    # AbstractTableBuilder hooks
+    #
+
+    def update_style(self):
+        """ Apply the column table style. """
+        ReportTableBuilder.update_style(self)
+        for idx, col in enumerate(self.columns):
+            col.update_style(self.style, idx)
+
 class ObjectTableBuilder(ColumnTableBuilder):
-    """ Classe que cria um elemento tabela objeto. """
+    """ Object table builder """
     def __init__(self, objs, columns, style=None, width=None,
                  progress_handler=None, table_line=TABLE_LINE,
                  extra_row=None):
-        """ 
-        Classe que cria um elemento tabela objeto. A instânciação desta classe
-        e a inserção na lista de elementos é feita pelo método
-        add_object_table(). Parâmetros:
+        """
+        @param objs:   A instance list, where each instance is a table row.
+        @type:         list.
 
-            - objs: uma lista de objetos na qual a lista de linhas será
-              construída.
-            - columns: uma lista de colunas ObjectTableColumn.
-            - style: parâmetro opcional, permite ao usuário definir um estilo
-              de tabela próprio.
-            - width: tamanho da tabela.
-            - table_line: permite ao usuário definir o estilo das linhas da
-              tabela. Stoqlib Reporting fornece os estilos TABLE_LINE e
-              TABLE_LINE_BLANK, que seriam tabelas com linhas simples e
-              tabelas sem linhas.
-            - extra_row: uma lista de colunas representando uma linha extra.
-              Nem todos os elementos precisam estar preenchidos, mas é
-              necessário que eles existam, isto é, é necessário que o tamanho
-              desta lista seja o mesmo das listas internas do parâmetro
-              'data'.
+        @param columns:A list of ObjectTableColumn, representing the table
+                       columns.
+        @type:         list
+
+        @param style:  The table style.
+        @type:         TableStyle
+
+        @param width:  The table width.
+        @type:         int
+
+        @param table_line: Define the type of the line that is inserted between
+                       the table rows.
+        @type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
+
+        @param extra_row: An list of strings to be inserted right after
+                       the table. This data is included on the report as
+                       a normal data table after this object table.
+        @type:         list
         """
         self._expand_cols(columns, width)
-        ColumnTableBuilder.__init__(self, objs, columns, 
-                                    style=style,
-                                    progress_handler=progress_handler, 
-                                    table_line=table_line,
-                                    extra_row=extra_row)
+        ColumnTableBuilder.__init__(self, objs, columns, style=style,
+                                    progress_handler=progress_handler,
+                                    table_line=table_line, extra_row=extra_row)
 
     def _get_header(self):
-        """
-        Obtêm os nomes das colunas para a montagem do cabeçalho e os retorna
-        em uma lista. Se alguma coluna estiver definida como virtual e um
-        cabeçalho não for provido, a criação do relatório irá falhar aqui.
-        """
+        """ Return the column names representing the table header. """
         header = [col.name for col in self.columns]
         # Avoid passing a list of all empty headers
         if reduce(lambda h1, h2: h1 or h2, header):
@@ -406,22 +361,18 @@ class ObjectTableBuilder(ColumnTableBuilder):
         return None
 
     def get_row_data(self, value):
-        """
-        Cria a lista de linhas, formatando suas respectivas colunas caso
-        necessário.
-        """
+        """ Create the row list, formatting its column values if needed. """
         ret = []
         for col in self.columns:
             ret.append(col.get_string_data(value))
         return ret
 
     def _expand_cols(self, cols, width):
-        """
-        Método utilizado para a expansão de colunas baseado em seus
-        respectivos fatores.
+        """ This method is used to apply column expansion based on its expand
+        factors.
         """
         col_widths = [col.width for col in cols]
-        
+
         total_expand = reduce(operator.add,
                               [col.expand_factor for col in cols])
 
@@ -429,7 +380,7 @@ class ObjectTableBuilder(ColumnTableBuilder):
             msg = 'You cannot use auto-sized (%r) and expandable ' \
                   ' columns on the same table (%r)'
             raise ValueError, msg % (cols[col_widths.index(None)], self)
-        
+
         if width and not total_expand:
             raise ValueError, 'Setting table width without expanded' \
                               ' col(s) doesn\'t make sense.'
@@ -503,7 +454,7 @@ class GroupingTableBuilder(AbstractTableBuilder):
         for group in self.column_groups:
             for obj_idx in range(len_objs):
                 group.update_style(self.style, obj_idx, line_offset)
-        
+
         style.add('LINEBEFORE', (0,0), (0,-1), *TABLE_LINE)
         style.add('LINEABOVE', (0,0), (-1,0), *TABLE_LINE)
         style.add('LINEBELOW', (0,0), (-1,-1), *TABLE_LINE)
@@ -526,7 +477,7 @@ class GroupingTableBuilder(AbstractTableBuilder):
             if header_span:
                 style.add('SPAN', (i, 0), (i + header_span, 0))
                 header_span = 0
-                    
+
     def _setup_columns(self):
         for group in self.column_groups:
             col_idx = 0
@@ -539,35 +490,81 @@ class GroupingTableBuilder(AbstractTableBuilder):
         for group in self.column_groups:
             group.setup_group(self.column_groups)
 
+class TableColumnGroup:
+    """ This class groups GroupTableColumns columns """
+
+    def __init__(self, columns, highlight=HIGHLIGHT_ODD):
+        self.columns = columns
+        self.highlight = highlight
+
+    def setup_group(self, groups):
+        self.total_columns = len(groups)
+        self.group_idx = groups.index(self)
+
+    def update_style(self, style, obj_idx, line_offset=0):
+        """ Apply the column style """
+        hl = self.highlight
+        odd = not obj_idx % 2
+        # line_idx is the calculated index of table lines
+        line_idx = line_offset + self.group_idx + obj_idx * self.total_columns
+
+        if hl == HIGHLIGHT_ALWAYS or (hl == HIGHLIGHT_ODD and odd) or \
+                                     (hl == HIGHLIGHT_EVEN and not odd):
+
+            style.add('BACKGROUND', (0, line_idx), (-1, line_idx),
+                      HIGHLIGHT_COLOR)
+
+        # span_offset is used to remember last spans
+        span_offset = 0
+        for idx, col in enumerate(self.columns):
+            span = colspan - 1
+            # x0. x1 are the begin / end of the spanned range
+            x0 = idx + span_offset
+            x1 = x0 + span
+            if span:
+                style.add('SPAN', (x0, line_idx), (x1, line_idx))
+            # We add a vertical line after every spanned cells end.
+            style.add('LINEAFTER', (x1, line_idx), (x1, line_idx),
+                      *TABLE_LINE)
+            span_offset += span
+            col.update_style(style, x0)
+
+    def __len__(self):
+        return len(self.columns)
+
+#
+# Table Columns
+#
 
 class TableColumn:
-    """ Classe para criação de colunas para o elemento tabela coluna. """
     def __init__(self, name=None, width=None, format_string=None,
-                 format_func=None, truncate=0, use_paragraph=0, align=LEFT,
-                 *args, **kwargs):
-        """
-        Classe para criação de colunas para o elemento tabela coluna.
-        Parâmetros:
+                 format_func=None, truncate=False, use_paragraph=False,
+                 align=LEFT, *args, **kwargs):
+        """ Column class for ColumnTable
 
-            - name: nome da coluna, usado basicamente na construção do
-            cabeçalho da tabela.
-            - width: tamanho da coluna; se não especificado, o tamanho da
-            coluna será expandido.
-            - format_string: define uma string pré-formatada para preencher a
-            coluna; a string deve incluir um caractere de controle que será
-            completado com o valor atribuído à coluna.
-            - format_func: especifica a função chamada para formatação do
-            valor à ser inserido na coluna. O valor é passado para a função
-            como primeiro parâmetro.
-            - truncate: se definido como True, formata o valor à ser inserido
-            na tabela para ocupar somente o espaço definido para uso; isso é
-            útil para campos texto.
-            - use_paragraph: define se o texto resultante deve ser encapsulado
-            dentro de um parágrafo (Paragraph).
-            - align: define o alinhamento da coluna; as constantes para
-            alinhamento estão definidas no módulo flowables.
-        """
+        @param name:   The column name
+        @type:         str
 
+        @param width:  The column width
+        @type:         float
+
+        @param format_string: A string that will be used to format the column
+                       value.
+        @type:         str
+
+        @param format_func: A function that will be called to format the column
+                       value
+        @type:
+
+        @param truncate: Must be the string be truncate if its length was
+                       greater than the colum width?
+        @type:         bool
+
+
+        @param use_paragraph: The the column content must be placed inside a
+                       Reportlab paragraph.
+        @type:         bool
+        """
         self.name = name
         self.width = width
         self.format_string = format_string
@@ -581,11 +578,6 @@ class TableColumn:
             'What do you want for %s? Use paragraph or truncate?' % self
 
     def truncate_string(self, data):
-        """
-        Se o parâmetro truncate foi definido como True, esse é método chamado
-        para formatação da string de uma coluna, fazendo com que ela preencha
-        somente o espaço destinado à ela.
-        """
         if not self.truncate or not len(data):
             return data
         if self.truncate and not self.width:
@@ -601,65 +593,65 @@ class TableColumn:
         return data
 
     def get_string_data(self, value):
-        """
-        Método responsável pela formatação de uma coluna, aplicando o estilo e
-        formatando o valor caso necessário.
-        """
+        """  Returns the column value. The value can be returned through
+        accessors defined by the user. """
         if self.format_func:
             value = self.format_func(value)
-
         if self.format_string:
             value = self.format_string % value
-
         value = self.truncate_string(value)
-
         if self.use_paragraph:
             value = Paragraph(value)
         return value
 
+    def __repr__(self):
+        return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
+
     def update_style(self, style, idx):
-        """ Aplica o estilo da tabela. """
+        """ Apply the column style. """
         if self.align:
             style.add('ALIGN', (idx,0), (idx,-1), self.align)
         else:
             style.add('LINEBEFORE', (idx,0), (idx,-1), *TABLE_LINE)
 
-    def __repr__(self):
-        """ Retorna a representação da classe. """
-        return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
-
 class ObjectTableColumn(TableColumn):
-    """ Classe para criação de colunas para o elemento tabela objeto. """
+    """ ObjectTableColumn implementation """
+
     def __init__(self, name, data_source, expand_factor=0, align=LEFT,
                  virtual=0, truncate=0, *args, **kwargs):
-        """ Classe para criação de colunas para o elemento tabela objeto. 
-        Parâmetros:
-            - name: o nome da coluna;
-            - data_source: o nome do atributo que ocupará tal coluna;
-            - expand_factor: fator de expansão. Se um valor True for 
-            especificado para o parâmetro 'expand' do método add_object_table()
-            (ObjecTableBuilder), esse fator de expansão será considerado e 
-            quanto maior for em relação à outras colunas, maior será o 
-            comprimento desta coluna.
-            - align: alinhamento da tabela;
-            - virtual: se verdadeiro, a coluna omite seu separador com a 
-            coluna anterior e seu cabeçalho será extendido com o cabeçalho da
-            coluna anterior.
-            - truncate: se definido como True, o valor inserido na coluna será
-            truncado caso possua tamanho maior que o comprimento da coluna.
+        """
+        @param name:   The column name
+        @type:         str
+
+        @param data_source: The attribute name where get the column value from.
+                       This can be a callable object too.
+        @type:         object
+
+        @param expand_factor: The column expand factor.
+        @type:         float
+
+        @param align:  The table alignment. One of LEFT, RIGHT, CENTER
+                       constants defined on stoqlib reporting flowables module.
+        @type:         One of LEFT, RIGHT or CENTER
+
+        @param virtual: If True, then the column *omit* its separator with the
+                       last column and it header will be expanded with the one
+                       of last column.
+        @type:         bool
+
+        @param truncate: If True, the column value will be truncate if its size
+                       was greater than the column width.
+        @type:         bool
         """
         self.data_source = data_source
         self.expand_factor = expand_factor
         self.virtual = virtual
-        TableColumn.__init__(self, name, truncate=truncate, align=align, 
+        TableColumn.__init__(self, name, truncate=truncate, align=align,
                              *args, **kwargs)
 
     def get_string_data(self, value):
-        """
-        Este método é responsável pela formatação apropriada do valor inserido
-        em uma coluna,  chamando rotinas específicas de formatação caso seja o
-        requisitado.
-        """
+        """  Returns the column value. The value can be returned through
+        accessors defined by the user. """
         if self.data_source is None:
             return ''
         if isinstance(self.data_source, str):
@@ -673,7 +665,7 @@ class ObjectTableColumn(TableColumn):
         return TableColumn.get_string_data(self, data)
 
     def update_style(self, style, idx):
-        """ Este método aplica estilos para cada coluna. """
+        """ Apply the column style. """
         assert idx or not self.virtual, \
             'The first column can\'t be a virtual column'
         if self.align:
@@ -684,18 +676,12 @@ class ObjectTableColumn(TableColumn):
             style.add('LINEBEFORE', (idx,0), (idx,-1), *TABLE_LINE)
 
     def __repr__(self):
-        """
-        Método utilizado para gerar uma representação "texto" da instância.
-        """
         return '<ObjectTableColumn name: %s at 0x%x>' % (self.name, id(self))
 
 class GroupingTableColumn(ObjectTableColumn):
-    """ 
-    Essa coluna de tabela trabalha como ObjectTableColumn, mas não implementa
-    expansão e colunas virtuais. Essa classe deveria ser usada para objetos
-    que precisam de mais de uma linha para representar seus dados; isso
-    implementa uma extensão de coluna. Você deveria usar colunas
-    GroupingTableColum em um TableColumnGroup.
+    """ This column type works like ObjectTableColumn but it doesn't implements
+    the expand attribute, nor virtual columns. This class must be used with
+    objects that needs more than one line to represents its data.
     """
     def __init__(self, data_source, colspan=1, align=LEFT, truncate=0,
                  *args, **kwargs):
@@ -706,46 +692,7 @@ class GroupingTableColumn(ObjectTableColumn):
                                    align=align, *args, **kwargs)
 
     def update_style(self, style, idx):
+        """ Apply the column style. """
         if self.align:
             style.add('ALIGN', (idx,0), (idx,-1), self.align)
-
-class TableColumnGroup:
-    """ Essa classe agrupa coluns do tipo GroupTableColumns. """
-    def __init__(self, columns, highlight=HIGHLIGHT_ODD):
-        self.columns = columns
-        self.highlight = highlight
-
-    def setup_group(self, groups):
-        self.total_columns = len(groups)
-        self.group_idx = groups.index(self)
-
-    def update_style(self, style, obj_idx, line_offset=0):
-        hl = self.highlight
-        odd = not obj_idx % 2
-        # line_idx is the calculated index of table lines
-        line_idx = line_offset + self.group_idx + obj_idx * self.total_columns 
-
-        if hl == HIGHLIGHT_ALWAYS or (hl == HIGHLIGHT_ODD and odd) or \
-                                     (hl == HIGHLIGHT_EVEN and not odd):
-
-            style.add('BACKGROUND', (0, line_idx), (-1, line_idx),
-                      HIGHLIGHT_COLOR)
-
-        # span_offset is used to remember last spans
-        span_offset = 0
-        for col_idx in range(len(self)):
-            colspan = self.columns[col_idx].colspan
-            span = colspan - 1
-            # x0. x1 are the begin / end of the spanned range
-            x0 = col_idx + span_offset
-            x1 = x0 + span
-            if span:
-                style.add('SPAN', (x0, line_idx), (x1, line_idx))
-            # We add a vertical line after every spanned cells end.
-            style.add('LINEAFTER', (x1, line_idx), (x1, line_idx), *TABLE_LINE)
-            span_offset += span
-            self.columns[col_idx].update_style(style, x0)
-
-    def __len__(self):
-        return len(self.columns)
 
