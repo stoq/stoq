@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-01-27 16:41-0200\n"
+"POT-Creation-Date: 2006-02-03 23:20-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,14 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/gui/editors.py:168
+#: ../stoqlib/reporting/printing.py:98
 #, python-format
-msgid "Edit \"%s\" Details"
-msgstr ""
-
-#: ../stoqlib/gui/editors.py:171
-#, python-format
-msgid "Add %s"
+msgid "Page % 2d"
 msgstr ""
 
 #: ../stoqlib/gui/lists.py:140
@@ -52,12 +47,31 @@ msgstr ""
 msgid "Se_lect Items"
 msgstr ""
 
-#: ../stoqlib/gui/glade/SearchEntry.glade.h:1
-msgid "_Search"
+#: ../stoqlib/gui/editors.py:169
+#, python-format
+msgid "Edit \"%s\" Details"
 msgstr ""
 
-#: ../stoqlib/gui/glade/SearchEntry.glade.h:2
-msgid "matching:"
+#: ../stoqlib/gui/editors.py:172
+#, python-format
+msgid "Add %s"
+msgstr ""
+
+#: ../stoqlib/gui/glade/NoteSlave.glade.h:1
+msgid "Notes:"
+msgstr ""
+
+#: ../stoqlib/gui/glade/Warnbox.glade.h:1
+#: ../stoqlib/gui/glade/BasicDialog.glade.h:2
+msgid "label"
+msgstr ""
+
+#: ../stoqlib/gui/glade/SimpleEntryEditor.glade.h:1
+msgid "label: "
+msgstr ""
+
+#: ../stoqlib/gui/glade/BasicDialog.glade.h:1
+msgid "header"
 msgstr ""
 
 #: ../stoqlib/gui/glade/DateSearchSlave.glade.h:1
@@ -76,6 +90,14 @@ msgstr ""
 msgid "to"
 msgstr ""
 
+#: ../stoqlib/gui/glade/SearchEntry.glade.h:1
+msgid "_Search"
+msgstr ""
+
+#: ../stoqlib/gui/glade/SearchEntry.glade.h:2
+msgid "matching:"
+msgstr ""
+
 #: ../stoqlib/gui/glade/SearchEditor.glade.h:1
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:3
 msgid "_Edit..."
@@ -85,27 +107,10 @@ msgstr ""
 msgid "_New..."
 msgstr ""
 
-#: ../stoqlib/gui/glade/NoteSlave.glade.h:1
-msgid "Notes:"
-msgstr ""
-
-#: ../stoqlib/gui/glade/Warnbox.glade.h:1
-#: ../stoqlib/gui/glade/BasicDialog.glade.h:2
-msgid "label"
-msgstr ""
-
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:1
 msgid "Add..."
 msgstr ""
 
 #: ../stoqlib/gui/glade/AdditionListSlave.glade.h:2
 msgid "Delete"
-msgstr ""
-
-#: ../stoqlib/gui/glade/BasicDialog.glade.h:1
-msgid "header"
-msgstr ""
-
-#: ../stoqlib/gui/glade/SimpleEntryEditor.glade.h:1
-msgid "label: "
 msgstr ""

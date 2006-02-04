@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -23,26 +23,8 @@
 """
 stoqlib/reporting/default_style.py:
 
-    Este módulo disponibiliza estilos de parágrafos e define estilos padrões
-    à serem utilizados em páginas, tabelas e textos. Os estilos de parágrafos 
-    definidos aqui tem como objetivo básico extender os estilos fornecidos
-    pelo ReportLab. É possível também criar seus próprios estilos seguindo o
-    padrão utilizado neste módulo, ou seja, simplesmente crie uma instância
-    de ParagraphStyle e adicione-a à STYLE_SHEET, um exemplo de como é
-    possível fazer isso é disponibilizado junto à distribuição e é incluído
-    no diretório stoqlib/reporting/examples/, com o nome contract_example.py.
-
-    Os estilos de parágrafo disponibilizados são:
-
-      - Normal: Fonte Helvetica, tamanho 10, alinhamento à esquerda
-      - Normal-Bold: Fonte Helvetia-Bold, tamanho 10, alinhamento à esquerda
-      - Normal-AlignRight: Fonte Helvetica, tamanho 10, alinhamento à esquerda
-      - Title: Fonte Helvetica-Bold, tamanho 12, alinhamento à esquerda
-      - Title-Note: Fonte Helvetica-Bold, tamanho 8, alinhamento à esquerda
-      - Title-AlignCenter: Fonte Helvetica-Bold; tamanho 14, 
-        alinhamento ao centro
-      - Title-AlignRight: Fonte Helvetica-Bold, tamamho 12, 
-        alinhamento à direita
+    Constants related to flowable styles, like paragraphs, pages, tables and
+    texts.
 """
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
@@ -51,6 +33,7 @@ from reportlab.lib.enums import TA_RIGHT, TA_CENTER
 from reportlab.platypus import TableStyle
 
 STYLE_SHEET = StyleSheet1()
+
 STYLE_SHEET.add(ParagraphStyle(
     'Normal',
     fontName='Helvetica',
@@ -131,8 +114,8 @@ default_table_cmds = (
     ('BOTTOMPADDING', (0,0), (-1,-1), 3))
 
 TABLE_LINE = (1, colors.black)
-# Define bordas limpas(brancas) para as tabelas.
-# XXX: Hack para que possamos definir uma tabela sem bordas.
+
+# XXX: Hack to have table without borders
 TABLE_LINE_BLANK = (1, colors.white)
 TABLE_STYLE = TableStyle(default_table_cmds)
 TABLE_HEADER_FONT = 'Helvetica-Bold'
