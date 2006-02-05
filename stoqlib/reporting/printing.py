@@ -44,7 +44,6 @@ class ReportTemplate(BaseReportTemplate):
     footer and header, just it.  Use this if you like headers and footer,
     otherwise look at BaseReportTemplate.
     """
-    header_height = 10 * mm
     footer_height = 7 * mm
 
     def __init__(self, filename, report_name, timestamp=False, do_header=True,
@@ -79,7 +78,7 @@ class ReportTemplate(BaseReportTemplate):
         """
         # Sorry, not implemented yet
         return
-       
+
     def draw_footer(self, canvas):
         """Implementation of BaseReportTemplate hook. This method is called on
         footer drawing time if this object has the time_stamp attribute set to
