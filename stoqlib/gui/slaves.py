@@ -87,7 +87,7 @@ class PrintDialogSlave(BaseEditorSlave):
             self.printer_combo.prefill(self._available_printers)
 
     def _get_available_printers(self):
-        printers = commands.getouput("lpstat -d -a").split('\n')
+        printers = commands.getoutput("lpstat -d -a").split('\n')
         if printers:
             default_printer = printers[0].split(":", 1)[1].strip()
             return [p.split()[0].strip() for p in printers[1:]]
