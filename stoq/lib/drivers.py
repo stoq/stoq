@@ -275,18 +275,19 @@ class FiscalCoupon:
     #
 
     def identify_customer(self, person):
-        person.check_individual_or_company_facets()
-        if not person.get_main_address():
-            address = ''
-        else:
-            address = person.get_main_address().get_address_string()
-        individual = IIndividual(person, connection=person.get_connection())
-        if individual is None:
+        if IIndividual.providedBy(person):
+            individual = IIndividual(person, connection=person.get_connection())
+            document = individual.cpf
+        elif ICompany.providedBy(person):
             company = ICompany(person, connection=person.get_connection())
             document = company.cnpj
         else:
-            document = individual.cpf
-        self.printer.identify_customer(person.name, address, document)
+            raise TypeError(
+                "identify_customer needs an object implementing "
+                "IIndividual or ICompany")
+        self.printer.identify_customer(person.name,
+                                       person.get_address_string(),
+                                       document)
 
     def open(self):
         while True:

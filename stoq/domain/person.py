@@ -154,6 +154,8 @@ class Address(Domain):
         if self.street and self.number and self.district:
             return '%s %s, %s' % (self.street, self.number, self.district)
 
+        # TODO: Try to return a better string if all fields aren't set
+        return ''
 
 class Liaison(Domain):
     """Base class to store the person's contact informations."""
@@ -235,6 +237,12 @@ class Person(Domain):
             msg = 'This person has more than 1 main address'
             raise DatabaseInconsistency, msg
         return address[0]
+
+    def get_address_string(self):
+        address = self.get_main_address()
+        if not address:
+            return ''
+        return address.get_address_string()
 
     #
     # Auxiliary methods

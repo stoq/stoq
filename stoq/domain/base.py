@@ -321,6 +321,18 @@ class ConnMetaInterface(MetaInterface):
                               (adaptable, self))
         return adapter
 
+    def providedBy(self, adaptable):
+        """
+        @param adaptable:
+        @returns: If the adaptable object can be adaptable to our interface
+        """
+
+        if super(ConnMetaInterface, self).providedBy(adaptable):
+            return True
+        if self(adaptable) is not None:
+            return True
+        return False
+
 ConnInterface = ConnMetaInterface('ConnInterface',
                                   __module__='stoq.domain.base')
 
