@@ -69,7 +69,7 @@ _ = gettext.gettext
 
 
 class POSApp(AppWindow):
-   
+
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
@@ -117,7 +117,7 @@ class POSApp(AppWindow):
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
         model = FancySellable()
-        self.sellable_proxy = self.add_proxy(model, 
+        self.sellable_proxy = self.add_proxy(model,
                                              widgets=POSApp.sellable_widgets)
         self.price_slave.set_model(model)
         self.product_proxy = self.add_proxy(Settable(product=None),
@@ -161,7 +161,7 @@ class POSApp(AppWindow):
 
     def _product_notify(self, msg):
         self.product.set_invalid(msg)
-        
+
     def _coupon_add_item(self, sellable_item):
         if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             return
@@ -174,7 +174,7 @@ class POSApp(AppWindow):
         sellables = [s.sellable for s in self.sellables]
         if sellable in sellables:
             if notify_on_entry:
-                msg = _("The item '%s' was already added to the order" 
+                msg = _("The item '%s' was already added to the order"
                         % sellable.base_sellable_info.description)
                 self.product.set_invalid(msg)
             return
@@ -182,7 +182,7 @@ class POSApp(AppWindow):
             quantity = self.sellable_proxy.model.quantity
             price = self.sellable_proxy.model.price
             sellable_item = sellable.add_sellable_item(self.sale,
-                                                       quantity=quantity, 
+                                                       quantity=quantity,
                                                        price=price)
         if isinstance(sellable_item, ServiceSellableItem):
             model = self.run_dialog(ServiceItemEditor, self.conn, sellable_item)
@@ -295,18 +295,18 @@ class POSApp(AppWindow):
             self.warning_box.hide()
 
     def get_columns(self):
-        return [Column('sellable.code', title=_('Code'), sorted=True, 
+        return [Column('sellable.code', title=_('Code'), sorted=True,
                        data_type=str, width=90),
-                Column('sellable.base_sellable_info.description', 
-                       title=_('Description'), data_type=str, expand=True, 
+                Column('sellable.base_sellable_info.description',
+                       title=_('Description'), data_type=str, expand=True,
                        searchable=True),
-                Column('price', title=_('Price'), data_type=currency, 
+                Column('price', title=_('Price'), data_type=currency,
                        width=90),
                 Column('quantity', title=_('Quantity'), data_type=float,
                        width=90, format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
-                       
+
     def _search_clients(self):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
@@ -319,8 +319,8 @@ class POSApp(AppWindow):
     # AppWindow Hooks
     #
 
-    def setup_focus(self): 
-        self.search_box.set_focus_chain([self.product, self.quantity, 
+    def setup_focus(self):
+        self.search_box.set_focus_chain([self.product, self.quantity,
                                          self.add_button])
 
     #
@@ -337,7 +337,7 @@ class POSApp(AppWindow):
         # for menuitems
         # Implement a search dialog for sales
         pass
-        
+
     def key_control_p(self, *args):
         # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
         # for menuitems
@@ -349,7 +349,7 @@ class POSApp(AppWindow):
     def on_advanced_search__clicked(self, *args):
         # Ouch!, commit now ? yes, because SearchDialog synchronizes self.conn
         # internally. Actually this is not a problem since our sale object
-        # is not valid (_is_valid_model defaults to False) until we finish the 
+        # is not valid (_is_valid_model defaults to False) until we finish the
         # whole process trough SaleWizard.
         self.conn.commit()
         items = self.run_dialog(SellableSearch, self.conn)
@@ -384,7 +384,7 @@ class POSApp(AppWindow):
     def on_client_edit_button__clicked(self, *args):
         if not (self.sale and self.sale.client):
             raise ValueError('You must have a client defined at this point')
-        if run_person_role_dialog(ClientEditor, self, self.conn, 
+        if run_person_role_dialog(ClientEditor, self, self.conn,
                                   self.sale.client):
             self.conn.commit()
 
@@ -423,7 +423,7 @@ class POSApp(AppWindow):
 
     def _on_sales_action__clicked(self, *args):
         self.run_dialog(SaleSearch, self.conn)
-                      
+
     def on_delivery_button__clicked(self, *args):
         if not self.sellables:
             notify_dialog(_("You don't have products to delivery."),
@@ -441,7 +441,7 @@ class POSApp(AppWindow):
         # instances created in self.conn in a new transaction
         self.conn.commit()
         conn = new_transaction()
-        service = self.run_dialog(DeliveryEditor, conn, self.sale, 
+        service = self.run_dialog(DeliveryEditor, conn, self.sale,
                                   products)
         if not finish_transaction(conn, service):
             return
