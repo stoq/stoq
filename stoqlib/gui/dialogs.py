@@ -383,9 +383,9 @@ class PrintDialog(BasicDialog):
                 shutil.copy(reportfile, filename)
             except IOError, e:
                 error("The file can't be saved", e.strerror)
+            os.unlink(reportfile)
         else:
             print_file(reportfile, printer)
-        os.unlink(reportfile)
         BasicDialog.confirm(self)
 
 #
