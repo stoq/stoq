@@ -33,7 +33,7 @@ import gettext
 from datetime import datetime
 
 from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
-from stoqlib.exceptions import SellError, DatabaseInconsistency 
+from stoqlib.exceptions import SellError, DatabaseInconsistency
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 
@@ -45,7 +45,7 @@ from stoq.domain.service import ServiceSellableItem
 from stoq.domain.renegotiation import RenegotiationData
 from stoq.domain.giftcertificate import (GiftCertificateItem,
                                          GiftCertificate)
-from stoq.domain.interfaces import (IContainer, IClient, IStorable, 
+from stoq.domain.interfaces import (IContainer, IClient, IStorable,
                                     IPaymentGroup, ISellable,
                                     IRenegotiationSaleReturnMoney,
                                     IRenegotiationGiftCertificate,
@@ -66,22 +66,22 @@ class Sale(Domain):
     current one.
 
     B{Important attributes}:
-        - I{order_number}: an optional identifier for this sale defined by 
+        - I{order_number}: an optional identifier for this sale defined by
                            the store.
         - I{open_date}: The day when we started this sale.
         - I{close_date}: The day when we confirmed this sale.
-        - I{notes}: Some optional additional information related to this 
+        - I{notes}: Some optional additional information related to this
                     sale.
         - I{till}: The Till operation where this sale lives. Note that every
-                   sale and payment generated are always in a till operation 
+                   sale and payment generated are always in a till operation
                    which defines a financial history of a store.
     """
 
     implements(IContainer)
 
-    (STATUS_OPENED, 
-     STATUS_CONFIRMED, 
-     STATUS_CLOSED, 
+    (STATUS_OPENED,
+     STATUS_CONFIRMED,
+     STATUS_CLOSED,
      STATUS_CANCELLED,
      STATUS_REVIEWING) = range(5)
 
@@ -99,7 +99,7 @@ class Sale(Domain):
     discount_value = FloatCol(default=0.0)
     charge_value = FloatCol(default=0.0)
     notes = StringCol(default='')
-    
+
     client = ForeignKey('PersonAdaptToClient', default=None)
     till = ForeignKey('Till')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
@@ -107,7 +107,7 @@ class Sale(Domain):
     #
     # SQLObject hooks
     #
-    
+
     def _create(self, id, **kw):
         # Sales objects must be set as valid explicitly
         kw['_is_valid_model'] = False
@@ -168,7 +168,7 @@ class Sale(Domain):
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
-        Note that percentage must be added as an absolute value not as a 
+        Note that percentage must be added as an absolute value not as a
         factor like 1.05 = 5 % of charge
         The correct form is 'percentage = 3' for a discount of 3 %"""
         self.discount_value = self._get_percentage_value(value)
@@ -189,7 +189,7 @@ class Sale(Domain):
 
     def _set_charge_by_percentage(self, value):
         """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a 
+        Note that charge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
         The correct form is 'percentage = 3' for a charge of 3 %"""
         self.charge_value = self._get_percentage_value(value)
@@ -215,28 +215,28 @@ class Sale(Domain):
         return sum([item.get_total() for item in self.get_items()], 0.0)
 
     def get_total_sale_amount(self):
-        """Return the total value paid by the client. This can be 
+        """Return the total value paid by the client. This can be
         calculated by:.
-        Sale total = Sum(product and service prices) + charge + 
+        Sale total = Sum(product and service prices) + charge +
                      interest - discount"""
         charge_value = self.charge_value or 0.0
         discount_value = self.discount_value or 0.0
         return self.get_sale_subtotal() + charge_value - discount_value
-        
+
     def get_total_interest(self):
         raise NotImplementedError
-        
+
     def get_services(self):
-        return [item for item in self.get_items() 
+        return [item for item in self.get_items()
                     if isinstance(item, ServiceSellableItem)]
 
     def get_products(self):
-        return [item for item in self.get_items() 
+        return [item for item in self.get_items()
                     if isinstance(item, ProductSellableItem)]
 
     def get_gift_certificates(self):
         """Returns a list of gift certificates tied to the current sale"""
-        return [item for item in self.get_items() 
+        return [item for item in self.get_items()
                     if isinstance(item, GiftCertificateItem)]
 
     def update_stocks(self):
@@ -326,7 +326,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         responsible = sale.salesperson.get_adapted()
         conn = self.get_connection()
         reason = reason or _('Overpaid value of sale using gift certificates')
-        reneg_data = RenegotiationData(connection=conn, 
+        reneg_data = RenegotiationData(connection=conn,
                                        responsible=responsible,
                                        reason=reason)
         self.renegotiation_data = reneg_data
@@ -339,7 +339,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         self.renegotiation_type = reneg_type
         conn = self.get_connection()
         renegotiation.addFacet(IRenegotiationSaleReturnMoney,
-                               connection=conn, 
+                               connection=conn,
                                payment_group=self,
                                overpaid_value=overpaid_value)
 
@@ -391,7 +391,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             raise ValueError('You should have a renegotiation_type defined '
                              'at this point')
         if self.renegotiation_type not in self.ifaces.keys():
-            raise ValueError('Invalid renegotiation_type, got %d' 
+            raise ValueError('Invalid renegotiation_type, got %d'
                              % self.renegotiation_type)
         iface = self.ifaces[self.renegotiation_type]
         conn = self.get_connection()
@@ -399,18 +399,18 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def setup_inpayments(self):
         reneg_type = self.RENEGOTIATION_OUTSTANDING
-        if (self.default_method == self.METHOD_GIFT_CERTIFICATE 
+        if (self.default_method == self.METHOD_GIFT_CERTIFICATE
             and not self.renegotiation_type == reneg_type):
             return
         AbstractPaymentGroup.setup_inpayments(self)
 
     def get_pm_commission_total(self):
-        """Return the payment method commission total. Usually credit 
-        card payment method is the most common method which uses 
+        """Return the payment method commission total. Usually credit
+        card payment method is the most common method which uses
         commission
         """
         return 0.0
-        
+
     def get_total_received(self):
         """Return the total amount paid by the client (sale total)
         deducted of payment method commissions"""
