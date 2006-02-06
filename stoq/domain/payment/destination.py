@@ -36,11 +36,11 @@ from stoq.domain.interfaces import IDescribable
 
 #
 # Domain Classes
-# 
+#
 
 class PaymentDestination(InheritableModel):
     """PaymentDestination is the location where all the paid payments live.
-    
+
     B{Important attributes}:
         - I{description}: an easy identification for this payment
                           destination.
@@ -67,7 +67,7 @@ class StoreDestination(PaymentDestination):
     """A StoreDestination is a payment destination which lives in a Store.
     Most of times this will represent the total value of operations in this
     store.
-    
+
     B{Importante attributes}:
         - I{branch}: the store itself.
     """
@@ -76,9 +76,9 @@ class StoreDestination(PaymentDestination):
 
 class BankDestination(PaymentDestination):
     """A Bank Destination is a payment destination which lives in a bank.
-    
+
     B{Importante attributes}:
         - I{branch}: the bank branch where all the paid payments are send
                      to.
     """
-    branch = ForeignKey('PersonAdaptToBankBranch') 
+    branch = ForeignKey('PersonAdaptToBankBranch')
