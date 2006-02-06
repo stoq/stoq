@@ -47,7 +47,7 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
 from stoq.domain.devices import DeviceSettings
-from stoq.domain.interfaces import (IIndividual, IPaymentGroup,
+from stoq.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                     IMoneyPM, ICheckPM, IContainer)
 from stoq.lib.parameters import sysparam
 
@@ -275,13 +275,18 @@ class FiscalCoupon:
     #
 
     def identify_customer(self, person):
-        address = person.get_main_address().get_address_string()
+        person.check_individual_or_company_facets()
+        if not person.get_main_address():
+            address = ''
+        else:
+            address = person.get_main_address().get_address_string()
         individual = IIndividual(person, connection=person.get_connection())
         if individual is None:
-            raise DatabaseInconsistency("The client must have a "
-                                        "Individual facet")
-        cpf = individual.cpf
-        self.printer.identify_customer(person.name, address, cpf)
+            company = ICompany(person, connection=person.get_connection())
+            document = company.cnpj
+        else:
+            document = individual.cpf
+        self.printer.identify_customer(person.name, address, document)
 
     def open(self):
         while True:
