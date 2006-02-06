@@ -2,34 +2,34 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
-## All rights reserved
+## Copyright (C) 2005 Async Open Source
 ##
-## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
-## the Free Software Foundation; either version 2 of the License, or
-## (at your option) any later version.
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
 ##
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public License
+## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
-## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
-## USA.
+## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
-"""
-stoqlib/reporting/tables.py:
+##
+## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Henrique Romano             <henrique@async.com.br>
+##
+""" Stoqlib Reporting tables implementation.  """
 
-    Stoqlib Reporting tables implementation.
-"""
 import operator
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import TableStyle, Paragraph, Table as RTable
 
+from stoqlib.reporting.flowables import LEFT, CENTER, RIGHT
 from stoqlib.reporting.default_style import (TABLE_HEADER_FONT,
                                              TABLE_HEADER_FONT_SIZE,
                                              TABLE_HEADER_TEXT_COLOR,
@@ -40,7 +40,6 @@ from stoqlib.reporting.default_style import (TABLE_HEADER_FONT,
                                              SOFT_LINE_COLOR,
                                              DEFAULT_FONTNAME,
                                              DEFAULT_FONTSIZE)
-from stoqlib.reporting.flowables import LEFT, CENTER, RIGHT
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1

@@ -6,7 +6,7 @@
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
-## it under the terms of the GNU General Public License as published by
+## it under the terms of the GNU Lesser General Public License as published by
 ## the Free Software Foundation; either version 2 of the License, or
 ## (at your option) any later version.
 ##
@@ -15,15 +15,12 @@
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ## GNU General Public License for more details.
 ##
-## You should have received a copy of the GNU General Public License
+## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-"""
-stoqlib/reporting/default_style.py:
-
-    Constants related to flowable styles, like paragraphs, pages, tables and
+""" Constants related to flowable styles, like paragraphs, pages, tables and
     texts.
 """
 from reportlab.lib import colors
@@ -32,6 +29,7 @@ from reportlab.lib.units import mm
 from reportlab.lib.enums import TA_RIGHT, TA_CENTER
 from reportlab.platypus import TableStyle
 
+# FIXME: Add support for TTF fonts
 STYLE_SHEET = StyleSheet1()
 
 STYLE_SHEET.add(ParagraphStyle(
