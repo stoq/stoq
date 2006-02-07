@@ -239,6 +239,12 @@ class Sale(Domain):
         return [item for item in self.get_items()
                     if isinstance(item, GiftCertificateItem)]
 
+    def get_items_total_quantity(self):
+        return sum([item.quantity for item in self.get_items()], 0.0)
+
+    def get_items_total_value(self):
+        return sum([item.get_total() for item in self.get_items()], 0.0)
+
     def update_stocks(self):
         conn = self.get_connection()
         branch = self.get_till_branch()

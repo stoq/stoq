@@ -241,7 +241,12 @@ parameters_info = {
                                                          'to the second step '
                                                          'with no order '
                                                          'selected.')),
-    }
+    'MAX_SALE_ORDER_VALIDITY': ParameterDetails(_('Sales'),
+                                                _('Max sale order validity'),
+                                                _('The max number of days '
+                                                  'that a sale order is '
+                                                  'valid'))
+}
 
 
 #
@@ -307,6 +312,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
                  ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool, 
                                initial=True),
+                 ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
 
                  # Adding objects -- Note that all the object referred here must
                  # implements the IDescribable interface.
@@ -475,19 +481,18 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, PersonAdaptToBranch):
             return
 
-        person_obj = Person(name=key, connection=self.conn)
+        person_obj = Person(name="Async Serviços de informática Ltda",
+                            phone_number="33760125", fax_number="35015394",
+                            connection=self.conn)
         city_location = CityLocation(city="Sao Carlos", state="SP",
                                      country="Brasil", connection=self.conn)
         main_address = Address(street="Orlando Damiano", number=2212,
-                               district="Jd Macarengo", postal_code="11223344",
+                               district="Jd Macarengo", postal_code="13560-450",
                                is_main_address=True, person=person_obj,
                                city_location=city_location,
                                connection=self.conn)
-        # XXX Ok, I know. 'current_branch' is not a valid cnpj but as I don't know
-        # what is the cnpj of this company I need to put something there because
-        # this is a mandatory field. I think use a simple string could help user
-        # to fix this field later.
-        person_obj.addFacet(ICompany, cnpj=_('current_branch'), 
+        person_obj.addFacet(ICompany, cnpj='03.852.995/0001-07',
+                            fancy_name="Async Open Source",
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         branch.manager = Person(connection=self.conn, name="Manager")
