@@ -40,8 +40,11 @@ gobject.threads_init()
 from kiwi import environ
 import py
 
+from stoq.main import setup_stoqlib_settings
+setup_stoqlib_settings()
+
 from stoqlib.lib.runtime import (print_immediately, get_connection,
-                              set_test_mode, set_verbose)
+                                 set_test_mode, set_verbose)
 
 DEFAULT_SEPARATORS = 79
 
