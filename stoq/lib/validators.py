@@ -32,7 +32,7 @@ import re
 from kiwi.datatypes import format_price
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection
 
 POSTAL_CODE_CHAR_LEN = 8
 

@@ -46,7 +46,7 @@ from stoqlib.lib.configparser import config
 
 from stoq.gui.components.login import LoginDialog
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import set_current_user, get_connection
+from stoqlib.lib.runtime import set_current_user, get_connection
 from stoq.domain.person import PersonAdaptToUser
 from stoq.domain.tables import check_tables
 

@@ -44,7 +44,7 @@ from stoq.gui.application import SearchableAppWindow
 from stoq.gui.editors.person import UserEditor
 from stoq.gui.editors.devices import DeviceSettingsDialog
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoq.domain.person import Person
 from stoq.domain.profile import UserProfile
 from stoq.domain.interfaces import IUser

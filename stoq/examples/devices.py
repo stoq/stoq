@@ -31,7 +31,7 @@ stoq/examples/devices.py:
 
 import socket
 
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoq.domain.devices import DeviceSettings
 
 def create_device_settings():

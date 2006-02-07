@@ -29,7 +29,7 @@ stoq/examples/createall.py:
 
 import sys
 
-from stoq.lib.runtime import print_msg, set_verbose
+from stoqlib.lib.runtime import print_msg, set_verbose
 from stoq.examples.person import create_persons
 from stoq.examples.product import create_products
 from stoq.examples.service import create_services

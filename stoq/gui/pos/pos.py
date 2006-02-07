@@ -44,7 +44,7 @@ from stoqdrivers.constants import UNIT_WEIGHT
 
 from stoq.gui.application import AppWindow
 from stoq.lib.validators import format_quantity, get_price_format_str
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)

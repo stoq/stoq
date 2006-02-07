@@ -27,7 +27,8 @@ sbin/update-database:
     Update the database schema
 """
 
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
+
 from stoq.domain.profile import update_profile_applications
 
     

@@ -37,7 +37,7 @@ from stoq.domain.sale import Sale
 from stoq.domain.till import get_current_till_operation
 from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
-from stoq.lib.runtime import get_current_user
+from stoqlib.lib.runtime import get_current_user
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import ClientEditor
 

@@ -32,7 +32,7 @@ import datetime
 from sqlobject.col import (SOStringCol, SOIntCol, SOFloatCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')

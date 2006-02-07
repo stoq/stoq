@@ -33,7 +33,7 @@ stoq/examples/person.py:
 import datetime
 import gettext
 
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoq.domain.profile import UserProfile
 from stoq.domain.person import (Person, EmployeeRole, Address,
                                 CityLocation, EmployeeRoleHistory)

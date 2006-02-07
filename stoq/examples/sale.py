@@ -35,7 +35,7 @@ import datetime
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam
 from stoq.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoq.domain.till import get_current_till_operation, Till

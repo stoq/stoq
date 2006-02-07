@@ -46,7 +46,7 @@ from stoq.domain.giftcertificate import GiftCertificateItem
 from stoq.domain.purchase import PurchaseItem
 from stoq.domain.service import DeliveryItem
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str
 

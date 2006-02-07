@@ -30,7 +30,7 @@ stoq/tests/test_parameters.py:
    Test for lib/parameters module.
 """
 
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoq.lib.parameters import ParameterAccess, sysparam
 from stoq.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
 from stoq.domain.person import Person, EmployeeRole

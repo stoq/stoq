@@ -39,7 +39,7 @@ from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 
-from stoq.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection
 from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.slaves.client import ClientStatusSlave
 from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave

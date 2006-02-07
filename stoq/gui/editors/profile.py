@@ -38,7 +38,7 @@ from stoqlib.gui.base.editors import BaseEditor
 from stoq.domain.profile import UserProfile
 from stoq.gui.slaves.profile import UserProfileSettingsSlave
 from stoq.lib.applist import get_app_descriptions
-from stoq.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection
 
 
 _ = gettext.gettext

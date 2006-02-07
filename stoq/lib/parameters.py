@@ -39,7 +39,7 @@ from stoq.domain.base import Domain, AbstractModel
 from stoq.domain.interfaces import (ISupplier, IBranch, ICompany, ISellable,
                                     IMoneyPM, ICheckPM, IBillPM, ICardPM,
                                     IFinancePM)
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 _ = gettext.gettext

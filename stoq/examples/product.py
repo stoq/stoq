@@ -42,7 +42,7 @@ from stoq.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
                                   AbstractSellableCategory,
                                   BaseSellableInfo, SellableUnit)
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 MAX_PRODUCT_NUMBER = 4

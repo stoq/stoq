@@ -40,7 +40,7 @@ gobject.threads_init()
 from kiwi import environ
 import py
 
-from stoq.lib.runtime import (print_immediately, get_connection,
+from stoqlib.lib.runtime import (print_immediately, get_connection,
                               set_test_mode, set_verbose)
 
 DEFAULT_SEPARATORS = 79
@@ -59,7 +59,7 @@ def setup(options):
     create()
 
 def test_gui(options, tests=None):
-    from stoq.lib.runtime import new_transaction
+    from stoqlib.lib.runtime import new_transaction
 
     if options.verbose:
         print_immediately('Performing gui module tests... ')
