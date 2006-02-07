@@ -36,6 +36,7 @@ from kiwi.environ import app, environ
 from stoqlib.gui.application import BaseApp, BaseAppWindow
 from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
+from stoqlib.gui.dialogs import print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 import stoq
@@ -160,6 +161,9 @@ class AppWindow(BaseAppWindow):
 
         about.run()
         about.destroy()
+
+    def print_report(self, report_class, *args, **kwargs):
+        print_report(report_class, *args, **kwargs)
 
     #
     # Public API

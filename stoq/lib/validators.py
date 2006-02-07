@@ -34,8 +34,10 @@ from kiwi.datatypes import format_price
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import get_connection
 
+POSTAL_CODE_CHAR_LEN = 8
+
 def is_date_in_interval(date, start_date, end_date):
-    """Check if a certain date is in an interval. The function accepts 
+    """Check if a certain date is in an interval. The function accepts
     None values for start_date and end_date and, in this case, return True
     if there is no interval to check."""
     assert isinstance(date, datetime.datetime)
@@ -104,3 +106,18 @@ def format_phone_number(phone_number):
         phone_number = raw_phone_number(phone_number)
         return _format_phone_number(len(phone_number), phone_number)
     return phone_number
+
+def validate_postal_code(postal_code):
+    if not postal_code:
+        return False
+    return len(raw_postal_code(postal_code)) == POSTAL_CODE_CHAR_LEN
+
+def raw_postal_code(postal_code):
+    return re.sub("[^0-9]", '', postal_code)
+
+def format_postal_code(postal_code):
+    if not validate_postal_code(postal_code):
+        return postal_code
+    postal_code = raw_postal_code(postal_code)
+    return "%s-%s" % (postal_code[:5],
+                      postal_code[5:8])

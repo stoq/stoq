@@ -96,6 +96,15 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="PrintOrder">
+                        <property name="name">PrintOrder</property>
+                        <property name="label" translatable="yes">Print Order...</property>
+                        <property name="tooltip" translatable="yes">Print the current sale order</property>
+                        <property name="stock_id">gtk-print</property>
+                        <signal handler="_on_print_order_action__clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
@@ -171,8 +180,7 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
-
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>
@@ -431,7 +439,6 @@
                                 </child>
                                 <child>
                                     <widget class="GtkHBox" id="warning_box">
-                                        <property name="visible">False</property>
                                         <child>
                                             <widget class="GtkAlignment" id="alignment1">
                                                 <property name="visible">True</property>

@@ -38,7 +38,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
 from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.gui.dialogs import notify_dialog
+from stoqlib.gui.dialogs import notify_dialog, PrintDialog
 from stoqlib.gui.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
 
@@ -64,6 +64,7 @@ from stoq.gui.search.person import ClientSearch
 from stoq.gui.search.sale import SaleSearch
 from stoq.gui.pos.neworder import NewOrderEditor
 from stoq.gui.slaves.price import PriceSlave
+from stoq.report.sale import SaleOrderReport
 
 _ = gettext.gettext
 
@@ -262,7 +263,8 @@ class POSApp(AppWindow):
 
     def _update_widgets(self):
         has_sellables = len(self.sellables) >= 1
-        widgets = [self.checkout_button, self.remove_item_button]
+        widgets = [self.checkout_button, self.remove_item_button,
+                   self.PrintOrder]
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale is not None and self.sale.client is not None
@@ -472,3 +474,5 @@ class POSApp(AppWindow):
     def on_new_order_button__clicked(self, *args):
         self._new_order()
 
+    def _on_print_order_action__clicked(self, *args):
+        self.print_report(SaleOrderReport, self.sale)
