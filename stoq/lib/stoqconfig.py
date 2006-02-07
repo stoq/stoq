@@ -42,9 +42,9 @@ from stoqlib.exceptions import (DatabaseError, UserProfileError,
 from stoqlib.gui.dialogs import notify_dialog
 from stoqlib.gui.search import set_max_search_results
 from stoqlib.gui.gtkadds import register_iconsets
+from stoqlib.lib.configparser import config
 
 from stoq.gui.components.login import LoginDialog
-from stoq.lib.configparser import config
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import set_current_user, get_connection
 from stoq.domain.person import PersonAdaptToUser

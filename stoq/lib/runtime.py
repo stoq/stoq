@@ -29,8 +29,7 @@ lib/runtime.py:
 import sys
 
 from sqlobject import connectionForURI
-
-from stoq.lib.configparser import config
+from stoqlib.lib.configparser import config
 
 _connection = None
 _current_user = None
