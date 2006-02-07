@@ -27,10 +27,9 @@ data_files = [
      listfiles('pixmaps', '*.xpm') +
      listfiles('pixmaps', '*.jpg') +
      listfiles('pixmaps', '*.png')),
-    ('share/stoq/sbin', ('sbin/init-database', 'sbin/update-database')),
+    ('share/stoq/bin', ('bin/init-database', 'bin/update-database')),
     ('share/doc/stoq', listfiles('docs/domain', '*.txt') +
-     ['docs/AUTHORS', 'docs/CONTRIBUTORS', 'docs/COPYING',
-      'docs/README']),
+     ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS']),
     ('share/stoq/glade',
      glob.glob('stoq/gui/*/glade/*.glade')),
     ]
