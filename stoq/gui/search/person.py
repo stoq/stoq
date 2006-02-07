@@ -34,8 +34,8 @@ import gettext
 
 from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.search import SearchEditor
-from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
+from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,

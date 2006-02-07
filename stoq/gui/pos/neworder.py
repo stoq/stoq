@@ -30,8 +30,8 @@ stoq/gui/pos/neworder.py:
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
-from stoqlib.gui.search import get_max_search_results
+from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.search import get_max_search_results
 
 from stoq.domain.sale import Sale
 from stoq.domain.till import get_current_till_operation

@@ -32,7 +32,7 @@ gui/slaves/liaison.py:
 
 import gettext
 
-from stoqlib.gui.lists import AdditionListDialog
+from stoqlib.gui.base.lists import AdditionListDialog
 from kiwi.ui.widgets.list import Column
 
 from stoq.gui.editors.contact import ContactEditor

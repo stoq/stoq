@@ -30,7 +30,7 @@ stoq/gui/editors/category.py:
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import (AbstractSellableCategory,

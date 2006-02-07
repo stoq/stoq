@@ -30,7 +30,7 @@ stoq/gui/editors/giftcertificate.py
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 from kiwi.python import Settable
 
 from stoq.lib.validators import get_price_format_str

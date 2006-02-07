@@ -31,7 +31,7 @@ stoq/gui/editors/parameters.py:
 import gettext
 
 import gtk
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 from kiwi.ui.widgets.entry import Entry
 from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 

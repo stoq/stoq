@@ -34,11 +34,11 @@ import gettext
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
-from stoqlib.gui.search import SearchBar
-from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.gui.dialogs import run_dialog
-from stoqlib.gui.editors import NoteEditor
+from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.base.columns import ForeignKeyColumn
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.editors import NoteEditor
 from sqlobject.sqlbuilder import AND
 
 from stoq.lib.parameters import sysparam

@@ -31,8 +31,8 @@ stoq/gui/editors/devices.py:
 import gettext
 
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.editors import BaseEditor
-from stoqlib.gui.lists import AdditionListDialog
+from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.lists import AdditionListDialog
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales

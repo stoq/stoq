@@ -28,7 +28,7 @@ stoq/gui/slaves/branch.py
     
 """
 
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.interfaces import IBranch
 

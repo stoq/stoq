@@ -27,7 +27,7 @@ stoq/gui/slaves/company.py
 """
 
 
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.person import PersonAdaptToCompany
 

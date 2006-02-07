@@ -34,10 +34,10 @@ import gettext
 import gtk
 from kiwi.ui.widgets.list import Column, List
 from kiwi.argcheck import argcheck
-from stoqlib.gui.dialogs import BasicDialog
-from stoqlib.gui.search import SearchEditorToolBar
-from stoqlib.gui.columns import AccessorColumn
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog
+from stoqlib.gui.base.search import SearchEditorToolBar
+from stoqlib.gui.base.columns import AccessorColumn
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database import rollback_and_begin
 from zope.interface import providedBy
 

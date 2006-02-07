@@ -33,10 +33,10 @@ import gettext
 
 import gtk
 from kiwi.environ import app, environ
-from stoqlib.gui.application import BaseApp, BaseAppWindow
-from stoqlib.gui.search import SearchBar
+from stoqlib.gui.base.application import BaseApp, BaseAppWindow
+from stoqlib.gui.base.search import SearchBar
 from stoqlib.database import rollback_and_begin
-from stoqlib.gui.dialogs import print_report
+from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 import stoq

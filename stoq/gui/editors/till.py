@@ -34,7 +34,7 @@ import gettext
 import datetime
 
 from sqlobject.sqlbuilder import AND, IN
-from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from kiwi.datatypes import ValidationError
 
 from stoq.domain.sellable import get_formatted_price

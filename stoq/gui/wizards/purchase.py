@@ -32,8 +32,8 @@ import gettext
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 

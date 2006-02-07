@@ -33,7 +33,7 @@ stoq/gui/editors/service.py:
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 
 from stoq.domain.service import ServiceSellableItem, Service
 from stoq.domain.sellable import BaseSellableInfo

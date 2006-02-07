@@ -31,8 +31,8 @@ stoq/gui/search/giftcertificate.py
 import gettext
 import gtk
 
-from stoqlib.gui.search import SearchEditor
-from stoqlib.gui.columns import Column
+from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.columns import Column
 from kiwi.datatypes import currency
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 

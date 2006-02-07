@@ -39,9 +39,9 @@ from kiwi.datatypes import currency
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import ValidationError
-from stoqlib.gui.editors import BaseEditorSlave
-from stoqlib.gui.dialogs import run_dialog
-from stoqlib.gui.search import get_max_search_results
+from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import get_max_search_results
 
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import get_price_format_str

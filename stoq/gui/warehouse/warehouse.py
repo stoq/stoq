@@ -33,7 +33,7 @@ import gettext
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.columns import AccessorColumn, ForeignKeyColumn
+from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 

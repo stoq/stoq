@@ -33,8 +33,8 @@ stoq/gui/editors/sellable.py:
 import gettext
 
 from sqlobject.sqlbuilder import LIKE, func
-from stoqlib.gui.editors import BaseEditor
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 from stoqlib.exceptions import DatabaseInconsistency
 

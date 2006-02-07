@@ -28,7 +28,7 @@ stoq/gui/slaves/sellable.py
     Slaves for sellables
 """
 
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.sellable import OnSaleInfo
 from stoq.lib.validators import get_price_format_str

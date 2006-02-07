@@ -39,9 +39,9 @@ import gtk
 import gobject
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
-from stoqlib.gui.dialogs import notify_dialog
-from stoqlib.gui.search import set_max_search_results
-from stoqlib.gui.gtkadds import register_iconsets
+from stoqlib.gui.base.dialogs import notify_dialog
+from stoqlib.gui.base.search import set_max_search_results
+from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.configparser import config
 
 from stoq.gui.components.login import LoginDialog

@@ -35,8 +35,8 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
-from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.gui.search import SearchDialog
+from stoqlib.gui.base.columns import ForeignKeyColumn
+from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.interfaces import IClient, ISalesPerson
