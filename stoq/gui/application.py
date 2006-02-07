@@ -38,17 +38,13 @@ from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
+import stoq
 from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user, new_transaction
 from stoq.gui.slaves.filter import FilterSlave
 
 
 _ = gettext.gettext
-
-__program_name__    = "Stoq"
-__website__         = 'http://www.stoq.com.br'
-__version__         = "0.6.0"
-__release_date__    = (2006, 1, 27)
 
 
 class App(BaseApp):
@@ -137,11 +133,12 @@ class AppWindow(BaseAppWindow):
 
     def _run_about(self, *args):
         about = gtk.AboutDialog()
-        about.set_name(__program_name__)
-        about.set_version(__version__)
-        about.set_website(__website__)
+        about.set_name(stoq.__program_name__)
+        about.set_version(stoq.__version__)
+        about.set_website(stoq.__website__)
+        release_date = *stoq.__release_date__
         about.set_comments('Release Date: %s' %
-                           datetime.datetime(*__release_date__).strftime('%x'))
+                           datetime.datetime(release_date).strftime('%x'))
         about.set_copyright('Copyright (C) 2005 Async Open Source')
 
         # Logo
