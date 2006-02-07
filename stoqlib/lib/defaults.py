@@ -27,7 +27,7 @@
 import gettext
 import datetime
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 #
