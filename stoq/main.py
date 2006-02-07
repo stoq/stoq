@@ -39,6 +39,15 @@ def run_app(options, config, appname):
     gtk.main()
     appconf.log("Shutting down application")
 
+def setup_stoqlib_settings(apps=None):
+    from stoqlib.lib.runtime import (register_configparser_settings,
+                                     register_application_names)
+    if not apps:
+        apps = get_application_names()
+    register_configparser_settings('stoq', 'stoq.conf')
+    register_application_names(apps)
+    
+
 def main(args):
     parser = optparse.OptionParser()
     parser.add_option('-n', '--hostname',
@@ -72,10 +81,7 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                                  "Valid applications are: %s" % (appname, apps))
 
-    from stoqlib.lib.runtime import (register_configparser_settings,
-                                     register_application_names)
-    register_configparser_settings('stoq', 'stoq.conf')
-    register_application_names(apps)
+    setup_stoqlib_settings(apps)
 
     from stoqlib.lib.configparser import config
     if options.hostname:
