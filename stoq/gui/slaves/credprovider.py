@@ -32,7 +32,7 @@ stoq/gui/slaves/credprovider.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.interfaces import ICreditProvider
+from stoqlib.domain.interfaces import ICreditProvider
 
 
 class CreditProviderDetailsSlave(BaseEditorSlave):

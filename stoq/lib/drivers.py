@@ -46,10 +46,10 @@ from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
-from stoq.domain.devices import DeviceSettings
-from stoq.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
-                                    IMoneyPM, ICheckPM, IContainer)
-from stoq.lib.parameters import sysparam
+from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
+                                       IMoneyPM, ICheckPM, IContainer)
+from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
 _printer = None

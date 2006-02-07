@@ -45,10 +45,10 @@ from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.configparser import config
 
 from stoq.gui.components.login import LoginDialog
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
-from stoq.domain.person import PersonAdaptToUser
-from stoq.domain.tables import check_tables
+from stoqlib.domain.person import PersonAdaptToUser
+from stoqlib.domain.tables import check_tables
 
 _ = gettext.gettext
 SPLASH_TIMEOUT = 4000

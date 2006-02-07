@@ -34,9 +34,9 @@ stoq/gui/slaves/individual.py
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 
-from stoq.domain.person import CityLocation
-from stoq.domain.interfaces import IIndividual
-from stoq.lib.parameters import sysparam
+from stoqlib.domain.person import CityLocation
+from stoqlib.domain.interfaces import IIndividual
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 
 

@@ -44,11 +44,11 @@ from stoq.gui.editors.person import SupplierEditor, TransporterEditor
 from stoq.gui.editors.product import ProductEditor
 from stoq.gui.slaves.purchase import PurchasePaymentSlave
 from stoq.gui.slaves.sale import DiscountChargeSlave
-from stoq.domain.payment.base import AbstractPaymentGroup
-from stoq.domain.person import Person
-from stoq.domain.purchase import PurchaseOrder, PurchaseItem
-from stoq.domain.interfaces import (IBranch, ITransporter, ISupplier,
-                                    IPaymentGroup)
+from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.person import Person
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
+                                       IPaymentGroup)
 
 _ = gettext.gettext
 

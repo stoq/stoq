@@ -39,13 +39,13 @@ from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 
-from stoq.domain.person import Person
-from stoq.domain.sellable import BaseSellableInfo
-from stoq.domain.product import ProductSupplierInfo, Product
-from stoq.domain.interfaces import ISellable, IStorable, ISupplier
+from stoqlib.domain.person import Person
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.product import ProductSupplierInfo, Product
+from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.gui.editors.sellable import SellableEditor
 from stoqlib.lib.validators import get_price_format_str
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
 

@@ -52,10 +52,10 @@ from stoq.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
 from stoq.gui.slaves.supplier import SupplierDetailsSlave
 from stoq.gui.slaves.transporter import TransporterDataSlave
 from stoq.gui.slaves.branch import BranchDetailsSlave
-from stoq.domain.person import EmployeeRole, LoginInfo, Person
-from stoq.domain.interfaces import (IClient, ICreditProvider, IEmployee,
-                                    ISupplier, ITransporter, IUser, 
-                                    ICompany, IIndividual, IBranch)
+from stoqlib.domain.person import EmployeeRole, LoginInfo, Person
+from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
+                                       ISupplier, ITransporter, IUser, 
+                                       ICompany, IIndividual, IBranch)
 
 _ = gettext.gettext
 

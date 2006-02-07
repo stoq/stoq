@@ -32,10 +32,10 @@ import gettext
 from  random import randint
 
 from stoqlib.lib.runtime import new_transaction, print_msg
-from stoq.lib.parameters import sysparam
-from stoq.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
-from stoq.domain.person import Person
-from stoq.domain.payment.methods import (CardInstallmentSettings,
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
+from stoqlib.domain.person import Person
+from stoqlib.domain.payment.methods import (CardInstallmentSettings,
                                          DebitCardDetails, 
                                          CreditCardDetails,
                                          CardInstallmentsStoreDetails,

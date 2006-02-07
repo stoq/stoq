@@ -30,7 +30,7 @@ stoq/gui/slaves/transporter.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.interfaces import ITransporter
+from stoqlib.domain.interfaces import ITransporter
 
 
 class TransporterDataSlave(BaseEditorSlave):

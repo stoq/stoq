@@ -46,18 +46,18 @@ from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave, 
                                      CardMethodSlave, 
                                      FinanceMethodSlave)
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoq.lib.drivers import print_cheques_for_payment_group
-from stoq.domain.person import Person
-from stoq.domain.sale import Sale
-from stoq.domain.payment.base import AbstractPaymentGroup
-from stoq.domain.giftcertificate import (GiftCertificate,
-                                         get_volatile_gift_certificate)
-from stoq.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
-                                    ICheckPM, ICardPM, IBillPM, 
-                                    IFinancePM, ISellable,
-                                    IRenegotiationGiftCertificate,
-                                    IRenegotiationOutstandingValue)
+from stoqlib.domain.person import Person
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.giftcertificate import (GiftCertificate,
+                                            get_volatile_gift_certificate)
+from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
+                                       ICheckPM, ICardPM, IBillPM, 
+                                       IFinancePM, ISellable,
+                                       IRenegotiationGiftCertificate,
+                                       IRenegotiationOutstandingValue)
 _ = gettext.gettext
 
 

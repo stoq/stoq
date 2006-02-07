@@ -28,8 +28,8 @@ stoq/tests/gui/test_profile.py:
     This module tests all classes in stoq/domain/profile.py.
 """
     
-from stoq.domain.profile import UserProfile, ProfileSettings
-from stoq.domain.profile import update_profile_applications
+from stoqlib.domain.profile import UserProfile, ProfileSettings
+from stoqlib.domain.profile import update_profile_applications
 from stoq.lib.applist import get_application_names
 from stoq.tests.domain.base import BaseDomainTest 
 

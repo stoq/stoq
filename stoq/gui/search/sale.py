@@ -39,9 +39,9 @@ from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoq.domain.interfaces import IClient, ISalesPerson
-from stoq.domain.person import Person
-from stoq.domain.sale import Sale
+from stoqlib.domain.interfaces import IClient, ISalesPerson
+from stoqlib.domain.person import Person
+from stoqlib.domain.sale import Sale
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.slaves.sale import SaleListToolbar
 

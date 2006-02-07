@@ -30,7 +30,7 @@ stoq/gui/slaves/branch.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.interfaces import IBranch
+from stoqlib.domain.interfaces import IBranch
 
 
 class BranchDetailsSlave(BaseEditorSlave):

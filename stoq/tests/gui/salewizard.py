@@ -41,8 +41,8 @@ player.delete_window("POSApp")
 player.finish()
 
 def post_hook(conn):
-    from stoq.domain.interfaces import IPaymentGroup
-    from stoq.domain.sale import Sale
+    from stoqlib.domain.interfaces import IPaymentGroup
+    from stoqlib.domain.sale import Sale
 
     sales = Sale.select(Sale.q.order_number == '14031981')
     assert sales.count() == 1, sales.count()

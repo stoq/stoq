@@ -34,10 +34,10 @@ import datetime
 import gettext
 
 from stoqlib.lib.runtime import new_transaction, print_msg
-from stoq.domain.profile import UserProfile
-from stoq.domain.person import (Person, EmployeeRole, Address,
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.person import (Person, EmployeeRole, Address,
                                 CityLocation, EmployeeRoleHistory)
-from stoq.domain.interfaces import (ICompany, ISupplier, IBranch,
+from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                     IClient, IIndividual,
                                     IEmployee, ISalesPerson,
                                     IUser, ICreditProvider, ITransporter)

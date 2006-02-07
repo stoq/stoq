@@ -40,9 +40,9 @@ from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoq.domain.purchase import PurchaseOrder
-from stoq.domain.person import Person
-from stoq.domain.interfaces import ISupplier
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import ISupplier
 from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import SupplierSearch, TransporterSearch

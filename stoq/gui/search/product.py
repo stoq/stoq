@@ -37,9 +37,9 @@ from stoqlib.gui.base.columns import Column, AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoqlib.lib.validators import format_quantity
-from stoq.domain.sellable import BaseSellableInfo
-from stoq.domain.interfaces import ISellable
-from stoq.domain.product import Product
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.product import Product
 from stoq.gui.editors.product import ProductEditor
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.search.sellable import SellableSearch

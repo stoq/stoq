@@ -32,7 +32,7 @@ stoq/examples/devices.py:
 import socket
 
 from stoqlib.lib.runtime import new_transaction, print_msg
-from stoq.domain.devices import DeviceSettings
+from stoqlib.domain.devices import DeviceSettings
 
 def create_device_settings():
     print_msg("Creating default device settings...", break_line=False)

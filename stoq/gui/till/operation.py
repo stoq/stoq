@@ -46,11 +46,11 @@ from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.domain.interfaces import IPaymentGroup
-from stoq.domain.sale import Sale
-from stoq.domain.till import get_current_till_operation
-from stoq.domain.payment.base import Payment
-from stoq.domain.sellable import get_formatted_price
+from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.sellable import get_formatted_price
 from stoq.gui.editors.till import (CashAdvanceEditor, CashInEditor, 
                                    CashOutEditor)                                   
 

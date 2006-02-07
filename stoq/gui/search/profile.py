@@ -33,7 +33,7 @@ import gettext
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.base.search import SearchEditor
 
-from stoq.domain.profile import UserProfile
+from stoqlib.domain.profile import UserProfile
 from stoq.gui.editors.profile import UserProfileEditor
 
 _ = gettext.gettext

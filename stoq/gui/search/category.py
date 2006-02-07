@@ -34,7 +34,7 @@ from sqlobject.sqlbuilder import INNERJOINOn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import ForeignKeyColumn
 
-from stoq.domain.sellable import (AbstractSellableCategory,
+from stoqlib.domain.sellable import (AbstractSellableCategory,
                                   BaseSellableCategory,
                                   SellableCategory)
 from stoq.gui.editors.category import (BaseSellableCategoryEditor,

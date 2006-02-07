@@ -29,9 +29,9 @@ stoq/examples/giftcertificate.py:
     Create gift certificates for an example database.
 """
 
-from stoq.domain.giftcertificate import GiftCertificateType, GiftCertificate
-from stoq.domain.interfaces import ISellable
-from stoq.domain.sellable import BaseSellableInfo, AbstractSellable
+from stoqlib.domain.giftcertificate import GiftCertificateType, GiftCertificate
+from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.sellable import BaseSellableInfo, AbstractSellable
 from stoqlib.lib.runtime import new_transaction, print_msg
 
 MAX_GIFTCERTIFICATE_NUMBER = 2

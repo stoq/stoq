@@ -38,16 +38,16 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.domain.sellable import (SellableCategory, AbstractSellable,
-                                  SellableUnit)
-from stoq.domain.interfaces import ISellable, IStorable
-from stoq.domain.product import ProductSellableItem
-from stoq.domain.giftcertificate import GiftCertificateItem
-from stoq.domain.purchase import PurchaseItem
-from stoq.domain.service import DeliveryItem
+from stoqlib.domain.sellable import (SellableCategory, AbstractSellable,
+                                     SellableUnit)
+from stoqlib.domain.interfaces import ISellable, IStorable
+from stoqlib.domain.product import ProductSellableItem
+from stoqlib.domain.giftcertificate import GiftCertificateItem
+from stoqlib.domain.purchase import PurchaseItem
+from stoqlib.domain.service import DeliveryItem
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.lib.runtime import new_transaction
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext

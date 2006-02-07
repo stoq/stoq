@@ -37,6 +37,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.validators import format_phone_number
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor,
@@ -44,10 +45,10 @@ from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      BranchEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier,
-                                    IEmployee, IClient, ICreditProvider,
-                                    ITransporter, IBranch)
-from stoq.domain.person import (Person, EmployeeRole)
+from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,
+                                       IEmployee, IClient, ICreditProvider,
+                                       ITransporter, IBranch)
+from stoqlib.domain.person import (Person, EmployeeRole)
 
 _ = gettext.gettext
 

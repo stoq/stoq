@@ -38,8 +38,8 @@ from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.domain.interfaces import IIndividual, ICompany
-from stoq.domain.person import Person, CityLocation
+from stoqlib.domain.interfaces import IIndividual, ICompany
+from stoqlib.domain.person import Person, CityLocation
 from stoq.gui.editors.address import AddressAdditionDialog
 from stoq.gui.slaves.liaison import LiaisonListDialog
 from stoq.gui.slaves.address import AddressSlave

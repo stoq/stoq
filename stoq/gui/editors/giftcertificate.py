@@ -35,11 +35,11 @@ from kiwi.python import Settable
 
 from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
-from stoq.domain.interfaces import ISellable
-from stoq.domain.sellable import BaseSellableInfo
-from stoq.domain.giftcertificate import (GiftCertificate,
-                                         GiftCertificateType,
-                                         get_volatile_gift_certificate)
+from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.giftcertificate import (GiftCertificate,
+                                            GiftCertificateType,
+                                            get_volatile_gift_certificate)
 
 _ = gettext.gettext
 

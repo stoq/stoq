@@ -35,7 +35,7 @@ import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoq.domain.person import Liaison
+from stoqlib.domain.person import Liaison
 
 _ = gettext.gettext
 

@@ -41,9 +41,9 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database import rollback_and_begin
 from zope.interface import providedBy
 
-from stoq.lib.parameters import ParameterData, sysparam
-from stoq.domain.base import AbstractModel
-from stoq.domain.interfaces import IDescribable
+from stoqlib.lib.parameters import ParameterData, sysparam
+from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.interfaces import IDescribable
 from stoq.gui.editors.parameters import SystemParameterEditor
 
 _ = gettext.gettext

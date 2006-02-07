@@ -27,7 +27,7 @@ stoq/tests/domain/test_person.py
 
     Test case for stoq/domain/person.py module.
 """             
-from stoq.domain.person import Person
+from stoqlib.domain.person import Person
 from stoq.tests.domain.base import BaseDomainTest
 
 PHONE_DATA_VALUES = ('7133524563','1633767277')

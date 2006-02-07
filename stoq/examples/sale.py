@@ -36,13 +36,13 @@ from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 
 from stoqlib.lib.runtime import new_transaction, print_msg
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoq.examples.payment import MAX_INSTALLMENTS_NUMBER
-from stoq.domain.till import get_current_till_operation, Till
-from stoq.domain.sale import Sale
-from stoq.domain.product import Product
-from stoq.domain.person import Person
-from stoq.domain.interfaces import (ISellable, IClient, IPaymentGroup,
+from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.product import Product
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
                                     ISalesPerson, ICheckPM)
 
 _ = gettext.gettext

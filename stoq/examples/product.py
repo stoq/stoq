@@ -35,10 +35,10 @@ import random
 
 from stoqdrivers.constants import UNIT_CUSTOM
 
-from stoq.domain.product import Product, ProductSupplierInfo
-from stoq.domain.person import Person
-from stoq.domain.interfaces import ISellable, IStorable, ISupplier
-from stoq.domain.sellable import (BaseSellableCategory,
+from stoqlib.domain.product import Product, ProductSupplierInfo
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
+from stoqlib.domain.sellable import (BaseSellableCategory,
                                   SellableCategory,
                                   AbstractSellableCategory,
                                   BaseSellableInfo, SellableUnit)

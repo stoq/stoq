@@ -29,7 +29,7 @@ stoq/gui/slaves/company.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.person import PersonAdaptToCompany
+from stoqlib.domain.person import PersonAdaptToCompany
 
 
 class CompanyDocumentsSlave(BaseEditorSlave):
