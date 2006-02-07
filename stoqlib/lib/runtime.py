@@ -26,6 +26,7 @@
 import sys
 
 from sqlobject import connectionForURI
+from kiwi.argcheck import argcheck
 
 _connection = None
 _current_user = None
@@ -33,6 +34,7 @@ _verbose = False
 _test_mode = False
 _domain = 'stoqlib'
 _config_file = 'stoqlib.conf'
+_app_names = None
 
 
 #
@@ -120,3 +122,12 @@ def register_configparser_settings(domain, file_name=''):
 def get_configparser_settings():
     global _domain, _config_file
     return _domain, _config_file
+
+@argcheck(list)
+def register_application_names(app_names):
+    global _app_names
+    _app_names = app_names
+
+def get_application_names():
+    global _app_names
+    return _app_names
