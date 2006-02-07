@@ -33,7 +33,7 @@ stoq/gui/editors/contact.py:
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 
 from stoq.domain.person import Liaison
 

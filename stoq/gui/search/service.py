@@ -32,7 +32,7 @@ import gettext
 
 import gtk
 from kiwi.datatypes import currency
-from stoqlib.gui.columns import Column, ForeignKeyColumn
+from stoqlib.gui.base.columns import Column, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.sellable import BaseSellableInfo

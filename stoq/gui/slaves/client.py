@@ -30,7 +30,7 @@ stoq/gui/slaves/client.py
 """
 
 
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.interfaces import IClient
 

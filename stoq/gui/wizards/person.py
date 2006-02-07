@@ -35,8 +35,8 @@ from sqlobject.sqlbuilder import OR, LIKE
 from kiwi.datatypes import ValidationError
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.domain.person import Person
 from stoq.gui.templates.person import BasePersonRoleEditor

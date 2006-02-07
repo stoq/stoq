@@ -33,9 +33,9 @@ stoq/gui/templates/person.py:
 import gettext
 
 import gtk
-from stoqlib.gui.dialogs import run_dialog
-from stoqlib.gui.editors import BaseEditorSlave, BaseEditor
-from stoqlib.gui.slaves import NoteSlave
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
+from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.domain.interfaces import IIndividual, ICompany

@@ -32,9 +32,9 @@ import gtk
 from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.search import get_max_search_results
-from stoqlib.gui.editors import BaseEditorSlave
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.search import get_max_search_results
+from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.domain.profile import UserProfile
 from stoq.domain.person import Person, LoginInfo

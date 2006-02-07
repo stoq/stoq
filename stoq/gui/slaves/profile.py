@@ -30,7 +30,7 @@ gui/slaves/profile.py:
 
 import gettext
 
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.profile import ProfileSettings, UserProfile
 

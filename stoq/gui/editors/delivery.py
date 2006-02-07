@@ -33,10 +33,10 @@ import gettext
 import gtk
 
 from kiwi.ui.widgets.list import Column
-from stoqlib.gui.lists import AdditionListSlave, SimpleListDialog
-from stoqlib.gui.editors import BaseEditor, NoteEditor
-from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.lists import AdditionListSlave, SimpleListDialog
+from stoqlib.gui.base.editors import BaseEditor, NoteEditor
+from stoqlib.gui.base.columns import ForeignKeyColumn
+from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import format_quantity, get_price_format_str

@@ -33,7 +33,7 @@ import gettext
 from kiwi.datatypes import currency
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.gui.dialogs import BasicWrappingDialog
+from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import DatabaseInconsistency
 
 from stoq.domain.interfaces import IPaymentGroup

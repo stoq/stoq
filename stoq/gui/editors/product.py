@@ -35,9 +35,9 @@ import gettext
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from kiwi.utils import gsignal
-from stoqlib.gui.lists import SimpleListDialog
-from stoqlib.gui.editors import BaseEditor, BaseEditorSlave
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.lists import SimpleListDialog
+from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.domain.person import Person
 from stoq.domain.sellable import BaseSellableInfo

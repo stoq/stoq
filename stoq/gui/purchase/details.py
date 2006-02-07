@@ -31,7 +31,7 @@ import gettext
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 
 from stoq.lib.validators import get_price_format_str, format_quantity
 from stoq.domain.purchase import PurchaseOrder

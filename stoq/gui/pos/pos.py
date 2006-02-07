@@ -38,8 +38,8 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
 from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.gui.dialogs import notify_dialog, PrintDialog
-from stoqlib.gui.search import get_max_search_results
+from stoqlib.gui.base.dialogs import notify_dialog, PrintDialog
+from stoqlib.gui.base.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
 
 from stoq.gui.application import AppWindow

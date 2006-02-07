@@ -30,10 +30,10 @@ stoq/gui/wizards/sale.py:
 
 import gettext
 
-from stoqlib.gui.dialogs import run_dialog, notify_dialog
-from stoqlib.gui.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
+from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.lists import AdditionListSlave
+from stoqlib.gui.base.lists import AdditionListSlave
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.datatypes import currency
 from kiwi.python import Settable

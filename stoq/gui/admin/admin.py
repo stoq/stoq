@@ -33,7 +33,7 @@ import gettext
 
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
-from stoqlib.gui.columns import ForeignKeyColumn
+from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 

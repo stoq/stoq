@@ -33,7 +33,7 @@ import gettext
 
 from kiwi.datatypes import ValidationError
 from sqlobject.sqlbuilder import func, AND
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.editors import BaseEditor
 
 from stoq.domain.profile import UserProfile
 from stoq.gui.slaves.profile import UserProfileSettingsSlave

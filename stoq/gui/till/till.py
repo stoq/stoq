@@ -37,7 +37,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from kiwi.ui.dialogs import messagedialog
-from stoqlib.gui.columns import ForeignKeyColumn
+from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.exceptions import TillError
 from stoqlib.database import rollback_and_begin, finish_transaction
 

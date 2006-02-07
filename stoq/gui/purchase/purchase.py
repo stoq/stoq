@@ -35,8 +35,8 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
-from stoqlib.gui.columns import ForeignKeyColumn
-from stoqlib.gui.dialogs import confirm_dialog, notify_dialog
+from stoqlib.gui.base.columns import ForeignKeyColumn
+from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 

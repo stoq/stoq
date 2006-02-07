@@ -34,7 +34,7 @@ from datetime import date
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
-from stoqlib.gui.columns import ForeignKeyColumn
+from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.sale import Sale

@@ -34,7 +34,7 @@ from datetime import datetime
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
 from sqlobject.sqlbuilder import AND
-from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types
 
 from stoq.lib.parameters import sysparam

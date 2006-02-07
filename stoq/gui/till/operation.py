@@ -40,8 +40,8 @@ from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import AND, IN
-from stoqlib.gui.search import SearchBar
-from stoqlib.gui.dialogs import (BasicWrappingDialog, run_dialog,
+from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
                                  confirm_dialog, notify_dialog)
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency

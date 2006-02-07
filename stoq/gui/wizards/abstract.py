@@ -32,8 +32,8 @@ import gettext
 
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.python import Settable
-from stoqlib.gui.wizards import BaseWizardStep
-from stoqlib.gui.lists import AdditionListSlave
+from stoqlib.gui.base.wizards import BaseWizardStep
+from stoqlib.gui.base.lists import AdditionListSlave
 
 from stoq.lib.validators import get_price_format_str
 from stoq.domain.product import Product

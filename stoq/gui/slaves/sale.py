@@ -33,8 +33,8 @@ import gtk
 from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.ui.delegates import SlaveDelegate
-from stoqlib.gui.editors import BaseEditorSlave
-from stoqlib.gui.dialogs import run_dialog
+from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.lib.validators import get_price_format_str
 from stoq.gui.sales.details import SaleDetailsDialog

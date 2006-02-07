@@ -37,7 +37,7 @@ import gtk
 import gettext
 from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
-from stoqlib.gui.editors import SimpleEntryEditor, BaseEditor
+from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 
 from stoq.lib.runtime import get_connection
 from stoq.gui.templates.person import BasePersonRoleEditor
