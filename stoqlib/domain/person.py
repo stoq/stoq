@@ -275,7 +275,7 @@ class Person(Domain):
         return PersonAdaptToUser(self, **kwargs)
 
     def facet_IBranch_add(self, **kwargs):
-        from stoq.domain.product import storables_set_branch
+        from stoqlib.domain.product import storables_set_branch
         company = ICompany(self)
         if not company:
                 msg = ('The person you want to adapt must have '
