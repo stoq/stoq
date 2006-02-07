@@ -48,6 +48,7 @@ def get_application_names():
         applications.append(appname)
     return applications
 
+
 def get_app_descriptions():
     """@returns: a list of tuples with some important Stoq application
     informations. Each tuple has the following data: 

@@ -72,8 +72,10 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                                  "Valid applications are: %s" % (appname, apps))
 
-    from stoqlib.lib.runtime import register_configparser_settings
+    from stoqlib.lib.runtime import (register_configparser_settings,
+                                     register_application_names)
     register_configparser_settings('stoq', 'stoq.conf')
+    register_application_names(apps)
 
     from stoqlib.lib.configparser import config
     if options.hostname:
