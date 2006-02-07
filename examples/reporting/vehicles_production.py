@@ -3,7 +3,7 @@
 from sys import path
 path.insert(0, "..")
 
-from stoqlib.reporting import build_report, print_preview
+from stoqlib.reporting.utils import build_report, print_preview
 from stoqlib.reporting.printing import ReportTemplate
 from stoqlib.reporting.common import read_file, safe_int
 
