@@ -5,9 +5,9 @@ Stoq's homepage is located at:
 http://www.stoq.com.br
 
 It's sourcecode is avaliable through a subversion repository at:
-svn://www.async.com.br/stoq/trunk 
+svn://svn.async.com.br/stoq/trunk
 
-If you have any enhancements or bug reports, please fill them in Async
+If you have any enhancements or bug reports, please fill them in Async's
 bugzilla:
 
 http://bugs.async.com.br
@@ -75,6 +75,6 @@ http://www.async.com.br/mailman/listinfo/stoq-devel
 Copyright Information
 =====================
                                                                                
-This software is covered by the GNU Lesser General Public License
+This software is covered by the GNU General Public License
 (version 2.0, or if you choose, a later version).  Basically just don't
 say you wrote bits you didn't.
