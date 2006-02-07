@@ -35,12 +35,12 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
 from stoqlib.gui.columns import ForeignKeyColumn
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.sale import Sale
 from stoq.domain.person import Person
 from stoq.domain.interfaces import IClient, ISalesPerson
 from stoq.lib.validators import get_price_format_str
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch
 from stoq.gui.search.product import ProductSearch

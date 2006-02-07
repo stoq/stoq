@@ -36,10 +36,10 @@ from kiwi.environ import app, environ
 from stoqlib.gui.application import BaseApp, BaseAppWindow
 from stoqlib.gui.search import SearchBar
 from stoqlib.database import rollback_and_begin
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.lib.stoqconfig import hide_splash
 from stoq.lib.runtime import get_current_user, new_transaction
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.slaves.filter import FilterSlave
 
 

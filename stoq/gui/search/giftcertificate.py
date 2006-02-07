@@ -34,9 +34,9 @@ import gtk
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import Column
 from kiwi.datatypes import currency
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.lib.validators import get_price_format_str
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.interfaces import ISellable
 from stoq.domain.giftcertificate import (GiftCertificateType,
                                          GiftCertificate)

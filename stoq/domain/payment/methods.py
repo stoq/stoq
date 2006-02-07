@@ -33,6 +33,7 @@ from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck
+from stoqlib.lib.defaults import calculate_interval
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 from sqlobject.sqlbuilder import AND
@@ -40,7 +41,6 @@ from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol,
                        ForeignKey, BoolCol)
 from zope.interface import implements
 
-from stoq.lib.defaults import calculate_interval
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import compare_float_numbers
 from stoq.domain.account import BankAccount

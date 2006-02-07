@@ -37,9 +37,9 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import AccessorColumn, ForeignKeyColumn
+from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 
 from stoq.gui.slaves.filter import FilterSlave
-from stoq.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import format_quantity
 from stoq.domain.sellable import AbstractSellable, BaseSellableInfo

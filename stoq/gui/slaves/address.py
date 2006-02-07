@@ -32,10 +32,10 @@ stoq/gui/slaves/address.py:
 
 
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.lib.defaults import get_country_states
 
 from stoq.domain.person import CityLocation, Address
 from stoq.lib.runtime import new_transaction
-from stoq.lib.defaults import get_country_states
 from stoq.lib.parameters import sysparam
 
 

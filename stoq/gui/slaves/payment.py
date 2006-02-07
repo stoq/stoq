@@ -35,8 +35,8 @@ from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.lib.defaults import interval_types
 
-from stoq.lib.defaults import interval_types
 from stoq.lib.parameters import sysparam
 from stoq.lib.validators import (get_price_format_str, get_formatted_price,
                                  compare_float_numbers)

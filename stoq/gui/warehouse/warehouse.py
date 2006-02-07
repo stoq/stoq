@@ -35,11 +35,11 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.wizards.receiving import ReceivingOrderWizard
 from stoq.lib.validators import get_price_format_str
-from stoq.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.domain.person import Person
 from stoq.domain.product import Product
 from stoq.domain.sellable import AbstractSellable, BaseSellableInfo

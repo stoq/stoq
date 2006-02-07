@@ -36,7 +36,7 @@ from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.search import SearchEditor
 from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
-from stoq.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor,
@@ -44,7 +44,6 @@ from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
                                      BranchEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import (ICompany, IIndividual, ISupplier,
                                     IEmployee, IClient, ICreditProvider,
                                     ITransporter, IBranch)

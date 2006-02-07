@@ -34,10 +34,10 @@ import datetime
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.payment.base import Payment
 from stoq.lib.validators import get_price_format_str
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
