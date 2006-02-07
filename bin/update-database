@@ -29,7 +29,7 @@ sbin/update-database:
 
 from stoqlib.lib.runtime import new_transaction
 
-from stoq.domain.profile import update_profile_applications
+from stoqlib.domain.profile import update_profile_applications
 
     
 

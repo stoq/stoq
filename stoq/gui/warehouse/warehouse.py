@@ -40,10 +40,10 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.lib.validators import get_price_format_str
-from stoq.domain.person import Person
-from stoq.domain.product import Product
-from stoq.domain.sellable import AbstractSellable, BaseSellableInfo
-from stoq.domain.interfaces import ISellable, IStorable, IBranch
+from stoqlib.domain.person import Person
+from stoqlib.domain.product import Product
+from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
+from stoqlib.domain.interfaces import ISellable, IStorable, IBranch
 
 _ = gettext.gettext
 

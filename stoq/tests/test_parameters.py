@@ -31,13 +31,13 @@ stoq/tests/test_parameters.py:
 """
 
 from stoqlib.lib.runtime import new_transaction
-from stoq.lib.parameters import ParameterAccess, sysparam
-from stoq.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
-from stoq.domain.person import Person, EmployeeRole
-from stoq.domain.sellable import BaseSellableCategory
-from stoq.domain.payment.methods import PaymentMethod
-from stoq.domain.payment.destination import PaymentDestination
-from stoq.domain.service import ServiceAdaptToSellable
+from stoqlib.lib.parameters import ParameterAccess, sysparam
+from stoqlib.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
+from stoqlib.domain.person import Person, EmployeeRole
+from stoqlib.domain.sellable import BaseSellableCategory
+from stoqlib.domain.payment.methods import PaymentMethod
+from stoqlib.domain.payment.destination import PaymentDestination
+from stoqlib.domain.service import ServiceAdaptToSellable
 
 class TestParameter:
 

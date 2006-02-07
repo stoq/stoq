@@ -34,8 +34,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.lib.validators import get_price_format_str, format_quantity
-from stoq.domain.purchase import PurchaseOrder
-from stoq.domain.interfaces import IPaymentGroup
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.interfaces import IPaymentGroup
 
 _ = gettext.gettext
 

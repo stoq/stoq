@@ -40,12 +40,12 @@ from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 
 from stoq.gui.slaves.filter import FilterSlave
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
-from stoq.domain.sellable import AbstractSellable, BaseSellableInfo
-from stoq.domain.product import Product
-from stoq.domain.person import Person
-from stoq.domain.interfaces import IStorable, IBranch, ISellable
+from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
+from stoqlib.domain.product import Product
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IStorable, IBranch, ISellable
 
 _ = gettext.gettext
 

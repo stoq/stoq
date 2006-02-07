@@ -36,9 +36,9 @@ from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 
-from stoq.domain.profile import UserProfile
-from stoq.domain.person import Person, LoginInfo
-from stoq.domain.interfaces import IUser
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.person import Person, LoginInfo
+from stoqlib.domain.interfaces import IUser
 from stoq.gui.editors.profile import UserProfileEditor
 
 _ = gettext.gettext

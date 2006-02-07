@@ -31,10 +31,10 @@ from stoqlib.reporting.printing import ReportTemplate
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import format_phone_number
-from stoq.domain.interfaces import ICompany
+from stoqlib.domain.interfaces import ICompany
 
 # FIXME: We must consider using TTF fonts here (UTF-8 issues)
 FANCYNAME_FONT = ("Helvetica-Bold", 14)

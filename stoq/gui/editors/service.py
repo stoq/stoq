@@ -35,10 +35,10 @@ import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoq.domain.service import ServiceSellableItem, Service
-from stoq.domain.sellable import BaseSellableInfo
+from stoqlib.domain.service import ServiceSellableItem, Service
+from stoqlib.domain.sellable import BaseSellableInfo
 from stoq.gui.editors.sellable import SellableEditor
-from stoq.domain.interfaces import ISellable
+from stoqlib.domain.interfaces import ISellable
 from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext

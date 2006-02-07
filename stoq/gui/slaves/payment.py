@@ -39,17 +39,18 @@ from stoqlib.lib.defaults import interval_types
 from stoqlib.lib.validators import (get_price_format_str, get_formatted_price,
                                     compare_float_numbers)
 
-from stoq.lib.parameters import sysparam
-from stoq.domain.account import BankAccount
-from stoq.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
-from stoq.domain.payment.base import Payment
-from stoq.domain.payment.methods import (BillCheckGroupData, CheckData,
-                                         CreditProviderGroupData,
-                                         DebitCardDetails, CreditCardDetails,
-                                         CardInstallmentsStoreDetails,
-                                         CardInstallmentsProviderDetails,
-                                         FinanceDetails,
-                                         PaymentMethodDetails)
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.account import BankAccount
+from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
+from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
+                                            CreditProviderGroupData,
+                                            DebitCardDetails, 
+                                            CreditCardDetails,
+                                            CardInstallmentsStoreDetails,
+                                            CardInstallmentsProviderDetails,
+                                            FinanceDetails,
+                                            PaymentMethodDetails)
 from stoq.lib.drivers import get_current_cheque_printer_settings
 
 _ = gettext.gettext

@@ -32,7 +32,7 @@ stoq/gui/slaves/client.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.interfaces import IClient
+from stoqlib.domain.interfaces import IClient
 
 class ClientStatusSlave(BaseEditorSlave):
     model_iface = IClient

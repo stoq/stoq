@@ -43,12 +43,13 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import get_max_search_results
 
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import get_price_format_str
-from stoq.domain.person import (WorkPermitData, MilitaryData, 
-                                VoterData, EmployeeRole, EmployeeRoleHistory)
-from stoq.domain.interfaces import IEmployee, ISalesPerson
-from stoq.domain.account import BankAccount
+from stoqlib.domain.person import (WorkPermitData, MilitaryData, 
+                                   VoterData, EmployeeRole, 
+                                   EmployeeRoleHistory)
+from stoqlib.domain.interfaces import IEmployee, ISalesPerson
+from stoqlib.domain.account import BankAccount
 
 _ = gettext.gettext
 

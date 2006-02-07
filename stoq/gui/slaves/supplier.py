@@ -33,7 +33,7 @@ stoq/gui/slaves/supplier.py
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.interfaces import ISupplier
+from stoqlib.domain.interfaces import ISupplier
 
 
 class SupplierDetailsSlave(BaseEditorSlave):

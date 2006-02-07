@@ -38,7 +38,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 
-from stoq.domain.person import Person
+from stoqlib.domain.person import Person
 from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.editors.person import (BranchEditor,
                                      ClientEditor, SupplierEditor,

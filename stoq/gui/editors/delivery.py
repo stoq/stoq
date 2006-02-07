@@ -38,12 +38,12 @@ from stoqlib.gui.base.editors import BaseEditor, NoteEditor
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.dialogs import run_dialog
 
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity, get_price_format_str
-from stoq.domain.sellable import AbstractSellable
-from stoq.domain.service import ServiceSellableItem, DeliveryItem
-from stoq.domain.sale import Sale
-from stoq.domain.interfaces import IDelivery
+from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.service import ServiceSellableItem, DeliveryItem
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.interfaces import IDelivery
 from stoq.gui.editors.sellable import SellableItemEditor
 
 _ = gettext.gettext

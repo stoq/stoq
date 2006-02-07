@@ -29,9 +29,9 @@ stoq/examples/service.py:
 
 import random
 
-from stoq.domain.service import Service
-from stoq.domain.sellable import BaseSellableInfo
-from stoq.domain.interfaces import ISellable
+from stoqlib.domain.service import Service
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.interfaces import ISellable
 from stoqlib.lib.runtime import new_transaction, print_msg
 
 

@@ -45,9 +45,9 @@ from stoq.gui.editors.person import UserEditor
 from stoq.gui.editors.devices import DeviceSettingsDialog
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoqlib.lib.runtime import new_transaction
-from stoq.domain.person import Person
-from stoq.domain.profile import UserProfile
-from stoq.domain.interfaces import IUser
+from stoqlib.domain.person import Person
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.interfaces import IUser
 from stoq.gui.components.parameters import ParametersListingDialog
 
 _ = gettext.gettext

@@ -37,12 +37,12 @@ from sqlobject.sqlbuilder import AND, IN
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from kiwi.datatypes import ValidationError
 
-from stoq.domain.sellable import get_formatted_price
-from stoq.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee, 
+from stoqlib.domain.sellable import get_formatted_price
+from stoqlib.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee, 
                                     IBranch, IOutPayment)
-from stoq.domain.till import Till, get_current_till_operation
-from stoq.domain.payment.base import Payment, CashAdvanceInfo
-from stoq.domain.person import Person
+from stoqlib.domain.till import Till, get_current_till_operation
+from stoqlib.domain.payment.base import Payment, CashAdvanceInfo
+from stoqlib.domain.person import Person
 from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext

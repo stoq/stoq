@@ -37,9 +37,9 @@ from sqlobject.sqlbuilder import AND, LEFTJOINOn
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoq.domain.sale import Sale
-from stoq.domain.person import Person
-from stoq.domain.interfaces import IClient, ISalesPerson
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import ClientSearch, CreditProviderSearch

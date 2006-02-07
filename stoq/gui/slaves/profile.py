@@ -32,7 +32,7 @@ import gettext
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 
-from stoq.domain.profile import ProfileSettings, UserProfile
+from stoqlib.domain.profile import ProfileSettings, UserProfile
 
 _ = gettext.gettext
 

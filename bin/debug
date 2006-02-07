@@ -43,10 +43,10 @@ from sqlobject import *
 from sqlobject.sqlbuilder import *
 from stoqlib.lib.runtime import get_connection, new_transaction
 
-from stoq.domain.base import *
-from stoq.domain.interfaces import *
-from stoq.domain.tables import get_table_types
-from stoq.lib.parameters import sysparam
+from stoqlib.domain.base import *
+from stoqlib.domain.interfaces import *
+from stoqlib.domain.tables import get_table_types
+from stoqlib.lib.parameters import sysparam
 
 names = []
 for table in get_table_types():

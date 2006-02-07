@@ -35,9 +35,9 @@ from stoqlib.gui.base.editors import BaseEditor
 from kiwi.ui.widgets.entry import Entry
 from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 
-from stoq.lib.parameters import (ParameterData, sysparam,
-                                 get_parameter_details)
-from stoq.domain.base import AbstractModel
+from stoqlib.lib.parameters import (ParameterData, sysparam,
+                                    get_parameter_details)
+from stoqlib.domain.base import AbstractModel
 
 _ = gettext.gettext
 

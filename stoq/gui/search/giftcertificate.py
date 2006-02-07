@@ -37,9 +37,9 @@ from kiwi.datatypes import currency
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoqlib.lib.validators import get_price_format_str
-from stoq.domain.interfaces import ISellable
-from stoq.domain.giftcertificate import (GiftCertificateType,
-                                         GiftCertificate)
+from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.giftcertificate import (GiftCertificateType,
+                                            GiftCertificate)
 from stoq.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
                                               GiftCertificateEditor)
 from stoq.gui.slaves.filter import FilterSlave

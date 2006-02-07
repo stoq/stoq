@@ -33,8 +33,8 @@ from stoqlib.reporting.flowables import RIGHT
 from stoq.report.template import BaseStoqReport
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                  format_phone_number)
-from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import AbstractSellableItem
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.sellable import AbstractSellableItem
 
 _ = gettext.gettext
 

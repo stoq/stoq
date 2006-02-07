@@ -35,7 +35,7 @@ from kiwi.datatypes import ValidationError
 from sqlobject.sqlbuilder import func, AND
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoq.domain.profile import UserProfile
+from stoqlib.domain.profile import UserProfile
 from stoq.gui.slaves.profile import UserProfileSettingsSlave
 from stoq.lib.applist import get_app_descriptions
 from stoqlib.lib.runtime import get_connection

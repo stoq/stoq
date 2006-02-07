@@ -40,7 +40,7 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 from zope.interface import providedBy
 
-from stoq.domain.devices import DeviceSettings
+from stoqlib.domain.devices import DeviceSettings
 
 _ = gettext.gettext
 

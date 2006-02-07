@@ -36,8 +36,8 @@ from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.base.lists import AdditionListSlave
 
 from stoqlib.lib.validators import get_price_format_str
-from stoq.domain.product import Product
-from stoq.domain.interfaces import ISellable
+from stoqlib.domain.product import Product
+from stoqlib.domain.interfaces import ISellable
 
 _ = gettext.gettext
 

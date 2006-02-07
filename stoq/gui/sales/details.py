@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import DatabaseInconsistency
 
-from stoq.domain.interfaces import IPaymentGroup
+from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.lib.validators import get_formatted_price, get_price_format_str
 
 _ = gettext.gettext

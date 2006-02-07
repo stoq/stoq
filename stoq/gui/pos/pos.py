@@ -45,15 +45,15 @@ from stoqdrivers.constants import UNIT_WEIGHT
 from stoq.gui.application import AppWindow
 from stoqlib.lib.validators import format_quantity, get_price_format_str
 from stoqlib.lib.runtime import new_transaction
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
-from stoq.domain.sellable import AbstractSellable, FancySellable
-from stoq.domain.service import ServiceSellableItem
-from stoq.domain.product import ProductSellableItem
-from stoq.domain.person import Person
-from stoq.domain.till import get_current_till_operation
-from stoq.domain.interfaces import ISellable, IClient, IDelivery
+from stoqlib.domain.sellable import AbstractSellable, FancySellable
+from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.domain.product import ProductSellableItem
+from stoqlib.domain.person import Person
+from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.interfaces import ISellable, IClient, IDelivery
 from stoq.gui.editors.person import ClientEditor
 from stoq.gui.editors.delivery import DeliveryEditor
 from stoq.gui.editors.service import ServiceItemEditor

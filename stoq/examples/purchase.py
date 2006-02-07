@@ -31,10 +31,10 @@ stoq/examples/purchase.py:
 
 import datetime
 
-from stoq.domain.purchase import PurchaseOrder, PurchaseItem
-from stoq.domain.person import Person
-from stoq.domain.interfaces import ISupplier, IBranch
-from stoq.domain.sellable import AbstractSellable
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import ISupplier, IBranch
+from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.lib.runtime import new_transaction, print_msg
 
 

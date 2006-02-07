@@ -33,10 +33,10 @@ import gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.search import get_max_search_results
 
-from stoq.domain.sale import Sale
-from stoq.domain.till import get_current_till_operation
-from stoq.domain.person import Person
-from stoq.domain.interfaces import IClient, ISalesPerson
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.runtime import get_current_user
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.editors.person import ClientEditor

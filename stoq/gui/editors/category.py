@@ -32,10 +32,10 @@ import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoq.lib.parameters import sysparam
-from stoq.domain.sellable import (AbstractSellableCategory,
-                                  BaseSellableCategory,
-                                  SellableCategory)
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.sellable import (AbstractSellableCategory,
+                                     BaseSellableCategory,
+                                     SellableCategory)
 
 _ = gettext.gettext
 

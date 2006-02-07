@@ -41,15 +41,15 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import NoteEditor
 from sqlobject.sqlbuilder import AND
 
-from stoq.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity, get_price_format_str
-from stoq.domain.person import Person
-from stoq.domain.purchase import PurchaseOrder
-from stoq.domain.product import Product
-from stoq.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
-                                   get_receiving_items_by_purchase_order)
-from stoq.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
+from stoqlib.domain.person import Person
+from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.product import Product
+from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
+                                      get_receiving_items_by_purchase_order)
+from stoqlib.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
 from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoq.gui.search.product import ProductSearch
 from stoq.gui.wizards.abstract import AbstractProductStep
