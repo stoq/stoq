@@ -35,6 +35,7 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                     BranchSearch)
@@ -44,7 +45,6 @@ from stoq.gui.editors.person import UserEditor
 from stoq.gui.editors.devices import DeviceSettingsDialog
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.lib.runtime import new_transaction
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.person import Person
 from stoq.domain.profile import UserProfile
 from stoq.domain.interfaces import IUser

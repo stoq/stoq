@@ -32,12 +32,12 @@ stoq/gui/slaves/individual.py
 
 
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.lib.defaults import get_country_states
 
 from stoq.domain.person import CityLocation
 from stoq.domain.interfaces import IIndividual
 from stoq.lib.parameters import sysparam
 from stoq.lib.runtime import new_transaction
-from stoq.lib.defaults import get_country_states
 
 
 class IndividualDocuments(BaseEditorSlave):

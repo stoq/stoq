@@ -29,8 +29,8 @@ stoq/gui/slaves/purchase.py
 """
 
 from stoqlib.gui.editors import BaseEditorSlave
+from stoqlib.lib.defaults import interval_types
 
-from stoq.lib.defaults import interval_types
 from stoq.domain.interfaces import IPaymentGroup
 
 

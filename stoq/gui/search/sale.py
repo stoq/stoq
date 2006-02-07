@@ -37,11 +37,11 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
 from stoqlib.gui.columns import ForeignKeyColumn
 from stoqlib.gui.search import SearchDialog
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.domain.interfaces import IClient, ISalesPerson
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
-from stoq.lib.defaults import ALL_ITEMS_INDEX
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.slaves.sale import SaleListToolbar
 
