@@ -60,6 +60,7 @@ def main(args):
 
     options, args = parser.parse_args(args)
 
+    apps = get_application_names()
     if len(args) < 2:
         appname = None
     else:
@@ -67,7 +68,6 @@ def main(args):
         if appname.endswith('/'):
             appname = appname[:-1]
 
-        apps = get_application_names()
         if not appname in apps:
             raise SystemExit("'%s' is not an application. "
                                  "Valid applications are: %s" % (appname, apps))
