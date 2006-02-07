@@ -1,0 +1,61 @@
+Stoqlib
+========
+
+Stoqlib's homepage is located at:
+http://www.stoq.com.br
+
+It's sourcecode is avaliable through a subversion repository at:
+svn://svn.async.com.br/stoqlib/trunk
+
+If you have any enhancements or bug reports, please fill them in Async's
+bugzilla:
+
+http://bugs.async.com.br
+
+Please select the product name Stoqlib
+
+
+Requirements
+============
+Stoqlib has the following dependencies:
+
+Python 2.4 or higher
+PyGTK 2.8.1 or higher
+PostgresSQL 7.4.7 or higher
+SQLObject 0.7.0
+Gazpacho 0.6.5
+Kiwi 1.9.4
+Stoqdrivers 0.2.0
+zope.interface 3.0.0 or higher 
+dateutil (http://labix.org/python-dateutil)
+
+If you are a developer, the following packages are for you:
+
+docutils(http://docutils.sourceforge.net)
+pylib (http://codespeak.net/py/current/doc/test.html)
+
+
+New Versions
+============
+
+New versions of Stoqlib can be found at:
+
+http://www.stoq.com.br
+
+
+Mailing list
+============
+
+There is two mailing lists for Stoq. You can subscribe to them through the web
+interface at:
+
+http://www.async.com.br/mailman/listinfo/stoq-users
+http://www.async.com.br/mailman/listinfo/stoq-devel
+
+
+Copyright Information
+=====================
+                                                                               
+This software is covered by the GNU Lesser General Public License
+(version 2.0, or if you choose, a later version).  Basically just don't
+say you wrote bits you didn't.
