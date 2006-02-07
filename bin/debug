@@ -46,6 +46,7 @@ from stoq.domain.base import *
 from stoq.domain.interfaces import *
 from stoq.domain.tables import get_table_types
 from stoq.lib.runtime import get_connection, new_transaction
+from stoq.lib.parameters import sysparam
 
 names = []
 for table in get_table_types():
