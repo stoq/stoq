@@ -25,7 +25,7 @@ from stoq.lib.applist import get_application_names
 
 def run_app(options, config, appname):
     from stoq.lib.stoqconfig import AppConfig
-
+    
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
@@ -72,8 +72,10 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                                  "Valid applications are: %s" % (appname, apps))
 
-    from stoq.lib.configparser import config
+    from stoqlib.lib.runtime import register_configparser_settings
+    register_configparser_settings('stoq', 'stoq.conf')
 
+    from stoqlib.lib.configparser import config
     if options.hostname:
         config.set_database(options.hostname)
     if options.database:
