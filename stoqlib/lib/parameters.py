@@ -37,7 +37,7 @@ from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        ICardPM, IFinancePM)
 
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class ParameterDetails:
