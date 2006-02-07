@@ -20,11 +20,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-"""
-stoq/lib/applist.py:
-
-    Listing and importing applications
-"""
+##  Author(s):  Evandro Vale Miquelito  <evandro@async.com.br>
+##
+##
+""" Listing and importing applications """
 
 import glob
 import os
