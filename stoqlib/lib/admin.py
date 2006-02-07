@@ -36,7 +36,7 @@ from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.tables import get_table_types
-from stoq.domain.sellable import SellableUnit
+from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                     ISalesPerson)
 
