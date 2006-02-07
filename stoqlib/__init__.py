@@ -33,7 +33,7 @@ if library.uninstalled:
         library.add_resources(locale='locale')
     except EnvironmentError:
         pass
-    library.add_global_resources(pixmaps='stoqlib/gui/pixmaps',
-                                 glade='stoqlib/gui/glade')
+    library.add_global_resources(pixmaps='data/pixmaps',
+                                 glade='data')
 library.enable_translation()
 

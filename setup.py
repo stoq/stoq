@@ -47,10 +47,9 @@ setup(name=PACKAGE,
       license="GNU LGPL 2.1 (see COPYING)",
       data_files=[
         ('share/stoqlib/pixmaps',
-         listfiles('stoqlib/gui/pixmaps', '*.xpm') +
-         listfiles('stoqlib/gui/pixmaps', '*.png')),
+         listfiles('data/pixmaps', '*.png')),
         ('share/stoqlib/glade',
-         listfiles('stoqlib/gui/glade', '*.glade')),
+         listfiles('data', '*.glade')),
         ('share/doc/stoqlib',
          ('AUTHORS', 'CONTRIBUTORS', 'NEWS', 'README')),
         ],
