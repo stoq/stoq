@@ -47,7 +47,7 @@ from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                      CardMethodSlave, 
                                      FinanceMethodSlave)
 from stoqlib.lib.parameters import sysparam
-from stoq.lib.drivers import print_cheques_for_payment_group
+from stoqlib.lib.drivers import print_cheques_for_payment_group
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup

@@ -51,7 +51,7 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CardInstallmentsProviderDetails,
                                             FinanceDetails,
                                             PaymentMethodDetails)
-from stoq.lib.drivers import get_current_cheque_printer_settings
+from stoqlib.lib.drivers import get_current_cheque_printer_settings
 
 _ = gettext.gettext
 
