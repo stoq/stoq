@@ -32,13 +32,17 @@ from stoq.tests.domain.base import BaseDomainTest
 
 PHONE_DATA_VALUES = ('7133524563','1633767277')
 MOBILE_DATA_VALUES = ('7188152345', '1699786748')
+FAX_DATA_VALUES = ('1681359875', '1633760125')
 
 class TestCasePerson(BaseDomainTest):
     """
     C{Person} TestCase
     """
     _table = Person
-    person_skip_attrs = ['phone_number', 'mobile_number']
+    phone_attr = 'phone_number'
+    mobile_attr = 'mobile_number'
+    fax_attr = 'fax_number'
+    person_skip_attrs = [phone_attr, mobile_attr, fax_attr]
     
     def __init__(self):
         self.skip_attrs.extend(self.person_skip_attrs)
@@ -46,10 +50,9 @@ class TestCasePerson(BaseDomainTest):
         self._add_phone_and_mobile_values()
 
     def _add_phone_and_mobile_values(self):
-        phone_key = self.person_skip_attrs[0]
-        self.insert_dict[phone_key], self.edit_dict[phone_key] = \
+        insertd, editd = self.insert_dict, self.edit_dict
+        insertd[self.phone_attr], editd[self.phone_attr] = \
                                                     PHONE_DATA_VALUES
-        mobile_key = self.person_skip_attrs[1]
-        self.insert_dict[mobile_key], self.edit_dict[mobile_key] = \
-                                                    PHONE_DATA_VALUES
-        
+        insertd[self.mobile_attr], editd[self.mobile_attr] = \
+                                                    MOBILE_DATA_VALUES
+        insertd[self.fax_attr], editd[self.fax_attr] = FAX_DATA_VALUES
