@@ -1,0 +1,119 @@
+`````````````````
+domain/profile.py
+`````````````````
+
+The **Users profile management module** was built to make easier to manage
+application users. A user profile consists of two objects types: `UserProfile
+<http://www.async.com.br/projects/stoq/docs/package/public/stoq.domain.profile.UserProfile-class.html>`_ and `ProfileSettings <http://www.async.com.br/projects/stoq/docs/package/public/stoq.domain.profile.ProfileSettings-class.html>`_ in a relation of one to n. Each ProfileSettings object represents a permission information about a certain application. 
+If Stoq applications suit has about twelve application, for each profile we 
+will have the same number of ProfileSettings instances stored in the database.
+
+
+Since you create a new profile you can associate it with many existent
+users and once the profile is changed, users under it will have also its
+permissions changed. The following code explains how to create a new
+profile:
+   
+First we need to import the modules and initialize a new transaction.
+
+    >>> from stoq.lib.runtime import new_transaction
+    >>> from stoq.domain.profile import ProfileSettings, UserProfile
+    >>> conn = new_transaction()
+
+Lets just get the number of profiles stored in the database. This will be
+useful to check later if our new profile was actually saved.
+
+    >>> prof_number = UserProfile.select(connection=conn).count()
+    >>> settings_number = ProfileSettings.select(connection=conn).count()
+
+Here we create a new profile...    
+
+    >>> profile = UserProfile(connection=conn, name='assistant')  
+
+...and also profile settings for application POS. Note that the default
+value for attribute has_permission is False.
+
+    >>> settings = ProfileSettings(connection=conn, app_dir_name='pos',
+    ...                            has_permission=True, user_profile=profile)
+
+Commit the transaction where we created our data.
+
+    >>> conn.commit()
+
+Check if everything was properly saved into database.
+
+    >>> prof_number = long(prof_number + 1)
+    >>> UserProfile.select(connection=conn).count() == prof_number
+    True
+    >>> settings_number = long(settings_number + 1)
+    >>> ProfileSettings.select(connection=conn).count() == settings_number
+    True
+
+How about adding permission information for a new application ? 
+There is an approach to deal with this requirement.
+
+    >>> profile.add_application_reference('warehouse',
+    ...                                   has_permission=True)
+    >>> conn.commit()
+
+Is everything properly saved ?
+
+    >>> settings_number = long(settings_number + 1)
+    >>> ProfileSettings.select(connection=conn).count() == settings_number
+    True
+
+The number of Stoq applications can change in the future and that's why we
+have the method update_profile_applications. A simple usage for this method
+is:
+
+First import the function from the right path...
+
+    >>> from stoq.domain.profile import update_profile_applications
+
+...and them use it !
+
+    >>> update_profile_applications(conn)
+    >>> conn.commit()
+
+Did it work ? we had before only permission information about POS
+application. Now we should have a lot more. Lets check getting first all the
+profile settings for our last created profile. Note that SQLObject
+selectBy method is very useful in this case, retrieving all the data of a
+certain table matching with one or more columns.  See `Select-By
+<http://www.sqlobject.org/SQLObject.html#select-by-method>`_.
+
+
+    >>> items = ProfileSettings.selectBy(user_profile=profile, connection=conn)
+
+Now getting the list of available applications and performing the check itself.     
+
+    >>> from stoq.lib.applist import get_application_names
+    >>> items.count() == len(get_application_names())
+    True
+
+There is also a much more easy way to create user profiles without the need
+to create manually profile settings or even calling
+update_profile_applications functions. See usage for classmethod
+create_profile_template:
+
+    >>> profile_name = 'Boss'
+    >>> boss_profile = UserProfile.create_profile_template(conn, profile_name,
+    ...                                                    has_full_permission=True)
+
+Our profile is for a boss an that's why we have sent
+has_full_permission=True argument for this method which defaults to False.
+
+Again, we must check if we have permission information for all the available
+applications:
+
+    >>> items = ProfileSettings.selectBy(user_profile=boss_profile, 
+    ...                                  connection=conn)
+    >>> items.count() == len(get_application_names())
+    True
+
+Now we have created profiles why not checking  permissions for a certain
+application ? We know that bosses must be allowed to access everything so,
+does our boss_profile have permission for application pos ?
+
+    >>> boss_profile.check_app_permission('pos')
+    True
