@@ -39,7 +39,7 @@ from stoq.domain.sellable import AbstractSellableItem
 _ = gettext.gettext
 
 class SaleOrderReport(BaseStoqReport):
-    report_name = "Purchase Order"
+    report_name = "Sale Order"
 
     def __init__(self, filename, sale_order):
         self.order = sale_order
