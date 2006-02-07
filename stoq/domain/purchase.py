@@ -39,10 +39,10 @@ from zope.interface import implements
 
 from stoq.domain.base import Domain
 from stoq.domain.payment.base import AbstractPaymentGroup
+from stoq.domain.columns import PriceCol
 from stoq.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                     IPaymentGroup)
 from stoq.lib.parameters import sysparam
-from stoq.lib.columns import PriceCol
 
 _ = gettext.gettext
 

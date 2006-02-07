@@ -39,8 +39,8 @@ from kiwi.argcheck import argcheck
 from stoq.domain.base import Domain
 from stoq.domain.interfaces import IStorable
 from stoq.domain.purchase import PurchaseOrder
+from stoq.domain.columns import PriceCol
 from stoq.lib.validators import get_formatted_price
-from stoq.lib.columns import PriceCol
 
 _ = gettext.gettext
 
