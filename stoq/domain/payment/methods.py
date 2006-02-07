@@ -42,7 +42,7 @@ from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol,
 from zope.interface import implements
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import compare_float_numbers
+from stoqlib.lib.validators import compare_float_numbers
 from stoq.domain.account import BankAccount
 from stoq.domain.person import Person
 from stoq.domain.payment.base import (Payment, PaymentAdaptToInPayment,

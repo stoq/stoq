@@ -39,7 +39,7 @@ from stoq.domain.service import ServiceSellableItem, Service
 from stoq.domain.sellable import BaseSellableInfo
 from stoq.gui.editors.sellable import SellableEditor
 from stoq.domain.interfaces import ISellable
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 

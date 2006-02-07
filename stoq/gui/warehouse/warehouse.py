@@ -39,7 +39,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.wizards.receiving import ReceivingOrderWizard
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.product import Product
 from stoq.domain.sellable import AbstractSellable, BaseSellableInfo

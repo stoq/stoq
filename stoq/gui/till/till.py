@@ -45,7 +45,7 @@ from stoq.domain.sale import Sale
 from stoq.domain.person import Person, PersonAdaptToClient
 from stoq.domain.till import get_current_till_operation, Till
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.editors.till import TillOpeningEditor, TillClosingEditor

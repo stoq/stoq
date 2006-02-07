@@ -44,7 +44,7 @@ from stoq.domain.sellable import BaseSellableInfo
 from stoq.domain.product import ProductSupplierInfo, Product
 from stoq.domain.interfaces import ISellable, IStorable, ISupplier
 from stoq.gui.editors.sellable import SellableEditor
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.lib.parameters import sysparam
 
 _ = gettext.gettext

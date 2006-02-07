@@ -36,7 +36,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.sales.details import SaleDetailsDialog
 
 

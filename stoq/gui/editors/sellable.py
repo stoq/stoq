@@ -48,7 +48,7 @@ from stoq.domain.service import DeliveryItem
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.lib.runtime import new_transaction
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 

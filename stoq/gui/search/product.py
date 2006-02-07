@@ -36,7 +36,7 @@ from kiwi.datatypes import currency
 from stoqlib.gui.base.columns import Column, AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoq.lib.validators import format_quantity
+from stoqlib.lib.validators import format_quantity
 from stoq.domain.sellable import BaseSellableInfo
 from stoq.domain.interfaces import ISellable
 from stoq.domain.product import Product

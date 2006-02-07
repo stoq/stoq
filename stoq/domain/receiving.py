@@ -40,7 +40,7 @@ from stoq.domain.base import Domain
 from stoq.domain.interfaces import IStorable
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.columns import PriceCol
-from stoq.lib.validators import get_formatted_price
+from stoqlib.lib.validators import get_formatted_price
 
 _ = gettext.gettext
 

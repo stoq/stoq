@@ -30,7 +30,7 @@ gui/slaves/price.py:
 
 from kiwi.ui.delegates import SlaveDelegate
 
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 
 class PriceSlave(SlaveDelegate):
     """ A simple slave that show a price with a label (when can_edit

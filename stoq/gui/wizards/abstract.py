@@ -35,7 +35,7 @@ from kiwi.python import Settable
 from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.base.lists import AdditionListSlave
 
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.domain.product import Product
 from stoq.domain.interfaces import ISellable
 

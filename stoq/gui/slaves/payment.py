@@ -36,10 +36,10 @@ from kiwi.ui.views import SlaveView
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types
+from stoqlib.lib.validators import (get_price_format_str, get_formatted_price,
+                                    compare_float_numbers)
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import (get_price_format_str, get_formatted_price,
-                                 compare_float_numbers)
 from stoq.domain.account import BankAccount
 from stoq.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
 from stoq.domain.payment.base import Payment

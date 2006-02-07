@@ -43,7 +43,7 @@ from stoq.gui.templates.person import BasePersonRoleEditor
 from stoq.gui.editors.person import (BranchEditor,
                                      ClientEditor, SupplierEditor,
                                      EmployeeEditor, CreditProviderEditor)
-from stoq.lib.validators import (validate_phone_number, format_phone_number,
+from stoqlib.lib.validators import (validate_phone_number, format_phone_number,
                                  raw_phone_number)
 
 
