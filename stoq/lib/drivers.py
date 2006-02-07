@@ -34,7 +34,7 @@ import socket
 import warnings
 
 import gtk
-from zope.interface import implements, providedBy
+from zope.interface import implements
 from sqlobject.sqlbuilder import OR, AND
 from stoqlib.exceptions import DatabaseInconsistency
 from kiwi.ui.dialogs import warning, error, info
@@ -201,7 +201,7 @@ def print_cheques_for_payment_group(conn, group):
     city = main_address.city_location.city
     for idx, payment in enumerate(payments):
         method = payment.method
-        if not ICheckPM in  providedBy(method):
+        if not ICheckPM.providedBy(method.get_adapted()):
             continue
         check_data = method.get_check_data_by_payment(payment)
         bank_id = check_data.bank_data.bank_id
@@ -346,9 +346,10 @@ class FiscalCoupon:
                                      sale.get_total_sale_amount(), '')
         else:
             for payment in group.get_items():
-                if ICheckPM.providedBy(payment.method):
+                base_method = payment.method.get_adapted()
+                if ICheckPM.providedBy(base_method):
                     money_type = CHEQUE_PM
-                elif IMoneyPM.providedBy(payment.method):
+                elif IMoneyPM.providedBy(base_method):
                     money_type = MONEY_PM
                     # FIXME: A default value, this is wrong but can't be better right
                     # now, since stoqdrivers doesn't have support for any payment
@@ -370,5 +371,3 @@ class FiscalCoupon:
             return False
         self.sale.coupon_id = coo
         return True
-
-
