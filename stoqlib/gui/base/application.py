@@ -26,7 +26,7 @@
 import gtk
 from kiwi.ui.delegates import Delegate
 
-from stoqlib.gui.dialogs import get_dialog, run_dialog
+from stoqlib.gui.base.dialogs import get_dialog, run_dialog
 
 
 #

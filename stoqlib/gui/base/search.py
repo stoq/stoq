@@ -41,10 +41,10 @@ from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
-from stoqlib.gui.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
-from stoqlib.gui.columns import FacetColumn, ForeignKeyColumn
+from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
