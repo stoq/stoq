@@ -41,7 +41,7 @@ from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel)
 
-_ = lambda msg: gettext.dgettext('stoqlib', ms)
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 #
 # Base Domain Classes
