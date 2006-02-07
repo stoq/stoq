@@ -24,6 +24,12 @@
 
 from kiwi.environ import Library
 
+__program_name__    = "Stoqlib"
+__website__         = 'http://www.stoq.com.br'
+__version__         = "0.6.0"
+__release_date__    = (2006, 1, 27)
+
+
 __all__ = ['library']
 
 library = Library('stoqlib', root='..')
