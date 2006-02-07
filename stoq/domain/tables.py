@@ -42,7 +42,7 @@ from stoqlib.exceptions import DatabaseError
 # could accept many other databases. Waiting for SQLObject suport.
 from psycopg import OperationalError
 
-from stoq.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection
 
 _ = gettext.gettext
 

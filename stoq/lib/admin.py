@@ -30,7 +30,7 @@ tables, removing tables and configuring administration user.
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoq.lib.parameters import sysparam, ensure_system_parameters
 from stoq.domain.person import EmployeeRole, PersonAdaptToUser
 from stoq.domain.profile import UserProfile

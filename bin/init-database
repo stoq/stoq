@@ -35,7 +35,7 @@ import sys
 
 TEST_MODE = '-t' in sys.argv
 
-from stoq.lib.runtime import set_test_mode, set_verbose, print_msg
+from stoqlib.lib.runtime import set_test_mode, set_verbose, print_msg
 
 # XXX This function must be called right before any other stoq domain
 # module since initialize_connection has been called after

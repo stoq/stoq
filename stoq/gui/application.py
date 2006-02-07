@@ -41,7 +41,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 import stoq
 from stoq.lib.stoqconfig import hide_splash
-from stoq.lib.runtime import get_current_user, new_transaction
+from stoqlib.lib.runtime import get_current_user, new_transaction
 from stoq.gui.slaves.filter import FilterSlave
 
 

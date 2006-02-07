@@ -41,7 +41,7 @@ from stoqlib.database import Adapter
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
-from stoq.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection
 
 __connection__ = get_connection()
 

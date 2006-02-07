@@ -32,7 +32,7 @@ import random
 from stoq.domain.service import Service
 from stoq.domain.sellable import BaseSellableInfo
 from stoq.domain.interfaces import ISellable
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 MAX_SERVICES_NUMBER = 4

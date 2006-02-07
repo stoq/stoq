@@ -32,7 +32,7 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoq.lib.validators import format_phone_number
 from stoq.domain.interfaces import ICompany
 

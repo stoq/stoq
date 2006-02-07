@@ -32,7 +32,7 @@ stoq/examples/giftcertificate.py:
 from stoq.domain.giftcertificate import GiftCertificateType, GiftCertificate
 from stoq.domain.interfaces import ISellable
 from stoq.domain.sellable import BaseSellableInfo, AbstractSellable
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 
 MAX_GIFTCERTIFICATE_NUMBER = 2
 

@@ -42,7 +42,7 @@ from stoqlib.gui.base.editors import NoteEditor
 from sqlobject.sqlbuilder import AND
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.runtime import get_current_user
+from stoqlib.lib.runtime import get_current_user
 from stoq.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder

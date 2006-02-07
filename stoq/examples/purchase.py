@@ -35,7 +35,7 @@ from stoq.domain.purchase import PurchaseOrder, PurchaseItem
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier, IBranch
 from stoq.domain.sellable import AbstractSellable
-from stoq.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 MAX_PURCHASES_NUMBER = 4
