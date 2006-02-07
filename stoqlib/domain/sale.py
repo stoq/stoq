@@ -47,7 +47,8 @@ from stoqlib.domain.interfaces import (IContainer, IClient, IStorable,
                                        IRenegotiationGiftCertificate,
                                        IRenegotiationOutstandingValue)
 
-_ = lambda msg: gettext.dgettext('stoqlib', ms)
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 #
 # Base Domain Classes

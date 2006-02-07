@@ -380,7 +380,7 @@ class ParameterAccess(ClassInittableObject):
 
     def get_parameter_by_field(self, field_name, field_type):
         if isinstance(field_type, basestring):
-            field_type = namedAny('stoq.domain.' + field_type)
+            field_type = namedAny('stoqlib.domain.' + field_type)
         if self._cache.has_key(field_name):
             param = self._cache[field_name]
             if issubclass(field_type, AbstractModel):
