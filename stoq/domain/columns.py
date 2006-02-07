@@ -22,11 +22,7 @@
 ##
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
 ##
-"""
-stoq/lib/columns.py:
-
-   SQLObject columns and helpers
-"""
+""" SQLObject columns and helpers """
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
