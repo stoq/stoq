@@ -417,7 +417,7 @@ class BaseReportTemplate(BaseDocTemplate):
                          style=TABLE_STYLE, margins=DEFAULT_MARGIN,
                          extra_row=None, align=flowables.CENTER, 
                          table_line=TABLE_LINE, highlight=tables.HIGHLIGHT_ODD,
-                         *args, **kwargs):
+                         summary_row=None, *args, **kwargs):
         """ Insert an object table. Its parameters are:
 
         @param objs:   A instance list, where each instance is a table row.
@@ -463,7 +463,8 @@ class BaseReportTemplate(BaseDocTemplate):
         table_builder = tables.ObjectTableBuilder(objs, cols, style,
                                                   width=width,
                                                   extra_row=extra_row,
-                                                  table_line=table_line)
+                                                  table_line=table_line,
+                                                  summary_row=summary_row)
         kwargs["align"] = align
         table_builder.set_highlight(highlight)
         self.add(table_builder.create_table(*args, **kwargs))

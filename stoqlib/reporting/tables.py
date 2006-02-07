@@ -225,7 +225,8 @@ class ColumnTableBuilder(ReportTableBuilder):
     # Note that extra_row needs to be formatted according to the column
     # specification provided.
     def __init__(self, data, columns, style=None, progress_handler=None,
-                 table_line=TABLE_LINE, do_header=1, extra_row=None):
+                 table_line=TABLE_LINE, do_header=1, extra_row=None,
+                 summary_row=None):
         """
         @param data:   A list of lists, where each nested list represents a
                        row (naturally, each column of this nested list is a
@@ -249,6 +250,10 @@ class ColumnTableBuilder(ReportTableBuilder):
         @param extra_row: An list of strings to be inserted right after the
                        table.
         @type:         list
+
+        @param summary_row: A list of strings to be inserted after the table
+                       and that means the sum of one or more columns.
+        @type:         list
         """
         self.columns = columns
         self.progress_handler = progress_handler
@@ -258,6 +263,8 @@ class ColumnTableBuilder(ReportTableBuilder):
             header = None
         if extra_row:
             extra_row = self.get_row_data(extra_row)
+        elif summary_row:
+            extra_row = summary_row
         ReportTableBuilder.__init__(self, self.build_data(data), style,
                                     header, table_line, extra_row)
 
@@ -310,13 +317,13 @@ class ColumnTableBuilder(ReportTableBuilder):
         """ Apply the column table style. """
         ReportTableBuilder.update_style(self)
         for idx, col in enumerate(self.columns):
-            col.update_style(self.style, idx)
+            col.update_style(self.style, idx, has_summary_row=True)
 
 class ObjectTableBuilder(ColumnTableBuilder):
     """ Object table builder """
     def __init__(self, objs, columns, style=None, width=None,
                  progress_handler=None, table_line=TABLE_LINE,
-                 extra_row=None):
+                 extra_row=None, summary_row=None):
         """
         @param objs:   A instance list, where each instance is a table row.
         @type:         list.
@@ -335,15 +342,23 @@ class ObjectTableBuilder(ColumnTableBuilder):
                        the table rows.
         @type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
 
-        @param extra_row: An list of strings to be inserted right after
+        @param extra_row: An object with data to be inserted right after
                        the table. This data is included on the report as
                        a normal data table after this object table.
         @type:         list
+
+        @param summary_row: A list of strings to be inserted after the table
+                       and that means the sum of one or more columns.
+        @type:         list
         """
+        if extra_row and summary_row:
+            raise ValueError("You can't use extra_row and summary_row at "
+                             "the same time!")
         self._expand_cols(columns, width)
         ColumnTableBuilder.__init__(self, objs, columns, style=style,
                                     progress_handler=progress_handler,
-                                    table_line=table_line, extra_row=extra_row)
+                                    table_line=table_line, extra_row=extra_row,
+                                    summary_row=summary_row)
 
     def _get_header(self):
         """ Return the column names representing the table header. """
@@ -606,7 +621,7 @@ class TableColumn:
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
 
-    def update_style(self, style, idx):
+    def update_style(self, style, idx, has_summary_row=False):
         """ Apply the column style. """
         if self.align:
             style.add('ALIGN', (idx,0), (idx,-1), self.align)
@@ -663,7 +678,7 @@ class ObjectTableColumn(TableColumn):
             data = self.data_source(value, *self.args, **self.kwargs)
         return TableColumn.get_string_data(self, data)
 
-    def update_style(self, style, idx):
+    def update_style(self, style, idx, has_summary_row=False):
         """ Apply the column style. """
         assert idx or not self.virtual, \
             'The first column can\'t be a virtual column'
@@ -672,7 +687,11 @@ class ObjectTableColumn(TableColumn):
         if self.virtual:
             style.add('SPAN', (idx-1, 0), (idx, 0))
         else:
-            style.add('LINEBEFORE', (idx,0), (idx,-1), *TABLE_LINE)
+            if has_summary_row:
+                j = 1
+            else:
+                j = 0
+            style.add('LINEBEFORE', (idx,0), (idx,-1-j), *TABLE_LINE)
 
     def __repr__(self):
         return '<ObjectTableColumn name: %s at 0x%x>' % (self.name, id(self))
