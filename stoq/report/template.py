@@ -33,7 +33,7 @@ from reportlab.lib.utils import ImageReader
 
 from stoq.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
-from stoq.lib.validators import format_phone_number
+from stoqlib.lib.validators import format_phone_number
 from stoq.domain.interfaces import ICompany
 
 # FIXME: We must consider using TTF fonts here (UTF-8 issues)

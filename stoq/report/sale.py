@@ -31,7 +31,7 @@ from stoqlib.reporting.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.flowables import RIGHT
 
 from stoq.report.template import BaseStoqReport
-from stoq.lib.validators import (get_formatted_price, format_quantity,
+from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                  format_phone_number)
 from stoq.lib.parameters import sysparam
 from stoq.domain.sellable import AbstractSellableItem

@@ -39,7 +39,7 @@ from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.dialogs import run_dialog
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import format_quantity, get_price_format_str
+from stoqlib.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.sellable import AbstractSellable
 from stoq.domain.service import ServiceSellableItem, DeliveryItem
 from stoq.domain.sale import Sale

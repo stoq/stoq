@@ -31,7 +31,7 @@ stoq/gui/slaves/sellable.py
 from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoq.domain.sellable import OnSaleInfo
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 
 
 class OnSaleInfoSlave(BaseEditorSlave):

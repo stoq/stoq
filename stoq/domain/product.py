@@ -42,7 +42,7 @@ from stoq.domain.stock import AbstractStockItem
 from stoq.domain.interfaces import (ISellable, IStorable, IContainer,
                                     IDelivery)
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import compare_float_numbers
+from stoqlib.lib.validators import compare_float_numbers
 
 _ = gettext.gettext
 

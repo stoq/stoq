@@ -41,7 +41,7 @@ from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import DatabaseInconsistency
 from zope.interface import implements
 
-from stoq.lib.validators import raw_phone_number
+from stoqlib.lib.validators import raw_phone_number
 from stoq.domain.base import CannotAdapt, Domain, ModelAdapter
 from stoq.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                     IClient, ISupplier, IUser, IBranch,

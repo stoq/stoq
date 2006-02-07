@@ -43,7 +43,7 @@ from sqlobject.sqlbuilder import AND
 
 from stoq.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
-from stoq.lib.validators import format_quantity, get_price_format_str
+from stoqlib.lib.validators import format_quantity, get_price_format_str
 from stoq.domain.person import Person
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.product import Product

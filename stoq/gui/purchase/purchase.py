@@ -43,7 +43,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoq.domain.purchase import PurchaseOrder
 from stoq.domain.person import Person
 from stoq.domain.interfaces import ISupplier
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.wizards.purchase import PurchaseWizard

@@ -37,7 +37,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 
-from stoq.lib.validators import get_price_format_str, format_quantity
+from stoqlib.lib.validators import get_price_format_str, format_quantity
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.wizards.abstract import AbstractProductStep
 from stoq.gui.editors.person import SupplierEditor, TransporterEditor

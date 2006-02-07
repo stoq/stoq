@@ -43,7 +43,7 @@ from stoq.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee,
 from stoq.domain.till import Till, get_current_till_operation
 from stoq.domain.payment.base import Payment, CashAdvanceInfo
 from stoq.domain.person import Person
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 
 _ = gettext.gettext
 

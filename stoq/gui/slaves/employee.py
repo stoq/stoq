@@ -44,7 +44,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import get_max_search_results
 
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.domain.person import (WorkPermitData, MilitaryData, 
                                 VoterData, EmployeeRole, EmployeeRoleHistory)
 from stoq.domain.interfaces import IEmployee, ISalesPerson

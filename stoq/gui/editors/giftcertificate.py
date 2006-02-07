@@ -33,7 +33,7 @@ import gettext
 from stoqlib.gui.base.editors import BaseEditor
 from kiwi.python import Settable
 
-from stoq.lib.validators import get_price_format_str
+from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.slaves.sellable import OnSaleInfoSlave
 from stoq.domain.interfaces import ISellable
 from stoq.domain.sellable import BaseSellableInfo

@@ -30,13 +30,16 @@ stoq/gui/wizards/sale.py:
 
 import gettext
 
+from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.datatypes import currency
+from kiwi.python import Settable
 from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.lists import AdditionListSlave
-from kiwi.ui.widgets.list import Column, SummaryLabel
-from kiwi.datatypes import currency
-from kiwi.python import Settable
+from stoqlib.lib.validators import (get_price_format_str,
+                                    compare_float_numbers, 
+                                    get_formatted_price)
 
 from stoq.gui.search.person import ClientSearch
 from stoq.gui.slaves.sale import DiscountChargeSlave
@@ -44,8 +47,6 @@ from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                      CardMethodSlave, 
                                      FinanceMethodSlave)
 from stoq.lib.parameters import sysparam
-from stoq.lib.validators import (get_price_format_str,
-                                 compare_float_numbers, get_formatted_price)
 from stoq.lib.drivers import print_cheques_for_payment_group
 from stoq.domain.person import Person
 from stoq.domain.sale import Sale
