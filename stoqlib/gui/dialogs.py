@@ -448,3 +448,6 @@ def notify_dialog(msg, title=None, size=None, ok_label=None):
 def confirm_dialog(msg, title=None, size=None, ok_label=None):
     return run_dialog(ConfirmDialog, None, text=msg, title=title,
                       size=size, ok_label=ok_label)
+
+def print_report(report_class, *args, **kwargs):
+    run_dialog(PrintDialog, None, report_class, *args, **kwargs)
