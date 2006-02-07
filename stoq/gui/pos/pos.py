@@ -46,7 +46,7 @@ from stoq.gui.application import AppWindow
 from stoqlib.lib.validators import format_quantity, get_price_format_str
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
-from stoq.lib.drivers import (FiscalCoupon, read_scale_info,
+from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
 from stoqlib.domain.sellable import AbstractSellable, FancySellable
 from stoqlib.domain.service import ServiceSellableItem
