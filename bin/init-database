@@ -43,7 +43,7 @@ from stoqlib.lib.runtime import set_test_mode, set_verbose, print_msg
 set_test_mode(TEST_MODE)
 
 from stoq.examples.createall import create
-from stoq.lib.admin import initialize_system, setup_tables
+from stoqlib.lib.admin import initialize_system, setup_tables
 
 def main(args):
     LIST_TABLES = '-l' in sys.argv
