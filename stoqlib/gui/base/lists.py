@@ -30,9 +30,9 @@ from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 from kiwi.ui.widgets.list import List
 
-from stoqlib.gui.dialogs import run_dialog, confirm_dialog
-from stoqlib.gui.dialogs import BasicPluggableDialog, BasicDialog
-from stoqlib.gui.editors import BaseEditor
+from stoqlib.gui.base.dialogs import (run_dialog, confirm_dialog,
+                                      BasicPluggableDialog, BasicDialog)
+from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.exceptions import SelectionError
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)

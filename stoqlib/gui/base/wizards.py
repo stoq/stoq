@@ -29,8 +29,8 @@ gui/wizards.py:
 
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 
-from stoqlib.gui.editors import BaseEditorSlave
-from stoqlib.gui.dialogs import AbstractDialog
+from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.dialogs import AbstractDialog
 
 
 class BaseWizardStep(BaseEditorSlave, WizardStep):

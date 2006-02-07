@@ -37,7 +37,7 @@ from kiwi.ui.views import BaseView
 from kiwi.ui.dialogs import error, ask_overwrite
 
 from stoqlib.exceptions import ModelDataError
-from stoqlib.gui.gtkadds import change_button_appearance
+from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.reporting.utils import print_file
 from stoqlib.reporting.template import BaseDocTemplate
 
@@ -365,7 +365,7 @@ class PrintDialog(BasicDialog):
 
     def _setup_slaves(self):
         # XXX Avoiding circular import
-        from stoqlib.gui.slaves import PrintDialogSlave
+        from stoqlib.gui.base.slaves import PrintDialogSlave
         self.print_slave = PrintDialogSlave(self._report_class, *self._args,
                                             **self._kwargs)
         self.attach_slave('main', self.print_slave)
