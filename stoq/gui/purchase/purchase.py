@@ -51,7 +51,7 @@ from stoqlib.gui.search.category import (BaseSellableCatSearch,
                                          SellableCatSearch)
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
-from stoq.gui.purchase.details import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 
 _ = gettext.gettext
 
