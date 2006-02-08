@@ -45,7 +45,7 @@ from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,
                                        IEmployee, IClient, ICreditProvider,
                                        ITransporter, IBranch)
 from stoqlib.domain.person import (Person, EmployeeRole)
-from stoq.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.person import run_person_role_dialog
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
