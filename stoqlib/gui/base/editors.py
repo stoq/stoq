@@ -189,6 +189,9 @@ class SimpleEntryEditor(BaseEditor):
         self.attr_name = attr_name
         BaseEditor.__init__(self, conn, model)
         self.name_entry_label.set_text(name_entry_label)
+        
+    def on_name_entry__activate(self, entry):
+        self.main_dialog.confirm()
 
     def setup_proxies(self):
         assert self.model
