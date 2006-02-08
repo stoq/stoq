@@ -25,7 +25,7 @@ from stoq.lib.applist import get_application_names
 
 def run_app(options, config, appname):
     from stoq.lib.stoqconfig import AppConfig
-    
+
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
@@ -46,7 +46,7 @@ def setup_stoqlib_settings(apps=None):
         apps = get_application_names()
     register_configparser_settings('stoq', 'stoq.conf')
     register_application_names(apps)
-    
+
 
 def main(args):
     parser = optparse.OptionParser()

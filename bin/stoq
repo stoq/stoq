@@ -64,16 +64,8 @@ except ImportError:
 
 app = Application('stoq', path='stoq.main')
 if app.uninstalled:
-    app.add_global_resource('pixmaps', 'pixmaps')
-    
-    # Add stoq/gui/*/glade, perhaps we should move this into environ itself
-    root = os.path.join(app.get_root(), 'stoq', 'gui')
-    for name in os.listdir(root):
-        dir = os.path.join(root, name, 'glade')
-        if not os.path.isdir(dir):
-            continue
-        app.add_global_resource('glade', dir)
-        
+    app.add_global_resource('pixmaps', 'data/pixmaps')
+    app.add_global_resource('glade', 'data')
     app.add_resources(locale='locale',
                       basedir='.',
                       docs='docs')
