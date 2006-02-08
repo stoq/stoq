@@ -13,7 +13,7 @@
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## GNU Lesser General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
@@ -42,7 +42,7 @@ from stoqlib.lib.parameters import ParameterData, sysparam
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 #
 # This class implementation will be improved after bug #2406 is fixed

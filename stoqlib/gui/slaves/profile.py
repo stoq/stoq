@@ -29,7 +29,7 @@ import gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.domain.profile import ProfileSettings, UserProfile
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class UserProfileSettingsSlave(BaseEditorSlave):
     model_type = ProfileSettings

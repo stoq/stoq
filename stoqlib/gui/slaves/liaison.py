@@ -35,7 +35,7 @@ from stoqlib.gui.editors.contact import ContactEditor
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.person import Liaison
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class LiaisonListDialog(AdditionListDialog):

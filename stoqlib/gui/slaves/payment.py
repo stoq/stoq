@@ -50,7 +50,7 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             FinanceDetails,
                                             PaymentMethodDetails)
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class PaymentListSlave(BaseEditorSlave):
     """A basic payment list slave. Each element of this list is a payment

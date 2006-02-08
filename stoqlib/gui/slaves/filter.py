@@ -29,7 +29,7 @@ import gettext
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class FilterSlave(SlaveDelegate):
