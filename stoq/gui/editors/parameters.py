@@ -22,11 +22,7 @@
 ##
 ## Author(s): Henrique Romano           <henrique@async.com.br>
 ##
-"""
-stoq/gui/editors/parameters.py:
-
-    System parameters editor.
-"""
+""" System parameters editor"""
 
 import gettext
 
