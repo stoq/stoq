@@ -42,7 +42,7 @@ from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificate)
 from stoqlib.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
                                                  GiftCertificateEditor)
-from stoq.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 
 _ = gettext.gettext
 

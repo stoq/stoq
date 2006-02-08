@@ -39,7 +39,7 @@ from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 
-from stoq.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo

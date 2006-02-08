@@ -47,7 +47,7 @@ from stoq.gui.search.product import ProductSearch
 from stoq.gui.search.service import ServiceSearch
 from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
                                              GiftCertificateSearch)
-from stoq.gui.slaves.sale import SaleListToolbar
+from stoqlib.gui.slaves.sale import SaleListToolbar
 
 _ = gettext.gettext
 

@@ -42,8 +42,8 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
-from stoq.gui.slaves.filter import FilterSlave
-from stoq.gui.slaves.sale import SaleListToolbar
+from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.sale import SaleListToolbar
 
 _ = gettext.gettext
 

@@ -38,7 +38,7 @@ from stoqlib.lib.runtime import get_current_user, new_transaction
 
 import stoq
 from stoq.lib.stoqconfig import hide_splash
-from stoq.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 
 
 _ = gettext.gettext
