@@ -31,7 +31,7 @@ import tempfile
 # a list of programs to be tried when a report needs be viewed
 PROGRAMS = ['xpdf', 'ggv']
 
-def build_report(report_class, *args):
+def build_report(report_class, *args, **kwargs):
     """ Given a class (BaseReportTemplate instance), build a report. It is
     important to note that this function create a temporary file where the
     report will be drawed to -- the name of the temporary file is returned.
@@ -43,7 +43,7 @@ def build_report(report_class, *args):
     constructor.
     """
     filename = tempfile.mktemp()
-    report = report_class(filename, *args)
+    report = report_class(filename, *args, **kwargs)
     report.save()
     return filename
 
