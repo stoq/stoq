@@ -36,7 +36,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.runtime import get_connection
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
-from stoq.gui.templates.person import BasePersonRoleEditor
+from stoqlib.gui.templates.person import BasePersonRoleEditor
 from stoqlib.gui.slaves.client import ClientStatusSlave
 from stoqlib.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employee import (EmployeeDetailsSlave,
