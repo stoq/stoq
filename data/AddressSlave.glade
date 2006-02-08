@@ -1,0 +1,237 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="AddressSlave">
+        <property name="role"></property>
+        <property name="title" context="yes" translatable="yes"></property>
+        <child>
+            <widget class="GtkTable" id="table2">
+                <property name="column_spacing">5</property>
+                <property name="n_columns">4</property>
+                <property name="n_rows">4</property>
+                <property name="row_spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="address_lbl">
+                        <property name="label" context="yes" translatable="yes">Street:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="complement_lbl">
+                        <property name="label" context="yes" translatable="yes">Complement:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="xpad">2</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="postal_code_lbl">
+                        <property name="label" context="yes" translatable="yes">Postal Code:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="state_lbl">
+                        <property name="label" context="yes" translatable="yes">State:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="xpad">2</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="street">
+                        <property name="data_type">str</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">street</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="complement">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">complement</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="postal_code">
+                        <property name="data_type">str</property>
+                        <property name="model_attribute">postal_code</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="state">
+                        <property name="completion">True</property>
+                        <property name="data_type">str</property>
+                        <property name="exact_completion">False</property>
+                        <property name="mandatory">True</property>
+                        <property name="max_length">2</property>
+                        <property name="model_attribute">city_location.state</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="number_lbl">
+                        <property name="label" context="yes" translatable="yes">Number:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="xpad">2</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="district_lbl">
+                        <property name="label" context="yes" translatable="yes">District:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="xpad">2</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">1</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="city_lbl">
+                        <property name="label" context="yes" translatable="yes">City:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                        <property name="xpad">2</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="country_lbl">
+                        <property name="label" context="yes" translatable="yes">Country:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="number">
+                        <property name="data_type">int</property>
+                        <property name="mandatory">True</property>
+                        <property name="max_length">9</property>
+                        <property name="model_attribute">number</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="district">
+                        <property name="data_type">str</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">district</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="city">
+                        <property name="completion">True</property>
+                        <property name="data_type">str</property>
+                        <property name="exact_completion">False</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">city_location.city</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="country">
+                        <property name="completion">True</property>
+                        <property name="data_type">str</property>
+                        <property name="exact_completion">False</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">city_location.country</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">4</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">3</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
