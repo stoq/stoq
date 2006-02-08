@@ -80,8 +80,10 @@ def test_gui(options, tests=None):
     else:
         tests = [os.path.join(oldpwd, test) for test in tests]
 
-    conn = get_connection()
+    # Sort the tests
+    tests.sort()
 
+    conn = get_connection()
     for test_name in tests:
         if options.verbose:
             print 'RUNNING', os.path.basename(test_name)
