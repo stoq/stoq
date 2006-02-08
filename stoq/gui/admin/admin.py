@@ -48,7 +48,7 @@ from stoqlib.lib.runtime import new_transaction
 from stoqlib.domain.person import Person
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.interfaces import IUser
-from stoq.gui.components.parameters import ParametersListingDialog
+from stoqlib.gui.parameters import ParametersListingDialog
 
 _ = gettext.gettext
 
