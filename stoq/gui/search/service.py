@@ -38,7 +38,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.service import Service
-from stoq.gui.editors.service import ServiceEditor
+from stoqlib.gui.editors.service import ServiceEditor
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.search.sellable import SellableSearch
 

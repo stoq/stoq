@@ -51,7 +51,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.sellable import get_formatted_price
-from stoq.gui.editors.till import (CashAdvanceEditor, CashInEditor, 
+from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor, 
                                    CashOutEditor)                                   
 
 _ = gettext.gettext

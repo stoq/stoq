@@ -39,7 +39,9 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import Person, LoginInfo
 from stoqlib.domain.interfaces import IUser
-from stoq.gui.editors.profile import UserProfileEditor
+from stoqlib.gui.editors.profile import UserProfileEditor
+
+from stoq.lib.applist import get_app_descriptions
 
 _ = gettext.gettext
 
@@ -188,6 +190,8 @@ class UserDetailsSlave(BaseEditorSlave):
         if not self.profile.get_text():
             self.model.profile = None 
         user_profile = self.model.profile
-        if run_dialog(UserProfileEditor, self, self.conn, user_profile):
+        app_list = get_app_descriptions()
+        if run_dialog(UserProfileEditor, self, self.conn, app_list, 
+                      user_profile):
             self._setup_entry_completion()
             self.proxy.update('profile')

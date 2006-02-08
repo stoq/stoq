@@ -39,10 +39,11 @@ from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
 
-from stoq.gui.editors.person import (ClientEditor, SupplierEditor,
-                                     EmployeeEditor, CreditProviderEditor,
-                                     TransporterEditor, EmployeeRoleEditor,
-                                     BranchEditor)
+from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
+                                        EmployeeEditor, 
+                                        CreditProviderEditor,
+                                        TransporterEditor, 
+                                        EmployeeRoleEditor, BranchEditor)
 from stoq.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,

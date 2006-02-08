@@ -41,8 +41,8 @@ from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                     BranchSearch)
 from stoq.gui.search.profile import UserProfileSearch
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.editors.person import UserEditor
-from stoq.gui.editors.devices import DeviceSettingsDialog
+from stoqlib.gui.editors.person import UserEditor
+from stoqlib.gui.editors.devices import DeviceSettingsDialog
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.domain.person import Person
@@ -157,7 +157,7 @@ class AdminApp(SearchableAppWindow):
         self._edit_user()
             
     def on_change_password_button__clicked(self, *args):
-        from stoq.gui.editors.person import PasswordEditor
+        from stoqlib.gui.editors.person import PasswordEditor
         # This avoid circular import
         user = self.users.get_selected()
         model = self.run_dialog(PasswordEditor, self.conn, user)

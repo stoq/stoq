@@ -39,7 +39,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.runtime import get_current_user
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.gui.editors.person import ClientEditor
+from stoqlib.gui.editors.person import ClientEditor
 
 
 _ = gettext.gettext
