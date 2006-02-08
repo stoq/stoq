@@ -44,7 +44,7 @@ from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import check_tables
 
-from stoq.gui.components.login import StoqLoginDialog
+from stoq.gui.login import StoqLoginDialog
 
 _ = gettext.gettext
 SPLASH_TIMEOUT = 4000
