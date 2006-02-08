@@ -40,7 +40,7 @@ from stoqlib.lib.parameters import ParameterData, sysparam
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 
-from stoq.gui.editors.parameters import SystemParameterEditor
+from stoqlib.gui.editors.parameters import SystemParameterEditor
 
 _ = gettext.gettext
 

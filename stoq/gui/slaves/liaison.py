@@ -35,7 +35,7 @@ import gettext
 from stoqlib.gui.base.lists import AdditionListDialog
 from kiwi.ui.widgets.list import Column
 
-from stoq.gui.editors.contact import ContactEditor
+from stoqlib.gui.editors.contact import ContactEditor
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.person import Liaison
 

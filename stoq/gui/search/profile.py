@@ -32,9 +32,11 @@ import gettext
 
 from kiwi.ui.widgets.list import Column
 from stoqlib.gui.base.search import SearchEditor
-
 from stoqlib.domain.profile import UserProfile
-from stoq.gui.editors.profile import UserProfileEditor
+from stoqlib.gui.editors.profile import UserProfileEditor
+from stoqlib.gui.base.dialogs import run_dialog
+
+from stoq.lib.applist import get_app_descriptions
 
 _ = gettext.gettext
 
@@ -48,6 +50,7 @@ class UserProfileSearch(SearchEditor):
     def __init__(self, conn):
         SearchEditor.__init__(self, conn, self.table, self.editor_class, 
                               title=self.title)
+        self.app_descriptions = get_app_descriptions()
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -60,3 +63,7 @@ class UserProfileSearch(SearchEditor):
 
     def get_columns(self):
         return [Column('name', _('Profile'), data_type=str, sorted=True)]
+
+    def run_editor(self, obj):
+        return run_dialog(self.editor_class, self, self.conn, 
+                          self.app_descriptions, obj)

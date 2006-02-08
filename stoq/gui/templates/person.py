@@ -40,7 +40,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person, CityLocation
-from stoq.gui.editors.address import AddressAdditionDialog
+from stoqlib.gui.editors.address import AddressAdditionDialog
 from stoq.gui.slaves.liaison import LiaisonListDialog
 from stoq.gui.slaves.address import AddressSlave
 from stoq.gui.slaves.company import CompanyDocumentsSlave

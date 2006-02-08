@@ -40,8 +40,8 @@ from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.validators import get_price_format_str, format_quantity
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.wizards.abstract import AbstractProductStep
-from stoq.gui.editors.person import SupplierEditor, TransporterEditor
-from stoq.gui.editors.product import ProductEditor
+from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
+from stoqlib.gui.editors.product import ProductEditor
 from stoq.gui.slaves.purchase import PurchasePaymentSlave
 from stoq.gui.slaves.sale import DiscountChargeSlave
 from stoqlib.domain.payment.base import AbstractPaymentGroup

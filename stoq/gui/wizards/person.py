@@ -40,11 +40,12 @@ from stoqlib.gui.base.dialogs import run_dialog
 
 from stoqlib.domain.person import Person
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.gui.editors.person import (BranchEditor,
-                                     ClientEditor, SupplierEditor,
-                                     EmployeeEditor, CreditProviderEditor)
+from stoqlib.gui.editors.person import (BranchEditor,
+                                        ClientEditor, SupplierEditor,
+                                        EmployeeEditor, 
+                                        CreditProviderEditor)
 from stoqlib.lib.validators import (validate_phone_number, format_phone_number,
-                                 raw_phone_number)
+                                    raw_phone_number)
 
 
 _ = gettext.gettext

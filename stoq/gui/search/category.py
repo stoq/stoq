@@ -37,7 +37,7 @@ from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.domain.sellable import (AbstractSellableCategory,
                                   BaseSellableCategory,
                                   SellableCategory)
-from stoq.gui.editors.category import (BaseSellableCategoryEditor,
+from stoqlib.gui.editors.category import (BaseSellableCategoryEditor,
                                        SellableCategoryEditor)
 
 _ = gettext.gettext

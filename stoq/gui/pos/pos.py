@@ -54,9 +54,9 @@ from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.interfaces import ISellable, IClient, IDelivery
-from stoq.gui.editors.person import ClientEditor
-from stoq.gui.editors.delivery import DeliveryEditor
-from stoq.gui.editors.service import ServiceItemEditor
+from stoqlib.gui.editors.person import ClientEditor
+from stoqlib.gui.editors.delivery import DeliveryEditor
+from stoqlib.gui.editors.service import ServiceItemEditor
 from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.search.sellable import SellableSearch

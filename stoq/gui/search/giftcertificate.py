@@ -40,8 +40,8 @@ from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificate)
-from stoq.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
-                                              GiftCertificateEditor)
+from stoqlib.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
+                                                 GiftCertificateEditor)
 from stoq.gui.slaves.filter import FilterSlave
 
 _ = gettext.gettext
