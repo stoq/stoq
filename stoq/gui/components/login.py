@@ -45,7 +45,8 @@ class StoqLoginDialog(LoginDialog):
             self.slave = SelectApplicationsSlave()
             self.attach_slave('applist_holder', self.slave)
             self.size = 450, 250
-        self.setup_widgets()
+            self.get_toplevel().set_size_request(*self.size)
+                    
 
     def get_app_name(self):
         if self.choose_applications:
