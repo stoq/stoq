@@ -40,7 +40,7 @@ from stoqlib.domain.person import Person, LoginInfo
 from stoqlib.domain.interfaces import IUser
 
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class UserStatusSlave(BaseEditorSlave):

@@ -13,7 +13,7 @@
 ## This program is distributed in the hope that it will be useful,
 ## but WITHOUT ANY WARRANTY; without even the implied warranty of
 ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-## GNU General Public License for more details.
+## GNU Lesser General Public License for more details.
 ##
 ## You should have received a copy of the GNU Lesser General Public License
 ## along with this program; if not, write to the Free Software
@@ -45,7 +45,7 @@ from stoqlib.gui.slaves.company import CompanyDocumentsSlave
 from stoqlib.gui.slaves.individual import (IndividualDetailsSlave,
                                            IndividualDocuments)
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class PersonEditorTemplate(BaseEditorSlave):

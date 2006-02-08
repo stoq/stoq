@@ -47,7 +47,7 @@ from stoqlib.domain.person import (WorkPermitData, MilitaryData,
                                    VoterData, EmployeeRole, 
                                    EmployeeRoleHistory)
 
-_ = gettext.gettext
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 class EmployeeDetailsSlave(BaseEditorSlave):
