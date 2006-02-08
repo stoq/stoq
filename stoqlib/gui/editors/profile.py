@@ -32,7 +32,7 @@ from sqlobject.sqlbuilder import func, AND
 
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.editors import BaseEditor
-from stoq.gui.slaves.profile import UserProfileSettingsSlave
+from stoqlib.gui.slaves.profile import UserProfileSettingsSlave
 from stoqlib.lib.runtime import get_connection
 
 

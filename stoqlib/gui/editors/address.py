@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoq.gui.slaves.address import AddressSlave
+from stoqlib.gui.slaves.address import AddressSlave
 from stoqlib.domain.person import Address, CityLocation
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)

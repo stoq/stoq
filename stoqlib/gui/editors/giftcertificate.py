@@ -30,7 +30,7 @@ from kiwi.python import Settable
 
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.validators import get_price_format_str
-from stoq.gui.slaves.sellable import OnSaleInfoSlave
+from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.giftcertificate import (GiftCertificate,

@@ -37,17 +37,17 @@ from kiwi.datatypes import ValidationError
 from stoqlib.lib.runtime import get_connection
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 from stoq.gui.templates.person import BasePersonRoleEditor
-from stoq.gui.slaves.client import ClientStatusSlave
-from stoq.gui.slaves.credprovider import CreditProviderDetailsSlave
-from stoq.gui.slaves.employee import (EmployeeDetailsSlave,
+from stoqlib.gui.slaves.client import ClientStatusSlave
+from stoqlib.gui.slaves.credprovider import CreditProviderDetailsSlave
+from stoqlib.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave, 
                                       EmployeeRoleSlave, 
                                       EmployeeRoleHistorySlave)
-from stoq.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
+from stoqlib.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
                                   PasswordEditorSlave)
-from stoq.gui.slaves.supplier import SupplierDetailsSlave
-from stoq.gui.slaves.transporter import TransporterDataSlave
-from stoq.gui.slaves.branch import BranchDetailsSlave
+from stoqlib.gui.slaves.supplier import SupplierDetailsSlave
+from stoqlib.gui.slaves.transporter import TransporterDataSlave
+from stoqlib.gui.slaves.branch import BranchDetailsSlave
 from stoqlib.domain.person import EmployeeRole, LoginInfo, Person
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser, 
@@ -82,6 +82,12 @@ class UserEditor(BasePersonRoleEditor):
     gladefile = 'BaseTemplate'
     USER_TAB_POSITION = 0
 
+    def __init__(self, conn, model=None, role_type=None, person=None,
+                 app_list=None):
+        self.app_list = app_list
+        BasePersonRoleEditor.__init__(self, conn, model, role_type, person)
+        
+
     #
     # BaseEditorSlaves Hooks
     #
@@ -98,7 +104,7 @@ class UserEditor(BasePersonRoleEditor):
         self.main_slave.attach_person_slave(user_status) 
         passwd_fields = not self.edit_mode
         klass = UserDetailsSlave
-        self.user_details = klass(self.conn, self.model,
+        self.user_details = klass(self.conn, self.model, self.app_list,
                                   show_password_fields=passwd_fields)
         tab_text = _('User Details')
         self.main_slave._person_slave.attach_custom_slave(self.user_details,
