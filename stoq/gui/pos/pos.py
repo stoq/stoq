@@ -57,8 +57,8 @@ from stoqlib.domain.interfaces import ISellable, IClient, IDelivery
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
-from stoq.gui.wizards.sale import SaleWizard
-from stoq.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.sale import SaleWizard
+from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.sellable import SellableSearch
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
