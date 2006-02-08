@@ -33,6 +33,7 @@ import gettext
 
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
+
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction
@@ -43,10 +44,10 @@ from stoqlib.domain.interfaces import IUser
 from stoqlib.gui.editors.person import UserEditor
 from stoqlib.gui.editors.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
-from stoq.gui.search.profile import UserProfileSearch
+from stoqlib.gui.search.profile import UserProfileSearch
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
-                                    BranchSearch)
+from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
+                                       BranchSearch)
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.lib.applist import get_app_descriptions
@@ -55,7 +56,7 @@ _ = gettext.gettext
 
 
 class AdminApp(SearchableAppWindow):
-   
+
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
@@ -64,11 +65,11 @@ class AdminApp(SearchableAppWindow):
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show users with status')
     klist_name = 'users'
-    
+
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self._update_view()
-        
+
     def get_filter_slave_items(self):
         items = [(value, key) for key, value in self.table.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
@@ -89,15 +90,15 @@ class AdminApp(SearchableAppWindow):
                 ForeignKeyColumn(UserProfile, 'name', title=_('Profile'),
                                  obj_field='profile', data_type=str,
                                  width=150),
-                ForeignKeyColumn(Person, 'name', title=_('Name'), 
+                ForeignKeyColumn(Person, 'name', title=_('Name'),
                                  data_type=str, adapted=True,
                                  width=300),
                 Column('status_str', title=_('Status'), data_type=str)]
 
-    def _edit_user(self): 
+    def _edit_user(self):
         user = self.users.get_selected()
         app_list = get_app_descriptions()
-        model =  run_person_role_dialog(UserEditor, self, self.conn, 
+        model =  run_person_role_dialog(UserEditor, self, self.conn,
                                         user, app_list=app_list)
         if finish_transaction(self.conn, model, keep_transaction=True):
             self.users.update(model)
@@ -111,7 +112,7 @@ class AdminApp(SearchableAppWindow):
         q1 = self.table.q._originalID == Person.q.id
         q2 = UserProfile.q.id == self.table.q.profileID
         return AND(q1, q2)
-        
+
     def filter_results(self, users):
         """Hook called by SearchBar"""
         status = self.filter_slave.get_selected_status()
@@ -128,10 +129,10 @@ class AdminApp(SearchableAppWindow):
     #
     # Callbacks
     #
-    
+
     def on_users__double_click(self, *args):
         self._edit_user()
-        
+
     def on_users__selection_changed(self, *args):
         self._update_view()
 
@@ -139,8 +140,9 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
 
     def _on_user_profiles_action_clicked(self, *args):
-        self.run_dialog(UserProfileSearch, self.conn)
-    
+        app_list = get_app_descriptions()
+        self.run_dialog(UserProfileSearch, self.conn, app_list)
+
     def _on_employee_role__action_clicked(self, *args):
         self.run_dialog(EmployeeRoleSearch, self.conn)
 
@@ -154,10 +156,10 @@ class AdminApp(SearchableAppWindow):
             self.searchbar.search_items()
             model = self.table.get(model.id, connection=self.conn)
             self.users.select(model)
-        
+
     def on_edit_button__clicked(self, *args):
         self._edit_user()
-            
+
     def on_change_password_button__clicked(self, *args):
         from stoqlib.gui.editors.person import PasswordEditor
         # This avoid circular import

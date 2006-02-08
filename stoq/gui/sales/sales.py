@@ -34,22 +34,25 @@ from datetime import date
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
+
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.validators import get_price_format_str
-from stoq.gui.application import SearchableAppWindow
-from stoq.gui.search.person import ClientSearch, CreditProviderSearch
-from stoq.gui.search.product import ProductSearch
-from stoq.gui.search.service import ServiceSearch
-from stoq.gui.search.giftcertificate import (GiftCertificateTypeSearch,
-                                             GiftCertificateSearch)
+from stoqlib.gui.search.person import ClientSearch, CreditProviderSearch
+from stoqlib.gui.search.product import ProductSearch
+from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.slaves.sale import SaleListToolbar
+from stoqlib.gui.search.giftcertificate import (GiftCertificateTypeSearch,
+                                                GiftCertificateSearch)
+
+from stoq.gui.application import SearchableAppWindow
+
 
 _ = gettext.gettext
+
 
 class SalesApp(SearchableAppWindow):
 

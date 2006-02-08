@@ -59,9 +59,9 @@ from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
 from stoq.gui.wizards.sale import SaleWizard
 from stoq.gui.wizards.person import run_person_role_dialog
-from stoq.gui.search.sellable import SellableSearch
-from stoq.gui.search.person import ClientSearch
-from stoq.gui.search.sale import SaleSearch
+from stoqlib.gui.search.sellable import SellableSearch
+from stoqlib.gui.search.person import ClientSearch
+from stoqlib.gui.search.sale import SaleSearch
 from stoq.gui.pos.neworder import NewOrderEditor
 from stoqlib.gui.slaves.price import PriceSlave
 from stoq.report.sale import SaleOrderReport
