@@ -220,8 +220,9 @@ class PersonRoleWizard(BaseWizard):
 
 
 argcheck(BasePersonRoleEditor, object, Transaction, object)
-def run_person_role_dialog(role_editor, parent, conn, model=None):
+def run_person_role_dialog(role_editor, parent, conn, model=None,
+                           **editor_kwargs):
     if not model:
         model = role_editor
         role_editor = PersonRoleWizard
-    return run_dialog(role_editor, parent, conn, model)
+    return run_dialog(role_editor, parent, conn, model, **editor_kwargs)

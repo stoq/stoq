@@ -39,7 +39,7 @@ from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.service import Service
 from stoqlib.gui.editors.service import ServiceEditor
-from stoq.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 from stoq.gui.search.sellable import SellableSearch
 
 _ = gettext.gettext

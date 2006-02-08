@@ -44,7 +44,7 @@ from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
                                         CreditProviderEditor,
                                         TransporterEditor, 
                                         EmployeeRoleEditor, BranchEditor)
-from stoq.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 from stoq.gui.wizards.person import run_person_role_dialog
 from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,
                                        IEmployee, IClient, ICreditProvider,

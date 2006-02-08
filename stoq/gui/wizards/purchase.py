@@ -42,8 +42,8 @@ from stoq.gui.wizards.person import run_person_role_dialog
 from stoq.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.product import ProductEditor
-from stoq.gui.slaves.purchase import PurchasePaymentSlave
-from stoq.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
+from stoqlib.gui.slaves.sale import DiscountChargeSlave
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem

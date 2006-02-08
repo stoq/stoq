@@ -42,8 +42,8 @@ from stoqlib.lib.validators import (get_price_format_str,
                                     get_formatted_price)
 
 from stoq.gui.search.person import ClientSearch
-from stoq.gui.slaves.sale import DiscountChargeSlave
-from stoq.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave, 
+from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave, 
                                      CardMethodSlave, 
                                      FinanceMethodSlave)
 from stoqlib.lib.parameters import sysparam

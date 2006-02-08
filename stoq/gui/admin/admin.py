@@ -35,20 +35,21 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-
-from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
-                                    BranchSearch)
-from stoq.gui.search.profile import UserProfileSearch
-from stoq.gui.application import SearchableAppWindow
-from stoqlib.gui.editors.person import UserEditor
-from stoqlib.gui.editors.devices import DeviceSettingsDialog
-from stoq.gui.wizards.person import run_person_role_dialog
 from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.person import Person
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.interfaces import IUser
+from stoqlib.gui.editors.person import UserEditor
+from stoqlib.gui.editors.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
+from stoq.gui.search.profile import UserProfileSearch
+from stoq.gui.wizards.person import run_person_role_dialog
+from stoq.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
+                                    BranchSearch)
+
+from stoq.gui.application import SearchableAppWindow
+from stoq.lib.applist import get_app_descriptions
 
 _ = gettext.gettext
 
@@ -95,8 +96,9 @@ class AdminApp(SearchableAppWindow):
 
     def _edit_user(self): 
         user = self.users.get_selected()
+        app_list = get_app_descriptions()
         model =  run_person_role_dialog(UserEditor, self, self.conn, 
-                                        user)
+                                        user, app_list=app_list)
         if finish_transaction(self.conn, model, keep_transaction=True):
             self.users.update(model)
 

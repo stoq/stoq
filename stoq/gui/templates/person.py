@@ -33,19 +33,19 @@ stoq/gui/templates/person.py:
 import gettext
 
 import gtk
+
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.exceptions import DatabaseInconsistency
-
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person, CityLocation
 from stoqlib.gui.editors.address import AddressAdditionDialog
-from stoq.gui.slaves.liaison import LiaisonListDialog
-from stoq.gui.slaves.address import AddressSlave
-from stoq.gui.slaves.company import CompanyDocumentsSlave
-from stoq.gui.slaves.individual import (IndividualDetailsSlave,
-                                        IndividualDocuments)
+from stoqlib.gui.slaves.liaison import LiaisonListDialog
+from stoqlib.gui.slaves.address import AddressSlave
+from stoqlib.gui.slaves.company import CompanyDocumentsSlave
+from stoqlib.gui.slaves.individual import (IndividualDetailsSlave,
+                                           IndividualDocuments)
 
 _ = gettext.gettext
 
