@@ -25,7 +25,7 @@
 ##
 """
 stoqdrivers/devices/printers/dataregis/EP375.py:
-    
+
     Dataregis 375-EP printer drivers implementation
 """
 
@@ -80,7 +80,7 @@ class EP375Status:
         0x61: (PrinterError, _("No manufacture number")),
         0x42: (CommError, _("Print buffer is full")),
         0x62: (CommandParametersError, _("No item(s) to cancel found")),
-        0x43: (CommandError, _("The requested command doesn't exist")), 
+        0x43: (CommandError, _("The requested command doesn't exist")),
         0x63: (DriverError, "Cancellation above the limit"),
         0x44: (DriverError, "Discount more than total value"),
         0x64: (DriverError, "Invalid date"),
@@ -192,7 +192,7 @@ class CouponItem:
             D = self.discount
         else:
             D = self.charge
-            
+
         return ("%-16s" # code
                 "%-*s" # description
                 "%02s" # taxcode
@@ -435,7 +435,7 @@ class EP375(SerialBase, BaseChequePrinter):
         return
 
     def coupon_open(self):
-        # 
+        #
         # Dataregis 375-EP doesn't need a function to open a coupon - the
         # coupon is opened when the first item is added, so simple checks
         # is done at this part.
@@ -585,7 +585,7 @@ class EP375(SerialBase, BaseChequePrinter):
         if not isinstance(bank, BankConfiguration):
             raise TypeError("bank parameter must be a BankConfiguration "
                             "instance")
-        
+
         value = '%014d' % int(value * 1e2)
         thirdparty = '%-50s' % thirdparty[:50]
         city = "%-20s" % city[:20]
