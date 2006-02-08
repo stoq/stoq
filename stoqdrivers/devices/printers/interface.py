@@ -165,6 +165,21 @@ class ICouponPrinter(Interface):
         is called. In Brazil this is 'reduce Z' operation
         """
 
+    def till_add_cash(value):
+        """ Add an till complement. This is called 'suprimento de caixa' on
+        Brazil
+
+        @param value:        The value added
+        @type value:         float
+        """
+
+    def till_remove_cash(value):
+        """ Retire payments from the till. This is called 'sangria' on Brazil
+
+        @param value:        The value to remove
+        @type value:         float
+        """
+
     #
     # Getting printer status
     #
@@ -188,6 +203,8 @@ class ICouponPrinter(Interface):
         * customer_name (str)
         * customer_id (str)
         * customer_address (str)
+        * add_cash_value (float)
+        * remove_cash_value (float)
         """
 
 class IChequePrinter(Interface):

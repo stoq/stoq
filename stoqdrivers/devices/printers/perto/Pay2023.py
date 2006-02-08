@@ -25,7 +25,7 @@
 ##
 """
 stoqdrivers/devices/printers/perto/Pay2023.py:
-    
+
     PertoPay 2023 driver implementation.
 """
 
@@ -257,7 +257,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
             unit = unit_desc
         else:
             unit = Pay2023.unit_dict[unit]
-        
+
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_ADD_ITEM,
                           CodAliquota=Pay2023.taxcode_dict[taxcode],
@@ -290,7 +290,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                           CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])
         return self.get_coupon_remainder_value()
-        
+
     def coupon_close(self, message=''):
         # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_COUPON_CLOSE,
@@ -302,6 +302,16 @@ class Pay2023(SerialBase, BaseChequePrinter):
 
     def close_till(self):
         self.send_command(Pay2023.CMD_CLOSE_TILL)
+
+    #
+    # FIXME: These two methods will be implemented on bug #2421
+    #
+
+    def till_add_cash(self, value):
+        raise NotImplementedError("not implemented yet")
+
+    def till_remove_cash(self, value):
+        raise NotImplementedError("not implemented yet")
 
     #
     # IChequePrinter implementation

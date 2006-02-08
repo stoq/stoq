@@ -26,7 +26,7 @@
 ##
 """
 stoqdrivers/drivers/bematech/MP25.py:
-    
+
     Drivers implementation for Bematech printers.
 """
 import gettext
@@ -69,10 +69,13 @@ unit_translate_dict = {UNIT_WEIGHT: "Kg",
                        UNIT_LITERS: "Lt",
                        UNIT_EMPTY: "  "}
 
+CASH_IN_TYPE = "SU"
+CASH_OUT_TYPE = "SA"
 CMD_READ_X = 6
 CMD_COUPON_CANCEL = 14
 CMD_CLOSE_TILL = 5
-CMD_ADD_ITEM = 63 
+CMD_ADD_VOUCHER = 25
+CMD_ADD_ITEM = 63
 CMD_COUPON_GET_SUBTOTAL = 29
 CMD_COUPON_OPEN = 0
 CMD_CANCEL_ITEM = 31
@@ -104,7 +107,7 @@ class MP25(SerialBase):
     CMD_PROTO = 0x1C
 
     model_name = "Bematech MP25 FI"
-    
+
     st1_codes = {
         128: (OutofPaperError, _("Printer is out of paper")),
         64: (AlmostOutofPaper, _("Printer almost out of paper")),
@@ -114,7 +117,7 @@ class MP25(SerialBase):
         4: (CommandError, _("Nonexistent command")),
         2: (CouponOpenError, _("Printer has a coupon currently open")),
         1: (CommandError, _("Invalid number of parameters"))}
-    
+
     st2_codes = {
         128: (CommandError, _("Invalid CMD parameter")),
         64: (HardwareFailure, _("Fiscal memory is full")),
@@ -124,10 +127,10 @@ class MP25(SerialBase):
         4: (DriverError, _("Cancel operation is not allowed")),
         2: (PrinterError, _("Owner data (CGC/IE) not programmed on the printer")),
         1: (CommandError, _("Command not executed"))}
-    
+
     st3_codes = {
         7: (CouponOpenError, _("Coupon already Open")),
-        8: (DriverError, _("Coupon is closed")), 
+        8: (DriverError, _("Coupon is closed")),
         13: (PrinterOfflineError, _("Printer is offline")),
         16: (DriverError, _("Surcharge or discount greater than coupon total "
                             "value")),
@@ -139,22 +142,22 @@ class MP25(SerialBase):
         23: (DriverError, _("Coupon isn't totalized yet")),
         43: (PrinterError, _("Printer not initialized")),
         45: (PrinterError, _("Printer without serial number")),
-        52: (DriverError, _("Invalid start date")), 
-        53: (DriverError, _("Invalid final date")), 
-        85: (DriverError, _("Sale with null value")), 
+        52: (DriverError, _("Invalid start date")),
+        53: (DriverError, _("Invalid final date")),
+        85: (DriverError, _("Sale with null value")),
         91: (ItemAdditionError, _("Surcharge or discount greater than item "
                                   "value")),
-        100: (DriverError, _("Invalid date")), 
+        100: (DriverError, _("Invalid date")),
         115: (CancelItemError, _("Item doesn't exists or already was cancelled")),
-        118: (DriverError, _("Surcharge greater than item value")), 
-        119: (DriverError, _("Discount greater than item value")), 
-        129: (DriverError, _("Invalid month")), 
+        118: (DriverError, _("Surcharge greater than item value")),
+        119: (DriverError, _("Discount greater than item value")),
+        129: (DriverError, _("Invalid month")),
         169: (CouponTotalizeError, _("Coupon already totalized")),
         170: (PaymentAdditionError, _("Coupon not totalized yet")),
         171: (DriverError, _("Surcharge on subtotal already effected")),
         172: (DriverError, _("Discount on subtotal already effected")),
         176: (DriverError, _("Invalid date"))}
-    
+
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
         # XXX: Seems that Bematech doesn't contains any variable with the
@@ -239,7 +242,7 @@ class MP25(SerialBase):
         CSH: MSB of checksum for raw_data
         """
         raw_data = chr(MP25.CMD_PROTO) + raw_data
-        cs = sum([ord(i) for i in raw_data]) 
+        cs = sum([ord(i) for i in raw_data])
         csl = chr(cs & 0xFF)
         csh = chr(cs >> 8 & 0xFF)
         nb = len(raw_data+csl+csh)
@@ -301,6 +304,11 @@ class MP25(SerialBase):
             return bcd2dec(coupon_number)
         raise ValueError("Inconsistent package received from the printer")
 
+
+    def _add_voucher(self, type, value):
+        value = "%014d" % int(float(value) * 1e2)
+        self._send_command(chr(CMD_ADD_VOUCHER) + type + value)
+
     #
     # This implements the ICouponPrinter Interface
     #
@@ -314,6 +322,12 @@ class MP25(SerialBase):
         is called.
         """
         self._send_command(chr(CMD_REDUCE_Z))
+
+    def till_add_cash(self, value):
+        self._add_voucher(CASH_IN_TYPE, value)
+
+    def till_remove_cash(self, value):
+        self._add_voucher(CASH_OUT_TYPE,value)
 
     def coupon_identify_customer(self, customer, address, document):
         self._customer_name = customer
@@ -369,9 +383,9 @@ class MP25(SerialBase):
         return self.get_last_item_id()
 
     def coupon_cancel_item(self, item_id=None):
-        """ Cancel an item added to coupon; if no item id is specified, 
+        """ Cancel an item added to coupon; if no item id is specified,
         cancel the last item added. """
-        # We would can use an apropriate command to cancel the last 
+        # We would can use an apropriate command to cancel the last
         # item added (command #13, man page 34),  but as we already
         # have an internal counter, I don't think that this is
         # necessary.
@@ -419,9 +433,11 @@ class MP25(SerialBase):
             'payment_description': Capability(max_len=48),
             'customer_name': Capability(max_len=30),
             'customer_id': Capability(max_len=28),
-            'customer_address': Capability(max_len=80)
+            'customer_address': Capability(max_len=80),
+            'add_cash_value': Capability(min_size=0.1, digits=12, decimals=2),
+            'remove_cash_value': Capability(min_size=0.1, digits=12, decimals=2),
             }
-    
+
     #
     # Here ends the implementation of the ICouponPrinter Driver Interface
     #

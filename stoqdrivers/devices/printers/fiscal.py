@@ -129,7 +129,7 @@ class FiscalPrinter(BasePrinter):
                                                  payment_description)
         self.payments_total_value += payment_value
         return result
-        
+
     def cancel(self):
         self.info('coupon_cancel')
         return self._driver.coupon_cancel()
@@ -161,6 +161,16 @@ class FiscalPrinter(BasePrinter):
     def close_till(self):
         self.info('close_till')
         return self._driver.close_till()
+
+    @capcheck(float)
+    def till_add_cash(self, add_cash_value):
+        self.info('till_add_cash')
+        return self._driver.till_add_cash(add_cash_value)
+
+    @capcheck(float)
+    def till_remove_cash(self, remove_cash_value):
+        self.info('till_remove_cash')
+        return self._driver.till_remove_cash(remove_cash_value)
 
     def get_status(self):
         self.info('get_status')

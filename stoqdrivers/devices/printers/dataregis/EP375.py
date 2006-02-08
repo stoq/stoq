@@ -59,6 +59,16 @@ SUB = 0x1A
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
 #
+# Helper functions
+#
+
+def format_value(value, max_len):
+    value = "%-*.02f" % (max_len, value)
+    if len(value) > max_len:
+        raise ValueError("The value is too big")
+    return value
+
+#
 # Class implementation to printer status management
 #
 
@@ -241,6 +251,8 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_CANCEL_ITEM = 'b'
     CMD_GET_REMAINING_VALUE = 'C'
     CMD_GET_FISCAL_COUNTERS = 'o'
+    CMD_GERENCIAL_REPORT = 'j'
+    CMD_CLOSE_GERENCIAL_REPORT = 'k'
 
     payment_methods = {
         MONEY_PM : '00',
@@ -425,6 +437,7 @@ class EP375(SerialBase, BaseChequePrinter):
         result = self._send_command(self.CMD_GET_STATUS)
         return EP375Status(result)
 
+
     #
     # ICouponPrinter implementation
     #
@@ -547,13 +560,22 @@ class EP375(SerialBase, BaseChequePrinter):
     def summarize(self):
         self._send_command(self.CMD_READ_X)
 
+    def till_add_cash(self, value):
+        value = format_value(value, 32)
+        self._send_command(self.CMD_GERENCIAL_REPORT, "01", "Valor = " + value)
+        self._send_command(self.CMD_CLOSE_GERENCIAL_REPORT)
+
+    def till_remove_cash(self, value):
+        value = format_value(value, 32)
+        self._send_command(self.CMD_GERENCIAL_REPORT, "01", "Valor = " + value)
+        self._send_command(self.CMD_CLOSE_GERENCIAL_REPORT)
+
     def get_capabilities(self):
         # FIXME: As always, we have a problem here with Dataregis printer:
         # only one of the last 100 items can be cancelled, so the 'item_id'
         # capability must have what value? Probably we never will have
         # more than 100 items right now, so I just mark a FIXME here, this
         # must be fixed in the future.
-
         return dict(item_code=Capability(min_len=3, max_len=6),
                     item_id=Capability(digits=3),
                     items_quantity=Capability(min_size=1, digits=3, decimals=3),
@@ -567,7 +589,11 @@ class EP375(SerialBase, BaseChequePrinter):
                     customer_address=Capability(),
                     cheque_thirdparty=Capability(max_len=50),
                     cheque_value=Capability(digits=12, decimals=2),
-                    cheque_city=Capability(max_len=20))
+                    cheque_city=Capability(max_len=20),
+                    add_cash_value=Capability(min_size=1, digits=30,
+                                              decimals=2),
+                    remove_cash_value=Capability(min_size=1, digits=30,
+                                                 decimals=2))
 
     #
     # IChequePrinter implementation

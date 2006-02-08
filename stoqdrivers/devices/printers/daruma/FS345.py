@@ -22,10 +22,11 @@
 ## USA.
 ##
 ## Author(s):   Johan Dahlin     <jdahlin@async.com.br>
+##              Henrique Romano  <henrique@async.com.br>
 ##
 """
 stoqdrivers/devices/printers/daruma/FS345.py:
-    
+
     Daruma printer drivers implementation
 """
 import gettext
@@ -104,6 +105,10 @@ CMD_GET_REGISTRIES = 244
 # [ESC] 251 Leitura das informações cadastrais do usuário
 # [ESC] V   Controle de horário de verão
 CMD_GET_TOTALIZERS = 244
+CMD_OPEN_VOUCHER = 217
+
+CASH_IN_TYPE = 'B'
+CASH_OUT_TYPE = 'A'
 
 def isbitset(value, bit):
     # BCD crap
@@ -141,7 +146,7 @@ class FS345(SerialBase):
         if retval.startswith(':E'):
             self.handle_error(retval, raw)
         return retval[1:]
-        
+
     # Status
     def _get_status(self):
         self.write(CMD_STATUS)
@@ -149,7 +154,7 @@ class FS345(SerialBase):
 
     def status_check(self, S, byte, bit):
         return isbitset(S[byte], bit)
-        
+
     def _check_status(self, verbose=False):
         status = self._get_status()
         if status[0] != ':':
@@ -157,11 +162,11 @@ class FS345(SerialBase):
 
         if verbose:
             print '== STATUS =='
-        
+
             # Codes found on page 57-59
             print 'Raw status code:', status
             print 'Cashier drawer is', ifset(status[1], 3, 'closed', 'open')
-            
+
         if self.needs_reduce_z():
             raise PendingReduceZ(_('Pending Reduce Z'))
         if self.status_check(status, 1, 2):
@@ -199,9 +204,9 @@ class FS345(SerialBase):
             status = self._get_status()
 
         return not self.status_check(status, 6, 2)
-    
+
     # Error handling
-    
+
     def handle_error(self, error_value, raw):
         error = int(error_value[2:])
         # Page 14-16
@@ -223,10 +228,10 @@ class FS345(SerialBase):
             raise DriverError("Unhandled error: %d" % error)
 
     # Information / debugging
-    
+
     def show_status(self):
         self._check_status(verbose=True)
-        
+
     def show_information(self):
         print 'Model:', self.send_command(CMD_GET_MODEL, debug=False)
         print 'Firmware:', self.send_command(CMD_GET_FIRMWARE, debug=False)
@@ -236,7 +241,7 @@ class FS345(SerialBase):
         print 'Last record:', time.strftime('%c', tt)
         print 'Configuration:', self.send_command(CMD_GET_CONFIGURATION,
                                                debug=False)
-        
+
     def show_document_status(self):
         print '== DOCUMENT STATUS =='
         value = self.send_command(CMD_GET_DOCUMENT_STATUS, debug=False)
@@ -265,7 +270,7 @@ class FS345(SerialBase):
         value = self.send_command(CMD_GET_REGISTRIES)
         assert value[:2] == '\x1b' + chr(CMD_GET_REGISTRIES)
         print value[48:62]
-        
+
     # High level commands
     def _verify_coupon_open(self):
         if not self.status_check(self._get_status(), 4, 2):
@@ -282,7 +287,7 @@ class FS345(SerialBase):
     def _get_coupon_number(self):
         return int(self._get_totalizers()[8:14])
 
-    # 
+    #
     # API implementation
     #
 
@@ -305,7 +310,7 @@ class FS345(SerialBase):
             S = 'Tb'
         else: # TAX_EXEMPTION
             S = 'Fb'
-            
+
         if charge:
             d = 1
             E = charge
@@ -329,15 +334,17 @@ class FS345(SerialBase):
     def coupon_cancel_item(self, item_id):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
 
-    def coupon_add_payment(self, payment_method, value, description=''):
-        self._check_status()
-        self._verify_coupon_open()
-
+    def _add_payment(self, payment_method, value, description=''):
         pm = payment_methods[payment_method]
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
                                '%c%012d%s\xff' % (pm, int(value * 1e2),
                                                   description[:48]))
         return float(rv) / 1e2
+
+    def coupon_add_payment(self, payment_method, value, description=''):
+        self._check_status()
+        self._verify_coupon_open()
+        return self._add_payment(payment_method, value, description)
 
     def coupon_cancel(self):
         self._check_status()
@@ -405,6 +412,18 @@ class FS345(SerialBase):
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
 
+    def _add_voucher(self, type, value):
+        data = "%s1%s%012d\xff" % (type, "0" * 12, # padding
+                                   int(float(value) * 1e2))
+        self.send_command(CMD_OPEN_VOUCHER, data)
+
+    def till_add_cash(self, value):
+        self._add_voucher(CASH_IN_TYPE, value)
+        self._add_payment(MONEY_PM, value, '')
+
+    def till_remove_cash(self, value):
+        self._add_voucher(CASH_OUT_TYPE, value)
+
     def get_capabilities(self):
         return dict(item_code=Capability(max_len=13),
                     item_id=Capability(digits=3),
@@ -416,4 +435,8 @@ class FS345(SerialBase):
                     payment_description=Capability(max_len=48),
                     customer_name=Capability(max_len=42),
                     customer_id=Capability(max_len=42),
-                    customer_address=Capability(max_len=42))
+                    customer_address=Capability(max_len=42),
+                    remove_cash_value=Capability(min_size=1, digits=10,
+                                                 decimals=2),
+                    add_cash_value=Capability(min_size=1, digits=10,
+                                              decimals=2))

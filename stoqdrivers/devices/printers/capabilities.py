@@ -25,7 +25,7 @@
 ##
 """
 stoqdrivers/devices/printers/capabilities.py:
-    
+
     Driver Capability management.
 """
 
@@ -45,7 +45,7 @@ class capcheck(argcheck):
         kwargs = kwargs.copy()
         kwargs.update(dict(keyvalues))
         self._check_capabilities(cargs[0], **kwargs)
-        
+
     def _check_capabilities(self, inst, **kwargs):
         caps = inst.get_capabilities()
 

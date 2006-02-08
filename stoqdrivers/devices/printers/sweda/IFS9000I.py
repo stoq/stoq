@@ -93,6 +93,8 @@ class IFS9000I(SerialBase):
     CMD_SETUP_PAYMENT_METHOD = '39'
     CMD_TRANSACTION_STATUS = '28'
     CMD_GET_PRINTER_TOTALIZERS = '27'
+    CMD_OPEN_VOUCHER = '19'
+    CMD_INCREMENT_NONFISCAL_COUNTER = '07'
 
     #
     # Settings for printer command parameters
@@ -173,6 +175,10 @@ class IFS9000I(SerialBase):
     #
     # Initializing Fiscal Printer
     #
+
+    def setup_no_fiscal_legends(self):
+        self.send_command("38S&%-14s-%-14s+%-14s", "Caixa", "Sangria",
+                          "Suprimento")
 
     def setup_coupon_header(self, jump_lines_number, header_data):
         """ Call this method only in non-fiscal mode.
@@ -401,6 +407,13 @@ class IFS9000I(SerialBase):
     def _get_coupon_number(self):
         return int(self.get_totalizers()[115:119])
 
+    def _open_voucher(self, index):
+        self.send_command(self.CMD_OPEN_VOUCHER, "%02d" % index)
+
+    def _add_value_to_counter(self, value, counter):
+        self.send_command(self.CMD_INCREMENT_NONFISCAL_COUNTER, counter,
+                          "%012d" % int(float(value) * 1e2), ' ' * 40)
+
     #
     # ICouponPrinter implementation
     #
@@ -558,6 +571,27 @@ class IFS9000I(SerialBase):
 
         self.send_command(self.CMD_READ_X, print_report)
 
+    def till_add_cash(self, value):
+        # XXX: The manual says that all the printer counters are defined by
+        # the user (i.e, can be programmed on the printer memory), so we don't
+        # have any counter related to "CASH IN" or "CASH OUT". This part must
+        # be considered when fixing bug #2246.  Right now i just consider
+        # the counter used by the printer at Async for cash in ("03")
+        self._open_voucher(1)
+        self._add_value_to_counter(value, "03")
+        self.coupon_add_payment(MONEY_PM, value)
+        self.coupon_close()
+
+    def till_remove_cash(self, value):
+        # XXX: The manual says that all the printer counters are defined by
+        # the user (i.e, can be programmed on the printer memory), so we don't
+        # have any counter related to "CASH IN" or "CASH OUT". This part must
+        # be considered when fixing bug #2246.  Right now i just consider
+        # the counter used by the printer at Async for cash out ("02")
+        self._open_voucher(1)
+        self._add_value_to_counter(value, "02")
+        self.coupon_close()
+
     def get_status(self):
         # TODO retornar status de impressão com string de interpretação.
         self.send_command(self.CMD_PRINTER_STATUS)
@@ -573,7 +607,10 @@ class IFS9000I(SerialBase):
                     payment_description=Capability(max_len=80),
                     customer_name=Capability(max_len=30),
                     customer_id=Capability(max_len=28),
-                    customer_address=Capability(max_len=80))
+                    customer_address=Capability(max_len=80),
+                    add_cash_value=Capability(digits=10, decimals=2),
+                    remove_cash_value=Capability(digits=10,
+                                                 decimals=2))
 
     #
     # Auxiliar methods
