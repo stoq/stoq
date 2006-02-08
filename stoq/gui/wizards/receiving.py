@@ -51,7 +51,7 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
 from stoqlib.gui.slaves.sale import DiscountChargeSlave
-from stoq.gui.search.product import ProductSearch
+from stoqlib.gui.search.product import ProductSearch
 from stoq.gui.wizards.abstract import AbstractProductStep
 from stoq.gui.purchase.details import PurchaseDetailsDialog
 

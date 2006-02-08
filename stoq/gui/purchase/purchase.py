@@ -45,19 +45,19 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier
 from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.search.person import SupplierSearch, TransporterSearch
+from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
 from stoq.gui.wizards.purchase import PurchaseWizard
-from stoq.gui.search.category import (BaseSellableCatSearch,
-                                      SellableCatSearch)
-from stoq.gui.search.product import ProductSearch
-from stoq.gui.search.service import ServiceSearch
+from stoqlib.gui.search.category import (BaseSellableCatSearch,
+                                         SellableCatSearch)
+from stoqlib.gui.search.product import ProductSearch
+from stoqlib.gui.search.service import ServiceSearch
 from stoq.gui.purchase.details import PurchaseDetailsDialog
 
 _ = gettext.gettext
 
 
 class PurchaseApp(SearchableAppWindow):
-   
+
     app_name = _('Purchase')
     app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"
@@ -91,7 +91,7 @@ class PurchaseApp(SearchableAppWindow):
         self.summary_hbox.pack_end(self.summary_received, False)
 
     def get_filter_slave_items(self):
-        items = [(text, value) 
+        items = [(text, value)
                     for value, text in PurchaseOrder.statuses.items()]
         first_item = (_('Any'), ALL_ITEMS_INDEX)
         items.append(first_item)
@@ -105,7 +105,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_searchbar_activate(self, slave, objs):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
         self._update_totals()
-            
+
     def _update_view(self):
         has_purchases = len(self.orders) > 0
         widgets = [self.edit_button, self.details_button, self.print_button,
@@ -128,15 +128,15 @@ class PurchaseApp(SearchableAppWindow):
                        data_type=str, width=100),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date),
-                ForeignKeyColumn(Person, 'name', title=_('Supplier'), 
+                ForeignKeyColumn(Person, 'name', title=_('Supplier'),
                                  data_type=str,
                                  obj_field='supplier', adapted=True,
                                  searchable=True, width=220),
                 Column('status_str', title=_('Status'), data_type=str,
                        width=100),
-                Column('purchase_total', title=_('Ordered'), 
+                Column('purchase_total', title=_('Ordered'),
                        data_type=currency, width=120),
-                Column('received_total', title=_('Received'), 
+                Column('received_total', title=_('Received'),
                        data_type=currency)]
 
     #
@@ -153,7 +153,7 @@ class PurchaseApp(SearchableAppWindow):
             q3 = PurchaseOrder.q.status == status
             return AND(q1, q2, q3)
         return AND(q1, q2)
-    
+
     def _open_order(self, order=None, edit_mode=False):
         order = self.run_dialog(PurchaseWizard, self.conn, order,
                                 edit_mode)
@@ -161,7 +161,7 @@ class PurchaseApp(SearchableAppWindow):
             return
         self.conn.commit()
         return order
-        
+
     def _edit_order(self):
         order = self.orders.get_selected_rows()
         qty = len(order)
@@ -198,7 +198,7 @@ class PurchaseApp(SearchableAppWindow):
 
     def _on_suppliers_action_clicked(self, *args):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
-            
+
     def _on_products_action_clicked(self, *args):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
@@ -212,7 +212,7 @@ class PurchaseApp(SearchableAppWindow):
     def _on_send_to_supplier_action_clicked(self, *args):
         rollback_and_begin(self.conn)
         orders = self.orders.get_selected_rows()
-        valid_orders = [order for order in orders 
+        valid_orders = [order for order in orders
                                   if order.status == PurchaseOrder.ORDER_PENDING]
         qty = len(orders)
         invalid_qty = qty - len(valid_orders)
@@ -230,7 +230,7 @@ class PurchaseApp(SearchableAppWindow):
             msg = _('The selected order will be market as sent.')
         if invalid_qty:
             msg += (_('\nWarning: there are %d order(s) with status different '
-                      'than pending that will not be included.') 
+                      'than pending that will not be included.')
                     % invalid_qty)
         title = _('Send order to supplier')
         if not confirm_dialog(msg, title, ok_label="C_onfirm"):
@@ -246,8 +246,8 @@ class PurchaseApp(SearchableAppWindow):
     def _on_categories_action_clicked(self, *args):
         self.run_dialog(SellableCatSearch, self.conn)
 
-    def _on_services_action_clicked(self, *args): 
+    def _on_services_action_clicked(self, *args):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
 
-    def _on_transporters_action_clicked(self, *args): 
+    def _on_transporters_action_clicked(self, *args):
         self.run_dialog(TransporterSearch, self.conn, hide_footer=True)
