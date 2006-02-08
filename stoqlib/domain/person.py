@@ -247,19 +247,23 @@ class Person(Domain):
 
     def facet_IClient_add(self, **kwargs):
         self.check_individual_or_company_facets()
-        return PersonAdaptToClient(self, **kwargs)
+        adapter_klass = self.getAdapterClass(IClient)
+        return adapter_klass(self, **kwargs)
 
     def facet_ITransporter_add(self, **kwargs):
         self.check_individual_or_company_facets()
-        return PersonAdaptToTransporter(self, **kwargs)
+        adapter_klass = self.getAdapterClass(ITransporter)
+        return adapter_klass(self, **kwargs)
 
     def facet_ISupplier_add(self, **kwargs):
         self.check_individual_or_company_facets()
-        return PersonAdaptToSupplier(self, **kwargs)
+        adapter_klass = self.getAdapterClass(ISupplier)
+        return adapter_klass(self, **kwargs)
 
     def facet_ICreditProvider_add(self, **kwargs):
         self.check_individual_or_company_facets()
-        return PersonAdaptToCreditProvider(self, **kwargs)
+        adapter_klass = self.getAdapterClass(ICreditProvider)
+        return adapter_klass(self, **kwargs)
 
     def facet_IEmployee_add(self, **kwargs):
         individual = IIndividual(self)
@@ -267,11 +271,13 @@ class Person(Domain):
                 msg = ('The person you want to adapt must have '
                        'an individual facet')
                 raise CannotAdapt(msg)
-        return PersonAdaptToEmployee(self, **kwargs)
+        adapter_klass = self.getAdapterClass(IEmployee)
+        return adapter_klass(self, **kwargs)
 
     def facet_IUser_add(self, **kwargs):
         self.check_individual_or_company_facets()
-        return PersonAdaptToUser(self, **kwargs)
+        adapter_klass = self.getAdapterClass(IUser)
+        return adapter_klass(self, **kwargs)
 
     def facet_IBranch_add(self, **kwargs):
         from stoqlib.domain.product import storables_set_branch
@@ -280,7 +286,8 @@ class Person(Domain):
                 msg = ('The person you want to adapt must have '
                        'a company facet')
                 raise CannotAdapt(msg)
-        branch = PersonAdaptToBranch(self, **kwargs)
+        adapter_klass = self.getAdapterClass(IBranch)
+        branch = adapter_klass(self, **kwargs)
         # XXX I'm not sure yet if this is the right place to update stocks
         # probably a hook called inside commit could be better...
         storables_set_branch(self._connection, branch)
@@ -292,7 +299,8 @@ class Person(Domain):
                 msg = ('The person you want to adapt must have '
                        'an employee facet')
                 raise CannotAdapt(msg)
-        return PersonAdaptToSalesPerson(self, **kwargs)
+        adapter_klass = self.getAdapterClass(ISalesPerson)
+        return adapter_klass(self, **kwargs)
 
 #
 # Adapters
