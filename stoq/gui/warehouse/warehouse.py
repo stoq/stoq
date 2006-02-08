@@ -38,7 +38,7 @@ from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.wizards.receiving import ReceivingOrderWizard
+from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product

@@ -50,7 +50,7 @@ from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoq.gui.till.operation import TillOperationDialog
-from stoq.gui.wizards.sale import SaleWizard
+from stoqlib.gui.wizards.sale import SaleWizard
 
 _ = gettext.gettext
 

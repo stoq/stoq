@@ -46,7 +46,7 @@ from stoqlib.domain.interfaces import ISupplier
 from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
-from stoq.gui.wizards.purchase import PurchaseWizard
+from stoqlib.gui.wizards.purchase import PurchaseWizard
 from stoqlib.gui.search.category import (BaseSellableCatSearch,
                                          SellableCatSearch)
 from stoqlib.gui.search.product import ProductSearch

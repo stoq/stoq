@@ -45,7 +45,7 @@ from stoqlib.gui.editors.person import UserEditor
 from stoqlib.gui.editors.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.search.profile import UserProfileSearch
-from stoq.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                        BranchSearch)
 
