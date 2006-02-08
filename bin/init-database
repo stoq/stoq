@@ -45,7 +45,7 @@ from stoqlib.lib.runtime import set_test_mode, set_verbose, print_msg
 # importing these modules
 set_test_mode(TEST_MODE)
 
-from stoq.examples.createall import create
+from stoqlib.domain.examples.createall import create
 from stoqlib.lib.admin import initialize_system, setup_tables
 
 def main(args):
@@ -72,4 +72,3 @@ def main(args):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-
