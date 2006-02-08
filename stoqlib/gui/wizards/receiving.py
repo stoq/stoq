@@ -41,7 +41,7 @@ from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.slaves.sale import DiscountChargeSlave
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.wizards.abstract import AbstractProductStep
-from stoq.gui.purchase.details import PurchaseDetailsDialog
+from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity, get_price_format_str
