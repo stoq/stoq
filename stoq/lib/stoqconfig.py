@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,11 +22,7 @@
 ##
 ##  Author(s):  Evandro Vale Miquelito  <evandro@async.com.br>
 ##
-"""
-lib/config.py:
-
-    Configuration file for stoq applications
-"""
+""" Configuration file for stoq applications """
 
 import gettext
 import os
