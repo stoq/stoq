@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -34,12 +34,12 @@ from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.exceptions import TillError, DatabaseInconsistency
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
-from stoqlib.lib.parameters import sysparam
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
