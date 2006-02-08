@@ -22,17 +22,12 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-stoq/gui/pos/neworder.py:
-
-   NewOrderEditor implementation
-"""
+""" NewOrderEditor implementation """
 
 import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.search import get_max_search_results
-
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.person import Person
@@ -89,12 +84,12 @@ class NewOrderEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     NewOrderEditor.proxy_widgets)
 
-    # 
+    #
     # Callbacks
     #
 
     def on_client_button__clicked(self, *args):
-        if run_person_role_dialog(ClientEditor, self, self.conn, 
+        if run_person_role_dialog(ClientEditor, self, self.conn,
                                   self.model.client):
             self.conn.commit()
             # FIXME waiting for entry completion bug fix in kiwi. This part
