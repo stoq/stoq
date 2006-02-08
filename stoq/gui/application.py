@@ -22,11 +22,7 @@
 ##
 ##  Author(s):      Evandro Vale Miquelito  <evandro@async.com.br>
 ##
-"""
-gui/application.py:
-
-    Base classes for application's GUI
-"""
+""" Base classes for application's GUI """
 
 import datetime
 import gettext
@@ -38,10 +34,10 @@ from stoqlib.gui.base.search import SearchBar
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.runtime import get_current_user, new_transaction
 
 import stoq
 from stoq.lib.stoqconfig import hide_splash
-from stoqlib.lib.runtime import get_current_user, new_transaction
 from stoq.gui.slaves.filter import FilterSlave
 
 
@@ -236,7 +232,8 @@ class SearchableAppWindow(AppWindow):
         self.searchbar.register_filter_results_callback(self.filter_results)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
-        self.searchbar.connect('before-search-activate', self.on_searchbar_before_activate)
+        self.searchbar.connect('before-search-activate', 
+                               self.on_searchbar_before_activate)
         self.searchbar.connect('search-activate', self.on_searchbar_activate)
         if filter_slave:
             filter_slave.connect('status-changed',
