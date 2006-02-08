@@ -52,7 +52,7 @@ def setup(options):
     # This must be called *before* anything else since it will switch to test
     # database and also change the runtime module behaviour
     set_test_mode(True)
-    from stoq.examples.createall import create
+    from stoqlib.domain.examples.createall import create
     from stoqlib.lib.admin import initialize_system, setup_tables
 
     set_verbose(False)
