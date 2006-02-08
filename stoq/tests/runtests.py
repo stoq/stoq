@@ -80,7 +80,8 @@ def test_gui(options, tests=None):
     else:
         tests = [os.path.join(oldpwd, test) for test in tests]
 
-    # Sort the tests
+    # Sort the tests so they're run in a predictible order
+    # useful for tests which depend on others being ran before
     tests.sort()
 
     conn = get_connection()
