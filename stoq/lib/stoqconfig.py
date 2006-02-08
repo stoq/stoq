@@ -43,12 +43,12 @@ from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.search import set_max_search_results
 from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.configparser import config
-
-from stoq.gui.components.login import LoginDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import check_tables
+
+from stoq.gui.components.login import StoqLoginDialog
 
 _ = gettext.gettext
 SPLASH_TIMEOUT = 4000
@@ -174,8 +174,8 @@ class AppConfig:
                 username, password, appname = ret
 
             if not dialog:
-                dialog = LoginDialog(_("Access Control"),
-                                     choose_applications)
+                dialog = StoqLoginDialog(_("Access Control"),
+                                         choose_applications)
             if not ret or choose_applications:
                 ret = dialog.run(username, password, msg=retry_msg)
 
