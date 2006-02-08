@@ -23,11 +23,7 @@
 ## Author(s):       Henrique Romano             <henrique@async.com.br>
 ##                  Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-stoq/gui/till/till.py:
-
-    Implementation of till application.
-"""
+""" Implementation of till application.  """
 
 import gettext
 import datetime
@@ -35,22 +31,22 @@ import datetime
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND
 from kiwi.ui.dialogs import messagedialog
-from stoqlib.gui.base.columns import ForeignKeyColumn
+from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import TillError
 from stoqlib.database import rollback_and_begin, finish_transaction
-
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person, PersonAdaptToClient
 from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
-from stoq.gui.application import SearchableAppWindow
+from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
-from stoq.gui.till.operation import TillOperationDialog
+from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
 from stoqlib.gui.wizards.sale import SaleWizard
+
+from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
