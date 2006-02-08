@@ -34,8 +34,6 @@ import gettext
 from zope.interface import providedBy
 from kiwi.python import namedAny
 
-from stoqdrivers.log import Logger
-from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.devices import printers
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)

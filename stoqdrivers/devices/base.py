@@ -31,7 +31,6 @@ stoqdrivers/devices/base.py:
 
 import gettext
 
-from kiwi.python import namedAny
 import gobject
 
 from stoqdrivers.log import Logger
@@ -49,7 +48,7 @@ class BaseDevice(Logger):
     device_dirname = None
     required_interfaces = None
     device_type = None
-    
+
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         Logger.__init__(self)
         if not self.device_dirname:

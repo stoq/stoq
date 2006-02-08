@@ -68,6 +68,7 @@ def get_supported_scales():
                                   % (module_name, module_name))
             if not IScale.implementedBy(obj):
                 raise TypeError("The driver %s %s doesn't implements a "
-                                "valid interface" % (brand, model_name))
+                                "valid interface"
+                                % (brand, obj.model_name))
             result[brand].append(obj)
     return result
