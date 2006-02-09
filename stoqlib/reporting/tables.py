@@ -533,7 +533,7 @@ class TableColumnGroup:
         # span_offset is used to remember last spans
         span_offset = 0
         for idx, col in enumerate(self.columns):
-            colspan = self.columns[idx].colspan
+            colspan = col.colspan
             span = colspan - 1
             # x0. x1 are the begin / end of the spanned range
             x0 = idx + span_offset
