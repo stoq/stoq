@@ -1,2 +1,2 @@
 recursive-include stoq *.py
-recursive-include stoq *.glade
+recursive-include data *.glade
