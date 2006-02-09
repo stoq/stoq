@@ -33,7 +33,7 @@ from kiwi.ui.views import SlaveView
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.lib.defaults import interval_types
+from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH
 from stoqlib.lib.validators import (get_price_format_str, get_formatted_price,
                                     compare_float_numbers)
 from stoqlib.lib.parameters import sysparam
@@ -43,7 +43,7 @@ from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
 from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CreditProviderGroupData,
-                                            DebitCardDetails, 
+                                            DebitCardDetails,
                                             CreditCardDetails,
                                             CardInstallmentsStoreDetails,
                                             CardInstallmentsProviderDetails,
@@ -59,7 +59,7 @@ class PaymentListSlave(BaseEditorSlave):
 
     Notes:
         - get_payment_slave: is a hook method which must be defined in
-                             parents. The result of this function must 
+                             parents. The result of this function must
                              be a BaseEditorSlave instance.
     """
 
@@ -363,10 +363,11 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self._setup_monthly_interest()
         max = self.method.get_max_installments_number()
         self.installments_number.set_range(1, max)
-        items = [(label, constant) for constant, label 
+        items = [(label, constant) for constant, label
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
-        self.payment_list = PaymentListSlave(self, self.conn, 
+        self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
+        self.payment_list = PaymentListSlave(self, self.conn,
                                              self.method, self.total_value,
                                              self.interest_total)
         self.payment_list.connect('add-slave',
@@ -412,10 +413,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.payment_list.clear_list()
         method = self.method
         inpayments, interest = method.setup_inpayments(group, inst_number,
-                                                       due_date, 
+                                                       due_date,
                                                        interval_type,
-                                                       intervals, 
-                                                       self.total_value, 
+                                                       intervals,
+                                                       self.total_value,
                                                        interest)
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
@@ -426,7 +427,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         for inpayment in inpayments:
             slave = self.get_slave_by_inpayment(inpayment)
             self.payment_list.add_slave(slave)
- 
+
     def get_slave_by_inpayment(self, inpayment):
         raise NotImplementedError
 
@@ -437,16 +438,16 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         """
         return []
 
-    # 
+    #
     #  Callbacks
-    # 
+    #
 
     def _on_payment_list__remove_item(self, payment_list, slave):
         if not isinstance(slave.model, slave.model_type):
             raise TypeError('Slave model attribute should be of type '
-                            '%s, got %s' % (slave.model_type, 
+                            '%s, got %s' % (slave.model_type,
                                             type(slave.model)))
-        
+
         if isinstance(slave.model, CheckData):
             payment = slave.model.payment
         else:
@@ -459,7 +460,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     #
     # PaymentListSlave hooks and callbacks
     #
-    
+
     def get_payment_slave(self, model=None):
         if not self._data_slave_class:
             raise ValueError('Child classes must define a data_slave_class '
@@ -473,7 +474,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         extra_params = self.get_extra_slave_args()
         slave = self._data_slave_class(self.conn, group, due_date, total,
                                        model, *extra_params)
-        slave.connect('paymentvalue-changed', 
+        slave.connect('paymentvalue-changed',
                       self._on_slave__paymentvalue_changed)
         return slave
 
@@ -571,11 +572,11 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         if not printer:
             self.bank_combo.hide()
             self.bank_label.hide()
-            return
-        banks = printer.get_banks()
-        items = [("%s - %s" % (code, bank.name), code)
-                     for code, bank in banks.items()]
-        self.bank_combo.prefill(items)
+        else:
+            banks = printer.get_banks()
+            items = [("%s - %s" % (code, bank.name), code)
+                         for code, bank in banks.items()]
+            self.bank_combo.prefill(items)
         BasePaymentMethodSlave._setup_widgets(self)
 
 class BillMethodSlave(BasePaymentMethodSlave):
