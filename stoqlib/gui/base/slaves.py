@@ -27,8 +27,6 @@
 import gettext
 import commands
 
-import gtk
-from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.dialogs import save
 from kiwi.python import Settable
 

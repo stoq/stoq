@@ -28,7 +28,6 @@ import datetime
 import gettext
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
-from zope.interface import implements
 from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import DatabaseInconsistency

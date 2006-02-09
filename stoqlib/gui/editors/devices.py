@@ -28,7 +28,6 @@
 import gettext
 
 from kiwi.ui.widgets.list import Column
-from zope.interface import providedBy
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales

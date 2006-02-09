@@ -38,7 +38,7 @@ from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
 
-_ = lambda msg: gettext.dgettext('stoqlib', ms)
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 #
 # Base Domain Classes

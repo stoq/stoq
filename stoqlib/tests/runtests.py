@@ -34,11 +34,10 @@ import sys
 
 import gobject
 gobject.threads_init()
-from kiwi import environ
 import py
 
-from stoqlib.lib.runtime import (print_immediately, get_connection,
-                                 set_test_mode, set_verbose,
+from stoqlib.lib.runtime import (print_immediately, set_test_mode,
+                                 set_verbose,
                                  register_configparser_settings,
                                  register_application_names)
 

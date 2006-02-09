@@ -30,8 +30,7 @@ import gettext
 import gtk
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
-from kiwi.ui.widgets.list import Column
-from kiwi.python import Settable
+
 from stoqlib.gui.base.dialogs import RunnableView
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -40,11 +39,11 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 class LoginDialog(Delegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
     size = (280, 230)
-    
+
     def __init__(self, title=None):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
-        Delegate.__init__(self, gladefile=self.gladefile, 
-                          widgets=self.widgets, 
+        Delegate.__init__(self, gladefile=self.gladefile,
+                          widgets=self.widgets,
                           keyactions=self.keyactions,
                           delete_handler=gtk.main_quit)
         if title:
@@ -56,7 +55,7 @@ class LoginDialog(Delegate, RunnableView):
         self.notification_label.set_text('')
         self.notification_label.set_color('black')
         filename = environ.find_resource("pixmaps", "stoq_logo.png")
-        
+
         gtkimage = gtk.Image()
         gtkimage.set_from_file(filename)
 
@@ -71,7 +70,7 @@ class LoginDialog(Delegate, RunnableView):
 
     def on_escape_pressed(self, window, event, extra):
         self.close()
-        
+
     def on_delete_event(self, window, event):
         self.close()
 
@@ -118,7 +117,7 @@ class LoginDialog(Delegate, RunnableView):
     #
     # Hooks
     #
-        
+
     def get_app_name(self):
         """This method must be overwrited if a subclass want to manage an
         application list and return the selected application by the user
