@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import Column, List
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
-from sqlobject.sqlbuilder import LIKE, AND, func, OR, SQLOp
+from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 

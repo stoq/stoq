@@ -27,7 +27,6 @@
 import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
-from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError

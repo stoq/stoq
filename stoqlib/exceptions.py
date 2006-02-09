@@ -24,8 +24,6 @@
 ##
 """ Exception and warning definitions """
 
-import sys 
-
 
 class ConfigError(Exception):
     """Error for config files which don't have a certain section"""
@@ -39,10 +37,10 @@ class NoConfigurationError(Exception):
     """Raise this error when we don't have a config option properly set."""
 
 
-class ModelDataError(Exception): 
+class ModelDataError(Exception):
     """General model data errors """
 
-    
+
 class SellError(Exception):
     """Exceptions for sale operations"""
 

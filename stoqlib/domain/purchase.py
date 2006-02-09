@@ -31,7 +31,6 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import format_price
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
-from zope.interface import implements
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.base import AbstractPaymentGroup

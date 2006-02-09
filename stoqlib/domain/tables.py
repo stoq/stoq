@@ -40,7 +40,8 @@ from psycopg import OperationalError
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.runtime import get_connection
 
-_ = lambda msg: gettext.dgettext('stoqlib', ms)
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 TABLES = [
      ('stoqlib.domain.base',               ("InheritableModelAdapter",

@@ -37,7 +37,8 @@ from stoqlib.domain.interfaces import (IRenegotiationGiftCertificate,
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.lib.parameters import sysparam
 
-_ = lambda msg: gettext.dgettext('stoqlib', ms)
+_ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 #
 # Base Domain Classes
