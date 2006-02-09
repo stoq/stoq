@@ -23,7 +23,7 @@
 ##                  Henrique Romano             <henrique@async.com.br>
 ##
 """Default values for applications"""
-    
+
 import gettext
 import datetime
 
