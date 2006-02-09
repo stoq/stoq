@@ -90,7 +90,7 @@
                 <child>
                     <widget class="GtkButton" id="file_selection_button">
                         <property name="is_focus">True</property>
-                        <property name="label" context="yes" translatable="yes">Selecionar...</property>
+                        <property name="label" context="yes" translatable="yes">Select...</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
