@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<glade-interface>
+<glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="IndividualDocuments">
         <property name="title" context="True" translatable="yes">client_id_slave</property>
         <property name="role"></property>
