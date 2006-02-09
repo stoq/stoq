@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -24,11 +24,7 @@
 ## Author(s): Evandro Vale Miquelito    <evandro@async.com.br>
 ##            Rudá Porto Filgueiras     <rudazz@gmail.com>
 ##
-"""
-stoq/tests/domain/runtests.py:
-
-   Run all the domain test suite
-"""
+""" Run all the domain test suite """
 
 import doctest
 import optparse
@@ -105,59 +101,17 @@ def test_gui(options, tests=None):
     if options.verbose:
         print_immediately('gui tests ok')
 
-def test_domain(options):
-    if options.verbose:
-        print_immediately('Running domain doctests... ')
-
-    # Running doctests
-    domain_tests_dir = os.path.abspath(os.path.join(
-        os.path.dirname(sys.argv[0]), '..', '..', 'docs', 'domain'))
-    doc_files = [filename for filename in os.listdir(domain_tests_dir)
-                              if filename.endswith('.txt')]
-
-    for doc_file in doc_files:
-        doc_file = os.path.join(domain_tests_dir, doc_file)
-        doctest.testfile(doc_file,
-                         verbose=options.verbose,
-                         module_relative=False)
-
-    if options.verbose:
-        print_immediately('Running domain unittests... ')
-
-    sys.argv = sys.argv[:1]
-    py.test.cmdline.main()
-
-    if options.verbose:
-        print_immediately('Domain tests are ok')
-
 def main(args):
     parser = optparse.OptionParser()
     parser.add_option('-v', '--verbose',
                       action="store_true",
                       dest="verbose")
-    parser.add_option('-g', '--gui',
-                      action="store_true",
-                      dest="only_gui",
-                      help='Only run gui tests')
-    parser.add_option('-d', '--domain',
-                      action="store_true",
-                      dest="only_domain",
-                      help='Only run domain tests')
 
     if '--g-fatal-warnings' in args:
         args.remove('--g-fatal-warnings')
     options, args = parser.parse_args(args)
     setup(options)
 
-    if options.only_domain:
-        test_domain(options)
-        return
-
-    if options.only_gui:
-        test_gui(options, args[1:])
-        return
-
-    test_domain(options)
     test_gui(options)
 
 if __name__ == '__main__':
