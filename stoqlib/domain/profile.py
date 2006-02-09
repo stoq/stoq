@@ -28,7 +28,7 @@ from sqlobject import StringCol, ForeignKey, MultipleJoin, BoolCol
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.runtime import get_application_names
 from stoqlib.domain.base import Domain
-    
+
 
 class ProfileSettings(Domain):
     """Profile settings for user profile instances. Each instance of this
@@ -38,7 +38,7 @@ class ProfileSettings(Domain):
     app_dir_name = StringCol()
     has_permission = BoolCol(default=False)
     user_profile = ForeignKey('UserProfile')
-    
+
 
 class UserProfile(Domain):
     """User profile definition."""
@@ -47,7 +47,7 @@ class UserProfile(Domain):
     profile_settings = MultipleJoin('ProfileSettings')
 
     @classmethod
-    def create_profile_template(cls, conn, name, 
+    def create_profile_template(cls, conn, name,
                                 has_full_permission=False):
         profile = cls(connection=conn, name=name)
         for app_dir in get_application_names():
@@ -62,15 +62,15 @@ class UserProfile(Domain):
                         has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
-        settings = [s for s in self.profile_settings 
-                            if s.app_dir_name == app_name 
+        settings = [s for s in self.profile_settings
+                            if s.app_dir_name == app_name
                                     and s.has_permission]
         if not settings:
             return False
         if len(settings) > 1:
             raise DatabaseInconsistency("You should have only one "
                                         "ProfileSettings instance for "
-                                        "directory name %s, got %d" 
+                                        "directory name %s, got %d"
                                         % (app_name, len(settings)))
         return True
 

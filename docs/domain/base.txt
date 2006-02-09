@@ -2,8 +2,8 @@
 domain/base.py
 `````````````````
 
-The `base 
-<http://www.async.com.br/projects/stoq/docs/package/public/stoq.domain.base-module.html>`_ 
+The `base
+<http://www.async.com.br/projects/stoq/docs/package/public/stoqlib.domain.base-module.html>`_
 module has all abstract mixin classes used to build all domain classes.
 
 These classes are mixin for domain components, domain adapters and domain
@@ -16,14 +16,14 @@ classes (Domain, InheritableModel), adapter classes (ModelAdapter,
 InheritableModelAdapter).
 
 ComponetizedModel and ConnMetaInterface are especializated versions of base
-twisted classes:Componetized and MetaInterface, and have some mofications to 
+twisted classes:Componetized and MetaInterface, and have some mofications to
 be used on stoq, and to be compatible with SQLObject.
 
 We need to import modules and classes inherited from classes defined in
-stoq/domain/base.py.
+stoqlib/domain/base.py.
 
-    >>> from stoq.lib.runtime import new_transaction
-    >>> from stoq.domain.product import Product
+    >>> from stoqlib.lib.runtime import new_transaction
+    >>> from stoqlib.domain.product import Product
 
 Create a new transaction object:
 
@@ -50,7 +50,7 @@ We have three methods do set valid, set invalid and get this state.
     False
 
 Now we can set this model valid, verify that that get_valid return true
-again. 
+again.
 
     >>> test_product.set_valid()
     >>> test_product.get_valid()
@@ -82,11 +82,11 @@ instance.
 
     >>> assert (test_product.get_connection() is
     ...         test_product_clone.get_connection())
-    
+
 Import ISellable interface and verify if this Product instance has a
 component that implement this interface:
 
-    >>> from stoq.domain.interfaces import ISellable
+    >>> from stoqlib.domain.interfaces import ISellable
     >>> ISellable(test_product, connection=conn)
 
 To get the correct Adapter class that implements a given interface you have
@@ -94,10 +94,10 @@ to call getAdapterClass method, and never import directly an Adapter class.
 
     >>> adapter_class = test_product.getAdapterClass(ISellable)
     >>> adapter_class
-    <class 'stoq.domain.product.ProductAdaptToSellable'>
+    <class 'stoqlib.domain.product.ProductAdaptToSellable'>
 
 To register a new facet you can call registerFacet class method. But
-stoq/domain/product.py module alredy registry ProductAdaptToSeallble facet
+stoqlib/domain/product.py module alredy registry ProductAdaptToSeallble facet
 and thus this another call must raise an exception.
 
     >>> Product.registerFacet(adapter_class, ISellable)
@@ -112,8 +112,8 @@ module
 
 The BaseSellableInfo class stores basic information about sellables. This
 object is mandatory for every new sellable.
-    
-    >>> from stoq.domain.sellable import BaseSellableInfo
+
+    >>> from stoqlib.domain.sellable import BaseSellableInfo
     >>> description = 'Red Mustang, 1960'
     >>> sellable_info = BaseSellableInfo(connection=conn,
     ...                                  description=description,
@@ -138,4 +138,4 @@ the id of your base class.
     >>> base = adapter.get_adapted()
     >>> assert base is test_product
     >>> base_id = adapter.get_adapted_id()
-    >>> assert base_id == test_product.id 
+    >>> assert base_id == test_product.id
