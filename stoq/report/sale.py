@@ -25,16 +25,14 @@
 """ Sales report implementation """
 
 import gettext
-from datetime import datetime
 
 from stoqlib.reporting.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.flowables import RIGHT
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import (get_formatted_price, format_quantity,
+                                    format_phone_number)
 
 from stoq.report.template import BaseStoqReport
-from stoqlib.lib.validators import (get_formatted_price, format_quantity,
-                                 format_phone_number)
-from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.sellable import AbstractSellableItem
 
 _ = gettext.gettext
 

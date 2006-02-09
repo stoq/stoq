@@ -25,11 +25,9 @@
 import gettext
 
 import gtk
-from kiwi.environ import environ
-from kiwi.ui.delegates import Delegate, SlaveDelegate
+from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
-from stoqlib.gui.base.dialogs import RunnableView
 from stoqlib.gui.login import LoginDialog
 
 from stoq.lib.applist import get_app_descriptions

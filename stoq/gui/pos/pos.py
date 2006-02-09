@@ -24,11 +24,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##
-"""
-stoq/gui/pos/pos.py:
-
-    Main interface definition for pos application.
-"""
+""" Main interface definition for pos application.  """
 
 import gettext
 
@@ -38,7 +34,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
 from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.gui.base.dialogs import notify_dialog, PrintDialog
+from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
 

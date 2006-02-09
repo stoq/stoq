@@ -26,7 +26,6 @@
 ##
 """ Run all the domain test suite """
 
-import doctest
 import optparse
 import os
 import sys
@@ -34,7 +33,6 @@ import sys
 import gobject
 gobject.threads_init()
 from kiwi import environ
-import py
 
 from stoq.main import setup_stoqlib_settings
 setup_stoqlib_settings()
