@@ -265,6 +265,7 @@ class ColumnTableBuilder(ReportTableBuilder):
             extra_row = self.get_row_data(extra_row)
         elif summary_row:
             extra_row = summary_row
+        self.has_summary_row = summary_row is not None 
         ReportTableBuilder.__init__(self, self.build_data(data), style,
                                     header, table_line, extra_row)
 
@@ -317,7 +318,8 @@ class ColumnTableBuilder(ReportTableBuilder):
         """ Apply the column table style. """
         ReportTableBuilder.update_style(self)
         for idx, col in enumerate(self.columns):
-            col.update_style(self.style, idx, has_summary_row=True)
+            col.update_style(self.style, idx,
+                             has_summary_row=self.has_summary_row)
 
 class ObjectTableBuilder(ColumnTableBuilder):
     """ Object table builder """
