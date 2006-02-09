@@ -366,7 +366,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         items = [(label, constant) for constant, label
                                 in interval_types.items()]
         self.interval_type_combo.prefill(items)
-        self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
         self.payment_list = PaymentListSlave(self, self.conn,
                                              self.method, self.total_value,
                                              self.interest_total)
@@ -504,6 +503,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     BasePaymentMethodSlave.proxy_widgets)
+        self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
 
     def create_model(self, conn):
         group = self.wizard.get_payment_group()
