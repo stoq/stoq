@@ -26,8 +26,8 @@
 
 import gettext
 
-from stoqlib.reporting.tables import ObjectTableColumn as OTC
-from stoqlib.reporting.flowables import RIGHT
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number)
