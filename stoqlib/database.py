@@ -50,7 +50,7 @@ def finish_transaction(conn, model=None, keep_transaction=False):
 
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
-    from stoqlib.domain.system import add_system_table_reference
+    from stoqlib.lib.migration import add_system_table_reference
     if not list_tables and verbose:
         print_msg('Setting up tables... ', break_line=False)
     else:
