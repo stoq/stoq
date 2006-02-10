@@ -34,12 +34,13 @@ from sqlobject import DateTimeCol, IntCol
 
 import stoqlib
 from stoqlib.exceptions import SQLError, DatabaseInconsistency
-from stoqlib.domain.base import AbstractModel
-from stoqlib.domain.tables import get_table_types
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.configparser import config
 from stoqlib.database import finish_transaction
+from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
+from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.tables import get_table_types
 
 
 class SchemaMigration:
@@ -112,6 +113,9 @@ class SchemaMigration:
                                % (value, type))
             conn.commit()
             add_system_table_reference(conn)
+        # checks if there is new applications and update all the user
+        # profiles on the system
+        update_profile_applications(conn)
         finish_transaction(conn, 1)
 
 
