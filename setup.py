@@ -43,7 +43,8 @@ class StoqLibInstallLib(TemplateInstallLib):
     name = __program_name__
     resources = dict(locale='$prefix/share/locale')
     global_resources = dict(pixmaps='$datadir/pixmaps',
-                            glade='$datadir/glade')
+                            glade='$datadir/glade',
+                            fonts='$datadir/fonts')
 
 setup(name=__program_name__,
       version=__version__,
