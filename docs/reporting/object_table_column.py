@@ -2,11 +2,11 @@
 from sys import path
 path.insert(0, '..')
 
-from stoqlib.reporting.utils import print_preview, build_report
-from stoqlib.reporting.printing import ReportTemplate
+from stoqlib.reporting.base.utils import print_preview, build_report
+from stoqlib.reporting.base.printing import ReportTemplate
 
-from stoqlib.reporting.tables import (ObjectTableColumn as OTC,
-                                      RIGHT)
+from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
+                            	           RIGHT)
 
 class ObjectTableColumnTest(ReportTemplate):
     report_name = "Simples teste com ObjectTableColumn"

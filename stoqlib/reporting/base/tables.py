@@ -29,17 +29,17 @@ import operator
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import TableStyle, Paragraph, Table as RTable
 
-from stoqlib.reporting.flowables import LEFT, CENTER, RIGHT
-from stoqlib.reporting.default_style import (TABLE_HEADER_FONT,
-                                             TABLE_HEADER_FONT_SIZE,
-                                             TABLE_HEADER_TEXT_COLOR,
-                                             TABLE_HEADER_BACKGROUND,
-                                             HIGHLIGHT_COLOR,
-                                             TABLE_LINE,
-                                             COL_PADDING,
-                                             SOFT_LINE_COLOR,
-                                             DEFAULT_FONTNAME,
-                                             DEFAULT_FONTSIZE)
+from stoqlib.reporting.base.flowables import LEFT, CENTER, RIGHT
+from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
+                                                  TABLE_HEADER_FONT_SIZE,
+                                                  TABLE_HEADER_TEXT_COLOR,
+                                                  TABLE_HEADER_BACKGROUND,
+                                                  HIGHLIGHT_COLOR,
+                                                  TABLE_LINE,
+                                                  COL_PADDING,
+                                                  SOFT_LINE_COLOR,
+                                                  DEFAULT_FONTNAME,
+                                                  DEFAULT_FONTSIZE)
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1

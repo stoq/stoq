@@ -38,8 +38,8 @@ from kiwi.ui.dialogs import error, ask_overwrite
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.gui.base.gtkadds import change_button_appearance
-from stoqlib.reporting.utils import print_file
-from stoqlib.reporting.template import BaseDocTemplate
+from stoqlib.reporting.base.utils import print_file
+from stoqlib.reporting.base.template import BaseDocTemplate
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 

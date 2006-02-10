@@ -3,9 +3,9 @@
 from sys import path
 path.insert(0, "..")
 
-from stoqlib.reporting.utils import build_report, print_preview
-from stoqlib.reporting.printing import ReportTemplate
-from stoqlib.reporting.common import read_file, safe_int
+from stoqlib.reporting.base.utils import build_report, print_preview
+from stoqlib.reporting.base.printing import ReportTemplate
+from stoqlib.reporting.base.common import read_file, safe_int
 
 class VehiclesProductionReport(ReportTemplate):
     """ Sample report table. Here we don't need columns because we already

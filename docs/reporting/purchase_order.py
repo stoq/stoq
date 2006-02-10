@@ -5,11 +5,11 @@ path.insert(0, "..")
 
 import operator
 
-from stoqlib.reporting.utils import build_report, print_preview
-from stoqlib.reporting.printing import ReportTemplate
-from stoqlib.reporting.flowables import RIGHT, CENTER
-from stoqlib.reporting.tables import ObjectTableColumn as OTC
-from stoqlib.reporting.common import read_file, safe_float
+from stoqlib.reporting.base.utils import build_report, print_preview
+from stoqlib.reporting.base.printing import ReportTemplate
+from stoqlib.reporting.base.flowables import RIGHT, CENTER
+from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
+from stoqlib.reporting.base.common import read_file, safe_float
 
 class Product:
     def __init__(self, qty, unit, description, price):
