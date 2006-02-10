@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-"""
-sbin/init-database:
-
-    Script to delete all the tables in an existent database or simple
+##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##
+##
+""" Script to delete all the tables in an existent database or simple
     create all the tables in an empty database. Note that you must have a
     database already created to run this script properly.
 """
@@ -45,8 +45,8 @@ from stoqlib.lib.runtime import set_test_mode, set_verbose, print_msg
 # importing these modules
 set_test_mode(TEST_MODE)
 
-from stoqlib.domain.examples.createall import create
-from stoqlib.lib.admin import initialize_system, setup_tables
+from stoqlib.lib.admin import initialize_system
+from stoqlib.database import setup_tables
 
 def main(args):
     LIST_TABLES = '-l' in sys.argv
@@ -68,6 +68,7 @@ def main(args):
     initialize_system(user=name, username=username, password=password)
 
     if '-e' in args:
+        from stoqlib.domain.examples.createall import create
         create()
 
 if __name__ == "__main__":

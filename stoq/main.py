@@ -21,11 +21,15 @@
 
 import optparse
 
+
 from stoq.lib.applist import get_application_names
 
+
 def run_app(options, config, appname):
+    from stoqlib.lib.migration import schema_migration
     from stoq.lib.stoqconfig import AppConfig
 
+    schema_migration.update_schema()
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
