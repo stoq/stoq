@@ -27,7 +27,7 @@
 import gettext
 
 from kiwi.environ import environ
-from stoqlib.reporting.printing import ReportTemplate
+from stoqlib.reporting.base.printing import ReportTemplate
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
