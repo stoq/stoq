@@ -23,18 +23,35 @@
 """ Constants related to flowable styles, like paragraphs, pages, tables and
     texts.
 """
+
+import os
+
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
 from reportlab.lib.enums import TA_RIGHT, TA_CENTER
 from reportlab.platypus import TableStyle
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from kiwi.environ import environ
+
+fonts_dir = environ.get_resource_paths("fonts")[0]
+
+pdfmetrics.registerFont(TTFont("Vera",
+                               os.path.join(fonts_dir, "Vera.ttf")))
+pdfmetrics.registerFont(TTFont("Vera-B",
+                               os.path.join(fonts_dir, "VeraBd.ttf")))
+pdfmetrics.registerFont(TTFont("Vera-I",
+                               os.path.join(fonts_dir, "VeraIt.ttf")))
+pdfmetrics.registerFont(TTFont("Vera-BI",
+                               os.path.join(fonts_dir, "VeraBI.ttf")))
 
 # FIXME: Add support for TTF fonts
 STYLE_SHEET = StyleSheet1()
 
 STYLE_SHEET.add(ParagraphStyle(
     'Normal',
-    fontName='Helvetica',
+    fontName='Vera',
     fontSize=10,
     leftIndent=8,
     rightIndent=8,
@@ -49,7 +66,7 @@ STYLE_SHEET.add(ParagraphStyle(
 STYLE_SHEET.add(ParagraphStyle(
     'Normal-Bold',
     parent=STYLE_SHEET['Normal'],
-    fontName='Helvetica-Bold'))
+    fontName='Vera-B'))
 
 STYLE_SHEET.add(ParagraphStyle(
     'Normal-AlignRight',
@@ -59,7 +76,7 @@ STYLE_SHEET.add(ParagraphStyle(
 STYLE_SHEET.add(ParagraphStyle(
     'Title',
     parent=STYLE_SHEET['Normal'],
-    fontName='Helvetica-Bold',
+    fontName='Vera-B',
     leading=12,
     fontSize=12))
 
@@ -72,7 +89,7 @@ STYLE_SHEET.add(ParagraphStyle(
 STYLE_SHEET.add(ParagraphStyle(
     'Title-AlignCenter',
     parent=STYLE_SHEET['Title'],
-    fontSize=14,
+    fontSize=13,
     alignment=TA_CENTER))
 
 STYLE_SHEET.add(ParagraphStyle(
@@ -98,7 +115,7 @@ DEFAULT_MARGIN = 5
 
 SIGNATURE_FONT = ('Helvetica', 8)
 
-DEFAULT_FONTNAME = 'Times-Roman'
+DEFAULT_FONTNAME = 'Vera'
 DEFAULT_FONTSIZE = 10
 
 default_table_cmds = (
@@ -116,7 +133,7 @@ TABLE_LINE = (1, colors.black)
 # XXX: Hack to have table without borders
 TABLE_LINE_BLANK = (1, colors.white)
 TABLE_STYLE = TableStyle(default_table_cmds)
-TABLE_HEADER_FONT = 'Helvetica-Bold'
+TABLE_HEADER_FONT = 'Vera'
 TABLE_HEADER_FONT_SIZE = 10
 TABLE_HEADER_TEXT_COLOR = colors.black
 TABLE_HEADER_BACKGROUND = colors.white

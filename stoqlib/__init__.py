@@ -40,6 +40,7 @@ if library.uninstalled:
     except EnvironmentError:
         pass
     library.add_global_resources(pixmaps='data/pixmaps',
-                                 glade='data')
+                                 glade='data',
+                                 fonts='data/fonts')
 library.enable_translation()
 
