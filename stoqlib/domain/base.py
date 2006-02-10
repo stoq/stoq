@@ -52,7 +52,6 @@ class CannotAdapt(Exception):
     pass
 
 
-
 #
 # Abstract classes
 #

@@ -24,27 +24,27 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-""" Helper functions related to administration of the database, creating 
+""" Helper functions related to administration of the database, creating
 tables, removing tables and configuring administration user.
 """
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
+from stoqlib.database import setup_tables
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.tables import get_table_types
 from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
-                                    ISalesPerson)
+                                       ISalesPerson)
 
 def ensure_admin_user(name, username, password):
     print_msg("Creating administrator user...", break_line=False)
     conn = new_transaction()
 
-    # XXX Person for administrator user is the same of Current Branch. I'm not 
-    # sure if it's the best approach but for sure it's better than 
+    # XXX Person for administrator user is the same of Current Branch. I'm not
+    # sure if it's the best approach but for sure it's better than
     # create another one just for this user.
     company = sysparam(conn).CURRENT_BRANCH
     person_obj = company.get_adapted()
@@ -60,11 +60,11 @@ def ensure_admin_user(name, username, password):
 
     profile = UserProfile.create_profile_template(conn, 'Administrator',
                                                   has_full_permission=True)
-    
+
     user = person_obj.addFacet(IUser, username=username, password=password,
                                profile=profile, connection=conn)
-    catalog = PersonAdaptToUser
-    ret = catalog.select(catalog.q.username == 'administrator',
+    table = PersonAdaptToUser
+    ret = table.select(table.q.username == 'administrator',
                          connection=conn)
     assert ret, ret.count() == 1
     assert ret[0].password == password
@@ -84,31 +84,9 @@ def ensure_sellable_units():
     conn.commit()
     print_msg("done")
 
-def setup_tables(delete_only=False, list_tables=False, verbose=False):
-    if not list_tables and verbose:
-        print_msg('Setting up tables... ', break_line=False)
-    else:
-        print_msg('Setting up tables... ')
-
-    catalog_types = get_table_types()
-    conn = new_transaction()
-    for catalog in catalog_types:
-        if conn.tableExists(catalog.get_db_table_name()):
-            catalog.dropTable(ifExists=True, cascade=True, connection=conn)
-            if list_tables:
-                print_msg('<removed>:  %s' % catalog)
-        if delete_only:
-            continue
-        catalog.createTable(connection=conn)
-        if list_tables:
-            print_msg('<created>:  %s' % catalog)
-
-    conn.commit()
-    print_msg('done')
-
 def initialize_system(user, username, password, delete_only=False,
                      list_tables=False, verbose=False):
-    """Call all the necessary methods to startup Stoq applications for 
+    """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
     setup_tables(delete_only=delete_only, list_tables=list_tables,

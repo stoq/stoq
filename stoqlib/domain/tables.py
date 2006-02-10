@@ -31,11 +31,8 @@
  (classA, classB, ...).
 """
 
+import sys
 import gettext
-
-# XXX This is postgres specific. We should use a better approach which
-# could accept many other databases. Waiting for SQLObject suport.
-from psycopg import OperationalError
 
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.runtime import get_connection
@@ -44,6 +41,8 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
 TABLES = [
+     ('stoqlib.domain.system',             ("SystemTable",
+                                           )),
      ('stoqlib.domain.base',               ("InheritableModelAdapter",
                                             "InheritableModel",
                                             )),
@@ -88,7 +87,7 @@ TABLES = [
                                             "POAdaptToPaymentDevolution",
                                             "POAdaptToPaymentDeposit",
                                             )),
-    # XXX Unfortunately we must add 'methods.py' module in two places 
+    # XXX Unfortunately we must add 'methods.py' module in two places
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
      ('stoqlib.domain.payment.methods',    ("PaymentMethod",
@@ -120,7 +119,7 @@ TABLES = [
                                             "CardInstallmentsStoreDetails",
                                             "CardInstallmentsProviderDetails",
                                             "FinanceDetails",
-                                            "CreditProviderGroupData", 
+                                            "CreditProviderGroupData",
                                             "CheckData",
                                             )),
      ('stoqlib.domain.sellable',           ("OnSaleInfo",
@@ -149,9 +148,9 @@ TABLES = [
                                             "DeliveryItem",
                                             )),
      ('stoqlib.domain.product',            ("Product",
-                                            "ProductSupplierInfo", 
+                                            "ProductSupplierInfo",
                                             "ProductSellableItem",
-                                            "ProductStockReference", 
+                                            "ProductStockReference",
                                             "ProductAdaptToSellable",
                                             "ProductAdaptToStorable",
                                             "ProductStockItem",
@@ -178,20 +177,21 @@ def check_tables():
     table_types = get_table_types()
     conn = get_connection()
 
-    try:
-        for table_type in table_types:
-            classname = table_type.get_db_table_name()
+    for table_type in table_types:
+        classname = table_type.get_db_table_name()
+        try:
             if not conn.tableExists(classname):
-                msg = _("Outdated schema. Table %s doesn't exist.\n" 
+                msg = _("Outdated schema. Table %s doesn't exist.\n"
                         "Run init-database script to fix this problem."
                         % classname)
                 raise DatabaseError, msg
+        except:
+            type, value, trace = sys.exc_info()
+            # TODO Raise a proper error if the database doesn't exist.
+            msg = _("An error ocurred trying to access the database\n"
+                    "This is the database error:\n%s. Error type is %s")
+            raise DatabaseError(msg % (value, type))
 
-    except OperationalError, e:
-        # Raise a proper error if the database doesn't exist.
-        msg = _("An error ocurred trying to access the database\n"
-                "This is the database error:\n%s")
-        raise DatabaseError(msg % str(e))
 
 def get_table_type_by_name(table_name, path=None):
     if not path:

@@ -21,7 +21,12 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##
+##
 """ Database access methods """
+
+from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.domain.tables import get_table_types
+
 
 # This class will be moved to it's proper place after bug 2253
 class Adapter:
@@ -32,7 +37,7 @@ def rollback_and_begin(conn):
     conn.rollback()
     conn.begin()
 
-def finish_transaction(conn, model, keep_transaction=False):
+def finish_transaction(conn, model=None, keep_transaction=False):
     if model:
         conn.commit()
     else:
@@ -42,3 +47,31 @@ def finish_transaction(conn, model, keep_transaction=False):
         # simple method do this in a simple way.
         conn._connection.close()
     return model
+
+
+def setup_tables(delete_only=False, list_tables=False, verbose=False):
+    from stoqlib.domain.system import add_system_table_reference
+    if not list_tables and verbose:
+        print_msg('Setting up tables... ', break_line=False)
+    else:
+        print_msg('Setting up tables... ')
+
+    table_types = get_table_types()
+    conn = new_transaction()
+    for table in table_types:
+        if conn.tableExists(table.get_db_table_name()):
+            table.dropTable(ifExists=True, cascade=True, connection=conn)
+            if list_tables:
+                print_msg('<removed>:  %s' % table)
+        if delete_only:
+            continue
+        table.createTable(connection=conn)
+        if list_tables:
+            print_msg('<created>:  %s' % table)
+    conn.commit()
+    if delete_only:
+        return
+
+    add_system_table_reference(conn, check_new_db=True)
+    finish_transaction(conn, 1)
+    print_msg('done')
