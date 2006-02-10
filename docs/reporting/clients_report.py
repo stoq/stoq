@@ -2,10 +2,10 @@
 from sys import path
 path.insert(0, "..")
 
-from stoqlib.reporting.utils import build_report, print_preview
-from stoqlib.reporting.printing import ReportTemplate
-from stoqlib.reporting.tables import TableColumn as TC
-from stoqlib.reporting.common import read_file, safe_int
+from stoqlib.reporting.base.utils import build_report, print_preview
+from stoqlib.reporting.base.printing import ReportTemplate
+from stoqlib.reporting.base.tables import TableColumn as TC
+from stoqlib.reporting.base.common import read_file, safe_int
 
 class ClientsReport(ReportTemplate):
     """ Sample column table report. If we have to set a fixed size to our columns

@@ -32,10 +32,10 @@ from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
 from reportlab.platypus.flowables import Preformatted
 from reportlab.platypus import Paragraph
 
-from stoqlib.reporting import tables, flowables
-from stoqlib.reporting.default_style import (DOC_DEFAULTS, SPACING,
-                                             STYLE_SHEET, TABLE_STYLE,
-                                             DEFAULT_MARGIN, TABLE_LINE)
+from stoqlib.reporting.base import tables, flowables
+from stoqlib.reporting.base.default_style import (DOC_DEFAULTS, SPACING,
+                                                 STYLE_SHEET, TABLE_STYLE,
+                                                 DEFAULT_MARGIN, TABLE_LINE)
 
 class BaseReportTemplate(BaseDocTemplate):
     """ Base class representing the document itself. Here is implemented all the

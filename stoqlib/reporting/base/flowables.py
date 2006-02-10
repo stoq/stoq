@@ -29,7 +29,7 @@
 from reportlab.lib.units import mm
 from reportlab.platypus import Flowable, ActionFlowable
 
-from stoqlib.reporting.default_style import SIGNATURE_FONT, SPACING
+from stoqlib.reporting.base.default_style import SIGNATURE_FONT, SPACING
 
 # We use enums here only to help to find typos. Reportlab uses strings for
 # alignment settings. Reportlab also defines other numeric enums for text

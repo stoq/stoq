@@ -31,7 +31,7 @@ from kiwi.ui.dialogs import save
 from kiwi.python import Settable
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.reporting.utils import print_preview, build_report
+from stoqlib.reporting.base.utils import print_preview, build_report
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 

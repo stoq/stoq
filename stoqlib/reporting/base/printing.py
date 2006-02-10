@@ -32,9 +32,9 @@ import datetime
 from reportlab.lib.units import mm
 
 # sibling imports
-from stoqlib.reporting.template import BaseReportTemplate
-from stoqlib.reporting.default_style import (HIGHLIGHT_COLOR, SPACING,
-                                             TEXT_COLOR)
+from stoqlib.reporting.base.template import BaseReportTemplate
+from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
+                                                  TEXT_COLOR)
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 SMALL_FONT = ("Helvetica", 12)
