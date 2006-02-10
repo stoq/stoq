@@ -24,9 +24,12 @@
 
 from kiwi.environ import Library
 
+FIRST_DB_VERSION = 5
+
 __program_name__    = "Stoqlib"
 __website__         = 'http://www.stoq.com.br'
 __version__         = "0.6.0"
+__db_version__      = 6
 __release_date__    = (2006, 1, 27)
 
 
@@ -40,6 +43,7 @@ if library.uninstalled:
     except EnvironmentError:
         pass
     library.add_global_resources(pixmaps='data/pixmaps',
+                                 sql='data/sql',
                                  glade='data',
                                  fonts='data/fonts')
 library.enable_translation()

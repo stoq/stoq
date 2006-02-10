@@ -43,6 +43,7 @@ class StoqLibInstallLib(TemplateInstallLib):
     name = __program_name__
     resources = dict(locale='$prefix/share/locale')
     global_resources = dict(pixmaps='$datadir/pixmaps',
+                            sql='$datadir/sql',
                             glade='$datadir/glade',
                             fonts='$datadir/fonts')
 
@@ -55,6 +56,8 @@ setup(name=__program_name__,
       data_files=[
         ('share/stoqlib/pixmaps',
          listfiles('data/pixmaps', '*.png')),
+        ('share/stoqlib/sql',
+         listfiles('data/sql', '*.sql')),
         ('share/stoqlib/glade',
          listfiles('data', '*.glade')),
         ('share/doc/stoqlib',

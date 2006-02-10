@@ -88,3 +88,6 @@ class UserProfileError(Exception):
 
 class LoginError(Exception):
     """Raise when an username or password is invalid"""
+
+class SQLError(Exception):
+    """Bad syntax for sql scripts"""

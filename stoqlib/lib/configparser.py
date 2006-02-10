@@ -224,11 +224,14 @@ dbusername=%(DBUSERNAME)s"""
     # Database config accessors
     #
 
+    def get_rdbms_name(self):
+        return self.get_option('rdbms', section='Database')
+
     def get_connection_uri(self, test_mode=False):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
 
-        scheme = self.get_option('rdbms', section='Database')
+        scheme = self.get_rdbms_name()
         if test_mode:
             dbname = self.get_option('testdb', section='Database')
         else:
