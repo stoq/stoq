@@ -106,7 +106,7 @@ class CityLocation(Domain):
     state = StringCol(default=None)
 
     def is_valid_model(self):
-        return self.country or self.city or self.state
+        return self.country and self.city and self.state
 
 class Address(Domain):
     """Class to store person's addresses.
