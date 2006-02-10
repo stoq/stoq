@@ -47,7 +47,8 @@ def setup(options):
     # database and also change the runtime module behaviour
     set_test_mode(True)
     from stoqlib.domain.examples.createall import create
-    from stoqlib.lib.admin import initialize_system, setup_tables
+    from stoqlib.lib.admin import initialize_system
+    from stoqlib.database import setup_tables
 
     set_verbose(False)
     setup_tables(delete_only=True, list_tables=True, verbose=True)
