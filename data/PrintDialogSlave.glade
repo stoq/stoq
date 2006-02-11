@@ -105,7 +105,7 @@
                 <child>
                     <widget class="GtkButton" id="print_preview_button">
                         <property name="is_focus">True</property>
-                        <property name="label" context="yes" translatable="yes">Visualizar...</property>
+                        <property name="label" context="yes" translatable="yes">Preview...</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
