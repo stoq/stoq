@@ -29,8 +29,6 @@ import sys
 import datetime
 
 from kiwi.environ import environ
-from sqlobject import SQLObject
-from sqlobject import DateTimeCol, IntCol
 
 import stoqlib
 from stoqlib.exceptions import SQLError, DatabaseInconsistency
@@ -39,7 +37,6 @@ from stoqlib.lib.configparser import config
 from stoqlib.database import finish_transaction
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
-from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.tables import get_table_types
 
 
