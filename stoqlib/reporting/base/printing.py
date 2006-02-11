@@ -37,7 +37,7 @@ from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
                                                   TEXT_COLOR)
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
-SMALL_FONT = ("Helvetica", 12)
+SMALL_FONT = ("Vera", 12)
 
 class ReportTemplate(BaseReportTemplate):
     """ An extension of BaseReportTemplate with methods to draw the report
