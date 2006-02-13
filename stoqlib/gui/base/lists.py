@@ -40,13 +40,13 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class AdditionListSlave(SlaveDelegate):
     """
-    A slave that offers a simple list and its management. 
+    A slave that offers a simple list and its management.
     """
 
     toplevel_name = gladefile = 'AdditionListSlave'
-    widgets = ('add_button', 
-               'delete_button', 
-               'klist', 
+    widgets = ('add_button',
+               'delete_button',
+               'klist',
                'list_vbox',
                'edit_button')
     gsignal('on-edit-item', object)
@@ -59,15 +59,15 @@ class AdditionListSlave(SlaveDelegate):
         @param conn:          a connection
         @param columns:       column definitions
         @type columns:        sequence of L{kiwi.ui.widgets.list.Columns}
-        @param editor_class:  the window that is going to be open when user 
+        @param editor_class:  the window that is going to be open when user
                               clicks on add_button or edit_button.
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
         if editor_class and not issubclass(editor_class, BaseEditor):
             raise TypeError("editor_class must be a BaseEditor subclass")
-        
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
         self.conn = conn
         self._editor_class = editor_class
@@ -89,7 +89,7 @@ class AdditionListSlave(SlaveDelegate):
             _can_edit = can_delete = False
         elif len(objs) > 1:
             _can_edit = False
-            
+
         self.add_button.set_sensitive(True)
         self.edit_button.set_sensitive(_can_edit)
         self.delete_button.set_sensitive(can_delete)
@@ -107,7 +107,7 @@ class AdditionListSlave(SlaveDelegate):
             self.klist.append(model)
             self.emit('on-add-item', model)
 
-        # As we have a selection extended mode for kiwi list, we 
+        # As we have a selection extended mode for kiwi list, we
         # need to unselect everything before select the new instance.
         self.klist.unselect_all()
         self.klist.select(model)
@@ -188,7 +188,7 @@ class AdditionListSlave(SlaveDelegate):
 
     def on_add_button__clicked(self, *args):
         self._run()
-    
+
     def on_edit_button__clicked(self, *args):
         self._edit()
 
@@ -199,7 +199,7 @@ class AdditionListSlave(SlaveDelegate):
 class AdditionListDialog(BasicPluggableDialog):
     size = (500, 500)
 
-    def __init__(self, conn, editor_class, columns, klist_objects, 
+    def __init__(self, conn, editor_class, columns, klist_objects,
                  title=''):
         self.title = title
         BasicPluggableDialog.__init__(self)
@@ -207,7 +207,7 @@ class AdditionListDialog(BasicPluggableDialog):
         self._initialize(editor_class, columns, klist_objects)
 
     def _initialize(self, editor_class, columns, klist_objects):
-        self.addition_list = AdditionListSlave(self.conn, columns, 
+        self.addition_list = AdditionListSlave(self.conn, columns,
                                                editor_class, klist_objects)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
@@ -238,7 +238,7 @@ class AdditionListDialog(BasicPluggableDialog):
         return self.addition_list.klist
 
     def validate_confirm(self):
-        return True    
+        return True
 
 
 class SimpleListDialog(BasicDialog):
@@ -259,7 +259,7 @@ class SimpleListDialog(BasicDialog):
         self._klist.show()
 
     def get_selection(self):
-        mode = self._klist.get_selection_mode() 
+        mode = self._klist.get_selection_mode()
         if mode == gtk.SELECTION_MULTIPLE:
             return self._klist.get_selected_rows()
         selection = self._klist.get_selected()
