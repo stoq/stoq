@@ -72,7 +72,7 @@ class DateSearchSlave(SlaveDelegate):
     gsignal('enddate-activate')
 
     def __init__(self, filter_slave=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
@@ -106,19 +106,19 @@ class DateSearchSlave(SlaveDelegate):
         if self.anytime_check.get_active():
             return
         start_date = self.model.start_date
-        # We need datetime.datetime instances in SearchBar and here we 
-        # must convert them since kiwi doesn't have support for datetime 
+        # We need datetime.datetime instances in SearchBar and here we
+        # must convert them since kiwi doesn't have support for datetime
         # widgets, only instances of type datetime.date
         if start_date:
             start_date = datetime.datetime(start_date.year,
-                                           start_date.month, 
+                                           start_date.month,
                                            start_date.day)
-        end_date = self.model.end_date 
+        end_date = self.model.end_date
         if end_date:
             end_date = datetime.datetime(end_date.year,
-                                         end_date.month, 
+                                         end_date.month,
                                          end_date.day)
-        return start_date, end_date 
+        return start_date, end_date
 
     def start_animate_search_icon(self):
         self._slave.start_animate_search_icon()
@@ -156,9 +156,9 @@ class SearchEntry(SlaveDelegate):
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, filter_slave=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
-        self.search_icon.set_from_stock("stoq-searchtool-icon1", 
+        self.search_icon.set_from_stock("stoq-searchtool-icon1",
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
             self.attach_slave('filter_area', filter_slave)
@@ -194,21 +194,21 @@ class SearchEntry(SlaveDelegate):
                      "stoq-searchtool-icon3",
                      "stoq-searchtool-icon4",
                      "stoq-searchtool-icon1"]
-        
+
         while True:
             for stock in stocklist:
                 self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
                 yield True
-        
+
         yield False
 
     def start_animate_search_icon(self):
         self.search_button.hide()
         self.search_icon.show()
         self._animate_search_icon_id = \
-            gobject.timeout_add(self.ANIMATE_TIMEOUT, 
+            gobject.timeout_add(self.ANIMATE_TIMEOUT,
                                 self._animate_search_icon().next)
-    
+
     def stop_animate_search_icon(self):
         self.search_button.show()
         if self._animate_search_icon_id == -1:
@@ -225,9 +225,9 @@ class SearchBar(SlaveDelegate):
 
     gsignal('before-search-activate')
     gsignal('search-activate', object)
-    
-    def __init__(self, conn, table_type, columns=None, query_args=None, 
-                 search_callback=None, filter_slave=None, 
+
+    def __init__(self, conn, table_type, columns=None, query_args=None,
+                 search_callback=None, filter_slave=None,
                  searching_by_date=False):
         """
         @param conn: a sqlobject Transaction instance
@@ -237,7 +237,7 @@ class SearchBar(SlaveDelegate):
                            sent to the sqlobject select method
 
         """
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
+        SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets)
         self._animate_search_icon_id = -1
         self.search_results_label.set_text('')
@@ -274,7 +274,7 @@ class SearchBar(SlaveDelegate):
             if not column.origName in attributes:
                 continue
             value = (column.name, table_type)
-            if (isinstance(column, SOStringCol) 
+            if (isinstance(column, SOStringCol)
                 and value not in self.str_fields):
                self.str_fields.append(value)
             elif (isinstance(column, SOIntCol)
@@ -297,11 +297,11 @@ class SearchBar(SlaveDelegate):
 
         attributes = [c.attribute for c in self.columns]
 
-        # Searching by id fields is evil, avoid it. 
+        # Searching by id fields is evil, avoid it.
         if 'id' in attributes:
             raise ValueError('Private field id should not be added to '
                              'the search list')
-        
+
         for k_column in self.columns:
             if isinstance(k_column, FacetColumn):
                 if issubclass(self.table_type, Adapter):
@@ -320,14 +320,14 @@ class SearchBar(SlaveDelegate):
             self._set_field_types(columns, attributes, table_type)
             if table_type._parentClass:
                 columns = table_type._parentClass.sqlmeta.columns.values()
-                self._set_field_types(columns, attributes, 
+                self._set_field_types(columns, attributes,
                                       table_type._parentClass)
 
     @argcheck(str, list)
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % string.upper(search_str)
         for field_name, table_type in self.str_fields:
-            table_field = getattr(table_type.q, field_name) 
+            table_field = getattr(table_type.q, field_name)
             q = LIKE(func.UPPER(table_field), search_str)
             query.append(q)
 
@@ -335,22 +335,22 @@ class SearchBar(SlaveDelegate):
     def _set_query_float(self, search_str, query):
         search_str = float(search_str)
         for field_name, table_type in self.float_fields:
-            table_field = getattr(table_type.q, field_name) 
+            table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
-           
+
     @argcheck(str, list)
     def _set_query_int(self, search_str, query):
         search_str = int(search_str)
         for field_name, table_type in self.int_fields:
-            table_field = getattr(table_type.q, field_name) 
+            table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
 
     @argcheck(list, datetime.datetime, datetime.datetime)
     def _set_query_dates(self, query, start_date=None, end_date=None):
         for field_name, table_type in self.dtime_fields:
-            table_field = getattr(table_type.q, field_name) 
+            table_field = getattr(table_type.q, field_name)
             q1 = q2 = None
             if start_date:
                 q1 = table_field >= str(start_date)
@@ -370,10 +370,10 @@ class SearchBar(SlaveDelegate):
 
     @argcheck(str, tuple)
     def _build_query(self, search_str, search_dates=None):
-        """Here we build queries after check the search string type. 
-        Queries are always optimized for field types to avoid database 
+        """Here we build queries after check the search string type.
+        Queries are always optimized for field types to avoid database
         input syntax errors and also make smart searches.
-        
+
         @param search_str: the string we are trying to find in the database
         @param search_dates: a tuple with two datetime.datetime instances
                              meaning a 'start date' and 'end date'
@@ -385,7 +385,7 @@ class SearchBar(SlaveDelegate):
             elif is_float(search_str):
                 self._set_query_float(search_str, query)
             else:
-                # Instead of checking for another type, perform later a 
+                # Instead of checking for another type, perform later a
                 # query for string fields and for any search string.
                 pass
             self._set_query_str(search_str, query)
@@ -425,7 +425,7 @@ class SearchBar(SlaveDelegate):
         query = self.table_type.q._is_valid_model == True
         if search_str or search_dates:
             query = AND(query, self._build_query(search_str, search_dates))
-        
+
         if self._extra_query_callback:
             extra_query = self._extra_query_callback()
             if extra_query:
@@ -439,7 +439,7 @@ class SearchBar(SlaveDelegate):
                 assert not query_arg in self.query_args, msg
             kwargs.update(self.query_args)
         kwargs['distinct'] = True
-        
+
         self.emit('before-search-activate')
         if query:
             search_results = self.table_type.select(query, **kwargs)
@@ -454,7 +454,7 @@ class SearchBar(SlaveDelegate):
             self._result_strings = _('result'), _('results')
             warnings.warn('You must define result strings before performing '
                           'searches in the SearchBar')
-            
+
         msg = self._get_search_results_msg(total, max_search_results)
         self.search_results_label.set_text(msg)
 
@@ -488,16 +488,16 @@ class SearchBar(SlaveDelegate):
     def register_extra_query_callback(self, query):
         """Register an extra query that will be added in the main query of
         SearchBar
-        
+
         @param query: a sqlbuilder query
         """
         self._extra_query_callback = query
 
     def register_filter_results_callback(self, callback):
         """Register a filter results callback that will be called right
-        after fetching the data from database. 
-        
-        @param callback: The callback must have only one argument of 
+        after fetching the data from database.
+
+        @param callback: The callback must have only one argument of
                          type SelectResults or InheritableSelectResults.
                          This callback will process the results and filter
                          possible invalid data and must *always* return the
@@ -571,10 +571,10 @@ class SearchDialog(BasicDialog):
     construction and "Filter" and "Clear" buttons management.
 
     This class must be subclassed and its subclass *must* implement the methods
-    'get_columns' and 'get_query_and_args' (if desired, 'get_query_and_args' 
+    'get_columns' and 'get_query_and_args' (if desired, 'get_query_and_args'
     can be implemented in the user's slave class, so SearchDialog will get its
-    slave instance and call the method directly). Its subclass also must 
-    implement a setup_slaves method and call its equivalent base class method 
+    slave instance and call the method directly). Its subclass also must
+    implement a setup_slaves method and call its equivalent base class method
     as in:
 
     def setup_slave(self):
@@ -592,9 +592,9 @@ class SearchDialog(BasicDialog):
     main_label_text = ''
     title = ''
     size = ()
-            
-    def __init__(self, conn, table, search_table=None, hide_footer=True, 
-                 title='', selection_mode=gtk.SELECTION_BROWSE, 
+
+    def __init__(self, conn, table, search_table=None, hide_footer=True,
+                 title='', selection_mode=gtk.SELECTION_BROWSE,
                  searching_by_date=False):
         BasicDialog.__init__(self)
         title = title or self.title
@@ -603,7 +603,7 @@ class SearchDialog(BasicDialog):
             raise ValueError('Invalid selection mode %d' % selection_mode)
         self.selection_mode = selection_mode
         BasicDialog._initialize(self, hide_footer=hide_footer,
-                                main_label_text=self.main_label_text, 
+                                main_label_text=self.main_label_text,
                                 title=title, size=self.size)
         self.set_ok_label(_('Se_lect Items'))
         self.table = table
@@ -654,7 +654,7 @@ class SearchDialog(BasicDialog):
         return None
 
     def after_search_bar_created(self):
-        """This method will be called after creating the SearchBar 
+        """This method will be called after creating the SearchBar
         instance.  Redefine this method in child when it's needed
         """
 
@@ -721,9 +721,9 @@ class SearchDialog(BasicDialog):
             self.klist.add_list(objs)
             selected = self.get_selected_instance()
             if selected:
-                # XXX We must deal in a better way with performance here. 
+                # XXX We must deal in a better way with performance here.
                 # Waiting for bug 2275
-                objs = [obj for obj in self.klist 
+                objs = [obj for obj in self.klist
                                     if obj.id == selected.id]
                 if not len(objs) == 1:
                     raise ValueError('Invalid selected object')
@@ -737,7 +737,7 @@ class SearchDialog(BasicDialog):
 
     def update_widgets(self, *args):
         """ Subclass can have an 'update_widgets', and this method will be
-        called when a signal is emitted by 'Filter' or 'Clear' buttons and 
+        called when a signal is emitted by 'Filter' or 'Clear' buttons and
         also when a list item is selected. """
 
     #
@@ -755,21 +755,21 @@ class SearchDialog(BasicDialog):
 
     def filter_results(self, objects):
         """Call sites can implement a filter here to allow multiple selects
-        for one search when it's necessary. Multiple selects are often 
+        for one search when it's necessary. Multiple selects are often
         much better than one super complex query."""
         return objects
 
 
 class SearchEditor(SearchDialog):
-    """ Base class for a search "editor" dialog, that offers a 'new' and 
-    'edit' button on the dialog footer. The 'new' and 'edit' buttons will 
-    call 'editor_class' sending as its parameters a new connection and the 
+    """ Base class for a search "editor" dialog, that offers a 'new' and
+    'edit' button on the dialog footer. The 'new' and 'edit' buttons will
+    call 'editor_class' sending as its parameters a new connection and the
     object to edit for 'edit' button.
-    
-    This is also a subclass of SearchDialog and the same rules are required. 
+
+    This is also a subclass of SearchDialog and the same rules are required.
 
     Some important parameters:
-    interface = The interface which we need to apply to the objects in 
+    interface = The interface which we need to apply to the objects in
                 kiwi list to get adapter for the editor.
     """
 
@@ -778,7 +778,7 @@ class SearchEditor(SearchDialog):
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  searching_by_date=False, hide_toolbar=False):
         SearchDialog.__init__(self, conn, table, search_table,
-                              hide_footer=hide_footer, title=title, 
+                              hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode,
                               searching_by_date=searching_by_date)
         self.interface = interface
@@ -815,7 +815,7 @@ class SearchEditor(SearchDialog):
         return self._selected
 
     def run(self, obj=None):
-        if obj: 
+        if obj:
             if self.interface:
                 if isinstance(obj, Adapter):
                     adapted = obj.get_adapted()
@@ -857,7 +857,7 @@ class SearchEditor(SearchDialog):
                 obj = self.klist.get_selected()
                 assert obj, msg % 0
         obj = self.get_model(obj)
-        self.run(obj) 
+        self.run(obj)
 
     def _on_toolbar__new(self, toolbar):
         self.run()
