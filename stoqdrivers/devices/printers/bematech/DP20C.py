@@ -36,6 +36,7 @@ from zope.interface import implements
 from stoqdrivers.devices.printers.interface import IChequePrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.cheque import BaseChequePrinter
+from stoqdrivers.devices.capabilities import Capability
 
 class DP20C(SerialBase, BaseChequePrinter):
     CMD_PREFIX = '\x1B'
@@ -83,7 +84,7 @@ class DP20C(SerialBase, BaseChequePrinter):
         bank_code = "987"
         for idx, data in enumerate((thirdparty, city, bank_code, value, date)):
             s = "%c%s" % (0xA0 + idx, data)
-            self.write(DP20C.CMD_PREFIX + s + DP20C.CMD_SUFFIX)       
+            self.write(DP20C.CMD_PREFIX + s + DP20C.CMD_SUFFIX)
 
     def _print_cheque(self):
         for data in (0xB1, 0xB0):
@@ -96,3 +97,10 @@ class DP20C(SerialBase, BaseChequePrinter):
     def print_cheque(self, *args, **kwargs):
         self._setup_cheque(*args, **kwargs)
         self._print_cheque()
+
+    def get_capabilities(self):
+        # XXX: The Bematech DP20C manual doesn't specify what are the
+        # parameter max values, so...
+        return {'cheque_thirdparty': Capability(),
+                'cheque_value': Capability(),
+                'cheque_city': Capability()}
