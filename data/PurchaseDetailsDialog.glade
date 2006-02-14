@@ -332,8 +332,8 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="purchase_subtotal">
-                                                <property name="data_type">str</property>
-                                                <property name="model_attribute">purchase_subtotal_str</property>
+                                                <property name="data_type">currency</property>
+                                                <property name="model_attribute">purchase_subtotal</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -346,8 +346,8 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="purchase_total">
-                                                <property name="data_type">str</property>
-                                                <property name="model_attribute">purchase_total_str</property>
+                                                <property name="data_type">currency</property>
+                                                <property name="model_attribute">purchase_total</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -656,7 +656,8 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="kiwi+ui+widgets+label+Label" id="freight">
-                                                        <property name="data_type">float</property>
+                                                        <property
+                                                        name="data_type">currency</property>
                                                         <property name="model_attribute">freight</property>
                                                         <property name="visible">True</property>
                                                         <property name="xalign">1.0</property>
