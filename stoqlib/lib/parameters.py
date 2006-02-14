@@ -42,9 +42,9 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class ParameterDetails:
     def __init__(self, group, short_desc, long_desc):
-        self.group = unicode(group)
-        self.short_desc = unicode(short_desc)
-        self.long_desc = unicode(long_desc)
+        self.group = group
+        self.short_desc = short_desc
+        self.long_desc = long_desc
 
 
 parameters_info = {
