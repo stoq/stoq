@@ -153,7 +153,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="cost">
-                        <property name="data_type">float</property>
+                        <property name="data_type">currency</property>
                         <property name="model_attribute">cost</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -168,7 +168,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="price">
-                        <property name="data_type">float</property>
+                        <property name="data_type">currency</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">base_sellable_info.price</property>
                         <property name="visible">True</property>
@@ -342,7 +342,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="stock_total_lbl">
-                        <property name="data_type">float</property>
+                        <property name="data_type">currency</property>
                         <property name="model_attribute">average_stock_price</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>

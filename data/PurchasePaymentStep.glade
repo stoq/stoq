@@ -48,7 +48,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="subtotal_lbl">
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_subtotal</property>
                                         <property name="xalign">1.0</property>
@@ -76,7 +76,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="total_lbl">
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_total</property>
                                         <property name="xalign">1.0</property>

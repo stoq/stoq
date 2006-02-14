@@ -45,7 +45,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_perc_ck">
-                                <property name="data_type">str</property>
+                                <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes"></property>
                                 <property name="visible">True</property>
@@ -57,7 +57,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_value_ck">
                                 <property name="active">False</property>
-                                <property name="data_type">str</property>
+                                <property name="data_type">bool</property>
                                 <property name="group">discount_perc_ck</property>
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
@@ -77,8 +77,8 @@
                                         <property name="data_type">float</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">discount_percentage</property>
-                                        <property name="width_request">80</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -106,26 +106,15 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel8">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">R$</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="discount_value">
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">currency</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">discount_value</property>
-                                        <property name="width_request">80</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                                 <child>
@@ -133,7 +122,7 @@
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
-                                        <property name="position">2</property>
+                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
@@ -166,7 +155,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_perc_ck">
-                                <property name="data_type">str</property>
+                                <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -179,7 +168,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_value_ck">
                                 <property name="active">False</property>
-                                <property name="data_type">str</property>
+                                <property name="data_type">bool</property>
                                 <property name="group">charge_perc_ck</property>
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
@@ -200,8 +189,8 @@
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="charge_perc">
                                         <property name="data_type">float</property>
                                         <property name="model_attribute">charge_percentage</property>
-                                        <property name="width_request">80</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -229,25 +218,15 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
-                                        <property name="data_type">str</property>
-                                        <property name="label" context="yes" translatable="yes">$</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                    </packing>
-                                </child>
-                                <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="charge_value">
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">currency</property>
+                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">charge_value</property>
-                                        <property name="width_request">80</property>
                                         <property name="visible">True</property>
+                                        <property name="width_request">80</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
-                                        <property name="position">1</property>
                                     </packing>
                                 </child>
                             </widget>
