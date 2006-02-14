@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -27,6 +27,9 @@
 """ Address slave implementation"""
 
 
+from sqlobject.sqlbuilder import AND
+
+from stoqlib.database import finish_transaction
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.domain.person import CityLocation, Address
@@ -105,11 +108,12 @@ class AddressSlave(BaseEditorSlave):
             self.model.city_location = None
             CityLocation.delete(cityloc.id, connection=self.conn)
 
-        query = ("city = '%s' and state = '%s' and country = '%s'"
-                 % (cityloc.city, cityloc.state, cityloc.country))
+        q1 = CityLocation.q.city == cityloc.city
+        q2 = CityLocation.q.state == cityloc.state
+        q3 = CityLocation.q.country == cityloc.country
+        query = AND(q1, q2, q3)
         conn = new_transaction()
         result = CityLocation.select(query, connection=conn)
-        conn.close()
 
         if not result.count():
             return
@@ -120,6 +124,7 @@ class AddressSlave(BaseEditorSlave):
 
         self.model.city_location = CityLocation.get(result[0].id)
         CityLocation.delete(cityloc.id, connection=self.conn)
+        finish_transaction(conn)
 
     def set_model(self, model):
         """ Changes proxy model.  This method is used when this slave is
