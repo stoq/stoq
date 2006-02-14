@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -26,7 +26,7 @@
 
 import datetime
 
-from sqlobject.col import (SOStringCol, SOIntCol, SOFloatCol, SODateTimeCol,
+from sqlobject.col import (SOUnicodeCol, SOIntCol, SOFloatCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
 from stoqlib.lib.runtime import new_transaction
@@ -44,7 +44,7 @@ BOOL_TEST_VALUES = (True, False)
 def column_type_data(column):
     """ This function returns tuples of values for each SQLObject
     column type:
-    SOStringCol, SOFloatCol, SOIntCOl, SODateCOl, SODateTimeCOl,
+    SOUnicodeCol, SOFloatCol, SOIntCOl, SODateCOl, SODateTimeCOl,
     SOBollCol. Any other column types receive None value.
 
     The first value of each pair is used to create an instance and are
@@ -52,7 +52,7 @@ def column_type_data(column):
 
     The second value is used to update the attribute of created instance.
     """
-    if isinstance(column, SOStringCol):
+    if isinstance(column, SOUnicodeCol):
         return STRING_TEST_VALUES
     elif isinstance(column, SOIntCol):
         return INT_TEST_VALUES
