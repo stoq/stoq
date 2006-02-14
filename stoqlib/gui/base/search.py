@@ -149,8 +149,7 @@ class SearchEntry(SlaveDelegate):
                'search_label',
                "search_entry",
                "search_icon")
-    gsignal('clicked')
-    gsignal('activate')
+    gsignal('selected')
 
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
