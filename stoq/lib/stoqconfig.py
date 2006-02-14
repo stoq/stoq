@@ -126,16 +126,19 @@ class AppConfig:
     def _lookup_user(self, username, password):
         # This function is really just a post-validation item.
         table = PersonAdaptToUser
-        res = table.select(table.q.username == '%s' % username)
+        conn = get_connection()
+        res = table.select(table.q.username == '%s' % username,
+                           connection=conn)
 
         msg = _("Invalid user or password")
-        if not res.count():
+        count = res.count()
+        if not count:
             raise LoginError(msg)
 
-        if res.count() != 1:
+        if count != 1:
             raise DatabaseInconsistency("It should exists only one instance "
                                         "in database for this username, got "
-                                        "%d instead" % res.count())
+                                        "%d instead" % count)
         user = res[0]
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
