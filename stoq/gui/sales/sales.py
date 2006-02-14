@@ -40,7 +40,6 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.gui.search.person import ClientSearch, CreditProviderSearch
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
@@ -73,7 +72,7 @@ class SalesApp(SearchableAppWindow):
         self._setup_slaves()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sales,
                                           column='total_sale_amount',
                                           label='<b>Total:</b>',

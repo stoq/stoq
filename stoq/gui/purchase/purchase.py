@@ -43,7 +43,6 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier
-from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchase import PurchaseWizard
@@ -75,7 +74,7 @@ class PurchaseApp(SearchableAppWindow):
         self._update_view()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         label = '<b>%s</b>' % _('Totals:')
         self.summary_total = SummaryLabel(klist=self.orders,
                                           column='purchase_total',

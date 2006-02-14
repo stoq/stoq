@@ -39,7 +39,7 @@ from stoqlib.gui.base.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
 
 from stoq.gui.application import AppWindow
-from stoqlib.lib.validators import format_quantity, get_price_format_str
+from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
@@ -137,7 +137,7 @@ class POSApp(AppWindow):
             widget = self.price_slave.get_widget()
             widget.connect("activate", self.on_price_activate)
 
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sellables,
                                           column='total',
                                           label='<b>Total:</b>',

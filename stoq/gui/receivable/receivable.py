@@ -37,7 +37,6 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoqlib.domain.payment.base import Payment
-from stoqlib.lib.validators import get_price_format_str
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
@@ -61,7 +60,7 @@ class ReceivableApp(SearchableAppWindow):
         self._update_widgets()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.receivables,
                                           column='value',
                                           label='<b>Total:</b>',
@@ -99,17 +98,17 @@ class ReceivableApp(SearchableAppWindow):
     #
 
     def get_columns(self):
-        return [Column('payment_id', title=_('Number'), width=100, 
+        return [Column('payment_id', title=_('Number'), width=100,
                        data_type=str, sorted=True,
                        format_func=self._get_payment_id),
-                Column('description', title=_('Description'), width=220, 
+                Column('description', title=_('Description'), width=220,
                        data_type=str),
                 Column('thirdparty_name', title=_('Drawee'), data_type=str,
                        width=170),
                 Column('due_date', title=_('Due Date'),
                        data_type=datetime.date, width=90),
-                Column('status_str', title=_('Status'), width=80, 
-                       data_type=str), 
+                Column('status_str', title=_('Status'), width=80,
+                       data_type=str),
                 Column('value', title=_('Value'), data_type=currency)]
 
     def get_extra_query(self):

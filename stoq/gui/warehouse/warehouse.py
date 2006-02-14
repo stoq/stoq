@@ -39,7 +39,6 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
@@ -66,7 +65,7 @@ class WarehouseApp(SearchableAppWindow):
         self._update_view()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.products,
                                           column='quantity',
                                           label=_('<b>Stock Total:</b>'),
