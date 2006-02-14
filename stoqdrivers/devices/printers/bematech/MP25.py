@@ -107,6 +107,7 @@ class MP25(SerialBase):
     CMD_PROTO = 0x1C
 
     model_name = "Bematech MP25 FI"
+    coupon_printer_charset = "cp850"
 
     st1_codes = {
         128: (OutofPaperError, _("Printer is out of paper")),

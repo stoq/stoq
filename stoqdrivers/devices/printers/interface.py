@@ -34,7 +34,11 @@ stoqdrivers/devices/printers/interface.py:
 
 from zope.interface import Interface, Attribute
 
-class ICouponPrinter(Interface):
+class IPrinter(Interface):
+    model_name = Attribute("The name of the printer that the driver "
+                           "implements")
+
+class ICouponPrinter(IPrinter):
     """ Describes coupon related tasks for a printer.
 
     Workflow
@@ -44,8 +48,8 @@ class ICouponPrinter(Interface):
     [identify_customer] -> open -> add_item -> totalize -> add_payment -> close
     """
 
-    model_name = Attribute("The name of the printer that the driver "
-                           "implements")
+    coupon_printer_charset = Attribute("The charset name which the "
+                                       "coupon printer uses.")
 
     #
     # Common API
@@ -207,8 +211,11 @@ class ICouponPrinter(Interface):
         * remove_cash_value (float)
         """
 
-class IChequePrinter(Interface):
+class IChequePrinter(IPrinter):
     """ Interface specification for cheque printers. """
+
+    cheque_printer_charset = Attribute("The charset name which the cheque "
+                                       "printer uses.")
 
     def get_banks():
         """ Returns a dictionary of all banks supported by the printer. The

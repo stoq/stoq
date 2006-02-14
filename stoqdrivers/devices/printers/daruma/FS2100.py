@@ -37,7 +37,6 @@ from stoqdrivers.constants import TAX_NONE, TAX_SUBSTITUTION
 CMD_ADD_ITEM = 201
 
 class FS2100(FS345):
-
     model_name = "Daruma FS 2100"
 
     def coupon_add_item(self, code, quantity, price, unit, description,
@@ -48,7 +47,7 @@ class FS2100(FS345):
             S = 'Tb'
         else: # TAX_EXEMPTION
             S = 'Fb'
-            
+
         if charge:
             d = 2
             E = charge
@@ -56,11 +55,11 @@ class FS2100(FS345):
             d = 0
             E = discount
 
-        # The minimum size of the description, when working with one line for 
+        # The minimum size of the description, when working with one line for
         # description; if 0, write in multiple lines, if necessary.
         desc_size = 0
 
-        # XXX: We need test correctly if the price's calcule is right (we 
+        # XXX: We need test correctly if the price's calcule is right (we
         # don't can do it right now since the manual isn't so clean).
         data = ('%2s'  # Tributary situation
                 '%07d' # Quantity
@@ -78,11 +77,11 @@ class FS2100(FS345):
 
         value = self.send_new_command(CMD_ADD_ITEM, data)
         return int(value[3:6])
- 
+
     def send_new_command(self, command, extra=''):
         """ This method is used to send especific commands to model FS2100.
         Note that the main differences are the prefix (0x1c + 'F', since we
-        will use a function of the FS2100 superset) and the checksum, that 
+        will use a function of the FS2100 superset) and the checksum, that
         must be included in the end of all the functions of this superset.
         """
         data = chr(command) + extra

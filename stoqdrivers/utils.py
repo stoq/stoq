@@ -30,6 +30,7 @@ stoqdrivers/utils.py:
 """
 
 import os
+import unicodedata
 
 def get_module_list(dirname):
     """ Given a directory name, returns a list of all Python modules in it
@@ -41,3 +42,20 @@ def get_module_list(dirname):
             continue
         modules.append(entry[:-3])
     return modules
+
+def encode_text(text, encoding):
+    """ Converts the string 'text' to encoding 'encoding' and optionally
+    normalizes the string (currently only for ascii)
+
+    @param text:       text to convert
+    @type:             str
+    @param encoding:   encoding to use
+    @type:             str
+
+    @returns:          converted text
+    """
+    if not isinstance(text, unicode):
+        return text
+    if encoding == "ascii":
+        text = unicodedata.normalize("NFKD", text)
+    return text.encode(encoding, "ignore")

@@ -36,7 +36,7 @@ from zope.interface import implements
 from stoqdrivers.devices.printers.interface import IChequePrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.cheque import BaseChequePrinter
-from stoqdrivers.devices.capabilities import Capability
+from stoqdrivers.devices.printers.capabilities import Capability
 
 class DP20C(SerialBase, BaseChequePrinter):
     CMD_PREFIX = '\x1B'
@@ -46,6 +46,7 @@ class DP20C(SerialBase, BaseChequePrinter):
     implements(IChequePrinter)
 
     model_name = "Bematech DP20C"
+    cheque_printer_charset = "cp850"
 
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)

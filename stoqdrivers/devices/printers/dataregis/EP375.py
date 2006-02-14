@@ -224,6 +224,8 @@ class EP375(SerialBase, BaseChequePrinter):
     implements(ICouponPrinter, IChequePrinter)
 
     model_name = "Dataregis 375 EP"
+    cheque_printer_charset = "ascii"
+    coupon_printer_charset = "ascii"
 
     CHEQUE_CONFIGFILE = "dataregis.ini"
 

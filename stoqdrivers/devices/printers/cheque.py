@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- Mode: Python; coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -37,6 +37,7 @@ from kiwi.environ import environ
 from stoqdrivers.devices.printers.interface import IChequePrinter
 from stoqdrivers.exceptions import ConfigError
 from stoqdrivers.devices.printers.base import BasePrinter
+from stoqdrivers.utils import encode_text
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
@@ -78,12 +79,12 @@ class BaseChequePrinter(BasePrinter):
     @cvar CHEQUE_CONFIGFILE: This constant must be redefined in subclass and
                              must specify the filename where the cheque printer
                              configuration can be found.
-    """ 
+    """
     CHEQUE_CONFIGFILE = None
 
     def __init__(self):
         self._banks = {}
-    
+
     def get_banks(self):
         configfile = self.__module__.split('.')[-2] + '.ini'
 
@@ -135,6 +136,10 @@ class ChequePrinter(BasePrinter):
         if not IChequePrinter in providedBy(self._driver):
             raise DoesNotImplement("The driver %r doesn't implements the "
                                    "IChequePrinter interface" % self._driver)
+        self._charset = self._driver.cheque_printer_charset
+
+    def _format_text(self, text):
+        return encode_text(text, self._charset)
 
     #
     # IChequePrinter interface
@@ -144,10 +149,12 @@ class ChequePrinter(BasePrinter):
         self.info("get_banks")
         return self._driver.get_banks()
 
-    @argcheck(object, number, str, str, datetime)
+    @argcheck(object, number, basestring, basestring, datetime)
     def print_cheque(self, bank, value, thirdparty, city, date=datetime.now()):
         self.info('print_cheque')
-        return self._driver.print_cheque(bank, value, thirdparty, city, date)
+        return self._driver.print_cheque(bank, value,
+                                         self._format_text(thirdparty),
+                                         self._format_text(city), date)
 
     def get_capabilities(self):
         self.info("get_capabilities")
@@ -164,7 +171,7 @@ def test():
     # what kind of the cheque the user wants to test, so let me get anyone.
     banks = printer.get_banks()
     bank = banks[banks.keys()[0]]
-    printer.print_cheque(bank, 6.66, "Henrique Romano", "Sao Paulo")
+    printer.print_cheque(bank, 6.66, "Henrique Romano", u"São Paulo")
 
 if __name__ == "__main__":
     test()

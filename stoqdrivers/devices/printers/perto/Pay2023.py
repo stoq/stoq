@@ -59,6 +59,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
 
     model_name = "Pertopay Fiscal 2023"
+    coupon_printer_charset = "cp850"
+    cheque_printer_charset = "ascii"
 
     CHEQUE_CONFIGFILE = 'perto.ini'
 

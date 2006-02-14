@@ -63,6 +63,7 @@ class IFS9000I(SerialBase):
     implements(ICouponPrinter)
 
     model_name = "Sweda IFS 9000 I"
+    coupon_printer_charset = "ascii"
 
     CMD_PREFIX = "."
     CMD_SUFFIX = EOL_DELIMIT = '}'

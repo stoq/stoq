@@ -54,6 +54,8 @@ class Simple:
     implements(IChequePrinter, ICouponPrinter)
 
     model_name = "Virtual Printer"
+    cheque_printer_charset = "latin-1"
+    coupon_printer_charset = "latin-1"
 
     def __init__(self, brand=None, model=None, device=None,
                  config_file=None):
@@ -93,7 +95,7 @@ class Simple:
         self._check_coupon_is_closed()
         self.is_coupon_opened = True
 
-    def coupon_add_item(self, code, quantity, price, unit, description, 
+    def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge, unit_desc=''):
         self._check_coupon_is_opened()
         if self.is_coupon_totalized:
@@ -103,7 +105,7 @@ class Simple:
         item_id = self.items_quantity
         self._items[item_id] = CouponItem(item_id, quantity, price)
         return item_id
-    
+
     def coupon_cancel_item(self, item_id):
         self._check_coupon_is_opened()
         if not item_id in self._items:
@@ -181,7 +183,7 @@ class Simple:
 
     #
     # IChequePrinter implementation
-    # 
+    #
 
     def print_cheque(self, value, thirdparty, city, date=None):
         return
