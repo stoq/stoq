@@ -28,7 +28,7 @@
 import gettext
 
 import gtk
-from kiwi.ui.widgets.list import Column, List
+from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.argcheck import argcheck
 from zope.interface import providedBy
 
@@ -67,8 +67,8 @@ class ParametersListingDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        self.klist = List(self._get_columns(), self._get_data(),
-                          gtk.SELECTION_BROWSE)
+        self.klist = ObjectList(self._get_columns(), self._get_data(),
+                                gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
         self.klist.connect("double-click", self._on_klist__double_click)
