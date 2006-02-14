@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -26,7 +26,7 @@
 
 import gettext
 
-from sqlobject import StringCol, ForeignKey, BoolCol
+from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from kiwi.python import Settable
 from zope.interface import implements
 
@@ -87,7 +87,7 @@ class GiftCertificate(Domain):
     certificate is a paper which will be used in the future as a payment
     method in a certain sale.
     """
-    notes = StringCol(default=None)
+    notes = UnicodeCol(default=None)
 
 #
 # Adapters

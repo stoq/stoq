@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -30,7 +30,7 @@ import datetime
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
+from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, UnicodeCol
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.base import AbstractPaymentGroup
@@ -121,8 +121,8 @@ class PurchaseOrder(Domain):
     expected_pay_date = DateTimeCol(default=None)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
-    notes = StringCol(default='')
-    salesperson_name = StringCol(default='')
+    notes = UnicodeCol(default='')
+    salesperson_name = UnicodeCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
     freight = PriceCol(default=0.0)
     charge_value = PriceCol(default=0.0)
@@ -254,13 +254,14 @@ class PurchaseOrder(Domain):
 
     def get_transporter_name(self):
         if not self.transporter:
-            return ""
+            return u""
         return self.transporter.get_adapted().name
 
     def get_order_number_str(self):
         if self.order_number:
-            return '%03d' % self.order_number
-        return ""
+            number = '%03d' % self.order_number
+            return unicode(number)
+        return u""
 
     def get_status_str(self):
         if not self.statuses.has_key(self.status):
@@ -320,7 +321,8 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         order = self.get_adapted()
-        return _('order %s') % order.order_number
+        desc = _('order %s') % order.order_number
+        return unicode(desc)
 
     #
     # Auxiliar methods

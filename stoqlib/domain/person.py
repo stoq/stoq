@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -31,7 +31,7 @@
 import gettext
 import datetime
 
-from sqlobject import (DateTimeCol, StringCol, IntCol, FloatCol,
+from sqlobject import (DateTimeCol, UnicodeCol, IntCol, FloatCol,
                        ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
@@ -57,7 +57,7 @@ class EmployeeRole(Domain):
 
     implements(IDescribable)
 
-    name = StringCol(alternateID=True)
+    name = UnicodeCol(alternateID=True)
 
     #
     # IDescribable implementation
@@ -75,10 +75,10 @@ class WorkPermitData(Domain):
                     that is a Brazil-specific information.
     """
 
-    number = StringCol(default=None)
-    series_number = StringCol(default=None)
-    pis_number = StringCol(default=None)
-    pis_bank = StringCol(default=None)
+    number = UnicodeCol(default=None)
+    series_number = UnicodeCol(default=None)
+    pis_number = UnicodeCol(default=None)
+    pis_bank = UnicodeCol(default=None)
     pis_registry_date = DateTimeCol(default=None)
 
 class MilitaryData(Domain):
@@ -86,25 +86,25 @@ class MilitaryData(Domain):
     information.
     """
 
-    number = StringCol(default=None)
-    series_number = StringCol(default=None)
-    category = StringCol(default=None)
+    number = UnicodeCol(default=None)
+    series_number = UnicodeCol(default=None)
+    category = UnicodeCol(default=None)
 
 class VoterData(Domain):
     """Voter data for employees. This is Brazil-specific information."""
 
-    number = StringCol(default=None)
-    section = StringCol(default=None)
-    zone = StringCol(default=None)
+    number = UnicodeCol(default=None)
+    section = UnicodeCol(default=None)
+    zone = UnicodeCol(default=None)
 
 class CityLocation(Domain):
     """Base class to store the locations. Used to store a person's address
     or birth location.
     """
 
-    country = StringCol(default=None)
-    city = StringCol(default=None)
-    state = StringCol(default=None)
+    country = UnicodeCol(default=None)
+    city = UnicodeCol(default=None)
+    state = UnicodeCol(default=None)
 
     def is_valid_model(self):
         return self.country and self.city and self.state
@@ -117,11 +117,11 @@ class Address(Domain):
                              for the main address
     """
 
-    street = StringCol(default='')
+    street = UnicodeCol(default='')
     number = IntCol(default=None)
-    district = StringCol(default='')
-    postal_code = StringCol(default='')
-    complement = StringCol(default='')
+    district = UnicodeCol(default='')
+    postal_code = UnicodeCol(default='')
+    complement = UnicodeCol(default='')
     is_main_address = BoolCol(default=False)
     person = ForeignKey('Person')
     city_location = ForeignKey('CityLocation')
@@ -141,16 +141,18 @@ class Address(Domain):
 
     def get_address_string(self):
         if self.street and self.number and self.district:
-            return '%s %s, %s' % (self.street, self.number, self.district)
+            address = '%s %s, %s' % (self.street, self.number,
+                                     self.district)
+            return unicode(address)
 
         # TODO: Try to return a better string if all fields aren't set
-        return ''
+        return u''
 
 class Liaison(Domain):
     """Base class to store the person's contact informations."""
 
-    name = StringCol(default='')
-    phone_number = StringCol(default='')
+    name = UnicodeCol(default='')
+    phone_number = UnicodeCol(default='')
     person = ForeignKey('Person')
 
 class Calls(Domain):
@@ -163,7 +165,7 @@ class Calls(Domain):
     """
 
     date = DateTimeCol()
-    message = StringCol()
+    message = UnicodeCol()
     person = ForeignKey('Person')
     attendant = ForeignKey('PersonAdaptToUser')
 
@@ -174,12 +176,12 @@ class Person(Domain):
     (ROLE_INDIVIDUAL,
      ROLE_COMPANY) = range(2)
 
-    name = StringCol()
-    phone_number = StringCol(default='')
-    mobile_number = StringCol(default='')
-    fax_number = StringCol(default='')
-    email = StringCol(default='')
-    notes = StringCol(default='')
+    name = UnicodeCol()
+    phone_number = UnicodeCol(default='')
+    mobile_number = UnicodeCol(default='')
+    fax_number = UnicodeCol(default='')
+    email = UnicodeCol(default='')
+    notes = UnicodeCol(default='')
     liaisons = MultipleJoin('Liaison')
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
@@ -190,19 +192,19 @@ class Person(Domain):
 
     def _set_phone_number(self, value):
         if value is None:
-            value = ''
+            value = u''
         value = raw_phone_number(value)
         self._SO_set_phone_number(value)
 
     def _set_fax_number(self, value):
         if value is None:
-            value = ''
+            value = u''
         value = raw_phone_number(value)
         self._SO_set_fax_number(value)
 
     def _set_mobile_number(self, value):
         if value is None:
-            value = ''
+            value = u''
         value = raw_phone_number(value)
         self._SO_set_mobile_number(value)
 
@@ -228,7 +230,7 @@ class Person(Domain):
     def get_address_string(self):
         address = self.get_main_address()
         if not address:
-            return ''
+            return u''
         return address.get_address_string()
 
     #
@@ -338,17 +340,17 @@ class PersonAdaptToIndividual(ModelAdapter):
 
     genders = {GENDER_MALE: _('Male'), GENDER_FEMALE: _('Female')}
 
-    cpf  = StringCol(default='')
-    rg_number = StringCol(default='')
+    cpf  = UnicodeCol(default='')
+    rg_number = UnicodeCol(default='')
     birth_date = DateTimeCol(default=None)
-    occupation = StringCol(default='')
+    occupation = UnicodeCol(default='')
     marital_status = IntCol(default=STATUS_SINGLE)
-    father_name = StringCol(default='')
-    mother_name = StringCol(default='')
+    father_name = UnicodeCol(default='')
+    mother_name = UnicodeCol(default='')
     rg_expedition_date = DateTimeCol(default=None)
-    rg_expedition_local = StringCol(default='')
+    rg_expedition_local = UnicodeCol(default='')
     gender = IntCol(default=None)
-    spouse_name = StringCol(default='')
+    spouse_name = UnicodeCol(default='')
     birth_location = ForeignKey('CityLocation', default=None)
 
     #
@@ -373,9 +375,9 @@ class PersonAdaptToCompany(ModelAdapter):
 
     # Cnpj and state_registry are
     # Brazil-specific information.
-    cnpj  = StringCol(default='')
-    fancy_name = StringCol(default='')
-    state_registry = StringCol(default='')
+    cnpj  = UnicodeCol(default='')
+    fancy_name = UnicodeCol(default='')
+    state_registry = UnicodeCol(default='')
 
     #
     # IDescribable implementation
@@ -462,7 +464,7 @@ class PersonAdaptToSupplier(ModelAdapter):
                 STATUS_BLOCKED:     _('Blocked')}
 
     status = IntCol(default=STATUS_ACTIVE)
-    product_desc = StringCol(default='')
+    product_desc = UnicodeCol(default='')
 
     #
     # Auxiliar methods
@@ -500,8 +502,8 @@ class PersonAdaptToEmployee(ModelAdapter):
     expire_vacation = DateTimeCol(default=None)
     salary = FloatCol(default=0.0)
     status = IntCol(default=STATUS_NORMAL)
-    registry_number = StringCol(default=None)
-    education_level = StringCol(default=None)
+    registry_number = UnicodeCol(default=None)
+    education_level = UnicodeCol(default=None)
     dependent_person_number = IntCol(default=None)
     role = ForeignKey('EmployeeRole')
 
@@ -541,8 +543,8 @@ class PersonAdaptToUser(ModelAdapter):
     statuses = {STATUS_ACTIVE:      _('Active'),
                 STATUS_INACTIVE:    _('Inactive')}
 
-    username = StringCol(alternateID=True)
-    password = StringCol()
+    username = UnicodeCol(alternateID=True)
+    password = UnicodeCol()
     is_active= BoolCol(default=True)
     profile  = ForeignKey('UserProfile')
 
@@ -645,8 +647,8 @@ class PersonAdaptToCreditProvider(ModelAdapter):
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
-    short_name = StringCol()
-    provider_id = StringCol(default='')
+    short_name = UnicodeCol()
+    provider_id = UnicodeCol(default='')
     open_contract_date = DateTimeCol()
 
     #

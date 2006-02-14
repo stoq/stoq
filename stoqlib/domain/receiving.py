@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -27,7 +27,7 @@
 import datetime
 import gettext
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
+from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, UnicodeCol
 from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import DatabaseInconsistency
@@ -69,9 +69,9 @@ class ReceivingOrder(Domain):
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
-    invoice_number = StringCol(default='')
+    invoice_number = UnicodeCol(default='')
     invoice_total = PriceCol(default=0.0)
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
     freight_total = PriceCol(default=0.0)
     charge_value = PriceCol(default=0.0)
     discount_value = PriceCol(default=0.0)
@@ -138,7 +138,7 @@ class ReceivingOrder(Domain):
 
     def get_order_number(self):
         if not self.purchase:
-            return _('No order set')
+            return unicode(_('No order set'))
         return self.purchase.get_order_number_str()
 
     #

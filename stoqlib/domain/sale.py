@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -28,7 +28,7 @@
 import gettext
 from datetime import datetime
 
-from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol
+from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -90,13 +90,13 @@ class Sale(Domain):
                 STATUS_REVIEWING:       _("Reviewing")}
 
     coupon_id = IntCol(default=None)
-    order_number = StringCol(default='')
+    order_number = UnicodeCol(default='')
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
     discount_value = PriceCol(default=0.0)
     charge_value = PriceCol(default=0.0)
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
 
     client = ForeignKey('PersonAdaptToClient', default=None)
     till = ForeignKey('Till')
@@ -137,7 +137,7 @@ class Sale(Domain):
 
     def get_client_name(self):
         if not self.client:
-            return _('Anonymous')
+            return unicode(_('Anonymous'))
         return self.client.get_name()
 
     def get_status_name(self):
@@ -321,7 +321,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         sale = self.get_adapted()
-        return _('sale %s') % sale.order_number
+        desc = _('sale %s') % sale.order_number
+        return unicode(desc)
 
     #
     # Auxiliar methods

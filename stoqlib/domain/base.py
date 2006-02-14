@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -32,6 +32,9 @@ from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
+from sqlobject.dbconnection import DBAPI, Transaction
+from sqlobject.converters import sqlrepr
+from sqlobject.sqlbuilder import SQLOp
 
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
@@ -40,7 +43,12 @@ from stoqlib.lib.runtime import get_connection
 from stoqlib.database import Adapter
 from stoqlib.exceptions import AdapterError
 
+
 __connection__ = get_connection()
+
+
+DATABASE_ENCODING = 'UTF-8'
+
 
 class MetaInterface(InterfaceClass):
     pass
@@ -57,7 +65,7 @@ class CannotAdapt(Exception):
 #
 
 
-class AbstractModel:
+class AbstractModel(object):
     """Generic methods for any domain classes."""
 
     def __ne__(self, other):
@@ -69,6 +77,31 @@ class AbstractModel:
         if not isinstance(self, Adapter):
             return self.id == other.id
         return self.get_adapted_id() == other.get_adapted_id()
+    #
+    # Overwriting some SQLObject methods
+    #
+
+    @classmethod
+    def select(cls, clause=None, connection=None, **kwargs):
+        from stoqlib.lib.configparser import config
+        rdbms_name = config.get_rdbms_name()
+        cls._check_connection(connection)
+        clause_repr = sqlrepr(clause, rdbms_name)
+        if isinstance(clause, SQLOp) and isinstance(clause_repr, unicode):
+            clause = clause_repr.encode(DATABASE_ENCODING)
+        return super(AbstractModel, cls).select(clause=clause,
+                                                connection=connection,
+                                                **kwargs)
+
+    @classmethod
+    def selectBy(cls, connection=None, **kw):
+        cls._check_connection(connection)
+        for field_name, search_str in kw.items():
+            if not isinstance(search_str, unicode):
+                continue
+            kw[field_name] = search_str.encode(DATABASE_ENCODING)
+        return super(AbstractModel, cls).selectBy(connection=connection,
+                                                  **kw)
 
     #
     # Classmethods
@@ -101,6 +134,21 @@ class AbstractModel:
     #
     # Auxiliar methods
     #
+
+    @classmethod
+    def _check_connection(cls, connection):
+        if connection is None and issubclass(cls, InheritableSQLObject):
+            # For an uncertain reason SQLObject doesn't send child
+            # connection to its parent. the interesting thing is that
+            # the connection is actually properly set on the instances
+            return
+        if connection is None:
+            raise ValueError("You must provide a valid connection "
+                             "argument for class %s" % cls)
+        if not isinstance(connection, (Transaction, DBAPI)):
+            raise TypeError("The argument connection must be of type "
+                            "Transaction, or DBAPI got %r instead"
+                            % connection)
 
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can
@@ -142,7 +190,9 @@ class AbstractModel:
     #
 
     def _set_original_references(self, _original, kwargs):
-        assert isinstance(self, Adapter)
+        if not isinstance(self, Adapter):
+            raise TypeError("Invalid Adapter class, it should be inherited "
+                            "from adapter, got %r"  % self)
         if _original:
             kwargs['_originalID'] = getattr(_original, 'id', None)
             kwargs['_original'] = _original
@@ -271,7 +321,8 @@ class Adaptable:
                                     forceDBName=True))
 
 
-class BaseDomain(SQLObject, AbstractModel):
+
+class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
 
 
@@ -301,8 +352,9 @@ class ConnMetaInterface(MetaInterface):
         # should this be `implements' of some kind?
         if ((persist is None or persist)
             and hasattr(adaptable, '_getComponent')):
+            conn = adaptable.get_connection()
             adapter = adaptable._getComponent(self, registry,
-                                              connection=connection)
+                                              connection=conn)
         else:
             adapter = registry.getAdapter(adaptable, self, _NoImplementor,
                                           persist=persist)
@@ -372,7 +424,7 @@ class Domain(BaseDomain, Adaptable):
         adapter = cls.getAdapterClass(iface)
         return adapter.get(object_id, **kwargs)
 
-class InheritableModel(InheritableSQLObject, AbstractModel, Adaptable):
+class InheritableModel(AbstractModel, InheritableSQLObject, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
     """
@@ -392,16 +444,17 @@ class ModelAdapter(BaseDomain, Adapter):
         BaseDomain.__init__(self, *args, **kwargs)
 
 
-class InheritableModelAdapter(InheritableModel, Adapter):
+class InheritableModelAdapter(AbstractModel, InheritableSQLObject, Adapter):
 
     def __init__(self, _original=None, *args, **kwargs):
         self._set_original_references(_original, kwargs)
-        InheritableModel.__init__(self, *args, **kwargs)
+        InheritableSQLObject.__init__(self, *args, **kwargs)
 
 
 
 
-for klass in (InheritableModel, Domain, ModelAdapter):
+for klass in (InheritableModel, Domain, ModelAdapter,
+              InheritableModelAdapter):
     klass.sqlmeta.cacheValues = False
     klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
                                         default=datetime.datetime.now))

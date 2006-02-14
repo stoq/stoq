@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -24,7 +24,7 @@
 ##
 """ Payment destination management implementations. """
 
-from sqlobject import StringCol, ForeignKey
+from sqlobject import UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.domain.base import InheritableModel
@@ -45,9 +45,9 @@ class PaymentDestination(InheritableModel):
     """
     implements(IDescribable)
 
-    description = StringCol()
+    description = UnicodeCol()
     account = ForeignKey('BankAccount', default=None)
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
 
     def get_balance(self, start_date=None, end_date=None):
         raise NotImplementedError

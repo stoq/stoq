@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -244,7 +244,8 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
         till = self.get_adapted()
         date_format = _('%d of %B')
         today_str = till.opening_date.strftime(date_format)
-        return _('till of %s') % today_str
+        desc = _('till of %s') % today_str
+        return unicode(desc)
 
 
 Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
