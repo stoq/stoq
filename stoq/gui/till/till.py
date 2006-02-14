@@ -39,7 +39,6 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person, PersonAdaptToClient
 from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
@@ -78,7 +77,7 @@ class TillApp(SearchableAppWindow):
         self.summary_label.update_total()
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sales,
                                           column='total_sale_amount',
                                           label='<b>Total:</b>',
