@@ -58,7 +58,8 @@ class SaleSearch(SearchDialog):
         self._setup_slaves()
 
     def _setup_slaves(self):
-        slave = SaleListToolbar(self.conn, self.klist, self)
+        slave = SaleListToolbar(self.conn, self.search_bar,
+                                self.klist, self)
         slave.hide_edit_button()
         slave.hide_return_sale_button()
         self.attach_slave("extra_holder", slave)

@@ -29,19 +29,19 @@ import gtk
 from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.ui.delegates import SlaveDelegate
-
+from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.gui.base.dialogs import run_dialog
+
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-
+from stoqlib.reporting.sale import SalesReport
 
 class DiscountChargeSlave(BaseEditorSlave):
     """A slave for discounts and charge management
 
     Notes:
         after_value_changed_handler     = a function which will be called
-                                          always after a discount or charge 
+                                          always after a discount or charge
                                           is changed
     """
     gladefile = 'DiscountChargeSlave'
@@ -56,7 +56,7 @@ class DiscountChargeSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_widgets(self):
-        float_widgets = [self.discount_perc, self.discount_value, 
+        float_widgets = [self.discount_perc, self.discount_value,
                          self.charge_perc, self.charge_value]
         format_str = get_price_format_str()
         for widget in float_widgets:
@@ -100,15 +100,15 @@ class DiscountChargeSlave(BaseEditorSlave):
     @signal_block('discount_value.changed')
     def after_discount_perc__changed(self, *args):
         self.setup_discount_charge()
-   
-    @signal_block('discount_perc.changed') 
+
+    @signal_block('discount_perc.changed')
     def after_discount_value__changed(self, *args):
         self.setup_discount_charge()
-    
+
     @signal_block('charge_value.changed')
     def after_charge_perc__changed(self, *args):
         self.setup_discount_charge()
-    
+
     @signal_block('charge_perc.changed')
     def after_charge_value__changed(self, *args):
         self.setup_discount_charge()
@@ -130,17 +130,20 @@ class SaleListToolbar(SlaveDelegate):
     changing installments and showing its details.
     """
     gladefile = "SaleListToolbar"
-    
-    def __init__(self, conn, klist, parent=None):
+
+    def __init__(self, conn, searchbar, klist, parent=None):
         SlaveDelegate.__init__(self, gladefile=SaleListToolbar.gladefile,
                                toplevel_name=SaleListToolbar.gladefile)
         if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
                             "list is supported on this slave")
         self.conn, self.klist, self.parent = conn, klist, parent
+        self.searchbar = searchbar
         self.klist.connect("selection-changed",
                            self.on_klist_selection_changed)
         self.klist.connect("double-click", self.on_klist_double_clicked)
+        self.klist.connect("has-rows", self._update_print_button)
+        self.klist.emit("has-rows", len(self.klist) != 0)
         self._update_buttons(False)
 
     def hide_return_sale_button(self):
@@ -148,6 +151,9 @@ class SaleListToolbar(SlaveDelegate):
 
     def hide_edit_button(self):
         self.edit_button.hide()
+
+    def _update_print_button(self, klist, enabled):
+        self.print_button.set_sensitive(enabled)
 
     def _update_buttons(self, enabled):
         for w in (self.return_sale_button,
@@ -178,3 +184,20 @@ class SaleListToolbar(SlaveDelegate):
 
     def on_details_button__clicked(self, *args):
         self._run_details_dialog(self.klist.get_selected())
+
+    def on_print_button__clicked(self, *args):
+        if self.searchbar is None:
+            print_report(SalesReport, list(self.klist))
+            return
+        extra_filters = self.searchbar.get_search_string()
+        start_date, end_date = self.searchbar.get_search_dates()
+        filter_slave = self.searchbar.get_filter_slave()
+        if filter_slave is None:
+            status = None
+        else:
+            status = filter_slave.filter_combo.get_selected_data()
+        blocked_results_qty = self.searchbar.get_blocked_records_quantity()
+        print_report(SalesReport, list(self.klist),
+                     extra_filters=extra_filters, start_date=start_date,
+                     end_date=end_date, status=status,
+                     blocked_results_qty=blocked_results_qty)
