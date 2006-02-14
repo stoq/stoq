@@ -61,7 +61,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="street">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">street</property>
@@ -74,7 +74,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="complement">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">complement</property>
                         <property name="visible">True</property>
                     </widget>
@@ -87,7 +87,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="postal_code">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">postal_code</property>
                         <property name="visible">True</property>
                     </widget>
@@ -101,7 +101,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="state">
                         <property name="completion">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="max_length">2</property>
@@ -187,7 +187,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="district">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">district</property>
                         <property name="visible">True</property>
@@ -202,7 +202,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="city">
                         <property name="completion">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.city</property>
@@ -218,7 +218,7 @@
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="country">
                         <property name="completion">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.country</property>

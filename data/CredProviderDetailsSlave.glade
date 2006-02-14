@@ -16,7 +16,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="status">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Status:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -73,7 +73,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Provider Type:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -81,7 +81,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Short Name:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -104,7 +104,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="short_name">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">short_name</property>
                                 <property name="visible">True</property>
@@ -118,7 +118,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Provider Id:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -130,7 +130,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Open Contract Date:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -144,7 +144,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="provider_id">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">provider_id</property>
                                 <property name="visible">True</property>
                             </widget>

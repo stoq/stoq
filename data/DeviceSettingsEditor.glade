@@ -79,7 +79,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+combobox+ComboBox" id="brand_combo">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">brand</property>
                         <property name="visible">True</property>
                     </widget>
@@ -147,7 +147,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+combobox+ComboBox" id="model_combo">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">model</property>
                         <property name="visible">True</property>
                     </widget>
@@ -161,7 +161,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="host">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">host</property>
                         <property name="visible">True</property>

@@ -31,7 +31,7 @@
                         <property name="model_attribute">cpf</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -60,7 +60,7 @@
                         <property name="model_attribute">rg_number</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -92,7 +92,7 @@ Local:</property>
                         <property name="model_attribute">rg_expedition_local</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

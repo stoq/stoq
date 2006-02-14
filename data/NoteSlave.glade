@@ -34,7 +34,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
                                 <property name="can_focus">True</property>
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                                 <property name="model_attribute">notes</property>
                                 <property name="wrap_mode">word-char</property>

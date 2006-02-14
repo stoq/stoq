@@ -98,7 +98,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="occupation">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">occupation</property>
                                 <property name="visible">True</property>
@@ -112,7 +112,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="mother_name">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">mother_name</property>
                                 <property name="visible">True</property>
@@ -126,7 +126,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="father_name">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">father_name</property>
                                 <property name="visible">True</property>
@@ -233,7 +233,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="birth_loc_state">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">state</property>
                                 <property name="visible">True</property>
@@ -247,7 +247,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="birth_loc_city">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">city</property>
                                 <property name="visible">True</property>
@@ -261,7 +261,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="birth_loc_country">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">country</property>
                                 <property name="visible">True</property>
@@ -275,7 +275,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="spouse_name">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">spouse_name</property>
                                 <property name="visible">True</property>

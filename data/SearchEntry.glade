@@ -8,7 +8,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                 </child>
@@ -25,7 +25,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="search_label">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">matching:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -101,7 +101,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

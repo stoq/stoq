@@ -62,7 +62,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="supplier">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">supplier_name</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -127,7 +127,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="order_number">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">order_number_str</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -141,7 +141,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="branch">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">branch_name</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -157,7 +157,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="status">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">status_str</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -486,7 +486,7 @@
                                                 <child>
                                                     <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
                                                         <property name="cursor_visible">False</property>
-                                                        <property name="data_type">str</property>
+                                                        <property name="data_type">unicode</property>
                                                         <property name="editable">False</property>
                                                         <property name="model_attribute">notes</property>
                                                         <property name="visible">True</property>
@@ -501,7 +501,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="payment_method">
-                                                <property name="data_type">str</property>
+                                                <property name="data_type">unicode</property>
                                                 <property name="model_attribute">default_payment_method_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -513,7 +513,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="salesperson">
-                                                <property name="data_type">str</property>
+                                                <property name="data_type">unicode</property>
                                                 <property name="model_attribute">salesperson_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -527,7 +527,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="transporter">
-                                                <property name="data_type">str</property>
+                                                <property name="data_type">unicode</property>
                                                 <property name="model_attribute">transporter_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -541,7 +541,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="freight_type">
-                                                <property name="data_type">str</property>
+                                                <property name="data_type">unicode</property>
                                                 <property name="model_attribute">freight_type_name</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>

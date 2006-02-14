@@ -113,7 +113,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="code">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">code</property>
@@ -128,7 +128,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="description">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">base_sellable_info.description</property>
@@ -190,7 +190,7 @@
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
                             <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="left_margin">5</property>
                                 <property name="model_attribute">notes</property>
@@ -295,7 +295,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="unit_entry">
                                         <property name="completion">True</property>
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="max_length">2</property>
                                         <property name="model_attribute">description</property>

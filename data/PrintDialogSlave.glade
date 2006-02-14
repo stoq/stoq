@@ -50,7 +50,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+combobox+ComboBox" id="printer_combo">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="model_attribute">printer_name</property>
                         <property name="visible">True</property>
                     </widget>
@@ -62,7 +62,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="filename_entry">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">filename</property>

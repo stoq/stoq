@@ -71,7 +71,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="registry_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">registry_number</property>
                                         <property name="visible">True</property>
@@ -140,7 +140,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="workpermit_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
                                         <property name="visible">True</property>
@@ -153,7 +153,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="workpermit_serie">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
                                         <property name="visible">True</property>
@@ -223,7 +223,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
                                         <property name="visible">True</property>
@@ -236,7 +236,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_serie">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
                                         <property name="visible">True</property>
@@ -251,7 +251,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_category">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">category</property>
                                         <property name="visible">True</property>
@@ -321,7 +321,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
                                         <property name="visible">True</property>
@@ -334,7 +334,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_section">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">section</property>
                                         <property name="visible">True</property>
@@ -349,7 +349,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_zone">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">zone</property>
                                         <property name="visible">True</property>
@@ -419,7 +419,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="pis_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_number</property>
                                         <property name="visible">True</property>
@@ -447,7 +447,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="pis_bank">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_bank</property>
                                         <property name="visible">True</property>
@@ -509,7 +509,7 @@ Number:</property>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="education_level">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">education_level</property>
                                         <property name="visible">True</property>
@@ -607,7 +607,7 @@ Number:</property>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="branch">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">branch</property>
                                         <property name="visible">True</property>
@@ -622,7 +622,7 @@ Number:</property>
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="account">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">account</property>
                                         <property name="visible">True</property>

@@ -146,7 +146,7 @@ Information:</property>
                         <property name="window_placement">bottom-left</property>
                         <child>
                             <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="left_margin">5</property>
                                 <property name="model_attribute">notes</property>
                                 <property name="right_margin">5</property>

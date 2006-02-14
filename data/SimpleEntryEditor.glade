@@ -21,7 +21,7 @@
                         <property name="model_attribute">name</property>
                         <property name="events"></property>
                         <property name="can_focus">True</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -37,7 +37,7 @@
                         <property name="use_markup">True</property>
                         <property name="events"></property>
                         <property name="xpad">1</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
