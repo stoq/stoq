@@ -71,7 +71,7 @@ class SalesApp(SearchableAppWindow):
         self._setup_widgets()
         self._update_widgets()
         self._setup_slaves()
-        
+
     def _setup_widgets(self):
         value_format = '<b>%s</b>' % get_price_format_str()
         self.summary_label = SummaryLabel(klist=self.sales,
@@ -82,7 +82,7 @@ class SalesApp(SearchableAppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
 
     def _setup_slaves(self):
-        slave = SaleListToolbar(self.conn, self.sales)
+        slave = SaleListToolbar(self.conn, self.searchbar, self.sales)
         self.attach_slave("list_toolbar_holder", slave)
 
     def on_searchbar_activate(self, slave, objs):

@@ -60,7 +60,7 @@ from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
 from stoq.gui.pos.neworder import NewOrderEditor
 from stoqlib.gui.slaves.price import PriceSlave
-from stoq.report.sale import SaleOrderReport
+from stoqlib.reporting.sale import SaleOrderReport
 
 _ = gettext.gettext
 
