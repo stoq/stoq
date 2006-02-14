@@ -44,7 +44,7 @@ def post_hook(conn):
     from stoqlib.domain.interfaces import IPaymentGroup
     from stoqlib.domain.sale import Sale
 
-    sales = Sale.select(Sale.q.order_number == '14031981')
+    sales = Sale.select(Sale.q.order_number == '14031981', connection=conn)
     assert sales.count() == 1, sales.count()
     sale = sales[0]
     items = sale.get_items()
