@@ -223,7 +223,7 @@ class ProductEditor(SellableEditor):
 
     def setup_widgets(self):
         self.notes_lbl.set_text(_('Product details'))
-        self.stock_total_lbl.show() 
+        self.stock_total_lbl.show()
         self.stock_lbl.show()
 
     def create_model(self, conn):
