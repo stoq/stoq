@@ -35,7 +35,7 @@ from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.dialogs import run_dialog
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import format_quantity, get_price_format_str
+from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.service import ServiceSellableItem, DeliveryItem
 from stoqlib.domain.sale import Sale
@@ -69,9 +69,6 @@ class DeliveryEditor(BaseEditor):
         if not self.delivery.get_items().count():
             validation_value = False
         self.refresh_ok(validation_value)
-
-    def set_widgets_format(self):
-        self.price.set_data_format(get_price_format_str())
 
     def update_widgets(self):
         if self.model.notes:
@@ -163,7 +160,6 @@ class DeliveryEditor(BaseEditor):
         return model
 
     def setup_proxies(self):
-        self.set_widgets_format()
         delivery = IDelivery(self.model, connection=self.conn)
         self.add_proxy(delivery, DeliveryEditor.delivery_widgets)
         self.add_proxy(self.model, DeliveryEditor.sellableitem_widgets)

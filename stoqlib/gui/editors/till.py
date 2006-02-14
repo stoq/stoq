@@ -33,12 +33,11 @@ from sqlobject.sqlbuilder import AND, IN
 from kiwi.datatypes import ValidationError
 
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.domain.till import Till, get_current_till_operation
 from stoqlib.domain.payment.base import Payment, CashAdvanceInfo
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee, 
+from stoqlib.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee,
                                        IBranch, IOutPayment)
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -48,14 +47,11 @@ class TillOpeningEditor(BaseEditor):
     model_name = _('Till Opening')
     model_type = Till
     gladefile = 'TillOpening'
-    proxy_widgets = ('open_date', 
+    proxy_widgets = ('open_date',
                      'initial_cash_amount')
 
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
-
-    def _setup_widgets(self):
-        self.initial_cash_amount.set_data_format(get_price_format_str())
 
     def _initialize_till_operation(self):
         if self.model.initial_cash_amount > 0:
@@ -67,14 +63,13 @@ class TillOpeningEditor(BaseEditor):
 
     #
     # BaseEditor hooks
-    # 
+    #
 
     def get_title_model_attribute(self, model):
         return self.model_name
 
     def setup_proxies(self):
         self.model.open_till()
-        self._setup_widgets()
         self._initialize_till_operation()
         self.add_proxy(self.model,
                        TillOpeningEditor.proxy_widgets)
@@ -93,15 +88,11 @@ class TillClosingEditor(BaseEditor):
         self.total_balance = model.get_balance()
         self._update_widgets()
 
-    def _setup_widgets(self):
-        for widget in (self.balance_to_send, self.final_cash_amount):
-            widget.set_data_format(get_price_format_str())
-    
-    def _payment_query(self): 
+    def _payment_query(self):
         current_till = get_current_till_operation(self.conn)
         group = IPaymentGroup(current_till, connection=self.conn)
         statuses = [Payment.STATUS_TO_PAY, Payment.STATUS_CANCELLED]
-        query = AND(IN(Payment.q.status, statuses), 
+        query = AND(IN(Payment.q.status, statuses),
                     Payment.q.groupID == group.id)
         payments = Payment.select(query, connection=self.conn)
         self.debits = 0
@@ -112,12 +103,12 @@ class TillClosingEditor(BaseEditor):
             else:
                 self.credits += payment.value
         if current_till.initial_cash_amount < 0:
-            raise ValueError(_('Initial cash amount cannot be lesser than ' 
+            raise ValueError(_('Initial cash amount cannot be lesser than '
                                'zero'))
         self.credits -= current_till.initial_cash_amount
-         
+
     def _update_widgets(self):
-        closing_date = self.model.closing_date.strftime('%x') 
+        closing_date = self.model.closing_date.strftime('%x')
         self.closing_date_lbl.set_text(closing_date)
         initial_cash = self.model.initial_cash_amount
         initial_cash_str = get_formatted_price(initial_cash)
@@ -131,7 +122,7 @@ class TillClosingEditor(BaseEditor):
         self.total_balance_lbl.set_text(total_balance)
         if self.total_balance < 0:
             self.total_balance_lbl.set_color('red')
-  
+
     def _update_final_cash_amount(self):
         balance_to_send = self.model.balance_sent or 0.0
         self.model.final_cash_amount = self.total_balance - balance_to_send
@@ -139,12 +130,12 @@ class TillClosingEditor(BaseEditor):
 
     def _update_balance_to_send(self):
         final_cash_amount = self.model.final_cash_amount or 0.0
-        self.model.balance_sent = self.total_balance - final_cash_amount 
+        self.model.balance_sent = self.total_balance - final_cash_amount
         self.proxy.update('balance_sent')
 
     #
     # BaseEditor hooks
-    # 
+    #
 
     def get_title(self, *args):
         return _('Closing current till')
@@ -153,7 +144,6 @@ class TillClosingEditor(BaseEditor):
         self._payment_query()
         self.model.close_till()
         self.final_cash = self.model.final_cash_amount
-        self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
 
@@ -189,7 +179,7 @@ class BaseCashSlave(BaseEditorSlave):
                      'date_lbl',
                      'cash_amount_lbl')
 
-    def __init__(self, conn, payment_description, 
+    def __init__(self, conn, payment_description,
                  payment_iface=IInPayment):
         self.payment_description = payment_description
         self.payment_iface = payment_iface
@@ -197,11 +187,10 @@ class BaseCashSlave(BaseEditorSlave):
 
     def _setup_widgets(self):
         self.date.set_text(datetime.datetime.now().strftime('%x'))
-        self.cash_amount.set_text('') 
 
-    # 
+    #
     # BaseEditorSlave Hooks
-    # 
+    #
 
     def create_model(self, conn):
         reason = self.payment_description
@@ -213,7 +202,7 @@ class BaseCashSlave(BaseEditorSlave):
         elif self.payment_iface is IOutPayment:
             return current_till.create_debit(*args)
         else:
-            raise ValueError('Invalid interface, got %s' 
+            raise ValueError('Invalid interface, got %s'
                              % self.payment_iface)
 
     def setup_proxies(self):
@@ -224,13 +213,15 @@ class BaseCashSlave(BaseEditorSlave):
     #
     # Kiwi handlers
     #
-    
-    def on_cash_amount__validate(self, entry, value):
-        if value < 0.0:
-            return ValidationError(_("Value Must be greater than zero"))
+
+    def validate_confirm(self):
+        if self.model.value <= 0:
+           self.cash_amount.set_invalid( _("Value Must be greater than zero"))
+           return False
+        return True
 
 
-class CashAdvanceEditor(BaseEditor): 
+class CashAdvanceEditor(BaseEditor):
     model_name = _('Cash Advance')
     model_type = CashAdvanceInfo
     gladefile = 'CashAdvanceEditor'
@@ -243,38 +234,38 @@ class CashAdvanceEditor(BaseEditor):
         for widget_name in widgets:
             widget = getattr(obj, widget_name)
             size_group.add_widget(widget)
-                            
+
     def _setup_widgets(self):
         self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self._setup_size_group(self.entry_size_group,
                                CashAdvanceEditor.entry_widgets,
                                self)
         self._setup_size_group(self.entry_size_group,
-                               self.cash_slave.proxy_widgets, 
+                               self.cash_slave.proxy_widgets,
                                self.cash_slave)
         self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self._setup_size_group(self.label_size_group,
                                CashAdvanceEditor.label_widgets,
                                self)
-        self._setup_size_group(self.label_size_group, 
+        self._setup_size_group(self.label_size_group,
                                self.cash_slave.label_widgets,
                                self.cash_slave)
-        employees = [(p.get_adapted().name, p) 
+        employees = [(p.get_adapted().name, p)
                      for p in Person.iselect(IEmployee, connection=self.conn)]
         self.employee_combo.prefill(employees)
         self.employee_combo.set_active(0)
-        
-    # 
+
+    #
     # BaseEditorSlave Hooks
-    # 
-    
+    #
+
     def create_model(self, conn):
-        # XXX We should not need to set None values here. 
+        # XXX We should not need to set None values here.
         # Waiting for bug 2163.
-        model = CashAdvanceInfo(employee=None, payment=None, 
+        model = CashAdvanceInfo(employee=None, payment=None,
                                 connection=conn)
         return model
-        
+
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(conn=self.conn,
                                         payment_description=None,
@@ -282,11 +273,14 @@ class CashAdvanceEditor(BaseEditor):
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
+    def validate_confirm(self):
+        return self.cash_slave.validate_confirm()
+
     def on_confirm(self):
         self.model.employee = self.employee_combo.get_selected_data()
         self.model.payment = self.cash_slave.model
         employee_name = self.employee_combo.get_selected_label()
-        payment_description = (_('Cash advance paid to employee: %s') 
+        payment_description = (_('Cash advance paid to employee: %s')
                                % employee_name)
         self.cash_slave.model.description = payment_description
         value = self.cash_slave.model.value
@@ -299,20 +293,23 @@ class CashInEditor(BaseEditor):
     model_name = _('Cash In')
     gladefile = 'BaseTemplate'
 
-    # 
+    #
     # BaseEditorSlave Hooks
-    # 
- 
+    #
+
     def setup_slaves(self):
         current_till = get_current_till_operation(self.conn)
-        branch = Person.iget(IBranch, current_till.branch.id, 
+        branch = Person.iget(IBranch, current_till.branch.id,
                              connection=self.conn)
-        branch_name = branch.get_adapted().name 
+        branch_name = branch.get_adapted().name
         payment_description = (_('Cash in for branch: %s') %
                                branch_name)
         self.cash_slave = BaseCashSlave(payment_description=payment_description,
                                         conn=self.conn)
         self.attach_slave("main_holder", self.cash_slave)
+
+    def validate_confirm(self):
+        return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
         value = self.cash_slave.model.value
@@ -326,39 +323,42 @@ class CashOutEditor(BaseEditor):
     label_widgets = ('reason_lbl',)
     entry_widgets = ('reason',)
     title = _('Reverse Payment')
-    
+
     payment_iface = IOutPayment
-    
+
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
             widget = getattr(obj, widget_name)
             size_group.add_widget(widget)
-        
+
     def _setup_widgets(self):
         self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self._setup_size_group(self.entry_size_group,
                                CashOutEditor.entry_widgets,
                                self)
         self._setup_size_group(self.entry_size_group,
-                               self.cash_slave.proxy_widgets, 
+                               self.cash_slave.proxy_widgets,
                                self.cash_slave)
         self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self._setup_size_group(self.label_size_group,
                                CashOutEditor.label_widgets,
                                self)
-        self._setup_size_group(self.label_size_group, 
+        self._setup_size_group(self.label_size_group,
                                self.cash_slave.label_widgets,
                                self.cash_slave)
-    
-    # 
+
+    #
     # BaseEditorSlave Hooks
-    # 
-    
+    #
+
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(self.conn, payment_description=None,
                                         payment_iface=self.payment_iface)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
+
+    def validate_confirm(self):
+        return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
         reason = self.reason.get_text()

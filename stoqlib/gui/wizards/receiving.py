@@ -44,7 +44,7 @@ from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
-from stoqlib.lib.validators import format_quantity, get_price_format_str
+from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.product import Product
@@ -96,10 +96,6 @@ class ReceivingInvoiceStep(BaseWizardStep):
             self.supplier.set_sensitive(False)
         self._setup_transporter_entry()
         self._setup_supplier_entry()
-        format_str = get_price_format_str()
-        for widget in [self.freight, self.icms_total, self.invoice_total,
-                       self.ipi]:
-            widget.set_data_format(format_str)
 
     #
     # WizardStep hooks

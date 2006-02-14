@@ -67,7 +67,7 @@ class GiftCertificateTypeEditor(BaseEditor):
         return model.base_sellable_info.description
 
     def setup_proxies(self):
-        widgets = [self.price, self.commission, self.max_discount]
+        widgets = [self.commission, self.max_discount]
         for widget in widgets:
             widget.set_data_format(get_price_format_str())
         self.add_proxy(self.model, GiftCertificateTypeEditor.proxy_widgets)

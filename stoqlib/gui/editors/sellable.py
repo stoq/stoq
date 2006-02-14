@@ -73,7 +73,7 @@ class SellablePriceEditor(BaseEditor):
 
     def set_widget_formats(self):
         widgets = (self.markup, self.base_markup, self.max_discount,
-                   self.commission, self.price, self.cost)
+                   self.commission)
         for widget in widgets:
             widget.set_data_format(get_price_format_str())
 
@@ -346,9 +346,6 @@ class SellableItemEditor(BaseEditor):
     def setup_widgets(self):
         sellable = self.model.sellable
         self.sellable_name.set_text(sellable.base_sellable_info.description)
-        format = get_price_format_str()
-        self.value.set_data_format(format)
-        self.total_label.set_data_format(format)
         if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
             self.disable_price_fields()
 
@@ -357,11 +354,11 @@ class SellableItemEditor(BaseEditor):
     #
 
     def on_quantity__value_changed(self, *args):
-        self.proxy.update('total')
+        self.proxy.update('total_str')
 
     def after_quantity__value_changed(self, *args):
-        self.proxy.update('total')
+        self.proxy.update('total_str')
 
     def after_value__changed(self, *args):
-        self.proxy.update('total')
+        self.proxy.update('total_str')
 

@@ -40,11 +40,10 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.person import (WorkPermitData, MilitaryData, 
-                                   VoterData, EmployeeRole, 
+from stoqlib.domain.person import (WorkPermitData, MilitaryData,
+                                   VoterData, EmployeeRole,
                                    EmployeeRoleHistory)
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -54,7 +53,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
     gladefile = 'EmployeeDetailsSlave'
     model_iface = IEmployee
 
-    # 
+    #
     # Widgets specification for size groups.
     #
 
@@ -121,7 +120,7 @@ class EmployeeDetailsSlave(BaseEditorSlave):
 
     #
     # BaseEditorSlave hooks
-    # 
+    #
 
     def setup_proxies(self):
         self.setup_widgets()
@@ -155,7 +154,7 @@ class EmployeeStatusSlave(BaseEditorSlave):
     proxy_widgets = ('statuses_combo',)
 
     def setup_proxies(self):
-        items = [(v, c) 
+        items = [(v, c)
                     for c, v in self.model_type.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
@@ -175,7 +174,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()
         BaseEditorSlave.__init__(self, conn)
- 
+
     def _setup_entry_completion(self):
         roles = [role for role in
                  EmployeeRole.select(connection=self.conn)]
@@ -187,7 +186,6 @@ class EmployeeRoleSlave(BaseEditorSlave):
         if self.salesperson:
             self.comission.update(self.salesperson.comission)
         self._setup_entry_completion()
-        self.salary.set_data_format(get_price_format_str())
 
     def _get_active_role_history(self):
         if self.is_edit_mode:
@@ -196,7 +194,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
             return None
 
     def _is_default_salesperson_role(self):
-        if (sysparam(self.conn).DEFAULT_SALESPERSON_ROLE == 
+        if (sysparam(self.conn).DEFAULT_SALESPERSON_ROLE ==
             self.model.role):
             return True
         return False
@@ -204,17 +202,17 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def on_confirm(self):
         if self._is_default_salesperson_role():
             if self.salesperson:
-                if not self.salesperson.is_active: 
+                if not self.salesperson.is_active:
                     self.salesperson.activate()
             else:
                 conn = self.conn
-                self.salesperson = self.person.addFacet(ISalesPerson, 
+                self.salesperson = self.person.addFacet(ISalesPerson,
                                                         connection=conn)
             self.salesperson.comission = self.comission.get_value()
         elif self.salesperson:
             if self.salesperson.is_active:
                 self.salesperson.inactivate()
-        
+
         self.employee.salary = self.model.salary
         if not self.model.role == self.employee.role:
             self.employee.role = self.model.role
@@ -223,7 +221,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
                 self.current_role_history.ended = datetime.datetime.now()
                 self.current_role_history.is_active = False
         else:
-            # XXX This will prevent problems in case that you can't update 
+            # XXX This will prevent problems in case that you can't update
             # the connection.
             self.model_type.delete(self.model.id, connection=self.conn)
         return self.model
@@ -231,11 +229,11 @@ class EmployeeRoleSlave(BaseEditorSlave):
     #
     # BaseEditorSlave Hooks
     #
-    
+
     def create_model(self, conn):
         return EmployeeRoleHistory(connection=conn,
                                    salary=self.employee.salary,
-                                   role=self.employee.role, 
+                                   role=self.employee.role,
                                    employee=self.employee)
 
     def setup_proxies(self):
@@ -265,7 +263,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def after_role__changed(self, widget):
         self._update_sensitivity()
-        
+
     def _update_sensitivity(self):
         editor = True
         settings = False
@@ -292,9 +290,9 @@ class EmployeeRoleHistorySlave(SlaveDelegate):
         self.history_list.add_list(self._get_objects())
 
     def _get_objects(self):
-        return [result for result in self.employee.get_role_history() 
+        return [result for result in self.employee.get_role_history()
                 if not result.is_active]
-                    
+
     def _get_columns(self):
         return [Column('began', _('Began'), data_type=datetime.date,
                        width=100),

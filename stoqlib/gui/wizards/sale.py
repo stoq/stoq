@@ -40,8 +40,7 @@ from stoqlib.gui.slaves.sale import DiscountChargeSlave
 from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                      CardMethodSlave,
                                      FinanceMethodSlave)
-from stoqlib.lib.validators import (get_price_format_str,
-                                    compare_float_numbers,
+from stoqlib.lib.validators import (compare_float_numbers,
                                     get_formatted_price)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import print_cheques_for_payment_group
@@ -442,7 +441,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         self.slave.hide_edit_button()
         self.slave.hide_add_button()
         self.slave.connect('after-delete-items', self.after_delete_items)
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary = SummaryLabel(klist=self.slave.klist,
                                     column='base_sellable_info.price',
                                     label=_('<b>Total:</b>'),
@@ -606,11 +605,6 @@ class SalesPersonStep(BaseWizardStep):
     def on_discount_charge_slave__discount_changed(self, slave):
         self.update_totals()
 
-    def _setup_widgets(self):
-        self.setup_combo()
-        self.total_lbl.set_data_format(get_price_format_str())
-        self.subtotal_lbl.set_data_format(get_price_format_str())
-
     #
     # WizardStep hooks
     #
@@ -648,7 +642,7 @@ class SalesPersonStep(BaseWizardStep):
     #
 
     def setup_proxies(self):
-        self._setup_widgets()
+        self.setup_combo()
         self.proxy = self.add_proxy(self.model,
                                     SalesPersonStep.proxy_widgets)
 
