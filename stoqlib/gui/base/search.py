@@ -32,7 +32,7 @@ import gtk
 import gobject
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
-from kiwi.ui.widgets.list import Column, List
+from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
@@ -68,8 +68,8 @@ class DateSearchSlave(SlaveDelegate):
     widgets = ('search_label',
                "anytime_check",
                "date_check") + proxy_widgets
-    gsignal('startdate-activate')
-    gsignal('enddate-activate')
+    gsignal('start-date-selected')
+    gsignal('end-date-selected')
 
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
@@ -137,10 +137,10 @@ class DateSearchSlave(SlaveDelegate):
         self._update_view()
 
     def on_start_date__activate(self, *args):
-        self.emit('startdate-activate')
+        self.emit('start-date-selected')
 
     def on_end_date__activate(self, *args):
-        self.emit('enddate-activate')
+        self.emit('end-date-selected')
 
 
 class SearchEntry(SlaveDelegate):
@@ -149,8 +149,8 @@ class SearchEntry(SlaveDelegate):
                'search_label',
                "search_entry",
                "search_icon")
-    gsignal('searchbutton-clicked')
-    gsignal('searchentry-activate')
+    gsignal('clicked')
+    gsignal('activate')
 
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
     ANIMATE_TIMEOUT = 200
@@ -179,10 +179,10 @@ class SearchEntry(SlaveDelegate):
     #
 
     def on_search_button__clicked(self, *args):
-        self.emit('searchbutton-clicked')
+        self.emit('selected')
 
     def on_search_entry__activate(self, *args):
-        self.emit('searchentry-activate')
+        self.emit('selected')
 
     #
     # Animation
@@ -245,14 +245,15 @@ class SearchBar(SlaveDelegate):
         if searching_by_date:
             self._slave = DateSearchSlave(filter_slave)
             entry_slave = self._slave.get_slave()
-            self._slave.connect('startdate-activate', self.search_items)
-            self._slave.connect('enddate-activate', self.search_items)
+            self._slave.connect('start-date-selected',
+                                self._on_date_search__start_date_selected)
+            self._slave.connect('end-date-selected',
+                                self._on_date_search__end_date_selected)
         else:
             self._slave = SearchEntry(filter_slave)
             entry_slave = self._slave
 
-        entry_slave.connect('searchbutton-clicked', self.search_items)
-        entry_slave.connect('searchentry-activate', self.search_items)
+        entry_slave.connect('selected', self._on_search_entry__selected)
         self.conn = conn
         self._extra_query_callback = None
         self._filter_results_callback = None
@@ -264,6 +265,17 @@ class SearchBar(SlaveDelegate):
         self.query_args = query_args
         self._slave_callback = search_callback
         self._split_field_types()
+
+    # Callbacks
+
+    def _on_date_search__start_date_selected(self, datesearch):
+        self.search_items()
+
+    def _on_date_search__end_date_selected(self, datesearch):
+        self.search_items()
+
+    def _on_search_entry__selected(self, searchentry):
+        self.search_items()
 
     #
     # Preparing query fields and groups
@@ -621,7 +633,7 @@ class SearchDialog(BasicDialog):
     def setup_slaves(self, **kwargs):
         self.disable_ok()
 
-        self.klist = List(self.get_columns(), mode=self.selection_mode)
+        self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
         # XXX: I think that BasicDialog must redesigned, if so we don't
         # need this ".remove" crap
         self.main.remove(self.main_label)
