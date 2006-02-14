@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -117,7 +117,8 @@ class GiftCertificateEditor(BaseEditor):
     def _create_gift_certificate(self, sellable_info, code):
         certificate = GiftCertificate(connection=self.conn)
         certificate.addFacet(ISellable, connection=self.conn,
-                             code=code, base_sellable_info=sellable_info)
+                             code=unicode(code),
+                             base_sellable_info=sellable_info)
 
     #
     # BaseEditor hooks
@@ -146,7 +147,7 @@ class GiftCertificateEditor(BaseEditor):
         else:
             for number in range(self.model.first_number, 
                                 self.model.last_number + 1):
-                self._create_gift_certificate(sellable_info, number)
+                self._create_gift_certificate(sellable_info, str(number))
         return True
 
     #

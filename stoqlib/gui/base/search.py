@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -37,7 +37,7 @@ from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
-from sqlobject.col import (SOStringCol, SOFloatCol, SOIntCol,
+from sqlobject.col import (SOUnicodeCol, SOFloatCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
@@ -287,7 +287,7 @@ class SearchBar(SlaveDelegate):
             if not column.origName in attributes:
                 continue
             value = (column.name, table_type)
-            if (isinstance(column, SOStringCol)
+            if (isinstance(column, SOUnicodeCol)
                 and value not in self.str_fields):
                self.str_fields.append(value)
             elif (isinstance(column, SOIntCol)
