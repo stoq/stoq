@@ -46,6 +46,7 @@ from stoqlib.domain.interfaces import (IContainer, IClient, IStorable,
                                        IRenegotiationSaleReturnMoney,
                                        IRenegotiationGiftCertificate,
                                        IRenegotiationOutstandingValue)
+from stoqlib.lib.validators import get_formatted_price
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -217,6 +218,9 @@ class Sale(Domain):
         charge_value = self.charge_value or 0.0
         discount_value = self.discount_value or 0.0
         return self.get_sale_subtotal() + charge_value - discount_value
+
+    def get_total_amount_as_string(self):
+        return get_formatted_price(self.get_total_sale_amount())
 
     def get_total_interest(self):
         raise NotImplementedError

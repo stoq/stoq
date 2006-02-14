@@ -241,6 +241,7 @@ class SearchBar(SlaveDelegate):
         self._animate_search_icon_id = -1
         self.search_results_label.set_text('')
         self.search_results_label.set_size('small')
+        self.filter_slave = filter_slave
         if searching_by_date:
             self._slave = DateSearchSlave(filter_slave)
             entry_slave = self._slave.get_slave()
@@ -256,6 +257,7 @@ class SearchBar(SlaveDelegate):
         self.conn = conn
         self._extra_query_callback = None
         self._filter_results_callback = None
+        self._blocked_results_counter = None
         self.attach_slave('place_holder', self._slave)
         self.searching_by_date = searching_by_date
         self._result_strings = None
@@ -458,6 +460,11 @@ class SearchBar(SlaveDelegate):
             search_results = self.table_type.select(**kwargs)
 
         max_search_results = get_max_search_results()
+        if search_results.count() > max_search_results:
+            self._blocked_results_counter = (search_results.count()
+                                             - max_search_results)
+        else:
+            self._blocked_results_counter = 0
         objs = search_results[:max_search_results]
 
         total = search_results.count()
@@ -550,6 +557,22 @@ class SearchBar(SlaveDelegate):
     def set_search_string(self, value):
         self._slave.set_search_string(value)
 
+    def get_search_dates(self):
+        res = (None, None)
+        if self.searching_by_date:
+            dates = self._slave.get_search_dates()
+            if dates is not None:
+                res = dates
+        return res
+
+    def get_blocked_records_quantity(self):
+        """ Return the number of records that were blocked in the last
+        query.
+        """
+        return self._blocked_results_counter
+
+    def get_filter_slave(self):
+        return self.filter_slave
 
 class SearchEditorToolBar(SlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
