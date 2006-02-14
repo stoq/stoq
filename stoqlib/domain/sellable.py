@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -29,7 +29,7 @@ or a service, implemented in your own modules.
 import datetime
 import gettext
 
-from sqlobject import DateTimeCol, StringCol, IntCol, FloatCol, ForeignKey
+from sqlobject import DateTimeCol, UnicodeCol, IntCol, FloatCol, ForeignKey
 from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 
@@ -53,7 +53,7 @@ class SellableUnit(Domain):
     defines if this object is one of our 'primitive units' (unit registered
     in database initialization time) or a user specified unit.
     """
-    description = StringCol()
+    description = UnicodeCol()
     index = IntCol()
 
 
@@ -68,10 +68,10 @@ class FancySellable:
         self.unit = unit
 
     def get_unit_description(self):
-        return self.unit and self.unit.description or ""
+        return self.unit and self.unit.description or u""
 
 class AbstractSellableCategory(Domain):
-    description = StringCol()
+    description = UnicodeCol()
     suggested_markup = FloatCol(default=0.0)
 
     # A percentage commission suggested for all the sales which products
@@ -110,8 +110,9 @@ class SellableCategory(Domain):
         return self.category_data.get_commission()
 
     def get_description(self):
-        return "%s %s" % (self.base_category.get_description(),
+        desc = "%s %s" % (self.base_category.get_description(),
                           self.category_data.description)
+        return unicode(desc)
 
 
 class AbstractSellableItem(InheritableModel):
@@ -163,7 +164,7 @@ class BaseSellableInfo(Domain):
     implements(IDescribable)
 
     price = PriceCol(default=0.0)
-    description = StringCol(default='')
+    description = UnicodeCol(default='')
     max_discount = FloatCol(default=0.0)
     commission = FloatCol(default=None)
 
@@ -196,7 +197,7 @@ class AbstractSellable(InheritableModelAdapter):
                 STATUS_CLOSED: _("Closed"),
                 STATUS_BLOCKED: _("Blocked")}
 
-    code = StringCol(alternateID=True, default="")
+    code = UnicodeCol(alternateID=True, default="")
     status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
     cost = PriceCol(default=0.0)
@@ -291,10 +292,11 @@ class AbstractSellable(InheritableModelAdapter):
         return self.base_sellable_info.commission
 
     def get_short_description(self):
-        return '%s %s' % (self.code, self.base_sellable_info.description)
+        desc = '%s %s' % (self.code, self.base_sellable_info.description)
+        return unicode(desc)
 
     def get_unit_description(self):
-        return self.unit and self.unit.description or ""
+        return self.unit and self.unit.description or u""
 
     def get_status_string(self):
         if not self.statuses.has_key(self.status):

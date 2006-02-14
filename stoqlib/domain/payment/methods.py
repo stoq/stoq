@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -30,7 +30,7 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
-from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol,
+from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
                        ForeignKey, BoolCol)
 from zope.interface import implements
 
@@ -627,7 +627,7 @@ class PaymentMethodDetails(InheritableModel):
 
     is_active = BoolCol(default=True)
     commission = FloatCol(default=0.0)
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
     provider = ForeignKey('PersonAdaptToCreditProvider')
     destination = ForeignKey('PaymentDestination')
 

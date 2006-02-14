@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -30,7 +30,7 @@ stoq/domain/devices.py
 
 import gettext
 
-from sqlobject import StringCol, IntCol
+from sqlobject import UnicodeCol, IntCol
 
 from stoqlib.domain.base import Domain
 
@@ -38,10 +38,10 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class DeviceSettings(Domain):
     type = IntCol()
-    brand = StringCol()
-    model = StringCol()
+    brand = UnicodeCol()
+    model = UnicodeCol()
     device = IntCol()
-    host = StringCol()
+    host = UnicodeCol()
 
     (DEVICE_SERIAL1,
      DEVICE_SERIAL2,

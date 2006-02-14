@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -26,7 +26,7 @@
 
 import gettext
 
-from sqlobject import StringCol , IntCol, ForeignKey
+from sqlobject import IntCol, ForeignKey, UnicodeCol
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -47,7 +47,7 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class RenegotiationData(Domain):
     responsible = ForeignKey('Person')
-    reason = StringCol(default=None)
+    reason = UnicodeCol(default=None)
 
 #
 # Adapters
@@ -66,7 +66,7 @@ class RenegotiationAdaptToGiftCertificate(ModelAdapter):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
-    new_gift_certificate_number = StringCol()
+    new_gift_certificate_number = UnicodeCol()
     overpaid_value = PriceCol()
     status = IntCol(default=STATUS_PENDING)
 

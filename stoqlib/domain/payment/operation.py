@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -24,7 +24,7 @@
 ##
 """ Payment operation management implementations """
 
-from sqlobject import DateTimeCol, StringCol
+from sqlobject import DateTimeCol, UnicodeCol
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -48,7 +48,7 @@ class POAdaptToPaymentDevolution(ModelAdapter):
     """Stores information for payment devolutions"""
     implements(IPaymentDevolution)
 
-    reason = StringCol(default='')
+    reason = UnicodeCol(default='')
 
     def get_devolution_date(self):
         return self.get_adapted().operation_date

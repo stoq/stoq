@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -23,7 +23,7 @@
 """ User profile management for applications"""
 
 
-from sqlobject import StringCol, ForeignKey, MultipleJoin, BoolCol
+from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.runtime import get_application_names
@@ -35,7 +35,7 @@ class ProfileSettings(Domain):
     class stores information about the access availability in a certain
     application."""
 
-    app_dir_name = StringCol()
+    app_dir_name = UnicodeCol()
     has_permission = BoolCol(default=False)
     user_profile = ForeignKey('UserProfile')
 
@@ -43,7 +43,7 @@ class ProfileSettings(Domain):
 class UserProfile(Domain):
     """User profile definition."""
 
-    name = StringCol()
+    name = UnicodeCol()
     profile_settings = MultipleJoin('ProfileSettings')
 
     @classmethod

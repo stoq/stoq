@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -22,7 +22,7 @@
 ##
 """ Domain classes to manage bank accounts """
 
-from sqlobject import StringCol, IntCol
+from sqlobject import UnicodeCol, IntCol
 
 from stoqlib.domain.base import Domain
 
@@ -40,9 +40,9 @@ class Bank(Domain):
         - I{compensation_code}: some financial operations require this code.
                                 It is specific for each bank.
     """
-    name = StringCol()
-    short_name = StringCol()
-    compensation_code = StringCol()
+    name = UnicodeCol()
+    short_name = UnicodeCol()
+    compensation_code = UnicodeCol()
 
 class BankAccount(Domain):
     """A bank account definition.
@@ -53,6 +53,6 @@ class BankAccount(Domain):
         - I{account}: an identifier of this account in the branch.
     """
     bank_id = IntCol(default=0)
-    branch = StringCol(default=None)
-    account = StringCol(default=None)
+    branch = UnicodeCol(default=None)
+    account = UnicodeCol(default=None)
 

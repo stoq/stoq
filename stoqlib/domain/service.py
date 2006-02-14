@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -28,7 +28,7 @@
 import gettext
 import datetime
 
-from sqlobject import StringCol, DateTimeCol, FloatCol, ForeignKey
+from sqlobject import UnicodeCol, DateTimeCol, FloatCol, ForeignKey
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
@@ -49,13 +49,13 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 class Service(Domain):
     """Class responsible to store basic service informations."""
 
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
 
 
 class ServiceSellableItem(AbstractSellableItem):
     """A service implementation as a sellable item."""
 
-    notes = StringCol(default=None)
+    notes = UnicodeCol(default=None)
     estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
     completion_date = DateTimeCol(default=None)
 
@@ -101,7 +101,7 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
 
     implements(IDelivery, IContainer)
 
-    address = StringCol(default='')
+    address = UnicodeCol(default='')
 
     #
     # IContainer implementation

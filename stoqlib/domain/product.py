@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -26,7 +26,8 @@ import gettext
 import operator
 
 from kiwi.datatypes import currency
-from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
+from sqlobject import (UnicodeCol, FloatCol, ForeignKey, MultipleJoin,
+                       BoolCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
@@ -67,7 +68,7 @@ class ProductSupplierInfo(Domain):
     """
 
     base_cost = PriceCol(default=0.0)
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
     is_main_supplier = BoolCol(default=False)
     # This is Brazil-specific information
     icms = FloatCol(default=0.0)
@@ -88,7 +89,7 @@ class ProductSupplierInfo(Domain):
 class Product(Domain):
     """Class responsible to store basic products informations."""
 
-    notes = StringCol(default='')
+    notes = UnicodeCol(default='')
     suppliers = MultipleJoin('ProductSupplierInfo')
 
     #

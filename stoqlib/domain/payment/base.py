@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -30,7 +30,7 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
-from sqlobject import (IntCol, DateTimeCol, FloatCol, StringCol,
+from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
                        ForeignKey)
 from zope.interface import implements
 
@@ -88,8 +88,8 @@ class Payment(Domain):
     value = PriceCol()
     interest = PriceCol(default=0.0)
     discount = PriceCol(default=0.0)
-    description = StringCol(default=None)
-    payment_number = StringCol(default=None)
+    description = UnicodeCol(default=None)
+    payment_number = UnicodeCol(default=None)
 
     method = ForeignKey('AbstractPaymentMethodAdapter')
     method_details = ForeignKey('PaymentMethodDetails', default=None)
