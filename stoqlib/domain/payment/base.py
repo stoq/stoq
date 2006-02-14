@@ -36,6 +36,7 @@ from zope.interface import implements
 
 from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
@@ -82,11 +83,11 @@ class Payment(Domain):
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
-    paid_value = FloatCol(default=0.0)
-    base_value = FloatCol()
-    value = FloatCol()
-    interest = FloatCol(default=0.0)
-    discount = FloatCol(default=0.0)
+    paid_value = PriceCol(default=0.0)
+    base_value = PriceCol()
+    value = PriceCol()
+    interest = PriceCol(default=0.0)
+    discount = PriceCol(default=0.0)
     description = StringCol(default=None)
     payment_number = StringCol(default=None)
 

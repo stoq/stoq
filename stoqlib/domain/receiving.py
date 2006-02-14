@@ -48,7 +48,7 @@ class ReceivingOrderItem(Domain):
         - I{cost}: the cost for each product received
     """
     quantity_received = FloatCol()
-    cost = FloatCol()
+    cost = PriceCol()
     sellable = ForeignKey('AbstractSellable')
     receiving_order = ForeignKey('ReceivingOrder')
 
@@ -65,7 +65,7 @@ class ReceivingOrder(Domain):
 
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
-        
+
     status = IntCol(default=STATUS_PENDING)
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
@@ -73,8 +73,8 @@ class ReceivingOrder(Domain):
     invoice_total = PriceCol(default=0.0)
     notes = StringCol(default='')
     freight_total = PriceCol(default=0.0)
-    charge_value = FloatCol(default=0.0)
-    discount_value = FloatCol(default=0.0)
+    charge_value = PriceCol(default=0.0)
+    discount_value = PriceCol(default=0.0)
 
     # This is Brazil-specific information
     icms_total = PriceCol(default=0.0)
@@ -116,7 +116,7 @@ class ReceivingOrder(Domain):
     #
     # Accessors
     #
-    
+
     def get_products_total(self):
         return sum([item.get_total() for item in self.get_items()], 0.0)
 
@@ -140,7 +140,7 @@ class ReceivingOrder(Domain):
         if not self.purchase:
             return _('No order set')
         return self.purchase.get_order_number_str()
-        
+
     #
     # General methods
     #
@@ -156,7 +156,7 @@ class ReceivingOrder(Domain):
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
-        Note that percentage must be added as an absolute value not as a 
+        Note that percentage must be added as an absolute value not as a
         factor like 1.05 = 5 % of charge
         The correct form is 'percentage = 3' for a discount of 3 %
         """
@@ -178,7 +178,7 @@ class ReceivingOrder(Domain):
 
     def _set_charge_by_percentage(self, value):
         """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a 
+        Note that charge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
         The correct form is 'percentage = 3' for a charge of 3 %
         """
@@ -203,7 +203,7 @@ class ReceivingOrder(Domain):
 def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     """Returns a list of receiving items based on a list of purchase items
     that weren't received yet.
-    
+
     @param purchase_order: a PurchaseOrder instance that holds one or more
                            purchase items
     @param receiving_order: a ReceivingOrder instance tied with the
@@ -213,6 +213,6 @@ def get_receiving_items_by_purchase_order(purchase_order, receiving_order):
     return [ReceivingOrderItem(connection=conn,
                                quantity_received=item.get_pending_quantity(),
                                cost=item.cost,
-                               sellable=item.sellable, 
+                               sellable=item.sellable,
                                receiving_order=receiving_order)
             for item in purchase_order.get_pending_items()]

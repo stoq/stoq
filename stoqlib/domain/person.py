@@ -39,6 +39,7 @@ from zope.interface import implements
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.domain.base import CannotAdapt, Domain, ModelAdapter
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -813,7 +814,7 @@ class EmployeeRoleHistory(Domain):
 
     began = DateTimeCol(default=datetime.datetime.now)
     ended = DateTimeCol(default=None)
-    salary = FloatCol()
+    salary = PriceCol()
     role = ForeignKey('EmployeeRole')
     employee = ForeignKey('PersonAdaptToEmployee')
     is_active = BoolCol(default=True)

@@ -58,7 +58,7 @@ DEFAULT_PAYMENT_INTERVALS = 1
 def get_till(conn):
     till = get_current_till_operation(conn)
     if till is None:
-        till = Till(connection=conn, 
+        till = Till(connection=conn,
                     branch=sysparam(conn).CURRENT_BRANCH)
         till.open_till()
 

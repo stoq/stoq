@@ -28,10 +28,12 @@
 import gettext
 from datetime import datetime
 
-from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol, FloatCol
+from sqlobject import StringCol, DateTimeCol, ForeignKey, IntCol
 from zope.interface import implements
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import currency
 
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import AbstractSellableItem
 from stoqlib.domain.payment.base import AbstractPaymentGroup
@@ -92,8 +94,8 @@ class Sale(Domain):
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
-    discount_value = FloatCol(default=0.0)
-    charge_value = FloatCol(default=0.0)
+    discount_value = PriceCol(default=0.0)
+    charge_value = PriceCol(default=0.0)
     notes = StringCol(default='')
 
     client = ForeignKey('PersonAdaptToClient', default=None)
@@ -208,7 +210,8 @@ class Sale(Domain):
         return self.till.branch
 
     def get_sale_subtotal(self):
-        return sum([item.get_total() for item in self.get_items()], 0.0)
+        subtotal = sum([item.get_total() for item in self.get_items()], 0.0)
+        return currency(subtotal)
 
     def get_total_sale_amount(self):
         """Return the total value paid by the client. This can be
@@ -217,7 +220,9 @@ class Sale(Domain):
                      interest - discount"""
         charge_value = self.charge_value or 0.0
         discount_value = self.discount_value or 0.0
-        return self.get_sale_subtotal() + charge_value - discount_value
+        total_amount = (self.get_sale_subtotal() + charge_value -
+                        discount_value)
+        return currency(total_amount)
 
     def get_total_amount_as_string(self):
         return get_formatted_price(self.get_total_sale_amount())
@@ -445,7 +450,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         if self.renegotiation_data is None:
             return self.default_method
         adapter = self.get_renegotiation_adapter()
-        if IRenegotiationOutstandingValue.providedBy(adapter):
+        if IRenegotiationOutstandingValue.providedBy(adapter.get_adapted()):
             return adapter.payment_method
         else:
             return self.default_method
