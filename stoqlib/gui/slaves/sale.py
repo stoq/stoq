@@ -56,8 +56,7 @@ class DiscountChargeSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def setup_widgets(self):
-        float_widgets = [self.discount_perc, self.discount_value,
-                         self.charge_perc, self.charge_value]
+        float_widgets = [self.discount_perc, self.charge_perc]
         format_str = get_price_format_str()
         for widget in float_widgets:
             widget.set_data_format(format_str)

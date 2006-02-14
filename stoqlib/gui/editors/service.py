@@ -35,7 +35,6 @@ from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.gui.editors.sellable import SellableEditor
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.lib.validators import get_price_format_str
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -54,9 +53,6 @@ class ServiceItemEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.service_name_label.set_bold(True)
 
-    def set_widgets_format(self):
-        self.price.set_data_format(get_price_format_str())
-
     #
     # BaseEditor hooks
     # 
@@ -65,7 +61,6 @@ class ServiceItemEditor(BaseEditor):
         return model.sellable.base_sellable_info.description
 
     def setup_proxies(self):
-        self.set_widgets_format()
         self.add_proxy(self.model, ServiceItemEditor.proxy_widgets)
 
 

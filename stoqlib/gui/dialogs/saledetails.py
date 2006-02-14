@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.lib.validators import get_formatted_price, get_price_format_str
+from stoqlib.lib.validators import get_formatted_price
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -92,7 +92,7 @@ class SaleDetailsDialog(SlaveDelegate):
         group = IPaymentGroup(self.sale, connection=self.conn)
         self.payments_list.add_list(group.get_items())
 
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         payments_summary_label = SummaryLabel(klist=self.payments_list,
                                               column='value',
                                               label='<b>Total:</b>',

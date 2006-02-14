@@ -177,7 +177,7 @@ class AbstractProductStep(BaseWizardStep):
         self.slave.connect('before-delete-items', self._before_delete_items)
         self.slave.connect('after-delete-items', self._update_total)
         self.slave.connect('on-edit-item', self._update_total)
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         self.summary = SummaryLabel(klist=self.slave.klist, column='total',
                                     label=self.summary_label_text,
                                     value_format=value_format)

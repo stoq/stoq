@@ -32,7 +32,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.lib.validators import get_price_format_str, format_quantity
+from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 
@@ -70,7 +70,7 @@ class PurchaseDetailsDialog(BaseEditor):
         self.ordered_items.add_list(self.model.get_items())
         self.received_items.add_list(self.model.get_items())
 
-        value_format = '<b>%s</b>' % get_price_format_str()
+        value_format = '<b>%s</b>'
         received_label = '<b>%s</b>' % _('Total Received:')
         received_summary_label = SummaryLabel(klist=self.received_items,
                                               column='received_total',
@@ -78,7 +78,6 @@ class PurchaseDetailsDialog(BaseEditor):
                                               value_format=value_format)
         received_summary_label.show()
         self.received_vbox.pack_start(received_summary_label, False)
-        self.freight.set_data_format(get_price_format_str())
 
     def _get_ordered_columns(self):
         return [Column('sellable.base_sellable_info.description',

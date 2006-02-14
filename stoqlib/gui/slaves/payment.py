@@ -34,8 +34,7 @@ from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH
-from stoqlib.lib.validators import (get_price_format_str, get_formatted_price,
-                                    compare_float_numbers)
+from stoqlib.lib.validators import get_formatted_price, compare_float_numbers
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import get_current_cheque_printer_settings
 from stoqlib.domain.account import BankAccount
@@ -229,7 +228,6 @@ class BillDataSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, model)
 
     def _setup_widgets(self):
-        self.value.set_data_format(get_price_format_str())
         self.payment_number_label.set_bold(True)
         self.payment_number_label.set_size('small')
 

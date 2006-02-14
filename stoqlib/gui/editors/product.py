@@ -103,7 +103,6 @@ class ProductSupplierEditor(BaseEditor):
         self.new_supplier_button.set_sensitive(False)
 
     def set_widget_formats(self):
-        self.base_cost.set_data_format(get_price_format_str())
         self.icms.set_data_format(get_price_format_str())
 
     def setup_combos(self):

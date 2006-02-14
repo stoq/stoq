@@ -133,8 +133,6 @@ class PurchasePaymentStep(BaseWizardStep):
                  (_('Money'), table.METHOD_MONEY)]
         self.method_combo.prefill(items)
         format_str = get_price_format_str()
-        self.subtotal_lbl.set_data_format(format_str)
-        self.total_lbl.set_data_format(format_str)
 
     def _update_payment_method_slave(self):
         holder_name = 'method_slave_holder'
