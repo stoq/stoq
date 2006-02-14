@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -27,7 +27,7 @@
 import gettext
 
 from stoqlib.exceptions import DatabaseInconsistency
-from sqlobject import StringCol, BoolCol
+from sqlobject import UnicodeCol, BoolCol
 from kiwi.python import namedAny, ClassInittableObject
 
 from stoqlib.lib.runtime import new_transaction, print_msg
@@ -42,9 +42,9 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 class ParameterDetails:
     def __init__(self, group, short_desc, long_desc):
-        (self.group,
-         self.short_desc,
-         self.long_desc) = group, short_desc, long_desc
+        self.group = unicode(group)
+        self.short_desc = unicode(short_desc)
+        self.long_desc = unicode(long_desc)
 
 
 parameters_info = {
@@ -255,8 +255,8 @@ class ParameterData(Domain):
     field_value = the current result(or value) of this parameter
     is_editable = if the item can't be edited through an editor.
     """
-    field_name = StringCol(alternateID=True)
-    field_value = StringCol()
+    field_name = UnicodeCol(alternateID=True)
+    field_value = UnicodeCol()
     is_editable = BoolCol()
 
     def get_group(self):
@@ -300,36 +300,36 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
                  ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
                  ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
-                 ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool, 
+                 ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
                                initial=True),
                  ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', bool,
                                initial=False),
                  ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
-                 ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool, 
+                 ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                                initial=True),
                  ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
 
                  # Adding objects -- Note that all the object referred here must
                  # implements the IDescribable interface.
-                 ParameterAttr('SUGGESTED_SUPPLIER', 
+                 ParameterAttr('SUGGESTED_SUPPLIER',
                                'person.PersonAdaptToSupplier'),
-                 ParameterAttr('CURRENT_BRANCH', 
+                 ParameterAttr('CURRENT_BRANCH',
                                'person.PersonAdaptToBranch'),
                  ParameterAttr('DEFAULT_BASE_CATEGORY',
                                'sellable.BaseSellableCategory'),
-                 ParameterAttr('DEFAULT_SALESPERSON_ROLE', 
+                 ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                                'person.EmployeeRole'),
                  ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
                                'payment.destination.PaymentDestination'),
                  ParameterAttr('BASE_PAYMENT_METHOD',
                                'payment.methods.PaymentMethod'),
-                 ParameterAttr('METHOD_MONEY', 
+                 ParameterAttr('METHOD_MONEY',
                                'payment.methods.PMAdaptToMoneyPM'),
-                 ParameterAttr('DELIVERY_SERVICE', 
+                 ParameterAttr('DELIVERY_SERVICE',
                                'service.ServiceAdaptToSellable'),
                  ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
                                'giftcertificate.GiftCertificateType'),
-                 ParameterAttr('CURRENT_WAREHOUSE', 
+                 ParameterAttr('CURRENT_WAREHOUSE',
                                'person.PersonAdaptToCompany')]
 
     _cache = {}
@@ -345,8 +345,8 @@ class ParameterAccess(ClassInittableObject):
             setattr(cls, obj.key, prop)
 
     def set_schema(self, field_name, field_value, is_editable=True):
-        ParameterData(connection=self.conn, field_name=field_name, 
-                      field_value=field_value, is_editable=is_editable)
+        ParameterData(connection=self.conn, field_name=field_name,
+                      field_value=str(field_value), is_editable=is_editable)
 
     def rebuild_cache_for(self, param_name):
         try:
@@ -443,7 +443,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, PersonAdaptToSupplier):
             return
         person_obj = Person(name=key, connection=self.conn)
-        person_obj.addFacet(ICompany, cnpj='supplier suggested', 
+        person_obj.addFacet(ICompany, cnpj='supplier suggested',
                             connection=self.conn)
         supplier = person_obj.addFacet(ISupplier, connection=self.conn)
         self.set_schema(key, supplier.id)
@@ -454,9 +454,9 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_BASE_CATEGORY"
         if self.get_parameter_by_field(key, BaseSellableCategory):
             return
-        abstract_cat = AbstractSellableCategory(connection=self.conn, 
+        abstract_cat = AbstractSellableCategory(connection=self.conn,
                                                 description=key)
-        base_cat = BaseSellableCategory(connection=self.conn, 
+        base_cat = BaseSellableCategory(connection=self.conn,
                                         category_data=abstract_cat)
         self.set_schema(key, base_cat.id)
 
@@ -465,7 +465,7 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        role = EmployeeRole(name='Salesperson', 
+        role = EmployeeRole(name='Salesperson',
                             connection=self.conn)
         self.set_schema(key, role.id, is_editable=False)
 
@@ -476,7 +476,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, PersonAdaptToBranch):
             return
 
-        person_obj = Person(name="Async Serviços de informática Ltda",
+        person_obj = Person(name="Async Open Source",
                             phone_number="33760125", fax_number="35015394",
                             connection=self.conn)
         city_location = CityLocation(city="Sao Carlos", state="SP",
@@ -501,7 +501,7 @@ class ParameterAccess(ClassInittableObject):
         person_obj = Person(name=key, connection=self.conn)
         # XXX See ensure_current_branch comment: we have the same problem with
         # cnpj here.
-        person_obj.addFacet(ICompany, cnpj=_('current_warehouse'), 
+        person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
                             connection=self.conn)
         self.set_schema(key, person_obj.id)
 
@@ -543,7 +543,7 @@ class ParameterAccess(ClassInittableObject):
 
         service = Service(connection=self.conn)
 
-        sellable_info = BaseSellableInfo(connection=self.conn, 
+        sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_('Delivery'), price=0.0)
         sellable = service.addFacet(ISellable, code='SD',
                                     base_sellable_info=sellable_info,
@@ -560,7 +560,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, GiftCertificateType):
             return
         description = _('General Gift Certificate')
-        sellable_info = BaseSellableInfo(connection=self.conn, 
+        sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=description,
                                          price=0.0)
         certificate = GiftCertificateType(connection=self.conn,
