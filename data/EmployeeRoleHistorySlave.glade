@@ -4,7 +4,7 @@
     <widget class="GtkWindow" id="EmployeeRoleHistorySlave">
         <property name="can_focus">True</property>
         <child>
-            <widget class="kiwi+ui+widgets+list+List" id="history_list">
+            <widget class="ObjectList" id="history_list">
                 <property name="selection_mode">single</property>
                 <property name="shadow_type">in</property>
                 <property name="vscrollbar_policy">automatic</property>

@@ -11,7 +11,7 @@
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+list+List" id="klist">
+                    <widget class="ObjectList" id="klist">
                         <property name="visible">True</property>
                     </widget>
                 </child>
