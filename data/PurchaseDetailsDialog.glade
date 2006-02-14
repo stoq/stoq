@@ -187,7 +187,7 @@
                                     <widget class="GtkVBox" id="items_vbox">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+list+List" id="ordered_items">
+                                            <widget class="ObjectList" id="ordered_items">
                                                 <property name="is_focus">True</property>
                                                 <property name="shadow_type">in</property>
                                                 <property name="visible">True</property>
@@ -376,7 +376,7 @@
                                 <property name="spacing">18</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+list+List" id="received_items">
+                                    <widget class="ObjectList" id="received_items">
                                         <property name="is_focus">True</property>
                                         <property name="shadow_type">in</property>
                                         <property name="visible">True</property>
