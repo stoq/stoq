@@ -16,7 +16,7 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="description">
                         <property name="can_focus">True</property>
                         <property name="completion">False</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">category_data.description</property>

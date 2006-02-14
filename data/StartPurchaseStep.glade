@@ -18,7 +18,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Open Date:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -26,7 +26,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Branch:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -38,7 +38,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Supplier:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -50,7 +50,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Freight Type:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -138,7 +138,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Order Number:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -168,7 +168,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Freight:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -198,7 +198,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel12">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -243,7 +243,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel15">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -253,7 +253,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel14">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -265,7 +265,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel13">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -277,7 +277,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">%</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>

@@ -9,7 +9,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="service_name_label">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property
                         name="model_attribute">sellable.base_sellable_info.description</property>
                         <property name="xalign">0.0</property>
@@ -109,7 +109,7 @@
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
                             <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">notes</property>
                                 <property name="visible">True</property>
                             </widget>

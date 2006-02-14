@@ -16,14 +16,14 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel9">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Discount:</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Charge:</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -86,7 +86,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">%</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -198,7 +198,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">%</property>
                                         <property name="visible">True</property>
                                     </widget>

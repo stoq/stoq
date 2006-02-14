@@ -36,7 +36,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Subtotal:</property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -68,7 +68,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Total:</property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -104,7 +104,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Payment Method:</property>
                                 <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
@@ -122,7 +122,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

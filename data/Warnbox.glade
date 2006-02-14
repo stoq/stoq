@@ -42,7 +42,7 @@
                         <property name="use_markup">True</property>
                         <property name="events">all-events-mask | button-motion-mask | button-press-mask | button-release-mask | button1-motion-mask | button2-motion-mask | button3-motion-mask | enter-notify-mask | exposure-mask | focus-change-mask | key-press-mask | key-release-mask | leave-notify-mask | pointer-motion-hint-mask | pointer-motion-mask | property-change-mask | proximity-in-mask | proximity-out-mask | scroll-mask | structure-mask | substructure-mask | visibility-notify-mask</property>
                         <property name="xalign">0.02</property>
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>

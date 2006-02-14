@@ -19,7 +19,7 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Salesperson Name:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -27,7 +27,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Transporter:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -39,7 +39,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Expected Receival Date:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -51,7 +51,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Notes:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -71,7 +71,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="salesperson_name">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">salesperson_name</property>
                                 <property name="visible">True</property>
@@ -115,7 +115,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -138,7 +138,7 @@
                                 <property name="vscrollbar_policy">automatic</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">notes</property>
                                         <property name="visible">True</property>

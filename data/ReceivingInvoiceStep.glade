@@ -185,7 +185,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="invoice_number">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">invoice_number</property>
                                         <property name="visible">True</property>
@@ -307,7 +307,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="order_number">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="model_attribute">order_number</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>

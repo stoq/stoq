@@ -21,7 +21,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Credit Provider:</property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -32,7 +32,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Payment Type:</property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
@@ -45,7 +45,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Number of Installments:</property>
                                         <property name="xalign">1.0</property>
                                         <property name="visible">True</property>

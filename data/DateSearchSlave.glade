@@ -20,13 +20,13 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="search_label">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="justify">right</property>
                                 <property name="label" context="yes" translatable="yes">Placed:</property>
                                 <property name="visible">True</property>
@@ -78,7 +78,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="ellipsize">end</property>
                                 <property name="label" context="yes" translatable="yes">to</property>
                                 <property name="visible">True</property>
@@ -104,7 +104,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -113,7 +113,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

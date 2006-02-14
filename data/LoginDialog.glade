@@ -119,7 +119,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="notification_label">
-                        <property name="data_type">str</property>
+                        <property name="data_type">unicode</property>
                         <property name="justify">center</property>
                         <property name="visible">True</property>
                         <property name="wrap">True</property>

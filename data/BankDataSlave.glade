@@ -25,7 +25,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                        <property name="data_type">str</property>
+                                        <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Bank ID:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
@@ -51,7 +51,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Branch Number:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -63,7 +63,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="branch">
-                                <property name="data_type">str</property>
+                                <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">branch</property>
                                 <property name="visible">True</property>
