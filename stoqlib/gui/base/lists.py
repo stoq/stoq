@@ -27,8 +27,8 @@ import gettext
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.objectlist import ObjectList
 from kiwi.utils import gsignal
-from kiwi.ui.widgets.list import List
 
 from stoqlib.gui.base.dialogs import (run_dialog, confirm_dialog,
                                       BasicPluggableDialog, BasicDialog)
@@ -254,7 +254,7 @@ class SimpleListDialog(BasicDialog):
 
     def setup_slave(self, columns, objects, selection_mode):
         self.main.remove(self.main_label)
-        self._klist = List(columns, objects, selection_mode)
+        self._klist = ObjectList(columns, objects, selection_mode)
         self.main.add(self._klist)
         self._klist.show()
 
