@@ -28,7 +28,7 @@ import gettext
 import datetime
 
 from kiwi.argcheck import argcheck
-from kiwi.datatypes import format_price
+from kiwi.datatypes import currency
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, StringCol
 
@@ -51,8 +51,8 @@ class PurchaseItem(Domain):
     """
     quantity = FloatCol(default=1.0)
     quantity_received = FloatCol(default=0.0)
-    base_cost = FloatCol()
-    cost = FloatCol()
+    base_cost = PriceCol()
+    cost = PriceCol()
     sellable = ForeignKey('AbstractSellable')
     order = ForeignKey('PurchaseOrder')
 
@@ -124,7 +124,7 @@ class PurchaseOrder(Domain):
     notes = StringCol(default='')
     salesperson_name = StringCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
-    freight = FloatCol(default=0.0)
+    freight = PriceCol(default=0.0)
     charge_value = PriceCol(default=0.0)
     discount_value = PriceCol(default=0.0)
     supplier = ForeignKey('PersonAdaptToSupplier')
@@ -269,20 +269,15 @@ class PurchaseOrder(Domain):
         return self.statuses[self.status]
 
     def get_purchase_subtotal(self):
-        return sum([item.get_total() for item in self.get_items()], 0.0)
-
-    def get_purchase_subtotal_str(self):
-        return format_price(self.get_purchase_subtotal())
+        subtotal = sum([item.get_total() for item in self.get_items()], 0.0)
+        return currency(subtotal)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
         total = subtotal - self.discount_value + self.charge_value
         if total < 0:
             raise ValueError('Purchase total can not be lesser than zero')
-        return total
-
-    def get_purchase_total_str(self):
-        return format_price(self.get_purchase_total())
+        return currency(total)
 
     def get_received_total(self):
         return sum([item.cost * item.quantity_received

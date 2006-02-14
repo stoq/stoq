@@ -25,11 +25,13 @@
 import gettext
 import operator
 
+from kiwi.datatypes import currency
 from sqlobject import (StringCol, FloatCol, ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.exceptions import StockError, SellError
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.person import PersonAdaptToBranch
@@ -64,7 +66,7 @@ class ProductSupplierInfo(Domain):
                    'de servicos'
     """
 
-    base_cost = FloatCol(default=0.0)
+    base_cost = PriceCol(default=0.0)
     notes = StringCol(default='')
     is_main_supplier = BoolCol(default=False)
     # This is Brazil-specific information
@@ -380,8 +382,8 @@ class ProductAdaptToStorable(ModelAdapter):
                    'and TotalCost= %f')
             raise StockError(msg % (self.get_adapted(), total_cost))
         if not total_qty:
-            return 0.0
-        return total_cost / total_qty
+            return currency(0.0)
+        return currency(total_cost / total_qty)
 
     def _has_qty_available(self, quantity, branch):
         logic_qty = self.get_logic_balance(branch)

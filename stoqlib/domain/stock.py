@@ -25,6 +25,7 @@
 from sqlobject import FloatCol, ForeignKey
 
 from stoqlib.domain.base import InheritableModel
+from stoqlib.domain.columns import PriceCol
 
 #
 # Adapters
@@ -38,7 +39,7 @@ class AbstractStockItem(InheritableModel):
                         main cost of a certain product.
     """
 
-    stock_cost = FloatCol(default=0.0)
+    stock_cost = PriceCol(default=0.0)
     quantity = FloatCol(default=0.0)
     logic_quantity = FloatCol(default=0.0)
     branch =  ForeignKey('PersonAdaptToBranch')

@@ -29,12 +29,13 @@ import operator
 import datetime
 import gettext
 
-from sqlobject import IntCol, DateTimeCol, FloatCol, ForeignKey
+from sqlobject import IntCol, DateTimeCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
@@ -71,9 +72,9 @@ class Till(Domain):
      STATUS_CLOSED) = range(3)
 
     status = IntCol(default=STATUS_PENDING)
-    balance_sent = FloatCol(default=None)
-    initial_cash_amount = FloatCol(default=0.0)
-    final_cash_amount = FloatCol(default=None)
+    balance_sent = PriceCol(default=0.0)
+    initial_cash_amount = PriceCol(default=0.0)
+    final_cash_amount = PriceCol(default=0.0)
     opening_date = DateTimeCol(default=datetime.datetime.now)
     closing_date = DateTimeCol(default=None)
 

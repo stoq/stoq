@@ -37,6 +37,7 @@ from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel)
@@ -117,8 +118,8 @@ class AbstractSellableItem(InheritableModel):
     """Abstract representation of a concrete sellable."""
 
     quantity = FloatCol()
-    base_price = FloatCol()
-    price = FloatCol()
+    base_price = PriceCol()
+    price = PriceCol()
     sale = ForeignKey('Sale')
     sellable = ForeignKey('AbstractSellable')
 
@@ -145,12 +146,15 @@ class AbstractSellableItem(InheritableModel):
     def get_total(self):
         return self.price * self.quantity
 
+    def get_total_str(self):
+        return get_formatted_price(self.get_total())
+
     def get_price_string(self):
         return get_formatted_price(self.price)
 
 
 class OnSaleInfo(Domain):
-    on_sale_price = FloatCol(default=0.0)
+    on_sale_price = PriceCol(default=0.0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
 
@@ -158,7 +162,7 @@ class OnSaleInfo(Domain):
 class BaseSellableInfo(Domain):
     implements(IDescribable)
 
-    price = FloatCol(default=0.0)
+    price = PriceCol(default=0.0)
     description = StringCol(default='')
     max_discount = FloatCol(default=0.0)
     commission = FloatCol(default=None)
@@ -195,7 +199,7 @@ class AbstractSellable(InheritableModelAdapter):
     code = StringCol(alternateID=True, default="")
     status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
-    cost = FloatCol(default=0.0)
+    cost = PriceCol(default=0.0)
     unit = ForeignKey("SellableUnit", default=None)
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')

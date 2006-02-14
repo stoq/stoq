@@ -37,6 +37,7 @@ from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
+from stoqlib.lib.validators import get_formatted_price
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -86,6 +87,9 @@ class DeliveryItem(Domain):
 
     def get_total(self):
         return self.get_price() * self.quantity
+
+    def get_total_str(self):
+        return get_formatted_price(self.get_total())
 
 #
 # Adapters

@@ -26,10 +26,11 @@
 
 import gettext
 
-from sqlobject import StringCol , FloatCol, IntCol, ForeignKey
+from sqlobject import StringCol , IntCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.interfaces import (IRenegotiationGiftCertificate,
                                        ISellable,
                                        IRenegotiationSaleReturnMoney,
@@ -66,7 +67,7 @@ class RenegotiationAdaptToGiftCertificate(ModelAdapter):
      STATUS_CLOSED) = range(2)
 
     new_gift_certificate_number = StringCol()
-    overpaid_value = FloatCol()
+    overpaid_value = PriceCol()
     status = IntCol(default=STATUS_PENDING)
 
     def confirm(self):
@@ -110,7 +111,7 @@ class RenegotiationAdaptToSaleReturnMoney(ModelAdapter):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
-    overpaid_value = FloatCol()
+    overpaid_value = PriceCol()
     status = IntCol(default=STATUS_PENDING)
     payment_group = ForeignKey('AbstractPaymentGroup')
 
@@ -146,7 +147,7 @@ class RenegotiationAdaptToOutstandingValue(ModelAdapter):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
-    outstanding_value = FloatCol()
+    outstanding_value = PriceCol()
     status = IntCol(default=STATUS_PENDING)
     preview_payment_method = IntCol()
     payment_method = IntCol(default=None)
