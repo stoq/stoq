@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -109,7 +109,7 @@ class PrintDialogSlave(BaseEditorSlave):
     #
 
     def create_model(self, dummy):
-        return Settable(printer_name=None, filename='relat1.pdf')
+        return Settable(printer_name=None, filename=u'relat1.pdf')
 
     def get_title(self, dummy):
         return _("Print Dialog")

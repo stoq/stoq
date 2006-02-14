@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -60,7 +60,7 @@ class SystemParameterEditor(BaseEditor):
 
     def _setup_entry_slave(self, justify_type=gtk.JUSTIFY_LEFT):
         widget = Entry()
-        widget.data_type = str
+        widget.data_type = unicode
         widget.set_property("model-attribute", "field_value")
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
@@ -68,7 +68,7 @@ class SystemParameterEditor(BaseEditor):
 
     def _setup_comboboxentry_slave(self):
         widget = ComboBoxEntry()
-        widget.data_type = str
+        widget.data_type = unicode
         widget.set_property("model-attribute", "field_value")
         widget.set_mode(COMBO_MODE_DATA)
         table = type(getattr(sysparam(self.conn), self.model.field_name))
