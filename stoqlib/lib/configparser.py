@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -129,10 +129,10 @@ dbusername=%(DBUSERNAME)s"""
 
     def ask_configuration_data(self):
         print ("Adding configuration file for Stoqlib applications. "
-               "\nYou can edit the file manually in $HOME/.%s/%s" 
+               "\nYou can edit the file manually in $HOME/.%s/%s"
                % (self.domain, self.filename))
 
-        # XXX For now we only suport postgres. SQLObject also suports
+        # XXX For now we only support postgres. SQLObject also suports
         # firebird, mysql, sybase and sqllite but these databases are not
         # tested yet.
         rdbms = 'postgres'
