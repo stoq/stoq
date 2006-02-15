@@ -36,13 +36,23 @@ class TestUserProfile(BaseDomainTest):
     """
     _table = UserProfile
 
+    def test_add_application_reference(self):
+        assert not self._instance.profile_settings
+        self._instance.add_application_reference('my_app',
+                                                  has_permission=True)
+        assert len(self._instance.profile_settings) == 1
+        assert self._instance.check_app_permission('my_app')
+
 
 class TestProfileSettings(BaseDomainTest):
     """
     C{ProfileSettings} TestCase
     """
     _table = ProfileSettings
-    foreign_key_attrs = {'user_profile': TestUserProfile}
+
+    @classmethod
+    def get_foreign_key_data(cls):
+        return [UserProfile(connection=cls.conn, name='Manager')]
 
     def test_update_profile_applications(self):
         profile = UserProfile(connection=self.conn, name='assistant')
