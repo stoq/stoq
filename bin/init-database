@@ -60,7 +60,7 @@ def main(args):
 
     name, username = "Superuser", "administrator"
     if not TEST_MODE:
-        msg = "Enter administrator user password for database: "
+        msg = "Enter Stoq 'administrator' user password: "
         password = getpass.getpass(msg)
     else:
         password = ''
