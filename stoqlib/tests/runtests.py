@@ -77,6 +77,8 @@ def test_domain(options):
         print_immediately('Running domain unittests... ')
 
     sys.argv = sys.argv[:1]
+    if options.nocapture:
+        sys.argv.append('--nocapture')
     py.test.cmdline.main()
 
     if options.verbose:
@@ -93,6 +95,10 @@ def main(args):
                       dest="package_name",
                       default="stoq",
                       help='Use this package name for config file')
+    parser.add_option('-c', '--nocapture',
+                      action="store_true",
+                      dest="nocapture",
+                      help='Get print outputs on tests')
     parser.add_option('-f', '--filename',
                       action="store",
                       type="string",
