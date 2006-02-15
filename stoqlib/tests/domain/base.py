@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s): Rudá Porto Filgueiras  <rudazz@gmail.com>
+## Author(s):   Rudá Porto Filgueiras   <rudazz@gmail.com>
+##              Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 """ Base module to be used by all domain test modules"""
 
@@ -29,6 +30,7 @@ import datetime
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SOFloatCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
+from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction
 
 # Default values for automatic instance creation and set value tests.
@@ -73,23 +75,128 @@ def column_type_data(column):
 
 class BaseDomainTest(object):
     """Base class to be used by all domain test classes.
-    This class has some base infrastructure:
-    conn: connection object
-    _table: reference to the domains class that will be tested by
-    the Test class.
-    foreign_key_attrs: a dict with foreign keys used by the class to be tested:
-    {'foreign_key_attrs_name': fk_class_reference}
-    skip_attr: attributes that will not be automaticaly tested
-    """
-    foreign_key_attrs = {}
-    _table = None
-    skip_attrs = ['model_modified','_is_valid_model','model_created']
+    This class has some basic infrastructure:
 
-    def __init__(self):
-        self.conn = new_transaction()
-        self._table_count = self._table.select(connection=self.conn).count()
-        self.insert_dict, self.edit_dict = self._generate_test_data()
-        self._generate_foreign_key_attrs()
+    @param conn: an SQLObject Transaction instance
+    @param _table: reference to a stoqlib domain class that will be
+                   tested by the Test class.
+    @param foreign_key_attrs: a dict with foreign keys used by the class
+                              to be tested:
+                             {'foreign_key_attrs_name': fk_class_reference}
+                             where fk_class_reference is a stoqlib domain
+                             class
+    @param skip_attr: attributes that will not be automaticaly tested
+    """
+    foreign_key_attrs = None
+    _table = None
+    skip_attrs = ['model_modified','_is_valid_model','model_created',
+                  'childName']
+
+    def setup_class(cls):
+        cls.conn = new_transaction()
+        cls._table_count = cls._table.select(connection=cls.conn).count()
+        cls._check_foreign_key_data()
+        cls.insert_dict, cls.edit_dict = cls._generate_test_data()
+        cls._generate_foreign_key_attrs()
+
+    def teardown_class(cls):
+        cls.conn.commit()
+        finish_transaction(cls.conn)
+
+    #
+    # Class methods
+    #
+
+    @classmethod
+    def _check_foreign_key_data(cls):
+        cls._foreign_key_data = cls.get_foreign_key_data()
+        for fkey_data in cls._foreign_key_data:
+            assert fkey_data.get_connection() is cls.conn
+
+    @classmethod
+    def _check_foreign_key(cls, table, fkey_name):
+        return fkey_name == table.sqlmeta.soClass.__name__
+
+    @classmethod
+    def _get_fkey_data_by_fkey_name(cls, fkey_name):
+        for data in cls._foreign_key_data:
+            table = type(data)
+            if cls._check_foreign_key(table, fkey_name):
+                return data
+            table = table._parentClass
+            if table and cls._check_foreign_key(table, fkey_name):
+                return data
+
+    @classmethod
+    def _generate_test_data(cls):
+        """This method uses column_type_data function and return two dicts:
+        insert_args: 'column_name': value #used to instance creation.
+        edit_args: 'column_name': value   #used to set_and_get test.
+        """
+        insert = dict()
+        edit = dict()
+        cols = column_type_data
+
+        columns = cls._table.sqlmeta.columns.values()
+        table = cls._table._parentClass
+        if table:
+            columns += table.sqlmeta.columns.values()
+
+        extra_values = cls.get_extra_field_values()
+        for column in columns:
+            colname = column.origName
+            if colname in cls.skip_attrs:
+                continue
+            data = cls._get_fkey_data_by_fkey_name(column.foreignKey)
+            if data:
+                insert[colname] = edit[colname] = data
+            elif colname in extra_values.keys():
+                insert[colname], edit[colname] = extra_values[colname]
+            else:
+                insert[colname], edit[colname] = cols(column)
+        return insert, edit
+
+    @classmethod
+    def _generate_foreign_key_attrs(cls):
+        """Create all foreign key objects using foreign_key_attrs dict and
+        apeend to insert_dict attribute.
+        """
+        if cls.foreign_key_attrs and isinstance(cls.foreign_key_attrs, dict):
+            for key, klass in cls.foreign_key_attrs.items():
+                fk_test_instance = klass(connection=cls.conn)
+                insert_dict, edit_dict = fk_test_instance._generate_test_data()
+                fk_table = fk_test_instance._table
+                fk_instance = fk_table(connection=cls.conn,
+                                       **insert_dict)
+                cls.insert_dict[key] = fk_instance
+
+    #
+    # General methods
+    #
+
+    def _check_set_and_get(self, test_value, db_value, key):
+        assert test_value == db_value
+
+    #
+    # Hooks
+    #
+
+    @classmethod
+    def get_foreign_key_data(cls):
+        return []
+
+    @classmethod
+    def get_extra_field_values(cls):
+        """This hook returns a dictionary of tuples. Each tuple has two values:
+        an 'insert' and an 'edit' values. This list will be used when
+        setting attributes in cls._table. The dict keys are attribute names
+        of cls._table
+        """
+        return {}
+
+    #
+    # Tests
+    #
 
     def test_1_create_instance(self):
         """ Create a domain class instance using insert_dict attribute and
@@ -111,33 +218,3 @@ class BaseDomainTest(object):
             setattr(self._instance, key, value)
             db_value = getattr(self._instance, key)
             yield self._check_set_and_get, value, db_value, key
-
-    def _check_set_and_get(self, test_value, db_value, key):
-        assert test_value == db_value
-
-    def _generate_test_data(self):
-        """This method uses column_type_data function and return two dicts:
-        insert_args: 'column_name': value #used to instance creation.
-        edit_args: 'column_name': value   #used to set_and_get test.
-        """
-        insert = dict()
-        edit = dict()
-        cols = column_type_data
-        for column in self._table.sqlmeta.columns.values():
-            if column.origName in self.skip_attrs:
-                continue
-            insert[column.origName], edit[column.origName] = cols(column)
-        return insert, edit
-
-    def _generate_foreign_key_attrs(self):
-        """Create all foreign key objects using foreign_key_attrs dict and
-        apeend to insert_dict attribute.
-        """
-        if self.foreign_key_attrs and isinstance(self.foreign_key_attrs, dict):
-            for key, klass in self.foreign_key_attrs.items():
-                fk_test_instance = klass()
-                insert_dict, edit_dict = fk_test_instance._generate_test_data()
-                fk_table = fk_test_instance._table
-                fk_instance = fk_table(connection=self.conn,
-                                       **insert_dict)
-                self.insert_dict[key] = fk_instance
