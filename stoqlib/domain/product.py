@@ -160,7 +160,7 @@ class ProductSellableItem(AbstractSellableItem):
         if not isinstance(item, ProductStockReference):
             raise TypeError("Item should be of type ProductStockReference,"
                             " got " % type(item))
-        ProductStockItem.delete(item.id, connection=conn)
+        ProductStockReference.delete(item.id, connection=conn)
 
     #
     # Basic methods
@@ -180,30 +180,28 @@ class ProductSellableItem(AbstractSellableItem):
             msg = _("This company doesn't allow order products")
             raise SellError(msg)
 
-        adapted = self.get_adapted()
-        sellable_item = ISellable(adapted)
-        sellable_item.setConnection(conn)
-        if not sellable_item.can_be_sold():
-            msg = '%s is already sold' % adapted
+        if not self.sellable.can_be_sold():
+            msg = '%r is already sold' % self.sellable
             raise SellError(msg)
 
         if order_product:
             # If order_product is True we will not update the stock for this
             # product
             return
-
-        storable_item = IStorable(adapted)
-        storable_item.setConnection(conn)
+        adapted = self.sellable.get_adapted()
+        storable = IStorable(adapted, connection=conn)
         # Update the stock
-        storable_item.decrease_stock(self.quantity, branch)
+        storable.decrease_stock(self.quantity, branch)
 
         # The function get_full_balance returns the current amount of items in the
         # stock. If get_full_balance == 0 we have no more stock for this product
         # and we need to set it as sold.
-        logic_qty = storable_item.get_logic_balance()
-        balance = storable_item.get_full_balance() - logic_qty
+        logic_qty = storable.get_logic_balance()
+        balance = storable.get_full_balance() - logic_qty
+        # TODO we must also update the sellable status when receiving
+        # products in warehouse application
         if not balance:
-            sellable_item.set_sold()
+            self.sellable.sell()
 
     #
     # General methods
@@ -389,7 +387,10 @@ class ProductAdaptToStorable(ModelAdapter):
     def _has_qty_available(self, quantity, branch):
         logic_qty = self.get_logic_balance(branch)
         balance = self.get_full_balance(branch) - logic_qty
-        qty_ok =  quantity <= balance
+        # XXX We are going to use decimals here and avoid all of
+        # this crap. See bug 2335
+        qty_ok = (quantity <= balance
+                  or compare_float_numbers(quantity, balance))
         logic_qty_ok = quantity <= self.get_full_balance(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
