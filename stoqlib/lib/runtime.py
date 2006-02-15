@@ -57,9 +57,10 @@ def initialize_connection():
 
 
 def get_connection():
-    # There is no sense to have more than one database connection for an
-    # Stoq application. That's why we always reuse the same _connection
-    # variable.
+    """This function return the main connection with the database. If users
+    would like to get another connection they should use new_transaction
+    instead
+    """
     global _connection
     if not _connection:
         initialize_connection()
