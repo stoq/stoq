@@ -20,11 +20,14 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s): Rudá Porto Filgueiras  <rudazz@gmail.com
+## Author(s): Rudá Porto Filgueiras     <rudazz@gmail.com>
+##            Evandro Vale Miquelito    <evandro@async.com.br>
+##
 ##
 """ Test case for stoq/domain/person.py module.  """
 
-from stoqlib.domain.person import Person
+
+from stoqlib.domain.person import Person, CityLocation, Address
 from stoqlib.tests.domain.base import BaseDomainTest
 
 PHONE_DATA_VALUES = ('7133524563','1633767277')
@@ -36,20 +39,21 @@ class TestCasePerson(BaseDomainTest):
     C{Person} TestCase
     """
     _table = Person
-    phone_attr = 'phone_number'
-    mobile_attr = 'mobile_number'
-    fax_attr = 'fax_number'
-    person_skip_attrs = [phone_attr, mobile_attr, fax_attr]
 
-    def __init__(self):
-        self.skip_attrs.extend(self.person_skip_attrs)
-        BaseDomainTest.__init__(self)
-        self._add_phone_and_mobile_values()
+    @classmethod
+    def get_extra_field_values(cls):
+        return dict(phone_number=PHONE_DATA_VALUES,
+                    mobile_number=MOBILE_DATA_VALUES,
+                    fax_number=FAX_DATA_VALUES)
 
-    def _add_phone_and_mobile_values(self):
-        insertd, editd = self.insert_dict, self.edit_dict
-        insertd[self.phone_attr], editd[self.phone_attr] = \
-                                                    PHONE_DATA_VALUES
-        insertd[self.mobile_attr], editd[self.mobile_attr] = \
-                                                    MOBILE_DATA_VALUES
-        insertd[self.fax_attr], editd[self.fax_attr] = FAX_DATA_VALUES
+    def test_get_main_address(self):
+        assert not self._instance.get_main_address()
+        ctlocs = CityLocation.select(connection=self.conn)
+        assert ctlocs.count() > 0
+        ctloc = ctlocs[0]
+        address = Address(connection=self.conn, person=self._instance,
+                          city_location=ctloc, is_main_address=True)
+        assert self._instance.get_main_address() is not None
+
+
+    # TODO Add more tests here for the whole person module
