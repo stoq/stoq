@@ -27,7 +27,6 @@
 import gettext
 from datetime import datetime, timedelta
 
-from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
 from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
@@ -35,6 +34,7 @@ from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
 from zope.interface import implements
 
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.lib.validators import compare_float_numbers
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
