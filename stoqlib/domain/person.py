@@ -500,7 +500,7 @@ class PersonAdaptToEmployee(ModelAdapter):
 
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
-    salary = FloatCol(default=0.0)
+    salary = PriceCol(default=0.0)
     status = IntCol(default=STATUS_NORMAL)
     registry_number = UnicodeCol(default=None)
     education_level = UnicodeCol(default=None)
