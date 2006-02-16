@@ -353,9 +353,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if interest:
             self.interest.set_range(1, interest)
             self.model.interest = interest
-            self.proxy.update('interest')
         param = sysparam(self.conn).MANDATORY_INTEREST_CHARGE
-        self.interest.set_sensitive(param)
+        self.interest.set_sensitive(not param)
 
     def _setup_widgets(self):
         self._setup_monthly_interest()
