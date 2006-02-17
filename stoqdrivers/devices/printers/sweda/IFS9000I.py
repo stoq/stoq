@@ -35,7 +35,6 @@ import gettext
 
 from zope.interface import implements
 
-from stoqdrivers.common import is_float
 from stoqdrivers.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT, UNIT_METERS,
                                    UNIT_LITERS, UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
@@ -287,10 +286,6 @@ class IFS9000I(SerialBase):
         if not value_str.isdigit():
             raise ValueError('Argument %s must be integer' % arg_name)
 
-    def _check_float(self, value, arg_name):
-        if not is_float(value):
-            raise ValueError('Argument %s must be float' % arg_name)
-
     def _format_datetime(self, value):
         value = str(value)
         if len(value) == 1:
@@ -314,7 +309,6 @@ class IFS9000I(SerialBase):
             - zero_digits is the number of zeros we should add in the
               beggining of the argument value.
         """
-        self._check_float(value, arg_name)
         value = '%.*f' % (dec_separator, value)
 
         # As we are going do remove the period character we can here allow
