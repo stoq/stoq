@@ -197,7 +197,7 @@ class AbstractSellable(InheritableModelAdapter):
                 STATUS_CLOSED: _("Closed"),
                 STATUS_BLOCKED: _("Blocked")}
 
-    code = UnicodeCol(alternateID=True, default="")
+    code = UnicodeCol(alternateID=True)
     status = IntCol(default=STATUS_AVAILABLE)
     markup = FloatCol(default=0.0)
     cost = PriceCol(default=0.0)

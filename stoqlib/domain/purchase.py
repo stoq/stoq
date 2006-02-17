@@ -244,7 +244,7 @@ class PurchaseOrder(Domain):
         if not self.freight_type in self.freight_types.keys():
             raise DatabaseInconsistency('Invalid freight_type, got %d'
                                         % self.freight_type)
-        return self.freight_types[self.freight_type]
+        return unicode(self.freight_types[self.freight_type])
 
     def get_branch_name(self):
         return self.branch.get_adapted().name
@@ -267,7 +267,7 @@ class PurchaseOrder(Domain):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Got an unexpected status value: '
                                         '%s' % self.status)
-        return self.statuses[self.status]
+        return unicode(self.statuses[self.status])
 
     def get_purchase_subtotal(self):
         subtotal = sum([item.get_total() for item in self.get_items()], 0.0)
