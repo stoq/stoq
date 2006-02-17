@@ -69,9 +69,9 @@ class Simple:
         self.is_coupon_opened = False
         self.items_quantity = 0
         self.is_coupon_totalized = False
-        self.totalized_value = 0.0
+        self.totalized_value = Decimal("0.0")
         self.has_payments = False
-        self.payments_total = 0.0
+        self.payments_total = Decimal("0.0")
         self._items = {}
 
     def _check_coupon_is_opened(self):
