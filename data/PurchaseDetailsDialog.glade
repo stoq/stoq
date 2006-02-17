@@ -597,7 +597,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel11">
-                                                <property name="label" context="yes" translatable="yes">Freight Value:</property>
+                                                <property name="label" context="yes" translatable="yes">Freight:</property>
                                                 <property name="visible">True</property>
                                             </widget>
                                             <packing>
@@ -657,7 +657,7 @@
                                                 <child>
                                                     <widget class="kiwi+ui+widgets+label+Label" id="freight">
                                                         <property
-                                                        name="data_type">currency</property>
+                                                        name="data_type">float</property>
                                                         <property name="model_attribute">freight</property>
                                                         <property name="visible">True</property>
                                                         <property name="xalign">1.0</property>
