@@ -43,7 +43,8 @@ from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     CouponNotOpenError, ReduceZError,
                                     HardwareFailure, DriverError,
                                     OutofPaperError, PendingReduceZ,
-                                    InvalidState)
+                                    InvalidState, CancelItemError,
+                                    AlreadyTotalized)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
@@ -170,7 +171,17 @@ class IFS9000I(SerialBase):
                                                           "pending")),
                    'ERRO-COMANDO NAO PERMITIDO': (InvalidState,
                                                   _("Invalid state for command "
-                                                    "execution"))}
+                                                    "execution")),
+                   'ERRO-SEM OS DADOS DO ITEM NA MEMORIA': (CancelItemError,
+                                                            _("It is not "
+                                                              "possible cancel "
+                                                              "the item since "
+                                                              "it wasn't added "
+                                                              "yet")),
+                   'ERRO-CUPOM TOTALIZADO': (AlreadyTotalized,
+                                             _("The coupon is already "
+                                               "totalized")),
+                   }
     def __init__(self, *args, **kwargs):
         SerialBase.__init__(self, *args, **kwargs)
         self._customer_document = None
