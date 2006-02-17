@@ -23,40 +23,53 @@
 ##
 ## Author(s):   Henrique Romano        <henrique@async.com.br>
 ##
-"""
-stoqdrivers/tests/test_flow.py:
-
-    A simple test case to check if the coupon workflow is managed
-    properly.
-"""
+" A simple test case to check if the coupon workflow is managed properly. "
 
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
-from stoqdrivers.exceptions import (CouponOpenError, CancelItemError,
-                                    CloseCouponError, PaymentAdditionError,
-                                    ItemAdditionError, PendingReduceZ,
-                                    PendingReadX)
+from stoqdrivers.exceptions import (
+    CouponOpenError, CancelItemError, CloseCouponError, PaymentAdditionError,
+    ItemAdditionError, PendingReduceZ, PendingReadX, CouponNotOpenError,
+    AlreadyTotalized)
+
+#
+# Currently this test works perfectly with:
+#
+# * Sweda IFS9000I
+#
+# TODO:
+#
+# * Check if all the tests works with the others supported printers
+#   -- the main test here is ensure the exceptions raised, i.e. the
+#   same exceptions must be raised on the same erros conditions on
+#   all the printers.
+#
+#
 
 def test():
     printer = FiscalPrinter()
 
     # Test 01 - Try add an item with the coupon cancelled
     try:
-        printer.open("Henrique", "XXX", "666")
+        printer.open()
         printer.cancel()
         printer.add_item("0001", 2, 1.30, UNIT_EMPTY, "Cigarro",
                          TAX_NONE, 0, 0)
-    except CouponOpenError:
+    except CouponNotOpenError:
         print "Test 1: OK."
     except PendingReadX:
+        print ("*** A read X is needed and will be made right now\n"
+               "*** restart the tests after that.\n\n")
         printer.summarize()
         return
     except PendingReduceZ:
+        print ("*** A reduce Z is need and will be made right now\n"
+               "*** restart the tests after that.\n\n")
         printer.close_till()
         return
 
     # Test 02 - Try cancel an item already cancelled
-    printer.open("Henrique", "XXX", "666")
+    printer.open()
     item_1 = printer.add_item("0001", 2, 1.30, UNIT_EMPTY,
                               "Cigarro", TAX_NONE, 0, 0)
     item_2 = printer.add_item("0002", 3, 5.20, UNIT_EMPTY,
@@ -86,7 +99,7 @@ def test():
     try:
         printer.add_item("0005", 4, 2.30, UNIT_EMPTY,
                          "Cigarro", TAX_NONE, 0, 0)
-    except ItemAdditionError:
+    except AlreadyTotalized:
         print "Test 5: OK."
 
     # Test 06 - Try close the with no payments
