@@ -281,7 +281,8 @@ class EP375(SerialBase, BaseChequePrinter):
         SerialBase.__init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                             parity=PARITY_NONE, stopbits=STOPBITS_ONE)
         BaseChequePrinter.__init__(self)
-        self.coupon_discount = self.coupon_charge = 0.00
+        self.coupon_discount = Decimal("0.0")
+        self.coupon_charge = Decimal("0.0")
         self._command_id = self._item_counter = -1
         self.items_dict = {}
 
