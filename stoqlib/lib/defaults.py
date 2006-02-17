@@ -52,8 +52,8 @@ interval_types = {INTERVALTYPE_DAY:      _('Days'),
                   INTERVALTYPE_MONTH:    _('Months'),
                   INTERVALTYPE_YEAR:     _('Years')}
 
-interval_values = {INTERVALTYPE_DAY:        1, 
-                   INTERVALTYPE_WEEK:       7, 
+interval_values = {INTERVALTYPE_DAY:        1,
+                   INTERVALTYPE_WEEK:       7,
                    INTERVALTYPE_MONTH:      30,
                    INTERVALTYPE_YEAR:       365}
 
@@ -83,7 +83,7 @@ ALL_BRANCHES = _('All branches'), ALL_ITEMS_INDEX
 
 def get_country_states():
     # This is Brazil-specific information.
-    return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
-             'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
+    return [ 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+             'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
              'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
 
