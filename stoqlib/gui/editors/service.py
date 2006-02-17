@@ -43,8 +43,8 @@ class ServiceItemEditor(BaseEditor):
     model_name = _('Service')
     model_type = ServiceSellableItem
     gladefile = 'ServiceItemEditor'
-    proxy_widgets = ('service_name_label', 
-                     'price', 
+    proxy_widgets = ('service_name_label',
+                     'price',
                      'estimated_fix_date',
                      'notes')
     size = (500, 250)
@@ -55,7 +55,7 @@ class ServiceItemEditor(BaseEditor):
 
     #
     # BaseEditor hooks
-    # 
+    #
 
     def get_title_model_attribute(self, model):
         return model.sellable.base_sellable_info.description
@@ -79,7 +79,7 @@ class ServiceEditor(SellableEditor):
 
     def create_model(self, conn):
         model = Service(connection=conn)
-        sellable_info = BaseSellableInfo(connection=conn, 
+        sellable_info = BaseSellableInfo(connection=conn,
                                          description='', price=0.0)
         model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
                        connection=conn)
