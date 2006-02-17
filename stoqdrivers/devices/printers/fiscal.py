@@ -75,7 +75,8 @@ class FiscalPrinter(BasePrinter):
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         BasePrinter.__init__(self, brand, model, device, config_file)
         self.has_been_totalized = False
-        self.totalized_value = self.payments_total_value = 0.0
+        self.payments_total_value = Decimal("0.0")
+        self.totalized_value = Decimal("0.0")
         self._capabilities = self._driver.get_capabilities()
         self._charset = self._driver.coupon_printer_charset
 
@@ -203,14 +204,15 @@ def test():
         except PendingReduceZ:
             p.close_till()
             return
-    i1 = p.add_item("123456", 2, 10.00, UNIT_CUSTOM, u"Hollywóód", TAX_NONE, 0,
-                    0, unit_desc=u"mç")
-    i2 = p.add_item("654321", 5, 1.53, UNIT_LITERS, "Bohemia Beer", TAX_NONE,
-                    0, 0)
+    i1 = p.add_item("123456", Decimal("2"), Decimal("10.00"), UNIT_CUSTOM,
+                    u"Hollywóód", TAX_NONE, Decimal("0"), Decimal("0"),
+                    unit_desc=u"mç")
+    i2 = p.add_item("654321", Decimal("5"), Decimal("1.53"), UNIT_LITERS,
+                    u"Heineken", TAX_NONE, Decimal("0"), Decimal("0"))
     p.cancel_item(i1)
-    coupon_total = p.totalize(1.0, 0, TAX_NONE)
-    p.add_payment(MONEY_PM, 2.00, '')
-    p.add_payment(MONEY_PM, 11.00, '')
+    coupon_total = p.totalize(Decimal('1.0'), Decimal('0.0'), TAX_NONE)
+    p.add_payment(MONEY_PM, Decimal('2.00'), '')
+    p.add_payment(MONEY_PM, Decimal('11.00'), '')
     coupon_id = p.close()
     print "+++ coupon %d created." % coupon_id
 
