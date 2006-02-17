@@ -26,6 +26,7 @@
 ##
 
 import gettext
+from decimal import Decimal
 
 from kiwi.argcheck import number, percent
 
@@ -127,7 +128,7 @@ class FiscalPrinter(BasePrinter):
         self.totalized_value = result
         return result
 
-    @capcheck(payment_method, float, basestring)
+    @capcheck(payment_method, number, basestring)
     def add_payment(self, payment_method, payment_value, payment_description=''):
         self.info('coupon_add_payment')
         if not self.has_been_totalized:
@@ -172,12 +173,12 @@ class FiscalPrinter(BasePrinter):
         self.info('close_till')
         return self._driver.close_till()
 
-    @capcheck(float)
+    @capcheck(number)
     def till_add_cash(self, add_cash_value):
         self.info('till_add_cash')
         return self._driver.till_add_cash(add_cash_value)
 
-    @capcheck(float)
+    @capcheck(number)
     def till_remove_cash(self, remove_cash_value):
         self.info('till_remove_cash')
         return self._driver.till_remove_cash(remove_cash_value)
