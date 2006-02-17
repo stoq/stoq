@@ -31,6 +31,7 @@ stoqdrivers/devices/printers/virtual/Simple.py:
 """
 
 import gettext
+from decimal import Decimal
 
 from zope.interface import implements
 

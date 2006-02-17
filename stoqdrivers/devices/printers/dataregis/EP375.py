@@ -31,6 +31,7 @@ stoqdrivers/devices/printers/dataregis/EP375.py:
 
 import time
 import gettext
+from decimal import Decimal
 
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
