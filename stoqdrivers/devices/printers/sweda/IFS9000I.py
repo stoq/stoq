@@ -171,6 +171,9 @@ class IFS9000I(SerialBase):
                    'ERRO-COMANDO NAO PERMITIDO': (InvalidState,
                                                   _("Invalid state for command "
                                                     "execution"))}
+    def __init__(self, *args, **kwargs):
+        SerialBase.__init__(self, *args, **kwargs)
+        self._customer_document = None
 
     #
     # Initializing Fiscal Printer
