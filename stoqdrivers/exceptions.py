@@ -109,3 +109,6 @@ class ItemAdditionError(DriverError):
 
 class InvalidReply(DriverError):
     "Invalid reply received"
+
+class AlreadyTotalized(DriverError):
+    "The coupon is already totalized"
