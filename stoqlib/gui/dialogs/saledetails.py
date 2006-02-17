@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s): Bruno Rafael Garcia             <brg@async.com.br>
+## Author(s):   Bruno Rafael Garcia             <brg@async.com.br>
+##              Evandro Vale Miquelito          <evandro@async.com.br>
 ##
 ##
 """ Classes for sale details """
@@ -30,66 +31,39 @@ import datetime
 import gettext
 
 from kiwi.datatypes import currency
-from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
-from stoqlib.gui.base.dialogs import BasicWrappingDialog
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.lib.validators import get_formatted_price
+from stoqlib.domain.sale import Sale
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
 
-class SaleDetailsDialog(SlaveDelegate):
+class SaleDetailsDialog(BaseEditor):
     gladefile = "SaleDetailsDialog"
+    model_type = Sale
     title = _("Sale Details")
     size = (650, 460)
-
-    def __init__(self, conn, sale):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self.main_dialog = BasicWrappingDialog(self, self.title,
-                                               size=self.size,
-                                               hide_footer=True)
-        self.sale = sale
-        self.conn = conn
-        self._setup_widgets()
+    hide_footer = True
+    proxy_widgets = ('status_lbl',
+                     'client_lbl',
+                     'salesperson_lbl',
+                     'open_date_lbl',
+                     'total_lbl',
+                     'subtotal_lbl',
+                     'surcharge_lbl',
+                     'discount_lbl')
 
     def _setup_widgets(self):
+        # TODO Waiting for bug 2360
         self.details_button.set_sensitive(False)
 
-        #
-        # FIXME: These labels must be defined through Kiwi's proxy.
-        # Waiting for bug #2366
-        #
-        salesperson = self.sale.salesperson
-        if not salesperson:
-            raise DatabaseInconsistency("A sale must have a salesperson.")
-        salesperson_name = salesperson.get_adapted().name
-        self.salesperson_lbl.set_text(salesperson_name)
-        client = self.sale.client
-        client_name = (client and client.get_name()
-                       or _("<i>Anonymous</i>"))
-        self.client_lbl.set_text(client_name)
-        
-        open_date_str = self.sale.open_date.strftime("%x")
-        status_str = self.sale.get_status_name()
-        subtotal_str = get_formatted_price(self.sale.get_sale_subtotal())
-        discount_value_str = get_formatted_price(self.sale.discount_value)
-        surcharge_value_str = get_formatted_price(self.sale.charge_value)
-        total_str = get_formatted_price(self.sale.get_total_sale_amount())
-        self.open_date_lbl.set_text(open_date_str)
-        self.status_lbl.set_text(status_str)
-        self.subtotal_lbl.set_text(subtotal_str)
-        self.discount_lbl.set_text(discount_value_str)
-        self.surcharge_lbl.set_text(surcharge_value_str)
-        self.total_lbl.set_text(total_str)
-        
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
-        
-        self.items_list.add_list(self.sale.get_items())
-        group = IPaymentGroup(self.sale, connection=self.conn)
+
+        self.items_list.add_list(self.model.get_items())
+        group = IPaymentGroup(self.model, connection=self.conn)
         self.payments_list.add_list(group.get_items())
 
         value_format = '<b>%s</b>'
@@ -108,23 +82,16 @@ class SaleDetailsDialog(SlaveDelegate):
                        data_type=datetime.date, width=120),
                 Column('status_str', _("Status"), data_type=str, width=100),
                 Column('value', _("Value"), data_type=currency, width=100)]
-    
+
     def _get_items_columns(self):
-        return [Column('sellable.code', _("Code"), sorted=True, 
+        return [Column('sellable.code', _("Code"), sorted=True,
                        data_type=str, width=80),
-                Column('sellable.base_sellable_info.description', 
-                       _("Description"), data_type=str, expand=True, 
+                Column('sellable.base_sellable_info.description',
+                       _("Description"), data_type=str, expand=True,
                        width=200),
-                Column('quantity', _("Quantity"), data_type=int, width=100), 
+                Column('quantity', _("Quantity"), data_type=int, width=100),
                 Column('price', _("Price"), data_type=currency, width=100),
                 Column('total', _("Total"), data_type=currency, width=100)]
-
-    #
-    # BasicDialog Hooks
-    #
-    
-    def on_cancel(self):
-        self.main_dialog.close()
 
     #
     # Kiwi handlers
@@ -133,3 +100,11 @@ class SaleDetailsDialog(SlaveDelegate):
     def on_details_button__clicked(self, *args):
         # This button will be implemeted after bug 2360 fix.
         pass
+
+    #
+    # BaseEditor hooks
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        self.add_proxy(self.model, SaleDetailsDialog.proxy_widgets)

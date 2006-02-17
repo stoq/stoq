@@ -42,7 +42,7 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="open_date_lbl">
-                                <property name="data_type">unicode</property>
+                                <property name="data_type">datetime</property>
                                 <property name="model_attribute">open_date</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -56,6 +56,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="salesperson_lbl">
                                 <property name="data_type">unicode</property>
+                                <property name="model_attribute">salesperson_name</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -98,6 +99,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="client_lbl">
                                 <property name="data_type">unicode</property>
+                                <property name="model_attribute">client_name</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -219,7 +221,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="discount_lbl">
-                                                <property name="data_type">unicode</property>
+                                                <property name="data_type">currency</property>
                                                 <property name="model_attribute">discount_value</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -266,7 +268,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="surcharge_lbl">
-                                                <property name="data_type">unicode</property>
+                                                <property name="data_type">currency</property>
                                                 <property name="model_attribute">charge_value</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -311,7 +313,7 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="subtotal_lbl">
-                                                <property name="data_type">unicode</property>
+                                                <property name="data_type">currency</property>
                                                 <property name="model_attribute">sale_subtotal</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -325,8 +327,8 @@
                                         </child>
                                         <child>
                                             <widget class="kiwi+ui+widgets+label+Label" id="total_lbl">
-                                                <property name="data_type">unicode</property>
-                                                <property name="model_attribute">sale_total_amount</property>
+                                                <property name="data_type">currency</property>
+                                                <property name="model_attribute">total_sale_amount</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
