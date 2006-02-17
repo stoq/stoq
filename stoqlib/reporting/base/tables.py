@@ -24,8 +24,6 @@
 ##
 """ Stoqlib Reporting tables implementation.  """
 
-import operator
-
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import TableStyle, Paragraph, Table as RTable
 
@@ -75,7 +73,7 @@ class Table(RTable):
         """
         # If Reportlab doesn't try to calculate the table width before drawning
         # it out of the sheet, we do it for Reportlab.
-        total_width = reduce(operator.add, [w or 0 for w in self._colWidths])
+        total_width = sum([w or 0 for w in self._colWidths])
         if  total_width > avail_width:
             # We don't use %r on the error message because reportlab dumps all
             # table data instead of the representation. %s the same.
@@ -389,8 +387,7 @@ class ObjectTableBuilder(ColumnTableBuilder):
         """
         col_widths = [col.width for col in cols]
 
-        total_expand = reduce(operator.add,
-                              [col.expand_factor for col in cols])
+        total_expand = sum([col.expand_factor for col in cols])
 
         if total_expand and None in col_widths:
             msg = 'You cannot use auto-sized (%r) and expandable ' \
@@ -405,7 +402,7 @@ class ObjectTableBuilder(ColumnTableBuilder):
             raise ValueError, 'Expandable cols can only be used with ' \
                               'fixed width table.'
 
-        total_width = reduce(operator.add, [w or 0 for w in col_widths])
+        total_width = sum([w or 0 for w in col_widths])
 
         if width and total_width > width:
             msg = 'Columns width sum (%.2f) can\'t exceed table width (%.2f).'
@@ -499,7 +496,7 @@ class GroupingTableBuilder(AbstractTableBuilder):
             col_idx = 0
             for col in group.columns:
                 widths = self.column_widths[col_idx:col_idx+col.colspan]
-                col.width = reduce(operator.add, widths)
+                col.width = sum(widths)
                 col_idx += col.colspan
 
     def _setup_groups(self):
