@@ -67,8 +67,8 @@ class GiftCertificateType(Domain):
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return unicode(_('Active'))
+        return unicode(_('Inactive'))
 
     @classmethod
     def get_active_gift_certificates(cls, conn):

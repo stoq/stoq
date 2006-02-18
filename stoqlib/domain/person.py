@@ -328,17 +328,18 @@ class PersonAdaptToIndividual(ModelAdapter):
      STATUS_SEPARATED,
      STATUS_COHABITATION) = range(6)
 
-    marital_statuses = {STATUS_SINGLE: _("Single"),
-                        STATUS_MARRIED: _("Married"),
-                        STATUS_DIVORCED: _("Divorced"),
-                        STATUS_WIDOWED: _("Widowed"),
-                        STATUS_SEPARATED: _('Separated'),
-                        STATUS_COHABITATION: _('Cohabitation')}
+    marital_statuses = {STATUS_SINGLE: unicode(_("Single")),
+                        STATUS_MARRIED: unicode(_("Married")),
+                        STATUS_DIVORCED: unicode(_("Divorced")),
+                        STATUS_WIDOWED: unicode(_("Widowed")),
+                        STATUS_SEPARATED: unicode(_('Separated')),
+                        STATUS_COHABITATION: unicode(_('Cohabitation'))}
 
     (GENDER_MALE,
      GENDER_FEMALE) = range(2)
 
-    genders = {GENDER_MALE: _('Male'), GENDER_FEMALE: _('Female')}
+    genders = {GENDER_MALE:     unicode(_('Male')),
+               GENDER_FEMALE:   unicode(_('Female'))}
 
     cpf  = UnicodeCol(default='')
     rg_number = UnicodeCol(default='')
@@ -398,10 +399,10 @@ class PersonAdaptToClient(ModelAdapter):
      STATUS_INSOLVENT,
      STATUS_INACTIVE) = range(4)
 
-    statuses = {STATUS_SOLVENT:     _('Solvent'),
-                STATUS_INDEBTED:    _('Indebted'),
-                STATUS_INSOLVENT:   _('Insolvent'),
-                STATUS_INACTIVE:    _('Inactive')}
+    statuses = {STATUS_SOLVENT:     unicode(_('Solvent')),
+                STATUS_INDEBTED:    unicode(_('Indebted')),
+                STATUS_INSOLVENT:   unicode(_('Insolvent')),
+                STATUS_INACTIVE:    unicode(_('Inactive'))}
 
     status = IntCol(default=STATUS_SOLVENT)
     days_late = IntCol(default=0)
@@ -459,9 +460,9 @@ class PersonAdaptToSupplier(ModelAdapter):
      STATUS_INACTIVE,
      STATUS_BLOCKED) = range(3)
 
-    statuses = {STATUS_ACTIVE:      _('Active'),
-                STATUS_INACTIVE:    _('Inactive'),
-                STATUS_BLOCKED:     _('Blocked')}
+    statuses = {STATUS_ACTIVE:      unicode(_('Active')),
+                STATUS_INACTIVE:    unicode(_('Inactive')),
+                STATUS_BLOCKED:     unicode(_('Blocked'))}
 
     status = IntCol(default=STATUS_ACTIVE)
     product_desc = UnicodeCol(default='')
@@ -493,10 +494,10 @@ class PersonAdaptToEmployee(ModelAdapter):
      STATUS_VACATION,
      STATUS_OFF) = range(4)
 
-    statuses = {STATUS_NORMAL: _('Normal'),
-                STATUS_AWAY: _('Away'),
-                STATUS_VACATION: _('Vacation'),
-                STATUS_OFF: _('Off')}
+    statuses = {STATUS_NORMAL:      unicode(_('Normal')),
+                STATUS_AWAY:        unicode(_('Away')),
+                STATUS_VACATION:    unicode(_('Vacation')),
+                STATUS_OFF:         unicode(_('Off'))}
 
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
@@ -540,8 +541,8 @@ class PersonAdaptToUser(ModelAdapter):
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
-    statuses = {STATUS_ACTIVE:      _('Active'),
-                STATUS_INACTIVE:    _('Inactive')}
+    statuses = {STATUS_ACTIVE:      unicode(_('Active')),
+                STATUS_INACTIVE:    unicode(_('Inactive'))}
 
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
@@ -573,8 +574,9 @@ class PersonAdaptToBranch(ModelAdapter):
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
-    statuses = {STATUS_ACTIVE:      _('Active'),
-                STATUS_INACTIVE:    _('Inactive')}
+
+    statuses = {STATUS_ACTIVE:      unicode(_('Active')),
+                STATUS_INACTIVE:    unicode(_('Inactive'))}
 
     manager = ForeignKey('Person', default=None)
     is_active= BoolCol(default=True)
@@ -642,8 +644,8 @@ class PersonAdaptToCreditProvider(ModelAdapter):
     (PROVIDER_CARD,
      PROVIDER_FINANCE) = range(2)
 
-    provider_types = {PROVIDER_CARD:        _('Card Provider'),
-                      PROVIDER_FINANCE:     _('Finance Provider')}
+    provider_types = {PROVIDER_CARD:    unicode(_('Card Provider')),
+                      PROVIDER_FINANCE: unicode(_('Finance Provider'))}
 
     is_active = BoolCol(default=True)
     provider_type = IntCol(default=PROVIDER_CARD)
@@ -759,8 +761,8 @@ class PersonAdaptToSalesPerson(ModelAdapter):
 
     def get_status_string(self):
         if self.is_active:
-            return _('Active')
-        return _('Inactive')
+            return unicode(_('Active'))
+        return unicode(_('Inactive'))
 
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 

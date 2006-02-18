@@ -70,12 +70,12 @@ class Payment(Domain):
      STATUS_CONFIRMED,
      STATUS_CANCELLED) = range(6)
 
-    statuses = {STATUS_PREVIEW:     _('Preview'),
-                STATUS_TO_PAY:      _('To Pay'),
-                STATUS_PAID:        _('Paid'),
-                STATUS_REVIEWING:   _('Reviewing'),
-                STATUS_CONFIRMED:   _('Confirmed'),
-                STATUS_CANCELLED:   _('Cancelled')}
+    statuses = {STATUS_PREVIEW:     unicode(_('Preview')),
+                STATUS_TO_PAY:      unicode(_('To Pay')),
+                STATUS_PAID:        unicode(_('Paid')),
+                STATUS_REVIEWING:   unicode(_('Reviewing')),
+                STATUS_CONFIRMED:   unicode(_('Confirmed')),
+                STATUS_CANCELLED:   unicode(_('Cancelled'))}
 
     # XXX The payment_id attribute will be an alternateID after
     # fixing bug 2214
