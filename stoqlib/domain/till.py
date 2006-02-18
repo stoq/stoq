@@ -25,13 +25,13 @@
 ##
 """ Implementation of classes related to Payment management. """
 
-import operator
 import datetime
 import gettext
 
 from sqlobject import IntCol, DateTimeCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
+from kiwi.datatypes import currency
 
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
@@ -107,8 +107,7 @@ class Till(Domain):
         if pg_facet:
             payments.extend(pg_facet.get_items())
 
-        total = reduce(operator.add, [p.value for p in payments], 0.0)
-        return total
+        return sum([p.value for p in payments], currency(0.0))
 
     def open_till(self, opening_date=datetime.datetime.now(), initial_cash_amount=0.0):
         if not initial_cash_amount:
