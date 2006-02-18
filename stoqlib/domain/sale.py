@@ -83,11 +83,11 @@ class Sale(Domain):
      STATUS_CANCELLED,
      STATUS_REVIEWING) = range(5)
 
-    statuses = {STATUS_OPENED:          _("Opened"),
-                STATUS_CONFIRMED:       _("Confirmed"),
-                STATUS_CLOSED:          _("Closed"),
-                STATUS_CANCELLED:       _("Cancelled"),
-                STATUS_REVIEWING:       _("Reviewing")}
+    statuses = {STATUS_OPENED:      unicode(_("Opened")),
+                STATUS_CONFIRMED:   unicode(_("Confirmed")),
+                STATUS_CLOSED:      unicode(_("Closed")),
+                STATUS_CANCELLED:   unicode(_("Cancelled")),
+                STATUS_REVIEWING:   unicode(_("Reviewing"))}
 
     coupon_id = IntCol(default=None)
     order_number = UnicodeCol(default='')

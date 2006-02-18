@@ -100,11 +100,11 @@ class PurchaseOrder(Domain):
      ORDER_CONFIRMED,
      ORDER_CLOSED) = range(5)
 
-    statuses = {ORDER_CANCELLED     : _('Cancelled'),
-                ORDER_QUOTING       : _('Quoting'),
-                ORDER_PENDING       : _('Pending'),
-                ORDER_CONFIRMED     : _('Confirmed'),
-                ORDER_CLOSED        : _('Closed')}
+    statuses = {ORDER_CANCELLED:    unicode(_('Cancelled')),
+                ORDER_QUOTING:      unicode(_('Quoting')),
+                ORDER_PENDING:      unicode(_('Pending')),
+                ORDER_CONFIRMED:    unicode(_('Confirmed')),
+                ORDER_CLOSED:       unicode(_('Closed'))}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
@@ -267,7 +267,7 @@ class PurchaseOrder(Domain):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Got an unexpected status value: '
                                         '%s' % self.status)
-        return unicode(self.statuses[self.status])
+        return self.statuses[self.status]
 
     def get_purchase_subtotal(self):
         subtotal = sum([item.get_total() for item in self.get_items()], 0.0)

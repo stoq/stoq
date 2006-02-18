@@ -192,10 +192,10 @@ class AbstractSellable(InheritableModelAdapter):
      STATUS_BLOCKED) = range(4)
 
 
-    statuses = {STATUS_AVAILABLE: _("Available"),
-                STATUS_SOLD: _("Sold"),
-                STATUS_CLOSED: _("Closed"),
-                STATUS_BLOCKED: _("Blocked")}
+    statuses = {STATUS_AVAILABLE:   unicode(_("Available")),
+                STATUS_SOLD:        unicode(_("Sold")),
+                STATUS_CLOSED:      unicode(_("Closed")),
+                STATUS_BLOCKED:     unicode(_("Blocked"))}
 
     code = UnicodeCol(alternateID=True)
     status = IntCol(default=STATUS_AVAILABLE)
