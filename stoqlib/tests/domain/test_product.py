@@ -27,7 +27,7 @@
 
 
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductStockReference, ProductStockItem,
+                                    ProductStockReference,
                                     ProductSellableItem)
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.interfaces import (ISupplier, ICompany, IStorable,
