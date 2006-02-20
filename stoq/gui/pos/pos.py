@@ -27,6 +27,7 @@
 """ Main interface definition for pos application.  """
 
 import gettext
+import decimal
 
 import gtk
 from kiwi.ui.dialogs import warning
@@ -113,7 +114,8 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
-        model = FancySellable()
+        model = FancySellable(quantity=decimal.Decimal('1.0'),
+                              price=currency(0))
         self.sellable_proxy = self.add_proxy(model,
                                              widgets=POSApp.sellable_widgets)
         self.price_slave.set_model(model)
@@ -277,7 +279,7 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         current_price = sellable.base_sellable_info.price
         scale_price = data.price_per_kg
-        if scale_price != 0.0 and current_price != scale_price:
+        if scale_price != 0 and current_price != scale_price:
             if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
                 msg = _("The price supplied by the scale doesn't match the "
                         "current one registered in the system and will be "
@@ -393,11 +395,13 @@ class POSApp(AppWindow):
         self._update_widgets()
         sellable = self.product_proxy.model.product
         if not (sellable and self.product.get_text()):
-            model = FancySellable()
+            model = FancySellable(quantity=decimal.Decimal('1.0'),
+                                  price=currency(0))
             self.sellable_proxy.new_model(model)
             self.price_slave.set_model(model)
             return
         sellable_item = FancySellable(price=sellable.get_price(),
+                                      quantity=decimal.Decimal('1.0'),
                                       unit=sellable.unit)
         self.price_slave.set_model(sellable_item)
         self.sellable_proxy.new_model(sellable_item)

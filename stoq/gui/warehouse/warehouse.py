@@ -22,13 +22,10 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-stoq/gui/warehouse/warehouse.py:
-
-    Main gui definition for warehouse application.
-"""
+""" Main gui definition for warehouse application.  """
 
 import gettext
+import decimal
 
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
@@ -117,7 +114,7 @@ class WarehouseApp(SearchableAppWindow):
                 AccessorColumn('supplier', self._get_supplier,
                                title=_('Supplier'), data_type=str),
                 AccessorColumn('quantity', self._get_stock_balance,
-                               title=_('Quantity'), data_type=float)]
+                               title=_('Quantity'), data_type=decimal.Decimal)]
     #
     # Accessor
     #
