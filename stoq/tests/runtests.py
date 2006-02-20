@@ -111,7 +111,7 @@ def main(args):
     options, args = parser.parse_args(args)
     setup(options)
 
-    test_gui(options)
+    test_gui(options, args[1:])
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[:]))
