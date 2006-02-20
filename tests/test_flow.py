@@ -54,27 +54,19 @@ from stoqdrivers.exceptions import (
 class InvalidResult(Exception):
     """ Invalid result for the test. """
 
-def testAddItemWithoutCoupon(printer):
+def tryException(exception, func, *args, **kwargs):
     try:
-        printer.open()
-        printer.cancel()
-        printer.add_item("000001", Decimal("2"), Decimal("1.30"),
-                         UNIT_EMPTY, "Cigarro", TAX_NONE,
-                         Decimal("0"), Decimal("0"))
-    except CouponNotOpenError:
-        print "* Test Add Item Without Coupon: OK."
-    except PendingReadX:
-        print ("*** A read X is needed and will be made right now\n"
-               "*** restart the tests after that.\n\n")
-        printer.summarize()
-        sys.exit()
-    except PendingReduceZ:
-        print ("*** A reduce Z is needed and will be made right now\n"
-               "*** restart the tests after that.\n\n")
-        printer.close_till()
-        sys.exit()
-    else:
-        raise InvalidResult("CouponNotOpenError exception expected.")
+        func(*args, **kwargs)
+    except exception:
+        return
+    raise InvalidResult("%s exception expected"
+                        % exception.__name__)
+
+def testAddItemWithoutCoupon(printer):
+    tryException(CouponNotOpenError, printer.add_item, "000001",
+                 Decimal("2"), Decimal("1.30"), UNIT_EMPTY,
+                 "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
+    print "* Test Add Item Without Coupon: OK."
 
 def testCancelItemTwice(printer):
     item_1 = printer.add_item("000001", Decimal("2"), Decimal("1.30"),
@@ -86,48 +78,28 @@ def testCancelItemTwice(printer):
     item_3 = printer.add_item("000003", Decimal("1"), Decimal("2.30"),
                               UNIT_EMPTY,"Isqueiro", TAX_NONE,
                               Decimal("0"), Decimal("0"))
-    try:
-        printer.cancel_item(item_3)
-        printer.cancel_item(item_3)
-    except CancelItemError:
-        print "Test Cancel Item Twice: OK."
-    else:
-        raise InvalidResult("CancelItemError exception expected.")
+    printer.cancel_item(item_3)
+    tryException(CancelItemError, printer.cancel_item, item_3)
+    print "Test Cancel Item Twice: OK."
 
 def testCloseCouponWithoutTotalize(printer):
-    try:
-        printer.close()
-    except CloseCouponError:
-        print "Test Close Coupon Without Totalize: OK."
-    else:
-        raise InvalidResult("CloseCouponError exception expected.")
+    tryException(CloseCouponError, printer.close)
+    print "Test Close Coupon Without Totalize: OK."
 
 def testAddPaymentWithoutTotalize(printer):
-    try:
-        printer.add_payment(MONEY_PM, Decimal("100.0"), "")
-    except PaymentAdditionError:
-        print "Test Add Payment Without Totalize: OK."
-    else:
-        raise InvalidResult("PaymentAdditionError exception expected.")
+    tryException(PaymentAdditionError, printer.add_payment,
+                 MONEY_PM, Decimal("100.0"), "")
+    print "Test Add Payment Without Totalize: OK."
 
 def testAddItemWithCouponTotalized(printer):
-    printer.totalize(0, 0, TAX_NONE)
-    try:
-        printer.add_item("0005", Decimal("4"), Decimal("2.30"), UNIT_EMPTY,
-                         "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
-    except AlreadyTotalized:
-        print "Test Add Item With Coupon Totalized: OK."
-    else:
-        raise InvalidResult("AlreadyTotalized exception expected.")
+    tryException(AlreadyTotalized, printer.add_item, "0005",
+                 Decimal("4"), Decimal("2.30"), UNIT_EMPTY,
+                 "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
+    print "Test Add Item With Coupon Totalized: OK."
 
 def testCloseCouponWithoutPayments(printer):
-    try:
-        printer.close()
-    except CloseCouponError:
-        print "Test Close Coupon Without Payments: OK."
-    else:
-        raise InvalidResult("CloseCouponError exception expected.")
-
+    tryException(CloseCouponError, printer.close)
+    print "Test Close Coupon Without Payments: OK."
 
 def test():
     printer = FiscalPrinter()
