@@ -363,7 +363,7 @@ class IFS9000I(SerialBase):
 
     def get_totalizers(self, type="1"):
         reply = self.writeline(self.CMD_GET_PRINTER_TOTALIZERS + type)
-        if reply[0] == '+':
+        if reply[1] != '+':
             raise ValueError("Inconsistent package received while "
                              "reading printer totalizers")
         return reply[5:]
