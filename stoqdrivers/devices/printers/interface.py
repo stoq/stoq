@@ -61,11 +61,13 @@ class ICouponPrinter(IPrinter):
         executed it must be called before calling any method.
 
         @param customer:
-        @type customer:  string
+        @type customer:   str
+
         @param address:
-        @type address:  string
+        @type address:    str
+
         @param document:
-        @type document:  string
+        @type document:   str
         """
 
     def coupon_open():
@@ -77,38 +79,45 @@ class ICouponPrinter(IPrinter):
                         discount, charge, unit_desc=''):
         """ Adds an item to the coupon.
 
-        @param code:         item code identifier
-        @type  code:         string
-        @param quantity:     quantity
-        @type  quantity:     number
-        @param price:        price
-        @type  price:        number
-        @param unit:         constant to describe the unit
-        @type unit:          integer constant one of: UNIT_LITERS,
-                             UNIT_EMPTY, UNIT_METERS, UNIT_WEIGHT,
-                             UNIT_CUSTOM.
-        @param description:  description of product
-        @type  desription:   string
-        @param taxcode:      constant to descrive the tax
-        @type  taxcode:      integer constant one of: TAX_NONE,
-                             TAX_SUBSTITUTION, TAX_EXEMPTION
-        @param discount:     discount in %
-        @type  discount      float 0..100
-        @param charge:       charge in %
-        @type  charge        float 0..100
-        @param unit_desc:    A 2-byte string representing the unit
-                             that applies to the product.
-        @type unit_desc:     string
+        @param code:      item code identifier
+        @type  code:      str
 
-        @rtype:              integer
-        @returns             identifier of added item
+        @param quantity:  quantity
+        @type  quantity:  Decimal
+
+        @param price:     price
+        @type  price:     Decimal
+
+        @param unit:      constant to describe the unit
+        @type unit:       integer constant one of: UNIT_LITERS, UNIT_EMPTY,
+                          UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
+
+        @param description:  description of product
+        @type  desription: str
+
+        @param taxcode:   constant to descrive the tax
+        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
+                          TAX_EXEMPTION
+
+        @param discount:  discount in %
+        @type  discount   Decimal between 0-100
+
+        @param charge:    charge in %
+        @type  charge     Decimal between 0-100
+
+        @param unit_desc: A 2-byte string representing the unit that applies to
+                          the product.
+        @type unit_desc:  str
+
+        @rtype:           Decimal
+        @returns          identifier of added item
         """
 
     def coupon_cancel_item(item_id):
         """ Cancels an item, item_id must be a value returned by
         coupon_add_item
 
-        @param item_id:  the item id
+        @param item_id:   the item id
         """
 
     def coupon_cancel():
@@ -121,38 +130,44 @@ class ICouponPrinter(IPrinter):
         This can only be called when the coupon is open, has items added and
         payments added.
 
-        @param discount:     discount in %
-        @type  discount      float 0..100
-        @param charge:       charge in %
-        @type  charge        float 0..100
-        @param tax_code:     currently unused
+        @param discount:  discount in %
+        @type discount:   Decimal between 0-100
 
-        @rtype:              float
-        @returns             the coupon total value
+        @param charge:    charge in %
+        @type  charge     Decimal between 0-100
+
+        @param tax_code:  currently unused
+
+        @rtype:           Decimal
+        @returns          the coupon total value
         """
 
     def coupon_add_payment(payment_method, value, description):
         """
-        @param payment_method:    A constant (defined in the constants.py
-                                  module) representing the payment method
-        @param value:             the payment value
-        @type value:              float
-        @param description:       A simple description of the payment method
-                                  to be appended to the coupon.
+        @param payment_method: The payment method.
+        @type payment_method:  A constant (defined in the constants.py module)
+                               representing the payment method.
 
-        @rtype:                   float
-        @returns                  the total remaining amount
+        @param value:     The payment value
+        @type value:      Decimal
+
+        @param description: A simple description of the payment method to be
+                            appended to the coupon.
+        @type value:      str
+
+        @rtype:           Decimal
+        @returns          the total remaining amount
         """
 
     def coupon_close(message=''):
         """ It needs to be possible to open new coupons after this is called.
         You must call coupon_totalize before calling this method.
 
-        @param message:      promotional message
-        @type message:       string
+        @param message:   promotional message
+        @type message:    str
 
-        @rtype:              integer
-        @returns:            identifier of the coupon.
+        @rtype:           int
+        @returns:         identifier of the coupon.
         """
 
     #
@@ -160,28 +175,28 @@ class ICouponPrinter(IPrinter):
     #
 
     def summarize():
-        """ Prints a summary of all sales of the day.
-        In Brazil this is 'read X' operation
+        """ Prints a summary of all sales of the day. In Brazil this is
+        'read X' operation.
         """
 
     def close_till():
-        """ Close the till for the day, no other actions can be done after this
-        is called. In Brazil this is 'reduce Z' operation
+        """ Close the till for the day, no other actions can be done after
+        this is called. In Brazil this is 'reduce Z' operation
         """
 
     def till_add_cash(value):
         """ Add an till complement. This is called 'suprimento de caixa' on
         Brazil
 
-        @param value:        The value added
-        @type value:         float
+        @param value:     The value added
+        @type value:      Decimal
         """
 
     def till_remove_cash(value):
         """ Retire payments from the till. This is called 'sangria' on Brazil
 
-        @param value:        The value to remove
-        @type value:         float
+        @param value:     The value to remove
+        @type value:      Decimal
         """
 
     #
@@ -196,19 +211,19 @@ class ICouponPrinter(IPrinter):
         """ Returns a capabilities dictionary, where the keys are the strings
         below and its values are Capability instances
 
-        * item_code (str)
-        * item_id (int)
-        * items_quantity (float)
-        * item_price (float)
-        * item_description (str)
-        * payment_value (float)
+        * item_code           (str)
+        * item_id             (int)
+        * items_quantity      (float)
+        * item_price          (float)
+        * item_description    (str)
+        * payment_value       (float)
         * payment_description (str)
         * promotional_message (str)
-        * customer_name (str)
-        * customer_id (str)
-        * customer_address (str)
-        * add_cash_value (float)
-        * remove_cash_value (float)
+        * customer_name       (str)
+        * customer_id         (str)
+        * customer_address    (str)
+        * add_cash_value      (float)
+        * remove_cash_value   (float)
         """
 
 class IChequePrinter(IPrinter):
@@ -227,22 +242,27 @@ class IChequePrinter(IPrinter):
     def print_cheque(bank, value, thirdparty, city, date=None):
         """ Prints a cheque
 
-        @param bank: the code of bank
-        @type bank: one of codes returned by get_banks method.
-        @param value: the value of the cheque
-        @type value: number
+        @param bank:      the code of bank
+        @type bank:       one of codes returned by get_banks method.
+
+        @param value:     the value of the cheque
+        @type value:      Decimal
+
         @param thirdparty: receiver of the cheque
-        @type thirdparty: string
+        @type thirdparty: str
+
         @param city:
-        @type city: string
-        @param date: when the cheque was payed, optional
-        @type date: datetime
+        @type city:       str
+
+        @param date:      when the cheque was payed, optional
+        @type date:       datetime
         """
+
     def get_capabilities():
         """ Returns a capabilities dictionary, where the keys are the strings
         below and its values are Capability instances
 
-        * cheque_thirdparty (str)
-        * cheque_value (float)
-        * cheque_city (str)
+        * cheque_thirdparty   (str)
+        * cheque_value        (Decimal)
+        * cheque_city         (str)
         """
