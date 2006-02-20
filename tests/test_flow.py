@@ -25,6 +25,7 @@
 ##
 " A simple test case to check if the coupon workflow is managed properly. "
 
+import sys
 from decimal import Decimal
 
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
@@ -39,6 +40,8 @@ from stoqdrivers.exceptions import (
 #
 # * Sweda IFS9000I
 # * Bematech MP25FI
+# * Dataregis 375EP
+# * PertoPay 2023
 #
 # TODO:
 #
@@ -49,71 +52,103 @@ from stoqdrivers.exceptions import (
 #
 #
 
-def test():
-    printer = FiscalPrinter()
+class InvalidResult(Exception):
+    """ Invalid result for the test. """
 
-    # Test 01 - Try add an item with the coupon cancelled
+def testAddItemWithoutCoupon(printer):
     try:
         printer.open()
         printer.cancel()
-        printer.add_item("0001", Decimal("2"), Decimal("1.30"), UNIT_EMPTY,
-                         "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
+        printer.add_item("000001", Decimal("2"), Decimal("1.30"),
+                         UNIT_EMPTY, "Cigarro", TAX_NONE,
+                         Decimal("0"), Decimal("0"))
     except CouponNotOpenError:
-        print "Test 1: OK."
+        print "* Test Add Item Without Coupon: OK."
     except PendingReadX:
         print ("*** A read X is needed and will be made right now\n"
                "*** restart the tests after that.\n\n")
         printer.summarize()
-        return
+        sys.exit()
     except PendingReduceZ:
         print ("*** A reduce Z is needed and will be made right now\n"
                "*** restart the tests after that.\n\n")
         printer.close_till()
-        return
+        sys.exit()
+    else:
+        raise InvalidResult("CouponNotOpenError exception expected.")
 
-    # Test 02 - Try cancel an item already cancelled
-    printer.open()
-    item_1 = printer.add_item("0001", Decimal("2"), Decimal("1.30"),
+def testCancelItemTwice(printer):
+    item_1 = printer.add_item("000001", Decimal("2"), Decimal("1.30"),
                               UNIT_EMPTY, "Cigarro", TAX_NONE,
                               Decimal("0"), Decimal("0"))
-    item_2 = printer.add_item("0002", Decimal("3"), Decimal("5.20"),
+    item_2 = printer.add_item("000002", Decimal("3"), Decimal("5.20"),
                               UNIT_EMPTY, "Cerveja", TAX_NONE,
                               Decimal("0"), Decimal("0"))
-    item_3 = printer.add_item("0003", Decimal("1"), Decimal("2.30"),
+    item_3 = printer.add_item("000003", Decimal("1"), Decimal("2.30"),
                               UNIT_EMPTY,"Isqueiro", TAX_NONE,
                               Decimal("0"), Decimal("0"))
     try:
         printer.cancel_item(item_3)
         printer.cancel_item(item_3)
     except CancelItemError:
-        print "Test 2: OK."
+        print "Test Cancel Item Twice: OK."
+    else:
+        raise InvalidResult("CancelItemError exception expected.")
 
-    # Test 03 - Try close the coupon without totalize it
+def testCloseCouponWithoutTotalize(printer):
     try:
         printer.close()
     except CloseCouponError:
-        print "Test 3: OK."
+        print "Test Close Coupon Without Totalize: OK."
+    else:
+        raise InvalidResult("CloseCouponError exception expected.")
 
-    # Test 04 - Try add a payment without totalize the coupon
+def testAddPaymentWithoutTotalize(printer):
     try:
         printer.add_payment(MONEY_PM, Decimal("100.0"), "")
     except PaymentAdditionError:
-        print "Test 4: OK."
+        print "Test Add Payment Without Totalize: OK."
+    else:
+        raise InvalidResult("PaymentAdditionError exception expected.")
 
-    # Test 05 - Try add an item with the coupon totalized
+def testAddItemWithCouponTotalized(printer):
     printer.totalize(0, 0, TAX_NONE)
     try:
         printer.add_item("0005", Decimal("4"), Decimal("2.30"), UNIT_EMPTY,
                          "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
     except AlreadyTotalized:
-        print "Test 5: OK."
+        print "Test Add Item With Coupon Totalized: OK."
+    else:
+        raise InvalidResult("AlreadyTotalized exception expected.")
 
-    # Test 06 - Try close the with no payments
+def testCloseCouponWithoutPayments(printer):
     try:
         printer.close()
     except CloseCouponError:
-        print "Test 6: OK."
+        print "Test Close Coupon Without Payments: OK."
+    else:
+        raise InvalidResult("CloseCouponError exception expected.")
 
+
+def test():
+    printer = FiscalPrinter()
+
+    if printer.brand == "dataregis" or printer.brand == "perto":
+        print ("+++ Skipping test `Add Item Without Coupon', since it "
+               "isn't supported on `%s'" % printer.brand)
+    else:
+        testAddItemWithoutCoupon(printer)
+    printer.open()
+    testCancelItemTwice(printer)
+    testCloseCouponWithoutTotalize(printer)
+    testAddPaymentWithoutTotalize(printer)
+    printer.totalize(Decimal("0"), Decimal("0"), TAX_NONE)
+    testAddItemWithCouponTotalized(printer)
+    if printer.brand == "dataregis":
+        print ("+++ Skipping test `Close Coupon Without Payments', since "
+               "it isn't supported on Dataregis")
+    else:
+        testCloseCouponWithoutPayments(printer)
     printer.add_payment(MONEY_PM, Decimal("100.0"), "")
     printer.close()
 
