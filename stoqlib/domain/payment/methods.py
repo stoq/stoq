@@ -25,24 +25,24 @@
 """ Payment method implementations. """
 
 import gettext
+import decimal
 from datetime import datetime, timedelta
 
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
-from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
+from sqlobject import (IntCol, DateTimeCol, UnicodeCol,
                        ForeignKey, BoolCol)
 from zope.interface import implements
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
-from stoqlib.lib.validators import compare_float_numbers
+from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.base import (Payment, PaymentAdaptToInPayment,
-                                         AbstractPaymentGroup,
-                                         MAX_PAYMENT_PRECISION)
+                                         AbstractPaymentGroup)
 from stoqlib.domain.base import (Domain, InheritableModel,
-                                 InheritableModelAdapter)
+                                 InheritableModelAdapter, ConnMetaInterface)
 from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
                                        IBillPM, IFinancePM, ICardPM,
                                        ICreditProvider, IActive, IOutPayment,
@@ -52,6 +52,130 @@ from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
+
+
+#
+# Payment method details
+#
+
+
+class PaymentMethodDetails(InheritableModel):
+    """.
+    B{Important attributes}:
+        - I{commission}: a percentage value. Note the percentages in Stoq
+                         applications must follow the standard:
+                         A discount of 5%    = 0,95.
+                         A charge of 3%      = 1,03.
+        - I{provider}: the credit provider which is the responsible to pay
+                       this payment.
+        - I{destination}: the suggested destination for the payment when it
+                          is paid.
+    """
+    implements(IActive)
+
+    payment_type_name = None
+    interface_method = None
+
+    is_active = BoolCol(default=True)
+    commission = DecimalCol(default=0)
+    notes = UnicodeCol(default='')
+    provider = ForeignKey('PersonAdaptToCreditProvider')
+    destination = ForeignKey('PaymentDestination')
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This provider is already inactive')
+        self.is_active = False
+
+    #
+    # Auxiliar methods
+    #
+
+    def get_thirdparty(self):
+        return self.provider.get_adapted()
+
+    def _get_payment_method_by_interface(self, iface):
+        conn = self.get_connection()
+        method = sysparam(conn).BASE_PAYMENT_METHOD
+        adapter = iface(method, connection=conn)
+        if not adapter:
+            raise TypeError('This object must implement interface '
+                            '%s' % iface)
+        return adapter
+
+    def calculate_payment_duedate(self, first_duedate):
+        if not hasattr(self, 'installment_settings'):
+            return first_duedate + timedelta(self.receive_days)
+
+        if (not (self.installment_settings and
+                 self.installment_settings.calculate_payment_duedate)):
+            raise ValueError('You must have a valid installment_settings '
+                              'attribute set at this point')
+        func = self.installment_settings.calculate_payment_duedate
+        return func(first_duedate)
+
+    def get_max_installments_number(self):
+        return self.max_installments_number
+
+    def get_payment_method(self):
+        iface = self.interface_method
+        if not iface:
+            raise ValueError('Child must define a interface_method '
+                             'attribute')
+        return self._get_payment_method_by_interface(iface)
+
+    def create_inpayment(self, payment_group, due_date, value,
+                         payment_method, description=None,
+                         base_value=None):
+        return payment_method.create_inpayment(payment_group, due_date,
+                                               value, self, description,
+                                               base_value=base_value)
+
+    @argcheck(AbstractPaymentGroup, int, datetime, decimal.Decimal)
+    def setup_inpayments(self, payment_group, installments_number,
+                         first_duedate, total_value):
+        """Return a list of newly created inpayments and its total
+        payment list and the second one is the interest total value
+
+        payment_group       = a AbstractPaymentGroup instance
+        installments_number = the number of installments for payment
+                              generation
+        first_duedate       = The duedate for the first payment created
+        total_value         = the sum of all the payments. Note that payment
+                              values are total_value divided by
+                              installments_number
+        """
+        conn = self.get_connection()
+        method = self.get_payment_method()
+        max = self.get_max_installments_number()
+        method._check_installments_number(installments_number, max)
+
+        base_value = total_value / installments_number
+        updated_value = total_value * self.commission
+        payment_value = updated_value / installments_number
+        payment_precision = sysparam(conn).DECIMAL_PRECISION
+        payment_value = round(payment_value, payment_precision)
+        base_value = round(base_value, payment_precision)
+
+        payments = []
+        due_date = first_duedate
+        group_desc = payment_group.get_group_description()
+        for number in range(installments_number):
+            due_date = self.calculate_payment_duedate(due_date)
+            description = _('%s (%s of %s) from %s') % (self.description,
+                                                        number + 1,
+                                                        installments_number,
+                                                        group_desc)
+            payment = self.create_inpayment(payment_group, due_date,
+                                            payment_value, method,
+                                            description,
+                                            base_value=base_value)
+            payments.append(payment)
+            due_date += relativedelta(month=+1)
+        return payments
 
 #
 # Domain Classes
@@ -84,7 +208,7 @@ class BillCheckGroupData(Domain):
     """
     installments_number = IntCol(default=1)
     first_duedate = DateTimeCol(default=datetime.now)
-    interest = FloatCol(default=0.0)
+    interest = DecimalCol(default=0)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=1)
     group = ForeignKey('AbstractPaymentGroup')
@@ -201,6 +325,9 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
         count = Payment.select(query, connection=conn).count()
         return count
 
+    @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
+              PaymentMethodDetails, basestring, ConnMetaInterface,
+              decimal.Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
                     iface=IInPayment, base_value=None):
@@ -335,17 +462,17 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     destination = ForeignKey('PaymentDestination')
 
     max_installments_number = IntCol(default=1)
-    monthly_interest = FloatCol(default=0.0)
-    daily_penalty = FloatCol(default=0.0)
+    monthly_interest = DecimalCol(default=0)
+    daily_penalty = DecimalCol(default=0)
 
     def _check_interest_value(self, interest):
-        interest = interest or 0.0
-        if not isinstance(interest, (float, int)):
+        interest = interest or decimal.Decimal('0.0')
+        if not isinstance(interest, (float, int, decimal.Decimal)):
             raise TypeError('interest argument must be integer '
                             'or float, got %s instead' % type(interest))
         conn = self.get_connection()
         if (sysparam(conn).MANDATORY_INTEREST_CHARGE and
-            not compare_float_numbers(interest, self.monthly_interest)):
+            not interest == self.monthly_interest):
             raise PaymentError('The interest charge is mandatory for '
                                'this establishment. Got %s of interest,'
                                'it should be %s' %(interest,
@@ -354,11 +481,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
             raise ValueError("Argument interest must be between 0 and 100,"
                              "got %s" % interest)
 
+    @argcheck(decimal.Decimal, int, decimal.Decimal)
     def calculate_payment_value(self, total_value, installments_number,
-                                monthly_interest):
-        if not isinstance(installments_number, int):
-            raise TypeError('installments_number argument must be integer '
-                            'got %s instead' % type(installments_number))
+                                monthly_interest=None):
         if not installments_number:
             raise ValueError('The payment_qty argument must be greater '
                              'than zero')
@@ -366,19 +491,18 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         self._check_interest_value(monthly_interest)
 
         if not monthly_interest:
-            return total_value/float(installments_number)
+            return total_value / installments_number
 
         # The interest value must be calculated per month
-        interest = monthly_interest / 100.0
+        interest = monthly_interest / 100
 
         # XXX Evaluate this code better
-        rate = 1 - ((1.0 + interest) ** -installments_number)
+        rate = 1 - ((1 + interest) ** -installments_number)
         payment_value = total_value * interest / rate
         return payment_value
 
-    # XXX Waiting for bug fix in kiwi
-    # @argcheck(object, AbstractPaymentGroup, int, datetime, int, int,
-    #           float)
+    @argcheck(AbstractPaymentGroup, int, datetime, int, int,
+              decimal.Decimal, decimal.Decimal, ConnMetaInterface)
     def _setup_payments(self, payment_group, installments_number,
                         first_duedate, interval_type, intervals,
                         total_value, interest=None, iface=IInPayment):
@@ -405,15 +529,11 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
                                              installments_number,
                                              interest)
 
-        # We need to call round for each payment value since we need good
-        # suport for fiscal printers (and stoqdrivers package) which most
-        # of times have two decimal digits.
-        value = round(value, MAX_PAYMENT_PRECISION)
+        conn = self.get_connection()
         if interest:
             interest_total = value * installments_number - total_value
         else:
-            interest_total = 0.0
-        conn = self.get_connection()
+            interest_total = decimal.Decimal('0.0')
         payments = []
         calc_interval = calculate_interval(interval_type, intervals)
         group_desc = payment_group.get_group_description()
@@ -426,12 +546,14 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
             payment = self.add_payment(payment_group, due_date, value,
                                        description=description,
                                        iface=iface)
-            total_value -= value
             payments.append(payment)
 
-        if total_value != 0.0:
-            payment.get_adapted().value += total_value
-
+        payments_total = sum([p.get_adapted().value for p in payments])
+        difference = total_value - payments_total - interest_total
+        if difference:
+            adapted = payment.get_adapted()
+            adapted.value += difference
+            adapted.base_value += difference
         return payments, interest_total
 
     def setup_inpayments(self, payment_group, installments_number,
@@ -494,6 +616,9 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     # Auxiliar methods
     #
 
+    @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
+              PaymentMethodDetails, basestring, ConnMetaInterface,
+              decimal.Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
                     iface=IInPayment, base_value=None):
@@ -603,128 +728,6 @@ class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToFinancePM, IFinancePM)
 
 
-#
-# Payment method details
-#
-
-
-class PaymentMethodDetails(InheritableModel):
-    """.
-    B{Important attributes}:
-        - I{commission}: a percentage value. Note the percentages in Stoq
-                         applications must follow the standard:
-                         A discount of 5%    = 0,95.
-                         A charge of 3%      = 1,03.
-        - I{provider}: the credit provider which is the responsible to pay
-                       this payment.
-        - I{destination}: the suggested destination for the payment when it
-                          is paid.
-    """
-    implements(IActive)
-
-    payment_type_name = None
-    interface_method = None
-
-    is_active = BoolCol(default=True)
-    commission = FloatCol(default=0.0)
-    notes = UnicodeCol(default='')
-    provider = ForeignKey('PersonAdaptToCreditProvider')
-    destination = ForeignKey('PaymentDestination')
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This provider is already inactive')
-        self.is_active = False
-
-    #
-    # Auxiliar methods
-    #
-
-    def get_thirdparty(self):
-        return self.provider.get_adapted()
-
-    def _get_payment_method_by_interface(self, iface):
-        conn = self.get_connection()
-        method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = iface(method, connection=conn)
-        if not adapter:
-            raise TypeError('This object must implement interface '
-                            '%s' % iface)
-        return adapter
-
-    def calculate_payment_duedate(self, first_duedate):
-        if not hasattr(self, 'installment_settings'):
-            return first_duedate + timedelta(self.receive_days)
-
-        if (not (self.installment_settings and
-                 self.installment_settings.calculate_payment_duedate)):
-            raise ValueError('You must have a valid installment_settings '
-                              'attribute set at this point')
-        func = self.installment_settings.calculate_payment_duedate
-        return func(first_duedate)
-
-    def get_max_installments_number(self):
-        return self.max_installments_number
-
-    def get_payment_method(self):
-        iface = self.interface_method
-        if not iface:
-            raise ValueError('Child must define a interface_method '
-                             'attribute')
-        return self._get_payment_method_by_interface(iface)
-
-    def create_inpayment(self, payment_group, due_date, value,
-                         payment_method, description=None,
-                         base_value=None):
-        return payment_method.create_inpayment(payment_group, due_date,
-                                               value, self, description,
-                                               base_value=base_value)
-
-    @argcheck(AbstractPaymentGroup, int, datetime, float)
-    def setup_inpayments(self, payment_group, installments_number,
-                         first_duedate, total_value):
-        """Return a list of newly created inpayments and its total
-        payment list and the second one is the interest total value
-
-        payment_group       = a AbstractPaymentGroup instance
-        installments_number = the number of installments for payment
-                              generation
-        first_duedate       = The duedate for the first payment created
-        total_value         = the sum of all the payments. Note that payment
-                              values are total_value divided by
-                              installments_number
-        """
-        conn = self.get_connection()
-        method = self.get_payment_method()
-        max = self.get_max_installments_number()
-        method._check_installments_number(installments_number, max)
-
-        base_value = total_value / installments_number
-        updated_value = total_value * self.commission
-        payment_value = updated_value / installments_number
-        payment_precision = sysparam(conn).PAYMENT_PRECISION
-        payment_value = round(payment_value, payment_precision)
-        base_value = round(base_value, payment_precision)
-
-        payments = []
-        due_date = first_duedate
-        group_desc = payment_group.get_group_description()
-        for number in range(installments_number):
-            due_date = self.calculate_payment_duedate(due_date)
-            description = _('%s (%s of %s) from %s') % (self.description,
-                                                        number + 1,
-                                                        installments_number,
-                                                        group_desc)
-            payment = self.create_inpayment(payment_group, due_date,
-                                            payment_value, method,
-                                            description,
-                                            base_value=base_value)
-            payments.append(payment)
-            due_date += relativedelta(month=+1)
-        return payments
 
 
 class DebitCardDetails(PaymentMethodDetails):

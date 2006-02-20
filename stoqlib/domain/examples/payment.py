@@ -67,9 +67,9 @@ def create_payments():
     conn = new_transaction()
     print_msg("Creating payments... ", break_line=False)
 
-    table = Person.getAdapterClass(ICreditProvider) 
-    
-    # XXX Since SQLObject SelectResults object doesn't provide an 
+    table = Person.getAdapterClass(ICreditProvider)
+
+    # XXX Since SQLObject SelectResults object doesn't provide an
     # index method, I need to use list here.
     card_providers = table.get_card_providers(conn)
     finance_companies = table.get_finance_companies(conn)
@@ -93,7 +93,7 @@ def create_payments():
         CardInstallmentsProviderDetails(installment_settings=inst_settings,
                                         max_installments_number=max,
                                         **general_args)
-        
+
     for provider in finance_companies:
         commission = get_percentage_commission()
         general_args = dict(commission=commission, destination=destination,

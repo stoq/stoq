@@ -26,8 +26,10 @@
 """ Abstract wizard steps definition """
 
 import gettext
+import decimal
 
 from kiwi.ui.widgets.list import SummaryLabel
+from kiwi.datatypes import currency
 from kiwi.python import Settable
 
 from stoqlib.gui.base.wizards import BaseWizardStep
@@ -121,7 +123,8 @@ class AbstractProductStep(BaseWizardStep):
             cost = self.proxy.model.cost
         else:
             cost = product.cost
-        quantity = self.proxy.model and self.proxy.model.quantity or 1.0
+        quantity = (self.proxy.model and self.proxy.model.quantity or
+                    decimal.Decimal('1.0'))
         order_item = self.get_order_item(product, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
@@ -166,7 +169,9 @@ class AbstractProductStep(BaseWizardStep):
         self.proxy = self.add_proxy(None,
                                     AbstractProductStep.proxy_widgets)
         widgets = AbstractProductStep.product_widgets
-        self.product_proxy = self.add_proxy(Settable(product=None), widgets)
+        model = Settable(quantity=decimal.Decimal('1.0'),
+                         price=currency(0), product=None)
+        self.product_proxy = self.add_proxy(model, widgets)
 
     def setup_slaves(self):
         items = self.get_saved_items()
@@ -216,7 +221,8 @@ class AbstractProductStep(BaseWizardStep):
             self.proxy.new_model(None, relax_type=True)
             return
         cost = product.cost
-        model = Settable(quantity=1.0, cost=cost, product=product)
+        model = Settable(quantity=decimal.Decimal('1.0'), cost=cost,
+                         product=product)
         self.proxy.new_model(model)
 
     def on_quantity__activate(self, *args):

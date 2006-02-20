@@ -120,16 +120,12 @@ class TestParameter:
         param = self.sparam.COUNTRY_SUGGESTED
         assert isinstance(param, basestring)
 
-    def test_SellablePricePrecision(self):
-        param = self.sparam.SELLABLE_PRICE_PRECISION
+    def test_DecimalSize(self):
+        param = self.sparam.DECIMAL_SIZE
         assert isinstance(param, int)
 
-    def test_StockBalancePrecision(self):
-        param = self.sparam.STOCK_BALANCE_PRECISION
-        assert isinstance(param, int)
-
-    def test_PaymentPrecision(self):
-        param = self.sparam.PAYMENT_PRECISION
+    def test_DecimalPrecision(self):
+        param = self.sparam.DECIMAL_PRECISION
         assert isinstance(param, int)
 
     def test_HasDeliveryMode(self):
@@ -151,10 +147,6 @@ class TestParameter:
     def test_MandatoryInterestChange(self):
         param = self.sparam.MANDATORY_INTEREST_CHARGE
         assert isinstance(param, int)
-
-    def test_ComparissonFloatTolerance(self):
-        param = self.sparam.COMPARISON_FLOAT_TOLERANCE
-        assert isinstance(param, float)
 
     def test_ConfirmSalesOnTill(self):
         param = self.sparam.CONFIRM_SALES_ON_TILL

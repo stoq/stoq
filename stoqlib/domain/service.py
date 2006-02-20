@@ -28,16 +28,17 @@
 import gettext
 import datetime
 
-from sqlobject import UnicodeCol, DateTimeCol, FloatCol, ForeignKey
+from sqlobject import UnicodeCol, DateTimeCol, ForeignKey
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import currency
 from zope.interface import implements
 
 from stoqlib.exceptions import SellError, DatabaseInconsistency
+from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
-from stoqlib.lib.validators import get_formatted_price
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -74,7 +75,7 @@ class ServiceSellableItem(AbstractSellableItem):
 class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
 
-    quantity = FloatCol()
+    quantity = DecimalCol()
     sellable = ForeignKey('AbstractSellable')
     delivery = ForeignKey('ServiceSellableItemAdaptToDelivery')
 
@@ -86,10 +87,7 @@ class DeliveryItem(Domain):
         return self.sellable.get_price()
 
     def get_total(self):
-        return self.get_price() * self.quantity
-
-    def get_total_str(self):
-        return get_formatted_price(self.get_total())
+        return currency(self.get_price() * self.quantity)
 
 #
 # Adapters

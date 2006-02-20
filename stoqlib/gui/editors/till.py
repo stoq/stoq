@@ -30,7 +30,7 @@ import gettext
 import datetime
 
 from sqlobject.sqlbuilder import AND, IN
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, currency
 
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.domain.sellable import get_formatted_price
@@ -124,12 +124,12 @@ class TillClosingEditor(BaseEditor):
             self.total_balance_lbl.set_color('red')
 
     def _update_final_cash_amount(self):
-        balance_to_send = self.model.balance_sent or 0.0
+        balance_to_send = self.model.balance_sent or currency(0)
         self.model.final_cash_amount = self.total_balance - balance_to_send
         self.proxy.update('final_cash_amount')
 
     def _update_balance_to_send(self):
-        final_cash_amount = self.model.final_cash_amount or 0.0
+        final_cash_amount = self.model.final_cash_amount or currency(0)
         self.model.balance_sent = self.total_balance - final_cash_amount
         self.proxy.update('balance_sent')
 
@@ -152,7 +152,7 @@ class TillClosingEditor(BaseEditor):
     #
 
     def after_final_cash_amount__validate(self, widget, value):
-        if value < 0.0:
+        if value < currency(0):
             return ValidationError(_("Value cannot be lesser that zero"))
         if value <= self.final_cash:
             return
@@ -195,7 +195,7 @@ class BaseCashSlave(BaseEditorSlave):
     def create_model(self, conn):
         reason = self.payment_description
         current_till = get_current_till_operation(conn)
-        payment_value = 0.0
+        payment_value = currency(0)
         args = [payment_value, reason]
         if self.payment_iface is IInPayment:
             return current_till.create_credit(*args)

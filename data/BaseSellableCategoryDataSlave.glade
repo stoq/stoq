@@ -75,7 +75,7 @@
                             <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="markup">
                                 <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
                                 <property name="can_focus">True</property>
-                                <property name="data_type">float</property>
+                                <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                                 <property name="model_attribute">category_data.suggested_markup</property>
@@ -115,7 +115,7 @@
                             <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="commission">
                                 <property name="adjustment">0.000000 0.000000 100.000000 1.000000 10.000000 0.000000</property>
                                 <property name="can_focus">True</property>
-                                <property name="data_type">float</property>
+                                <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="events">button-press-mask | button-release-mask | key-press-mask</property>
                                 <property name="model_attribute">category_data.salesperson_commission</property>

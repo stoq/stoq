@@ -37,7 +37,7 @@ from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
-from sqlobject.col import (SOUnicodeCol, SOFloatCol, SOIntCol,
+from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
@@ -293,7 +293,7 @@ class SearchBar(SlaveDelegate):
             elif (isinstance(column, SOIntCol)
                   and value not in self.int_fields):
                  self.int_fields.append(value)
-            elif (isinstance(column, SOFloatCol)
+            elif (isinstance(column, SODecimalCol)
                   and value not in self.float_fields):
                  self.float_fields.append(value)
             elif (isinstance(column, (SODateTimeCol, SODateCol))

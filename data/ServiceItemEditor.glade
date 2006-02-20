@@ -66,7 +66,7 @@
                                 </child>
                                 <child>
                                     <widget class="kiwi+ui+widgets+entry+Entry" id="price">
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">Decimal</property>
                                         <property name="model_attribute">price</property>
                                         <property name="width_chars">10</property>
                                         <property name="xalign">1.0</property>

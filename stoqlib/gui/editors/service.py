@@ -29,6 +29,7 @@
 
 import gettext
 
+from kiwi.datatypes import currency
 
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.service import ServiceSellableItem, Service
@@ -80,7 +81,7 @@ class ServiceEditor(SellableEditor):
     def create_model(self, conn):
         model = Service(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn,
-                                         description='', price=0.0)
+                                         description='', price=currency(0))
         model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
                        connection=conn)
         return model

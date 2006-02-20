@@ -150,8 +150,8 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="products_total">
-                                <property name="data_type">str</property>
-                                <property name="model_attribute">products_total_str</property>
+                                <property name="data_type">currency</property>
+                                <property name="model_attribute">products_total</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -364,8 +364,8 @@
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+label+Label" id="order_total">
-                                <property name="data_type">str</property>
-                                <property name="model_attribute">order_total_str</property>
+                                <property name="data_type">currency</property>
+                                <property name="model_attribute">order_total</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>

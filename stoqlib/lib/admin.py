@@ -33,13 +33,12 @@ from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 from stoqlib.database import setup_tables
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
-from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
-from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 
 def ensure_admin_user(name, username, password):
+    from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
+    from stoqlib.domain.profile import UserProfile
     print_msg("Creating administrator user...", break_line=False)
     conn = new_transaction()
 
@@ -73,6 +72,7 @@ def ensure_admin_user(name, username, password):
     return user
 
 def ensure_sellable_units():
+    from stoqlib.domain.sellable import SellableUnit
     """ Create native sellable units. """
     print_msg("Creating sellable units... ", break_line=False)
     conn = new_transaction()

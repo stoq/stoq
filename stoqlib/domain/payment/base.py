@@ -30,13 +30,12 @@ import datetime
 
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
-from sqlobject import (IntCol, DateTimeCol, FloatCol, UnicodeCol,
-                       ForeignKey)
+from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
@@ -46,7 +45,6 @@ from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
-MAX_PAYMENT_PRECISION = 2
 
 #
 # Domain Classes
@@ -70,12 +68,12 @@ class Payment(Domain):
      STATUS_CONFIRMED,
      STATUS_CANCELLED) = range(6)
 
-    statuses = {STATUS_PREVIEW:     unicode(_('Preview')),
-                STATUS_TO_PAY:      unicode(_('To Pay')),
-                STATUS_PAID:        unicode(_('Paid')),
-                STATUS_REVIEWING:   unicode(_('Reviewing')),
-                STATUS_CONFIRMED:   unicode(_('Confirmed')),
-                STATUS_CANCELLED:   unicode(_('Cancelled'))}
+    statuses = {STATUS_PREVIEW: unicode(_('Preview')),
+                STATUS_TO_PAY: unicode(_('To Pay')),
+                STATUS_PAID: unicode(_('Paid')),
+                STATUS_REVIEWING: unicode(_('Reviewing')),
+                STATUS_CONFIRMED: unicode(_('Confirmed')),
+                STATUS_CANCELLED: unicode(_('Cancelled'))}
 
     # XXX The payment_id attribute will be an alternateID after
     # fixing bug 2214
@@ -83,11 +81,11 @@ class Payment(Domain):
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
-    paid_value = PriceCol(default=0.0)
+    paid_value = PriceCol(default=0)
     base_value = PriceCol()
     value = PriceCol()
-    interest = PriceCol(default=0.0)
-    discount = PriceCol(default=0.0)
+    interest = PriceCol(default=0)
+    discount = PriceCol(default=0)
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
 
@@ -202,7 +200,7 @@ class Payment(Domain):
         days = (paid_date - self.due_date).days
         if days <= 0:
             return self.value
-        daily_penalty = self.group.daily_penalty / 100.0
+        daily_penalty = self.group.daily_penalty / 100
         return self.value + days * (daily_penalty * self.value)
 
     def get_thirdparty(self):
@@ -236,13 +234,13 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      METHOD_GIFT_CERTIFICATE,
      METHOD_MULTIPLE) = range(7)
 
-    method_names = {METHOD_MONEY:              _('Money'),
-                    METHOD_CHECK:              _('Check'),
-                    METHOD_BILL:               _('Bill'),
-                    METHOD_CARD:               _('Card'),
-                    METHOD_FINANCE:            _('Finance'),
-                    METHOD_GIFT_CERTIFICATE:   _('Gift Certificate'),
-                    METHOD_MULTIPLE:           _('Multiple')}
+    method_names = {METHOD_MONEY: _(u'Money'),
+                    METHOD_CHECK: _(u'Check'),
+                    METHOD_BILL: _(u'Bill'),
+                    METHOD_CARD: _(u'Card'),
+                    METHOD_FINANCE: _(u'Finance'),
+                    METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate'),
+                    METHOD_MULTIPLE: _(u'Multiple')}
 
     implements(IPaymentGroup, IContainer)
 
@@ -253,7 +251,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
-    daily_penalty = FloatCol(default=0.0)
+    daily_penalty = DecimalCol(default=0)
     renegotiation_data = ForeignKey('RenegotiationData', default=None)
 
 
@@ -262,7 +260,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     #
 
     def _set_daily_penalty(self, value):
-        if not 0.0 <= value <= 100.0:
+        if not 0 <= value <= 100:
             raise ValueError('Attribute daily_penalty must be between '
                              'zero and one hundred')
         self._SO_set_daily_penalty(value)

@@ -27,6 +27,8 @@
 
 import datetime
 
+from kiwi.datatypes import currency
+
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier, IBranch
@@ -72,31 +74,31 @@ def create_purchases():
 
     purchase_data = [dict(status=PurchaseOrder.ORDER_QUOTING,
                           salesperson_name='Michael Jackson',
-                          discount_value=10.0,
+                          discount_value=10,
                           open_date=open_dates[0],
                           quote_deadline=dates[0]),
                      dict(status=PurchaseOrder.ORDER_PENDING,
                           salesperson_name='Olivia Palito',
                           open_date=open_dates[1],
-                          discount_value=15.50),
+                          discount_value=currency('15.50')),
                      dict(status=PurchaseOrder.ORDER_CONFIRMED,
                           salesperson_name='Henrique Sabbath',
                           open_date=open_dates[2],
                           expected_receival_date=dates[1],
                           confirm_date=dates[2],
-                          charge_value=13.70),
+                          charge_value=currency('13.70')),
                      dict(status=PurchaseOrder.ORDER_CLOSED,
                           salesperson_name='Johan Lebowski',
                           open_date=open_dates[3],
                           receival_date=dates[3],
-                          charge_value=34.32)]
+                          charge_value=currency('34.32'))]
 
     sellable_index = 0
     for index in range(MAX_PURCHASES_NUMBER):
 
         supplier = suppliers[index]
         branch = branches[index]
-        
+
         purchase_args = purchase_data[index]
         order = PurchaseOrder(connection=conn, supplier=supplier,
                               branch=branch,
@@ -115,7 +117,7 @@ def create_purchases():
             PurchaseItem(connection=conn, cost=sellable.cost,
                          order=order, sellable=sellable,
                          **item_args)
-        
+
     conn.commit()
     print_msg('done.')
 

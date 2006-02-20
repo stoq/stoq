@@ -50,14 +50,20 @@ def finish_transaction(conn, model=None, keep_transaction=False):
 
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
-    from stoqlib.lib.migration import add_system_table_reference
+    from stoqlib.lib.parameters import ParameterData
     if not list_tables and verbose:
         print_msg('Setting up tables... ', break_line=False)
     else:
         print_msg('Setting up tables... ')
 
-    table_types = get_table_types()
     conn = new_transaction()
+    # We need that since DecimalCol attributes fetch some data from this
+    # table. If we are trying to initialize an existent database this table
+    # can already exist and DecimalCols will get wrong data from it
+    if conn.tableExists(ParameterData.get_db_table_name()):
+        ParameterData.clearTable(connection=conn)
+    conn.commit()
+    table_types = get_table_types()
     for table in table_types:
         if conn.tableExists(table.get_db_table_name()):
             table.dropTable(ifExists=True, cascade=True, connection=conn)
@@ -72,6 +78,9 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
     if delete_only:
         return
 
+    # Import here since we must create properly the domain schema before
+    # importing than in migration module
+    from stoqlib.lib.migration import add_system_table_reference
     add_system_table_reference(conn, check_new_db=True)
     finish_transaction(conn, 1)
     print_msg('done')

@@ -27,6 +27,7 @@
 """ Implementation of sellable search """
 
 import gettext
+import decimal
 
 import gtk
 from kiwi.datatypes import currency
@@ -81,7 +82,7 @@ class SellableSearch(SearchEditor):
 
     def get_stock_balance(self, product):
         if not isinstance(product, self.product_table):
-            return 0.0
+            return decimal.Decimal('0.0')
         branch = self.get_branch()
         adapted = product.get_adapted()
         conn = adapted.get_connection()

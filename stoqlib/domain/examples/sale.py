@@ -30,7 +30,6 @@ import datetime
 
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
-
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
@@ -102,7 +101,7 @@ def create_sales():
     qty = salespersons.count()
     if qty < DEFAULT_SALE_NUMBER:
         raise ValueError('You should have at last %d salespersons defined '
-                         'in database at this point, got %d instead' % 
+                         'in database at this point, got %d instead' %
                          (DEFAULT_SALE_NUMBER, qty))
 
     open_dates = [datetime.datetime.today(),
@@ -110,26 +109,26 @@ def create_sales():
                   datetime.datetime.today() + datetime.timedelta(15),
                   datetime.datetime.today() + datetime.timedelta(23)]
 
-    installments_numbers = [i * 2 for i in range(1, 
+    installments_numbers = [i * 2 for i in range(1,
                                                  DEFAULT_SALE_NUMBER + 1)]
-    
+
     statuses = Sale.statuses.keys()
     method = sysparam(conn).BASE_PAYMENT_METHOD
     check_method = ICheckPM(method, connection=conn)
-                 
+
     # We need to increment payment_id attribute automatically. Waiting
     # for SQLObject support
     payment_id = 1
     for index in range(DEFAULT_SALE_NUMBER):
-        
+
         #
         # Setting up the sale
         #
-        
+
         open_date = open_dates[index]
         status = statuses[index]
         salesperson = salespersons[index]
-        sale = Sale(connection=conn, till=till, client=clients[index], 
+        sale = Sale(connection=conn, till=till, client=clients[index],
                     order_number='#%03d' % (index + 1), status=status,
                     open_date=open_date, salesperson=salesperson)
         sellable_facet = ISellable(product_list[index], connection=conn)
@@ -145,11 +144,11 @@ def create_sales():
         installments = installments_numbers[index]
         if installments > MAX_INSTALLMENTS_NUMBER:
             raise ValueError('Number of installments for this payment '
-                             'method can not be greater than %d, got %d' 
+                             'method can not be greater than %d, got %d'
                              % (installments, MAX_INSTALLMENTS_NUMBER))
         check_method.setup_inpayments(pg_facet, installments, open_date,
                                       DEFAULT_PAYMENT_INTERVAL_TYPE,
-                                      DEFAULT_PAYMENTS_INTERVAL, 
+                                      DEFAULT_PAYMENTS_INTERVAL,
                                       sale_total)
         sale.set_valid()
 

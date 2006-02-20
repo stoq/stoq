@@ -141,7 +141,7 @@ class TillOperationDialog(SlaveDelegate):
         self._update_total()
 
     def _update_total(self, *args):
-        total_balance = 0.0
+        total_balance = currency(0)
         for item in self.payments:
             total_balance += item.value
         total_balance_str = get_formatted_price(total_balance)

@@ -27,8 +27,9 @@
 """ Editors definitions for products"""
 
 import gettext
+import decimal
 
-from kiwi.datatypes import ValidationError
+from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
 from kiwi.utils import gsignal
 
@@ -64,11 +65,11 @@ class ProductSupplierSlave(BaseEditorSlave):
 
     def on_supplier_button__clicked(self, button):
         self.edit_supplier()
- 
+
     def edit_supplier(self):
         main_supplier = self.model.get_main_supplier_info()
         if not main_supplier:
-            current_cost = 0.0
+            current_cost = currency(0)
         else:
             current_cost =  main_supplier.base_cost
         result = run_dialog(ProductSupplierEditor, self, self.conn, self.model)
@@ -127,7 +128,7 @@ class ProductSupplierEditor(BaseEditor):
         # Kiwi proxy already sets the supplier attribute to new selected
         # supplier, so we need revert this and set the correct supplier:
         self.prod_supplier_proxy.model.supplier = self._last_supplier
-        
+
         self._last_supplier = selected_supplier
         is_valid_model = self.prod_supplier_proxy.model.base_cost
 
@@ -159,12 +160,12 @@ class ProductSupplierEditor(BaseEditor):
         model = self.model.get_main_supplier_info()
         if not model:
             supplier = sysparam(self.conn).SUGGESTED_SUPPLIER
-            model = ProductSupplierInfo(connection=self.conn, product=None, 
+            model = ProductSupplierInfo(connection=self.conn, product=None,
                                         is_main_supplier=True,
                                         supplier=supplier)
         self.set_widget_formats()
 
-        self.prod_supplier_proxy = self.add_proxy(model, 
+        self.prod_supplier_proxy = self.add_proxy(model,
                                                   self.proxy_widgets)
 
         # XXX:  GTK don't allow me get the supplier selected in the combo
@@ -177,12 +178,10 @@ class ProductSupplierEditor(BaseEditor):
     def update_main_supplier_references(self, main_supplier):
         if not self.model.suppliers:
             return
-
         for s in self.model.suppliers:
             if s is main_supplier:
                 s.is_main_supplier = True
                 continue
-
             s.is_main_supplier = False
 
     def on_confirm(self):
@@ -197,7 +196,7 @@ class ProductSupplierEditor(BaseEditor):
 
     #
     # Kiwi handlers
-    # 
+    #
 
     def on_supplier_list_button__clicked(self, button):
         self.list_suppliers()
@@ -206,7 +205,7 @@ class ProductSupplierEditor(BaseEditor):
         self.update_model()
 
     def on_base_cost__validate(self, entry, value):
-        if not value or value <= 0.0:
+        if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
 
 
@@ -246,13 +245,14 @@ class ProductEditor(SellableEditor):
     def _on_supplier_slave__cost_changed(self, slave):
         if not self.sellable_proxy.model.cost and self.model.suppliers:
            base_cost = self.model.get_main_supplier_info().base_cost
-           self.sellable_proxy.model.cost = base_cost or 0.0
+           self.sellable_proxy.model.cost = base_cost or currency(0)
            self.sellable_proxy.update('cost')
 
         if self.sellable_proxy.model.base_sellable_info.price:
            return
-        cost = self.sellable_proxy.model.cost or 0.0
-        markup = self.sellable_proxy.model.get_suggested_markup() or 0.0
+        cost = self.sellable_proxy.model.cost or currency(0)
+        markup = (self.sellable_proxy.model.get_suggested_markup()
+                  or decimal.Decimal("0.0"))
         price = cost + ((markup / 100) * cost)
         self.sellable_proxy.model.base_sellable_info.price = price
         self.sellable_proxy.update('price')
