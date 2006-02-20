@@ -26,7 +26,6 @@
 
 from kiwi.ui.delegates import SlaveDelegate
 
-from stoqlib.lib.validators import get_price_format_str
 
 class PriceSlave(SlaveDelegate):
     """ A simple slave that show a price with a label (when can_edit
@@ -40,7 +39,6 @@ class PriceSlave(SlaveDelegate):
             gladefile = "PriceLabelSlave"
         toplevel_name = gladefile
         SlaveDelegate.__init__(self, toplevel_name, gladefile=gladefile)
-        self.price.set_data_format(get_price_format_str())
         self._proxy = None
 
     def set_model(self, model):
