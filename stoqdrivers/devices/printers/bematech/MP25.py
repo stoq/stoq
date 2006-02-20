@@ -40,7 +40,7 @@ from stoqdrivers.exceptions import (DriverError, OutofPaperError, PrinterError,
                                     HardwareFailure, AlmostOutofPaper,
                                     PrinterOfflineError, PaymentAdditionError,
                                     ItemAdditionError, CancelItemError,
-                                    CouponTotalizeError)
+                                    CouponTotalizeError, CouponNotOpenError)
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
@@ -126,13 +126,14 @@ class MP25(SerialBase):
         32: (HardwareFailure, _("Error in CMOS memory")),
         16: (PrinterError, _("Given tax is not programmed on the printer")),
         8: (DriverError, _("No available tax slot")),
-        4: (DriverError, _("Cancel operation is not allowed")),
+        4: (CancelItemError, _("The item wasn't added in the coupon or can't "
+                               "be cancelled")),
         2: (PrinterError, _("Owner data (CGC/IE) not programmed on the printer")),
         1: (CommandError, _("Command not executed"))}
 
     st3_codes = {
         7: (CouponOpenError, _("Coupon already Open")),
-        8: (DriverError, _("Coupon is closed")),
+        8: (CouponNotOpenError, _("Coupon is closed")),
         13: (PrinterOfflineError, _("Printer is offline")),
         16: (DriverError, _("Surcharge or discount greater than coupon total "
                             "value")),
