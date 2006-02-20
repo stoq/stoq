@@ -42,7 +42,8 @@ from stoqdrivers.devices.printers.interface import (IChequePrinter,
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     PrinterError, CommError, CommandError,
                                     CommandParametersError, ReduceZError,
-                                    HardwareFailure, OutofPaperError)
+                                    HardwareFailure, OutofPaperError,
+                                    CouponNotOpenError, CancelItemError)
 from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
                                    TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
@@ -90,7 +91,7 @@ class EP375Status:
         0x41: (PrinterError, _("Fiscal memory has changed")),
         0x61: (PrinterError, _("No manufacture number")),
         0x42: (CommError, _("Print buffer is full")),
-        0x62: (CommandParametersError, _("No item(s) to cancel found")),
+        0x62: (CancelItemError, _("No item(s) to cancel found")),
         0x43: (CommandError, _("The requested command doesn't exist")),
         0x63: (DriverError, "Cancellation above the limit"),
         0x44: (DriverError, "Discount more than total value"),
@@ -204,6 +205,11 @@ class CouponItem:
         else:
             D = self.charge
 
+        taxcode = self.taxcode
+        quantity = int(float(self.quantity) * 1e3)
+        price = int(float(self.price) * 1e2)
+        D = int(float(D) * 1e2)
+
         return ("%-16s" # code
                 "%-*s" # description
                 "%02s" # taxcode
@@ -212,8 +218,7 @@ class CouponItem:
                 "%04d" # discount/surcharge
                 "%02d" # unit
                 % (self.code[:16], desc_size, self.description[:desc_size],
-                   self.taxcode, int(self.quantity * 1e3),
-                   int(self.price * 1e2), int(D * 1e2), self.unit))
+                   taxcode, quantity, price, D, self.unit))
 
 
 #
@@ -376,9 +381,9 @@ class EP375(SerialBase, BaseChequePrinter):
         result = self._send_command(self.CMD_GET_REMAINING_VALUE)
         has_remaining_value = result[4] == 'S'
         if has_remaining_value:
-            return float(result[5:19]) / 1e2
+            return Decimal(str(float(result[5:19]) / 1e2))
         else:
-            return 0.0
+            return Decimal("0.0")
 
     def _get_fiscal_counters(self):
         return self._send_command(self.CMD_GET_FISCAL_COUNTERS)
@@ -509,7 +514,11 @@ class EP375(SerialBase, BaseChequePrinter):
         self._send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
 
     def coupon_cancel(self):
-        self._send_command(self.CMD_CANCEL_COUPON)
+        # XXX: If a command error is raised here, we have no coupon open.
+        try:
+            self._send_command(self.CMD_CANCEL_COUPON)
+        except CommandError, e:
+            raise CouponNotOpenError(e)
 
     def coupon_totalize(self, discount, charge, taxcode):
         # The callsite must check if discount and charge are used together,
@@ -528,7 +537,7 @@ class EP375(SerialBase, BaseChequePrinter):
 
     def coupon_add_payment(self, payment_method, value, description=''):
         pm = EP375.payment_methods[payment_method]
-        value = "%014d" % int(value * 1e2)
+        value = "%014d" % int(float(value) * 1e2)
 
         if ((not self._get_status().has_been_totalized())
             and self.coupon_discount or self.coupon_charge):
@@ -538,13 +547,12 @@ class EP375(SerialBase, BaseChequePrinter):
             else:
                 type = "A"
                 D = self.coupon_charge
-            D = "%014d" % int(D * 1e2)
+            D = "%014d" % int(float(D) * 1e2)
             self._send_command(self.CMD_ADD_PAYMENT_WITH_CHARGE, pm, value, D,
                                type)
         else:
             self._send_command(self.CMD_ADD_PAYMENT,
                                EP375.payment_methods[payment_method],  value)
-
         return self._get_coupon_remaining_value()
 
     def coupon_close(self, message=''):
