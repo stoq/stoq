@@ -356,11 +356,11 @@ class SellableItemEditor(BaseEditor):
     #
 
     def on_quantity__value_changed(self, *args):
-        self.proxy.update('total_str')
+        self.proxy.update('total')
 
     def after_quantity__value_changed(self, *args):
-        self.proxy.update('total_str')
+        self.proxy.update('total')
 
     def after_value__changed(self, *args):
-        self.proxy.update('total_str')
+        self.proxy.update('total')
 
