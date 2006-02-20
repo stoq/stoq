@@ -32,7 +32,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
-from stoqlib.lib.validators import get_price_format_str, format_quantity
+from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.wizards.person import run_person_role_dialog
@@ -132,7 +132,6 @@ class PurchasePaymentStep(BaseWizardStep):
                  (_('Check'), table.METHOD_CHECK),
                  (_('Money'), table.METHOD_MONEY)]
         self.method_combo.prefill(items)
-        format_str = get_price_format_str()
 
     def _update_payment_method_slave(self):
         holder_name = 'method_slave_holder'
@@ -277,7 +276,6 @@ class StartPurchaseStep(BaseWizardStep):
         branches = table.get_active_branches(self.conn)
         items = [(s.get_adapted().name, s) for s in branches]
         self.branch.prefill(items)
-        self.freight.set_data_format(get_price_format_str())
 
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()

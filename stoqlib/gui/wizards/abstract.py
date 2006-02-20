@@ -34,7 +34,6 @@ from kiwi.python import Settable
 
 from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
 
@@ -164,7 +163,6 @@ class AbstractProductStep(BaseWizardStep):
         self.force_validation()
 
     def setup_proxies(self):
-        self.cost.set_data_format(get_price_format_str())
         self._setup_product_entry()
         self.proxy = self.add_proxy(None,
                                     AbstractProductStep.proxy_widgets)

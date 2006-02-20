@@ -41,7 +41,6 @@ from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.gui.editors.sellable import SellableEditor
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.parameters import sysparam
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -103,9 +102,6 @@ class ProductSupplierEditor(BaseEditor):
         # XXX: Waiting fix for bug #2043
         self.new_supplier_button.set_sensitive(False)
 
-    def set_widget_formats(self):
-        self.icms.set_data_format(get_price_format_str())
-
     def setup_combos(self):
         supplier_list = Person.iselect(ISupplier, connection=self.conn)
         items = [(obj.get_adapted().name, obj) for obj in supplier_list]
@@ -156,15 +152,12 @@ class ProductSupplierEditor(BaseEditor):
 
     def setup_proxies(self):
         self.setup_combos()
-
         model = self.model.get_main_supplier_info()
         if not model:
             supplier = sysparam(self.conn).SUGGESTED_SUPPLIER
             model = ProductSupplierInfo(connection=self.conn, product=None,
                                         is_main_supplier=True,
                                         supplier=supplier)
-        self.set_widget_formats()
-
         self.prod_supplier_proxy = self.add_proxy(model,
                                                   self.proxy_widgets)
 
