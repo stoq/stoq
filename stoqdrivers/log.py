@@ -35,7 +35,7 @@ import logging
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
-log_level = logging.DEBUG
+log_level = logging.CRITICAL
 
 class Log(logging.Logger):
     def __init__(self, file=sys.stdout, level=log_level,
