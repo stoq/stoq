@@ -30,11 +30,11 @@ from datetime import datetime
 
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
+from kiwi.datatypes import format_price, currency
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH
-from stoqlib.lib.validators import get_formatted_price, compare_float_numbers
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import get_current_cheque_printer_settings
 from stoqlib.domain.account import BankAccount
@@ -107,11 +107,12 @@ class PaymentListSlave(BaseEditorSlave):
         slaves = self.payment_slaves.values()
         values = [s.get_payment_value() for s in slaves
                         if s.get_payment_value() is not None]
-        slaves_total = sum(values)
+        slaves_total = sum(values, currency(0))
         slaves_total -= self._interest_total
-        if compare_float_numbers(slaves_total, self.sale_total):
-            return 0.0
-        return self.sale_total - slaves_total
+        sale_total = self.sale_total
+        if slaves_total == sale_total:
+            return currency(0)
+        return currency(sale_total - slaves_total)
 
     def update_total_label(self):
         difference = self.get_total_difference()
@@ -123,7 +124,7 @@ class PaymentListSlave(BaseEditorSlave):
         else:
             label_name = _('Outstanding:')
         if difference:
-            difference = get_formatted_price(difference)
+            difference = format_price(difference)
         self.total_label.set_text(difference)
         self.status_label.set_text(label_name)
 
@@ -281,9 +282,10 @@ class CheckDataSlave(BillDataSlave):
     def create_model(self, conn):
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         check_method = ICheckPM(base_method)
+        value = self._value
         inpayment = check_method.create_inpayment(self._payment_group,
                                                   self._due_date,
-                                                  self._value)
+                                                  value)
         adapted = inpayment.get_adapted()
         return check_method.get_check_data_by_payment(adapted)
 
@@ -315,13 +317,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     _data_slave_class = None
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
-                 outstanding_value=0.0):
+                 outstanding_value=currency(0)):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
-        self.interest_total = 0.0
+        self.interest_total = currency(0)
         self.payment_group = self.wizard.get_payment_group()
         self.payment_list = None
         self.reset_btn_validation_ok = True
@@ -335,7 +337,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     def _refresh_next(self, validation_ok=True):
         if validation_ok and self.payment_list:
             total_difference = self.payment_list.get_total_difference()
-            validation_ok = total_difference == 0.0
+            validation_ok = total_difference == currency(0)
         self.wizard.refresh_next(validation_ok)
 
     def update_view(self):
@@ -405,14 +407,16 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
         intervals = self.model.intervals
-        interest = self.model.interest / 100 * self.total_value
+        interest = (self.model.interest / 100 *
+                    self.total_value)
         self.payment_list.clear_list()
         method = self.method
+        total = self.total_value
         inpayments, interest = method.setup_inpayments(group, inst_number,
                                                        due_date,
                                                        interval_type,
                                                        intervals,
-                                                       self.total_value,
+                                                       total,
                                                        interest)
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
@@ -466,7 +470,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if not self.payment_list.get_children_number():
             total = self.total_value
         else:
-            total = 0.0
+            total = currency(0)
         extra_params = self.get_extra_slave_args()
         slave = self._data_slave_class(self.conn, group, due_date, total,
                                        model, *extra_params)
@@ -599,7 +603,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     _payment_types = None
 
     def __init__(self, wizard, parent, conn, sale_obj, payment_method,
-                 outstanding_value=0.0):
+                 outstanding_value=currency(0)):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
@@ -609,7 +613,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
-        # this will be properly updated after changing data in payment_type 
+        # this will be properly updated after changing data in payment_type
         # widget
         self.installments_number.set_range(1, 1)
 

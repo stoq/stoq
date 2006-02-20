@@ -75,7 +75,7 @@ class ReceivingInvoiceStep(BaseWizardStep):
                      'icms_total')
 
     def _update_totals(self, *args):
-        self.proxy.update_many(['products_total_str', 'order_total_str'])
+        self.proxy.update_many(['products_total', 'order_total'])
 
     # We will avoid duplicating code like when setting up entry completions
     # on bug 2275.
@@ -126,7 +126,7 @@ class ReceivingInvoiceStep(BaseWizardStep):
             self.proxy.update('supplier')
             if purchase.freight:
                 freight_value = (self.model.get_products_total() *
-                                 purchase.freight / 100.0)
+                                 purchase.freight / 100)
                 self.model.freight_total = freight_value
                 self.proxy.update('freight_total')
 

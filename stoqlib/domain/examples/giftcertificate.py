@@ -42,9 +42,9 @@ def create_giftcertificates():
                          status=AbstractSellable.STATUS_AVAILABLE)]
 
     sellable_data = [dict(description='Christmas Gift Certificate',
-                          price=430.00),
+                          price=430),
                      dict(description='Passover Gift Certificate',
-                          price=650.00)]
+                          price=650)]
 
     # Creating products and facets
     for index in range(MAX_GIFTCERTIFICATE_NUMBER):

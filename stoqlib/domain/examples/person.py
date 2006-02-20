@@ -28,6 +28,7 @@
 
 import datetime
 import gettext
+import decimal
 
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.profile import UserProfile
@@ -97,13 +98,13 @@ def create_persons():
 
     now = datetime.datetime.now()
     transporter_data = [dict(open_contract_date=now, is_active=False,
-                             freight_percentage=2.5),
+                             freight_percentage=decimal.Decimal('2.5')),
                         dict(open_contract_date=now + datetime.timedelta(5),
-                             freight_percentage=7.0),
+                             freight_percentage=7),
                         dict(open_contract_date=now + datetime.timedelta(10),
-                             freight_percentage=10.5),
+                             freight_percentage=decimal.Decimal('10.5')),
                         dict(open_contract_date=now + datetime.timedelta(15),
-                             freight_percentage=12.3)]
+                             freight_percentage=decimal.Decimal('12.3'))]
 
     user_data = [dict(username='john',
                       password='john243'),

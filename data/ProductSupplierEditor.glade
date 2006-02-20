@@ -82,7 +82,7 @@ Information:</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="base_cost">
-                                <property name="data_type">float</property>
+                                <property name="data_type">Decimal</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">base_cost</property>
                                 <property name="visible">True</property>
@@ -106,7 +106,7 @@ Information:</property>
                         </child>
                         <child>
                             <widget class="kiwi+ui+widgets+entry+Entry" id="icms">
-                                <property name="data_type">float</property>
+                                <property name="data_type">Decimal</property>
                                 <property name="model_attribute">icms</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">8</property>

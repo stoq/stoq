@@ -46,27 +46,21 @@ def is_date_in_interval(date, start_date, end_date):
         q2 = date <= end_date
     return q1 and q2
 
-def compare_float_numbers(float_number1, float_number2):
-    difference = abs(float_number1 - float_number2)
-    conn = get_connection()
-    tolerance = sysparam(conn).COMPARISON_FLOAT_TOLERANCE
-    return difference <= tolerance
-
 def format_quantity(quantity):
     conn = get_connection()
     if (quantity * 100 % 100) == 0:
         return '%.0f' % quantity
-    precision = sysparam(conn).STOCK_BALANCE_PRECISION
+    precision = sysparam(conn).DECIMAL_PRECISION
     return '%.*f' % (precision, quantity)
 
 def get_price_format_str():
     conn = get_connection()
-    precision = sysparam(conn).SELLABLE_PRICE_PRECISION
+    precision = sysparam(conn).DECIMAL_PRECISION
     return '%%.%sf' % precision
 
 def get_formatted_price(float_value):
     conn = get_connection()
-    precision = sysparam(conn).SELLABLE_PRICE_PRECISION
+    precision = sysparam(conn).DECIMAL_PRECISION
     return format_price(float_value, precision=precision)
 
 #

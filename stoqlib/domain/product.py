@@ -23,16 +23,16 @@
 """ Base classes to manage product's informations """
 
 import gettext
-import operator
+import decimal
 
 from kiwi.datatypes import currency
-from sqlobject import (UnicodeCol, FloatCol, ForeignKey, MultipleJoin,
+from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
                        BoolCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.exceptions import StockError, SellError
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.person import PersonAdaptToBranch
@@ -40,7 +40,6 @@ from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery)
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.validators import compare_float_numbers
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
 
@@ -67,11 +66,11 @@ class ProductSupplierInfo(Domain):
                    'de servicos'
     """
 
-    base_cost = PriceCol(default=0.0)
+    base_cost = PriceCol(default=0)
     notes = UnicodeCol(default='')
     is_main_supplier = BoolCol(default=False)
     # This is Brazil-specific information
-    icms = FloatCol(default=0.0)
+    icms = DecimalCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
 
@@ -131,8 +130,8 @@ class ProductStockReference(Domain):
                              all the product.
     """
 
-    quantity = FloatCol(default=0.0)
-    logic_quantity = FloatCol(default=0.0)
+    quantity = DecimalCol(default=0)
+    logic_quantity = DecimalCol(default=0)
     branch =  ForeignKey('PersonAdaptToBranch')
     product_item =  ForeignKey('ProductSellableItem')
 
@@ -216,8 +215,8 @@ class ProductSellableItem(AbstractSellableItem):
         query = AND(q1, q2)
         services = AbstractSellableItem.select(query, connection=conn)
         if not services.count():
-            return 0.0
-        delivered_qty = 0
+            return decimal.Decimal('0.0')
+        delivered_qty = decimal.Decimal('0.0')
         for service in services:
             delivery = IDelivery(service, connection=conn)
             if not delivery:
@@ -229,12 +228,11 @@ class ProductSellableItem(AbstractSellableItem):
         return delivered_qty
 
     def has_been_totally_delivered(self):
-        return compare_float_numbers(self.get_quantity_delivered(),
-                                     self.quantity)
+        return self.get_quantity_delivered() == self.quantity
 
 
-    def add_stock_reference(self, branch, quantity=0.0,
-                            logic_quantity=0.0):
+    def add_stock_reference(self, branch, quantity=0,
+                            logic_quantity=0):
         conn = self.get_connection()
         return ProductStockReference(connection=conn, quantity=quantity,
                                      logic_quantity=logic_quantity,
@@ -270,7 +268,7 @@ class ProductAdaptToStorable(ModelAdapter):
     def __init__(self, _original=None, *args, **kwargs):
         ModelAdapter.__init__(self, _original, *args, **kwargs)
         conn = self.get_connection()
-        self.precision = sysparam(conn).STOCK_BALANCE_PRECISION
+        self.precision = sysparam(conn).DECIMAL_PRECISION
 
     #
     # IContainer implementation
@@ -355,7 +353,7 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         if not stocks.count():
             raise StockError, 'Invalid stock references for %s' % self
-        value = 0.0
+        value = decimal.Decimal('0.0')
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         for stock_item in stocks:
             value += stock_item.quantity
@@ -367,11 +365,11 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         assert stocks.count() >= 1
         values = [stock_item.logic_quantity for stock_item in stocks]
-        return reduce(operator.add, values, 0.0)
+        return sum(values, decimal.Decimal('0.0'))
 
     def get_average_stock_price(self):
-        total_cost = 0.0
-        total_qty = 0.0
+        total_cost = decimal.Decimal('0.0')
+        total_qty = decimal.Decimal('0.0')
         for stock_item in self.get_stocks():
             total_cost += stock_item.stock_cost
             total_qty += stock_item.quantity
@@ -381,16 +379,13 @@ class ProductAdaptToStorable(ModelAdapter):
                    'and TotalCost= %f')
             raise StockError(msg % (self.get_adapted(), total_cost))
         if not total_qty:
-            return currency(0.0)
+            return currency(0)
         return currency(total_cost / total_qty)
 
     def _has_qty_available(self, quantity, branch):
         logic_qty = self.get_logic_balance(branch)
         balance = self.get_full_balance(branch) - logic_qty
-        # XXX We are going to use decimals here and avoid all of
-        # this crap. See bug 2335
-        qty_ok = (quantity <= balance
-                  or compare_float_numbers(quantity, balance))
+        qty_ok = quantity <= balance
         logic_qty_ok = quantity <= self.get_full_balance(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):

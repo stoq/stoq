@@ -29,6 +29,7 @@ import gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import UnicodeCol, BoolCol
 from kiwi.python import namedAny, ClassInittableObject
+from kiwi.datatypes import currency
 
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.base import Domain, AbstractModel
@@ -38,6 +39,10 @@ from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
 
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
+
+
+DEFAULT_DECIMAL_PRECISION = 2
+DEFAULT_DECIMAL_SIZE = 10
 
 
 class ParameterDetails:
@@ -122,6 +127,18 @@ parameters_info = {
                                                 'stock ? If this parameter '
                                                 'is True we can order '
                                                 'products.')),
+    'DECIMAL_SIZE': ParameterDetails(_('General'), _('Decimal Size'),
+                                     _('The total size of digits used '
+                                       'by decimal numbers in Stoq '
+                                       'applications. Decimal numbers '
+                                       'can be quantities, prices and '
+                                       'payment values.')),
+    'DECIMAL_PRECISION': ParameterDetails(_('General'), _('Decimal Precision'),
+                                          _('The precision size used '
+                                            'by decimal numbers in Stoq '
+                                            'applications. Decimal numbers '
+                                            'can be quantities, prices and '
+                                            'payment values.')),
     'CITY_SUGGESTED': ParameterDetails(_('General'), _('City Suggested'),
                                        _('When adding a new address for a '
                                          'certain person we will always '
@@ -134,17 +151,6 @@ parameters_info = {
                                           _('When adding a new address for a '
                                             'certain person we will always '
                                             'suggest this country.')),
-    'SELLABLE_PRICE_PRECISION': ParameterDetails(_('Sales'),
-                                                 _('Sellable Price Precision'),
-                                                 _('Precision for the price '
-                                                   'attribute of a sellable '
-                                                   'object.')),
-    'STOCK_BALANCE_PRECISION': ParameterDetails(_('Stock'),
-                                                _('Stock Balance Precision'),
-                                                _('precision for product '
-                                                  'stock balances.')),
-    'PAYMENT_PRECISION': ParameterDetails(_('Financial'), _('Payment Precision'),
-                                          _('Precision for payment values.')),
     'HAS_DELIVERY_MODE': ParameterDetails(_('Sales'), _('Has Delivery Mode'),
                                           _('Does this branch work with '
                                             'delivery service? If not, the '
@@ -170,17 +176,6 @@ parameters_info = {
                                                     ' the charge of monthly '
                                                     'interest will be mandatory '
                                                     'for every payment')),
-    'COMPARISON_FLOAT_TOLERANCE': ParameterDetails(_('General'),
-                                                   _('Comparison Float '
-                                                     'Tolerance '),
-                                                   _('This is useful when '
-                                                     'performing comparison '
-                                                     'between two float '
-                                                     'numbers. If abs(numberA '
-                                                     '- numberB) = This '
-                                                     ' parameter value, the '
-                                                     'two numbers can be '
-                                                     'considerer equals')),
     'CONFIRM_SALES_ON_TILL': ParameterDetails(_('Sales'),
                                               _('Confirm Sales on Till'),
                                               _('Once this parameter is set, '
@@ -265,6 +260,7 @@ class ParameterData(Domain):
     def get_short_description(self):
         return parameters_info[self.field_name].short_desc
 
+
 class ParameterAttr:
     def __init__(self, key, type, initial=None):
         self.key = key
@@ -281,20 +277,20 @@ class ParameterAccess(ClassInittableObject):
         parameter = sysparam(conn).parameter_name
     """
 
+
     # New parameters must always be defined here
     constants = [# Adding constants
                  ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
                  ParameterAttr('MAX_LATE_DAYS', int, initial=30),
-                 ParameterAttr('SELLABLE_PRICE_PRECISION', int, initial=2),
                  ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
                  ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
-                 ParameterAttr('STOCK_BALANCE_PRECISION', int, initial=2),
-                 ParameterAttr('PAYMENT_PRECISION', int, initial=2),
+                 ParameterAttr('DECIMAL_PRECISION', int,
+                               initial=DEFAULT_DECIMAL_PRECISION),
+                 ParameterAttr('DECIMAL_SIZE', int,
+                               initial=DEFAULT_DECIMAL_SIZE),
                  ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
                  ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=True),
                  ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
-                 ParameterAttr('COMPARISON_FLOAT_TOLERANCE', float,
-                               initial=0.02),
                  ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
                  ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
                  ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
@@ -421,7 +417,7 @@ class ParameterAccess(ClassInittableObject):
             self.set_schema(obj.key, value)
 
         # Creating system objects
-        # When creating new methods for system objects creation add them 
+        # When creating new methods for system objects creation add them
         # always here
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
@@ -544,7 +540,7 @@ class ParameterAccess(ClassInittableObject):
         service = Service(connection=self.conn)
 
         sellable_info = BaseSellableInfo(connection=self.conn,
-                                         description=_('Delivery'), price=0.0)
+                                         description=_('Delivery'))
         sellable = service.addFacet(ISellable, code='SD',
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
@@ -562,7 +558,7 @@ class ParameterAccess(ClassInittableObject):
         description = _('General Gift Certificate')
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=description,
-                                         price=0.0)
+                                         price=currency(0))
         certificate = GiftCertificateType(connection=self.conn,
                                           base_sellable_info=sellable_info)
         self.set_schema(key, certificate.id)

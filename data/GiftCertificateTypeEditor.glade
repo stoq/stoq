@@ -53,7 +53,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="commission">
                                         <property name="adjustment">0 0 100 1 10 0</property>
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">Decimal</property>
                                         <property name="digits">2</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">base_sellable_info.commission</property>
@@ -130,7 +130,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="max_discount">
                                         <property name="adjustment">0 0 100 1 10 0</property>
-                                        <property name="data_type">float</property>
+                                        <property name="data_type">Decimal</property>
                                         <property name="digits">2</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">base_sellable_info.max_discount</property>

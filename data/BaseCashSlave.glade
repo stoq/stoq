@@ -53,8 +53,8 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">&lt;flags GTK_FILL of type GtkAttachOptions&gt;</property>
-                        <property name="y_options">&lt;flags GTK_FILL of type GtkAttachOptions&gt;</property>
+                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                     </packing>
                 </child>
                 <child>
@@ -70,7 +70,7 @@
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+entry+Entry" id="cash_amount">
-                        <property name="data_type">currency</property>
+                        <property name="data_type">Decimal</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">value</property>

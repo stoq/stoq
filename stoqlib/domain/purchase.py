@@ -26,15 +26,16 @@
 
 import gettext
 import datetime
+import decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, UnicodeCol
+from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.base import AbstractPaymentGroup
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                        IPaymentGroup)
 from stoqlib.lib.parameters import sysparam
@@ -49,8 +50,8 @@ class PurchaseItem(Domain):
         - I{base_cost}: the cost which helps the purchaser to define the
                         main cost of a certain product.
     """
-    quantity = FloatCol(default=1.0)
-    quantity_received = FloatCol(default=0.0)
+    quantity = DecimalCol(default=1)
+    quantity_received = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
     sellable = ForeignKey('AbstractSellable')
@@ -77,17 +78,17 @@ class PurchaseItem(Domain):
     #
 
     def get_total(self):
-        return self.quantity * self.cost
+        return currency(self.quantity * self.cost)
 
     def get_received_total(self):
-        return self.quantity_received * self.cost
+        return currency(self.quantity_received * self.cost)
 
     def has_been_received(self):
         return self.quantity_received >= self.quantity
 
     def get_pending_quantity(self):
         if not self.has_been_received:
-            return 0.0
+            return decimal.Decimal('0.0')
         return self.quantity - self.quantity_received
 
 
@@ -124,9 +125,9 @@ class PurchaseOrder(Domain):
     notes = UnicodeCol(default='')
     salesperson_name = UnicodeCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
-    freight = PriceCol(default=0.0)
-    charge_value = PriceCol(default=0.0)
-    discount_value = PriceCol(default=0.0)
+    freight = DecimalCol(default=0)
+    charge_value = PriceCol(default=0)
+    discount_value = PriceCol(default=0)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
@@ -161,9 +162,10 @@ class PurchaseOrder(Domain):
 
     def _get_percentage_value(self, percentage):
         if not percentage:
-            return 0.0
+            return currency(0)
         subtotal = self.get_purchase_subtotal()
-        return subtotal * (percentage/100.0)
+        percentage = decimal.Decimal(str(percentage))
+        return subtotal * (percentage / 100)
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
@@ -175,12 +177,12 @@ class PurchaseOrder(Domain):
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
-            return 0.0
+            return currency(0)
         subtotal = self.get_purchase_subtotal()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
         total = subtotal - discount_value
-        percentage = (1 - total / float(subtotal)) * 100
+        percentage = (1 - total / subtotal) * 100
         return percentage
 
     discount_percentage = property(_get_discount_by_percentage,
@@ -196,18 +198,18 @@ class PurchaseOrder(Domain):
     def _get_charge_by_percentage(self):
         charge_value = self.charge_value
         if not charge_value:
-            return 0.0
+            return currency(0)
         subtotal = self.get_purchase_subtotal()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
         total = subtotal + charge_value
-        percentage = ((total / float(subtotal)) - 1) * 100
+        percentage = ((total / subtotal) - 1) * 100
         return percentage
 
     charge_percentage = property(_get_charge_by_percentage,
                                  _set_charge_by_percentage)
     def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = 0.0
+        self.discount_value = self.charge_value = currency(0)
 
     def can_close(self):
         for item in self.get_items():
@@ -270,8 +272,8 @@ class PurchaseOrder(Domain):
         return self.statuses[self.status]
 
     def get_purchase_subtotal(self):
-        subtotal = sum([item.get_total() for item in self.get_items()], 0.0)
-        return currency(subtotal)
+        total = sum([i.get_total() for i in self.get_items()], currency(0))
+        return currency(total)
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
@@ -281,8 +283,9 @@ class PurchaseOrder(Domain):
         return currency(total)
 
     def get_received_total(self):
-        return sum([item.cost * item.quantity_received
-                        for item in self.get_items()])
+        total = sum([item.cost * item.quantity_received
+                        for item in self.get_items()], currency(0))
+        return currency(total)
 
     def get_remaining_total(self):
         return self.get_purchase_total() - self.get_received_total()
@@ -336,7 +339,8 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         first_due_date = order.expected_receival_date
         if self.default_method == self.METHOD_MONEY:
             method = IMoneyPM(base_method, connection=conn)
-            method.setup_outpayments(total, self, self.installments_number)
+            method.setup_outpayments(total, self,
+                                     self.installments_number)
             return
         elif self.default_method == self.METHOD_CHECK:
             method = ICheckPM(base_method, connection=conn)

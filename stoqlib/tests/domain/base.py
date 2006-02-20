@@ -26,16 +26,22 @@
 """ Base module to be used by all domain test modules"""
 
 import datetime
+import decimal
 
-from sqlobject.col import (SOUnicodeCol, SOIntCol, SOFloatCol, SODateTimeCol,
+from kiwi.datatypes import currency
+from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
 from stoqlib.database import finish_transaction
+from stoqlib.domain.columns import SOPriceCol
 from stoqlib.lib.runtime import new_transaction
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')
-FLOAT_TEST_VALUES = (24.38, 445.67)
+DECIMAL_TEST_VALUES = (decimal.Decimal("24.38"),
+                       decimal.Decimal("445.67"))
+CURRENCY_TEST_VALUES = (currency(decimal.Decimal("98.42")),
+                        currency(decimal.Decimal("876.98")))
 INT_TEST_VALUES = (20, 55)
 DATE_TEST_VALUES = (datetime.date.today(),
                     datetime.date.today() + datetime.timedelta(1))
@@ -46,7 +52,7 @@ BOOL_TEST_VALUES = (True, False)
 def column_type_data(column):
     """ This function returns tuples of values for each SQLObject
     column type:
-    SOUnicodeCol, SOFloatCol, SOIntCOl, SODateCOl, SODateTimeCOl,
+    SOUnicodeCol, SODecimalCol, SOIntCOl, SODateCOl, SODateTimeCOl,
     SOBollCol. Any other column types receive None value.
 
     The first value of each pair is used to create an instance and are
@@ -58,8 +64,10 @@ def column_type_data(column):
         return STRING_TEST_VALUES
     elif isinstance(column, SOIntCol):
         return INT_TEST_VALUES
-    elif isinstance(column, SOFloatCol):
-        return FLOAT_TEST_VALUES
+    elif isinstance(column, SOPriceCol):
+        return CURRENCY_TEST_VALUES
+    elif isinstance(column, SODecimalCol):
+        return DECIMAL_TEST_VALUES
     elif isinstance(column, SODateCol):
         return DATE_TEST_VALUES
     elif isinstance(column, SODateTimeCol):

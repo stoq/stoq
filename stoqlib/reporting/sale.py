@@ -27,6 +27,8 @@
 
 import gettext
 
+from kiwi.datatypes import currency
+
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.parameters import sysparam
@@ -77,7 +79,7 @@ class SaleOrderReport(BaseStoqReport):
         # XXX Bug #2430 will improve this part
         items_qty = self.order.get_items_total_quantity()
         total_value = get_formatted_price(self.order.get_items_total_value())
-        if items_qty > 1.0:
+        if items_qty > 1:
             items_text = _("%s items") % format_quantity(items_qty)
         else:
             items_text = _("%s item") % format_quantity(items_qty)
@@ -139,7 +141,7 @@ class SalesReport(BaseStoqReport):
 
     def _setup_sales_table(self):
         total = sum([sale.get_total_sale_amount()
-                         for sale in self.sale_list], 0.0)
+                         for sale in self.sale_list], currency(0))
         total_str = "Total %s" % get_formatted_price(total)
         summary_row = ["", "", "", "", total_str]
         if self._landscape_mode:

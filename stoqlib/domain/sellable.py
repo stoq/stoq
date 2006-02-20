@@ -29,15 +29,16 @@ or a service, implemented in your own modules.
 import datetime
 import gettext
 
-from sqlobject import DateTimeCol, UnicodeCol, IntCol, FloatCol, ForeignKey
+from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
+from kiwi.datatypes import currency
 
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel)
@@ -62,7 +63,7 @@ class FancySellable:
     # XXX Probably we could avoid this class with some kiwi improvements
     # waiting for bug 2365.
 
-    def __init__(self, price=0.0, quantity=1.0, unit=None):
+    def __init__(self, price=currency(0), quantity=1, unit=None):
         self.price = price
         self.quantity = quantity
         self.unit = unit
@@ -72,11 +73,11 @@ class FancySellable:
 
 class AbstractSellableCategory(Domain):
     description = UnicodeCol()
-    suggested_markup = FloatCol(default=0.0)
+    suggested_markup = DecimalCol(default=0)
 
     # A percentage commission suggested for all the sales which products
     # belongs to this category or base category
-    salesperson_commission = FloatCol(default=0.0)
+    salesperson_commission = DecimalCol(default=0)
 
     def get_commission(self):
         return self.salesperson_commission
@@ -118,7 +119,7 @@ class SellableCategory(Domain):
 class AbstractSellableItem(InheritableModel):
     """Abstract representation of a concrete sellable."""
 
-    quantity = FloatCol()
+    quantity = DecimalCol()
     base_price = PriceCol()
     price = PriceCol()
     sale = ForeignKey('Sale')
@@ -145,17 +146,14 @@ class AbstractSellableItem(InheritableModel):
     #
 
     def get_total(self):
-        return self.price * self.quantity
-
-    def get_total_str(self):
-        return get_formatted_price(self.get_total())
+        return currency(self.price * self.quantity)
 
     def get_price_string(self):
         return get_formatted_price(self.price)
 
 
 class OnSaleInfo(Domain):
-    on_sale_price = PriceCol(default=0.0)
+    on_sale_price = PriceCol(default=0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
 
@@ -163,14 +161,14 @@ class OnSaleInfo(Domain):
 class BaseSellableInfo(Domain):
     implements(IDescribable)
 
-    price = PriceCol(default=0.0)
+    price = PriceCol(default=0)
     description = UnicodeCol(default='')
-    max_discount = FloatCol(default=0.0)
-    commission = FloatCol(default=None)
+    max_discount = DecimalCol(default=0)
+    commission = DecimalCol(default=0)
 
     def get_commission(self):
         if self.commission is None:
-            return 0.0
+            return 0
         return self.commission
 
     #
@@ -199,8 +197,8 @@ class AbstractSellable(InheritableModelAdapter):
 
     code = UnicodeCol(alternateID=True)
     status = IntCol(default=STATUS_AVAILABLE)
-    markup = FloatCol(default=0.0)
-    cost = PriceCol(default=0.0)
+    markup = DecimalCol(default=0)
+    cost = PriceCol(default=0)
     unit = ForeignKey("SellableUnit", default=None)
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')
@@ -262,7 +260,7 @@ class AbstractSellable(InheritableModelAdapter):
                 return self.on_sale_info.on_sale_price
         return self.base_sellable_info.price
 
-    def add_sellable_item(self, sale, quantity=1.0, price=None, **kwargs):
+    def add_sellable_item(self, sale, quantity=1, price=None, **kwargs):
         """Add a new sellable item instance tied to the current
         sellable object
         """
@@ -400,7 +398,7 @@ class AbstractSellable(InheritableModelAdapter):
 
     def set_default_commission(self):
         if not self.category:
-            self.commission = 0.0
+            self.commission = 0
         else:
             commission = self.category.base_category.get_commission()
             self.commission = (self.category.get_commission()

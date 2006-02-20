@@ -26,6 +26,7 @@
 """ Sale object and related objects implementation """
 
 import gettext
+import decimal
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol
@@ -94,8 +95,8 @@ class Sale(Domain):
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
-    discount_value = PriceCol(default=0.0)
-    charge_value = PriceCol(default=0.0)
+    discount_value = PriceCol(default=0)
+    charge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
 
     client = ForeignKey('PersonAdaptToClient', default=None)
@@ -135,6 +136,9 @@ class Sale(Domain):
     # Auxiliar methods
     #
 
+    def get_salesperson_name(self):
+        return self.salesperson.get_adapted().name
+
     def get_client_name(self):
         if not self.client:
             return unicode(_('Anonymous'))
@@ -156,13 +160,15 @@ class Sale(Domain):
         self.client = client
 
     def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = 0.0
+        self.discount_value = self.charge_value = currency(0)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
-            return 0.0
+            return currency(0)
         subtotal = self.get_sale_subtotal()
-        return subtotal * (percentage/100.0)
+        percentage = decimal.Decimal(str(percentage))
+        perc_value = subtotal * (percentage / decimal.Decimal('100.0'))
+        return currency(perc_value)
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
@@ -174,12 +180,12 @@ class Sale(Domain):
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
-            return 0.0
+            return decimal.Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
         total = subtotal - discount_value
-        percentage = (1 - total / float(subtotal)) * 100
+        percentage = (1 - total / subtotal) * 100
         return percentage
 
     discount_percentage = property(_get_discount_by_percentage,
@@ -195,12 +201,12 @@ class Sale(Domain):
     def _get_charge_by_percentage(self):
         charge_value = self.charge_value
         if not charge_value:
-            return 0.0
+            return decimal.Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
         total = subtotal + charge_value
-        percentage = ((total / float(subtotal)) - 1) * 100
+        percentage = ((total / subtotal) - 1) * 100
         return percentage
 
     charge_percentage = property(_get_charge_by_percentage,
@@ -210,7 +216,8 @@ class Sale(Domain):
         return self.till.branch
 
     def get_sale_subtotal(self):
-        subtotal = sum([item.get_total() for item in self.get_items()], 0.0)
+        subtotal = sum([item.get_total() for item in self.get_items()],
+                       currency(0))
         return currency(subtotal)
 
     def get_total_sale_amount(self):
@@ -218,10 +225,10 @@ class Sale(Domain):
         calculated by:.
         Sale total = Sum(product and service prices) + charge +
                      interest - discount"""
-        charge_value = self.charge_value or 0.0
-        discount_value = self.discount_value or 0.0
-        total_amount = (self.get_sale_subtotal() + charge_value -
-                        discount_value)
+        charge_value = self.charge_value or decimal.Decimal('0.0')
+        discount_value = self.discount_value or decimal.Decimal('0.0')
+        subtotal = self.get_sale_subtotal()
+        total_amount = subtotal + charge_value - discount_value
         return currency(total_amount)
 
     def get_total_amount_as_string(self):
@@ -244,10 +251,13 @@ class Sale(Domain):
                     if isinstance(item, GiftCertificateItem)]
 
     def get_items_total_quantity(self):
-        return sum([item.quantity for item in self.get_items()], 0.0)
+        return sum([item.quantity for item in self.get_items()],
+                   decimal.Decimal("0.0"))
 
     def get_items_total_value(self):
-        return sum([item.get_total() for item in self.get_items()], 0.0)
+        total = sum([item.get_total() for item in self.get_items()],
+                   currency(0))
+        return currency(total)
 
     def update_stocks(self):
         conn = self.get_connection()
@@ -343,7 +353,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         self.renegotiation_data = reneg_data
         return reneg_data
 
-    @argcheck(float)
+    @argcheck(decimal.Decimal)
     def create_renegotiation_return_data(self, overpaid_value):
         renegotiation = self._get_stored_renegotiation()
         reneg_type = self.RENEGOTIATION_RETURN
@@ -354,7 +364,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                payment_group=self,
                                overpaid_value=overpaid_value)
 
-    @argcheck(str, float)
+    @argcheck(str, decimal.Decimal)
     def create_renegotiation_giftcertificate_data(self, certificate_number,
                                                   overpaid_value):
         if not certificate_number:
@@ -370,7 +380,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                new_gift_certificate_number=number,
                                overpaid_value=overpaid_value)
 
-    @argcheck(float, int)
+    @argcheck(decimal.Decimal, int)
     def create_renegotiation_outstanding_data(self, outstanding_value,
                                               preview_payment_method):
         reneg_type = self.RENEGOTIATION_OUTSTANDING
@@ -420,7 +430,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         card payment method is the most common method which uses
         commission
         """
-        return 0.0
+        return currency(0)
 
     def get_total_received(self):
         """Return the total amount paid by the client (sale total)

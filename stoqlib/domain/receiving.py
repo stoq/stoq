@@ -26,18 +26,21 @@
 
 import datetime
 import gettext
+import decimal
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, FloatCol, UnicodeCol
+from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import currency
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.columns import PriceCol
-from stoqlib.lib.validators import get_formatted_price
+from stoqlib.domain.columns import PriceCol, DecimalCol
+
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
+
 
 class ReceivingOrderItem(Domain):
     """This class stores information of the purchased items.
@@ -47,7 +50,7 @@ class ReceivingOrderItem(Domain):
           product
         - I{cost}: the cost for each product received
     """
-    quantity_received = FloatCol()
+    quantity_received = DecimalCol()
     cost = PriceCol()
     sellable = ForeignKey('AbstractSellable')
     receiving_order = ForeignKey('ReceivingOrder')
@@ -57,7 +60,7 @@ class ReceivingOrderItem(Domain):
     #
 
     def get_total(self):
-        return self.quantity_received * self.cost
+        return currency(self.quantity_received * self.cost)
 
 
 class ReceivingOrder(Domain):
@@ -70,15 +73,15 @@ class ReceivingOrder(Domain):
     receival_date = DateTimeCol(default=datetime.datetime.now)
     confirm_date = DateTimeCol(default=None)
     invoice_number = UnicodeCol(default='')
-    invoice_total = PriceCol(default=0.0)
+    invoice_total = PriceCol(default=0)
     notes = UnicodeCol(default='')
-    freight_total = PriceCol(default=0.0)
-    charge_value = PriceCol(default=0.0)
-    discount_value = PriceCol(default=0.0)
+    freight_total = PriceCol(default=0)
+    charge_value = PriceCol(default=0)
+    discount_value = PriceCol(default=0)
 
     # This is Brazil-specific information
-    icms_total = PriceCol(default=0.0)
-    ipi_total = PriceCol(default=0.0)
+    icms_total = PriceCol(default=0)
+    ipi_total = PriceCol(default=0)
 
     responsible = ForeignKey('PersonAdaptToUser')
     supplier = ForeignKey('PersonAdaptToSupplier')
@@ -118,10 +121,9 @@ class ReceivingOrder(Domain):
     #
 
     def get_products_total(self):
-        return sum([item.get_total() for item in self.get_items()], 0.0)
-
-    def get_products_total_str(self):
-        return get_formatted_price(self.get_products_total())
+        total = sum([item.get_total() for item in self.get_items()],
+                     currency(0))
+        return currency(total)
 
     def get_order_total(self):
         products_total = self.get_products_total()
@@ -131,10 +133,7 @@ class ReceivingOrder(Domain):
         if order_total < 0:
             raise DatabaseInconsistency('Order total must be greater '
                                         'than zero')
-        return order_total
-
-    def get_order_total_str(self):
-        return get_formatted_price(self.get_order_total())
+        return currency(order_total)
 
     def get_order_number(self):
         if not self.purchase:
@@ -146,13 +145,14 @@ class ReceivingOrder(Domain):
     #
 
     def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = 0.0
+        self.discount_value = self.charge_value = currency(0)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
-            return 0.0
+            return currency(0)
         subtotal = self.get_products_total()
-        return subtotal * (percentage/100.0)
+        percentage = decimal.Decimal(str(percentage))
+        return subtotal * (percentage / 100)
 
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
@@ -165,12 +165,12 @@ class ReceivingOrder(Domain):
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
-            return 0.0
+            return currency(0)
         subtotal = self.get_products_total()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
         total = subtotal - discount_value
-        percentage = (1 - total / float(subtotal)) * 100
+        percentage = (1 - total / subtotal) * 100
         return percentage
 
     discount_percentage = property(_get_discount_by_percentage,
@@ -187,12 +187,12 @@ class ReceivingOrder(Domain):
     def _get_charge_by_percentage(self):
         charge_value = self.charge_value
         if not charge_value:
-            return 0.0
+            return currency(0)
         subtotal = self.get_products_total()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
         total = subtotal + charge_value
-        percentage = ((total / float(subtotal)) - 1) * 100
+        percentage = ((total / subtotal) - 1) * 100
         return percentage
 
     charge_percentage = property(_get_charge_by_percentage,

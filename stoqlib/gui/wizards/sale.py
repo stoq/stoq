@@ -40,8 +40,7 @@ from stoqlib.gui.slaves.sale import DiscountChargeSlave
 from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                      CardMethodSlave,
                                      FinanceMethodSlave)
-from stoqlib.lib.validators import (compare_float_numbers,
-                                    get_formatted_price)
+from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import print_cheques_for_payment_group
 from stoqlib.domain.person import Person
@@ -69,7 +68,7 @@ class CustomerStep(BaseWizardStep):
                      'order_details')
 
     def __init__(self, wizard, previous, conn, model,
-                 outstanding_value=0.0):
+                 outstanding_value=currency(0)):
         self.total = outstanding_value or model.get_total_sale_amount()
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.register_validate_function(self.wizard.refresh_next)
@@ -136,7 +135,7 @@ class PaymentMethodStep(BaseWizardStep):
                    (IFinancePM, FinanceMethodSlave))
 
     def __init__(self, wizard, previous, conn, model,
-                 outstanding_value=0.0):
+                 outstanding_value=currency(0)):
         # A dictionary for payment method informaton. Each key is a
         # PaymentMethod adapter and its value is a tuple where the first
         # element is a payment method interface and the second one is the
@@ -146,7 +145,7 @@ class PaymentMethodStep(BaseWizardStep):
         self.slaves_dict = {}
         self.outstanding_value = outstanding_value
         self.group = wizard.get_payment_group()
-        self.renegotiation_mode = outstanding_value > 0.0
+        self.renegotiation_mode = outstanding_value > currency(0)
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.method_slave = None
         self.setup_combo()
@@ -414,7 +413,9 @@ class GiftCertificateSelectionStep(BaseWizardStep):
                        data_type=currency, width=90)]
 
     def _get_gift_certificates_total(self):
-        return sum([c.get_price() for c in self.slave.klist], 0.0)
+        total = sum([c.get_price() for c in self.slave.klist],
+                    currency(0))
+        return currency(total)
 
     #
     # BaseEditorSlave hooks
@@ -461,7 +462,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         for certificate in self.slave.klist[:]:
             self.wizard.gift_certificates.append(certificate)
         gift_total = self._get_gift_certificates_total()
-        if compare_float_numbers(gift_total, self.sale_total):
+        if gift_total == self.sale_total:
             return CustomerStep(self.wizard, self, self.conn, self.sale)
         elif self.sale_total > gift_total:
             outstanding_value = self.sale_total - gift_total
@@ -484,7 +485,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
     def _update_total(self, *args):
         self.summary.update_total()
         gift_total = self._get_gift_certificates_total()
-        if compare_float_numbers(gift_total, self.sale_total):
+        if gift_total == self.sale_total:
             text = ''
             value = ''
         else:

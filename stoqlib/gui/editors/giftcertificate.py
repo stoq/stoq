@@ -27,6 +27,7 @@
 import gettext
 
 from kiwi.python import Settable
+from kiwi.datatypes import currency
 
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.validators import get_price_format_str
@@ -58,7 +59,7 @@ class GiftCertificateTypeEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        sellable_info = BaseSellableInfo(connection=conn, price=0.0,
+        sellable_info = BaseSellableInfo(connection=conn, price=currency(0),
                                          description='')
         return self.model_type(connection=conn,
                                base_sellable_info=sellable_info)

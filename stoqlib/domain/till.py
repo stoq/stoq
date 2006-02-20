@@ -72,9 +72,9 @@ class Till(Domain):
      STATUS_CLOSED) = range(3)
 
     status = IntCol(default=STATUS_PENDING)
-    balance_sent = PriceCol(default=0.0)
-    initial_cash_amount = PriceCol(default=0.0)
-    final_cash_amount = PriceCol(default=0.0)
+    balance_sent = PriceCol(default=0)
+    initial_cash_amount = PriceCol(default=0)
+    final_cash_amount = PriceCol(default=0)
     opening_date = DateTimeCol(default=datetime.datetime.now)
     closing_date = DateTimeCol(default=None)
 
@@ -106,10 +106,11 @@ class Till(Domain):
         pg_facet = IPaymentGroup(self, connection=conn)
         if pg_facet:
             payments.extend(pg_facet.get_items())
+        total = sum([p.value for p in payments], currency(0))
+        return currency(total)
 
-        return sum([p.value for p in payments], currency(0.0))
-
-    def open_till(self, opening_date=datetime.datetime.now(), initial_cash_amount=0.0):
+    def open_till(self, opening_date=datetime.datetime.now(),
+                 initial_cash_amount=currency(0)):
         if not initial_cash_amount:
             last_till = get_last_till_operation(self.get_connection())
             if last_till:
@@ -122,7 +123,7 @@ class Till(Domain):
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
 
-    def close_till(self, balance_to_send=0.0,
+    def close_till(self, balance_to_send=currency(0),
                    closing_date=datetime.datetime.now()):
         """ This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than

@@ -22,10 +22,10 @@
 ##
 """ Domain classes to manage stocks. """
 
-from sqlobject import FloatCol, ForeignKey
+from sqlobject import ForeignKey
 
 from stoqlib.domain.base import InheritableModel
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 
 #
 # Adapters
@@ -39,7 +39,7 @@ class AbstractStockItem(InheritableModel):
                         main cost of a certain product.
     """
 
-    stock_cost = PriceCol(default=0.0)
-    quantity = FloatCol(default=0.0)
-    logic_quantity = FloatCol(default=0.0)
+    stock_cost = PriceCol(default=0)
+    quantity = DecimalCol(default=0)
+    logic_quantity = DecimalCol(default=0)
     branch =  ForeignKey('PersonAdaptToBranch')

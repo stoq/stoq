@@ -27,6 +27,7 @@
 """ Editors definitions for sellable"""
 
 import gettext
+import decimal
 
 from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
@@ -78,8 +79,9 @@ class SellablePriceEditor(BaseEditor):
             widget.set_data_format(get_price_format_str())
 
     def update_markup(self):
-        price = self.model.base_sellable_info.price or 1.0
-        cost = self.model.cost or 1.0
+        dec_one = decimal.Decimal('1.0')
+        price = self.model.get_price() or dec_one
+        cost = self.model.cost or dec_one
         self.model.markup = ((price / cost) - 1) * 100
         self.main_proxy.update('markup')
 
@@ -91,7 +93,7 @@ class SellablePriceEditor(BaseEditor):
 
     def update_price(self):
         cost = self.model.cost
-        markup = self.model.markup 
+        markup = self.model.markup
         # XXX: Kiwi call spinbutton's callback two times, in the first one
         # the spin value is None, so we need to manage this.
         if markup is None:
@@ -125,7 +127,7 @@ class SellablePriceEditor(BaseEditor):
 
     #
     # Kiwi handlers
-    # 
+    #
 
     def after_price__content_changed(self, entry_box):
         self.handler_block(self.markup, 'changed')
@@ -152,7 +154,7 @@ class SellableEditor(BaseEditor):
     model_name = None
     model_type = None
 
-    gladefile = 'SellableEditor' 
+    gladefile = 'SellableEditor'
     product_widgets = ('notes',)
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
@@ -236,8 +238,8 @@ class SellableEditor(BaseEditor):
 
     def setup_combos(self):
         category_list = SellableCategory.select(connection=self.conn)
-        items = [('%s %s' % (obj.base_category.category_data.description, 
-                             obj.category_data.description), obj)
+        items = [('%s %s' % (obj.base_category.get_description(),
+                             obj.get_description()), obj)
                  for obj in category_list]
         self.category_combo.prefill(items)
         query = SellableUnit.q.index != UNIT_CUSTOM
@@ -284,7 +286,7 @@ class SellableEditor(BaseEditor):
         code = self.code.get_text()
         confirmed = True
         if code != self._original_code:
-            conn = new_transaction() 
+            conn = new_transaction()
             qty = AbstractSellable.selectBy(code=code, connection=conn).count()
             if qty:
                 msg = _('This code already exists!')
@@ -299,7 +301,7 @@ class SellableEditor(BaseEditor):
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'
     size = (550, 115)
-    proxy_widgets = ('quantity', 
+    proxy_widgets = ('quantity',
                      'value',
                      'total_label')
     model_names = {ProductSellableItem: _('Product Item'),

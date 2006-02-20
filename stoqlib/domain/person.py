@@ -31,7 +31,7 @@
 import gettext
 import datetime
 
-from sqlobject import (DateTimeCol, UnicodeCol, IntCol, FloatCol,
+from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
@@ -39,7 +39,7 @@ from zope.interface import implements
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.domain.base import CannotAdapt, Domain, ModelAdapter
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -501,7 +501,7 @@ class PersonAdaptToEmployee(ModelAdapter):
 
     admission_date = DateTimeCol(default=None)
     expire_vacation = DateTimeCol(default=None)
-    salary = PriceCol(default=0.0)
+    salary = PriceCol(default=0)
     status = IntCol(default=STATUS_NORMAL)
     registry_number = UnicodeCol(default=None)
     education_level = UnicodeCol(default=None)
@@ -733,7 +733,7 @@ class PersonAdaptToSalesPerson(ModelAdapter):
                                                          'Category'),
                        COMMISSION_BY_SALE_TOTAL: _('By Sale Total')}
 
-    comission = FloatCol(default=0.0)
+    comission = DecimalCol(default=0)
     comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
     is_active = BoolCol(default=True)
 
@@ -772,7 +772,7 @@ class PersonAdaptToTransporter(ModelAdapter):
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
-    freight_percentage = FloatCol(default=None)
+    freight_percentage = DecimalCol(default=None)
 
     #
     # IActive implementation
