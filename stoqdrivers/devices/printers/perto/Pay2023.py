@@ -94,6 +94,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                    8014: PaymentAdditionError,
                    8045: CancelItemError,
                    8068: PaymentAdditionError,
+                   8086: CancelItemError,
                    15009: PendingReduceZ,
                    11002: CommandParametersError,
                    11006: CommandError,
@@ -259,8 +260,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
             unit = unit_desc
         else:
             unit = Pay2023.unit_dict[unit]
-
-        # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_ADD_ITEM,
                           CodAliquota=Pay2023.taxcode_dict[taxcode],
                           CodProduto="\"%s\"" % code[:48],
@@ -294,7 +293,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return self.get_coupon_remainder_value()
 
     def coupon_close(self, message=''):
-        # FIXME: these magic numbers will be remove when the bug #2176 is fixed
         self.send_command(Pay2023.CMD_COUPON_CLOSE,
                           TextoPromocional="\"%s\"" % message[:492])
         return self._get_coupon_number()
