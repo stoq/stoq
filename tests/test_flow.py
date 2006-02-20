@@ -25,6 +25,8 @@
 ##
 " A simple test case to check if the coupon workflow is managed properly. "
 
+from decimal import Decimal
+
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (
@@ -36,6 +38,7 @@ from stoqdrivers.exceptions import (
 # Currently this test works perfectly with:
 #
 # * Sweda IFS9000I
+# * Bematech MP25FI
 #
 # TODO:
 #
@@ -53,8 +56,8 @@ def test():
     try:
         printer.open()
         printer.cancel()
-        printer.add_item("0001", 2, 1.30, UNIT_EMPTY, "Cigarro",
-                         TAX_NONE, 0, 0)
+        printer.add_item("0001", Decimal("2"), Decimal("1.30"), UNIT_EMPTY,
+                         "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
     except CouponNotOpenError:
         print "Test 1: OK."
     except PendingReadX:
@@ -63,19 +66,22 @@ def test():
         printer.summarize()
         return
     except PendingReduceZ:
-        print ("*** A reduce Z is need and will be made right now\n"
+        print ("*** A reduce Z is needed and will be made right now\n"
                "*** restart the tests after that.\n\n")
         printer.close_till()
         return
 
     # Test 02 - Try cancel an item already cancelled
     printer.open()
-    item_1 = printer.add_item("0001", 2, 1.30, UNIT_EMPTY,
-                              "Cigarro", TAX_NONE, 0, 0)
-    item_2 = printer.add_item("0002", 3, 5.20, UNIT_EMPTY,
-                              "Cerveja", TAX_NONE, 0, 0)
-    item_3 = printer.add_item("0003", 1, 2.30, UNIT_EMPTY,
-                              "Isqueiro", TAX_NONE, 0, 0)
+    item_1 = printer.add_item("0001", Decimal("2"), Decimal("1.30"),
+                              UNIT_EMPTY, "Cigarro", TAX_NONE,
+                              Decimal("0"), Decimal("0"))
+    item_2 = printer.add_item("0002", Decimal("3"), Decimal("5.20"),
+                              UNIT_EMPTY, "Cerveja", TAX_NONE,
+                              Decimal("0"), Decimal("0"))
+    item_3 = printer.add_item("0003", Decimal("1"), Decimal("2.30"),
+                              UNIT_EMPTY,"Isqueiro", TAX_NONE,
+                              Decimal("0"), Decimal("0"))
     try:
         printer.cancel_item(item_3)
         printer.cancel_item(item_3)
@@ -90,15 +96,15 @@ def test():
 
     # Test 04 - Try add a payment without totalize the coupon
     try:
-        printer.add_payment(MONEY_PM, 100.00, "")
+        printer.add_payment(MONEY_PM, Decimal("100.0"), "")
     except PaymentAdditionError:
         print "Test 4: OK."
 
     # Test 05 - Try add an item with the coupon totalized
     printer.totalize(0, 0, TAX_NONE)
     try:
-        printer.add_item("0005", 4, 2.30, UNIT_EMPTY,
-                         "Cigarro", TAX_NONE, 0, 0)
+        printer.add_item("0005", Decimal("4"), Decimal("2.30"), UNIT_EMPTY,
+                         "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
     except AlreadyTotalized:
         print "Test 5: OK."
 
@@ -108,7 +114,7 @@ def test():
     except CloseCouponError:
         print "Test 6: OK."
 
-    printer.add_payment(MONEY_PM, 100.00, "")
+    printer.add_payment(MONEY_PM, Decimal("100.0"), "")
     printer.close()
 
 if __name__ == "__main__":
