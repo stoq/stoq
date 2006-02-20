@@ -41,6 +41,7 @@ player.delete_window("POSApp")
 player.finish()
 
 def post_hook(conn):
+    import decimal
     from stoqlib.domain.interfaces import IPaymentGroup
     from stoqlib.domain.sale import Sale
 
@@ -52,7 +53,7 @@ def post_hook(conn):
     item = items[0]
 
     assert item.sellable.get_short_description() == 'K15 Keyboard AXDR'
-    assert item.quantity == 2.0
+    assert item.quantity == decimal.Decimal('2.0')
 
     # Verify installments
     group = IPaymentGroup(sale)
@@ -63,5 +64,3 @@ def post_hook(conn):
     # Refresh list.
     #assert installments.count() == 4, installments.count()
     assert installments.count() > 0, installments.count()
-
-
