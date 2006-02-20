@@ -32,7 +32,7 @@ from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     PendingReadX, PendingReduceZ,
-                                    CouponOpenError)
+                                    CouponOpenError, AlreadyTotalized)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
@@ -74,7 +74,7 @@ class payment_method(number):
 class FiscalPrinter(BasePrinter):
     def __init__(self, brand=None, model=None, device=None, config_file=None):
         BasePrinter.__init__(self, brand, model, device, config_file)
-        self.has_been_totalized = False
+        self._has_been_totalized = False
         self.payments_total_value = Decimal("0.0")
         self.totalized_value = Decimal("0.0")
         self._capabilities = self._driver.get_capabilities()
@@ -98,10 +98,13 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_open')
         return self._driver.coupon_open()
 
-    @capcheck(basestring, number, number, unit, basestring, taxcode, percent,
+    @capcheck(basestring, Decimal, Decimal, unit, basestring, taxcode, percent,
               percent, basestring)
     def add_item(self, item_code, items_quantity, item_price, unit,
                  item_description, taxcode, discount, charge, unit_desc=''):
+        if self._has_been_totalized:
+            raise AlreadyTotalized("the coupon is already totalized, you "
+                                   "can't add more items")
         if discount and charge:
             raise TypeError("discount and charge can not be used together")
         elif unit != UNIT_CUSTOM and unit_desc:
@@ -125,14 +128,15 @@ class FiscalPrinter(BasePrinter):
 
         self.info('coupon_totalize')
         result = self._driver.coupon_totalize(discount, charge, taxcode)
-        self.has_been_totalized = True
+        self._has_been_totalized = True
         self.totalized_value = result
         return result
 
-    @capcheck(payment_method, number, basestring)
-    def add_payment(self, payment_method, payment_value, payment_description=''):
+    @capcheck(payment_method, Decimal, basestring)
+    def add_payment(self, payment_method, payment_value,
+                    payment_description=''):
         self.info('coupon_add_payment')
-        if not self.has_been_totalized:
+        if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
                                          "before add payments."))
         result = self._driver.coupon_add_payment(
@@ -153,7 +157,7 @@ class FiscalPrinter(BasePrinter):
     @capcheck(basestring)
     def close(self, promotional_message=''):
         self.info('coupon_close')
-        if not self.has_been_totalized:
+        if not self._has_been_totalized:
             raise CloseCouponError(_("You must totalize the coupon before "
                                      "closing it"))
         elif self.totalized_value > self.payments_total_value:
@@ -162,9 +166,11 @@ class FiscalPrinter(BasePrinter):
                                      "match the totalized value (%.2f).")
                                    % (self.payments_total_value,
                                       self.totalized_value))
-        else:
-            return self._driver.coupon_close(
-                self._format_text(promotional_message))
+        elif not self.payments_total_value:
+            raise CloseCouponError(_("It is not possible close the coupon "
+                                     "since there are no payments defined."))
+        return self._driver.coupon_close(
+            self._format_text(promotional_message))
 
     def summarize(self):
         self.info('summarize')
@@ -174,12 +180,12 @@ class FiscalPrinter(BasePrinter):
         self.info('close_till')
         return self._driver.close_till()
 
-    @capcheck(number)
+    @capcheck(Decimal)
     def till_add_cash(self, add_cash_value):
         self.info('till_add_cash')
         return self._driver.till_add_cash(add_cash_value)
 
-    @capcheck(number)
+    @capcheck(Decimal)
     def till_remove_cash(self, remove_cash_value):
         self.info('till_remove_cash')
         return self._driver.till_remove_cash(remove_cash_value)
