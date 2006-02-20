@@ -31,9 +31,8 @@ from decimal import Decimal
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (
-    CouponOpenError, CancelItemError, CloseCouponError, PaymentAdditionError,
-    ItemAdditionError, PendingReduceZ, PendingReadX, CouponNotOpenError,
-    AlreadyTotalized)
+    CancelItemError, CloseCouponError, PaymentAdditionError, PendingReduceZ,
+    PendingReadX, CouponNotOpenError, AlreadyTotalized)
 
 #
 # Currently this test works perfectly with:
