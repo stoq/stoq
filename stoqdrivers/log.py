@@ -42,26 +42,26 @@ class Log(logging.Logger):
                  category='fiscal_printer'):
         """Initializes Log module, creating log handler and defining log
         level.
-        
+
         level attribute is not mandatory. It defines from which level
         messages should be logged. Logs with lower level are ignored.
-        
+
         logging default levels table:
-        
+
         Level                                         Numeric Value
         logging.NOTSET                                0
         logging.DEBUG                                 10
         logging.INFO                                  20
         logging.WARNING                               30
         logging.ERROR                                 40
-        logging.CRITICAL                              50        
+        logging.CRITICAL                              50
         """
-        
+
         logging.Logger.__init__(self, category, log_level)
-        
+
         # Tries to open the given file. If IOerror occour, send log to stdout
         file_obj = None
-        
+
         if type(file) == type(sys.stdout):
             # If file is already a file object, just set it to file_obj var
             if 'w' in file.mode or 'a' in file.mode or '+' in file.mode:
@@ -79,9 +79,9 @@ class Log(logging.Logger):
                 print _(">>> Couldn't access specified file! Using standard "
                         "output to write logs!")
                 file_obj = sys.stdout
-                
+
         stream_handler = logging.StreamHandler(file_obj)
-            
+
         # Formater class define a format for the log messages been
         # logged with this handler
         # The following format string
@@ -96,17 +96,17 @@ class Log(logging.Logger):
 
     def log(self, message, level=log_level):
         """This method logs messages with default log_level.
-        
+
         If it's desired another level, user is able to define it using
-        the level argument.        
-        """        
+        the level argument.
+        """
         logging.Logger.log(self, level, message)
 
 class Logger:
     log_domain = 'default'
     def __init__(self):
         self.log = Log(category=self.log_domain)
-        
+
     def debug(self, message):
         self.log.log(level=logging.DEBUG, message=message)
 
