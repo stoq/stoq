@@ -30,6 +30,7 @@ stoqdrivers/drivers/bematech/MP25.py:
     Drivers implementation for Bematech printers.
 """
 import gettext
+from decimal import Decimal
 
 from zope.interface import implements
 
@@ -163,7 +164,7 @@ class MP25(SerialBase):
         SerialBase.__init__(self, *args, **kwargs)
         # XXX: Seems that Bematech doesn't contains any variable with the
         # coupon remainder value, so I need to manage it by myself.
-        self.remainder_value = 0.00
+        self.remainder_value = Decimal("0.00")
         self.setTimeout(5)
         self.setWriteTimeout(5)
         self._customer_name = None
@@ -287,8 +288,8 @@ class MP25(SerialBase):
         self._handle_error(reply[0] + reply[8:])
         subtotal = reply[1:8]
         if subtotal:
-            return float(bcd2dec(subtotal)) / 1e2
-        return 0.0 # XXX: "**** BUSTED SUBTOTAL ****"
+            return Decimal(str(float(bcd2dec(subtotal)) / 1e2))
+        return Decimal("0.0") # XXX: "**** BUSTED SUBTOTAL ****"
 
     def get_last_item_id(self):
         self._send_packed("%c%c" % (CMD_GET_VARIABLES, VAR_LAST_ITEM_ID))
@@ -402,7 +403,7 @@ class MP25(SerialBase):
         self._send_command(data)
         self.remainder_value -= value
         if self.remainder_value < 0.0:
-            self.remainder_value = 0.0
+            self.remainder_value = Decimal("0.0")
         return self.remainder_value
 
     def coupon_totalize(self, discount, markup, taxcode):
