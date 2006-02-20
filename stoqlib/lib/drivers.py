@@ -23,7 +23,7 @@
 ## Author(s):   Henrique Romano         <henrique@async.com.br>
 ##              Evandro Vale Miquelito  <evandro@async.com.br>
 ##
-""" Useful functions for StoqDrivers compability """
+""" Useful functions for StoqDrivers interaction """
 
 import gettext
 import socket
@@ -108,8 +108,8 @@ def _get_fiscalprinter(conn):
         _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
                                  device=setting.get_port_name())
     else:
-        error(_("There is no printer configured"),
-              _("There is no printer configured this station (\"%s\")"
+        error(_("There is no fiscal printer configured"),
+              _("There is no fiscal printer configured this station (\"%s\")"
                 % socket.gethostname()))
     return _printer
 
@@ -168,7 +168,7 @@ def emit_coupon(sale, conn):
 
 def read_scale_info(conn):
     """ Read informations from the scale configured for this station.
-    """ 
+    """
     scale = _get_scale(conn)
     dlg = gtk.MessageDialog(None, 0, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE)
     dlg.set_markup("<span size=\"medium\"><b>%s</b></span>"
@@ -179,6 +179,9 @@ def read_scale_info(conn):
     scale.notify_read(notifyfunc)
     dlg.run()
     return scale.read_data()
+
+def get_capability(printer, name):
+    return printer.get_capabilities()[name].max_len
 
 def print_cheques_for_payment_group(conn, group):
     """ Given a instance that implements the IPaymentGroup interface, iterate
@@ -194,7 +197,9 @@ def print_cheques_for_payment_group(conn, group):
     if not main_address:
         raise ValueError("The cheque can not be printed since there is no "
                          "main address defined for the current branch.")
-    city = main_address.city_location.city
+
+    max_len = get_capability(printer, "cheque_city")
+    city = main_address.city_location.city[:max_len]
     for idx, payment in enumerate(payments):
         method = payment.method
         if not ICheckPM.providedBy(method.get_adapted()):
@@ -209,7 +214,8 @@ def print_cheques_for_payment_group(conn, group):
         info(_("Insert Cheque %d") % (idx+1),
                 buttons=((gtk.STOCK_OK, gtk.RESPONSE_OK),),
                 default=gtk.RESPONSE_OK)
-        thirdparty = thirdparty and thirdparty.name or ""
+        max_len = get_capability(printer, "cheque_thirdparty")
+        thirdparty = thirdparty and thirdparty.name[:max_len] or ""
         printer.print_cheque(bank, payment.value, thirdparty, city)
 
 #
@@ -238,9 +244,8 @@ class FiscalCoupon:
 
     def add_item(self, item):
         sellable = item.sellable
-        description = sellable.base_sellable_info.description
-        # FIXME: TAX_NONE is a HACK, waiting for bug #2269
-
+        max_len = get_capability(self.printer, "item_description")
+        description = sellable.base_sellable_info.description[:max_len]
         unit_desc = ''
         if not sellable.unit:
             unit = UNIT_EMPTY
@@ -248,10 +253,13 @@ class FiscalCoupon:
             if sellable.unit.index == UNIT_CUSTOM:
                 unit_desc = sellable.unit.description
             unit = sellable.unit.index
-        item_id = self.printer.add_item(sellable.code, item.quantity,
-                                        item.price, unit, description,
-                                        TAX_NONE, 0, 0,
-                                        unit_desc=unit_desc)
+        max_len = get_capability(self.printer, "item_code")
+        code = sellable.code[:max_len]
+
+        # FIXME: TAX_NONE is a HACK, waiting for bug #2269
+        item_id = self.printer.add_item(code, item.quantity, item.price,
+                                        unit, description,  TAX_NONE, 0,
+                                        0, unit_desc=unit_desc)
         self._item_ids[item] = item_id
 
     def get_items(self):
@@ -271,19 +279,22 @@ class FiscalCoupon:
     #
 
     def identify_customer(self, person):
+        max_len = get_capability(self.printer, "customer_id")
         if IIndividual.providedBy(person):
             individual = IIndividual(person, connection=person.get_connection())
-            document = individual.cpf
+            document = individual.cpf[:max_len]
         elif ICompany.providedBy(person):
             company = ICompany(person, connection=person.get_connection())
-            document = company.cnpj
+            document = company.cnpj[:max_len]
         else:
             raise TypeError(
                 "identify_customer needs an object implementing "
                 "IIndividual or ICompany")
-        self.printer.identify_customer(person.name,
-                                       person.get_address_string(),
-                                       document)
+        max_len = get_capability(self.printer, "customer_name")
+        name = person.name[:max_len]
+        max_len = get_capability(self.printer, "customer_address")
+        address = person.get_address_string()[:max_len]
+        self.printer.identify_customer(name, address, document)
 
     def open(self):
         while True:
@@ -347,14 +358,14 @@ class FiscalCoupon:
                     money_type = CHEQUE_PM
                 elif IMoneyPM.providedBy(base_method):
                     money_type = MONEY_PM
-                    # FIXME: A default value, this is wrong but can't be better right
-                    # now, since stoqdrivers doesn't have support for any payment
-                    # method diferent than money and cheque.  This will be improved
-                    # when bug #2246 is fixed.
                 else:
                     warnings.warn(_("The payment type %s isn't supported "
                                     "yet. The default, MONEY_PM, will be "
                                     "used.") % payment.method.description)
+                    # FIXME: A default value, this is wrong but can't be better right
+                    # now, since stoqdrivers doesn't have support for any payment
+                    # method diferent than money and cheque.  This will be improved
+                    # when bug #2246 is fixed.
                     money_type = MONEY_PM
                 self.printer.add_payment(money_type, payment.base_value, '')
         return True
