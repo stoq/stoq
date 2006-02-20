@@ -33,7 +33,6 @@ from kiwi.datatypes import currency
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import Column
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificate)
@@ -93,11 +92,11 @@ class GiftCertificateTypeSearch(SearchEditor):
                        data_type=currency, width=120),
                 Column('base_sellable_info.max_discount',
                        _('Max Discount'), data_type=float,
-                       format=get_price_format_str(), width=120,
+                       width=120,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('base_sellable_info.commission',
                        _('Commission'), data_type=float,
-                       format=get_price_format_str(), width=120,
+                       width=120,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('on_sale_info.on_sale_price', _('On Sale Price'),
                        data_type=currency, width=120),

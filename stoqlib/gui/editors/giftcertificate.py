@@ -30,7 +30,6 @@ from kiwi.python import Settable
 from kiwi.datatypes import currency
 
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.lib.validators import get_price_format_str
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo
@@ -68,9 +67,6 @@ class GiftCertificateTypeEditor(BaseEditor):
         return model.base_sellable_info.description
 
     def setup_proxies(self):
-        widgets = [self.commission, self.max_discount]
-        for widget in widgets:
-            widget.set_data_format(get_price_format_str())
         self.add_proxy(self.model, GiftCertificateTypeEditor.proxy_widgets)
 
     def setup_slaves(self):

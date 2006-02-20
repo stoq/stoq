@@ -26,7 +26,6 @@
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.domain.sellable import OnSaleInfo
-from stoqlib.lib.validators import get_price_format_str
 
 
 class OnSaleInfoSlave(BaseEditorSlave):
@@ -47,5 +46,4 @@ class OnSaleInfoSlave(BaseEditorSlave):
         return OnSaleInfo(connection=conn)
 
     def setup_proxies(self):
-        self.on_sale_price.set_data_format(get_price_format_str())
         self.proxy = self.add_proxy(self.model, self.proxy_widgets)
