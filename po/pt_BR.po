@@ -1427,7 +1427,7 @@ msgstr "Comissão"
 #: ../stoqlib/gui/search/giftcertificate.py:102
 #: ../stoqlib/gui/search/giftcertificate.py:159
 msgid "On Sale Price"
-msgstr "Preço na Venda"
+msgstr "Preço de Promoção"
 
 #: ../stoqlib/gui/search/giftcertificate.py:117
 msgid "Gift Certificate Search"
