@@ -28,13 +28,13 @@ from kiwi.accessors import kgetattr
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.database import Adapter
- 
+
 
 class FacetColumn(Column):
     def __init__(self, facet, *args, **kwargs):
         self._facet = facet
         Column.__init__(self, *args, **kwargs)
- 
+
     def get_attribute(self, instance, name, default=None):
         if not isinstance(instance, Adapter):
             obj = self._facet(instance)
@@ -65,12 +65,12 @@ class ForeignKeyColumn(Column):
         if not 'obj_field' in kwargs and not 'adapted' in kwargs:
             raise TypeError(
                 'ForeigKeyColumn needs an obj_field or adapted argument')
-        
+
         self._table = table
         self._obj_field = kwargs.pop('obj_field', None)
         self._adapted = kwargs.pop('adapted', False)
         Column.__init__(self, *args, **kwargs)
- 
+
     def get_attribute(self, instance, name, default=None):
         if self._obj_field:
             value = kgetattr(instance, self._obj_field, default)
@@ -87,12 +87,12 @@ class AccessorColumn(Column):
     def __init__(self, attribute, accessor, *args, **kwargs):
         if not accessor:
             raise TypeError('AccessorColumn needs an accessor argument')
- 
+
         self.accessor = accessor
         if not kwargs.has_key('cache'):
             kwargs['cache'] = True
         assert callable(self.accessor)
         Column.__init__(self, attribute=attribute, *args, **kwargs)
- 
+
     def get_attribute(self, instance, name, default=None):
         return self.accessor(instance)
