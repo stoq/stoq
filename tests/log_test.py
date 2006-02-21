@@ -27,7 +27,7 @@
 import sys
 import unittest
 
-from fiscalprinter.log import Log
+from stoqdrivers.log import Log
 
 class LogTest(unittest.TestCase):
     def setUp(self):
