@@ -169,8 +169,10 @@ class FiscalPrinter(BasePrinter):
         elif not self.payments_total_value:
             raise CloseCouponError(_("It is not possible close the coupon "
                                      "since there are no payments defined."))
-        return self._driver.coupon_close(
+        res = self._driver.coupon_close(
             self._format_text(promotional_message))
+        self._has_been_totalized = False
+        return res
 
     def summarize(self):
         self.info('summarize')
