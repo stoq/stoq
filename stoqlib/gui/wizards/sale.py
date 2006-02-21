@@ -587,7 +587,7 @@ class SalesPersonStep(BaseWizardStep):
                 self.othermethods_check.set_active(True)
         else:
             model.reset_discount_and_charge()
-        self.register_validate_function(self.previous.refresh_next)
+        self.register_validate_function(self.wizard.refresh_next)
         changed_handler = self.update_totals
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
@@ -633,10 +633,7 @@ class SalesPersonStep(BaseWizardStep):
             group.default_method = AbstractPaymentGroup.METHOD_MULTIPLE
             if not self.wizard.skip_payment_step:
                 step_class = PaymentMethodStep
-        return step_class(self.previous, self, self.conn, self.model)
-
-    def has_previous_step(self):
-        return False
+        return step_class(self.wizard, self, self.conn, self.model)
 
     #
     # BaseEditorSlave hooks
