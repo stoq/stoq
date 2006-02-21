@@ -38,18 +38,18 @@ from zope.interface import implements
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
-from stoqdrivers.devices.printers.cheque import BaseChequePrinter, BankConfiguration
+from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
+                                                 BankConfiguration)
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
-from stoqdrivers.exceptions import (DriverError, PendingReduceZ,
-                                    CommandParametersError, CommandError,
-                                    ReadXError, OutofPaperError,
-                                    CouponTotalizeError, PaymentAdditionError,
-                                    CancelItemError, CouponOpenError,
-                                    InvalidState, PendingReadX)
+from stoqdrivers.exceptions import (
+    DriverError, PendingReduceZ, CommandParametersError, CommandError,
+    ReadXError, OutofPaperError, CouponTotalizeError, PaymentAdditionError,
+    CancelItemError, CouponOpenError, InvalidState, PendingReadX,
+    CloseCouponError)
 from stoqdrivers.devices.printers.capabilities import Capability
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
@@ -92,6 +92,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                    8011: PaymentAdditionError,
                    8013: CouponTotalizeError,
                    8014: PaymentAdditionError,
+                   8017: CloseCouponError,
                    8045: CancelItemError,
                    8068: PaymentAdditionError,
                    8086: CancelItemError,
