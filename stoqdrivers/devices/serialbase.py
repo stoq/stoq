@@ -44,7 +44,7 @@ class SerialBase(Serial, Logger):
     def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                  parity=PARITY_NONE, stopbits=STOPBITS_ONE):
         Logger.__init__(self)
-        
+
         self.info('opening device %s' % device)
         Serial.__init__(self, device, baudrate=baudrate,
                         bytesize=bytesize, parity=parity,
@@ -69,9 +69,8 @@ class SerialBase(Serial, Logger):
                 number_of_tries -= 1
             else:
                 break
-
         return data
-    
+
     def readline(self):
         if self.DEBUG_MODE:
             return
@@ -93,12 +92,3 @@ class SerialBase(Serial, Logger):
             return
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
-
-    def handle_error(self, error, command):
-        """
-        Should be implemented by subclass
-        
-        @param error:
-        @param command:
-        """
-        raise NotImplementedError
