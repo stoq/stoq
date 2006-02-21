@@ -38,7 +38,6 @@ class BaseWizardStep(BaseEditorSlave, WizardStep):
 
     def __init__(self, conn, wizard, model=None, previous=None):
         self.wizard = wizard
-        previous = previous or self.wizard
         WizardStep.__init__(self, previous)
         BaseEditorSlave.__init__(self, conn, model)
 
@@ -48,7 +47,7 @@ class BaseWizard(PluggableWizard, AbstractDialog):
     title = None
     size = ()
 
-    def __init__(self, conn, first_step, model=None, title=None, 
+    def __init__(self, conn, first_step, model=None, title=None,
                  size=None, edit_mode=False):
         self.conn = conn
         self.model = model
