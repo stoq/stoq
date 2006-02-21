@@ -27,6 +27,7 @@
 
 import sys
 from decimal import Decimal
+from unittest import TestCase, makeSuite, TextTestRunner
 
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
@@ -34,94 +35,76 @@ from stoqdrivers.exceptions import (
     CancelItemError, CloseCouponError, PaymentAdditionError, PendingReduceZ,
     PendingReadX, CouponNotOpenError, AlreadyTotalized)
 
-#
-# Currently this test works perfectly with:
-#
-# * Sweda IFS9000I
-# * Bematech MP25FI
-# * Dataregis 375EP
-# * PertoPay 2023
-#
-# TODO:
-#
-# * Check if all the tests works with the others supported printers
-#   -- the main test here is ensure the exceptions raised, i.e. the
-#   same exceptions must be raised on the same erros conditions on
-#   all the printers.
-#
-#
 
-class InvalidResult(Exception):
-    """ Invalid result for the test. """
+class FlowTest(TestCase):
+    """ Responsible for test the coupon workflow. Currently this test works
+    with:
 
-def tryException(exception, func, *args, **kwargs):
-    try:
-        func(*args, **kwargs)
-    except exception:
-        return
-    raise InvalidResult("%s exception expected"
-                        % exception.__name__)
+    * Sweda IFS9000I
+    * Bematech MP25FI
+    * Dataregis 375EP
+    * PertoPay 2023
+    """
+    _printer = None
 
-def testAddItemWithoutCoupon(printer):
-    tryException(CouponNotOpenError, printer.add_item, "000001",
-                 Decimal("2"), Decimal("1.30"), UNIT_EMPTY,
-                 "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
-    print "* Test Add Item Without Coupon: OK."
+    def __init__(self, *args, **kwargs):
+        TestCase.__init__(self, *args, **kwargs)
+        if FlowTest._printer is None:
+            FlowTest._printer = FiscalPrinter()
 
-def testCancelItemTwice(printer):
-    item_1 = printer.add_item("000001", Decimal("2"), Decimal("1.30"),
-                              UNIT_EMPTY, "Cigarro", TAX_NONE,
-                              Decimal("0"), Decimal("0"))
-    item_2 = printer.add_item("000002", Decimal("3"), Decimal("5.20"),
-                              UNIT_EMPTY, "Cerveja", TAX_NONE,
-                              Decimal("0"), Decimal("0"))
-    item_3 = printer.add_item("000003", Decimal("1"), Decimal("2.30"),
-                              UNIT_EMPTY,"Isqueiro", TAX_NONE,
-                              Decimal("0"), Decimal("0"))
-    printer.cancel_item(item_3)
-    tryException(CancelItemError, printer.cancel_item, item_3)
-    print "Test Cancel Item Twice: OK."
+    def test1_AddItemWithoutCoupon(self):
+        if (FlowTest._printer.brand == "dataregis"
+            or FlowTest._printer.brand == "perto"):
+            print ("skipping test (it isn't supported on `%s')"
+                   % FlowTest._printer.brand)
+            return
+        self.failUnlessRaises(CouponNotOpenError, FlowTest._printer.add_item,
+                              "000001", Decimal("2"), Decimal("1.30"),
+                              UNIT_EMPTY, "Cigarro", TAX_NONE, Decimal("0"),
+                              Decimal("0"))
+        FlowTest._printer.open()
 
-def testCloseCouponWithoutTotalize(printer):
-    tryException(CloseCouponError, printer.close)
-    print "Test Close Coupon Without Totalize: OK."
+    def test2_CancelItemTwice(self):
+        i1 = FlowTest._printer.add_item("000001", Decimal("2"), Decimal("1.30"),
+                                        UNIT_EMPTY, "Cigarro", TAX_NONE,
+                                        Decimal("0"), Decimal("0"))
+        i2 = FlowTest._printer.add_item("000002", Decimal("3"), Decimal("5.20"),
+                                        UNIT_EMPTY, "Cerveja", TAX_NONE,
+                                        Decimal("0"), Decimal("0"))
+        i3 = FlowTest._printer.add_item("000003", Decimal("1"), Decimal("2.30"),
+                                        UNIT_EMPTY,"Isqueiro", TAX_NONE,
+                                        Decimal("0"), Decimal("0"))
+        FlowTest._printer.cancel_item(i3)
+        self.failUnlessRaises(CancelItemError,
+                              FlowTest._printer.cancel_item, i3)
 
-def testAddPaymentWithoutTotalize(printer):
-    tryException(PaymentAdditionError, printer.add_payment,
-                 MONEY_PM, Decimal("100.0"), "")
-    print "Test Add Payment Without Totalize: OK."
+    def test3_CloseCouponWithoutTotalize(self):
+        self.failUnlessRaises(CloseCouponError, FlowTest._printer.close)
 
-def testAddItemWithCouponTotalized(printer):
-    tryException(AlreadyTotalized, printer.add_item, "0005",
-                 Decimal("4"), Decimal("2.30"), UNIT_EMPTY,
-                 "Cigarro", TAX_NONE, Decimal("0"), Decimal("0"))
-    print "Test Add Item With Coupon Totalized: OK."
+    def test4_AddPaymentWithoutTotalize(self):
+        self.failUnlessRaises(PaymentAdditionError,
+                              FlowTest._printer.add_payment, MONEY_PM,
+                              Decimal("100.0"), "")
+        FlowTest._printer.totalize(Decimal("0"), Decimal("0"), TAX_NONE)
 
-def testCloseCouponWithoutPayments(printer):
-    tryException(CloseCouponError, printer.close)
-    print "Test Close Coupon Without Payments: OK."
+    def test5_AddItemWithCouponTotalized(self):
+        self.failUnlessRaises(AlreadyTotalized, FlowTest._printer.add_item,
+                              "0005", Decimal("4"), Decimal("2.30"),
+                              UNIT_EMPTY, "Cigarro", TAX_NONE, Decimal("0"),
+                              Decimal("0"))
+
+    def test6_CloseCouponWithoutPayments(self):
+        if FlowTest._printer.brand != "dataregis":
+            self.failUnlessRaises(CloseCouponError, FlowTest._printer.close)
+        else:
+            print ("skipping test (it isn't supported on `%s')"
+                   % FlowTest._printer.brand)
+        FlowTest._printer.add_payment(MONEY_PM, Decimal("100.0"), "")
+        FlowTest._printer.close()
 
 def test():
-    printer = FiscalPrinter()
-
-    if printer.brand == "dataregis" or printer.brand == "perto":
-        print ("+++ Skipping test `Add Item Without Coupon', since it "
-               "isn't supported on `%s'" % printer.brand)
-    else:
-        testAddItemWithoutCoupon(printer)
-    printer.open()
-    testCancelItemTwice(printer)
-    testCloseCouponWithoutTotalize(printer)
-    testAddPaymentWithoutTotalize(printer)
-    printer.totalize(Decimal("0"), Decimal("0"), TAX_NONE)
-    testAddItemWithCouponTotalized(printer)
-    if printer.brand == "dataregis":
-        print ("+++ Skipping test `Close Coupon Without Payments', since "
-               "it isn't supported on Dataregis")
-    else:
-        testCloseCouponWithoutPayments(printer)
-    printer.add_payment(MONEY_PM, Decimal("100.0"), "")
-    printer.close()
+    s = makeSuite(FlowTest)
+    TextTestRunner(verbosity=2).run(s)
 
 if __name__ == "__main__":
     test()
