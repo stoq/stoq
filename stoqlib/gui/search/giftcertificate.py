@@ -46,7 +46,7 @@ _ = lambda msg: gettext.dgettext('stoqlib', msg)
 class GiftCertificateTypeSearch(SearchEditor):
     """A search dialog for gift certificate types"""
     title = _('Gift Certificate Type Search')
-    size = (800, 600)
+    size = (750, 500)
     table = GiftCertificateType
     editor_class = GiftCertificateTypeEditor
 
@@ -87,19 +87,19 @@ class GiftCertificateTypeSearch(SearchEditor):
     def get_columns(self):
         return [Column('base_sellable_info.description',
                        _('Description'), data_type=str,
-                       width=260),
+                       expand=True),
                 Column('base_sellable_info.price', _('Price'),
-                       data_type=currency, width=120),
+                       data_type=currency, width=90),
                 Column('base_sellable_info.max_discount',
                        _('Max Discount'), data_type=float,
-                       width=120,
+                       width=110,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('base_sellable_info.commission',
                        _('Commission'), data_type=float,
-                       width=120,
+                       width=110,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('on_sale_info.on_sale_price', _('On Sale Price'),
-                       data_type=currency, width=120),
+                       data_type=currency, width=100),
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 
