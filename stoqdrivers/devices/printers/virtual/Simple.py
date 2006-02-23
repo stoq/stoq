@@ -158,6 +158,7 @@ class Simple:
             raise CloseCouponError(_("The payments total value doesn't "
                                      "match the totalized value."))
         self._reset_flags()
+        return 0
 
     def get_capabilities(self):
         # fake values
