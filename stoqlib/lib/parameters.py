@@ -35,7 +35,8 @@ from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.base import Domain, AbstractModel
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        ISellable, IMoneyPM, ICheckPM, IBillPM,
-                                       ICardPM, IFinancePM)
+                                       ICardPM, IFinancePM,
+                                       IGiftCertificatePM)
 
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -524,8 +525,8 @@ class ParameterAccess(ClassInittableObject):
         for interface in [IMoneyPM, ICheckPM, IBillPM]:
             pm.addFacet(interface, connection=self.conn,
                         destination=destination)
-        pm.addFacet(ICardPM, connection=self.conn)
-        pm.addFacet(IFinancePM, connection=self.conn)
+        for interface in [ICardPM, IGiftCertificatePM, IFinancePM]:
+            pm.addFacet(interface, connection=self.conn)
         self.set_schema('BASE_PAYMENT_METHOD', pm.id, is_editable=False)
         self.set_schema(key, IMoneyPM(pm, connection=self.conn).id,
                         is_editable=False)
