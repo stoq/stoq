@@ -308,7 +308,7 @@ class IBillPM(ConnInterface):
         """Get all the available bill accounts for the current Bill type"""
 
 class IFinancePM(ConnInterface):
-    """Defines a finance payment method"""
+    """Defines a Finance payment method"""
 
     def get_finance_companies():
         """Get all the finance companies for a certain method"""
@@ -318,6 +318,12 @@ class ICardPM(ConnInterface):
 
     def get_credit_card_providers():
         """Get all the credit providers for a certain method"""
+
+class IGiftCertificatePM(ConnInterface):
+    """A marker interface for gift certificate payment method"""
+
+class IMultiplePM(ConnInterface):
+    """A marker interface for multiple payment method"""
 
 class ITillOperation(ConnInterface):
     """Basic payment operation like adding a credit and a debit"""
@@ -418,6 +424,7 @@ class IPaymentDeposit(ConnInterface):
 
 class IBankBranch(ConnInterface):
     branch = Attribute('A bank branch definition')
+
 
 class ICreditProvider(ConnInterface):
     provider_type = Attribute('This attribute must be either'
