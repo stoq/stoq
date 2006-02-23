@@ -2980,9 +2980,8 @@ msgid "Supplied By:"
 msgstr ""
 
 #: ../data/SearchEntry.glade.h:1
-#, fuzzy
 msgid "_Search"
-msgstr "Sök"
+msgstr "_Sök"
 
 #: ../data/DeliveryEditor.glade.h:1
 #, fuzzy
