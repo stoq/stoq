@@ -21,11 +21,7 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-gui/wizards.py:
-
-    Base classes for wizards
-"""
+""" Base classes for wizards """
 
 from kiwi.ui.wizard import PluggableWizard, WizardStep
 
