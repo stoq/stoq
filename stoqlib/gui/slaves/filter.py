@@ -24,12 +24,13 @@
 ##
 """ Useful slaves for filtering data in SearchBar """
 
-import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 class FilterSlave(SlaveDelegate):

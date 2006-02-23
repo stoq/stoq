@@ -25,7 +25,6 @@
 ##
 """ Base classes to manage services informations """
 
-import gettext
 import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey
@@ -33,6 +32,7 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -40,7 +40,7 @@ from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Base Domain Classes

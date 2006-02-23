@@ -24,11 +24,10 @@
 ##
 """ Domain classes for renegotiation management """
 
-import gettext
-
 from sqlobject import IntCol, ForeignKey, UnicodeCol
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.interfaces import (IRenegotiationGiftCertificate,
@@ -38,7 +37,7 @@ from stoqlib.domain.interfaces import (IRenegotiationGiftCertificate,
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.lib.parameters import sysparam
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

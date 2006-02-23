@@ -27,12 +27,11 @@
 """ Person Liaisons editor implementation"""
 
 
-import gettext
-
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.person import Liaison
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class ContactEditor(BaseEditor):
     model_name = _('Liaison')

@@ -25,19 +25,19 @@
 ##
 """ Abstract wizard steps definition """
 
-import gettext
 import decimal
 
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.datatypes import currency
 from kiwi.python import Settable
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import BaseWizardStep
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

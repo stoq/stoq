@@ -25,8 +25,6 @@
 ##
 """ Listing dialog for system parameters """
 
-import gettext
-
 import gtk
 from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.argcheck import argcheck
@@ -39,10 +37,11 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.parameters import SystemParameterEditor
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.parameters import ParameterData, sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.interfaces import IDescribable
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # This class implementation will be improved after bug #2406 is fixed

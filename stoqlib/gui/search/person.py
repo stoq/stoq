@@ -26,11 +26,10 @@
 ##
 """ Search dialogs for person objects """
 
-import gettext
-
 from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
@@ -47,7 +46,7 @@ from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,
 from stoqlib.domain.person import (Person, EmployeeRole)
 from stoqlib.gui.wizards.person import run_person_role_dialog
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class BasePersonSearch(SearchEditor):

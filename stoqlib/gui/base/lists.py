@@ -23,20 +23,19 @@
 ##
 """ List management for common dialogs.  """
 
-import gettext
-
 import gtk
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.objectlist import ObjectList
 from kiwi.utils import gsignal
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import (run_dialog, confirm_dialog,
                                       BasicPluggableDialog, BasicDialog)
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.exceptions import SelectionError
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class AdditionListSlave(SlaveDelegate):

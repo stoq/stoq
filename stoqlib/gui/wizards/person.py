@@ -25,14 +25,13 @@
 ##
 """ Person role wizards definition """
 
-import gettext
-
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import OR, LIKE
 from kiwi.datatypes import ValidationError
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
@@ -45,7 +44,7 @@ from stoqlib.lib.validators import (validate_phone_number, format_phone_number,
                                     raw_phone_number)
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Wizard Steps

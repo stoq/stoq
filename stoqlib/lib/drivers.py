@@ -25,7 +25,6 @@
 ##
 """ Useful functions for StoqDrivers interaction """
 
-import gettext
 import socket
 import warnings
 
@@ -41,13 +40,14 @@ from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        IMoneyPM, ICheckPM, IContainer)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 _printer = None
 _scale = None
 

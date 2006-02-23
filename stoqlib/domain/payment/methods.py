@@ -24,7 +24,6 @@
 ##
 """ Payment method implementations. """
 
-import gettext
 import decimal
 from datetime import datetime, timedelta
 
@@ -34,6 +33,7 @@ from sqlobject import (IntCol, DateTimeCol, UnicodeCol,
                        ForeignKey, BoolCol)
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.domain.columns import DecimalCol
@@ -51,7 +51,7 @@ from stoqlib.lib.defaults import calculate_interval
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

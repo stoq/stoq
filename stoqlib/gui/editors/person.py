@@ -30,10 +30,10 @@
 import datetime
 
 import gtk
-import gettext
 from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_connection
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 from stoqlib.gui.templates.person import BasePersonRoleEditor
@@ -53,7 +53,7 @@ from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser, 
                                        ICompany, IIndividual, IBranch)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class ClientEditor(BasePersonRoleEditor):

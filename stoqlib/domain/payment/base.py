@@ -25,7 +25,6 @@
 ##
 """ Payment management implementations."""
 
-import gettext
 import datetime
 
 from kiwi.argcheck import argcheck
@@ -33,6 +32,7 @@ from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol, DecimalCol
@@ -43,7 +43,7 @@ from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
                                        IFinancePM, ICardPM, IContainer,
                                        IPaymentDevolution, IPaymentDeposit)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #
@@ -68,12 +68,12 @@ class Payment(Domain):
      STATUS_CONFIRMED,
      STATUS_CANCELLED) = range(6)
 
-    statuses = {STATUS_PREVIEW: unicode(_('Preview')),
-                STATUS_TO_PAY: unicode(_('To Pay')),
-                STATUS_PAID: unicode(_('Paid')),
-                STATUS_REVIEWING: unicode(_('Reviewing')),
-                STATUS_CONFIRMED: unicode(_('Confirmed')),
-                STATUS_CANCELLED: unicode(_('Cancelled'))}
+    statuses = {STATUS_PREVIEW: _(u'Preview'),
+                STATUS_TO_PAY: _(u'To Pay'),
+                STATUS_PAID: _(u'Paid'),
+                STATUS_REVIEWING: _(u'Reviewing'),
+                STATUS_CONFIRMED: _(u'Confirmed'),
+                STATUS_CANCELLED: _(u'Cancelled')}
 
     # XXX The payment_id attribute will be an alternateID after
     # fixing bug 2214

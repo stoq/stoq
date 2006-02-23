@@ -25,11 +25,10 @@
 ##
 """ Purchase wizard definition """
 
-import gettext
-
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.validators import format_quantity
@@ -47,7 +46,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IPaymentGroup)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

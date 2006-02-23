@@ -27,13 +27,13 @@ or a service, implemented in your own modules.
 """
 
 import datetime
-import gettext
 
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
 from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.runtime import get_connection
@@ -43,7 +43,7 @@ from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Base Domain Classes
@@ -111,9 +111,8 @@ class SellableCategory(Domain):
         return self.category_data.get_commission()
 
     def get_description(self):
-        desc = "%s %s" % (self.base_category.get_description(),
+        return "%s %s" % (self.base_category.get_description(),
                           self.category_data.description)
-        return unicode(desc)
 
 
 class AbstractSellableItem(InheritableModel):
@@ -190,10 +189,10 @@ class AbstractSellable(InheritableModelAdapter):
      STATUS_BLOCKED) = range(4)
 
 
-    statuses = {STATUS_AVAILABLE:   unicode(_("Available")),
-                STATUS_SOLD:        unicode(_("Sold")),
-                STATUS_CLOSED:      unicode(_("Closed")),
-                STATUS_BLOCKED:     unicode(_("Blocked"))}
+    statuses = {STATUS_AVAILABLE:   _(u"Available"),
+                STATUS_SOLD:        _(u"Sold"),
+                STATUS_CLOSED:      _(u"Closed"),
+                STATUS_BLOCKED:     _(u"Blocked")}
 
     code = UnicodeCol(alternateID=True)
     status = IntCol(default=STATUS_AVAILABLE)
@@ -290,8 +289,7 @@ class AbstractSellable(InheritableModelAdapter):
         return self.base_sellable_info.commission
 
     def get_short_description(self):
-        desc = '%s %s' % (self.code, self.base_sellable_info.description)
-        return unicode(desc)
+        return u'%s %s' % (self.code, self.base_sellable_info.description)
 
     def get_unit_description(self):
         return self.unit and self.unit.description or u""

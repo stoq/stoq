@@ -28,13 +28,12 @@ stoq/domain/devices.py
    Domain classes related to stoqdrivers package.
 """
 
-import gettext
-
 from sqlobject import UnicodeCol, IntCol
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class DeviceSettings(Domain):
     type = IntCol()

@@ -24,19 +24,17 @@
 ##
 """ User profile editor implementation.  """
 
-
-import gettext
-
 from kiwi.datatypes import ValidationError
 from sqlobject.sqlbuilder import func, AND
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.slaves.profile import UserProfileSettingsSlave
 from stoqlib.lib.runtime import get_connection
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class UserProfileEditor(BaseEditor):

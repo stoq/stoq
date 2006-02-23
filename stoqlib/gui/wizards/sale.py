@@ -25,12 +25,11 @@
 ##
 """ Sale wizard definition """
 
-import gettext
-
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.datatypes import currency
 from kiwi.python import Settable
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
@@ -53,7 +52,7 @@ from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
                                        IFinancePM, ISellable,
                                        IRenegotiationGiftCertificate,
                                        IRenegotiationOutstandingValue)
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

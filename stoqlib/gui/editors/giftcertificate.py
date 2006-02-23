@@ -24,11 +24,10 @@
 ##
 """ Gift Certificate editor implementation """
 
-import gettext
-
 from kiwi.python import Settable
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
@@ -37,7 +36,7 @@ from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             GiftCertificateType,
                                             get_volatile_gift_certificate)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class GiftCertificateTypeEditor(BaseEditor):

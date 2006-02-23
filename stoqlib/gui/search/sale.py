@@ -26,7 +26,6 @@
 """ Search dialogs for sale objects """
 
 
-import gettext
 from datetime import date
 
 import gtk
@@ -34,6 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND, LEFTJOINOn
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
@@ -43,7 +43,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.slaves.sale import SaleListToolbar
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class SaleSearch(SearchDialog):

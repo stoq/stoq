@@ -24,14 +24,14 @@
 ##
 """ Base classes for editors """
 
-import gettext
 
 from kiwi.ui.delegates import SlaveDelegate
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class BaseEditorSlave(SlaveDelegate):

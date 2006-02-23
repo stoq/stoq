@@ -25,7 +25,6 @@
 ##
 """ Sale object and related objects implementation """
 
-import gettext
 import decimal
 from datetime import datetime
 
@@ -34,6 +33,7 @@ from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.sellable import AbstractSellableItem
@@ -51,7 +51,7 @@ from stoqlib.domain.interfaces import (IContainer, IClient, IStorable,
                                        IRenegotiationOutstandingValue)
 from stoqlib.lib.validators import get_formatted_price
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #
@@ -84,11 +84,11 @@ class Sale(Domain):
      STATUS_CANCELLED,
      STATUS_REVIEWING) = range(5)
 
-    statuses = {STATUS_OPENED:      unicode(_("Opened")),
-                STATUS_CONFIRMED:   unicode(_("Confirmed")),
-                STATUS_CLOSED:      unicode(_("Closed")),
-                STATUS_CANCELLED:   unicode(_("Cancelled")),
-                STATUS_REVIEWING:   unicode(_("Reviewing"))}
+    statuses = {STATUS_OPENED:      _(u"Opened"),
+                STATUS_CONFIRMED:   _(u"Confirmed"),
+                STATUS_CLOSED:      _(u"Closed"),
+                STATUS_CANCELLED:   _(u"Cancelled"),
+                STATUS_REVIEWING:   _(u"Reviewing")}
 
     coupon_id = IntCol(default=None)
     order_number = UnicodeCol(default='')
@@ -141,7 +141,7 @@ class Sale(Domain):
 
     def get_client_name(self):
         if not self.client:
-            return unicode(_('Anonymous'))
+            return _(u'Anonymous')
         return self.client.get_name()
 
     def get_status_name(self):
@@ -331,8 +331,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         sale = self.get_adapted()
-        desc = _('sale %s') % sale.order_number
-        return unicode(desc)
+        return _(u'sale %s') % sale.order_number
 
     #
     # Auxiliar methods

@@ -25,7 +25,6 @@
 ##
 """ Slaves for payment management """
 
-import gettext
 from datetime import datetime
 
 from kiwi.utils import gsignal
@@ -33,6 +32,7 @@ from kiwi.ui.views import SlaveView
 from kiwi.datatypes import format_price, currency
 from sqlobject.sqlbuilder import AND
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
@@ -49,7 +49,7 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             FinanceDetails,
                                             PaymentMethodDetails)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class PaymentListSlave(BaseEditorSlave):
     """A basic payment list slave. Each element of this list is a payment

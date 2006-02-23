@@ -27,10 +27,10 @@
 creation and edition.
 """
 
-import gettext
 import sets
 
 from sqlobject.sqlbuilder import INNERJOINOn
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.editors.category import (BaseSellableCategoryEditor,
@@ -39,7 +39,7 @@ from stoqlib.domain.sellable import (AbstractSellableCategory,
                                      BaseSellableCategory,
                                      SellableCategory)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class BaseSellableCatSearch(SearchEditor):

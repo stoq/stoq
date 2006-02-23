@@ -24,8 +24,7 @@
 ##
 """ Sellable category editors implementation"""
 
-import gettext
-
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.lib.parameters import sysparam
@@ -33,7 +32,7 @@ from stoqlib.domain.sellable import (AbstractSellableCategory,
                                      BaseSellableCategory,
                                      SellableCategory)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class BaseSellableCategoryEditor(BaseEditor):

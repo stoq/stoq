@@ -25,11 +25,10 @@
 ##
 """ Search dialogs for services """
 
-import gettext
-
 import gtk
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
@@ -39,7 +38,7 @@ from stoqlib.gui.editors.service import ServiceEditor
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.search.sellable import SellableSearch
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class ServiceSearch(SellableSearch):

@@ -26,7 +26,6 @@
 ##
 """ Implementation of sellable search """
 
-import gettext
 import decimal
 
 import gtk
@@ -34,6 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
@@ -45,7 +45,7 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IStorable, IBranch, ISellable
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class SellableSearch(SearchEditor):

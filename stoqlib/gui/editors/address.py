@@ -26,16 +26,15 @@
 ##
 """ Person address editor implementation"""
 
-import gettext
-
 from kiwi.ui.widgets.list import Column
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.gui.slaves.address import AddressSlave
 from stoqlib.domain.person import Address, CityLocation
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class AddressAdditionDialog(AdditionListDialog):

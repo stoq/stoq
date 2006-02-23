@@ -24,18 +24,17 @@
 ##
 """ System parameters editor"""
 
-import gettext
-
 import gtk
 from kiwi.ui.widgets.entry import Entry
 from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import AbstractModel
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.parameters import (ParameterData, sysparam,
                                     get_parameter_details)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class SystemParameterEditor(BaseEditor):
     gladefile = "SystemParameterEditor"

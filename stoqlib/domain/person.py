@@ -28,7 +28,6 @@
 ##
 """ Person domain classes for Stoq applications """
 
-import gettext
 import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
@@ -36,6 +35,7 @@ from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.domain.base import CannotAdapt, Domain, ModelAdapter
@@ -46,7 +46,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ICreditProvider, ITransporter,
                                        IDescribable)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Base Domain Classes
@@ -71,7 +71,7 @@ class WorkPermitData(Domain):
     """Work permit data for employees.
 
     B{Important Attributes}:
-        - I{pis_*}: is a reference to PIS ("Programa de Integração Social"),
+        - I{pis_*}: is a reference to PIS ("Programa de IntegraçÂão Social"),
                     that is a Brazil-specific information.
     """
 
