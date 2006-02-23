@@ -25,15 +25,14 @@
 ##
 """ Login dialog for users authentication"""
 
-import gettext
-
 import gtk
 from kiwi.environ import environ
 from kiwi.ui.delegates import Delegate
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import RunnableView
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class LoginDialog(Delegate, RunnableView):

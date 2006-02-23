@@ -25,15 +25,15 @@
 ##
 """Routines for parsing the configuration file"""
 
-import gettext
 import os
 from ConfigParser import ConfigParser
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_configparser_settings
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class StoqlibConfigParser:

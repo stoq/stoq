@@ -25,13 +25,13 @@
 """ Receiving management """
 
 import datetime
-import gettext
 import decimal
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IStorable
@@ -39,7 +39,7 @@ from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.columns import PriceCol, DecimalCol
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class ReceivingOrderItem(Domain):
@@ -137,7 +137,7 @@ class ReceivingOrder(Domain):
 
     def get_order_number(self):
         if not self.purchase:
-            return unicode(_('No order set'))
+            return _(u'No order set')
         return self.purchase.get_order_number_str()
 
     #

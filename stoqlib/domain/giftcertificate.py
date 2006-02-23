@@ -24,18 +24,18 @@
 ##
 """ Gift Certificate implementation """
 
-import gettext
 
 from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from kiwi.python import Settable
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                      OnSaleInfo)
 from stoqlib.domain.interfaces import ISellable, IDescribable
 from stoqlib.domain.base import Domain
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Base Domain Classes
@@ -67,8 +67,8 @@ class GiftCertificateType(Domain):
 
     def get_status_string(self):
         if self.is_active:
-            return unicode(_('Active'))
-        return unicode(_('Inactive'))
+            return _(u'Active')
+        return _(u'Inactive')
 
     @classmethod
     def get_active_gift_certificates(cls, conn):

@@ -24,10 +24,11 @@
 ##
 """Default values for applications"""
 
-import gettext
 import datetime
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
 
 
 #

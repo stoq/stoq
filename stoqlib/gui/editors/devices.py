@@ -25,8 +25,6 @@
 ##
 """ Editors implementation for Stoq devices configuration"""
 
-import gettext
-
 from kiwi.ui.widgets.list import Column
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
@@ -34,11 +32,12 @@ from stoqdrivers.devices.scales.base import get_supported_scales
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.lists import AdditionListDialog
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class DeviceSettingsEditor(BaseEditor):

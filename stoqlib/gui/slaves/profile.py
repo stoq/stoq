@@ -24,12 +24,11 @@
 ##
 """ User profile slaves implementation"""
 
-import gettext
-
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.domain.profile import ProfileSettings, UserProfile
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class UserProfileSettingsSlave(BaseEditorSlave):
     model_type = ProfileSettings

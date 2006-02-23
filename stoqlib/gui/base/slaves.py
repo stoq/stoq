@@ -24,16 +24,16 @@
 ##
 """ Basic slave definitions """
 
-import gettext
 import commands
 
 from kiwi.ui.dialogs import save
 from kiwi.python import Settable
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.reporting.base.utils import print_preview, build_report
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class NoteSlave(BaseEditorSlave):
     """ Slave store general notes. The model must have an attribute 'notes'

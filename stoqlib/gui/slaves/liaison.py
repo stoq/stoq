@@ -26,16 +26,15 @@
 ##
 """ Liaison slave implementation"""
 
-import gettext
-
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.editors.contact import ContactEditor
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.person import Liaison
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class LiaisonListDialog(AdditionListDialog):

@@ -28,16 +28,16 @@
 
 
 import datetime
-import gettext
 
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class SaleDetailsDialog(BaseEditor):

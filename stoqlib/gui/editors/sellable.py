@@ -26,12 +26,12 @@
 ##
 """ Editors definitions for sellable"""
 
-import gettext
 import decimal
 
 from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
@@ -47,7 +47,7 @@ from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import get_price_format_str
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

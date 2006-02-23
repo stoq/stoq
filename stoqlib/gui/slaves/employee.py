@@ -28,7 +28,6 @@
 """ Employee editor slaves implementation"""
 
 import datetime
-import gettext
 
 import gtk
 from kiwi.datatypes import currency
@@ -36,6 +35,7 @@ from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import ValidationError
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import get_max_search_results
@@ -46,7 +46,7 @@ from stoqlib.domain.person import (WorkPermitData, MilitaryData,
                                    VoterData, EmployeeRole,
                                    EmployeeRoleHistory)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class EmployeeDetailsSlave(BaseEditorSlave):

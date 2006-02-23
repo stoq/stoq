@@ -25,10 +25,10 @@
 ##
 """ Product delivery editor implementation """
 
-import gettext
 import gtk
 
 from kiwi.ui.widgets.list import Column
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListSlave, SimpleListDialog
 from stoqlib.gui.base.editors import BaseEditor, NoteEditor
 from stoqlib.gui.base.columns import ForeignKeyColumn
@@ -42,7 +42,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.interfaces import IDelivery
 from stoqlib.gui.editors.sellable import SellableItemEditor
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class DeliveryEditor(BaseEditor):

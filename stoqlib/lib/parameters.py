@@ -24,8 +24,7 @@
 ##
 """ Parameters and system data for applications"""
 
-import gettext
-
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from sqlobject import UnicodeCol, BoolCol
 from kiwi.python import namedAny, ClassInittableObject
@@ -39,7 +38,7 @@ from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        IGiftCertificatePM)
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 DEFAULT_DECIMAL_PRECISION = 2

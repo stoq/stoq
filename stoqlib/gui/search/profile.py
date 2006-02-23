@@ -25,17 +25,16 @@
 ##
 """ Search dialogs for profile objects """
 
-import gettext
-
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.editors.profile import UserProfileEditor
 from stoqlib.gui.base.dialogs import run_dialog
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class UserProfileSearch(SearchEditor):

@@ -32,12 +32,12 @@
 """
 
 import sys
-import gettext
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.runtime import get_connection
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 TABLES = [

@@ -26,7 +26,6 @@
 ##
 """ Editors definitions for products"""
 
-import gettext
 import decimal
 
 from kiwi.datatypes import ValidationError, currency
@@ -42,8 +41,9 @@ from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.gui.editors.sellable import SellableEditor
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

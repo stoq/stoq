@@ -28,10 +28,9 @@
 """ Templates implementation for person editors.  """
 
 
-import gettext
-
 import gtk
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
@@ -45,7 +44,7 @@ from stoqlib.gui.slaves.company import CompanyDocumentsSlave
 from stoqlib.gui.slaves.individual import (IndividualDetailsSlave,
                                            IndividualDocuments)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class PersonEditorTemplate(BaseEditorSlave):

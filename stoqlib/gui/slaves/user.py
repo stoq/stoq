@@ -25,11 +25,11 @@
 ##
 """ User editor slaves implementation.  """
 
-import gettext
 import gtk
 from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -40,7 +40,7 @@ from stoqlib.domain.person import Person, LoginInfo
 from stoqlib.domain.interfaces import IUser
 
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class UserStatusSlave(BaseEditorSlave):

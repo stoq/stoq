@@ -24,7 +24,6 @@
 """ Implementation of basic dialogs for searching data """
 
 import string
-import gettext
 import datetime
 import warnings
 
@@ -41,12 +40,13 @@ from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

@@ -24,7 +24,6 @@
 ##
 """ Purchase management """
 
-import gettext
 import datetime
 import decimal
 
@@ -33,6 +32,7 @@ from kiwi.datatypes import currency
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.columns import PriceCol, DecimalCol
@@ -41,7 +41,7 @@ from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
 from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import DatabaseInconsistency
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 class PurchaseItem(Domain):
     """This class stores information of the purchased items.
@@ -101,17 +101,17 @@ class PurchaseOrder(Domain):
      ORDER_CONFIRMED,
      ORDER_CLOSED) = range(5)
 
-    statuses = {ORDER_CANCELLED:    unicode(_('Cancelled')),
-                ORDER_QUOTING:      unicode(_('Quoting')),
-                ORDER_PENDING:      unicode(_('Pending')),
-                ORDER_CONFIRMED:    unicode(_('Confirmed')),
-                ORDER_CLOSED:       unicode(_('Closed'))}
+    statuses = {ORDER_CANCELLED:    _(u'Cancelled'),
+                ORDER_QUOTING:      _(u'Quoting'),
+                ORDER_PENDING:      _(u'Pending'),
+                ORDER_CONFIRMED:    _(u'Confirmed'),
+                ORDER_CLOSED:       _(u'Closed')}
 
     (FREIGHT_FOB,
      FREIGHT_CIF) = range(2)
 
-    freight_types = {FREIGHT_FOB    : _('FOB'),
-                     FREIGHT_CIF    : _('CIF')}
+    freight_types = {FREIGHT_FOB    : _(u'FOB'),
+                     FREIGHT_CIF    : _(u'CIF')}
 
     status = IntCol(default=ORDER_QUOTING)
     # Field order_number must be unique. Waiting for bug 2214
@@ -246,7 +246,7 @@ class PurchaseOrder(Domain):
         if not self.freight_type in self.freight_types.keys():
             raise DatabaseInconsistency('Invalid freight_type, got %d'
                                         % self.freight_type)
-        return unicode(self.freight_types[self.freight_type])
+        return self.freight_types[self.freight_type]
 
     def get_branch_name(self):
         return self.branch.get_adapted().name
@@ -261,8 +261,7 @@ class PurchaseOrder(Domain):
 
     def get_order_number_str(self):
         if self.order_number:
-            number = '%03d' % self.order_number
-            return unicode(number)
+            return '%03d' % self.order_number
         return u""
 
     def get_status_str(self):
@@ -324,8 +323,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         order = self.get_adapted()
-        desc = _('order %s') % order.order_number
-        return unicode(desc)
+        return _(u'order %s') % order.order_number
 
     #
     # Auxiliar methods

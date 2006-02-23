@@ -26,13 +26,13 @@
 """ Receiving wizard definition """
 
 import datetime
-import gettext
 
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.columns import ForeignKeyColumn
@@ -52,7 +52,7 @@ from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 #

@@ -26,12 +26,12 @@
 """ Editors implementation for open/close operation on till operation"""
 
 import gtk
-import gettext
 import datetime
 
 from sqlobject.sqlbuilder import AND, IN
 from kiwi.datatypes import ValidationError, currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.domain.till import Till, get_current_till_operation
@@ -40,7 +40,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IPaymentGroup, IInPayment, IEmployee,
                                        IBranch, IOutPayment)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class TillOpeningEditor(BaseEditor):

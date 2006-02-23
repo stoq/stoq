@@ -26,17 +26,17 @@ stoqlib/reporting/printing.py:
     Implements the ReportTemplate class, an BaseReportTemplate extension
     that allows footer and header drawing.
 """
-import gettext
 import datetime
 
 from reportlab.lib.units import mm
 
 # sibling imports
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.template import BaseReportTemplate
 from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
                                                   TEXT_COLOR)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 SMALL_FONT = ("Vera", 12)
 
 class ReportTemplate(BaseReportTemplate):

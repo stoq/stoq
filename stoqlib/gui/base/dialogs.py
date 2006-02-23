@@ -27,7 +27,6 @@
 import traceback
 import warnings
 import shutil
-import gettext
 import sys
 import os
 
@@ -37,11 +36,12 @@ from kiwi.ui.views import BaseView
 from kiwi.ui.dialogs import error, ask_overwrite
 
 from stoqlib.exceptions import ModelDataError
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.reporting.base.utils import print_file
 from stoqlib.reporting.base.template import BaseDocTemplate
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Helper classes

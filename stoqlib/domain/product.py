@@ -22,7 +22,6 @@
 ##
 """ Base classes to manage product's informations """
 
-import gettext
 import decimal
 
 from kiwi.datatypes import currency
@@ -31,6 +30,7 @@ from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import StockError, SellError
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
@@ -41,7 +41,7 @@ from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery)
 from stoqlib.lib.parameters import sysparam
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Base Domain Classes

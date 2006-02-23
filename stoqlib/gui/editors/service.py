@@ -26,18 +26,16 @@
 ##
 """ Service item editor implementation """
 
-
-import gettext
-
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.gui.editors.sellable import SellableEditor
 from stoqlib.domain.interfaces import ISellable
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class ServiceItemEditor(BaseEditor):

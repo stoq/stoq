@@ -26,13 +26,13 @@
 """ Implementation of classes related to Payment management. """
 
 import datetime
-import gettext
 
 from sqlobject import IntCol, DateTimeCol, ForeignKey
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol
@@ -42,7 +42,7 @@ from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 #
 # Domain Classes
@@ -242,10 +242,9 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         till = self.get_adapted()
-        date_format = _('%d of %B')
+        date_format = _(u'%d of %B')
         today_str = till.opening_date.strftime(date_format)
-        desc = _('till of %s') % today_str
-        return unicode(desc)
+        return _(u'till of %s') % today_str
 
 
 Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)

@@ -25,11 +25,10 @@
 ##
 """ Search dialogs for product objects """
 
-import gettext
-
 import gtk
 from kiwi.datatypes import currency
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import Column, AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
@@ -40,7 +39,7 @@ from stoqlib.gui.editors.product import ProductEditor
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.search.sellable import SellableSearch
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class ProductSearch(SellableSearch):

@@ -25,18 +25,16 @@
 ##
 """ Purchase details dialogs """
 
-
-import gettext
-
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 
-_ = lambda msg: gettext.dgettext('stoqlib', msg)
+_ = stoqlib_gettext
 
 
 class PurchaseDetailsDialog(BaseEditor):
