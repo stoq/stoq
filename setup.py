@@ -31,8 +31,8 @@ from distutils.core import setup
 from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
                        listpackages)
 
-from stoqlib import __version__, __program_name__, __website__
-
+from stoqlib import __version__, __website__
+PACKAGE = 'stoqlib'
 
 class StoqLibInstallData(install_data):
     def run(self):
@@ -40,14 +40,14 @@ class StoqLibInstallData(install_data):
         install_data.run(self)
 
 class StoqLibInstallLib(TemplateInstallLib):
-    name = __program_name__.lower()
+    name = PACKAGE
     resources = dict(locale='$prefix/share/locale')
     global_resources = dict(pixmaps='$datadir/pixmaps',
                             sql='$datadir/sql',
                             glade='$datadir/glade',
                             fonts='$datadir/fonts')
 
-setup(name=__program_name__.lower(),
+setup(name=PACKAGE,
       version=__version__,
       author="Async Open Source",
       author_email="evandro@async.com.br",
@@ -60,6 +60,8 @@ setup(name=__program_name__.lower(),
          listfiles('data/sql', '*.sql')),
         ('share/stoqlib/glade',
          listfiles('data', '*.glade')),
+        ('share/stoqlib/fonts',
+         listfiles('data', 'fonts', '*.ttf')),
         ('share/doc/stoqlib',
          ('AUTHORS', 'CONTRIBUTORS', 'NEWS', 'README')),
         ],
