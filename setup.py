@@ -40,14 +40,14 @@ class StoqLibInstallData(install_data):
         install_data.run(self)
 
 class StoqLibInstallLib(TemplateInstallLib):
-    name = __program_name__
+    name = __program_name__.lower()
     resources = dict(locale='$prefix/share/locale')
     global_resources = dict(pixmaps='$datadir/pixmaps',
                             sql='$datadir/sql',
                             glade='$datadir/glade',
                             fonts='$datadir/fonts')
 
-setup(name=__program_name__,
+setup(name=__program_name__.lower(),
       version=__version__,
       author="Async Open Source",
       author_email="evandro@async.com.br",
