@@ -33,6 +33,7 @@ from kiwi.utils import gsignal
 from stoqlib.gui.base.dialogs import (run_dialog, confirm_dialog,
                                       BasicPluggableDialog, BasicDialog)
 from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.exceptions import SelectionError
 
 _ = lambda msg: gettext.dgettext('stoqlib', msg)
@@ -64,7 +65,8 @@ class AdditionListSlave(SlaveDelegate):
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
-        if editor_class and not issubclass(editor_class, BaseEditor):
+        if editor_class and not issubclass(editor_class, (BaseEditor,
+                                                          BaseWizard)):
             raise TypeError("editor_class must be a BaseEditor subclass")
 
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
