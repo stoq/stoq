@@ -30,6 +30,8 @@ import datetime
 import gettext
 import decimal
 
+from kiwi.datatypes import currency
+
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
@@ -37,7 +39,7 @@ from stoqlib.domain.person import (Person, EmployeeRole, Address,
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
-                                       IUser, ICreditProvider, 
+                                       IUser, ICreditProvider,
                                        ITransporter)
 
 _ = gettext.gettext
@@ -191,7 +193,8 @@ def create_persons():
         began = now + datetime.timedelta(20)
         role_history = EmployeeRoleHistory(connection=conn, role=role,
                                            employee=employee,
-                                           is_active=True, salary=500,
+                                           is_active=True,
+                                           salary=currency(500),
                                            began=began)
         employee.salary = role_history.salary
         # SalesPerson facet requires an employee facet.
