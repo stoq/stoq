@@ -569,14 +569,14 @@ class IFS9000I(SerialBase):
         date = '%s%s%s' % (day, month, year)
 
         # This will print a sales report after summarizing
-        print_report = 'S'
+        print_report = 'N'
 
         self.send_command(self.CMD_REDUCE_Z, print_report, date)
 
     def summarize(self):
         """This is 'read X' in Brazil"""
         # This will print a sales report after summarizing
-        print_report = 'S'
+        print_report = 'N'
 
         self.send_command(self.CMD_READ_X, print_report)
 
