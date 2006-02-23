@@ -32,7 +32,14 @@ def stoqlib_gettext(message):
     return dgettext('stoqlib', message)
 
 def dgettext(domain, message):
-    return unicode(gettext_.dgettext(domain, message), 'utf-8')
+    is_unicode = False
+    if type(message) == unicode:
+        message = str(message)
+        is_unicode = True
+    retval = gettext_.dgettext(domain, message)
+    if is_unicode:
+        retval = unicode(retval, 'utf-8')
+    return retval
 
 def gettext(message):
     return unicode(gettext_.gettext(message), 'utf-8')
