@@ -656,7 +656,7 @@ class SearchDialog(BasicDialog):
         self.disable_ok()
 
         self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
-        # XXX: I think that BasicDialog must redesigned, if so we don't
+        # XXX: I think that BasicDialog must be redesigned, if so we don't
         # need this ".remove" crap
         self.main.remove(self.main_label)
         self.main.add(self.klist)
