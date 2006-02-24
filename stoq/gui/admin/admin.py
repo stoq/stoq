@@ -44,6 +44,7 @@ from stoqlib.domain.interfaces import IUser
 from stoqlib.gui.editors.person import UserEditor
 from stoqlib.gui.editors.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
+from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.search.profile import UserProfileSearch
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
@@ -172,3 +173,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_system_parameters_activate(self, *args):
         self.run_dialog(ParametersListingDialog, self.conn)
+
+    def on_payment_methods_activate(self, *args):
+        self.run_dialog(PaymentMethodsDialog, self.conn)

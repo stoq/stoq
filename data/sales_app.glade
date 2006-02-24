@@ -24,6 +24,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ClientSearch">
+                        <property name="name">ClientSearch</property>
+                        <property name="label" translatable="yes">Clients...</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
+                        <signal handler="_on_clients_action__clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients</property>
@@ -37,15 +45,6 @@
                         <property name="name">Copy</property>
                         <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
                         <property name="stock_id">gtk-copy</property>
-                    </widget>
-                </child>
-                <child>
-                    <widget class="GtkAction" id="CreditProvider">
-                        <property name="name">CreditProvider</property>
-                        <property name="label" translatable="yes">Credit Providers...</property>
-                        <property name="short_label" translatable="yes">Credit Providers...</property>
-                        <signal handler="_on_credit_provider_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -79,15 +78,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="GiftCertificateType">
-                        <property name="name">GiftCertificateType</property>
-                        <property name="label" translatable="yes">Gift Certificate Types...</property>
-                        <property name="short_label" translatable="yes">Gift Certificate Types...</property>
-                        <signal handler="_on_gift_certificate_types_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;g</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
@@ -106,6 +96,14 @@
                         <property name="name">Paste</property>
                         <property name="tooltip" translatable="yes">Paste object from the Clipboard</property>
                         <property name="stock_id">gtk-paste</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="ProductSearch">
+                        <property name="name">ProductSearch</property>
+                        <property name="label" translatable="yes">Products...</property>
+                        <property name="accelerator">&lt;Control&gt;w</property>
+                        <signal handler="_on_products_action__clicked" name="activate"/>
                     </widget>
                 </child>
                 <child>
@@ -145,6 +143,14 @@
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">Searc_h</property>
                         <property name="short_label" translatable="yes">Searc_h</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="ServiceSearch">
+                        <property name="name">ServiceSearch</property>
+                        <property name="label" translatable="yes">Services...</property>
+                        <signal handler="_on_services_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;s</property>
                     </widget>
                 </child>
                 <child>
@@ -210,7 +216,8 @@
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="CreditProvider" name="CreditProvider"/><menuitem action="GiftCertificateType" name="GiftCertificateType"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch"
+name="ServiceSearch"/><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   

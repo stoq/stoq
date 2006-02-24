@@ -34,12 +34,8 @@ from kiwi.ui.dialogs import warning
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
-from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.gui.base.dialogs import notify_dialog
-from stoqlib.gui.base.search import get_max_search_results
 from stoqdrivers.constants import UNIT_WEIGHT
-
-from stoq.gui.application import AppWindow
+from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
@@ -51,6 +47,8 @@ from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.interfaces import ISellable, IClient, IDelivery
+from stoqlib.gui.base.dialogs import notify_dialog
+from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
@@ -59,9 +57,11 @@ from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.sellable import SellableSearch
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
-from stoq.gui.pos.neworder import NewOrderEditor
 from stoqlib.gui.slaves.price import PriceSlave
 from stoqlib.reporting.sale import SaleOrderReport
+
+from stoq.gui.application import AppWindow
+from stoq.gui.pos.neworder import NewOrderEditor
 
 _ = gettext.gettext
 

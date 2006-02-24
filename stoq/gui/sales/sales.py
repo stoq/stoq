@@ -40,12 +40,11 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
-from stoqlib.gui.search.person import ClientSearch, CreditProviderSearch
+from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
+from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.slaves.sale import SaleListToolbar
-from stoqlib.gui.search.giftcertificate import (GiftCertificateTypeSearch,
-                                                GiftCertificateSearch)
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -147,12 +146,6 @@ class SalesApp(SearchableAppWindow):
     def _on_products_action__clicked(self, *args):
         self.run_dialog(ProductSearch, self.conn, hide_footer=True,
                         hide_toolbar=True, hide_cost_column=True)
-
-    def _on_credit_provider_action__clicked(self, *args):
-        self.run_dialog(CreditProviderSearch, self.conn, hide_footer=True)
-
-    def _on_gift_certificate_types_action_clicked(self, *args):
-        self.run_dialog(GiftCertificateTypeSearch, self.conn)
 
     def _on_gift_certificates_action_clicked(self, *args):
         self.run_dialog(GiftCertificateSearch, self.conn)
