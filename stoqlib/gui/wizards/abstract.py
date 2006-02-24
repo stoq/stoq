@@ -69,8 +69,8 @@ class AbstractProductStep(BaseWizardStep):
 
     def _setup_product_entry(self):
         products = self.table.get_available_sellables(self.conn)
-        descriptions = [p.base_sellable_info.description for p in products]
-        self.product.set_completion_strings(descriptions, list(products))
+        items = [(p.get_description(), p) for p in products]
+        self.product.prefill(items)
 
     def get_columns(self):
         raise NotImplementedError('This method must be defined on child')

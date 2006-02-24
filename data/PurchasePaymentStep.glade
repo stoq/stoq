@@ -38,8 +38,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Subtotal:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -51,8 +51,8 @@
                                         <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_subtotal</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -70,8 +70,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Total:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                 </child>
                                 <child>
@@ -79,8 +79,8 @@
                                         <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_total</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -106,13 +106,13 @@
                             <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Payment Method:</property>
-                                <property name="xalign">1.0</property>
                                 <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="method_combo">
-                                <property name="data_type">int</property>
+                            <widget class="ProxyComboEntry" id="method_combo">
+                                <property name="data_type">object</property>
                                 <property name="model_attribute">default_method</property>
                                 <property name="visible">True</property>
                             </widget>
