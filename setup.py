@@ -25,11 +25,11 @@ class StoqInstallLib(TemplateInstallLib):
 data_files = [
     ('share/stoq/pixmaps',
      listfiles('data/pixmaps', '*.png')),
-    ('share/stoq/bin', ('bin/init-database', 'bin/update-database')),
+    ('share/stoq/bin',  ['bin/init-database']),
     ('share/doc/stoq',
      ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS']),
     ('share/stoq/glade',
-     glob.glob('stoq/gui/*/glade/*.glade')),
+     listfiles('data', '*.glade')),
     ]
 
 setup(name=PACKAGE,
