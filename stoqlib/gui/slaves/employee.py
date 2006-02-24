@@ -213,15 +213,17 @@ class EmployeeRoleSlave(BaseEditorSlave):
             if self.salesperson.is_active:
                 self.salesperson.inactivate()
 
+        old_salary = self.employee.salary
         self.employee.salary = self.model.salary
-        if not self.model.role == self.employee.role:
+        if (self.model.role is not self.employee.role
+            or old_salary != self.model.salary):
             self.employee.role = self.model.role
             if self.current_role_history:
-                self.current_role_history.salary = self.model.salary
+                self.current_role_history.salary = old_salary
                 self.current_role_history.ended = datetime.datetime.now()
                 self.current_role_history.is_active = False
         else:
-            # XXX This will prevent problems in case that you can't update
+            # XXX This will prevent problems when you can't update
             # the connection.
             self.model_type.delete(self.model.id, connection=self.conn)
         return self.model
@@ -249,7 +251,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
     #
 
     def on_role_editor_button__clicked(self, *args):
-        # This will avoid the circular import
+        # This will avoid circular imports
         from stoqlib.gui.editors.person import EmployeeRoleEditor
         model =  run_dialog(EmployeeRoleEditor, self, self.conn,
                             self.model.role)
