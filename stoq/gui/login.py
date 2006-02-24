@@ -44,7 +44,7 @@ class StoqLoginDialog(LoginDialog):
             self.attach_slave('applist_holder', self.slave)
             self.size = 450, 250
             self.get_toplevel().set_size_request(*self.size)
-                    
+
 
     def get_app_name(self):
         if self.choose_applications:
@@ -66,11 +66,11 @@ class SelectApplicationsSlave(SlaveDelegate):
 
         apps = get_app_descriptions()
         # sorting by app_full_name
-        apps = [(app_full_name, app_name, app_icon_name) 
+        apps = [(app_full_name, app_name, app_icon_name)
                     for app_name, app_full_name, app_icon_name in apps]
         apps.sort()
         for app_full_name, app_name, app_icon_name in apps:
-            model = Settable(app_name=app_name, app_full_name=app_full_name, 
+            model = Settable(app_name=app_name, app_full_name=app_full_name,
                              icon_name=app_icon_name)
             self.klist.append(model)
         if not len(self.klist):
@@ -80,8 +80,8 @@ class SelectApplicationsSlave(SlaveDelegate):
         self.app_list.show()
 
     def _get_columns(self):
-        return [Column('icon_name', use_stock=True, 
+        return [Column('icon_name', use_stock=True,
                        justify=gtk.JUSTIFY_LEFT, expand=True,
                        icon_size=gtk.ICON_SIZE_LARGE_TOOLBAR),
-                Column('app_full_name', data_type=str, 
+                Column('app_full_name', data_type=str,
                        expand=True)]
