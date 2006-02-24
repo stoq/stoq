@@ -264,7 +264,7 @@ class PurchaseOrder(Domain):
 
     def get_order_number_str(self):
         if self.order_number:
-            return '%03d' % self.order_number
+            return u'%03d' % self.order_number
         return u""
 
     def get_status_str(self):
