@@ -36,20 +36,11 @@ from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
 
 
 class CheckBillSettingsSlave(BaseEditorSlave):
-    model_type = None
+    model_type = AbstractCheckBillAdapter
     gladefile = 'CheckBillSettingsSlave'
     proxy_widgets = ('installments_number',
                      'monthly_interest',
                      'daily_penalty')
-
-    def __init__(self, conn, model):
-        # FIXME find out a good way to do this job in BaseEditorSlave
-        if not issubclass(type(model), AbstractCheckBillAdapter):
-            raise TypeError('Invalid model type, it must be a subclass of '
-                            'AbstractCheckBillAdapter, got %r'
-                            % model)
-        self.model_type = type(model)
-        BaseEditorSlave.__init__(self, conn, model)
 
     def setup_proxies(self):
         self.add_proxy(self.model, CheckBillSettingsSlave.proxy_widgets)
