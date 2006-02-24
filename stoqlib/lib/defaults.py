@@ -26,7 +26,12 @@
 
 import datetime
 
+
+from stoqlib.domain.interfaces import (IMoneyPM, ICheckPM, IBillPM,
+                                       ICardPM, IMultiplePM, IFinancePM,
+                                       IGiftCertificatePM)
 from stoqlib.lib.translation import stoqlib_gettext
+
 
 _ = stoqlib_gettext
 
@@ -69,6 +74,36 @@ def calculate_interval(interval_type, intervals):
         raise TypeError('Invalid type for intervals argument. It must be '
                         'integer, got %s' % type(intervals))
     return interval_values[interval_type] * intervals
+
+#
+# Payment Methods
+#
+
+(METHOD_MONEY,
+ METHOD_CHECK,
+ METHOD_BILL,
+ METHOD_CARD,
+ METHOD_FINANCE,
+ METHOD_GIFT_CERTIFICATE,
+ METHOD_MULTIPLE) = range(7)
+
+def get_method_names():
+    return {METHOD_MONEY: _(u'Money'),
+            METHOD_CHECK: _(u'Check'),
+            METHOD_BILL: _(u'Bill'),
+            METHOD_CARD: _(u'Card'),
+            METHOD_FINANCE: _(u'Finance'),
+            METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate'),
+            METHOD_MULTIPLE: _(u'Multiple')}
+
+def get_all_methods_dict():
+    return {METHOD_MONEY: IMoneyPM,
+            METHOD_CHECK: ICheckPM,
+            METHOD_BILL: IBillPM,
+            METHOD_CARD: ICardPM,
+            METHOD_GIFT_CERTIFICATE: IGiftCertificatePM,
+            METHOD_FINANCE: IFinancePM,
+            METHOD_MULTIPLE: IMultiplePM}
 
 #
 # Kiwi combobox

@@ -27,15 +27,17 @@
 import decimal
 from datetime import datetime, timedelta
 
-from kiwi.argcheck import argcheck
+from kiwi.argcheck import argcheck, percent
+from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
-from sqlobject import (IntCol, DateTimeCol, UnicodeCol,
-                       ForeignKey, BoolCol)
-from zope.interface import implements
+from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
+from zope.interface import implements, implementedBy
 
+from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
+from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
 from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
@@ -46,8 +48,8 @@ from stoqlib.domain.base import (Domain, InheritableModel,
 from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
                                        IBillPM, IFinancePM, ICardPM,
                                        ICreditProvider, IActive, IOutPayment,
-                                       IDescribable)
-from stoqlib.lib.defaults import calculate_interval
+                                       IDescribable, IGiftCertificatePM,
+                                       IMultiplePM)
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 
@@ -55,7 +57,7 @@ _ = stoqlib_gettext
 
 
 #
-# Payment method details
+# Infrastructure for Payment method Details
 #
 
 
@@ -71,14 +73,13 @@ class PaymentMethodDetails(InheritableModel):
         - I{destination}: the suggested destination for the payment when it
                           is paid.
     """
-    implements(IActive)
+    implements(IActive, IDescribable)
 
     payment_type_name = None
     interface_method = None
 
     is_active = BoolCol(default=True)
     commission = DecimalCol(default=0)
-    notes = UnicodeCol(default='')
     provider = ForeignKey('PersonAdaptToCreditProvider')
     destination = ForeignKey('PaymentDestination')
 
@@ -91,8 +92,19 @@ class PaymentMethodDetails(InheritableModel):
         self.is_active = False
 
     #
+    # IDescribable implementation
+    #
+
+    @classmethod
+    def get_description(cls):
+        return cls.description
+
+    #
     # Auxiliar methods
     #
+
+    def get_destination_name(self):
+        return self.destination.description
 
     def get_thirdparty(self):
         return self.provider.get_adapted()
@@ -138,7 +150,7 @@ class PaymentMethodDetails(InheritableModel):
     def setup_inpayments(self, payment_group, installments_number,
                          first_duedate, total_value):
         """Return a list of newly created inpayments and its total
-        payment list and the second one is the interest total value
+        payment list.
 
         payment_group       = a AbstractPaymentGroup instance
         installments_number = the number of installments for payment
@@ -156,9 +168,6 @@ class PaymentMethodDetails(InheritableModel):
         base_value = total_value / installments_number
         updated_value = total_value * self.commission
         payment_value = updated_value / installments_number
-        payment_precision = sysparam(conn).DECIMAL_PRECISION
-        payment_value = round(payment_value, payment_precision)
-        base_value = round(base_value, payment_precision)
 
         payments = []
         due_date = first_duedate
@@ -197,8 +206,9 @@ class BillCheckGroupData(Domain):
     """Stores general information for payment groups which store checks.
 
     B{Importante attributes}:
-        - I{interest}: a percentage that represents the interest. This value
-                       must be betwen 0 and 100.
+        - I{monthly_interest}: a percentage that represents the
+                               monthly_interest. This value
+                               must be betwen 0 and 100.
         - I{interval_types}: a useful attribute when generating multiple
                              payments. callsites you ensure to use it
                              properly sending valid constants which define
@@ -208,7 +218,7 @@ class BillCheckGroupData(Domain):
     """
     installments_number = IntCol(default=1)
     first_duedate = DateTimeCol(default=datetime.now)
-    interest = DecimalCol(default=0)
+    monthly_interest = DecimalCol(default=0)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=1)
     group = ForeignKey('AbstractPaymentGroup')
@@ -289,6 +299,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
 
     description = None
 
+    active_editable = True
     is_active = BoolCol(default=True)
 
     #
@@ -309,6 +320,15 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     #
     # Auxiliar methods
     #
+
+    def get_implemented_iface(self):
+        all_ifaces = get_all_methods_dict().values()
+        for iface in all_ifaces:
+            if iface in implementedBy(type(self)):
+                return iface
+        else:
+            raise ValueError("Invalid implemented interfaces, got %r "
+                             % implementedBy(self))
 
     def _check_installments_number(self, installments_number, max=None):
         max = max or self.get_max_installments_number()
@@ -404,7 +424,10 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
 class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
     implements(IMoneyPM, IActive)
 
-    description = _('Money')
+    # Money payment method must be always available
+    active_editable = False
+
+    description = _(u'Money')
     destination = ForeignKey('PaymentDestination')
 
     #
@@ -426,8 +449,8 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         self._check_installments_number(installments_number)
         due_date = datetime.today()
         group_desc = group.get_group_description()
-        description = _('%s (1 of 1) from %s') % (self.description,
-                                                  group_desc)
+        description = _(u'%s (1 of 1) from %s') % (self.description,
+                                                   group_desc)
         payment = group.add_payment(total, description, self,
                                     self.destination, due_date)
         return payment
@@ -450,6 +473,48 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 
 
+class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
+    implements(IGiftCertificatePM, IActive)
+
+    description = _(u'Gift Certificate')
+
+    #
+    # General methods
+    #
+
+    def _get_new_payment(self, total, group, installments_number):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def setup_outpayments(self, total, group, installments_number=None):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def setup_inpayments(self, total, group, installments_number=None):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def add_payment(self, payment_group, due_date, value,
+                    method_details=None, description=None,
+                    iface=IInPayment, base_value=None):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def create_inpayment(self, payment_group, due_date, value,
+                         method_details=None, description=None,
+                         iface=IInPayment, base_value=None):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def create_outpayment(self, payment_group, due_date, value,
+                          method_details=None, description=None,
+                          iface=IInPayment, base_value=None):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def delete_inpayment(self, inpayment):
+        raise NotImplementedError("Not supported by gift certificates")
+
+    def get_max_installments_number(self):
+        raise NotImplementedError("Not supported by gift certificates")
+
+PaymentMethod.registerFacet(PMAdaptToGiftCertificatePM, IGiftCertificatePM)
+
+
 class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     """Base payment method adapter class for for Check and Bill.
 
@@ -465,21 +530,40 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     monthly_interest = DecimalCol(default=0)
     daily_penalty = DecimalCol(default=0)
 
-    def _check_interest_value(self, interest):
-        interest = interest or decimal.Decimal('0.0')
-        if not isinstance(interest, (float, int, decimal.Decimal)):
-            raise TypeError('interest argument must be integer '
-                            'or float, got %s instead' % type(interest))
+
+    #
+    # SQLObject callbacks
+    #
+
+    def _set_daily_penalty(self, value):
+        percent.value_check("daily_penalty", value)
+        self._SO_set_daily_penalty(value)
+
+    def _set_monthly_interest(self, value):
+        percent.value_check("monthly_interest", value)
+        self._SO_set_monthly_interest(value)
+
+    #
+    # General methods
+    #
+
+    def _check_interest_value(self, monthly_interest):
+        monthly_interest = monthly_interest or decimal.Decimal('0.0')
+        if not isinstance(monthly_interest, (int, decimal.Decimal)):
+            raise TypeError('monthly_interest argument must be integer '
+                            'or Decimal, got %s instead'
+                            % type(monthly_interest))
         conn = self.get_connection()
         if (sysparam(conn).MANDATORY_INTEREST_CHARGE and
-            not interest == self.monthly_interest):
-            raise PaymentError('The interest charge is mandatory for '
-                               'this establishment. Got %s of interest,'
-                               'it should be %s' %(interest,
-                                                   self.monthly_interest))
-        if not (0 <= interest <= 100):
-            raise ValueError("Argument interest must be between 0 and 100,"
-                             "got %s" % interest)
+            not monthly_interest == self.monthly_interest):
+            raise PaymentError('The monthly_interest charge is mandatory '
+                               'for this establishment. Got %s of '
+                               'monthly_interest, it should be %s'
+                               % (monthly_interest, self.monthly_interest))
+        if not (0 <= monthly_interest <= 100):
+            raise ValueError("Argument monthly_interest must be "
+                             "between 0 and 100, got %s"
+                             % monthly_interest)
 
     @argcheck(decimal.Decimal, int, decimal.Decimal)
     def calculate_payment_value(self, total_value, installments_number,
@@ -493,19 +577,15 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         if not monthly_interest:
             return total_value / installments_number
 
-        # The interest value must be calculated per month
-        interest = monthly_interest / 100
-
-        # XXX Evaluate this code better
-        rate = 1 - ((1 + interest) ** -installments_number)
-        payment_value = total_value * interest / rate
-        return payment_value
+        interest_rate = monthly_interest / 100 + 1
+        return (total_value / installments_number) * interest_rate
 
     @argcheck(AbstractPaymentGroup, int, datetime, int, int,
               decimal.Decimal, decimal.Decimal, ConnMetaInterface)
     def _setup_payments(self, payment_group, installments_number,
                         first_duedate, interval_type, intervals,
-                        total_value, interest=None, iface=IInPayment):
+                        total_value, monthly_interest=None,
+                        iface=IInPayment):
         """Return a list of newly created inpayments or outpayments and its
         total interest. The result value is a tuple where the first item
         is the payment list and the second one is the interest total value
@@ -522,15 +602,15 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         total_value         = the sum of all the payments. Note that payment
                               values are total_value divided by
                               installments_number
-        interest            = a float value in the format
-                              0 <= interest <= 100
+        monthly_interest            = a Decimal instance in the format
+                              0 <= monthly_interest <= 100
         """
         value = self.calculate_payment_value(total_value,
                                              installments_number,
-                                             interest)
+                                             monthly_interest)
 
         conn = self.get_connection()
-        if interest:
+        if monthly_interest:
             interest_total = value * installments_number - total_value
         else:
             interest_total = decimal.Decimal('0.0')
@@ -548,8 +628,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
                                        iface=iface)
             payments.append(payment)
 
-        payments_total = sum([p.get_adapted().value for p in payments])
-        difference = total_value - payments_total - interest_total
+        payments_total = sum([p.get_adapted().value for p in payments],
+                             currency(0))
+        difference = -(payments_total - interest_total - total_value)
         if difference:
             adapted = payment.get_adapted()
             adapted.value += difference
@@ -558,17 +639,17 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
 
     def setup_inpayments(self, payment_group, installments_number,
                           first_duedate, interval_type, intervals,
-                          total_value, interest=None):
+                          total_value, monthly_interest=None):
         return self._setup_payments(payment_group, installments_number,
                                     first_duedate, interval_type,
-                                    intervals, total_value, interest)
+                                    intervals, total_value, monthly_interest)
 
     def setup_outpayments(self, payment_group, installments_number,
                          first_duedate, interval_type, intervals,
-                         total_value, interest=None):
+                         total_value, monthly_interest=None):
         return self._setup_payments(payment_group, installments_number,
                                     first_duedate, interval_type,
-                                    intervals, total_value, interest,
+                                    intervals, total_value, monthly_interest,
                                     IOutPayment)
 
     def get_max_installments_number(self):
@@ -593,7 +674,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
 class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     implements(ICheckPM, IActive)
 
-    description = _('Check')
+    description = _(u'Check')
 
     #
     # ICheckPM implementation
@@ -660,7 +741,7 @@ PaymentMethod.registerFacet(PMAdaptToCheckPM, ICheckPM)
 class PMAdaptToBillPM(AbstractCheckBillAdapter):
     implements(IBillPM, IActive)
 
-    description = _('Bill')
+    description = _(u'Bill')
 
     #
     # IBillPM implementation
@@ -675,7 +756,7 @@ PaymentMethod.registerFacet(PMAdaptToBillPM, IBillPM)
 class PMAdaptToCardPM(AbstractPaymentMethodAdapter):
     implements(ICardPM, IActive)
 
-    description = _('Card')
+    description = _(u'Card')
 
     #
     # ICardPM implementation
@@ -705,7 +786,7 @@ PaymentMethod.registerFacet(PMAdaptToCardPM, ICardPM)
 class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
     implements(IFinancePM, IActive)
 
-    description = _('Finance')
+    description = _(u'Finance')
 
 
     def get_thirdparty(self):
@@ -728,6 +809,9 @@ class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
 PaymentMethod.registerFacet(PMAdaptToFinancePM, IFinancePM)
 
 
+#
+# Payment method details
+#
 
 
 class DebitCardDetails(PaymentMethodDetails):
@@ -736,7 +820,7 @@ class DebitCardDetails(PaymentMethodDetails):
     # Lowercases here is for PaymentMethodDetails
     # get_max_installments_number compatibility
     max_installments_number = 1
-    description = payment_type_name = _('Debit Card')
+    description = payment_type_name = _(u'Debit Card')
     interface_method = ICardPM
 
     receive_days = IntCol()
@@ -758,25 +842,37 @@ class CreditCardDetails(PaymentMethodDetails):
     # Lowercases here is for PaymentMethodDetails
     # get_max_installments_number compatibility
     max_installments_number = 1
-    description = payment_type_name = _('Credit Card')
+    description = payment_type_name = _(u'Credit Card')
     interface_method = ICardPM
 
-    installment_settings = ForeignKey('CardInstallmentSettings')
+    installment_settings = ForeignKey(u'CardInstallmentSettings')
 
 
 class CardInstallmentsStoreDetails(PaymentMethodDetails):
-    payment_type_name = _('Installments store')
+    implements(IDescribable)
+
+    payment_type_name = _(u'Installments Store')
     interface_method = ICardPM
-    description = _('Credit Card')
+    description = _(u'Credit Card')
 
     max_installments_number = IntCol(default=1)
     installment_settings = ForeignKey('CardInstallmentSettings')
 
+    #
+    # IDescribable implementation
+    #
+
+    @classmethod
+    def get_description(cls):
+        return u'%s - %s' % (cls.description, cls.payment_type_name)
+
 
 class CardInstallmentsProviderDetails(PaymentMethodDetails):
-    payment_type_name = _('Installments provider')
+    implements(IDescribable)
+
+    payment_type_name = _(u'Installments Provider')
     interface_method = ICardPM
-    description = _('Credit Card')
+    description = _(u'Credit Card')
 
 
     # Lowercases here is for PaymentMethodDetails
@@ -784,13 +880,58 @@ class CardInstallmentsProviderDetails(PaymentMethodDetails):
     max_installments_number = 1
     installment_settings = ForeignKey('CardInstallmentSettings')
 
+    #
+    # IDescribable implementation
+    #
+
+    @classmethod
+    def get_description(cls):
+        return u'%s - %s' % (cls.description, cls.payment_type_name)
+
 
 class FinanceDetails(PaymentMethodDetails):
     """finance payment method definition."""
 
     max_installments_number = 1
-    payment_type_names = (_('Check'), _('Bill'))
+    payment_type_names = (_(u'Check'), _(u'Bill'))
     interface_method = IFinancePM
-    description = _('Finance')
+    description = _(u'Finance')
 
-    receive_days = IntCol()
+    receive_days = IntCol(default=1)
+
+
+#
+# General methods
+#
+
+
+def get_active_pm_ifaces():
+    """returns a list of payment method interfaces tied with the
+    active payment methods
+    """
+    conn = get_connection()
+    methods = AbstractPaymentMethodAdapter.selectBy(is_active=True,
+                                                    connection=conn)
+    qty = methods.count()
+    if not qty:
+        raise DatabaseInconsistency("You should have at least one active "
+                                    "payment method, got nothing. ")
+
+    all_ifaces = get_all_methods_dict().values()
+    all_ifaces.remove(IMultiplePM)
+    if qty > len(all_ifaces):
+        raise DatabaseInconsistency("You can not have more payment methods "
+                                    "them the maximum allowed, which is %d, "
+                                    "found %d payment methods"
+                                    % (len(all_ifaces), qty))
+
+    ifaces = []
+    for pm in methods:
+        for iface in implementedBy(type(pm)):
+            if not iface in all_ifaces:
+                continue
+            ifaces.append(iface)
+    if not IMoneyPM in ifaces:
+        raise DatabaseInconsistency("Money payment method must be"
+                                    "always active.")
+    return ifaces

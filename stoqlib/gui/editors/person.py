@@ -28,29 +28,37 @@
 """ Person editors definition """
 
 import datetime
+import decimal
 
 import gtk
 from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
+from kiwi.ui.widgets.list import Column
 
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_connection
+from stoqlib.gui.wizards.paymentmethod import PaymentMethodDetailsWizard
+from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 from stoqlib.gui.templates.person import BasePersonRoleEditor
+from stoqlib.gui.slaves.paymentmethod import FinanceDetailsSlave
 from stoqlib.gui.slaves.client import ClientStatusSlave
 from stoqlib.gui.slaves.credprovider import CreditProviderDetailsSlave
 from stoqlib.gui.slaves.employee import (EmployeeDetailsSlave,
-                                      EmployeeStatusSlave, 
-                                      EmployeeRoleSlave, 
+                                      EmployeeStatusSlave,
+                                      EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
                                   PasswordEditorSlave)
 from stoqlib.gui.slaves.supplier import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporter import TransporterDataSlave
 from stoqlib.gui.slaves.branch import BranchDetailsSlave
+from stoqlib.domain.payment.methods import (PaymentMethodDetails,
+                                            FinanceDetails)
 from stoqlib.domain.person import EmployeeRole, LoginInfo, Person
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
-                                       ISupplier, ITransporter, IUser, 
+                                       ISupplier, ITransporter, IUser,
                                        ICompany, IIndividual, IBranch)
 
 _ = stoqlib_gettext
@@ -75,7 +83,7 @@ class ClientEditor(BasePersonRoleEditor):
         self.status_slave = ClientStatusSlave(self.conn, self.model)
         self.main_slave.attach_person_slave(self.status_slave)
 
-        
+
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
     model_iface = IUser
@@ -86,7 +94,7 @@ class UserEditor(BasePersonRoleEditor):
                  app_list=None):
         self.app_list = app_list
         BasePersonRoleEditor.__init__(self, conn, model, role_type, person)
-        
+
 
     #
     # BaseEditorSlaves Hooks
@@ -95,13 +103,13 @@ class UserEditor(BasePersonRoleEditor):
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         user = IUser(person, connection=conn)
-        return user or person.addFacet(IUser, connection=conn, username="", 
+        return user or person.addFacet(IUser, connection=conn, username="",
                                        password="", profile=None)
 
     def setup_slaves(self):
-        BasePersonRoleEditor.setup_slaves(self) 
+        BasePersonRoleEditor.setup_slaves(self)
         user_status = UserStatusSlave(self.conn, self.model)
-        self.main_slave.attach_person_slave(user_status) 
+        self.main_slave.attach_person_slave(user_status)
         passwd_fields = not self.edit_mode
         klass = UserDetailsSlave
         self.user_details = klass(self.conn, self.model, self.app_list,
@@ -118,7 +126,7 @@ class UserEditor(BasePersonRoleEditor):
         self.main_slave.on_confirm()
         self.user_details.on_confirm()
         return self.model
-        
+
 
 class PasswordEditor(BaseEditor):
     gladefile = 'PasswordEditor'
@@ -134,10 +142,10 @@ class PasswordEditor(BaseEditor):
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
             widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)        
+            size_group.add_widget(widget)
 
     def _setup_widgets(self):
-        self.password_slave.set_password_labels(_('New Password:'), 
+        self.password_slave.set_password_labels(_('New Password:'),
                                                 _('Retype New Password:'))
         size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self._setup_size_group(size_group,
@@ -179,26 +187,95 @@ class CreditProviderEditor(BasePersonRoleEditor):
     model_name = _('Credit Provider')
     model_iface = ICreditProvider
     gladefile = 'BaseTemplate'
+    provtype = None
 
     #
     # BaseEditor hooks
     #
-    
+
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         credprovider = ICreditProvider(person, connection=conn)
         if credprovider:
             return credprovider
+        if self.provtype is None:
+            raise ValueError('Subclasses of CreditProviderEditor must '
+                             'define a provtype attribute')
         return person.addFacet(ICreditProvider, short_name='',
+                               provider_type=self.provtype,
                                open_contract_date=datetime.datetime.today(),
                                connection=conn)
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = CreditProviderDetailsSlave(self.conn, 
+        self.details_slave = CreditProviderDetailsSlave(self.conn,
                                                         self.model)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
+
+
+class CardProviderEditor(CreditProviderEditor):
+
+    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_CARD
+
+    def _get_columns(self):
+        return [Column('description', _('Payment Type'), data_type=unicode,
+                       expand=True, sorted=True),
+                Column('destination_name', _('Destination'),
+                       data_type=unicode, width=90),
+                Column('commission', _('Commission (%)'),
+                       data_type=decimal.Decimal, width=120),
+                Column('is_active', _('Active'), data_type=bool,
+                       editable=True)]
+
+    def setup_slaves(self):
+        CreditProviderEditor.setup_slaves(self)
+        items = PaymentMethodDetails.selectBy(providerID=self.model.id,
+                                              connection=self.conn)
+        addlist = AdditionListSlave(self.conn, self._get_columns(),
+                                    PaymentMethodDetailsWizard,
+                                    list(items))
+        addlist.register_editor_kwargs(credprovider=self.model)
+        addlist.connect('before-delete-items', self.before_delete_items)
+        addlist.klist.connect('cell-edited', self.on_cell_edited)
+        slave = self.main_slave.get_person_slave()
+        slave.attach_custom_slave(addlist, _("Payment Types"))
+    #
+    # Callbacks
+    #
+
+    def before_delete_items(self, slave, items):
+        for item in items:
+            table = type(item)
+            table.delete(item.id, connection=self.conn)
+
+    def on_cell_edited(self, klist, obj, attr):
+        conn = obj.get_connection()
+        conn.commit()
+
+
+class FinanceProviderEditor(CreditProviderEditor):
+
+    provtype = Person.getAdapterClass(ICreditProvider).PROVIDER_FINANCE
+
+    def setup_slaves(self):
+        CreditProviderEditor.setup_slaves(self)
+        query = PaymentMethodDetails.q.providerID == self.model.id
+        items = FinanceDetails.select(query, connection=self.conn)
+        qty = items.count()
+        if not qty:
+            item = FinanceDetails(connection=self.conn,
+                                  provider=self.model, destination=None)
+        elif qty == 1:
+            item = items[0]
+        else:
+            raise DatabaseInconsistency("You should have only one "
+                                        "FinanceDetails  instance for "
+                                        "this provider, got %d instead"
+                                        % qty)
+        finance_slave = FinanceDetailsSlave(self.conn, item)
+        slave = self.main_slave.get_person_slave()
+        slave.attach_custom_slave(finance_slave, _("Finance Details"))
 
 
 class EmployeeEditor(BasePersonRoleEditor):
@@ -241,14 +318,14 @@ class EmployeeEditor(BasePersonRoleEditor):
         self.individual_slave.on_confirm()
         self.role_slave.on_confirm()
         return self.model
-                
- 
+
+
 
 class EmployeeRoleEditor(SimpleEntryEditor):
     model_type = EmployeeRole
     model_name = _('Employee Role')
     size = (330, 130)
-  
+
     def __init__(self, conn, model):
         SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
                                    name_entry_label=_('Role Name:'))
@@ -260,10 +337,10 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     def get_title_model_attribute(self, model):
         return model.name
 
-    # 
-    # BaseEditorSlave Hooks 
     #
-    
+    # BaseEditorSlave Hooks
+    #
+
     def create_model(self, conn):
         return EmployeeRole(connection=conn, name='')
 
@@ -282,7 +359,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
         q1 = func.UPPER(EmployeeRole.q.name) == value.upper()
         q2 = EmployeeRole.q.id != self.model.id
         query = AND(q1, q2)
-        if EmployeeRole.select(query, connection=conn).count():       
+        if EmployeeRole.select(query, connection=conn).count():
             return ValidationError('This role already exists!')
 
 
@@ -315,7 +392,7 @@ class TransporterEditor(BasePersonRoleEditor):
     #
     # BaseEditor hooks
     #
-    
+
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
         transporter = ITransporter(person, connection=conn)
@@ -325,7 +402,7 @@ class TransporterEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = TransporterDataSlave(self.conn, 
+        self.details_slave = TransporterDataSlave(self.conn,
                                                   self.model)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
@@ -344,11 +421,9 @@ class BranchEditor(BasePersonRoleEditor):
         branch = IBranch(person, connection=conn)
         model =  branch or person.addFacet(IBranch, connection=conn)
         model.manager = Person(connection=self.conn, name="")
-        return model    
+        return model
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
         self.status_slave = BranchDetailsSlave(self.conn, self.model)
         self.main_slave.attach_person_slave(self.status_slave)
-    
-

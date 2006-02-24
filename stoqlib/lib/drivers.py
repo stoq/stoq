@@ -42,6 +42,7 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
@@ -348,7 +349,7 @@ class FiscalCoupon:
         if not group:
             raise ValueError("The sale object must have a PaymentGroup facet at "
                              "this point.")
-        if group.default_method == group.METHOD_GIFT_CERTIFICATE:
+        if group.default_method == METHOD_GIFT_CERTIFICATE:
             self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount(),
                                      '')
         else:

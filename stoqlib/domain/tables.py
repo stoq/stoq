@@ -113,6 +113,7 @@ TABLES = [
                                             "PMAdaptToBillPM",
                                             "PMAdaptToCardPM",
                                             "PMAdaptToFinancePM",
+                                            "PMAdaptToGiftCertificatePM",
                                             "CardInstallmentSettings",
                                             "DebitCardDetails",
                                             "CreditCardDetails",
