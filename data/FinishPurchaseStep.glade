@@ -82,8 +82,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="transporter">
-                                <property name="completion">True</property>
+                            <widget class="ProxyComboEntry" id="transporter">
                                 <property name="data_type">object</property>
                                 <property name="model_attribute">transporter</property>
                                 <property name="visible">True</property>
@@ -105,8 +104,9 @@
                                         <property name="mandatory">True</property>
                                         <property name="max_length">20</property>
                                         <property name="model_attribute">expected_receival_date</property>
+                                        <property name="text" context="yes" translatable="yes">  /  /    </property>
                                         <property name="visible">True</property>
-                                        <property name="width_chars">10</property>
+                                        <property name="width_chars">13</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
@@ -131,6 +131,15 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkScrolledWindow" id="scrolled_notes_window">
                                 <property name="hscrollbar_policy">automatic</property>
                                 <property name="shadow_type">in</property>
@@ -150,15 +159,6 @@
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                         <child>

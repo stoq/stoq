@@ -68,8 +68,8 @@ class FinishPurchaseStep(BaseWizardStep):
     def _setup_transporter_entry(self):
         table = Person.getAdapterClass(ITransporter)
         transporters = table.get_active_transporters(self.conn)
-        names = [t.get_adapted().name for t in transporters]
-        self.transporter.set_completion_strings(names, list(transporters))
+        items = [(t.get_adapted().name, t) for t in transporters]
+        self.transporter.prefill(items)
 
     def _setup_focus(self):
         self.salesperson_name.grab_focus()
@@ -266,8 +266,8 @@ class StartPurchaseStep(BaseWizardStep):
     def _setup_supplier_entry(self):
         table = Person.getAdapterClass(ISupplier)
         suppliers = table.get_active_suppliers(self.conn)
-        names = [s.get_adapted().name for s in suppliers]
-        self.supplier.set_completion_strings(names, list(suppliers))
+        items = [(s.get_adapted().name, s) for s in suppliers]
+        self.supplier.prefill(items)
 
     def _setup_widgets(self):
         self._setup_supplier_entry()
