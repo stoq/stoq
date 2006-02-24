@@ -126,10 +126,12 @@ class SalesReport(BaseStoqReport):
                    OTC(_("Date"), lambda obj: obj.open_date.strftime("%x"),
                        width=70, align=RIGHT),
                    OTC(_("Client"),
-                       data_source=lambda obj: (obj.client.get_name()),
+                       data_source=lambda obj: (obj.client and
+                                                obj.client.get_name() or ""),
                        width=person_col_width),
                    OTC(_("Salesperson"),
-                       lambda obj: (obj.salesperson.get_adapted().name),
+                       lambda obj: (obj.salesperson and
+                                    obj.salesperson.get_adapted().name or ""),
                        width=person_col_width, truncate=True),
                    OTC(_("Total"),
                        lambda obj: (obj.get_total_amount_as_string()),
