@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -25,8 +25,6 @@
 ##
 """ Sales report implementation """
 
-import gettext
-
 from kiwi.datatypes import currency
 
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
@@ -36,8 +34,11 @@ from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number)
 from stoqlib.reporting.template import BaseStoqReport
 from stoqlib.domain.sale import Sale
+from stoqlib.lib.translation import stoqlib_gettext
 
-_ = gettext.gettext
+
+_ = stoqlib_gettext
+
 
 class SaleOrderReport(BaseStoqReport):
     report_name = _("Sale Order")

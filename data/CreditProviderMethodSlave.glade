@@ -23,8 +23,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Credit Provider:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="y_options">fill</property>
@@ -34,8 +34,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Payment Type:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -47,8 +47,8 @@
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Number of Installments:</property>
-                                        <property name="xalign">1.0</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -60,7 +60,7 @@
                                     <widget class="GtkVBox" id="vbox3">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="credit_provider">
+                                            <widget class="ProxyComboEntry" id="credit_provider">
                                                 <property name="data_type">object</property>
                                                 <property name="model_attribute">provider</property>
                                                 <property name="visible">True</property>
@@ -80,7 +80,7 @@
                                     <widget class="GtkVBox" id="vbox2">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="payment_type">
+                                            <widget class="ProxyComboEntry" id="payment_type">
                                                 <property name="data_type">object</property>
                                                 <property name="model_attribute">payment_type</property>
                                                 <property name="visible">True</property>

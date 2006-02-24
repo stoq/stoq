@@ -24,10 +24,10 @@
 ##
 """Create simple payments to an example database"""
 
-import gettext
 from  random import randint
 
 from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
 from stoqlib.domain.person import Person
@@ -38,7 +38,7 @@ from stoqlib.domain.payment.methods import (CardInstallmentSettings,
                                             CardInstallmentsProviderDetails,
                                             FinanceDetails)
 
-_ = gettext.gettext
+_ = stoqlib_gettext
 
 
 

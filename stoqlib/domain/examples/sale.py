@@ -24,7 +24,6 @@
 ##
 """ Create a simple sale to an example database"""
 
-import gettext
 import sys
 import datetime
 
@@ -32,15 +31,18 @@ from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.product import Product
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
-                                    ISalesPerson, ICheckPM)
+                                       ISalesPerson, ICheckPM)
 
-_ = gettext.gettext
+
+_ = stoqlib_gettext
+
 
 # Number of installments for the sale
 DEFAULT_PAYMENTS_NUMBER = 4

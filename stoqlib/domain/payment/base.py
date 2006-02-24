@@ -35,12 +35,13 @@ from zope.interface import implements
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
+                                  METHOD_MULTIPLE, METHOD_MONEY)
+from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
-                                       IMoneyPM, ICheckPM, IBillPM,
-                                       IFinancePM, ICardPM, IContainer,
+                                       ICheckPM, IBillPM, IContainer,
                                        IPaymentDevolution, IPaymentDeposit)
 
 _ = stoqlib_gettext
@@ -196,12 +197,15 @@ class Payment(Domain):
             raise TypeError('Argument paid_date must be of type '
                             'datetime.date, got %s instead' %
                             type(paid_date))
-        paid_date = paid_date or datetime.datetime.now()
-        days = (paid_date - self.due_date).days
-        if days <= 0:
+        if self.method.get_implemented_iface() in (ICheckPM, IBillPM):
+            paid_date = paid_date or datetime.datetime.now()
+            days = (paid_date - self.due_date).days
+            if days <= 0:
+                return self.value
+            daily_penalty = self.method.daily_penalty / 100
+            return self.value + days * (daily_penalty * self.value)
+        else:
             return self.value
-        daily_penalty = self.group.daily_penalty / 100
-        return self.value + days * (daily_penalty * self.value)
 
     def get_thirdparty(self):
         if self.method_details:
@@ -213,34 +217,12 @@ class Payment(Domain):
 
 
 class AbstractPaymentGroup(InheritableModelAdapter):
-    """A base class for payment group adapters.
-
-    B{Important attributes}:
-        - I{daily_penalty}: represents the percentage amount which will be
-                            charged sometimes in payment acquitance. This
-                            value must be between 0 and 100.
-    """
+    """A base class for payment group adapters. """
 
     (STATUS_PREVIEW,
      STATUS_OPEN,
      STATUS_CLOSED,
      STATUS_CANCELLED) = range(4)
-
-    (METHOD_MONEY,
-     METHOD_CHECK,
-     METHOD_BILL,
-     METHOD_CARD,
-     METHOD_FINANCE,
-     METHOD_GIFT_CERTIFICATE,
-     METHOD_MULTIPLE) = range(7)
-
-    method_names = {METHOD_MONEY: _(u'Money'),
-                    METHOD_CHECK: _(u'Check'),
-                    METHOD_BILL: _(u'Bill'),
-                    METHOD_CARD: _(u'Card'),
-                    METHOD_FINANCE: _(u'Finance'),
-                    METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate'),
-                    METHOD_MULTIPLE: _(u'Multiple')}
 
     implements(IPaymentGroup, IContainer)
 
@@ -251,19 +233,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
-    daily_penalty = DecimalCol(default=0)
     renegotiation_data = ForeignKey('RenegotiationData', default=None)
-
-
-    #
-    # SQLObject callbacks
-    #
-
-    def _set_daily_penalty(self, value):
-        if not 0 <= value <= 100:
-            raise ValueError('Attribute daily_penalty must be between '
-                             'zero and one hundred')
-        self._SO_set_daily_penalty(value)
 
     #
     # IPaymentGroup implementation
@@ -297,16 +267,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.add_item(payment)
         return payment
 
-    def get_available_methods(self):
-        return {self.METHOD_MONEY: IMoneyPM,
-                self.METHOD_CHECK: ICheckPM,
-                self.METHOD_BILL: IBillPM,
-                self.METHOD_CARD: ICardPM,
-                self.METHOD_FINANCE: IFinancePM,
-                self.METHOD_MULTIPLE: None}
-
     def get_method_id_by_iface(self, iface):
-        methods = self.get_available_methods()
+        methods = get_all_methods_dict()
         if not iface in methods.values():
             raise ValueError('Invalid interface, got %s' % iface)
         method_data = [method_id for method_id, m_iface in methods.items()
@@ -318,7 +280,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return method_data[0]
 
     def set_method(self, method_iface):
-        items = self.get_available_methods().items()
+        items = get_all_methods_dict().items()
         method = [method_id for method_id, iface in items
                         if method_iface is iface]
         if len(method) != 1:
@@ -332,15 +294,16 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def get_default_payment_method_name(self):
         """This hook must be redefined in a subclass when it's necessary"""
-        if not self.default_method in self.method_names.keys():
+        method_names = get_method_names()
+        if not self.default_method in method_names.keys():
             raise DatabaseInconsistency('Invalid payment method, got %d'
                                         % self.default_method)
-        return self.method_names[self.default_method]
+        return method_names[self.default_method]
 
     def setup_inpayments(self):
-        methods = self.get_available_methods()
+        methods = get_all_methods_dict()
         payment_method = self.get_default_payment_method()
-        if payment_method != self.METHOD_MULTIPLE:
+        if payment_method != METHOD_MULTIPLE:
             self.clear_preview_payments(methods[payment_method])
         payments = self.get_items()
         if not payments.count():

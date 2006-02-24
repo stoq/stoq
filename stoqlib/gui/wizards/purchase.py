@@ -30,7 +30,8 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database import rollback_and_begin
-from stoqlib.lib.defaults import INTERVALTYPE_MONTH
+from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
+                                  METHOD_CHECK, METHOD_MONEY)
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
@@ -40,7 +41,6 @@ from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.product import ProductEditor
 from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
 from stoqlib.gui.slaves.sale import DiscountChargeSlave
-from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
@@ -115,7 +115,7 @@ class PurchasePaymentStep(BaseWizardStep):
         if pg:
             model = pg
         else:
-            method = AbstractPaymentGroup.METHOD_BILL
+            method = METHOD_BILL
             interval_type = INTERVALTYPE_MONTH
             model = model.addFacet(IPaymentGroup, default_method=method,
                                    intervals=1,
@@ -127,9 +127,9 @@ class PurchasePaymentStep(BaseWizardStep):
 
     def _setup_widgets(self):
         table = self.model_type
-        items = [(_('Bill'), table.METHOD_BILL),
-                 (_('Check'), table.METHOD_CHECK),
-                 (_('Money'), table.METHOD_MONEY)]
+        items = [(_('Bill'), METHOD_BILL),
+                 (_('Check'), METHOD_CHECK),
+                 (_('Money'), METHOD_MONEY)]
         self.method_combo.prefill(items)
 
     def _update_payment_method_slave(self):
@@ -138,7 +138,7 @@ class PurchasePaymentStep(BaseWizardStep):
             self.detach_slave(holder_name)
         if not self.slave:
             self.slave = PurchasePaymentSlave(self.conn, self.model)
-        if self.model.default_method == self.model_type.METHOD_MONEY:
+        if self.model.default_method == METHOD_MONEY:
             self.slave.get_toplevel().hide()
             return
         self.slave.get_toplevel().show()

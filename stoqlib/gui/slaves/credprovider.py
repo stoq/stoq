@@ -38,11 +38,10 @@ from stoqlib.domain.interfaces import ICreditProvider
 class CreditProviderDetailsSlave(BaseEditorSlave):
     model_iface = ICreditProvider
     gladefile = 'CredProviderDetailsSlave'
+    proxy_widgets = ('provider_id',
+                     'short_name',
+                     'open_contract_date')
 
     def setup_proxies(self):
-        provider_types = self.model_type.provider_types
-        items = [(description, value) for value, description 
-                        in provider_types.items()]
-        self.provider_type_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
-                                    CreditProviderDetailsSlave.widgets)
+                                    CreditProviderDetailsSlave.proxy_widgets)

@@ -27,7 +27,6 @@
 """ Implementation of classes related to till operations.  """
 
 
-import gettext
 import datetime
 
 import gtk
@@ -49,8 +48,10 @@ from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
                                       confirm_dialog, notify_dialog)
 from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor,
                                       CashOutEditor)
+from stoqlib.lib.translation import stoqlib_gettext
 
-_ = gettext.gettext
+
+_ = stoqlib_gettext
 
 
 class TillOperationDialog(SlaveDelegate):

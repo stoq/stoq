@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -25,8 +25,6 @@
 ##
 """ Base class implementation for all Stoq reports """
 
-import gettext
-
 from kiwi.environ import environ
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
@@ -36,13 +34,16 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.interfaces import ICompany
+from stoqlib.lib.translation import stoqlib_gettext
+
+_ = stoqlib_gettext
+
 
 # FIXME: We must consider using TTF fonts here (UTF-8 issues)
 FANCYNAME_FONT = ("Vera-B", 14)
 SMALL_FONT = ("Vera", 12)
 TEXT_HEIGHT = 13
 
-_ = gettext.gettext
 
 class BaseStoqReport(ReportTemplate):
     logo_border = 5 * mm

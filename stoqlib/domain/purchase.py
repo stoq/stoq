@@ -32,16 +32,19 @@ from kiwi.datatypes import currency
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
+                                  METHOD_MONEY)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                        IPaymentGroup)
-from stoqlib.lib.parameters import sysparam
-from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
+
 
 class PurchaseItem(Domain):
     """This class stores information of the purchased items.
@@ -335,14 +338,14 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         order = self.get_adapted()
         total = order.get_purchase_total()
         first_due_date = order.expected_receival_date
-        if self.default_method == self.METHOD_MONEY:
+        if self.default_method == METHOD_MONEY:
             method = IMoneyPM(base_method, connection=conn)
             method.setup_outpayments(total, self,
                                      self.installments_number)
             return
-        elif self.default_method == self.METHOD_CHECK:
+        elif self.default_method == METHOD_CHECK:
             method = ICheckPM(base_method, connection=conn)
-        elif self.default_method == self.METHOD_BILL:
+        elif self.default_method == METHOD_BILL:
             method = IBillPM(base_method, connection=conn)
         else:
             raise ValueError('Invalid payment method, got %d' %

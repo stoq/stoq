@@ -34,9 +34,10 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
                                         EmployeeEditor,
-                                        CreditProviderEditor,
                                         TransporterEditor,
-                                        EmployeeRoleEditor, BranchEditor)
+                                        EmployeeRoleEditor, BranchEditor,
+                                        CardProviderEditor,
+                                        FinanceProviderEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.slaves.filter import FilterSlave
@@ -152,45 +153,61 @@ class SupplierSearch(BasePersonSearch):
                                     company_table.q._originalID))
 
 
-class CreditProviderSearch(BasePersonSearch):
-    title = _('Credit Provider Search')
-    editor_class = CreditProviderEditor
+class AbstractCreditProviderSearch(BasePersonSearch):
+    title = ""
     table = Person
     interface = ICreditProvider
-    search_lbl_text = _('matching:')
-    result_strings = _('provider'), _('providers')
+    search_lbl_text = ''
+    result_strings = None
+    editor_class = None
 
-    def get_filter_slave(self):
-        provider_table = Person.getAdapterClass(ICreditProvider)
-        items = [(value, key) for key, value in provider_table.provider_types.items()]
-        items.append((_('Any provider'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
-        self.filter_slave.set_filter_label(_('Show:'))
-        return self.filter_slave
-
-    def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
+    def __init__(self, conn, title='', hide_footer=True):
+        self.provider_table = self.table.getAdapterClass(ICreditProvider)
+        BasePersonSearch.__init__(self, conn, title, hide_footer)
 
     def get_columns(self):
         return [Column('name', title=_('Name'),
-                       data_type=str, sorted=True, width=250),
+                       data_type=str, sorted=True, expand=True),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=130),
                 FacetColumn(ICreditProvider, 'short_name',
                             title=_('Short Name'), data_type=str,
                             width=150),
-                FacetColumn(ICreditProvider, 'provider_type_str',
-                            title=_('Provider Type'), data_type=str,
-                            width=200)]
+                FacetColumn(ICreditProvider, 'is_active',
+                            title=_('Active'), data_type=bool,
+                            editable=True)]
+
+    def on_cell_edited(self, klist, obj, attr):
+        conn = obj.get_connection()
+        conn.commit()
+
+    def get_provider_type(self):
+        raise NotImplementedError("This method must be defined on child")
 
     def get_extra_query(self):
-        provider_table = self.table.getAdapterClass(ICreditProvider)
-        query = self.table.q.id == provider_table.q._originalID
-        status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            query = AND(query, provider_table.q.provider_type == status)
-        return query
+        q1 = self.table.q.id == self.provider_table.q._originalID
+        q2 = self.provider_table.q.provider_type == self.get_provider_type()
+        return AND(q1, q2)
+
+
+class CardProviderSearch(AbstractCreditProviderSearch):
+    title = _('Card Provider Search')
+    search_lbl_text = _('Card providers matching:')
+    result_strings = _('card provider'), _('card providers')
+    editor_class = CardProviderEditor
+
+    def get_provider_type(self):
+        return self.provider_table.PROVIDER_CARD
+
+
+class FinanceProviderSearch(AbstractCreditProviderSearch):
+    title = _('Finance Provider Search')
+    search_lbl_text = _('Finance providers matching:')
+    result_strings = _('finance provider'), _('finance providers')
+    editor_class = FinanceProviderEditor
+
+    def get_provider_type(self):
+        return self.provider_table.PROVIDER_FINANCE
 
 
 class ClientSearch(BasePersonSearch):

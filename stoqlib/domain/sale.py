@@ -33,6 +33,8 @@ from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
+from stoqlib.lib.validators import get_formatted_price
+from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain
@@ -49,7 +51,6 @@ from stoqlib.domain.interfaces import (IContainer, IClient, IStorable,
                                        IRenegotiationSaleReturnMoney,
                                        IRenegotiationGiftCertificate,
                                        IRenegotiationOutstandingValue)
-from stoqlib.lib.validators import get_formatted_price
 
 _ = stoqlib_gettext
 
@@ -363,7 +364,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                payment_group=self,
                                overpaid_value=overpaid_value)
 
-    @argcheck(str, decimal.Decimal)
+    @argcheck(unicode, decimal.Decimal)
     def create_renegotiation_giftcertificate_data(self, certificate_number,
                                                   overpaid_value):
         if not certificate_number:
@@ -419,7 +420,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def setup_inpayments(self):
         reneg_type = self.RENEGOTIATION_OUTSTANDING
-        if (self.default_method == self.METHOD_GIFT_CERTIFICATE
+        if (self.default_method == METHOD_GIFT_CERTIFICATE
             and not self.renegotiation_type == reneg_type):
             return
         AbstractPaymentGroup.setup_inpayments(self)
@@ -442,8 +443,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         associated gift certificates properly.
         """
         self.setup_inpayments()
-        if (self.default_method ==
-            AbstractPaymentGroup.METHOD_GIFT_CERTIFICATE):
+        if self.default_method == METHOD_GIFT_CERTIFICATE:
             self.confirm_gift_certificates()
         if self.renegotiation_type is None:
             return
