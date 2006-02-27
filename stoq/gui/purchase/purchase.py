@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: iso-8859-1 -*-
+# -*- Mode: Python; coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
