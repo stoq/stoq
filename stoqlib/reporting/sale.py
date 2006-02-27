@@ -113,7 +113,7 @@ class SalesReport(BaseStoqReport):
         else:
             self._landscape_mode = False
         BaseStoqReport.__init__(self, filename, SalesReport.report_name,
-                                do_foote=True, landscape=self._landscape_mode)
+                                landscape=self._landscape_mode)
         self._setup_sales_table()
 
     def _get_columns(self):
