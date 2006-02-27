@@ -120,6 +120,12 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
+    def get_branch_name(self):
+        return self.branch.get_adapted().name
+
+    def get_supplier_name(self):
+        return self.supplier.get_adapted().name
+
     def get_products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
                      currency(0))

@@ -50,10 +50,11 @@ class SaleSearch(SearchDialog):
     title = _("Search for Sales")
     size = (800, 600)
     search_table = Sale
+    searching_by_date = True
 
     def __init__(self, conn):
         SearchDialog.__init__(self, conn, self.search_table,
-                              title=self.title, searching_by_date=True)
+                              title=self.title)
         self._setup_widgets()
         self._setup_slaves()
 

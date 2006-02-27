@@ -595,6 +595,26 @@ class SearchEditorToolBar(SlaveDelegate):
     def on_new_button__clicked(self, button):
         self.emit('add')
 
+
+class SearchDialogDetailsSlave(SlaveDelegate):
+    """ Slave for internal use of SearchEditor, offering an eventbox for a
+    toolbar and managing the 'New' and 'Edit' buttons. """
+
+    gladefile = 'SearchDialogDetailsSlave'
+
+    gsignal('details')
+    gsignal('print')
+
+    #
+    # Kiwi handlers
+    #
+
+    def on_details_button__clicked(self, button):
+        self.emit('details')
+
+    def on_print_button__clicked(self, button):
+        self.emit('print')
+
 #
 # Base dialogs for search.
 #
@@ -620,50 +640,63 @@ class SearchDialog(BasicDialog):
         SearchDialog.__init__(self)
 
     Some important parameters:
-    table = the table type which we will query on to get the objects.
-
+        table = the table type which we will query on to get the objects.
+        searchbar_labels = labels for SearchBar entry and date fields
+        searchbar_result_strings = a tuple where each item has a singular
+                                   and a plural form for searchbar results
+                                   label
+    Important callbacks:
+        on_details_button_clicked: Subclasses must define this method 
+                                   properly when a details dialog is 
+                                   needed with SearchDialog
+        on_print_button_clicked: Subclasses must define this method 
+                                 properly when printing data is 
+                                 needed with SearchDialog
     """
     main_label_text = ''
     title = ''
+    table = None
+    selection_mode = gtk.SELECTION_BROWSE
+    searchbar_labels = None
+    searchbar_result_strings = None
+    searching_by_date = False
     size = ()
 
-    def __init__(self, conn, table, search_table=None, hide_footer=True,
-                 title='', selection_mode=gtk.SELECTION_BROWSE,
-                 searching_by_date=False):
+    argcheck(Transaction, object, object, bool, basestring, int, bool)
+    def __init__(self, conn, table=None, search_table=None, hide_footer=True,
+                 title='', selection_mode=None):
         BasicDialog.__init__(self)
         title = title or self.title
+        self.selection_mode = selection_mode or self.selection_mode
         avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
-        if selection_mode not in avaliable_modes:
-            raise ValueError('Invalid selection mode %d' % selection_mode)
-        self.selection_mode = selection_mode
+        if self.selection_mode not in avaliable_modes:
+            raise ValueError('Invalid selection mode %d' % self.selection_mode)
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text,
                                 title=title, size=self.size)
         self.set_ok_label(_('Se_lect Items'))
-        self.table = table
+        self.table = table or self.table
+        if not self.table:
+            raise ValueError("Child must define a table attribute")
         self.search_table = search_table or self.table
         self.conn = conn
         if not isinstance(conn, Transaction):
             raise TypeError('Invalid type for connection argument, got %s'
                             % type(conn))
-        self.searching_by_date = searching_by_date
         self.setup_slaves()
 
     def _sync(self, *args):
         rollback_and_begin(self.conn)
 
-    def setup_slaves(self, **kwargs):
-        self.disable_ok()
+    def _check_searchbar_settings(self, value, attr_name):
+        if not value:
+            return False
+        if not isinstance(value, tuple):
+            raise TypeError("%s attribute must be of typle tuple, "
+                            "got %s" % (attr_name, type(value)))
+        return True
 
-        self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
-        # XXX: I think that BasicDialog must be redesigned, if so we don't
-        # need this ".remove" crap
-        self.main.remove(self.main_label)
-        self.main.add(self.klist)
-        self.klist.show()
-
-        self.klist.connect('cell_edited', self.on_cell_edited)
-
+    def _setup_searchbar(self):
         columns = self.get_columns()
         query_args = self.get_query_args()
         use_dates = self.searching_by_date
@@ -677,8 +710,62 @@ class SearchDialog(BasicDialog):
         self.search_bar.register_filter_results_callback(self.filter_results)
         self.search_bar.connect('before-search-activate', self._sync)
         self.search_bar.connect('search-activate', self.update_klist)
+        if self._check_searchbar_settings(self.searchbar_result_strings,
+                                          "searchbar_result_strings"):
+            self.set_result_strings(*self.searchbar_result_strings)
+        if self._check_searchbar_settings(self.searchbar_labels,
+                                          "searchbar_labels"):
+            self.set_searchbar_labels(*self.searchbar_labels)
         self.after_search_bar_created()
         self.attach_slave('header', self.search_bar)
+
+    def _setup_klist(self):
+        self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
+        # XXX: I think that BasicDialog must be redesigned, if so we don't
+        # need this ".remove" crap
+        self.main.remove(self.main_label)
+        self.main.add(self.klist)
+        self.klist.show()
+        self.klist.connect('cell_edited', self.on_cell_edited)
+
+    def _setup_details_slave(self):
+        has_details_btn = hasattr(self, 'on_details_button_clicked')
+        has_print_btn = hasattr(self, 'on_print_button_clicked')
+        if not (has_details_btn or has_print_btn):
+            self._details_slave = None
+            return
+        self._details_slave = SearchDialogDetailsSlave()
+        self.attach_slave('details_holder', self._details_slave)
+        if has_details_btn:
+            self._details_slave.connect("details", self.on_details_button_clicked)
+        else:
+            self._details_slave.details_button.hide()
+        if has_print_btn:
+            self._details_slave.connect("print", self.on_print_button_clicked)
+        else:
+            self._details_slave.print_button.hide()
+
+    #
+    # Public API
+    #
+
+    def setup_slaves(self, **kwargs):
+        self.disable_ok()
+        self._setup_klist()
+        self._setup_searchbar()
+        self._setup_details_slave()
+
+    def get_query_args(self):
+        """An optional list of SQLObject arguments for select function."""
+
+    def get_extra_query(self):
+        """An optional SQLObject.sqlbuilder query for select statement."""
+
+    def filter_results(self, objects):
+        """Call sites can implement a filter here to allow multiple selects
+        for one search when it's necessary. Multiple selects are often
+        much better than one super complex query."""
+        return objects
 
     def get_filter_slave(self):
         """Returns a slave which will be used as filter by SearchBar.
@@ -781,18 +868,6 @@ class SearchDialog(BasicDialog):
     def get_columns(self):
         raise NotImplementedError
 
-    def get_query_args(self):
-        """An optional list of SQLObject arguments for select function."""
-
-    def get_extra_query(self):
-        """An optional SQLObject.sqlbuilder query for select statement."""
-
-    def filter_results(self, objects):
-        """Call sites can implement a filter here to allow multiple selects
-        for one search when it's necessary. Multiple selects are often
-        much better than one super complex query."""
-        return objects
-
 
 class SearchEditor(SearchDialog):
     """ Base class for a search "editor" dialog, that offers a 'new' and
@@ -810,11 +885,10 @@ class SearchEditor(SearchDialog):
     def __init__(self, conn, table, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
-                 searching_by_date=False, hide_toolbar=False):
+                 hide_toolbar=False):
         SearchDialog.__init__(self, conn, table, search_table,
                               hide_footer=hide_footer, title=title,
-                              selection_mode=selection_mode,
-                              searching_by_date=searching_by_date)
+                              selection_mode=selection_mode)
         self.interface = interface
         if hide_toolbar:
             self.accept_edit_data = False
