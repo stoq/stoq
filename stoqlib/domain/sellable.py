@@ -361,7 +361,7 @@ class AbstractSellable(InheritableModelAdapter):
                           if the sellable code doesn't exists
 
         """
-        extra_query = cls.q.status == cls.q.STATUS_AVAILABLE
+        extra_query = cls.q.status == cls.STATUS_AVAILABLE
         return cls._get_sellables_by_code(conn, code, extra_query,
                                           notify_callback)
 
