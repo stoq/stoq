@@ -90,7 +90,10 @@ class PrintDialogSlave(BaseEditorSlave):
         func = commands.getoutput
         if not func("lpstat -v"):
             return []
-        printers = [func("lpstat -d").split(':')[1].strip()]
+        printers = []
+        res = func("lpstat -d").split(":")
+        if len(res) > 1:
+            printers.append(res[1].strip())
         for p in func('lpstat -a').split('\n'):
             printer_name = p.split()[0].strip()
             if printer_name in printers:
