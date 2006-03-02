@@ -646,11 +646,11 @@ class SearchDialog(BasicDialog):
                                    and a plural form for searchbar results
                                    label
     Important callbacks:
-        on_details_button_clicked: Subclasses must define this method 
-                                   properly when a details dialog is 
+        on_details_button_clicked: Subclasses must define this method
+                                   properly when a details dialog is
                                    needed with SearchDialog
-        on_print_button_clicked: Subclasses must define this method 
-                                 properly when printing data is 
+        on_print_button_clicked: Subclasses must define this method
+                                 properly when printing data is
                                  needed with SearchDialog
     """
     main_label_text = ''
@@ -662,7 +662,7 @@ class SearchDialog(BasicDialog):
     searching_by_date = False
     size = ()
 
-    argcheck(Transaction, object, object, bool, basestring, int, bool)
+    @argcheck(Transaction, object, object, bool, basestring, int)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None):
         BasicDialog.__init__(self)
