@@ -151,6 +151,22 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="PurchaseReceiving">
+                        <property name="name">PurchaseReceiving</property>
+                        <property name="label" translatable="yes">Purchase Receiving...</property>
+                        <property name="accelerator">&lt;Control&gt;p</property>
+                        <signal handler="on_receiving_search_action_clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="TransferSearch">
+                        <property name="name">TransferSearch</property>
+                        <property name="label" translatable="yes">Stock Transfer...</property>
+                        <property name="accelerator">&lt;Control&gt;t</property>
+                        <signal handler="on_stock_transfer_action_clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="transfer_action">
                         <property name="name">transfer_action</property>
                         <property name="label" translatable="yes">Transfer</property>
@@ -168,7 +184,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="transfer_action" name="transfer_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="TransferSearch" name="TransferSearch"/><menuitem action="PurchaseReceiving" name="PurchaseReceiving"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
