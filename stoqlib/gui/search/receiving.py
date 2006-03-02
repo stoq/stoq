@@ -25,12 +25,13 @@
 ##
 """ Search dialogs for purchase receiving"""
 
-import gtk
 import datetime
+
+import gtk
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.columns import Column 
+from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.receiving import ReceivingOrder
 
@@ -66,8 +67,8 @@ class PurchaseReceivingSearch(SearchDialog):
 
     #
     # Callbacks
-    #   
+    #
 
     def on_print_button_clicked(self, *args):
-        # TODO To be implemented on bug XXX
+        # TODO To be implemented on bug 2460
         pass
