@@ -78,7 +78,7 @@ class DateSearchSlave(SlaveDelegate):
         # proxies here.
         self.model = DateInterval()
         self.add_proxy(self.model, self.proxy_widgets)
-        self._slave = SearchEntry(filter_slave)
+        self._slave = _SearchBarEntry(filter_slave)
         self.attach_slave('searchentry_holder', self._slave)
         self._update_view()
 
@@ -143,8 +143,8 @@ class DateSearchSlave(SlaveDelegate):
         self.emit('end-date-selected')
 
 
-class SearchEntry(SlaveDelegate):
-    gladefile = 'SearchEntry'
+class _SearchBarEntry(SlaveDelegate):
+    gladefile = 'SearchBarEntry'
     widgets = ('search_button',
                'search_label',
                "search_entry",
@@ -250,7 +250,7 @@ class SearchBar(SlaveDelegate):
             self._slave.connect('end-date-selected',
                                 self._on_date_search__end_date_selected)
         else:
-            self._slave = SearchEntry(filter_slave)
+            self._slave = _SearchBarEntry(filter_slave)
             entry_slave = self._slave
 
         entry_slave.connect('selected', self._on_search_entry__selected)
@@ -531,7 +531,7 @@ class SearchBar(SlaveDelegate):
 
     def set_result_strings(self, singular_form, plural_form):
         """This method defines strings to be used in the
-        search_results_label of SearchEntry class.
+        search_results_label of _SearchBarEntry class.
         """
         self._result_strings = singular_form, plural_form
 
