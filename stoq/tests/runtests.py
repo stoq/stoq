@@ -87,7 +87,14 @@ def test_gui(options, tests=None):
         globs = {}
         environ.app = None
 
-        execfile(test_name, globs)
+        # Run each tests in a child process, since kiwis ui test framework
+        # is not completely capable of cleaning up all it's state
+        # seems to be highly threads related.
+        pid = os.fork()
+        if not pid:
+            execfile(test_name, globs)
+            raise SystemExit
+        os.waitpid(pid, 0)
 
         post_hook = globs.get('post_hook')
         if post_hook:
