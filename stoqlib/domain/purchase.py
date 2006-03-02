@@ -296,6 +296,9 @@ class PurchaseOrder(Domain):
         return [item for item in self.get_items()
                         if not item.has_been_received()]
 
+    def get_received_items(self):
+        return [item for item in self.get_items() if item.has_been_received()]
+
     def get_items(self):
         return PurchaseItem.selectBy(order=self,
                                      connection=self.get_connection())
