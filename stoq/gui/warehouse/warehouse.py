@@ -36,6 +36,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
+from stoqlib.gui.search.receiving import PurchaseReceivingSearch
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
@@ -172,3 +173,10 @@ class WarehouseApp(SearchableAppWindow):
         if not model:
             rollback_and_begin(self.conn)
         self.conn.commit()
+
+    def on_stock_transfer_action_clicked(self, *args):
+        # TODO To be implemented
+        pass
+
+    def on_receiving_search_action_clicked(self, *args):
+        self.run_dialog(PurchaseReceivingSearch, self.conn)
