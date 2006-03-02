@@ -675,7 +675,7 @@ class ObjectTableColumn(TableColumn):
             if callable(data):
                 data = data(*self.args, **self.kwargs)
         elif callable(self.data_source):
-            data = self.data_source(value, *self.args, **self.kwargs)
+            data = self.data_source(value)
         return TableColumn.get_string_data(self, data)
 
     def update_style(self, style, idx, has_summary_row=False):
