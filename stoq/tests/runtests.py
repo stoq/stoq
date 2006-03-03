@@ -99,7 +99,9 @@ def test_gui(options, tests=None):
             try:
                 execfile(filename, globs)
             except TimeOutError, e:
-                print 'TIMEOUT ERROR: %s' % e
+                print '*' * 50
+                print '* TIMEOUT ERROR: %s' % e
+                print '*' * 50
                 os._exit(1)
             raise SystemExit
 
