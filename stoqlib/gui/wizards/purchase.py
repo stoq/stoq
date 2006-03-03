@@ -34,7 +34,7 @@ from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
                                   METHOD_CHECK, METHOD_MONEY)
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
@@ -45,6 +45,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IPaymentGroup)
+from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
 
@@ -100,6 +101,9 @@ class FinishPurchaseStep(BaseWizardStep):
                                   self.model.transporter):
             self.conn.commit()
             self._setup_transporter_entry()
+
+    def on_print_button__clicked(self, button):
+        print_report(PurchaseOrderReport, self.model)
 
 
 class PurchasePaymentStep(BaseWizardStep):

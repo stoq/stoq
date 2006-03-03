@@ -25,15 +25,21 @@
 ##
 """ Purchase report implementation """
 
+import decimal
+
 from kiwi.datatypes import currency
 
-from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
-from stoqlib.reporting.base.flowables import RIGHT
-from stoqlib.lib.validators import get_formatted_price
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.reporting.template import SearchResultsReport
+from stoqlib.reporting.base.tables import (ObjectTableColumn as OTC,
+                                           TableColumn as TC,
+                                           HIGHLIGHT_NEVER)
+from stoqlib.reporting.base.flowables import RIGHT, LEFT
+from stoqlib.reporting.base.default_style import TABLE_LINE_BLANK
+from stoqlib.lib.validators import get_formatted_price, format_quantity
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX, METHOD_MONEY
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
 from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.interfaces import IPaymentGroup
 
 _ = stoqlib_gettext
 
@@ -86,3 +92,116 @@ class PurchaseReport(SearchResultsReport):
         self.add_object_table(self._purchases, self._get_columns(),
                               summary_row=summary_row)
 
+class PurchaseOrderReport(BaseStoqReport):
+    report_name = _("Purchase Order")
+
+    def __init__(self, filename, order):
+        self._order = order
+        BaseStoqReport.__init__(self, filename, PurchaseOrderReport.report_name,
+                                landscape=True)
+        self._setup_order_details_table()
+        self.add_blank_space(10)
+        self._setup_items_table()
+
+    def _get_items_table_columns(self):
+        return [OTC(_("Item"), lambda obj: ("%s - %s"
+                                            % (obj.sellable.code,
+                                               obj.sellable.get_description())),
+                    width=300, expand=True, expand_factor=1, truncate=True),
+                OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+                    width=50, align=RIGHT),
+                OTC("", lambda obj: obj.sellable.get_unit_description(),
+                    virtual=True, width=25, align=LEFT),
+                OTC(_("Cost"), lambda obj: get_formatted_price(obj.cost),
+                    width=60, align=RIGHT),
+                OTC(_("Total"),
+                    lambda obj: get_formatted_price(obj.get_total()), width=70,
+                    align=RIGHT),
+                ]
+
+    def _add_items_table(self, items):
+        total_cost = decimal.Decimal("0.0")
+        total_value = decimal.Decimal("0.0")
+        for item in items:
+            total_value += item.quantity * item.cost
+            total_cost += item.cost
+        extra_row = ["", "Totals:", "", get_formatted_price(total_cost),
+                     get_formatted_price(total_value)]
+        self.add_object_table(items, self._get_items_table_columns(),
+                              width=730, summary_row=extra_row)
+
+    def _add_ordered_items_table(self, items):
+        self.add_paragraph(_("Ordered Items"), style="Title")
+        self._add_items_table(items)
+
+    def _add_received_items_table(self, items):
+        self.add_paragraph(_("Received Items"), style="Title")
+        if not items:
+            self.add_paragraph(_("There is no received items"))
+            return
+        self._add_items_table(items)
+
+    def _get_freight_line(self):
+        freight_line = []
+        transporter = self._order.get_transporter_name() or _("Not Specified")
+        freight_line.extend(["Transporter:", transporter, _("Freight:")])
+        if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
+            freight_line.append("%.2f %%" % self._order.freight)
+        else:
+            freight_line.append("CIF")
+        return freight_line
+
+    def _setup_payment_group_data(self):
+        group = IPaymentGroup(self._order)
+        if not group:
+            return
+        if group.default_method == METHOD_MONEY:
+            msg = _("Paid in cash")
+        else:
+            method_name = group.get_default_payment_method_name()
+            if group.installments_number > 1:
+                msg = (_("Paid with %s in %d installments")
+                       % (method_name, group.installments_number))
+            else:
+                msg = (_("Paid with %s in %d installment")
+                       % (method_name, group.installments_number))
+        self.add_paragraph(msg, style="Normal-Bold")
+
+    def _setup_order_details_table(self):
+        cols = [TC("", width=70), TC("", width=300, expand=True, truncate=True),
+                TC("", width=50), TC("", width=300, expand=True, truncate=True)]
+        data = [["Open Date:", self._order.get_open_date_as_string(),
+                 "Status:", self._order.get_status_str()],
+                ["Supplier:", self._order.get_supplier_name(),
+                 "Branch:", self._order.get_branch_name()],
+                ]
+        data.append(self._get_freight_line())
+        self.add_column_table(data, cols, do_header=False,
+                              highlight=HIGHLIGHT_NEVER, margins=2,
+                              table_line=TABLE_LINE_BLANK, width=730)
+        if self._order.expected_receival_date:
+            expected_date = self._order.expected_receival_date.strftime("%x")
+        else:
+            expected_date = _("Not Specified")
+        self.add_paragraph(_("Expected Receival Date: %s") % expected_date)
+        self.add_blank_space(5)
+        self._setup_payment_group_data()
+
+    def _setup_items_table(self):
+        items = self._order.get_items()
+        received_items = [item for item in items if item.has_been_received()]
+        # XXX: Stoqlib Reporting try to apply len() on the table data, but
+        # Purchase's get_items returns a SelectResult instance (SQLObject)
+        # that not supports the len operator.
+        self._add_ordered_items_table(list(self._order.get_items()))
+        self._add_received_items_table(received_items)
+
+    #
+    # BaseStoqReport hooks
+    #
+
+    def get_title(self):
+        order_number = self._order.get_order_number_str()
+        if order_number:
+            order_number = "#" + order_number
+        return _("Purchase Order %s") % order_number
