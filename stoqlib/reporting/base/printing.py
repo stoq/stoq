@@ -45,6 +45,7 @@ class ReportTemplate(BaseReportTemplate):
     otherwise look at BaseReportTemplate.
     """
     footer_height = 7 * mm
+    report_name_prefix = ""
 
     def __init__(self, filename, report_name, timestamp=False, do_header=True,
                  do_footer=True, **kwargs):
@@ -79,6 +80,9 @@ class ReportTemplate(BaseReportTemplate):
         # Sorry, not implemented yet
         return
 
+    def get_report_name(self):
+        return self.report_name_prefix + self.report_name
+
     def draw_footer(self, canvas):
         """Implementation of BaseReportTemplate hook. This method is called on
         footer drawing time if this object has the time_stamp attribute set to
@@ -104,7 +108,7 @@ class ReportTemplate(BaseReportTemplate):
         canvas.setFillColor(TEXT_COLOR)
         canvas.setFont(*SMALL_FONT)
         canvas.drawString(self.leftMargin + 0.5 * SPACING, text_y,
-                          self.report_name)
+                          self.get_report_name())
         canvas.drawRightString(self._rightMargin - 75, text_y, date_string)
         canvas.drawRightString(self._rightMargin - 0.5 * SPACING, text_y,
                                page_number)

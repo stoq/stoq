@@ -33,6 +33,7 @@ from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import format_phone_number
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -47,12 +48,11 @@ TEXT_HEIGHT = 13
 
 class BaseStoqReport(ReportTemplate):
     logo_border = 5 * mm
+    report_name_prefix = "Stoq - "
 
     def __init__(self, *args, **kwargs):
         ReportTemplate.__init__(self, *args, **kwargs)
         self.conn = new_transaction()
-        if self.report_name:
-            self.report_name = "Stoq - %s" % self.report_name
         self._logotype = self._get_logotype()
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
@@ -113,4 +113,67 @@ class BaseStoqReport(ReportTemplate):
         pass
 
     def get_title(self):
-        return ""
+        raise NotImplementedError
+
+
+class SearchResultsReport(BaseStoqReport):
+    """ This class is very useful for reports based on SearchBar results.
+    Based on the main object name used on the report, this class build
+    the BaseStoqReport title's notes with the search criteria defined by
+    the user on the GUI.
+    """
+    main_object_name = None
+
+    def __init__(self, filename, data, report_name, blocked_records=None,
+                 status_name=None, extra_filters=None, start_date=None,
+                 end_date=None, status=None, *args, **kwargs):
+        self._blocked_records = None
+        self._status_name = status_name
+        self._status = status
+        self._extra_filters = extra_filters
+        self._start_date = start_date
+        self._end_date = end_date
+        self._data = data
+        BaseStoqReport.__init__(self, filename, report_name, *args, **kwargs)
+
+    #
+    # BaseStoqReport hooks
+    #
+
+    def get_title(self):
+        """ This method build the report title based on the arguments sent
+        by SearchBar to its class constructor.
+        """
+        title = self.report_name.capitalize()
+        title += " - %s " % _("Listing")
+        main_object_name = (self.main_object_name
+                            and self.main_object_name.lower() or "")
+        if self._blocked_records > 0:
+            rows_qty = len(self._data)
+            title += (_("%d of a total of %d %s")
+                      % (rows_qty, rows_qty + self._blocked_records,
+                         main_object_name))
+        else:
+            if main_object_name:
+                title += _("all %s") % main_object_name
+        notes = ""
+        if self._status_name:
+            notes += _("with status %s ") % ("<u>%s</u>"
+                                             % self._status_name.lower())
+        if self._extra_filters:
+            notes += " %s " % (_("matching \"%s\"")
+                               % self._extra_filters)
+        if self._start_date:
+            if self._end_date:
+                notes += (_("between %s and %s")
+                          % (self._start_date.strftime("%x"),
+                             self._end_date.strftime("%x")))
+            else:
+                notes += (_("and since %s")
+                          % self._start_date.strftime("%x"))
+        elif self._end_date:
+            notes += (_("until %s")
+                      % self._end_date.strftime("%x"))
+        if notes:
+            notes = "%s %s" % (self.main_object_name.capitalize(), notes)
+        return (title, notes)

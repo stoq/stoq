@@ -260,6 +260,9 @@ class Sale(Domain):
                    currency(0))
         return currency(total)
 
+    def get_open_date_as_string(self):
+        return self.open_date.strftime("%x")
+
     def update_stocks(self):
         conn = self.get_connection()
         branch = self.get_till_branch()

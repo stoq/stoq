@@ -41,10 +41,11 @@ from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
 
 import stoqlib
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 _ = stoqlib_gettext
 
@@ -573,6 +574,22 @@ class SearchBar(SlaveDelegate):
 
     def get_filter_slave(self):
         return self.filter_slave
+
+    # XXX: This part will be improved after bug #2205
+    def print_report(self, report_class, *args, **kwargs):
+        blocked_records = self.get_blocked_records_quantity()
+        filter_slave = self.get_filter_slave()
+        status = filter_slave.filter_combo.get_selected_data()
+        if filter_slave and status != ALL_ITEMS_INDEX:
+            status_name = filter_slave.filter_combo.get_selected_label()
+        else:
+            status_name = ""
+        extra_filters = self.get_search_string()
+        start_date, end_date = self.get_search_dates()
+        print_report(report_class, blocked_records=blocked_records,
+                     status_name=status_name, extra_filters=extra_filters,
+                     start_date=start_date, end_date=end_date,
+                     status=status, *args, **kwargs)
 
 class SearchEditorToolBar(SlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a

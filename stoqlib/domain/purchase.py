@@ -42,6 +42,7 @@ from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                        IPaymentGroup)
+from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
 
@@ -94,6 +95,10 @@ class PurchaseItem(Domain):
             return decimal.Decimal('0.0')
         return self.quantity - self.quantity_received
 
+    def get_quantity_as_string(self):
+        unit = self.sellable.unit
+        return "%s %s" % (format_quantity(self.quantity),
+                          unit and unit.description or "")
 
 class PurchaseOrder(Domain):
     """Purchase and order definition."""
@@ -311,6 +316,8 @@ class PurchaseOrder(Domain):
                              'associated with the current purchase instance')
         PurchaseItem.delete(item.id, connection=conn)
 
+    def get_open_date_as_string(self):
+        return self.open_date and self.open_date.strftime("%x") or ""
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
