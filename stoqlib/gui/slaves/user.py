@@ -20,7 +20,8 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-##  Author(s):      Bruno Rafael Garcia  <brg@async.com.br>
+##  Author(s):      Bruno Rafael Garcia     <brg@async.com.br>
+##                  Evandro Vale Miquelito  <evandro@async.com.br>
 ##
 ##
 """ User editor slaves implementation.  """
@@ -56,7 +57,7 @@ class UserStatusSlave(BaseEditorSlave):
 class PasswordEditorSlave(BaseEditorSlave):
     gladefile = 'PasswordEditorSlave'
     model_type = LoginInfo
-    proxy_widgets = ('password', 
+    proxy_widgets = ('password',
                      'confirm_password')
     size_group_widgets = ('password_lbl',
                           'confirm_password_lbl')
@@ -75,15 +76,15 @@ class PasswordEditorSlave(BaseEditorSlave):
 
     def create_model(self, conn):
         return LoginInfo()
-    
-    def setup_proxies(self): 
+
+    def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     PasswordEditorSlave.proxy_widgets)
-        
+
     #
     # Kiwi handlers
     #
-        
+
     def on_password__validate(self, widget, value):
         password_len = self.model.PASSWORD_LEN
         if len(self.password.get_text()) < password_len:
@@ -95,19 +96,19 @@ class PasswordEditorSlave(BaseEditorSlave):
             self.confirm_password.set_invalid(_("Passwords doesn't match"))
         else:
             self.confirm_password.set_valid()
-            
+
     def on_confirm_password__validate(self, widget, value):
         if value != self.model.new_password:
             return ValidationError(_("Passwords doesn't match"))
-        self.confirm_password.set_valid()    
+        self.confirm_password.set_valid()
 
 
 class UserDetailsSlave(BaseEditorSlave):
     gladefile = 'UserDetailsSlave'
     model_iface = IUser
-    proxy_widgets = ('username', 
+    proxy_widgets = ('username',
                      'profile')
-    
+
     size_group_widgets = ('username_lbl',
                           'profile_lbl') + proxy_widgets
 
@@ -120,7 +121,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
             widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)        
+            size_group.add_widget(widget)
 
     def _setup_widgets(self):
         if self.show_password_fields:
@@ -135,21 +136,21 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
-        profiles = [profile for profile in 
+        profiles = [profile for profile in
                     UserProfile.select(connection=self.conn)]
         profiles = profiles[:self.max_results]
-        strings = [profile.name for profile in profiles]
-        self.profile.set_completion_strings(strings, list(profiles))
+        items = [(profile.name, profile) for profile in profiles]
+        self.profile.prefill(items)
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)
         self.attach_slave('password_holder', self.password_slave)
- 
+
     #
     # BaseEditorSlave Hooks
     #
 
-    def setup_proxies(self): 
+    def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     UserDetailsSlave.proxy_widgets)
@@ -161,16 +162,16 @@ class UserDetailsSlave(BaseEditorSlave):
     #
     # Kiwi handlers
     #
-    
+
     def after_profile__changed(self, widget):
-        # This could be wrriten in this way: 
+        # This could be wrriten in this way:
         # sensitive = bool(widget.get_text()) and widget.is_valid()
         # but if widget.get_text() returns "" sensitive will be False
         sensitive = True
         if widget.get_text():
             sensitive = widget.is_valid()
         self.profile_button.set_sensitive(sensitive)
-        
+
     def on_username__validate(self, widget, value):
         user_table = Person.getAdapterClass(IUser)
         query = func.UPPER(user_table.q.username) == value.upper()
@@ -183,10 +184,10 @@ class UserDetailsSlave(BaseEditorSlave):
                                         'users with the same username')
         if self.model.username != value:
             return ValidationError('Username already exist')
-            
+
     def on_profile_button__clicked(self, *args):
         if not self.profile.get_text():
-            self.model.profile = None 
+            self.model.profile = None
         user_profile = self.model.profile
         if run_dialog(UserProfileEditor, self, self.conn, self.app_list,
                       user_profile):

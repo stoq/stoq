@@ -122,10 +122,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="supplier">
-                                <property name="completion">True</property>
+                            <widget class="ProxyComboEntry" id="supplier">
                                 <property name="data_type">object</property>
-                                <property name="is_focus">True</property>
                                 <property name="model_attribute">supplier</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -135,8 +133,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="transporter">
-                                <property name="completion">True</property>
+                            <widget class="ProxyComboEntry" id="transporter">
                                 <property name="data_type">object</property>
                                 <property name="model_attribute">transporter</property>
                                 <property name="visible">True</property>

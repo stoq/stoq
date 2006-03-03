@@ -179,8 +179,8 @@ class EmployeeRoleSlave(BaseEditorSlave):
         roles = [role for role in
                  EmployeeRole.select(connection=self.conn)]
         roles = roles[:self.max_results]
-        strings = [role.name for role in roles]
-        self.role.set_completion_strings(strings, list(roles))
+        items = [(role.name, role) for role in roles]
+        self.role.prefill(items)
 
     def _setup_widgets(self):
         if self.salesperson:

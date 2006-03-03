@@ -52,7 +52,7 @@ class GiftCertificateTypeEditor(BaseEditor):
                      'commission',
                      'max_discount')
 
-    # 
+    #
     # BaseEditor hooks
     #
 
@@ -126,10 +126,9 @@ class GiftCertificateEditor(BaseEditor):
     def setup_proxies(self):
         table = GiftCertificateType
         certificates = table.get_active_gift_certificates(self.conn)
-        descriptions = [c.base_sellable_info.description 
+        items = [(c.base_sellable_info.description, c)
                                     for c in certificates]
-        self.gift_certificate_type.set_completion_strings(descriptions,
-                                                          list(certificates))
+        self.gift_certificate_type.prefill(items)
         self.add_proxy(self.model, self.proxy_widgets)
 
 
@@ -141,7 +140,7 @@ class GiftCertificateEditor(BaseEditor):
         if self.single_check.get_active():
             self._create_gift_certificate(sellable_info, self.model.number)
         else:
-            for number in range(self.model.first_number, 
+            for number in range(self.model.first_number,
                                 self.model.last_number + 1):
                 self._create_gift_certificate(sellable_info, str(number))
         return True

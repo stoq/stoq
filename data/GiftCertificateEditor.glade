@@ -131,6 +131,7 @@
                                 <property name="model_attribute">first_number</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">8</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
@@ -190,6 +191,7 @@
                                 <property name="model_attribute">last_number</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">8</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="bottom_attach">2</property>
@@ -229,11 +231,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="gift_certificate_type">
-                                <property name="completion">True</property>
+                            <widget class="ProxyComboEntry" id="gift_certificate_type">
                                 <property name="data_type">object</property>
-                                <property name="is_focus">True</property>
-                                <property name="mandatory">True</property>
                                 <property name="model_attribute">gift_certificate_type</property>
                                 <property name="visible">True</property>
                             </widget>

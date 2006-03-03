@@ -78,19 +78,17 @@ class CustomerStep(BaseWizardStep):
         BaseWizardStep.__init__(self, conn, wizard, model, previous)
         self.register_validate_function(self.wizard.refresh_next)
 
-    def setup_entry_completion(self):
-        table = Person.getAdapterClass(IClient)
-        clients = table.get_active_clients(self.conn)
-        strings = [c.get_adapted().name for c in clients]
-        self.client.set_completion_strings(strings, list(clients))
-
     def update_view(self):
         # TODO Check here if the customer data has enough information like
         # cpf or phone_number according to parameter value. Bug 2172
         pass
 
     def _setup_widgets(self):
-        self.setup_entry_completion()
+        table = Person.getAdapterClass(IClient)
+        clients = table.get_active_clients(self.conn)
+        items = [(c.get_adapted().name, c) for c in clients]
+        self.client.prefill(items)
+
         total_str = get_formatted_price(self.total)
         self.order_total_lbl.set_text(total_str)
 
@@ -401,16 +399,13 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         self.register_validate_function(self.wizard.refresh_next)
         self._update_total()
 
-    def setup_entry_completion(self):
-        certificates = self.table.get_sold_sellables(self.conn)
-        descriptions = [c.get_short_description() for c in certificates]
-        self.certificate_number.set_completion_strings(descriptions,
-                                                       list(certificates))
-
     def _setup_widgets(self):
         self.header_label.set_size('large')
         self.header_label.set_bold(True)
-        self.setup_entry_completion()
+
+        certificates = self.table.get_sold_sellables(self.conn)
+        items = [(c.get_short_description(), c) for c in certificates]
+        self.certificate_number.prefill(items)
 
     def _get_columns(self):
         return [Column('code', title=_('Number'), data_type=str, width=90),

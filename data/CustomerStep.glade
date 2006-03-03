@@ -30,10 +30,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="client">
-                                <property name="completion">True</property>
+                            <widget class="ProxyComboEntry" id="client">
                                 <property name="data_type">object</property>
-                                <property name="is_focus">True</property>
                                 <property name="model_attribute">client</property>
                                 <property name="visible">True</property>
                             </widget>
