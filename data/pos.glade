@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
-<glade-interface>
+<glade-interface domain="gazpacho">
     <widget class="GtkUIManager" id="uimanager">
         <child>
             <widget class="GtkActionGroup" id="DefaultActions">
@@ -179,8 +179,10 @@
                 </child>
             </widget>
         </child>
-        <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar></ui>]]></ui>
+        <ui id="initial-state"><![CDATA[<ui>
+<menubar action="menubar" name="menubar">
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><separator name="sep"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
+</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="pos">
         <property name="destroy_with_parent">True</property>
@@ -289,12 +291,10 @@
                                             </widget>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+entry+Entry" id="product">
+                                            <widget class="ProxyComboEntry" id="product">
                                                 <property name="data_type">object</property>
-                                                <property name="is_focus">True</property>
                                                 <property name="model_attribute">product</property>
                                                 <property name="visible">True</property>
-                                                <property name="width_chars">27</property>
                                             </widget>
                                             <packing>
                                                 <property name="position">1</property>
@@ -318,10 +318,9 @@
                                                 <property name="digits">2</property>
                                                 <property name="is_focus">True</property>
                                                 <property name="model_attribute">quantity</property>
-                                                <property name="text" context="yes" translatable="yes">0,00</property>
+                                                <property name="text" context="yes" translatable="yes">0.00</property>
                                                 <property name="visible">True</property>
                                                 <property name="width_chars">6</property>
-                                                <property name="xalign">1.0</property>
                                             </widget>
                                             <packing>
                                                 <property name="expand">False</property>
@@ -439,6 +438,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkHBox" id="warning_box">
+                                        <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkAlignment" id="alignment1">
                                                 <property name="visible">True</property>
