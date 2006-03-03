@@ -38,7 +38,8 @@ from stoq.main import setup_stoqlib_settings
 setup_stoqlib_settings()
 
 from stoqlib.lib.runtime import (print_immediately, get_connection,
-                                 set_test_mode, set_verbose)
+                                 set_test_mode, set_verbose,
+                                 register_configparser_settings)
 
 DEFAULT_SEPARATORS = 79
 
@@ -112,10 +113,17 @@ def main(args):
     parser.add_option('-v', '--verbose',
                       action="store_true",
                       dest="verbose")
+    parser.add_option('-f', '--filename',
+                      action="store",
+                      type="string",
+                      dest="filename",
+                      default="stoq.conf",
+                      help='Use this file name for config file')
 
     if '--g-fatal-warnings' in args:
         args.remove('--g-fatal-warnings')
     options, args = parser.parse_args(args)
+    register_configparser_settings('stoq', options.filename)
     setup(options)
 
     test_gui(options, args[1:])
