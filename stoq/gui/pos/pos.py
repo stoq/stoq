@@ -128,8 +128,8 @@ class POSApp(AppWindow):
         # entry
         sellables = AbstractSellable.get_available_sellables(self.conn)
         sellables = sellables[:self.max_results]
-        strings = [s.get_short_description() for s in sellables]
-        self.product.set_completion_strings(strings, list(sellables))
+        items = [(s.get_short_description(), s) for s in sellables]
+        self.product.prefill(items)
 
     def _setup_widgets(self):
         can_edit = sysparam(self.conn).EDIT_SELLABLE_PRICE
