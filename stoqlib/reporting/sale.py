@@ -37,9 +37,7 @@ from stoqlib.reporting.template import BaseStoqReport, SearchResultsReport
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext
 
-
 _ = stoqlib_gettext
-
 
 class SaleOrderReport(BaseStoqReport):
     report_name = _("Sale Order")
@@ -101,6 +99,7 @@ class SaleOrderReport(BaseStoqReport):
 class SalesReport(SearchResultsReport):
     report_name = _("Sales Report")
     main_object_name = _("sales")
+    filter_format_string = _("with status <u>%s</u>")
 
     def __init__(self, filename, sale_list, status=None, *args, **kwargs):
         self.sale_list = sale_list
@@ -140,7 +139,7 @@ class SalesReport(SearchResultsReport):
     def _setup_sales_table(self):
         total = sum([sale.get_total_sale_amount()
                          for sale in self.sale_list], currency(0))
-        total_str = "Total %s" % get_formatted_price(total)
+        total_str = _("Total %s") % get_formatted_price(total)
         summary_row = ["", "", "", "", total_str]
         if self._landscape_mode:
             summary_row.insert(-1, "")

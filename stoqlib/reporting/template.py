@@ -123,6 +123,7 @@ class SearchResultsReport(BaseStoqReport):
     the user on the GUI.
     """
     main_object_name = None
+    filter_format_string = ""
 
     def __init__(self, filename, data, report_name, blocked_records=None,
                  status_name=None, extra_filters=None, start_date=None,
@@ -157,9 +158,8 @@ class SearchResultsReport(BaseStoqReport):
             if main_object_name:
                 title += _("all %s") % main_object_name
         notes = ""
-        if self._status_name:
-            notes += _("with status %s ") % ("<u>%s</u>"
-                                             % self._status_name.lower())
+        if self.filter_format_string and self._status_name:
+            notes += self.filter_format_string % self._status_name.lower()
         if self._extra_filters:
             notes += " %s " % (_("matching \"%s\"")
                                % self._extra_filters)
