@@ -112,6 +112,15 @@ class POSApp(AppWindow):
         table = type(item)
         table.delete(item.id, connection=self.conn)
 
+    def _set_product_on_sale(self):
+        sellable = self._get_sellable()
+        # If the sellable has a weight unit specified and we have a scale
+        # configured for this station, go and check out what the printer says.
+        if (sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT
+            and get_current_scale_settings(self.conn)):
+            self._read_scale()
+        self.quantity.grab_focus()
+
     def _setup_proxies(self):
         self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
         model = FancySellable(quantity=decimal.Decimal('1.0'),
@@ -310,10 +319,6 @@ class POSApp(AppWindow):
     def _search_clients(self):
         self.run_dialog(ClientSearch, self.conn, hide_footer=True)
 
-    # Not connect by Kiwi, since the 'price' entry widget belongs to
-    # PriceSlave
-    def on_price_activate(self, *args):
-        self.add_sellable_item()
 
     #
     # AppWindow Hooks
@@ -327,24 +332,16 @@ class POSApp(AppWindow):
     # Callbacks
     #
 
-    def key_control_r(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
-        self._new_order()
+    def on_price_activate(self, *args):
+        self.add_sellable_item()
 
-    def key_control_l(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
-        # Implement a search dialog for sales
-        pass
-
-    def key_control_p(self, *args):
-        # FIXME Waiting for a bugfix in gazpacho. Accelerators doesn't work
-        # for menuitems
-        self._search_clients()
+    #
+    # Kiwi callbacks
+    #
 
     def on_product__changed(self, *args):
         self.product.set_valid()
+        self._set_product_on_sale()
 
     def on_advanced_search__clicked(self, *args):
         # Ouch!, commit now ? yes, because SearchDialog synchronizes self.conn
@@ -363,14 +360,9 @@ class POSApp(AppWindow):
     def on_add_button__clicked(self, *args):
         self.add_sellable_item()
 
+
     def on_product__activate(self, *args):
-        sellable = self._get_sellable()
-        # If the sellable has a weight unit specified and we have a scale
-        # configured for this station, go and check out what the printer says.
-        if (sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT
-            and get_current_scale_settings(self.conn)):
-            self._read_scale()
-        self.quantity.grab_focus()
+        self._set_product_on_sale()
 
     def on_quantity__activate(self, *args):
         if sysparam(self.conn).EDIT_SELLABLE_PRICE:

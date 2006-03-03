@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
-<glade-interface>
+<glade-interface domain="gazpacho">
     <widget class="GtkWindow" id="NewOrderEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -13,6 +13,9 @@
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
+                    <placeholder/>
+                </child>
+                <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                         <property name="label" context="yes" translatable="yes">Salesperson:</property>
                         <property name="visible">True</property>
@@ -21,9 +24,6 @@
                     <packing>
                         <property name="right_attach">3</property>
                     </packing>
-                </child>
-                <child>
-                    <placeholder/>
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
@@ -70,7 +70,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="salesperson">
+                    <widget class="ProxyComboEntry" id="salesperson">
                         <property name="data_type">object</property>
                         <property name="model_attribute">salesperson</property>
                         <property name="visible">True</property>
@@ -81,13 +81,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="client">
-                        <property name="completion">True</property>
+                    <widget class="ProxyComboEntry" id="client">
                         <property name="data_type">object</property>
-                        <property name="is_focus">True</property>
                         <property name="model_attribute">client</property>
                         <property name="visible">True</property>
-                        <property name="width_chars">33</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
