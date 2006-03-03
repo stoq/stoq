@@ -32,7 +32,8 @@ from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number)
-from stoqlib.reporting.template import BaseStoqReport
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.reporting.template import BaseStoqReport, SearchResultsReport
 from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -97,23 +98,17 @@ class SaleOrderReport(BaseStoqReport):
                 % (self.order.open_date.strftime("%x"),
                    sysparam(self.conn).MAX_SALE_ORDER_VALIDITY))
 
-class SalesReport(BaseStoqReport):
+class SalesReport(SearchResultsReport):
     report_name = _("Sales Report")
+    main_object_name = _("sales")
 
-    def __init__(self, filename, sale_list, start_date=None, end_date=None,
-                 status=None, extra_filters=None, blocked_results_qty=None):
+    def __init__(self, filename, sale_list, status=None, *args, **kwargs):
         self.sale_list = sale_list
-        self.start_date = start_date
-        self.extra_filters = extra_filters
-        self.end_date = end_date
-        self.status = status
-        self._blocked_results_qty = blocked_results_qty
-        if status is None or status not in Sale.statuses:
-            self._landscape_mode = True
-        else:
-            self._landscape_mode = False
-        BaseStoqReport.__init__(self, filename, SalesReport.report_name,
-                                landscape=self._landscape_mode)
+        self._landscape_mode = status and status == ALL_ITEMS_INDEX
+        SearchResultsReport.__init__(self, filename, sale_list,
+                                     SalesReport.report_name,
+                                     landscape=self._landscape_mode,
+                                     *args, **kwargs)
         self._setup_sales_table()
 
     def _get_columns(self):
@@ -123,7 +118,7 @@ class SalesReport(BaseStoqReport):
             person_col_width += 84
         columns = [OTC(_("Number"), lambda obj: obj.order_number, width=50,
                        align=RIGHT),
-                   OTC(_("Date"), lambda obj: obj.open_date.strftime("%x"),
+                   OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
                        width=70, align=RIGHT),
                    OTC(_("Client"),
                        data_source=lambda obj: (obj.client and
@@ -134,8 +129,8 @@ class SalesReport(BaseStoqReport):
                                     obj.salesperson.get_adapted().name or ""),
                        width=person_col_width, truncate=True),
                    OTC(_("Total"),
-                       lambda obj: (obj.get_total_amount_as_string()),
-                       width=80, align=RIGHT)]
+                       lambda obj: obj.get_total_amount_as_string(), width=80,
+                       align=RIGHT)]
         if self._landscape_mode:
             columns.insert(-1, OTC(_("Status"),
                                    lambda obj: (obj.get_status_name()),
@@ -151,39 +146,3 @@ class SalesReport(BaseStoqReport):
             summary_row.insert(-1, "")
         self.add_object_table(self.sale_list, self._get_columns(),
                               summary_row=summary_row)
-
-    #
-    # BaseReportTemplate hooks
-    #
-
-    def get_title(self):
-        title = _("Sales Report")
-        if self._blocked_results_qty is not None:
-            title += " - %s " % _("Listing")
-            if self._blocked_results_qty > 0:
-                rows_qty = len(self.sale_list)
-                title += (_("%d of a total of %d sales")
-                          % (rows_qty, rows_qty + self._blocked_results_qty))
-            else:
-                title += _("all sales")
-        notes = ""
-        if self.status is not None:
-            try:
-                status_name = Sale.statuses[self.status].lower()
-                notes += _("with status %s ") % ("<u>%s</u>" % status_name)
-            except KeyError:
-                pass
-        if self.extra_filters:
-            notes += " %s " % _("matching \"%s\"") % self.extra_filters
-        if self.start_date:
-            if self.end_date:
-                notes += (_("between %s and %s")
-                          % (self.start_date.strftime("%x"),
-                             self.end_date.strftime("%x")))
-            else:
-                notes += _("and since %s") % self.start_date.strftime("%x")
-        elif self.end_date:
-            notes += (_("and until %s") % self.end_date.strftime("%x"))
-        if notes:
-            notes = "%s %s" % (_("Sales"), notes)
-        return (title, notes)

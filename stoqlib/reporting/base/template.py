@@ -407,7 +407,8 @@ class BaseReportTemplate(BaseDocTemplate):
         table_builder = tables.ColumnTableBuilder(data, columns, style=style, 
                                                   table_line=table_line,
                                                   do_header=do_header,
-                                                  extra_row=extra_row)
+                                                  extra_row=extra_row, *args,
+                                                  **kwargs)
         kwargs["align"] = align
         table_builder.set_highlight(highlight)
         self.add(table_builder.create_table(*args, **kwargs))

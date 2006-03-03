@@ -184,18 +184,4 @@ class SaleListToolbar(SlaveDelegate):
         self._run_details_dialog(self.klist.get_selected())
 
     def on_print_button__clicked(self, *args):
-        if self.searchbar is None:
-            print_report(SalesReport, list(self.klist))
-            return
-        extra_filters = self.searchbar.get_search_string()
-        start_date, end_date = self.searchbar.get_search_dates()
-        filter_slave = self.searchbar.get_filter_slave()
-        if filter_slave is None:
-            status = None
-        else:
-            status = filter_slave.filter_combo.get_selected_data()
-        blocked_results_qty = self.searchbar.get_blocked_records_quantity()
-        print_report(SalesReport, list(self.klist),
-                     extra_filters=extra_filters, start_date=start_date,
-                     end_date=end_date, status=status,
-                     blocked_results_qty=blocked_results_qty)
+        self.searchbar.print_report(SalesReport, self.klist)
