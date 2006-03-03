@@ -57,10 +57,6 @@ def setup(options):
     initialize_system("Superuser", "administrator", "", verbose=True)
     create()
 
-def run_test(test_name, globs):
-
-    return rv
-
 def test_gui(options, tests=None):
     from kiwi.ui.test.player import TimeOutError
     from stoqlib.lib.runtime import new_transaction
@@ -104,7 +100,7 @@ def test_gui(options, tests=None):
             except TimeOutError, e:
                 print 'TIMEOUT ERROR: %s' % e
                 os._exit(1)
-            sys.exit(0)
+            raise SystemExit
 
         pid, status = os.waitpid(pid, 0)
         if status != 0:
