@@ -50,8 +50,8 @@ class NewOrderEditor(BaseEditor):
         client_table = Person.getAdapterClass(IClient)
         clients = client_table.get_active_clients(self.conn)
         clients = clients[:get_max_search_results()]
-        strings = [c.get_adapted().name for c in clients]
-        self.client.set_completion_strings(strings, list(clients))
+        items = [(c.get_adapted().name, c) for c in clients]
+        self.client.prefill(items)
 
     def _setup_widgets(self):
         # Waiting for bug 2319
