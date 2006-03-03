@@ -37,7 +37,8 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   COL_PADDING,
                                                   SOFT_LINE_COLOR,
                                                   DEFAULT_FONTNAME,
-                                                  DEFAULT_FONTSIZE)
+                                                  DEFAULT_FONTSIZE,
+                                                  STYLE_SHEET)
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -224,7 +225,7 @@ class ColumnTableBuilder(ReportTableBuilder):
     # specification provided.
     def __init__(self, data, columns, style=None, progress_handler=None,
                  table_line=TABLE_LINE, do_header=1, extra_row=None,
-                 summary_row=None):
+                 summary_row=None, width=None):
         """
         @param data:   A list of lists, where each nested list represents a
                        row (naturally, each column of this nested list is a
@@ -263,13 +264,38 @@ class ColumnTableBuilder(ReportTableBuilder):
             extra_row = self.get_row_data(extra_row)
         elif summary_row:
             extra_row = summary_row
-        self.has_summary_row = summary_row is not None 
+        self.has_summary_row = summary_row is not None
+        if width:
+            self._expand_cols(columns, width)
         ReportTableBuilder.__init__(self, self.build_data(data), style,
                                     header, table_line, extra_row)
 
+    def _expand_cols(self, cols, table_width):
+        """ Based on the table width, expand the columns marked off with the
+        expand property.
+        """
+        cols_to_expand = [col for col in cols if col.expand]
+        if not cols_to_expand:
+            return
+        cols_width = [float(col.width) for col in cols]
+        if None in cols_width:
+            col = cols[cols_width.index(None)]
+            raise ValueError("You can't use auto-sized (%r) and expandable "
+                             "columns on the same table (%r)" % (col, self))
+        cols_total_width = sum(cols_width, 0.0)
+        if cols_total_width > table_width:
+            raise ValueError("Columns width sum (%.2f) can't exced table "
+                             "width (%.2f)" % (cols_total_width,
+                                               table_width))
+        extra_width = table_width - cols_total_width - COL_PADDING
+        expand_val = float(extra_width) / len(cols_to_expand)
+        for col in cols_to_expand:
+            col.width += expand_val
+
     def create_table(self, *args, **kwargs):
         """ Override ReportTableBuilder create_table method to allow specify
-        the columns width. """
+        the columns width.
+        """
         col_widths = [col.width for col in self.columns]
         return ReportTableBuilder.create_table(self, colWidths=col_widths)
 
@@ -317,7 +343,8 @@ class ColumnTableBuilder(ReportTableBuilder):
         ReportTableBuilder.update_style(self)
         for idx, col in enumerate(self.columns):
             col.update_style(self.style, idx,
-                             has_summary_row=self.has_summary_row)
+                             has_summary_row=self.has_summary_row,
+                             table_line=self.table_line)
 
 class ObjectTableBuilder(ColumnTableBuilder):
     """ Object table builder """
@@ -553,7 +580,8 @@ class TableColumnGroup:
 class TableColumn:
     def __init__(self, name=None, width=None, format_string=None,
                  format_func=None, truncate=False, use_paragraph=False,
-                 align=LEFT, *args, **kwargs):
+                 expand=False, align=LEFT, virtual=False, *args,
+                 **kwargs):
         """ Column class for ColumnTable
 
         @param name:   The column name
@@ -574,6 +602,13 @@ class TableColumn:
                        greater than the colum width?
         @type:         bool
 
+        @param expand: Must this column expand?
+        @type:         bool
+
+        @param virtual: If True, then the column *omit* its separator with the
+                       last column and its header will be expanded with the one
+                       of last column.
+        @type:         bool
 
         @param use_paragraph: The the column content must be placed inside a
                        Reportlab paragraph.
@@ -588,6 +623,8 @@ class TableColumn:
         self.align = align
         self.args = args
         self.kwargs = kwargs
+        self.expand = expand
+        self.virtual = virtual
         assert not (truncate and use_paragraph), \
             'What do you want for %s? Use paragraph or truncate?' % self
 
@@ -615,24 +652,29 @@ class TableColumn:
             value = self.format_string % value
         value = self.truncate_string(value)
         if self.use_paragraph:
-            value = Paragraph(value)
+            value = Paragraph(value, style=STYLE_SHEET["Normal"])
         return value
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
 
-    def update_style(self, style, idx, has_summary_row=False):
+    def update_style(self, style, idx, has_summary_row=False,
+                     table_line=TABLE_LINE):
         """ Apply the column style. """
         if self.align:
             style.add('ALIGN', (idx,0), (idx,-1), self.align)
+        if self.virtual:
+            style.add('SPAN', (idx-1, 0), (idx, 0))
         else:
-            style.add('LINEBEFORE', (idx,0), (idx,-1), *TABLE_LINE)
+            j = has_summary_row and 1 or 0
+            style.add('LINEBEFORE', (idx,0), (idx,-1-j),
+                      *table_line)
 
 class ObjectTableColumn(TableColumn):
     """ ObjectTableColumn implementation """
 
     def __init__(self, name, data_source, expand_factor=0, align=LEFT,
-                 virtual=0, truncate=0, *args, **kwargs):
+                 truncate=0, *args, **kwargs):
         """
         @param name:   The column name
         @type:         str
@@ -648,18 +690,12 @@ class ObjectTableColumn(TableColumn):
                        constants defined on stoqlib reporting flowables module.
         @type:         One of LEFT, RIGHT or CENTER
 
-        @param virtual: If True, then the column *omit* its separator with the
-                       last column and it header will be expanded with the one
-                       of last column.
-        @type:         bool
-
         @param truncate: If True, the column value will be truncate if its size
                        was greater than the column width.
         @type:         bool
         """
         self.data_source = data_source
         self.expand_factor = expand_factor
-        self.virtual = virtual
         TableColumn.__init__(self, name, truncate=truncate, align=align,
                              *args, **kwargs)
 
@@ -677,21 +713,6 @@ class ObjectTableColumn(TableColumn):
         elif callable(self.data_source):
             data = self.data_source(value)
         return TableColumn.get_string_data(self, data)
-
-    def update_style(self, style, idx, has_summary_row=False):
-        """ Apply the column style. """
-        assert idx or not self.virtual, \
-            'The first column can\'t be a virtual column'
-        if self.align:
-            style.add('ALIGN', (idx,0), (idx,-1), self.align)
-        if self.virtual:
-            style.add('SPAN', (idx-1, 0), (idx, 0))
-        else:
-            if has_summary_row:
-                j = 1
-            else:
-                j = 0
-            style.add('LINEBEFORE', (idx,0), (idx,-1-j), *TABLE_LINE)
 
     def __repr__(self):
         return '<ObjectTableColumn name: %s at 0x%x>' % (self.name, id(self))
