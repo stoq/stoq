@@ -31,7 +31,6 @@ import os
 import sys
 
 import gobject
-gobject.threads_init()
 from kiwi import environ
 
 from stoq.main import setup_stoqlib_settings
@@ -58,7 +57,6 @@ def setup(options):
     create()
 
 def test_gui(options, tests=None):
-    from kiwi.ui.test.player import TimeOutError
     from stoqlib.lib.runtime import new_transaction
 
     if options.verbose:
@@ -95,6 +93,9 @@ def test_gui(options, tests=None):
         # seems to be highly threads related.
         pid = os.fork()
         if not pid:
+            # Do thread initialization here, in the child process
+            # avoids strange X errors
+            from kiwi.ui.test.player import TimeOutError
             try:
                 execfile(filename, globs)
             except TimeOutError, e:
@@ -106,10 +107,10 @@ def test_gui(options, tests=None):
         if status != 0:
             print '%s failed' % test_name
             return 1
-        else:
-            post_hook = globs.get('post_hook')
-            if post_hook:
-                post_hook(new_transaction())
+
+        post_hook = globs.get('post_hook')
+        if post_hook:
+            post_hook(new_transaction())
 
         if options.verbose:
             print '=' * DEFAULT_SEPARATORS
@@ -135,6 +136,7 @@ def main(args):
 
     if '--g-fatal-warnings' in args:
         args.remove('--g-fatal-warnings')
+
     options, args = parser.parse_args(args)
     register_configparser_settings('stoq', options.filename)
     setup(options)
