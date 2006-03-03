@@ -33,7 +33,6 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
-
 from stoq.gui.application import SearchableAppWindow
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.gui.search.receiving import PurchaseReceivingSearch
@@ -41,6 +40,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable, IStorable, IBranch
+from stoqlib.reporting.product import ProductReport
 
 _ = gettext.gettext
 
@@ -107,7 +107,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
-                       data_type=str, width=100),
+                       data_type=str, width=120),
                 ForeignKeyColumn(BaseSellableInfo, 'description',
                                  title=_('Description'), data_type=str,
                                  obj_field='base_sellable_info',
@@ -115,7 +115,9 @@ class WarehouseApp(SearchableAppWindow):
                 AccessorColumn('supplier', self._get_supplier,
                                title=_('Supplier'), data_type=str),
                 AccessorColumn('quantity', self._get_stock_balance,
-                               title=_('Quantity'), data_type=decimal.Decimal)]
+                               title=_('Quantity'), data_type=decimal.Decimal),
+                Column('unit_description', title=_("Unit"), data_type=str,
+                       width=50)]
     #
     # Accessor
     #
@@ -180,3 +182,6 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_receiving_search_action_clicked(self, *args):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
+
+    def on_print_button__clicked(self, button):
+        self.searchbar.print_report(ProductReport, self.products)

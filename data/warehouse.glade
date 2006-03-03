@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
-<glade-interface>
+<glade-interface domain="gazpacho">
     <widget class="GtkUIManager" id="uimanager">
         <child>
             <widget class="GtkActionGroup" id="DefaultActions">
@@ -24,7 +24,7 @@
                 <child>
                     <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
-                        <property name="tooltip">Copy selected object into the clipboard</property>
+                        <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
                         <property name="stock_id">gtk-copy</property>
                     </widget>
                 </child>
@@ -32,7 +32,7 @@
                     <widget class="GtkAction" id="Cut">
                         <property name="name">Cut</property>
                         <property name="label" translatable="yes">C_ut</property>
-                        <property name="tooltip">Cut selected object into the clipboard</property>
+                        <property name="tooltip" translatable="yes">Cut selected object into the clipboard</property>
                         <property name="stock_id">gtk-cut</property>
                     </widget>
                 </child>
@@ -46,34 +46,33 @@
                     <widget class="GtkAction" id="FileMenu">
                         <property name="name">FileMenu</property>
                         <property name="label" translatable="yes">_File</property>
-                        <property name="short_label">_File</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
-                        <property name="tooltip">Create a new file</property>
+                        <property name="tooltip" translatable="yes">Create a new file</property>
                         <property name="stock_id">gtk-new</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Open">
                         <property name="name">Open</property>
-                        <property name="tooltip">Open a file</property>
+                        <property name="tooltip" translatable="yes">Open a file</property>
                         <property name="stock_id">gtk-open</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Paste">
                         <property name="name">Paste</property>
-                        <property name="tooltip">Paste object from the Clipboard</property>
+                        <property name="tooltip" translatable="yes">Paste object from the Clipboard</property>
                         <property name="stock_id">gtk-paste</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
-                        <property name="tooltip">Quit the program</property>
+                        <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
                     </widget>
@@ -82,13 +81,12 @@
                     <widget class="GtkAction" id="SalesMenu">
                         <property name="name">SalesMenu</property>
                         <property name="label" translatable="yes">_Warehouse</property>
-                        <property name="short_label">_Warehouse</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="Save">
                         <property name="name">Save</property>
-                        <property name="tooltip">Save a file</property>
+                        <property name="tooltip" translatable="yes">Save a file</property>
                         <property name="stock_id">gtk-save</property>
                     </widget>
                 </child>
@@ -96,8 +94,7 @@
                     <widget class="GtkAction" id="SaveAs">
                         <property name="name">SaveAs</property>
                         <property name="label" translatable="yes">Save _as</property>
-                        <property name="short_label">Save _as</property>
-                        <property name="tooltip">Save with a differente name</property>
+                        <property name="tooltip" translatable="yes">Save with a differente name</property>
                         <property name="stock_id">gtk-save-as</property>
                     </widget>
                 </child>
@@ -105,14 +102,12 @@
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
                         <property name="label" translatable="yes">S_earch</property>
-                        <property name="short_label">S_earch</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
                         <property name="label" translatable="yes">_Store Cookie</property>
-                        <property name="short_label">_Store Cookie</property>
                         <property name="stock_id">gtk-save</property>
                         <signal handler="_store_cookie" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;k</property>
@@ -122,7 +117,6 @@
                     <widget class="GtkAction" id="about_menu">
                         <property name="name">about_menu</property>
                         <property name="label" translatable="yes">About</property>
-                        <property name="short_label">About</property>
                         <property name="stock_id">gtk-about</property>
                         <signal handler="_run_about" name="activate"/>
                     </widget>
@@ -131,7 +125,6 @@
                     <widget class="GtkAction" id="help_menu">
                         <property name="name">help_menu</property>
                         <property name="label" translatable="yes">_Help</property>
-                        <property name="short_label">_Help</property>
                     </widget>
                 </child>
                 <child>
@@ -182,7 +175,8 @@
                 </child>
             </widget>
         </child>
-        <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
+        <ui id="initial-state"><![CDATA[<ui>
+<menubar action="menubar" name="menubar">
 
 <menu action="SalesMenu" name="SalesMenu"><menuitem action="receive_action" name="receive_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="TransferSearch" name="TransferSearch"/><menuitem action="PurchaseReceiving" name="PurchaseReceiving"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
@@ -192,7 +186,8 @@
   
   
   
-<toolitem action="receive_action" name="receive_action"/><toolitem action="transfer_action" name="transfer_action"/></toolbar></ui>]]></ui>
+<toolitem action="receive_action" name="receive_action"/><toolitem action="transfer_action" name="transfer_action"/></toolbar>
+</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="warehouse">
         <property name="destroy_with_parent">True</property>
@@ -333,6 +328,16 @@
                                             </widget>
                                             <packing>
                                                 <property name="position">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="print_button">
+                                                <property name="label">gtk-print</property>
+                                                <property name="use_stock">True</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">2</property>
                                             </packing>
                                         </child>
                                     </widget>
