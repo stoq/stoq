@@ -38,9 +38,10 @@ from stoqlib.domain.product import Product
 from stoqlib.gui.editors.product import ProductEditor
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.search.sellable import SellableSearch
+from stoqlib.gui.base.dialogs import print_report
+from stoqlib.reporting.product import ProductReport
 
 _ = stoqlib_gettext
-
 
 class ProductSearch(SellableSearch):
     title = _('Product Search')
@@ -81,16 +82,19 @@ class ProductSearch(SellableSearch):
         col_index = self.klist.get_columns().index(column)
         self.klist.set_column_visibility(col_index, False)
 
+    def on_print_button_clicked(self, button):
+        print_report(ProductReport, list(self.klist))
+
     #
     # SearchDialog Hooks
     #
 
     def get_filter_slave(self):
-        statuses = [(value, key) 
+        statuses = [(value, key)
                         for key, value in self.search_table.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
         if self.use_product_statuses:
-            statuses = [(value, key) for value, key in statuses 
+            statuses = [(value, key) for value, key in statuses
                             if key in self.use_product_statuses]
             selected = self.use_product_statuses[0]
         else:

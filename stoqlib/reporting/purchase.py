@@ -46,6 +46,7 @@ _ = stoqlib_gettext
 class PurchaseReport(SearchResultsReport):
     report_name = _("Purchase Order Report")
     main_object_name = _("orders")
+    filter_format_string = _("with status <u>%s</u>")
 
     def __init__(self, filename, purchases, status, *args, **kwargs):
         if status:
@@ -125,7 +126,7 @@ class PurchaseOrderReport(BaseStoqReport):
         for item in items:
             total_value += item.quantity * item.cost
             total_cost += item.cost
-        extra_row = ["", "Totals:", "", get_formatted_price(total_cost),
+        extra_row = ["", _("Totals:"), "", get_formatted_price(total_cost),
                      get_formatted_price(total_value)]
         self.add_object_table(items, self._get_items_table_columns(),
                               width=730, summary_row=extra_row)
@@ -144,7 +145,7 @@ class PurchaseOrderReport(BaseStoqReport):
     def _get_freight_line(self):
         freight_line = []
         transporter = self._order.get_transporter_name() or _("Not Specified")
-        freight_line.extend(["Transporter:", transporter, _("Freight:")])
+        freight_line.extend([_("Transporter:"), transporter, _("Freight:")])
         if self._order.freight_type == PurchaseOrder.FREIGHT_FOB:
             freight_line.append("%.2f %%" % self._order.freight)
         else:
@@ -170,10 +171,10 @@ class PurchaseOrderReport(BaseStoqReport):
     def _setup_order_details_table(self):
         cols = [TC("", width=70), TC("", width=300, expand=True, truncate=True),
                 TC("", width=50), TC("", width=300, expand=True, truncate=True)]
-        data = [["Open Date:", self._order.get_open_date_as_string(),
-                 "Status:", self._order.get_status_str()],
-                ["Supplier:", self._order.get_supplier_name(),
-                 "Branch:", self._order.get_branch_name()],
+        data = [[_("Open Date:"), self._order.get_open_date_as_string(),
+                 _("Status:"), self._order.get_status_str()],
+                [_("Supplier:"), self._order.get_supplier_name(),
+                 _("Branch:"), self._order.get_branch_name()],
                 ]
         data.append(self._get_freight_line())
         self.add_column_table(data, cols, do_header=False,
