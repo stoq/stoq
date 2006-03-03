@@ -30,12 +30,13 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
-
 
 class PurchaseDetailsDialog(BaseEditor):
     gladefile = "PurchaseDetailsDialog"
@@ -114,3 +115,11 @@ class PurchaseDetailsDialog(BaseEditor):
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
         payment_group = IPaymentGroup(self.model, connection=self.conn)
         self.add_proxy(payment_group, PurchaseDetailsDialog.payment_proxy)
+
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_print_button__clicked(self, button):
+        print_report(PurchaseOrderReport, self.model)
