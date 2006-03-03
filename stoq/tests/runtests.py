@@ -57,7 +57,12 @@ def setup(options):
     initialize_system("Superuser", "administrator", "", verbose=True)
     create()
 
+def run_test(test_name, globs):
+
+    return rv
+
 def test_gui(options, tests=None):
+    from kiwi.ui.test.player import TimeOutError
     from stoqlib.lib.runtime import new_transaction
 
     if options.verbose:
@@ -81,9 +86,10 @@ def test_gui(options, tests=None):
     tests.sort()
 
     conn = get_connection()
-    for test_name in tests:
+    for filename in tests:
+        test_name = os.path.basename(filename)
         if options.verbose:
-            print 'RUNNING', os.path.basename(test_name)
+            print 'RUNNING', test_name
             print '=' * DEFAULT_SEPARATORS
         globs = {}
         environ.app = None
@@ -93,20 +99,31 @@ def test_gui(options, tests=None):
         # seems to be highly threads related.
         pid = os.fork()
         if not pid:
-            execfile(test_name, globs)
-            raise SystemExit
-        os.waitpid(pid, 0)
+            try:
+                execfile(filename, globs)
+            except TimeOutError, e:
+                print 'TIMEOUT ERROR: %s' % e
+                os._exit(1)
+            sys.exit(0)
 
-        post_hook = globs.get('post_hook')
-        if post_hook:
-            post_hook(new_transaction())
+        pid, status = os.waitpid(pid, 0)
+        if status != 0:
+            print '%s failed' % test_name
+            return 1
+        else:
+            post_hook = globs.get('post_hook')
+            if post_hook:
+                post_hook(new_transaction())
 
         if options.verbose:
             print '=' * DEFAULT_SEPARATORS
+
     os.chdir(oldpwd)
 
     if options.verbose:
         print_immediately('gui tests ok')
+
+    return 0
 
 def main(args):
     parser = optparse.OptionParser()
@@ -126,7 +143,7 @@ def main(args):
     register_configparser_settings('stoq', options.filename)
     setup(options)
 
-    test_gui(options, args[1:])
+    return test_gui(options, args[1:])
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[:]))
