@@ -65,7 +65,7 @@ setup(name=PACKAGE,
         ('share/doc/stoqlib',
          ('AUTHORS', 'CONTRIBUTORS', 'NEWS', 'README')),
         ],
-    packages=listpackages('stoqlib'),
+    packages=listpackages('stoqlib', exclude='stoqlib.tests'),
     cmdclass=dict(install_data=StoqLibInstallData,
                   install_lib=StoqLibInstallLib),
     )
