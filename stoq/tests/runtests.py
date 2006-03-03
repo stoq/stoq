@@ -32,6 +32,7 @@ import sys
 
 import gobject
 from kiwi import environ
+from kiwi.log import set_log_level
 
 from stoq.main import setup_stoqlib_settings
 setup_stoqlib_settings()
@@ -60,6 +61,7 @@ def test_gui(options, tests=None):
     from stoqlib.lib.runtime import new_transaction
 
     if options.verbose:
+        set_log_level('uitest', 5)
         print_immediately('Performing gui module tests... ')
 
     root = os.path.abspath(os.path.join(sys.argv[0], '..', '..', '..'))
@@ -96,6 +98,7 @@ def test_gui(options, tests=None):
             # Do thread initialization here, in the child process
             # avoids strange X errors
             from kiwi.ui.test.player import TimeOutError
+
             try:
                 execfile(filename, globs)
             except TimeOutError, e:
