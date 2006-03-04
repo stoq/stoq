@@ -50,7 +50,9 @@ class StoqLibInstallLib(TemplateInstallLib):
 setup(name=PACKAGE,
       version=__version__,
       author="Async Open Source",
-      author_email="evandro@async.com.br",
+      maintainer="Evandro Vale Miquelito"
+      maintainer_email="evandro@async.com.br",
+      description="A powerful retail system library"
       url=__website__,
       license="GNU LGPL 2.1 (see COPYING)",
       data_files=[
