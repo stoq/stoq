@@ -33,8 +33,7 @@ from kiwi.environ import environ
 import stoqlib
 from stoqlib.exceptions import SQLError, DatabaseInconsistency
 from stoqlib.lib.runtime import new_transaction
-from stoqlib.lib.configparser import config
-from stoqlib.database import finish_transaction
+from stoqlib.database import finish_transaction, get_registered_db_settings
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.domain.tables import get_table_types
@@ -51,7 +50,7 @@ class SchemaMigration:
         """Returns a list of all the migration sql files for a certain
         db schema version
         """
-        rdbms_name = config.get_rdbms_name()
+        rdbms_name = get_registered_db_settings().rdbms
         migration_files = []
         for version in range(current_db_version + 1, self.db_version +1):
             filename = '%s-schema-migration-%s.sql' % (rdbms_name, version)
@@ -108,8 +107,13 @@ class SchemaMigration:
                 type, value, trace = sys.exc_info()
                 raise SQLError("Bad sql script, got error %s, of type %s"
                                % (value, type))
-            conn.commit()
-            add_system_table_reference(conn)
+            parts = sql_file.replace('.sql', '').split('-')
+            version = parts[-1]
+            try:
+                version = int(version)
+            except ValueError:
+                raise ValueError("Bad sql file name, got %s" % sql_file)
+            add_system_table_reference(conn, version=version)
         # checks if there is new applications and update all the user
         # profiles on the system
         update_profile_applications(conn)
