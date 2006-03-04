@@ -111,10 +111,10 @@ class AbstractDialog(Delegate, RunnableView):
     def __init__(self, delete_handler=None):
         if not delete_handler:
             delete_handler = self.close
-        
+
         self.setup_keyactions()
-        Delegate.__init__(self, gladefile=self.gladefile, 
-                          delete_handler=delete_handler, widgets=self.widgets, 
+        Delegate.__init__(self, gladefile=self.gladefile,
+                          delete_handler=delete_handler, widgets=self.widgets,
                           keyactions=self.keyactions)
 
     def setup_keyactions(self):
@@ -138,15 +138,15 @@ be subclassed and customized."""
 
     gladefile = "BasicDialog"
 
-    widgets = ('top_separator', 
-               'header', 
+    widgets = ('top_separator',
+               'header',
                'header_label',
                'extra_header',
-               'main', 
-               'main_label', 
+               'main',
+               'main_label',
                'ok_button',
-               'cancel_button', 
-               'extra_holder') 
+               'cancel_button',
+               'extra_holder')
 
     def __init__(self, delete_handler=None):
         if not delete_handler:
@@ -156,8 +156,8 @@ be subclassed and customized."""
     # Yes, title=" ". Use a single space to work around *cough* BROKEN
     # window managers that want to set the title as Unnamed or ? when an
     # empty string is set to it.
-    def _initialize(self, main_label_text=None, title=" ", 
-                    header_text="", size=None, hide_footer=False): 
+    def _initialize(self, main_label_text=None, title=" ",
+                    header_text="", size=None, hide_footer=False):
         self.set_title(title)
         if size:
             self.get_toplevel().set_size_request(*size)
@@ -209,12 +209,12 @@ be subclassed and customized."""
     #
     # Kiwi handlers
     #
-        
+
 
 
     def on_ok_button__clicked(self, *args):
         self.confirm()
-    
+
     def on_cancel_button__clicked(self, *args):
         self.cancel()
 
@@ -245,7 +245,7 @@ class BasicPluggableDialog(BasicDialog):
             self.warnbox = None
         BasicDialog._initialize(self, title=title, header_text=header_text,
                                 size=size, hide_footer=hide_footer)
-    
+
     def enable_notices(self):
         """Enables display of notice messages with icons using alert()
         and error()."""
@@ -261,7 +261,7 @@ class BasicPluggableDialog(BasicDialog):
         if not self.warnbox:
             raise AssertionError
         self.warnbox.error(message)
-    
+
     def alert(self, message):
         if not self.warnbox:
             raise AssertionError
@@ -277,8 +277,8 @@ class BasicPluggableDialog(BasicDialog):
         self.close()
 
     def cancel(self, *args):
-        # self.slave.on_cancel() should return a considered failure 
-        # value 
+        # self.slave.on_cancel() should return a considered failure
+        # value
         self.retval = self.slave.on_cancel()
         self.close()
 
@@ -296,7 +296,7 @@ class BasicWrappingDialog(BasicPluggableDialog):
     def __init__(self, slave, title=" ", header_text="", size=None,
                  hide_footer=False):
         BasicPluggableDialog.__init__(self)
-        BasicPluggableDialog._initialize(self, slave, title, header_text, 
+        BasicPluggableDialog._initialize(self, slave, title, header_text,
                                          size, hide_footer=hide_footer)
         # This helps kiwis ui test, set the name of ourselves to
         # the classname of the slave, which is much more helpful than
@@ -306,7 +306,7 @@ class BasicWrappingDialog(BasicPluggableDialog):
         slave.set_transient_for = self.set_transient_for
 
 class ConfirmDialog(BasicDialog):
-    """Dialog offers an option to confirm or cancel an event. 
+    """Dialog offers an option to confirm or cancel an event.
     It prints text in a label and offers OK/Cancel buttons."""
 
     title = 'Confirmation'
