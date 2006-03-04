@@ -31,12 +31,16 @@ tables, removing tables and configuring administration user.
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database import setup_tables
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 
-def ensure_admin_user(name, username, password):
+_ = stoqlib_gettext
+
+
+def ensure_admin_user(administrator_password):
     from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
     from stoqlib.domain.profile import UserProfile
     print_msg("Creating administrator user...", break_line=False)
@@ -49,7 +53,7 @@ def ensure_admin_user(name, username, password):
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
-    role = EmployeeRole(name='Administrator role', connection=conn)
+    role = EmployeeRole(name=_('System Administrator'), connection=conn)
     user = person_obj.addFacet(IIndividual, connection=conn)
     user = person_obj.addFacet(IEmployee, role=role,
                                connection=conn)
@@ -57,16 +61,17 @@ def ensure_admin_user(name, username, password):
     # must have all the facets.
     person_obj.addFacet(ISalesPerson, connection=conn)
 
-    profile = UserProfile.create_profile_template(conn, 'Administrator',
+    profile = UserProfile.create_profile_template(conn, _('Administrator'),
                                                   has_full_permission=True)
 
-    user = person_obj.addFacet(IUser, username=username, password=password,
+    username = _('administrator')
+    user = person_obj.addFacet(IUser, username=username,
+                               password=administrator_password,
                                profile=profile, connection=conn)
     table = PersonAdaptToUser
-    ret = table.select(table.q.username == 'administrator',
-                         connection=conn)
+    ret = table.select(table.q.username == username, connection=conn)
     assert ret, ret.count() == 1
-    assert ret[0].password == password
+    assert ret[0].password == administrator_password
     conn.commit()
     print_msg('done')
     return user
@@ -84,13 +89,13 @@ def ensure_sellable_units():
     conn.commit()
     print_msg("done")
 
-def initialize_system(user, username, password, delete_only=False,
-                     list_tables=False, verbose=False):
+def initialize_system(password, delete_only=False, list_tables=False, 
+                      verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
     setup_tables(delete_only=delete_only, list_tables=list_tables,
                  verbose=verbose)
     ensure_system_parameters()
-    ensure_admin_user(user, username, password)
+    ensure_admin_user(password)
     ensure_sellable_units()

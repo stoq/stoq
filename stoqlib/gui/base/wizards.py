@@ -58,6 +58,9 @@ class BaseWizard(PluggableWizard, AbstractDialog):
         PluggableWizard.cancel(self)
         self.close()
 
+    def quit_if_last(self, *args):
+        self.cancel()
+
     def refresh_next(self, validation_value):
         if validation_value:
             self.enable_next()

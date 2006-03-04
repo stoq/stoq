@@ -25,7 +25,7 @@
 ##            Rudá Porto Filgueiras     <rudazz@gmail.com>
 ##            Johan Dahlin              <jdahlin@async.com.br>
 ##
-""" Infrastructure for running tests suites """
+""" Infrastructure for running test suites """
 
 import doctest
 import optparse
@@ -36,26 +36,22 @@ import gobject
 gobject.threads_init()
 import py
 
-from stoqlib.lib.runtime import (print_immediately, set_test_mode,
-                                 set_verbose,
-                                 register_configparser_settings,
+from stoqlib.lib.runtime import (print_immediately, set_verbose,
                                  register_application_names)
 
 DEFAULT_SEPARATORS = 79
 
 
 def setup(options):
-    # This must be called *before* anything else since it will switch to test
-    # database and also change the runtime module behaviour
-    set_test_mode(True)
     from stoqlib.domain.examples.createall import create
     from stoqlib.lib.admin import initialize_system, setup_tables
 
     set_verbose(False)
     setup_tables(delete_only=True, list_tables=True, verbose=True)
     set_verbose(options.verbose)
-    initialize_system("Superuser", "administrator", "", verbose=True)
+    initialize_system("", verbose=True)
     create()
+
 
 def test_domain(options):
     if options.verbose:
@@ -84,17 +80,41 @@ def test_domain(options):
     if options.verbose:
         print_immediately('Domain tests are ok')
 
-def main(args):
+
+def get_parser():
     parser = optparse.OptionParser()
+
+    # Database connection settings
+    parser.add_option('-a', '--address',
+                      action="store",
+                      dest="address",
+                      default='localhost',
+                      help='Database address to connect to')
+    parser.add_option('-p', '--port',
+                      action="store",
+                      dest="port",
+                      default='5432',
+                      help='Database port')
+    parser.add_option('-d', '--dbname',
+                      action="store",
+                      dest="dbname",
+                      default='%s_test' % os.getlogin(),
+                      help='Database name to use')
+    parser.add_option('-u', '--username',
+                      action="store",
+                      dest="username",
+                      default=os.getlogin(),
+                      help='Database username')
+    parser.add_option('-w', '--password',
+                      action="store",
+                      dest="password",
+                      default='',
+                      help='user password')
+
+    # Additional options
     parser.add_option('-v', '--verbose',
                       action="store_true",
                       dest="verbose")
-    parser.add_option('-p', '--package',
-                      action="store",
-                      type="string",
-                      dest="package_name",
-                      default="stoq",
-                      help='Use this package name for config file')
     parser.add_option('-c', '--nocapture',
                       action="store_true",
                       dest="nocapture",
@@ -105,15 +125,30 @@ def main(args):
                       dest="filename",
                       default="stoq.conf",
                       help='Use this file name for config file')
+    return parser
+
+
+def main(args):
+    parser = get_parser()
 
     if '--g-fatal-warnings' in args:
         args.remove('--g-fatal-warnings')
     options, args = parser.parse_args(args)
-    register_configparser_settings(options.package_name, options.filename)
+
+    from stoqlib.database import register_db_settings, DatabaseSettings
+
+    db_settings = DatabaseSettings(address=options.address,
+                                   port=options.port,
+                                   dbname=options.dbname,
+                                   username=options.username,
+                                   password=options.password)
+
+    register_db_settings(db_settings)
     register_application_names(["stoqlib_app"])
 
     setup(options)
     test_domain(options)
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[:]))
