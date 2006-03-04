@@ -32,24 +32,24 @@ _connection = None
 _current_user = None
 _verbose = False
 _test_mode = False
-_domain = 'stoqlib'
-_config_file = 'stoqlib.conf'
 _app_names = None
+_database_settings = None
 
 
 #
-# Work with connections and transactions
+# Working with connections and transactions
 #
 
 def initialize_connection():
     # Avoiding circular imports
-    from stoqlib.lib.configparser import config
+    from stoqlib.database import get_registered_db_settings
     global _connection
     msg = 'The connection for this application was already set.'
     assert not _connection, msg
 
-    conn_uri = config.get_connection_uri(test_mode=get_test_mode())
-    conn = connectionForURI(conn_uri)
+    db_settings = get_registered_db_settings()
+    # TODO if port is invalid there will be an error here
+    conn = connectionForURI(db_settings.get_connection_uri())
 
     # Stoq applications always use transactions explicitly
     conn.autoCommit = False
@@ -104,25 +104,9 @@ def get_current_user():
 def set_current_user(user):
     global _current_user
     assert user
-    # He we store a PersonAdaptToUser object.
+    # Here we store a PersonAdaptToUser object.
     _current_user = user
 
-def set_test_mode(value):
-    global _test_mode
-    _test_mode = value
-
-def get_test_mode():
-    global _test_mode
-    return _test_mode
-
-def register_configparser_settings(domain, file_name=''):
-    global _domain, _config_file
-    _domain = domain
-    _config_file = file_name
-
-def get_configparser_settings():
-    global _domain, _config_file
-    return _domain, _config_file
 
 @argcheck(list)
 def register_application_names(app_names):

@@ -24,13 +24,96 @@
 ##
 """ Database access methods """
 
+import os
+import sys
+import socket
+
+from kiwi.argcheck import argcheck
+from sqlobject import connectionForURI
+
+from stoqlib.exceptions import ConfigError
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.tables import get_table_types
+
+_ = stoqlib_gettext
+
+_db_settings = None
+
+DEFAULT_RDBMS = 'postgres'
 
 
 # This class will be moved to it's proper place after bug 2253
 class Adapter:
     pass
+
+class DatabaseSettings:
+    def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,
+                 dbname='stoq', username=os.getlogin(), password=''):
+        self.rdbms = rdbms
+        self.address = address
+        self.port = port
+        self.dbname = dbname
+        self.username = username
+        self.password = password
+
+    def get_connection_uri(self):
+        return get_connection_uri(self.address, self.port, self.dbname,
+                                  self.rdbms, self.username,
+                                  self.password)
+
+    def check_database_address(self):
+        try:
+            socket.gethostbyaddr(self.address)
+        except socket.gaierror:
+            return False
+        return True
+
+    def check_database_connection(self):
+        """Checks the database connection according to the stored
+        database settings.
+        @return: a tuple with two itens where the first one is the check
+                 ok status (True or False) and the second one is the error
+                 message. The error message is None if the status is ok.
+        """
+        conn_uri = self.get_connection_uri()
+        return check_database_connection(conn_uri)
+
+
+def get_connection_uri(address, port, dbname, rdbms=DEFAULT_RDBMS,
+                       username=os.getlogin(), password=''):
+    # Here we construct a uri for database access like:
+    # 'postgresql://username@localhost/dbname'
+    if rdbms == DEFAULT_RDBMS:
+        authority = '%s:%s@%s:%s' % (username, password, address, port)
+        path = '/' + dbname
+    else:
+        raise ConfigError("Unsupported database type: %s" % rdbms)
+    return '%s://%s%s' % (rdbms, authority, path)
+
+
+def check_database_connection(conn_uri):
+    """Checks the database connection according to the stored
+    database settings.
+    @return: a tuple with two itens where the first one is the check
+             ok status (True or False) and the second one is the error
+             message. The error message is None if the status is ok.
+    """
+    try:
+        conn = connectionForURI(conn_uri)
+        conn.makeConnection()
+    except:
+        type, value, trace = sys.exc_info()
+        msg = _("Could not connect to %s database. The error message is "
+                "'%s'. Please fix the connection settings you have set "
+                "and try again." % (DEFAULT_RDBMS, value))
+        return False, msg
+    return True, None
+
+
+#
+# General routines
+#
 
 
 def rollback_and_begin(conn):
@@ -69,6 +152,7 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
             table.dropTable(ifExists=True, cascade=True, connection=conn)
             if list_tables:
                 print_msg('<removed>:  %s' % table)
+            conn.commit()
         if delete_only:
             continue
         table.createTable(connection=conn)
@@ -79,8 +163,20 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
         return
 
     # Import here since we must create properly the domain schema before
-    # importing than in migration module
+    # importing them in the migration module
     from stoqlib.lib.migration import add_system_table_reference
     add_system_table_reference(conn, check_new_db=True)
     finish_transaction(conn, 1)
     print_msg('done')
+
+
+@argcheck(DatabaseSettings)
+def register_db_settings(db_settings):
+    global _db_settings
+    _db_settings = db_settings
+
+
+def get_registered_db_settings():
+    global _db_settings
+    return _db_settings
+

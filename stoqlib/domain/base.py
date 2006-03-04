@@ -83,8 +83,8 @@ class AbstractModel(object):
 
     @classmethod
     def select(cls, clause=None, connection=None, **kwargs):
-        from stoqlib.lib.configparser import config
-        rdbms_name = config.get_rdbms_name()
+        from stoqlib.database import get_registered_db_settings
+        rdbms_name = get_registered_db_settings().rdbms
         cls._check_connection(connection)
         clause_repr = sqlrepr(clause, rdbms_name)
         if isinstance(clause, SQLOp) and isinstance(clause_repr, unicode):
