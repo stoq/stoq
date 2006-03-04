@@ -142,6 +142,7 @@ class SaleListToolbar(SlaveDelegate):
         self.klist.connect("double-click", self.on_klist_double_clicked)
         self.klist.connect("has-rows", self._update_print_button)
         self.klist.emit("has-rows", len(self.klist) != 0)
+        self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self._update_buttons(False)
 
     def hide_return_sale_button(self):
@@ -184,4 +185,6 @@ class SaleListToolbar(SlaveDelegate):
         self._run_details_dialog(self.klist.get_selected())
 
     def on_print_button__clicked(self, *args):
-        self.searchbar.print_report(SalesReport, self.klist)
+        self.searchbar.print_report(SalesReport,
+                                    (self.klist.get_selected_rows()
+                                     or self.klist))
