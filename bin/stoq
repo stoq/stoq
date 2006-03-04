@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 by Async Open Source 
+## Copyright (C) 2005 by Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -22,55 +22,16 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
-"""
-bin/stoq:
+""" Script to start application """
 
-   Script to start application
-"""
-
-import os
 import sys
+import os
 
-# Required version of Python
-REQUIRED_VERSION = (2, 4)
-
-KIWI_REQUIRED = '1.9.2'
-
-# Directory name, defaults to name of binary, it is relative to ..
-# a, __init__.py and main.py is expected to be found there.
-DIRNAME = None
-
-# Application name, defaults to capitalized name of binary
-APPNAME = None
-
-# Do not modify code below this point
-dirname = DIRNAME or os.path.split(sys.argv[0])[1]
-appname = APPNAME or dirname.capitalize()
-
-version_string = sys.version.split(' ')[0]
-majmin = tuple(map(int, version_string.split('.')))
-if majmin < REQUIRED_VERSION:
-    raise SystemExit("ERROR: Python %s or higher is required to run %s, "
-                     "%s found" % ('.'.join(map(str, REQUIRED_VERSION)),
-                                   appname,
-                                   version_string))
-
-main_module = dirname + '.main'
-try:
-    from kiwi.environ import Application
-except ImportError:
-    raise SystemExit("Could not find kiwi, is a recent version %s installed?"
-                      % KIWI_REQUIRED)
+from kiwi.environ import Application
 
 app = Application('stoq', path='stoq.main')
-if app.uninstalled:
-    app.add_global_resource('pixmaps', 'data/pixmaps')
-    app.add_global_resource('glade', 'data')
-    app.add_resources(locale='locale',
-                      basedir='.',
-                      docs='.')
-app.enable_translation()
 app.run()
+
 try:
     sys.exit(main(sys.argv))
 except KeyboardInterrupt:

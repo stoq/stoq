@@ -42,8 +42,8 @@ else:
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 
-from stoq.main import setup_stoqlib_settings
-setup_stoqlib_settings()
+from stoq.main import setup_environment
+setup_environment()
 
 from stoqlib.lib.runtime import get_connection, new_transaction
 

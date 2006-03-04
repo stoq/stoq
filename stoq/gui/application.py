@@ -28,7 +28,7 @@ import datetime
 import gettext
 
 import gtk
-from kiwi.environ import app, environ
+from kiwi.environ import environ
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.database import rollback_and_begin
@@ -144,14 +144,14 @@ class AppWindow(BaseAppWindow):
         about.set_logo(logo)
 
         # License
-        license = app.find_resource('docs', 'COPYING')
+        license = environ.find_resource('docs', 'COPYING')
         about.set_license(file(license).read())
 
         # Authors & Contributors
-        authors = app.find_resource('docs', 'AUTHORS')
+        authors = environ.find_resource('docs', 'AUTHORS')
         lines = [a.strip() for a in file(authors).readlines()]
         lines.append('') # separate authors from contributors
-        contributors = app.find_resource('docs', 'CONTRIBUTORS')
+        contributors = environ.find_resource('docs', 'CONTRIBUTORS')
         lines.extend([c.strip() for c in file(contributors).readlines()])
         about.set_authors(lines)
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from distutils.core import setup
 from distutils.command.install_data import install_data
-import glob
 
 from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
      listpackages)
 
+from stoq import __version__
+
 PACKAGE = 'stoq'
-VERSION = '0.6.0'
- 
+
 class StoqInstallData(install_data):
     def run(self):
         self.data_files.extend(compile_po_files(PACKAGE))
@@ -20,12 +20,14 @@ class StoqInstallLib(TemplateInstallLib):
                      docs='$prefix/share/doc/stoq',
                      basedir='$prefix')
     global_resources = dict(pixmaps='$datadir/pixmaps',
-                            glade='$datadir/glade')
+                            glade='$datadir/glade',
+                            config='$sysconfdir/stoq')
 
 data_files = [
     ('share/stoq/pixmaps',
      listfiles('data/pixmaps', '*.png')),
     ('share/stoq/bin',  ['bin/init-database']),
+    ('etc/stoq',  ''),
     ('share/doc/stoq',
      ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS']),
     ('share/stoq/glade',
@@ -33,12 +35,12 @@ data_files = [
     ]
 
 setup(name=PACKAGE,
-      version=VERSION,
+      version=__version__,
       author='Async Open Source',
       author_email='evandro@async.com.br',
       url='http://www.async.com.br/projects/stoq/wiki',
       license='GPL',
-      packages=listpackages('stoq'),
+      packages=listpackages(PACKAGE),
       scripts=['bin/stoq'],
       data_files=data_files,
       cmdclass=dict(install_lib=StoqInstallLib,

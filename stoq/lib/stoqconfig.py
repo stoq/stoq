@@ -38,13 +38,13 @@ from stoqlib.exceptions import (DatabaseError, UserProfileError,
 from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.search import set_max_search_results
 from stoqlib.gui.base.gtkadds import register_iconsets
-from stoqlib.lib.configparser import config
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import check_tables
 
 from stoq.gui.login import StoqLoginDialog
+from stoq.lib.configparser import get_config
 
 _ = gettext.gettext
 SPLASH_TIMEOUT = 4000
@@ -60,6 +60,7 @@ class AppConfig:
     splash = 0
     _applications = None
     RETRY_NUMBER = 3
+    config = get_config()
 
     def init_log(self):
         sys.stderr.write("-"*76 + "\n")
@@ -74,13 +75,13 @@ class AppConfig:
     def check_dir_and_create(self, dir):
         if not os.path.isdir(dir):
             if os.path.exists(dir):
-                config.check_permissions(dir, executable=True)
+                self.config.check_permissions(dir, executable=True)
                 os.remove(dir)
                 warnings.warn('A %s file already exist and was removed.'
                               % dir)
             os.mkdir(dir)
             return
-        config.check_permissions(dir, executable=True)
+        self.config.check_permissions(dir, executable=True)
 
     #
     # Application setup.
@@ -96,15 +97,15 @@ class AppConfig:
         self.splash = splash
 
         # Ensure user's application directory is created
-        homepath = config.get_homepath()
+        homepath = self.config.get_homepath()
         self.check_dir_and_create(homepath)
 
         env_log = os.environ.get('%s_LOGFILE' %
-                                 config.domain.upper())
+                                 self.config.domain.upper())
         if env_log:
             sys.stderr = open(env_log, 'a', 0)
-        elif config.has_option("logfile"):
-            option = config.get_option("logfile")
+        elif self.config.has_option("logfile"):
+            option = self.config.get_option("logfile")
             logfile = os.path.expanduser(option)
             sys.stderr = open(logfile, 'a', 0)
 
@@ -226,9 +227,9 @@ class AppConfig:
     #
 
     def get_cookiefile(self):
-        cookiefile = os.path.join(config.get_homepath(), "cookie")
+        cookiefile = os.path.join(self.config.get_homepath(), "cookie")
         if os.path.exists(cookiefile):
-            config.check_permissions(cookiefile, writable=True)
+            self.config.check_permissions(cookiefile, writable=True)
         return cookiefile
 
     def clear_cookie(self):
