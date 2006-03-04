@@ -11,7 +11,7 @@
                 <property name="visible">True</property>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                        <property name="label" context="yes" translatable="yes">Select Application:</property>
+                        <property name="label" context="yes" translatable="yes">Select an Application:</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
                     </widget>
