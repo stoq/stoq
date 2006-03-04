@@ -34,6 +34,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.receiving import ReceivingOrder
+from stoqlib.gui.base.dialogs import print_report
+from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
 
 _ = stoqlib_gettext
 
@@ -70,5 +72,4 @@ class PurchaseReceivingSearch(SearchDialog):
     #
 
     def on_print_button_clicked(self, *args):
-        # TODO To be implemented on bug 2460
-        pass
+        self.search_bar.print_report(PurchaseReceivalReport, list(self.klist))

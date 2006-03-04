@@ -579,7 +579,9 @@ class SearchBar(SlaveDelegate):
     def print_report(self, report_class, *args, **kwargs):
         blocked_records = self.get_blocked_records_quantity()
         filter_slave = self.get_filter_slave()
-        status = filter_slave.filter_combo.get_selected_data()
+        status = (filter_slave
+                  and filter_slave.filter_combo.get_selected_data()
+                  or None)
         if filter_slave and status != ALL_ITEMS_INDEX:
             status_name = filter_slave.filter_combo.get_selected_label()
         else:
