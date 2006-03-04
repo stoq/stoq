@@ -23,11 +23,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##
-"""
-stoq/gui/purchase/purchase.py:
-
-    Main gui definition for purchase application.
-"""
+""" Main gui definition for purchase application.  """
 
 import gettext
 import datetime
@@ -37,7 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
 from stoqlib.gui.base.columns import ForeignKeyColumn
-from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog, print_report
+from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.purchase import PurchaseOrder
