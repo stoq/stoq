@@ -1,0 +1,317 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="gazpacho">
+    <widget class="GtkWindow" id="DatabaseSettingsStep">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="dbsettings_vbox">
+                <property name="border_width">6</property>
+                <property name="spacing">10</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="title_label">
+                        <property name="label" context="yes" translatable="yes">Welcome to Stoq</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="kiwi+ui+widgets+label+Label" id="header_label">
+                        <property name="label" context="yes" translatable="yes">Please, fill some important informations before start using Stoq</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkFrame" id="frame1">
+                        <property name="label" context="yes" translatable="yes">Postgres Database Settings</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkTable" id="table1">
+                                <property name="border_width">6</property>
+                                <property name="column_spacing">6</property>
+                                <property name="n_columns">6</property>
+                                <property name="n_rows">3</property>
+                                <property name="row_spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkLabel" id="label3">
+                                        <property name="label" context="yes" translatable="yes">Address:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label4">
+                                        <property name="label" context="yes" translatable="yes">Port:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="address">
+                                        <property name="data_type">str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">address</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">14</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="x_options">fill</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkHBox" id="port_hbox">
+                                        <property name="visible">True</property>
+                                        <child>
+                                            <widget class="kiwi+ui+widgets+entry+Entry" id="port">
+                                                <property name="data_type">int</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">port</property>
+                                                <property name="visible">True</property>
+                                                <property name="width_chars">5</property>
+                                                <property name="xalign">1.0</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                            </packing>
+                                        </child>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">2</property>
+                                        <property name="bottom_attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label5">
+                                        <property name="label" context="yes" translatable="yes">Database Name:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="GtkLabel" id="label6">
+                                        <property name="label" context="yes" translatable="yes">Username:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">1</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                        <property name="label" context="yes" translatable="yes">Authentication Type:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="dbname">
+                                        <property name="data_type">str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">dbname</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">13</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="x_options">fill</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="username">
+                                        <property name="data_type">str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">username</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">14</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="x_options">fill</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyComboBox" id="authentication_type">
+                                        <property name="data_type">int</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">4</property>
+                                        <property name="right_attach">5</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">4</property>
+                                        <property name="right_attach">5</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="passwd_label">
+                                        <property name="label" context="yes" translatable="yes">Password:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">4</property>
+                                        <property name="right_attach">5</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">5</property>
+                                        <property name="right_attach">6</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="left_attach">5</property>
+                                        <property name="right_attach">6</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="password">
+                                        <property name="data_type">str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">password</property>
+                                        <property name="visibility">False</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">10</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="bottom_attach">3</property>
+                                        <property name="left_attach">5</property>
+                                        <property name="right_attach">6</property>
+                                        <property name="top_attach">2</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkVBox" id="vbox2">
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                        <property name="label" context="yes" translatable="yes">Stoq user 'administrator' password:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <widget class="kiwi+ui+widgets+entry+Entry" id="stoq_user_passwd">
+                                        <property name="data_type">str</property>
+                                        <property name="model_attribute">password</property>
+                                        <property name="visibility">False</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_chars">10</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="hint_label">
+                                <property name="label" context="yes" translatable="yes">Hint: this is the first user to start Stoq applications</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">4</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

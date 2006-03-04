@@ -26,36 +26,18 @@
 ##
 """ Run all the domain test suite """
 
-import optparse
 import os
 import sys
 
-import gobject
 from kiwi import environ
 from kiwi.log import set_log_level
 
-from stoq.main import setup_stoqlib_settings
-setup_stoqlib_settings()
-
 from stoqlib.lib.runtime import (print_immediately, get_connection,
-                                 set_test_mode, set_verbose,
-                                 register_configparser_settings)
+                                 set_verbose)
+
 
 DEFAULT_SEPARATORS = 79
 
-def setup(options):
-    # This must be called *before* anything else since it will switch to test
-    # database and also change the runtime module behaviour
-    set_test_mode(True)
-    from stoqlib.domain.examples.createall import create
-    from stoqlib.lib.admin import initialize_system
-    from stoqlib.database import setup_tables
-
-    set_verbose(False)
-    setup_tables(delete_only=True, list_tables=True, verbose=True)
-    set_verbose(options.verbose)
-    initialize_system("Superuser", "administrator", "", verbose=True)
-    create()
 
 def test_gui(options, tests=None):
     from stoqlib.lib.runtime import new_transaction
@@ -121,14 +103,19 @@ def test_gui(options, tests=None):
             print '=' * DEFAULT_SEPARATORS
 
     os.chdir(oldpwd)
-
     if options.verbose:
         print_immediately('gui tests ok')
-
     return 0
 
+
 def main(args):
-    parser = optparse.OptionParser()
+    from stoq.main import setup_environment, get_parser
+
+    if '--g-fatal-warnings' in args:
+        args.remove('--g-fatal-warnings')
+
+    parser = get_parser()
+    # Additional options only useful for tests
     parser.add_option('-v', '--verbose',
                       action="store_true",
                       dest="verbose")
@@ -138,14 +125,14 @@ def main(args):
                       dest="filename",
                       default="stoq.conf",
                       help='Use this file name for config file')
-
-    if '--g-fatal-warnings' in args:
-        args.remove('--g-fatal-warnings')
-
     options, args = parser.parse_args(args)
-    register_configparser_settings('stoq', options.filename)
-    setup(options)
 
+    setup_environment(options, options.verbose, force_init_db=True,
+                      test_mode=True)
+
+    from stoqlib.domain.examples.createall import create
+    set_verbose(options.verbose)
+    create()
     return test_gui(options, args[1:])
 
 if __name__ == '__main__':

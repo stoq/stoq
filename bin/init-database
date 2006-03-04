@@ -29,43 +29,22 @@
     database already created to run this script properly.
 """
 
-import getpass
 import os
 import sys
 
+from stoqlib.lib.runtime import set_verbose
+
+from stoq.main import setup_environment
+
+
 TEST_MODE = '-t' in sys.argv
+VERBOSE = '-v' in sys.argv
 
-from stoq.main import setup_stoqlib_settings
-setup_stoqlib_settings()
-
-from stoqlib.lib.runtime import set_test_mode, set_verbose, print_msg
-
-# XXX This function must be called right before any other stoq domain
-# module since initialize_connection has been called after
-# importing these modules
-set_test_mode(TEST_MODE)
-
-from stoqlib.lib.admin import initialize_system
-from stoqlib.database import setup_tables
 
 def main(args):
-    LIST_TABLES = '-l' in sys.argv
-    VERBOSE = LIST_TABLES or '-v' in sys.argv
-
     set_verbose(VERBOSE)
-    setup_tables(delete_only=True, list_tables=LIST_TABLES,
-                 verbose=TEST_MODE)
-    if 'delete' in sys.argv:
-        raise SystemExit
-
-    name, username = "Superuser", "administrator"
-    if not TEST_MODE:
-        msg = "Enter Stoq 'administrator' user password: "
-        password = getpass.getpass(msg)
-    else:
-        password = ''
-
-    initialize_system(user=name, username=username, password=password)
+    setup_environment(verbose=VERBOSE, force_init_db=True,
+                      test_mode=TEST_MODE)
 
     if '-e' in args:
         from stoqlib.domain.examples.createall import create
