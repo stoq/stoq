@@ -30,6 +30,7 @@
 import doctest
 import optparse
 import os
+import pwd
 import sys
 
 import gobject
@@ -84,6 +85,8 @@ def test_domain(options):
 def get_parser():
     parser = optparse.OptionParser()
 
+    login_name = pwd.getpwuid(os.getuid())[0]
+
     # Database connection settings
     parser.add_option('-a', '--address',
                       action="store",
@@ -98,12 +101,12 @@ def get_parser():
     parser.add_option('-d', '--dbname',
                       action="store",
                       dest="dbname",
-                      default='%s_test' % os.getlogin(),
+                      default='%s_test' % login_name,
                       help='Database name to use')
     parser.add_option('-u', '--username',
                       action="store",
                       dest="username",
-                      default=os.getlogin(),
+                      default=login_name,
                       help='Database username')
     parser.add_option('-w', '--password',
                       action="store",
@@ -119,12 +122,6 @@ def get_parser():
                       action="store_true",
                       dest="nocapture",
                       help='Get print outputs on tests')
-    parser.add_option('-f', '--filename',
-                      action="store",
-                      type="string",
-                      dest="filename",
-                      default="stoq.conf",
-                      help='Use this file name for config file')
     return parser
 
 
