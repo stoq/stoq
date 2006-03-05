@@ -25,6 +25,7 @@
 """ Database access methods """
 
 import os
+import pwd
 import sys
 import socket
 
@@ -49,11 +50,13 @@ class Adapter:
 
 class DatabaseSettings:
     def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,
-                 dbname='stoq', username=os.getlogin(), password=''):
+                 dbname='stoq', username=None, password=''):
         self.rdbms = rdbms
         self.address = address
         self.port = port
         self.dbname = dbname
+        if not username:
+            username = pwd.getpwuid(os.getuid())[0]
         self.username = username
         self.password = password
 
@@ -81,7 +84,10 @@ class DatabaseSettings:
 
 
 def get_connection_uri(address, port, dbname, rdbms=DEFAULT_RDBMS,
-                       username=os.getlogin(), password=''):
+                       username=None, password=''):
+    if not username:
+        username = pwd.getpwuid(os.getuid())[0]
+
     # Here we construct a uri for database access like:
     # 'postgresql://username@localhost/dbname'
     if rdbms == DEFAULT_RDBMS:
