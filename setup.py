@@ -2,20 +2,19 @@
 from distutils.core import setup
 from distutils.command.install_data import install_data
 
-from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
-     listpackages)
+from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files, 
+     listfiles, listpackages)
 
 from stoq import __version__
 
 PACKAGE = 'stoq'
 
-class StoqInstallData(install_data):
+class StoqInstallData(KiwiInstallData):
     def run(self):
         self.data_files.extend(compile_po_files(PACKAGE))
         install_data.run(self)
 
-class StoqInstallLib(TemplateInstallLib):
-    name = PACKAGE
+class StoqInstallLib(KiwiInstallLib):
     resources = dict(locale='$prefix/share/locale',
                      docs='$prefix/share/doc/stoq',
                      basedir='$prefix')
@@ -24,14 +23,14 @@ class StoqInstallLib(TemplateInstallLib):
                             config='$sysconfdir/stoq')
 
 data_files = [
-    ('share/stoq/pixmaps',
+    ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.png')),
-    ('share/stoq/bin',  ['bin/init-database']),
-    ('etc/stoq',  ''),
+    ('$datadir/bin',  ['bin/init-database']),
+    ('$datadir/glade',
+     listfiles('data', '*.glade')),
+    ('$sysconfdir',  ''),
     ('share/doc/stoq',
      ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS']),
-    ('share/stoq/glade',
-     listfiles('data', '*.glade')),
     ]
 
 setup(name=PACKAGE,
