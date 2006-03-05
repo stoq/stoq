@@ -5,10 +5,9 @@
 
 from distutils.core import setup
 
-from kiwi.dist import listpackages, listfiles, TemplateInstallLib
+from kiwi.dist import listpackages, listfiles, KiwiInstallData, KiwiInstallLib
 
-class StoqdriversInstallLib(TemplateInstallLib):
-    name = "stoqdrivers"
+class StoqdriversInstallLib(KiwiInstallLib):
     global_resources = dict(conf="$datadir/conf")
 
 version = ''
@@ -16,7 +15,7 @@ execfile("stoqdrivers/__version__.py")
 assert version
 
 setup(
-    name = "Stoqdrivers",
+    name = "stoqdrivers",
     version =  ".".join(map(str, version)),
     description = "Useful drivers for Stoq and retail systems",
     long_description = """ """,
@@ -25,7 +24,8 @@ setup(
     url = "http://www.async.com.br/projects/",
     license = "GNU LGPL 2.1 (see COPYING)",
     packages = listpackages('stoqdrivers'),
-    data_files = [("share/stoqdrivers/conf",
+    data_files = [("$datadir/conf",
                    listfiles("stoqdrivers/conf", "*.ini"))],
-    cmdclass=dict(install_lib=StoqdriversInstallLib),
+    cmdclass=dict(install_lib=StoqdriversInstallLib,
+                  install_data=KiwiInstallData),
     )
