@@ -28,17 +28,17 @@
 from distutils.command.install_data import install_data
 from distutils.core import setup
 
-from kiwi.dist import (TemplateInstallLib, compile_po_files, listfiles,
-                       listpackages)
+from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
+    listfiles, listpackages)
 
 from stoqlib import __version__, __website__
 
-class StoqLibInstallData(install_data):
+class StoqLibInstallData(KiwiInstallData):
     def run(self):
         self.data_files.extend(compile_po_files('stoqlib'))
         install_data.run(self)
 
-class StoqLibInstallLib(TemplateInstallLib):
+class StoqLibInstallLib(KiwiInstallLib):
     resources = dict(locale='$prefix/share/locale')
     global_resources = dict(pixmaps='$datadir/pixmaps',
                             sql='$datadir/sql',
