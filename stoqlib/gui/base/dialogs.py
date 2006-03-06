@@ -92,16 +92,15 @@ class RunnableView:
         self.toplevel.destroy()
 
     def run(self):
-        """Handles action to be performed when window is opened.
-Defaults to _open(), which blocks in a mainloop. Returns the value of
-the retval attribute"""
+        """Handles action to be performed when window is opened. Defaults to
+        _open(), which blocks in a mainloop. Returns the value of the retval
+        attribute.
+        """
         self.show()
-
 
 #
 # Abstract classes: inherit only, do not use.
 #
-
 
 class AbstractDialog(Delegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
@@ -120,7 +119,6 @@ class AbstractDialog(Delegate, RunnableView):
     def setup_keyactions(self):
         self.keyactions = {}
 
-
 #
 # Special note for BasicDialog and BasicPluggableDialog: if you inherit
 # from this class, you *must* call Basic*Dialog._initialize() right after
@@ -131,11 +129,10 @@ class AbstractDialog(Delegate, RunnableView):
 # behave.
 #
 
-
 class BasicDialog(AbstractDialog):
-    """Abstract class that offers a Dialog with two buttons. It should
-be subclassed and customized."""
-
+    """Abstract class that offers a Dialog with two buttons. It should be
+    subclassed and customized.
+    """
     gladefile = "BasicDialog"
 
     widgets = ('top_separator',
@@ -204,13 +201,9 @@ be subclassed and customized."""
     def justify_label(self, just):
         self.main_label.set_justify(just)
 
-
-
     #
     # Kiwi handlers
     #
-
-
 
     def on_ok_button__clicked(self, *args):
         self.confirm()
@@ -218,16 +211,12 @@ be subclassed and customized."""
     def on_cancel_button__clicked(self, *args):
         self.cancel()
 
-
-
 #
 # Main classes start here. There are two basic types: Notify and
 # Confirm dialogs, the only difference between them being that Notify
 # offers only an OK button and Confirm offering both OK and Cancel. The
 # second set offers a pluggable slave area.
 #
-
-
 
 class BasicPluggableDialog(BasicDialog):
     """Abstract class for Pluggable*Dialog; two buttons and a slave area"""
@@ -247,8 +236,9 @@ class BasicPluggableDialog(BasicDialog):
                                 size=size, hide_footer=hide_footer)
 
     def enable_notices(self):
-        """Enables display of notice messages with icons using alert()
-        and error()."""
+        """Enables display of notice messages with icons using alert() and
+        error().
+        """
         self.warnbox = Warnbox()
         self.clear_notices()
         self.attach_slave('notice', self.warnbox)
@@ -282,13 +272,11 @@ class BasicPluggableDialog(BasicDialog):
         self.retval = self.slave.on_cancel()
         self.close()
 
-
 #
 # Wrapping variants, which take a slave as a parameter and set it up to
 # have a "normal" dialog API, which follows the BasicPluggableDialog
 # interface for stoqlib.services run_dialog compatibility.
 #
-
 
 class BasicWrappingDialog(BasicPluggableDialog):
     """ Abstract class for Wrapping*Dialog; run and set_transient_for to
@@ -306,8 +294,9 @@ class BasicWrappingDialog(BasicPluggableDialog):
         slave.set_transient_for = self.set_transient_for
 
 class ConfirmDialog(BasicDialog):
-    """Dialog offers an option to confirm or cancel an event.
-    It prints text in a label and offers OK/Cancel buttons."""
+    """Dialog offers an option to confirm or cancel an event. It prints text
+    in a label and offers OK/Cancel buttons.
+    """
 
     title = 'Confirmation'
     def __init__(self, text, title=None, size=None, ok_label=None):
@@ -324,8 +313,9 @@ class ConfirmDialog(BasicDialog):
                             gtk.keysyms.KP_Enter: self.confirm}
 
 class NotifyDialog(ConfirmDialog):
-    """Dialog that notifies an event. It prints text in a label and
-offers a single OK button."""
+    """Dialog that notifies an event. It prints text in a label and offers a
+    single OK button.
+    """
 
     title = 'Notification'
     def __init__(self, text, title=None, size=None, ok_label=None):
@@ -345,17 +335,24 @@ class PrintDialog(BasicDialog):
             raise TypeError("Invalid report class type specified: %r"
                             % report_class)
         BasicDialog.__init__(self)
-        self._args = args
+
         self._report_class = report_class
+        preview_label = kwargs.pop("preview_label", None)
+        default_filename = kwargs.pop("default_filename", None)
+        title = kwargs.pop("title", PrintDialog.title)
         self._kwargs = kwargs
-        self._initialize()
+        self._args = args
+        self._initialize(preview_label=preview_label, title=title,
+                         default_filename=default_filename)
         self.register_validate_function(self.refresh_ok)
         self.force_validation()
 
-    def _initialize(self, *args, **kwargs):
-        BasicDialog._initialize(self, title=PrintDialog.title, *args,
-                                **kwargs)
-        self._setup_slaves()
+    def _initialize(self, preview_label=None, default_filename=None, *args,
+                    **kwargs):
+        BasicDialog._initialize(self, *args, **kwargs)
+        self.ok_button.set_label(gtk.STOCK_PRINT)
+        self._setup_slaves(preview_label=preview_label,
+                           default_filename=default_filename)
 
     def refresh_ok(self, validation_value):
         if validation_value:
@@ -363,11 +360,13 @@ class PrintDialog(BasicDialog):
         else:
             self.disable_ok()
 
-    def _setup_slaves(self):
+    def _setup_slaves(self, preview_label=None, default_filename=None):
         # XXX Avoiding circular import
         from stoqlib.gui.base.slaves import PrintDialogSlave
-        self.print_slave = PrintDialogSlave(self._report_class, *self._args,
-                                            **self._kwargs)
+        self.print_slave = PrintDialogSlave(self._report_class,
+                                            default_filename=default_filename,
+                                            preview_label=preview_label,
+                                            *self._args, **self._kwargs)
         self.attach_slave('main', self.print_slave)
 
     def confirm(self):
@@ -391,7 +390,6 @@ class PrintDialog(BasicDialog):
 #
 # Auxiliar methods
 #
-
 
 def get_dialog(parent, dialog, *args, **kwargs):
     """ Returns a dialog.
@@ -451,3 +449,4 @@ def confirm_dialog(msg, title=None, size=None, ok_label=None):
 
 def print_report(report_class, *args, **kwargs):
     run_dialog(PrintDialog, None, report_class, *args, **kwargs)
+
