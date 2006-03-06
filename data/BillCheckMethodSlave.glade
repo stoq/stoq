@@ -21,7 +21,7 @@
                                 <child>
                                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
-                                        <property name="label" context="yes" translatable="yes">Number of installments:</property>
+                                        <property name="label" context="yes" translatable="yes">Number of installments2:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -65,15 +65,29 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="installments_number">
-                                        <property name="adjustment">0 0 100 1 10 0</property>
-                                        <property name="data_type">int</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">installments_number</property>
-                                        <property name="text" context="yes" translatable="yes">0</property>
+                                    <widget class="GtkHBox" id="hbox2">
                                         <property name="visible">True</property>
-                                        <property name="width_request">90</property>
-                                        <property name="xalign">1.0</property>
+                                        <child>
+                                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="installments_number">
+                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                                <property name="data_type">int</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">installments_number</property>
+                                                <property name="text" context="yes" translatable="yes">0</property>
+                                                <property name="visible">True</property>
+                                                <property name="width_chars">6</property>
+                                                <property name="width_request">90</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <placeholder/>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
+                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -83,12 +97,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="first_duedate">
+                                    <widget class="ProxyDateEntry" id="first_duedate">
                                         <property name="data_type">date</property>
                                         <property name="model_attribute">first_duedate</property>
                                         <property name="visible">True</property>
-                                        <property name="width_request">90</property>
-                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -99,15 +111,35 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="intervals">
-                                        <property name="adjustment">0 0 100 1 10 0</property>
-                                        <property name="data_type">int</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">intervals</property>
-                                        <property name="text" context="yes" translatable="yes">0</property>
+                                    <widget class="GtkHBox" id="hbox3">
                                         <property name="visible">True</property>
-                                        <property name="width_request">90</property>
-                                        <property name="xalign">1.0</property>
+                                        <child>
+                                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="intervals">
+                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                                <property name="data_type">int</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">intervals</property>
+                                                <property name="text" context="yes" translatable="yes">0</property>
+                                                <property name="visible">True</property>
+                                                <property name="width_chars">6</property>
+                                                <property name="width_request">90</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="expand">False</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <placeholder/>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
+                                        </child>
+                                        <child>
+                                            <placeholder/>
+                                            <packing>
+                                                <property name="position">2</property>
+                                            </packing>
+                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">3</property>
@@ -118,7 +150,8 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="bank_combo">
+                                    <widget class="ProxyComboEntry" id="bank_combo">
+                                        <property name="data_type">str</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -157,7 +190,7 @@
                                         <property name="visible">True</property>
                                         <property name="width_request">90</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="interval_type_combo">
+                                            <widget class="ProxyComboBox" id="interval_type_combo">
                                                 <property name="data_type">int</property>
                                                 <property name="model_attribute">interval_type</property>
                                                 <property name="visible">True</property>
@@ -181,8 +214,8 @@
                                         <property name="model_attribute">monthly_interest</property>
                                         <property name="text" context="yes" translatable="yes">0</property>
                                         <property name="visible">True</property>
+                                        <property name="width_chars">6</property>
                                         <property name="width_request">90</property>
-                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">3</property>
