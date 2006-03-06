@@ -50,7 +50,7 @@ have pygtk 2.8.1 in the default python site-packages directory.
 Once you have Stoq installed, then to run it:
 [evandro@localhost]$ stoq
 
-If you just type bin/stoq you will get a list of available applications. 
+If you just type bin/stoq you will get a list of available applications.
 You must also type the application name to run it properly like: bin/stoq pos
 
 Note that your path will need to containe 'yourprefix/bin'
@@ -76,7 +76,7 @@ http://www.async.com.br/mailman/listinfo/stoq-devel
 
 Copyright Information
 =====================
-                                                                               
+
 This software is covered by the GNU General Public License
 (version 2.0, or if you choose, a later version).  Basically just don't
 say you wrote bits you didn't.
