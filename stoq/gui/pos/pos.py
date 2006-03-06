@@ -71,7 +71,9 @@ class POSApp(AppWindow):
     app_name = _('Point of Sales')
     app_icon_name = 'stoq-pos-app'
     gladefile = "pos"
-    client_widgets =  ('client',)
+    order_widgets =  ('client',
+                      'order_number',
+                      'salesperson')
     product_widgets = ('product',)
     sellable_widgets = ('quantity',
                         'sellable_unit_label')
@@ -93,13 +95,13 @@ class POSApp(AppWindow):
 
     def _clear_order(self):
         self.sellables.clear()
-        for widget in (self.search_box, self.client_data_hbox,
+        for widget in (self.search_box, self.order_details_hbox,
                        self.list_vbox, self.CancelOrder):
             widget.set_sensitive(False)
         self.ResetOrder.set_sensitive(True)
         self.new_order_button.set_sensitive(True)
         self.sale = None
-        self.client_proxy.new_model(self.sale, relax_type=True)
+        self.order_proxy.new_model(self.sale, relax_type=True)
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
@@ -122,7 +124,7 @@ class POSApp(AppWindow):
         self.quantity.grab_focus()
 
     def _setup_proxies(self):
-        self.client_proxy = self.add_proxy(widgets=POSApp.client_widgets)
+        self.order_proxy = self.add_proxy(widgets=POSApp.order_widgets)
         model = FancySellable(quantity=decimal.Decimal('1.0'),
                               price=currency(0))
         self.sellable_proxy = self.add_proxy(model,
@@ -161,8 +163,6 @@ class POSApp(AppWindow):
         self.sellable_unit_label.set_size("small")
         self.sellable_unit_label.set_bold(True)
         self.warning_label.set_size("small")
-        # Waiting for bug 2319
-        self.client_details_button.set_sensitive(False)
 
     def _update_totals(self, *args):
         self.summary_label.update_total()
@@ -240,10 +240,10 @@ class POSApp(AppWindow):
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
         if self.sale:
             self.sellables.clear()
-            self.client_proxy.new_model(self.sale)
+            self.order_proxy.new_model(self.sale)
             self._update_widgets()
             self._update_totals()
-            for widget in (self.search_box, self.client_data_hbox,
+            for widget in (self.search_box, self.order_details_hbox,
                            self.list_vbox, self.footer_hbox,
                            self.CancelOrder):
                 widget.set_sensitive(True)
@@ -275,7 +275,8 @@ class POSApp(AppWindow):
         for widget in widgets:
             widget.set_sensitive(has_sellables)
         has_client = self.sale is not None and self.sale.client is not None
-        self.client_edit_button.set_sensitive(has_client)
+        self.EditClient.set_sensitive(has_client)
+        self.ClientDetails.set_sensitive(has_client)
         self.delivery_button.set_sensitive(has_client and has_sellables)
         model = self.sellables.get_selected()
         self._update_totals()
@@ -335,9 +336,21 @@ class POSApp(AppWindow):
     def on_price_activate(self, *args):
         self.add_sellable_item()
 
+    def on_edit_current_client_action_clicked(self, *args):
+        if not (self.sale and self.sale.client):
+            raise ValueError('You must have a client defined at this point')
+        if run_person_role_dialog(ClientEditor, self, self.conn,
+                                  self.sale.client):
+            self.conn.commit()
+
+    def on_client_details_action_clicked(self, *args):
+        # Waiting for bug 2319
+        pass
+
     #
     # Kiwi callbacks
     #
+
 
     def on_product__changed(self, *args):
         self.product.set_valid()
@@ -372,13 +385,6 @@ class POSApp(AppWindow):
 
     def on_sellables__selection_changed(self, *args):
         self._update_widgets()
-
-    def on_client_edit_button__clicked(self, *args):
-        if not (self.sale and self.sale.client):
-            raise ValueError('You must have a client defined at this point')
-        if run_person_role_dialog(ClientEditor, self, self.conn,
-                                  self.sale.client):
-            self.conn.commit()
 
     def _on_clients_action__clicked(self, *args):
         self._search_clients()
