@@ -585,7 +585,8 @@ class SalesPersonStep(BaseWizardStep):
 
     def post_init(self):
         self.salesperson_combo.grab_focus()
-        self.wizard.enable_finish()
+        if self._get_selected_payment_method() is IMoneyPM:
+            self.wizard.enable_finish()
 
     def next_step(self):
         step_class = None
