@@ -57,9 +57,8 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="admission_date">
+                                    <widget class="ProxyDateEntry" id="admission_date">
                                         <property name="data_type">date</property>
-                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">admission_date</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -85,10 +84,9 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="expire_vacation">
+                                    <widget class="ProxyDateEntry" id="expire_vocation">
                                         <property name="data_type">date</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">expire_vacation</property>
+                                        <property name="model_attribute">expire_vocation</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -431,9 +429,8 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="pis_registry_date">
+                                    <widget class="ProxyDateEntry" id="pis_registry_date">
                                         <property name="data_type">date</property>
-                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_registry_date</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -526,6 +523,7 @@ Number:</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">dependent_person_number</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="bottom_attach">2</property>
@@ -598,6 +596,7 @@ Number:</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">bank_id</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>

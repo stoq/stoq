@@ -96,11 +96,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="open_contract_date">
+                            <widget class="ProxyDateEntry" id="open_contract_date">
                                 <property name="data_type">date</property>
-                                <property name="mandatory">True</property>
                                 <property name="model_attribute">open_contract_date</property>
-                                <property name="text" context="yes" translatable="yes">  /  /    </property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

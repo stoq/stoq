@@ -16,16 +16,16 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">Transporter Status:</property>
-                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                 </child>
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">Open Contract Date:</property>
-                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -48,7 +48,7 @@
                         <child>
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="active_radio">
                                 <property name="data_type">bool</property>
-                                <property name="data_value" context="yes" translatable="yes">True</property>
+                                <property name="data_value">True</property>
                                 <property name="label" context="yes" translatable="yes">Active</property>
                                 <property name="model_attribute">is_active</property>
                                 <property name="visible">True</property>
@@ -58,7 +58,7 @@
                             <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="inactive_radio">
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
-                                <property name="data_value" context="yes" translatable="yes">False</property>
+                                <property name="data_value">False</property>
                                 <property name="group">active_radio</property>
                                 <property name="label" context="yes" translatable="yes">Inactive</property>
                                 <property name="model_attribute">is_active</property>
@@ -81,11 +81,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="open_contract_date">
+                    <widget class="ProxyDateEntry" id="open_contract_date">
                         <property name="data_type">date</property>
-                        <property name="is_focus">True</property>
                         <property name="model_attribute">open_contract_date</property>
-                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -115,8 +113,8 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">Freight:</property>
-                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -145,8 +143,8 @@
                     <widget class="kiwi+ui+widgets+entry+Entry" id="freight">
                         <property name="data_type">Decimal</property>
                         <property name="model_attribute">freight_percentage</property>
-                        <property name="xalign">1.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -175,8 +173,8 @@
                     <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">%</property>
-                        <property name="xalign">0.0</property>
                         <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>

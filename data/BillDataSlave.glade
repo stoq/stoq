@@ -38,13 +38,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="due_date">
+                                    <widget class="ProxyDateEntry" id="due_date">
                                         <property name="data_type">date</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">due_date</property>
                                         <property name="visible">True</property>
-                                        <property name="width_request">90</property>
                                     </widget>
                                     <packing>
                                         <property name="position">1</property>
@@ -70,6 +67,7 @@
                                         <property name="model_attribute">value</property>
                                         <property name="visible">True</property>
                                         <property name="width_request">90</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="position">3</property>

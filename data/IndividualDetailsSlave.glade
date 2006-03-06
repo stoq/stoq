@@ -139,7 +139,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="marital_status">
+                            <widget class="ProxyComboBox" id="marital_status">
                                 <property name="data_type">int</property>
                                 <property name="model_attribute">marital_status</property>
                                 <property name="visible">True</property>
@@ -220,9 +220,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="birth_date">
+                            <widget class="ProxyDateEntry" id="birth_date">
                                 <property name="data_type">date</property>
-                                <property name="is_focus">True</property>
                                 <property name="model_attribute">birth_date</property>
                                 <property name="visible">True</property>
                             </widget>
