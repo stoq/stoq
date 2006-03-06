@@ -22,11 +22,7 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-stoq/gui/sales/sale.py:
-
-    Implementation of sales application.
-"""
+""" Implementation of sales application.  """
 
 import gettext
 from datetime import date
@@ -111,19 +107,19 @@ class SalesApp(SearchableAppWindow):
     #
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=100, 
-                       data_type=str, sorted=True),
-                Column('open_date', title=_('Date Started'), width=120, 
+        return [Column('order_number', title=_('Number'), width=100,
+                       data_type=int, sorted=True),
+                Column('open_date', title=_('Date Started'), width=120,
                        data_type=date),
-                ForeignKeyColumn(Person, 'name', title=_('Client'), 
+                ForeignKeyColumn(Person, 'name', title=_('Client'),
                                  data_type=str, width=220,
                                  obj_field='client', adapted=True),
-                ForeignKeyColumn(Person, 'name', title=_('Salesperson'), 
+                ForeignKeyColumn(Person, 'name', title=_('Salesperson'),
                                  data_type=str, width=180,
                                  obj_field='salesperson', adapted=True),
-                Column('status_name', title=_('Status'), width=80, 
-                       data_type=str), 
-                Column('total_sale_amount', title=_('Total'), 
+                Column('status_name', title=_('Status'), width=80,
+                       data_type=str),
+                Column('total_sale_amount', title=_('Total'),
                        data_type=currency)]
 
     def get_extra_query(self):

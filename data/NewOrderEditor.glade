@@ -94,7 +94,11 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
+                        <property name="label" context="yes" translatable="yes">Order Number:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
                     <packing>
                         <property name="left_attach">4</property>
                         <property name="right_attach">5</property>
@@ -114,7 +118,13 @@
                     </packing>
                 </child>
                 <child>
-                    <placeholder/>
+                    <widget class="kiwi+ui+widgets+entry+Entry" id="order_number">
+                        <property name="data_type">int</property>
+                        <property name="model_attribute">order_number</property>
+                        <property name="visible">True</property>
+                        <property name="width_chars">6</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
                     <packing>
                         <property name="left_attach">5</property>
                         <property name="right_attach">6</property>
