@@ -185,6 +185,21 @@ parameters_info = {
                                                 'coupon will be printed on '
                                                 'that application instead of '
                                                 'Point of Sales')),
+    'EDIT_SALES_ORDER_NUMBER': ParameterDetails(_('Sales'),
+                                              _('Edit Sales Order Number'),
+                                              _('Once this parameter is set '
+                                                'to true, every time we '
+                                                'create a new sale order, the'
+                                                'user will be asked for a '
+                                                'order number')),
+    'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_('Sales'),
+                                              _('Accept Change Salesperson'),
+                                              _('Once this parameter is set '
+                                                'to true, the user will be '
+                                                'able to change the '
+                                                'salesperson of an opened '
+                                                'order on sale checkout '
+                                                'dialog')),
     'SET_PAYMENT_METHODS_ON_TILL': ParameterDetails(_('Financial'),
                                                     _('Set Payment Methods on '
                                                       'Till'),
@@ -267,6 +282,7 @@ class ParameterAttr:
         self.type = type
         self.initial = initial
 
+
 class ParameterAccess(ClassInittableObject):
     """A mechanism to tie specific instances to constants that can be
     made available cross-application. This class has a special hook that
@@ -290,11 +306,13 @@ class ParameterAccess(ClassInittableObject):
                                initial=DEFAULT_DECIMAL_SIZE),
                  ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
                  ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=True),
+                 ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
                  ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
                  ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
                  ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
                  ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
                  ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
+                 ParameterAttr('EDIT_SALES_ORDER_NUMBER', bool, initial=False),
                  ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
                  ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
                                initial=True),
