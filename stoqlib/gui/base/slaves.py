@@ -57,12 +57,20 @@ class PrintDialogSlave(BaseEditorSlave):
                      'filename_entry')
     model_type = Settable
 
-    def __init__(self, report_class, *report_args, **report_kwargs):
+    def __init__(self, report_class, *args, **kwargs):
         self._available_printers = []
         BaseEditorSlave.__init__(self, None, None)
+        preview_label = kwargs.pop("preview_label", None)
+        if preview_label is not None:
+            self.print_preview_button.set_label(preview_label)
+        self._preview_callback = kwargs.pop("preview_callback", None)
+        default_filename = kwargs.pop("default_filename", None)
+        if default_filename:
+            self.model.filename = default_filename
+            self.proxy.update("filename")
         self._report_class = report_class
-        self._report_kwargs = report_kwargs
-        self._report_args = report_args
+        self._report_kwargs = kwargs
+        self._report_args = args
         self._update_view()
 
     def get_printer_name(self):
@@ -142,4 +150,7 @@ class PrintDialogSlave(BaseEditorSlave):
         self.filename_entry.set_text(filename)
 
     def on_print_preview_button__clicked(self, *args):
-        print_preview(self.get_report_file())
+        if self._preview_callback is not None:
+            return self._preview_callback(self._report_class, *self._report_args,
+                                          **self._report_kwargs)
+        return print_preview(self.get_report_file())
