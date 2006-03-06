@@ -26,10 +26,12 @@
 """ Slaves for payment methods management"""
 
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.domain.interfaces import (ICheckPM, ICardPM, IBillPM,
-                                       IFinancePM, IGiftCertificatePM)
+                                       IFinancePM, IGiftCertificatePM,
+                                       IMultiplePM, IMoneyPM)
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
                                             FinanceDetails)
@@ -81,6 +83,7 @@ class SelectCashMethodSlave(SlaveDelegate):
 
 class SelectPaymentMethodSlave(SlaveDelegate):
     toplevel = gladefile = 'SelectPaymentMethodSlave'
+    gsignal('method-changed', object)
 
     def __init__(self, active_pm_ifaces):
         SlaveDelegate.__init__(self, toplevel=self.toplevel,
@@ -100,3 +103,16 @@ class SelectPaymentMethodSlave(SlaveDelegate):
                                 if iface in active_pm_ifaces]
         if not otherm_ifaces:
             self.othermethods_check.hide()
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_cash_check__toggled(self, *args):
+        self.emit('method-changed', IMoneyPM)
+
+    def on_certificate_check__toggled(self, *args):
+        self.emit('method-changed', IGiftCertificatePM)
+
+    def on_othermethods_check__toggled(self, *args):
+        self.emit('method-changed', IMultiplePM)

@@ -92,7 +92,7 @@ class Sale(Domain):
                 STATUS_REVIEWING:   _(u"Reviewing")}
 
     coupon_id = IntCol(default=None)
-    order_number = UnicodeCol(default='')
+    order_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)

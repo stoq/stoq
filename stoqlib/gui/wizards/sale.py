@@ -29,8 +29,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.datatypes import currency
 from kiwi.python import Settable
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import print_cheques_for_payment_group
@@ -38,6 +38,7 @@ from stoqlib.lib.defaults import (METHOD_MONEY, METHOD_MULTIPLE,
                                   METHOD_GIFT_CERTIFICATE)
 from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
@@ -65,72 +66,10 @@ _ = stoqlib_gettext
 # Wizard Steps
 #
 
-class CustomerStep(BaseWizardStep):
-    gladefile = 'CustomerStep'
-    model_type = Sale
-    proxy_widgets = ('client',
-                     'order_number',
-                     'order_details')
-
-    def __init__(self, wizard, previous, conn, model,
-                 outstanding_value=currency(0)):
-        self.total = outstanding_value or model.get_total_sale_amount()
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
-        self.register_validate_function(self.wizard.refresh_next)
-
-    def update_view(self):
-        # TODO Check here if the customer data has enough information like
-        # cpf or phone_number according to parameter value. Bug 2172
-        pass
-
-    def _setup_widgets(self):
-        table = Person.getAdapterClass(IClient)
-        clients = table.get_active_clients(self.conn)
-        items = [(c.get_adapted().name, c) for c in clients]
-        self.client.prefill(items)
-
-        total_str = get_formatted_price(self.total)
-        self.order_total_lbl.set_text(total_str)
-
-    #
-    # BaseEditorSlave hooks
-    #
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    CustomerStep.proxy_widgets)
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.client.grab_focus()
-        self.order_details.set_accepts_tab(False)
-        self.update_view()
-
-    def has_next_step(self):
-        return False
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_add_button__clicked(self, *args):
-        # Commit here and do not forget that SearchDialog synchronizes
-        # connection internally
-        self.conn.commit()
-        person = run_dialog(ClientSearch, self, self.conn)
-        if person:
-            self.model.update_client(person)
-
-
 class PaymentMethodStep(BaseWizardStep):
     gladefile = 'PaymentMethodStep'
     model_type = Sale
     slave_holder = 'method_holder'
-    widgets = ('method_combo',)
 
     slaves_info = ((ICheckPM, CheckMethodSlave),
                    (IBillPM, BillMethodSlave),
@@ -205,11 +144,12 @@ class PaymentMethodStep(BaseWizardStep):
     # WizardStep hooks
     #
 
-    def next_step(self):
+    def validate_step(self):
         self.method_slave.finish()
-        return CustomerStep(self.wizard, self, self.conn, self.model,
-                            self.outstanding_value)
+        return True
 
+    def has_next_step(self):
+        return False
 
     def post_init(self):
         self.method_combo.grab_focus()
@@ -232,6 +172,7 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
         self.outstanding_value = outstanding_value
         self.sale = sale
         self.group = wizard.get_payment_group()
+        self._is_last = True
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         self.register_validate_function(self.wizard.refresh_next)
         self._setup_widgets()
@@ -266,12 +207,12 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
     # WizardStep hooks
     #
 
+
     def next_step(self):
-        step_class = CustomerStep
         if self.other_methods_check.get_active():
             method = METHOD_MULTIPLE
-            if not self.wizard.skip_payment_step:
-                step_class = PaymentMethodStep
+            if self.wizard.skip_payment_step:
+                self._is_last = True
         else:
             method = METHOD_MONEY
             self.wizard.setup_cash_payment(self.outstanding_value)
@@ -281,11 +222,27 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
             value = self.outstanding_value
             self.group.create_renegotiation_outstanding_data(value,
                                                              method)
-        return step_class(self.wizard, self, self.conn, self.sale,
-                          self.outstanding_value)
+        if self._is_last:
+            # finish the wizard
+            return
+        return PaymentMethodStep(self.wizard, self, self.conn, self.sale,
+                                 self.outstanding_value)
 
     def post_init(self):
         self.cash_check.grab_focus()
+        self.wizard.enable_finish()
+
+    #
+    # Callbacks
+    #
+
+    def on_cash_check__toggled(self, *args):
+        self._is_last = True
+        self.wizard.enable_finish()
+
+    def on_other_methods_check__toggled(self, *args):
+        self._is_last = False
+        self.wizard.disable_finish()
 
 
 class GiftCertificateOverpaidStep(BaseWizardStep):
@@ -346,7 +303,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
     # WizardStep hooks
     #
 
-    def next_step(self):
+    def validate_step(self):
         number = self.model.number
         if self.group.renegotiation_data is not None:
             cert_adapter = self.group.get_renegotiation_adapter()
@@ -360,7 +317,10 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
             else:
                 self.group.create_renegotiation_giftcertificate_data(number,
                                                                      value)
-        return CustomerStep(self.wizard, self, self.conn, self.sale)
+        return True
+
+    def has_next_step(self):
+        return False
 
     def post_init(self):
         self.certificate_number.grab_focus()
@@ -466,7 +426,8 @@ class GiftCertificateSelectionStep(BaseWizardStep):
             self.wizard.gift_certificates.append(certificate)
         gift_total = self._get_gift_certificates_total()
         if gift_total == self.sale_total:
-            return CustomerStep(self.wizard, self, self.conn, self.sale)
+            # finish the wizard
+            return
         elif self.sale_total > gift_total:
             outstanding_value = self.sale_total - gift_total
             return GiftCertificateOutstandingStep(self.wizard, self,
@@ -491,6 +452,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         if gift_total == self.sale_total:
             text = ''
             value = ''
+            self.wizard.enable_finish()
         else:
             value = self.sale_total - gift_total
             if gift_total < self.sale_total:
@@ -499,6 +461,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
                 text = _('Overpaid:')
                 value = -value
             value = get_formatted_price(value)
+            self.wizard.disable_finish()
         self.difference_label.set_text(text)
         self.difference_value_label.set_text(value)
 
@@ -566,7 +529,6 @@ class SalesPersonStep(BaseWizardStep):
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
                      'salesperson_combo')
-    widgets = proxy_widgets + ('subtotal_expander',)
 
     def __init__(self, wizard, conn, model, edit_mode):
         self._edit_mode = edit_mode
@@ -607,15 +569,26 @@ class SalesPersonStep(BaseWizardStep):
         else:
             return IMultiplePM
 
+    def _update_next_button(self, slave, method_iface):
+        if method_iface is IMoneyPM:
+            self.wizard.enable_finish()
+        elif (method_iface is IGiftCertificatePM
+              or method_iface is IMultiplePM):
+            self.wizard.disable_finish()
+        else:
+            raise ValueError("Invalid payment method interface, got %s"
+                             % method_iface)
+
     #
     # WizardStep hooks
     #
 
     def post_init(self):
         self.salesperson_combo.grab_focus()
+        self.wizard.enable_finish()
 
     def next_step(self):
-        step_class = CustomerStep
+        step_class = None
         selected_method = self._get_selected_payment_method()
         group = self.wizard.get_payment_group()
         if selected_method is IMoneyPM:
@@ -634,6 +607,10 @@ class SalesPersonStep(BaseWizardStep):
             group.default_method = METHOD_MULTIPLE
             if not self.wizard.skip_payment_step:
                 step_class = PaymentMethodStep
+        if step_class is None:
+            # Return None here means call wizard.finish, which is exactly
+            # what we need
+            return
         return step_class(self.wizard, self, self.conn, self.model)
 
     #
@@ -655,10 +632,13 @@ class SalesPersonStep(BaseWizardStep):
         else:
             self.pm_slave = SelectPaymentMethodSlave(pm_ifaces)
             self._setup_payment_method_widgets()
+        self.pm_slave.connect('method-changed', self._update_next_button)
         self.attach_slave('select_method_holder', self.pm_slave)
 
     def setup_proxies(self):
         self.setup_combo()
+        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
+            self.salesperson_combo.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     SalesPersonStep.proxy_widgets)
 
@@ -668,6 +648,10 @@ class SalesPersonStep(BaseWizardStep):
 
     def on_disccharge_slave_changed(self, slave):
         self.update_totals()
+
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_("Additional Information"))
 
 
 #

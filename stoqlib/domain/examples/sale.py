@@ -130,8 +130,9 @@ def create_sales():
         open_date = open_dates[index]
         status = statuses[index]
         salesperson = salespersons[index]
+        # Order number field will be filled automatically after bug 2214
         sale = Sale(connection=conn, till=till, client=clients[index],
-                    order_number='#%03d' % (index + 1), status=status,
+                    order_number=index + 1, status=status,
                     open_date=open_date, salesperson=salesperson)
         sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
