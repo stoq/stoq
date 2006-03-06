@@ -31,11 +31,8 @@ import sys
 import optparse
 import gettext
 
-from kiwi.ui.dialogs import error
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.database import check_database_connection
 
-from stoq.gui.config import FirstTimeConfigWizard
 from stoq.lib.applist import get_application_names
 from stoq.lib.configparser import (StoqConfigParser, register_config,
                                    get_config)
@@ -127,6 +124,7 @@ def setup_environment(options=None, verbose=False, force_init_db=False,
             type, value, trace = sys.exc_info()
             msg = _("Invalid config file settings, got error '%s', "
                     "of type '%s'" % (value, type))
+            from kiwi.ui.dialogs import error
             error(_('Could not open database config file'), long=msg)
             raise SystemExit("Error: bad config file")
 
@@ -143,6 +141,8 @@ def setup_environment(options=None, verbose=False, force_init_db=False,
             if options.password:
                 config.set_password(options.password)
     else:
+        from stoqlib.gui.base.dialogs import run_dialog
+        from stoq.gui.config import FirstTimeConfigWizard
         model = run_dialog(FirstTimeConfigWizard, None)
         if not model:
             raise SystemExit("No configuration data provided")
@@ -155,6 +155,7 @@ def setup_environment(options=None, verbose=False, force_init_db=False,
         conn_uri = config.get_connection_uri()
         conn_ok, error_msg = check_database_connection(conn_uri)
         if not conn_ok:
+            from kiwi.ui.dialogs import error
             error(_('Could not connect to database'), long=error_msg)
             raise SystemExit("Error: bad connection settings provided")
 

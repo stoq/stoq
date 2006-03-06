@@ -63,6 +63,9 @@ def test_gui(options, tests=None):
     # useful for tests which depend on others being ran before
     tests.sort()
 
+    if 'gtk' in sys.modules:
+        raise AssertionError("Gtk cannot be loaded at this point")
+
     conn = get_connection()
     for filename in tests:
         test_name = os.path.basename(filename)
