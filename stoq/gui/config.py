@@ -90,13 +90,15 @@ class DatabaseSettingsStep(BaseWizardStep):
             msg = _("The database address '%s' is invalid. Please fix the "
                     "address you have set and try again"
                     % self.model.address)
-            error(_('Invalid database address'), long=msg)
+            error(_('Invalid database address'), long=msg,
+                  parent=self.wizard.get_toplevel())
             self.address.set_invalid(_("Invalid database address"))
             self.force_validation()
             return False
         conn_ok, error_msg = self.model.check_database_connection()
         if not conn_ok:
-            error(_('Invalid database settings'), long=error_msg)
+            error(_('Invalid database settings'), long=error_msg,
+                  parent=self.wizard.get_toplevel())
             return False
         return True
 
