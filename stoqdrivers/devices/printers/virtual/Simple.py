@@ -132,8 +132,13 @@ class Simple:
         for item_id, item in self._items.items():
             self.totalized_value += item.get_total_value()
 
-        if not self.totalized_value:
-            raise CouponTotalizeError(_("Coupon totalized at zero!"))
+        charge_value = self.totalized_value * charge / 100
+        discount_value = self.totalized_value * discount / 100
+        self.totalized_value += -discount_value + charge_value
+
+        if not self.totalized_value > 0:
+            raise CouponTotalizeError(_("Coupon totalized must be greater "
+                                        "than zero!"))
 
         self.is_coupon_totalized = True
         return self.totalized_value
