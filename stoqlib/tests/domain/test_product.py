@@ -155,5 +155,5 @@ class TestProductSellableItem(BaseDomainTest):
         self.conn.commit()
         # now setting the proper sold quantity in the sellable item
         self._instance.quantity = sold_qty
-        self._instance.sell(self.conn, branch)
+        self._instance.sell(branch)
         assert not storable.get_stocks(branch)[0].quantity
