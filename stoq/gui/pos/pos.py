@@ -43,10 +43,11 @@ from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
 from stoqlib.domain.sellable import AbstractSellable, FancySellable
 from stoqlib.domain.service import ServiceSellableItem
-from stoqlib.domain.product import ProductSellableItem
+from stoqlib.domain.product import ProductSellableItem, Product
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import get_current_till_operation
-from stoqlib.domain.interfaces import ISellable, IClient, IDelivery
+from stoqlib.domain.interfaces import (ISellable, IClient, IDelivery,
+                                       IStorable)
 from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.editors.person import ClientEditor
@@ -92,6 +93,7 @@ class POSApp(AppWindow):
         self._setup_proxies()
         self._clear_order()
         self._update_widgets()
+        self._product_table = Product.getAdapterClass(ISellable)
 
     def _clear_order(self):
         self.sellables.clear()
@@ -133,7 +135,7 @@ class POSApp(AppWindow):
         self.product_proxy = self.add_proxy(Settable(product=None),
                                             POSApp.product_widgets)
 
-    def _setup_entry_completion(self):
+    def _setup_sellables(self):
         # TODO Waiting for improvements in kiwi entry completion. We need a
         # better way to query strings immediately when typing in the
         # entry
@@ -159,7 +161,7 @@ class POSApp(AppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
         if not sysparam(self.conn).HAS_DELIVERY_MODE:
             self.delivery_button.hide()
-        self._setup_entry_completion()
+        self._setup_sellables()
         self.sellable_unit_label.set_size("small")
         self.sellable_unit_label.set_bold(True)
         self.warning_label.set_size("small")
@@ -225,12 +227,26 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         if not sellable:
             return
+
+        if isinstance(sellable, self._product_table):
+            adapted = sellable.get_adapted()
+            storable = IStorable(adapted, connection=self.conn)
+            # XXX Probably we could get rid of this check using a view and
+            # not allowing products without stocks for a certain branch in
+            # the pos item list. Waiting for bug 2339
+            if not storable.has_stock_by_branch(self.sale.get_till_branch()):
+                msg = _("There is no stock of this product in this branch, "
+                        "please, select another item.")
+                warning(_("Can not sell this product"), long=msg,
+                        parent=self.get_toplevel())
+                return
         self._update_list(sellable, notify_on_entry=True)
+        self._setup_sellables()
         self.warning_box.hide()
         self.product.grab_focus()
 
     def select_first_item(self):
-        if self.sellables:
+        if len(self.sellables):
             # XXX Probably kiwi should handle this for us. Waiting for
             # support
             self.sellables.select(self.sellables[0])
