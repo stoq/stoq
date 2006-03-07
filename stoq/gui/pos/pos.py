@@ -103,7 +103,7 @@ class POSApp(AppWindow):
         self.ResetOrder.set_sensitive(True)
         self.new_order_button.set_sensitive(True)
         self.sale = None
-        self.order_proxy.new_model(self.sale, relax_type=True)
+        self.order_proxy.new_model(None)
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
