@@ -31,7 +31,7 @@ from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import StockError, SellError
+from stoqlib.exceptions import StockError, SellError, DatabaseInconsistency
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
@@ -165,7 +165,8 @@ class ProductSellableItem(AbstractSellableItem):
     # Basic methods
     #
 
-    def sell(self, conn, branch, order_product=False):
+    def sell(self, branch, order_product=False):
+        conn = self.get_connection()
         sparam = sysparam(conn)
         if not (branch and
                 branch.id == sparam.CURRENT_BRANCH.id or
@@ -197,8 +198,6 @@ class ProductSellableItem(AbstractSellableItem):
         # and we need to set it as sold.
         logic_qty = storable.get_logic_balance()
         balance = storable.get_full_balance() - logic_qty
-        # TODO we must also update the sellable status when receiving
-        # products in warehouse application
         if not balance:
             self.sellable.sell()
 
@@ -304,6 +303,11 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         for stock_item in stocks:
             stock_item.quantity += quantity
+        conn = self.get_connection()
+        adapted = self.get_adapted()
+        sellable = ISellable(adapted, connection=conn)
+        if sellable.is_sold():
+            sellable.set_available()
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
@@ -411,6 +415,20 @@ class ProductAdaptToStorable(ModelAdapter):
             msg = ("This company doesn't allow logic quantity "
                    "operations.")
             raise StockError(msg)
+
+    def has_stock_by_branch(self, branch):
+        """Returns True if there is at least one item on stock for the
+        given branch or False if not.
+        This method also considers the logic stock
+        """
+        stock = self.get_stocks(branch)
+        qty = stock.count()
+        if not qty == 1:
+            raise DatabaseInconsistency("You should have only one stock "
+                                        "item for this branch, got %d"
+                                        % qty)
+        stock = stock[0]
+        return stock.quantity + stock.logic_quantity > 0
 
     def add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
                        logic_quantity=0.0):

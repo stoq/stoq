@@ -305,7 +305,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('DECIMAL_SIZE', int,
                                initial=DEFAULT_DECIMAL_SIZE),
                  ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
-                 ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=True),
+                 ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
                  ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
                  ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
                  ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
