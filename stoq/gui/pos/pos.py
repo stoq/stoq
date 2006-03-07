@@ -103,7 +103,11 @@ class POSApp(AppWindow):
         self.ResetOrder.set_sensitive(True)
         self.new_order_button.set_sensitive(True)
         self.sale = None
-        self.order_proxy.new_model(None)
+        # FIXME Hack, waiting for a bug fix in kiwi, see bug #2473
+        self.order_proxy.new_model(None, relax_type=True)
+        self.client.set_text('')
+        self.order_number.set_text('')
+        self.salesperson.set_text('')
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
