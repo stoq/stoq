@@ -213,7 +213,10 @@ class Payment(Domain):
         return self.method.get_thirdparty(self.group)
 
     def get_thirdparty_name(self):
-        return self.get_thirdparty().name
+        thirdparty = self.get_thirdparty()
+        if thirdparty:
+            return thirdparty.name
+        return _(u'Anonymous')
 
 
 class AbstractPaymentGroup(InheritableModelAdapter):

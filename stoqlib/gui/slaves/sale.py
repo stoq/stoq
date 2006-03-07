@@ -28,13 +28,18 @@
 import gtk
 from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
+from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoqlib.lib.validators import get_price_format_str
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.reporting.sale import SalesReport
+
+_ = stoqlib_gettext
+
 
 class DiscountChargeSlave(BaseEditorSlave):
     """A slave for discounts and charge management
@@ -82,6 +87,11 @@ class DiscountChargeSlave(BaseEditorSlave):
             self.proxy.update('charge_percentage')
         self.emit('discount-changed')
 
+    def _validate_percentage(self, value, type_text):
+        if value > 100:
+            return ValidationError(_("%s can not be greater then 100")
+                                     % type_text)
+
     #
     # BaseEditorSlave hooks
     #
@@ -95,6 +105,12 @@ class DiscountChargeSlave(BaseEditorSlave):
     # Kiwi callbacks
     #
 
+    def on_charge_perc__validate(self, entry, value):
+        return self._validate_percentage(value, _('Charge'))
+
+    def on_discount_perc__validate(self, entry, value):
+        return self._validate_percentage(value, _('Discount'))
+
     @signal_block('discount_value.changed')
     def after_discount_perc__changed(self, *args):
         self.setup_discount_charge()
@@ -102,6 +118,9 @@ class DiscountChargeSlave(BaseEditorSlave):
     @signal_block('discount_perc.changed')
     def after_discount_value__changed(self, *args):
         self.setup_discount_charge()
+        if self.model.discount_percentage > 100:
+            msg =_("Discount can not be greater then 100 percent")
+            self.discount_value.set_invalid(msg)
 
     @signal_block('charge_value.changed')
     def after_charge_perc__changed(self, *args):
@@ -110,6 +129,9 @@ class DiscountChargeSlave(BaseEditorSlave):
     @signal_block('charge_perc.changed')
     def after_charge_value__changed(self, *args):
         self.setup_discount_charge()
+        if self.model.charge_percentage > 100:
+            msg =_("Charge can not be greater then 100 percent")
+            self.charge_value.set_invalid(msg)
 
     def on_charge_perc_ck__toggled(self, *args):
         self.update_widget_status()
@@ -122,6 +144,7 @@ class DiscountChargeSlave(BaseEditorSlave):
 
     def on_discount_value_ck__toggled(self, *args):
         self.update_widget_status()
+
 
 class SaleListToolbar(SlaveDelegate):
     """ A simple sale toolbar with common operations like, returning a sale,
