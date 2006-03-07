@@ -329,8 +329,19 @@ class FiscalCoupon:
         return True
 
     def totalize(self):
-        self.printer.totalize(self.sale.discount_value,
-                              self.sale.charge_value, TAX_NONE)
+        discount = self.sale.discount_percentage
+        charge = self.sale.charge_percentage
+        if discount > charge:
+            discount = discount - charge
+            charge = 0
+        elif charge > discount:
+            charge = charge - discount
+            discount = 0
+        else:
+            # If these values are greater than zero we will get problems in
+            # stoqdrivers
+            charge = discount = 0
+        self.printer.totalize(discount, charge, TAX_NONE)
         return True
 
     def cancel(self):
