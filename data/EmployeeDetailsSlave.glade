@@ -84,9 +84,9 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyDateEntry" id="expire_vocation">
+                                    <widget class="ProxyDateEntry" id="expire_vacation">
                                         <property name="data_type">date</property>
-                                        <property name="model_attribute">expire_vocation</property>
+                                        <property name="model_attribute">expire_vacation</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
