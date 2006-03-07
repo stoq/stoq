@@ -19,15 +19,16 @@ Requirements
 ============
 Stoqlib has the following dependencies:
 
-Python 2.4 or higher
+Python 2.4-dev or higher
 PyGTK 2.8.1 or higher
 PostgresSQL 7.4.7 or higher
 Psycopg 1
 SQLObject 0.7.0
-Gazpacho 0.6.5
-Kiwi 1.9.4
-Stoqdrivers 0.2.0
 zope.interface 3.0.0 or higher
+Kiwi 1.9.4
+Gazpacho 0.6.5
+Stoqdrivers 0.2.0
+Python Imaging Library (PIL) 1.1.5 or higher
 Reportlab 1.20
 
 If you are a developer, the following packages are for you:
@@ -56,7 +57,7 @@ http://www.async.com.br/mailman/listinfo/stoq-devel
 
 Copyright Information
 =====================
-                                                                               
+
 This software is covered by the GNU Lesser General Public License
 (version 2.0, or if you choose, a later version).  Basically just don't
 say you wrote bits you didn't.
