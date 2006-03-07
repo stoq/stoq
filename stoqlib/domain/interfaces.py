@@ -78,7 +78,13 @@ class ISellable(ConnInterface):
     def can_be_sold():
         pass
 
+    def is_sold():
+        pass
+
     def set_sold():
+        pass
+
+    def set_available():
         pass
 
     def get_price():

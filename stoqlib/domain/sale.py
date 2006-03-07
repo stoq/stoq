@@ -263,13 +263,15 @@ class Sale(Domain):
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")
 
-    def update_stocks(self):
+    def update_items(self):
         conn = self.get_connection()
         branch = self.get_till_branch()
-        for product in self.get_products():
-            storable = IStorable(product.sellable.get_adapted(),
-                                 connection=conn)
-            storable.decrease_stock(product.quantity, branch)
+        for item in self.get_items():
+            if isinstance(item, ProductSellableItem):
+                # TODO add support for ordering products, bug #2469
+                item.sell(branch)
+                continue
+            item.sell()
 
     def validate(self):
         if not self.get_items().count():
@@ -289,18 +291,12 @@ class Sale(Domain):
         if not self.get_valid():
             self.set_valid()
 
-    def update_gift_certificates(self):
-        """Update the status of all gift certificates as sold"""
-        for item in self.get_gift_certificates():
-            item.sellable.sell()
-
     def confirm_sale(self):
         self.validate()
         conn = self.get_connection()
-        self.update_stocks()
+        self.update_items()
         group = IPaymentGroup(self, connection=conn)
         group.confirm()
-        self.update_gift_certificates()
         self.status = self.STATUS_CONFIRMED
         self.close_date = datetime.now()
 

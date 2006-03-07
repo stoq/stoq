@@ -135,9 +135,6 @@ class AbstractSellableItem(InheritableModel):
     def sell(self):
         conn = self.get_connection()
         sellable = ISellable(self.get_adapted(), connection=conn)
-        if not sellable.can_be_sold():
-            msg = '%s is already sold' % self.get_adapted()
-            raise SellError(msg)
         sellable.sell()
 
     #
@@ -241,8 +238,17 @@ class AbstractSellable(InheritableModelAdapter):
     # ISellable methods
     #
 
+    def set_available(self):
+        if not self.is_sold():
+            raise ValueError("Invalid status for sellable, it should be "
+                             "sold, got %s" % self.get_status_string())
+        self.status = self.STATUS_AVAILABLE
+
     def can_be_sold(self):
         return self.status == self.STATUS_AVAILABLE
+
+    def is_sold(self):
+        return self.status == self.STATUS_SOLD
 
     def sell(self):
         if not self.can_be_sold():
@@ -385,6 +391,7 @@ class AbstractSellable(InheritableModelAdapter):
     #
     # General methods
     #
+
 
     def _set_code(self, code):
         conn = get_connection()
