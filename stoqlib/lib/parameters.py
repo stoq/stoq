@@ -24,19 +24,19 @@
 ##
 """ Parameters and system data for applications"""
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import DatabaseInconsistency
-from sqlobject import UnicodeCol, BoolCol
 from kiwi.python import namedAny, ClassInittableObject
 from kiwi.datatypes import currency
+from sqlobject import UnicodeCol, BoolCol
 
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.database import finish_transaction
 from stoqlib.domain.base import Domain, AbstractModel
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        ISellable, IMoneyPM, ICheckPM, IBillPM,
                                        ICardPM, IFinancePM,
                                        IGiftCertificatePM)
-
 
 _ = stoqlib_gettext
 
@@ -334,7 +334,7 @@ class ParameterAccess(ClassInittableObject):
                  ParameterAttr('DEFAULT_SALESPERSON_ROLE',
                                'person.EmployeeRole'),
                  ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
-                               'payment.destination.PaymentDestination'),
+                               'payment.destination.StoreDestination'),
                  ParameterAttr('BASE_PAYMENT_METHOD',
                                'payment.methods.PaymentMethod'),
                  ParameterAttr('METHOD_MONEY',
@@ -351,6 +351,18 @@ class ParameterAccess(ClassInittableObject):
     def __init__(self, conn):
         self.conn = conn
 
+    def _remove_unused_parameters(self):
+        """Remove any  parameter found in ParameterData table which is not
+        used any longer.
+        """
+        for param in ParameterData.select(connection=self.conn):
+            if param.field_name not in parameters_info.keys():
+                ParameterData.delete(param.id, connection=self.conn)
+
+    def _set_schema(self, field_name, field_value, is_editable=True):
+        ParameterData(connection=self.conn, field_name=field_name,
+                      field_value=str(field_value), is_editable=is_editable)
+
     @classmethod
     def __class_init__(cls, namespace):
         for obj in cls.constants:
@@ -358,9 +370,9 @@ class ParameterAccess(ClassInittableObject):
                             self.get_parameter_by_field(n, v))
             setattr(cls, obj.key, prop)
 
-    def set_schema(self, field_name, field_value, is_editable=True):
-        ParameterData(connection=self.conn, field_name=field_name,
-                      field_value=str(field_value), is_editable=is_editable)
+    #
+    # Public API
+    #
 
     def rebuild_cache_for(self, param_name):
         try:
@@ -421,18 +433,21 @@ class ParameterAccess(ClassInittableObject):
         return param
 
     def set_defaults(self):
+        self._remove_unused_parameters()
+        self.__cash = {}
         constants = [c for c in self.constants if c.initial is not None]
 
         # Creating constants
         for obj in constants:
-            if self.get_parameter_by_field(obj.key, obj.type):
+            if (self.get_parameter_by_field(obj.key, obj.type)
+                is not None):
                 continue
             if obj.type is bool:
                 # Convert Bool to int here
                 value = int(obj.initial)
             else:
                 value = obj.initial
-            self.set_schema(obj.key, value)
+            self._set_schema(obj.key, value)
 
         # Creating system objects
         # When creating new methods for system objects creation add them
@@ -452,15 +467,16 @@ class ParameterAccess(ClassInittableObject):
     #
 
     def ensure_suggested_supplier(self):
-        from stoqlib.domain.person import Person, PersonAdaptToSupplier
+        from stoqlib.domain.person import Person
         key = "SUGGESTED_SUPPLIER"
-        if self.get_parameter_by_field(key, PersonAdaptToSupplier):
+        table = Person.getAdapterClass(ISupplier)
+        if self.get_parameter_by_field(key, table):
             return
         person_obj = Person(name=key, connection=self.conn)
         person_obj.addFacet(ICompany, cnpj='supplier suggested',
                             connection=self.conn)
         supplier = person_obj.addFacet(ISupplier, connection=self.conn)
-        self.set_schema(key, supplier.id)
+        self._set_schema(key, supplier.id)
 
     def ensure_default_base_category(self):
         from stoqlib.domain.sellable import (BaseSellableCategory,
@@ -472,7 +488,7 @@ class ParameterAccess(ClassInittableObject):
                                                 description=key)
         base_cat = BaseSellableCategory(connection=self.conn,
                                         category_data=abstract_cat)
-        self.set_schema(key, base_cat.id)
+        self._set_schema(key, base_cat.id)
 
     def ensure_default_salesperson_role(self):
         from stoqlib.domain.person import EmployeeRole
@@ -481,13 +497,13 @@ class ParameterAccess(ClassInittableObject):
             return
         role = EmployeeRole(name='Salesperson',
                             connection=self.conn)
-        self.set_schema(key, role.id, is_editable=False)
+        self._set_schema(key, role.id, is_editable=False)
 
     def ensure_current_branch(self):
-        from stoqlib.domain.person import (Person, PersonAdaptToBranch, Address,
-                                        CityLocation)
+        from stoqlib.domain.person import Person, Address, CityLocation
         key = "CURRENT_BRANCH"
-        if self.get_parameter_by_field(key, PersonAdaptToBranch):
+        table = Person.getAdapterClass(IBranch)
+        if self.get_parameter_by_field(key, table):
             return
 
         person_obj = Person(name="Async Open Source",
@@ -505,19 +521,20 @@ class ParameterAccess(ClassInittableObject):
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         branch.manager = Person(connection=self.conn, name="Manager")
-        self.set_schema(key, branch.id)
+        self._set_schema(key, branch.id)
 
     def ensure_current_warehouse(self):
-        from stoqlib.domain.person import Person, PersonAdaptToCompany
+        from stoqlib.domain.person import Person
         key = "CURRENT_WAREHOUSE"
-        if self.get_parameter_by_field(key, PersonAdaptToCompany):
+        table = Person.getAdapterClass(ICompany)
+        if self.get_parameter_by_field(key, table):
             return
         person_obj = Person(name=key, connection=self.conn)
         # XXX See ensure_current_branch comment: we have the same problem with
         # cnpj here.
         person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
                             connection=self.conn)
-        self.set_schema(key, person_obj.id)
+        self._set_schema(key, person_obj.id)
 
     def ensure_payment_destination(self):
         # Note that this method must always be called after
@@ -530,12 +547,13 @@ class ParameterAccess(ClassInittableObject):
         pm = StoreDestination(description=_('Default Store Destination'),
                               branch=branch,
                               connection=self.conn)
-        self.set_schema(key, pm.id)
+        self._set_schema(key, pm.id)
 
     def ensure_payment_methods(self):
         from stoqlib.domain.payment.methods import PaymentMethod
         key = "METHOD_MONEY"
-        if self.get_parameter_by_field(key, PaymentMethod):
+        table = PaymentMethod.getAdapterClass(IMoneyPM)
+        if self.get_parameter_by_field(key, table):
             return
         destination = self.DEFAULT_PAYMENT_DESTINATION
         pm = PaymentMethod(connection=self.conn)
@@ -544,15 +562,16 @@ class ParameterAccess(ClassInittableObject):
                         destination=destination)
         for interface in [ICardPM, IGiftCertificatePM, IFinancePM]:
             pm.addFacet(interface, connection=self.conn)
-        self.set_schema('BASE_PAYMENT_METHOD', pm.id, is_editable=False)
-        self.set_schema(key, IMoneyPM(pm, connection=self.conn).id,
+        self._set_schema('BASE_PAYMENT_METHOD', pm.id, is_editable=False)
+        self._set_schema(key, IMoneyPM(pm, connection=self.conn).id,
                         is_editable=False)
 
     def ensure_delivery_service(self):
         from stoqlib.domain.sellable import BaseSellableInfo
         from stoqlib.domain.service import Service
         key = "DELIVERY_SERVICE"
-        if self.get_parameter_by_field(key, Service):
+        table = Service.getAdapterClass(ISellable)
+        if self.get_parameter_by_field(key, table):
             return
 
         service = Service(connection=self.conn)
@@ -562,7 +581,7 @@ class ParameterAccess(ClassInittableObject):
         sellable = service.addFacet(ISellable, code='SD',
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
-        self.set_schema(key, sellable.id)
+        self._set_schema(key, sellable.id)
 
     def ensure_default_gift_certificate_type(self):
         """Creates a initial gift certificate that will be tied with return
@@ -579,7 +598,12 @@ class ParameterAccess(ClassInittableObject):
                                          price=currency(0))
         certificate = GiftCertificateType(connection=self.conn,
                                           base_sellable_info=sellable_info)
-        self.set_schema(key, certificate.id)
+        self._set_schema(key, certificate.id)
+
+
+#
+# General routines
+#
 
 
 def sysparam(conn):
@@ -617,6 +641,7 @@ def get_parameter_details(field_name):
         raise NameError("Does not exists no parameters "
                         "with name %s" % field_name)
 
+
 #
 # Ensuring everything
 #
@@ -624,8 +649,8 @@ def get_parameter_details(field_name):
 
 def ensure_system_parameters():
     print_msg("Creating default system parameters...", break_line=False)
-    trans = new_transaction()
-    param = sysparam(trans)
+    conn = new_transaction()
+    param = sysparam(conn)
     param.set_defaults()
-    trans.commit()
+    finish_transaction(conn, 1)
     print_msg('done')
