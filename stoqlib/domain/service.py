@@ -67,8 +67,7 @@ class ServiceSellableItem(AbstractSellableItem):
 
     def sell(self):
         conn = self.get_connection()
-        sellable = ISellable(self.get_adapted(), connection=conn)
-        if not sellable.can_be_sold():
+        if not self.sellable.can_be_sold():
             msg = '%s is already sold' % self.get_adapted()
             raise SellError(msg)
 
