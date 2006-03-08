@@ -18,10 +18,14 @@
 --
 -- Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 --
+--
+-- A migration schema for 0.6.0 stoqlib databases. It migrates an existent
+-- schema to stoqlib 0.7.0 release.
 
--- Changes on Bug fix #2320
-ALTER TABLE bank_account ADD COLUMN bank_id integer;
-ALTER TABLE bank_account DROP COLUMN name;
+
+--
+-- Double precision to numeric conversions
+--
 
 
 --Converts a double_precision column to a numeric one.
@@ -53,6 +57,7 @@ BEGIN
     RETURN 1;
 END;
 '  LANGUAGE 'plpgsql';
+
 
 SELECT doubletonum('till', 'balance_sent');
 SELECT doubletonum('till', 'initial_cash_amount');
@@ -110,12 +115,21 @@ SELECT doubletonum('abstract_check_bill_adapter', 'daily_penalty');
 DROP FUNCTION doubletonum(text, text);
 
 
+--
+-- Changing table columns
+--
+
+
+-- Changes on Bug fix #2320
+ALTER TABLE bank_account ADD COLUMN bank_id integer;
+ALTER TABLE bank_account DROP COLUMN name;
+
 ---- Ups... losing data here. But unfortunately there is no other solution
 ---- when converting a string field to an integer field
 ALTER TABLE sale DROP COLUMN order_number;
 ALTER TABLE sale ADD COLUMN order_number integer;
 
----- useless column
+---- This was an useless column in 0.6.0 release
 ALTER TABLE abstract_payment_group DROP COLUMN daily_penalty;
 
 ALTER TABLE bill_check_group_data RENAME COLUMN interest TO monthly_interest;
@@ -125,11 +139,32 @@ ALTER TABLE inheritable_model_adapter
 ALTER TABLE inheritable_model_adapter
             ADD COLUMN model_modified timestamp without time zone;
 ALTER TABLE inheritable_model_adapter ADD COLUMN is_valid_model boolean;
+
+
+--
+-- Updating rows
+--
+
+
 UPDATE inheritable_model_adapter SET is_valid_model = true;
 UPDATE inheritable_model_adapter SET model_created = 'now';
 UPDATE inheritable_model_adapter SET model_modified = 'now';
 
--- fixing the next value of inheritable_model_adapter sequence
+--this parameter was erroneusly set in the last version, fixing it
+UPDATE parameter_data SET field_value =
+        (SELECT id FROM person_adapt_to_company WHERE
+         original_id = (SELECT field_value FROM parameter_data
+                        WHERE field_name='CURRENT_WAREHOUSE'))
+        WHERE field_name = 'CURRENT_WAREHOUSE';
+
+
+--
+-- Sequence updates
+--
+
+
+-- fixing the next value of inheritable_model_adapter sequence since
+-- this table structure was completely changed on 0.7.0 release
 CREATE OR REPLACE FUNCTION fix_sequence() RETURNS integer AS '
 DECLARE
     max_id integer;
@@ -143,10 +178,3 @@ END;
 
 SELECT fix_sequence();
 DROP FUNCTION fix_sequence();
-
-
---this parameter was erroneusly set in the last version, fixing it
-UPDATE parameter_data SET field_value = (SELECT id FROM
-person_adapt_to_company WHERE original_id = (SELECT field_value FROM
-parameter_data WHERE field_name='CURRENT_WAREHOUSE')) WHERE field_name =
-'CURRENT_WAREHOUSE';
