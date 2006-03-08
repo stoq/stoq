@@ -34,13 +34,11 @@ from kiwi.dist import listpackages, listfiles, KiwiInstallData, KiwiInstallLib
 class StoqdriversInstallLib(KiwiInstallLib):
     global_resources = dict(conf="$datadir/conf")
 
-version = ''
-execfile("stoqdrivers/__version__.py")
-assert version
+from stoqdrivers import __version__
 
 setup(
     name = "stoqdrivers",
-    version =  ".".join(map(str, version)),
+    version =  ".".join(map(str, __version__)),
     author="Async Open Source",
     author_email="stoq-devel@async.com.br",
     description = "Useful drivers for Stoq and retail systems",
