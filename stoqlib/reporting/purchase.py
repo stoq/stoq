@@ -164,7 +164,7 @@ class PurchaseOrderReport(BaseStoqReport):
                 msg = (_("Paid with %s in %d installments")
                        % (method_name, group.installments_number))
             else:
-                msg = (_("Paid with %s in %d installment")
+                msg = (_("Paid with %s in %d installments")
                        % (method_name, group.installments_number))
         self.add_paragraph(msg, style="Normal-Bold")
 

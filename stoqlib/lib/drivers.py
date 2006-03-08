@@ -110,7 +110,7 @@ def _get_fiscalprinter(conn):
                                  device=setting.get_port_name())
     else:
         error(_("There is no fiscal printer configured"),
-              _("There is no fiscal printer configured this station (\"%s\")"
+              _("There is no fiscal printer configured for this station (\"%s\")"
                 % socket.gethostname()))
     return _printer
 

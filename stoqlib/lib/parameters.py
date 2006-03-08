@@ -189,7 +189,7 @@ parameters_info = {
                                               _('Edit Sales Order Number'),
                                               _('Once this parameter is set '
                                                 'to true, every time we '
-                                                'create a new sale order, the'
+                                                'create a new sale order, the '
                                                 'user will be asked for a '
                                                 'order number')),
     'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_('Sales'),
