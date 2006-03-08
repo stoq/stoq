@@ -1,3 +1,15 @@
+Release 0.3.0 - 08/03/2006:
+
+	* Bug fixes: 700, 2153, 2274, 2362, 2369, 2383,
+		     2386, 2408, 2441
+
+	* Exception strings internationalization
+	* Better error management for Bematech MP25 driver
+	* Till cash out support
+	* Better text encoding management on printer command parameters
+	* Bematech DP20C printer support
+	* Custom product unit support
+	* Toledo Prix III scale support
 
 Release 0.2.0 - 22/12/2005:
 
