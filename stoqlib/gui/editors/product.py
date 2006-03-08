@@ -222,7 +222,7 @@ class ProductEditor(SellableEditor):
         sellable_info = BaseSellableInfo(connection=conn)
 
         model.addFacet(ISellable, base_sellable_info=sellable_info,
-                       connection=conn)
+                       code='', connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
         supplier_info = ProductSupplierInfo(connection=conn,
