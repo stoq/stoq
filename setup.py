@@ -10,7 +10,7 @@
 
 
 dependencies = [('zope.interface', '3.0', None),
-                ('kiwi', (1, 9, 6), lambda x: x.__version__),
+                ('kiwi', (1, 9, 6), lambda x: x.__version__.version),
                 ('serial', '1.3', None)]
 for package_name, version, attr in dependencies:
     try:
