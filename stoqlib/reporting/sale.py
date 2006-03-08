@@ -63,14 +63,15 @@ class SaleOrderReport(BaseStoqReport):
 
     def _get_table_columns(self):
         # XXX Bug #2430 will improve this part
-        return [OTC(_("Code"), lambda obj: obj.sellable.code, width=50),
+        return [OTC(_("Code"), lambda obj: obj.sellable.code, truncate=True,
+                    width=80),
                 OTC(_("Item"),
                     lambda obj: obj.sellable.base_sellable_info.description,
-                    truncate=True, width=160),
+                    truncate=True, width=130),
                 OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
                     width=70, align=RIGHT),
                 OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
-                    width=100, align=RIGHT),
+                    width=90, align=RIGHT),
                 OTC(_("Total"),
                     lambda obj: get_formatted_price(obj.get_total()),
                     width=100, align=RIGHT)]
