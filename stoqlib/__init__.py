@@ -28,11 +28,11 @@ from kiwi.environ import Library
 
 FIRST_DB_VERSION = 5
 
-__program_name__    = "Stoqlib"
-__website__         = 'http://www.stoq.com.br'
-__version__         = "0.7.0"
-__db_version__      = 6
-__release_date__    = (2006, 3, 8)
+program_name    = "Stoqlib"
+website         = 'http://www.stoq.com.br'
+version         = "0.7.0"
+db_version      = 6
+release_date    = (2006, 3, 8)
 
 
 __all__ = ['library']
