@@ -174,10 +174,10 @@ class PaymentMethodDetails(InheritableModel):
         group_desc = payment_group.get_group_description()
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
-            description = _('%s (%s of %s) from %s') % (self.description,
-                                                        number + 1,
-                                                        installments_number,
-                                                        group_desc)
+            description = _(u'%s (%s of %s) from %s') % (self.description,
+                                                         number + 1,
+                                                         installments_number,
+                                                         group_desc)
             payment = self.create_inpayment(payment_group, due_date,
                                             payment_value, method,
                                             description,
@@ -370,8 +370,8 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         'allowed for this payment method')
         if not description:
             group_desc = payment_group.get_group_description()
-            description = _('%s (1 of 1) from %s') % (self.description,
-                                                      group_desc)
+            description = _(u'%s (1 of 1) from %s') % (self.description,
+                                                       group_desc)
         payment = Payment(connection=conn, group=payment_group,
                           method=self, destination=destination,
                           method_details=method_details,
