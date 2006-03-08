@@ -54,7 +54,6 @@
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">installment_settings.payment_day</property>
                                 <property name="sizegroup">credit_card_sizegroup</property>
-                                <property name="text" context="yes" translatable="yes">1</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">4</property>
                                 <property name="xalign">1.0</property>
@@ -71,7 +70,6 @@
                                 <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">installment_settings.closing_day</property>
-                                <property name="text" context="yes" translatable="yes">1</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">4</property>
                                 <property name="xalign">1.0</property>

@@ -92,7 +92,7 @@ class SaleOrderReport(BaseStoqReport):
     #
 
     def get_title(self):
-        return (_("Sale Order on %s with due date of %d days")
+        return (_("Sale Order on %s, with due date of %d days")
                 % (self.order.open_date.strftime("%x"),
                    sysparam(self.conn).MAX_SALE_ORDER_VALIDITY))
 

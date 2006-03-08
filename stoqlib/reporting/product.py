@@ -70,7 +70,7 @@ class ProductReport(SearchResultsReport):
                 OTC(_("Quantity"), lambda obj: format_quantity(
                                                  self._get_stock_balance(obj)),
                     width=60, align=RIGHT, truncate=True),
-                OTC(_("Unity"), lambda obj: obj.get_unit_description(),
+                OTC(_("Unit"), lambda obj: obj.get_unit_description(),
                     width=30, virtual=True)
                 ]
 
