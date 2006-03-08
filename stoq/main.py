@@ -170,6 +170,10 @@ def setup_environment(options=None, verbose=False, force_init_db=False,
     from stoqlib.lib.migration import schema_migration
     schema_migration.update_schema()
 
+    if has_been_installed:
+        from stoqlib.lib.parameters import ensure_system_parameters
+        ensure_system_parameters()
+
 
 def main(args):
     parser = get_parser()
