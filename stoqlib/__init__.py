@@ -47,4 +47,3 @@ if library.uninstalled:
                                  glade='data',
                                  fonts='data/fonts')
 library.enable_translation()
-
