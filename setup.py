@@ -17,7 +17,7 @@ for package_name, version, attr in dependencies:
         module = __import__(package_name, {}, {}, [])
         if attr:
             assert attr(module) >= version
-    except ImportError, AssertionError:
+    except (ImportError, AssertionError):
         raise SystemExit("Stoqdrivers requires %s %s or higher"
                          % (package_name, version))
 
