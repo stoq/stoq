@@ -619,7 +619,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         group_desc = payment_group.get_group_description()
         for i in range(installments_number):
             due_date = first_duedate + timedelta((i * calc_interval))
-            description = _('%s (%s of %s) from %s') % (self.description,
+            description = _(u'%s (%s of %s) from %s') % (self.description,
                                                         i + 1,
                                                         installments_number,
                                                         group_desc)
