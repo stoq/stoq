@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005, 2006 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -19,7 +19,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 ##
 ##
-## Author(s):       Johan Dahlin <jdahlin@async.com.br>
+## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
+##                  Evandro Vale Miquelito      <evandro@async.com.br>
+##
 ##
 
 from kiwi.environ import Library
@@ -28,9 +30,9 @@ FIRST_DB_VERSION = 5
 
 __program_name__    = "Stoqlib"
 __website__         = 'http://www.stoq.com.br'
-__version__         = "0.6.0"
+__version__         = "0.7.0"
 __db_version__      = 6
-__release_date__    = (2006, 1, 27)
+__release_date__    = (2006, 3, 8)
 
 
 __all__ = ['library']
