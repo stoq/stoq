@@ -28,7 +28,6 @@
 import decimal
 
 from stoqlib.reporting.template import SearchResultsReport
-from stoqlib.reporting.template import BaseStoqReport
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX

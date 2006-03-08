@@ -46,7 +46,7 @@ from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.giftcertificate import (GiftCertificateItem,
                                             GiftCertificate)
 from stoqlib.exceptions import SellError, DatabaseInconsistency
-from stoqlib.domain.interfaces import (IContainer, IClient, IStorable,
+from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
                                        IRenegotiationSaleReturnMoney,
                                        IRenegotiationGiftCertificate,

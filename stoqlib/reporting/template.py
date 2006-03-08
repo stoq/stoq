@@ -33,7 +33,6 @@ from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import format_phone_number
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.interfaces import ICompany
 from stoqlib.lib.translation import stoqlib_gettext
 
