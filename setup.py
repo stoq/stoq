@@ -26,6 +26,26 @@
 ##
 """Setup file for Stoq package"""
 
+#
+# Dependencies check
+#
+
+dependencies = [('kiwi', (1, 9, 6), lambda x: x.__version__.version),
+                ('stoqlib', '0.7.0', lambda x: x.version)]
+for package_name, version, attr in dependencies:
+    try:
+        module = __import__(package_name, {}, {}, [])
+        if attr:
+            assert attr(module) >= version
+    except ImportError, AssertionError:
+        raise SystemExit("Stoqdrivers requires %s %s or higher"
+                         % (package_name, version))
+
+
+#
+# Package installation
+#
+
 
 from distutils.core import setup
 from distutils.command.install_data import install_data
@@ -33,7 +53,7 @@ from distutils.command.install_data import install_data
 from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
                        listfiles, listpackages)
 
-from stoq import __version__
+from stoq import version
 
 PACKAGE = 'stoq'
 
@@ -62,11 +82,16 @@ data_files = [
     ]
 
 setup(name=PACKAGE,
-      version=__version__,
+      version=version,
       author='Async Open Source',
-      author_email='evandro@async.com.br',
-      url='http://www.async.com.br/projects/stoq/wiki',
-      license='GPL',
+      author_email='stoq-devel@async.com.br',
+      description="An advanced retail system",
+      long_description="""
+      This is an advanced retails system which has as main goals the
+      usability, good devices support, and useful features for retails.
+      """,
+      url='http://www.stoq.com.br',
+      license='GNU GPL (see COPYING)',
       packages=listpackages(PACKAGE),
       scripts=['bin/stoq'],
       data_files=data_files,

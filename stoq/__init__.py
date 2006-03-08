@@ -2,10 +2,10 @@
 import os
 import sys
 
-__program_name__    = "Stoq"
-__website__         = 'http://www.stoq.com.br'
-__version__         = "0.7.0"
-__release_date__    = (2006, 3, 8)
+program_name    = "Stoq"
+website         = 'http://www.stoq.com.br'
+version         = "0.7.0"
+release_date    = (2006, 3, 8)
 
 # Required version of Python
 REQUIRED_VERSION = (2, 4)
