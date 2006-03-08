@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-08 11:33-0300\n"
+"POT-Creation-Date: 2006-03-08 14:01-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -244,7 +244,7 @@ msgstr "Ítens Solicitados"
 
 #: ../stoqlib/reporting/purchase.py:139
 msgid "Received Items"
-msgstr "Ítens Recebido"
+msgstr "Ítens Recebidos"
 
 #: ../stoqlib/reporting/purchase.py:141
 msgid "There is no received items"
@@ -376,7 +376,7 @@ msgstr "Nota Fiscal #"
 #: ../stoqlib/reporting/purchase_receival.py:56
 #: ../stoqlib/gui/search/receiving.py:67
 msgid "Invoice Total"
-msgstr "Total da Nota Fiscal"
+msgstr "Total Nota Fiscal"
 
 #: ../stoqlib/reporting/base/printing.py:101
 #, python-format
@@ -1361,7 +1361,7 @@ msgstr "Cargo"
 
 #: ../stoqlib/gui/slaves/employee.py:304
 msgid "Salary"
-msgstr "Salario"
+msgstr "Salário"
 
 #: ../stoqlib/gui/slaves/sale.py:92
 #, python-format
@@ -1742,7 +1742,7 @@ msgstr "órdens de recebimento"
 
 #: ../stoqlib/gui/search/receiving.py:57
 msgid "Receival Date"
-msgstr "Data de Recebimento"
+msgstr "Recebido em"
 
 #: ../stoqlib/gui/search/receiving.py:59
 msgid "Purchase Order #"
@@ -2623,7 +2623,7 @@ msgstr "Seção:"
 
 #: ../data/EmployeeDetailsSlave.glade.h:19
 msgid "Serie:"
-msgstr "Serie:"
+msgstr "Série:"
 
 #: ../data/EmployeeDetailsSlave.glade.h:20
 msgid "Vacation:"
@@ -3003,7 +3003,7 @@ msgstr "Deduzir em todas as parcelas comissão de:"
 #: ../data/PMDetailsGeneralDataStep.glade.h:5
 #: ../data/PaymentMethodEditor.glade.h:1
 msgid "Default Payment Destination:"
-msgstr "Destino padrão de pagamento"
+msgstr "Destino padrão de pagamento:"
 
 #: ../data/PMDetailsGeneralDataStep.glade.h:6
 #: ../data/CreditProviderMethodSlave.glade.h:4
@@ -3040,7 +3040,7 @@ msgstr "Senha:"
 
 #: ../data/FinanceDetailsSlave.glade.h:6
 msgid "Default Payments Destination:"
-msgstr "Destino padrão de pagamento"
+msgstr "Destino padrão de pagamento:"
 
 #: ../data/FinanceDetailsSlave.glade.h:7
 #: ../data/DebitCardDetailsStep.glade.h:2

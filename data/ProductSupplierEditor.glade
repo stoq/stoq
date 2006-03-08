@@ -2,15 +2,17 @@
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="ProductSupplierEditor">
+        <property name="border_width">6</property>
         <property name="destroy_with_parent">True</property>
         <property name="modal">True</property>
         <property name="window_position">center-on-parent</property>
         <child>
             <widget class="GtkTable" id="table1">
-                <property name="column_spacing">5</property>
+                <property name="border_width">6</property>
+                <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
                 <property name="n_rows">4</property>
-                <property name="row_spacing">5</property>
+                <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="label1">
@@ -65,7 +67,7 @@ Information:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="supplier_combo">
+                    <widget class="ProxyComboBoxEntry" id="supplier_combo">
                         <property name="data_type">object</property>
                         <property name="model_attribute">supplier</property>
                         <property name="visible">True</property>
