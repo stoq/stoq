@@ -1,7 +1,41 @@
 
+Release 0.7.0,  08-March-2006
+    - Bug Fixes: 2114 2136 2253 2262 2320 2335 2366 2391 2392 2404 2408
+                 2413 2416 2417 2424 2425 2428 2431 2434 2437 2438 2441
+                 2443 2453 2458 2459 2460 2461 2462 2467 2468
+
+    - Migration schema infrastructure (Evandro Miquelito)
+    - Dialog for payment method settings (Evandro Miquelito)
+    - Stoq code migration to stoqlib (Evandro Miquelito)
+    - Print dialog implementation (Henrique Romano)
+    - Reports infrastructure (Henrique Romano)
+    - Sales order report (Henrique Romano)
+    - Check printers support (Henrique Romano)
+    - Decimals support (Evandro Miquelito)
+    - Datatypes bug fixes (Johan Dahlin)
+    - SaleWizard bug fixes (Evandro Miquelito)
+    - POS application and SaleWizard improvements (Evandro Miquelito)
+    - Cash out support on fiscal printers (Henrique Romano)
+    - Masks support (Johan Dahlin)
+    - Calendars on date widgets (Johan Dahlin)
+    - TTF fonts support (Henrique Romano)
+    - UTF-8 support (Evandro Miquelito)
+    - Sales report (Henrique Romano)
+    - Drivers capabilities bug fixes (Henrique Romano)
+    - Bug fixes in the sales confirmation process (Evandro Miquelito)
+    - Stock balance report (Henrique Romano)
+    - Purchase receival dialog implementation (Evandro Miquelito)
+    - Purchase receival report (Henrique Romano)
+    - Purchase order report (Henrique Romano)
+    - Purchase order list report (Henrique Romano)
+    - FirstTimeConfigWizard implementation (Evandro Miquelito)
+    - Python Eggs support (Evandro Miquelito)
+    - Debian/Ubuntu packages support (Evandro Miquelito)
+
+
 Release 0.6.0,  27-January-2006
-    - Bug Fixes: 2135 2166 2177 2178 2247 2252 2256 2266 2268 2271 2272 
-                 2310 2325 2370 2374 2376 2380 2383 2385 2388 2393 2395 
+    - Bug Fixes: 2135 2166 2177 2178 2247 2252 2256 2266 2268 2271 2272
+                 2310 2325 2370 2374 2376 2380 2383 2385 2388 2393 2395
                  2401 2402 2403
 
     - Portuguese translation (Bruno Garcia)
@@ -26,9 +60,9 @@ Release 0.6.0,  27-January-2006
 
 
 Release 0.5.0,  03-January-2006
-    - Bug Fixes: 1990 1996 2098 2113 2129 2164 2171 2185 2186 2192 2197 
-                 2206 2209 2211 2213 2218 2219 2222 2223 2224 2229 2236 
-                 2245 2250 2272 2273 2276 2285 2286 2293 2330 2333 2344 
+    - Bug Fixes: 1990 1996 2098 2113 2129 2164 2171 2185 2186 2192 2197
+                 2206 2209 2211 2213 2218 2219 2222 2223 2224 2229 2236
+                 2245 2250 2272 2273 2276 2285 2286 2293 2330 2333 2344
                  2345 2359 2363 2364
 
     - Fiscal printers support (Henrique Romano)

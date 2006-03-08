@@ -19,7 +19,7 @@ Requirements
 ============
 Stoq has the following dependencies:
 
-stoqlib 0.6.0
+stoqlib 0.7.0
 
 If you are a developer, the following packages are for you:
 
