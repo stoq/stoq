@@ -87,15 +87,23 @@ class BaseStoqReport(ReportTemplate):
         canvas.drawString(text_x, text_y, company.fancy_name)
 
         canvas.setFont(*SMALL_FONT)
+
         main_address = person.get_main_address()
-        address_string1 = main_address.get_address_string()
-        address_string2 = ""
-        if main_address.postal_code:
-            address_string2 += "%s - " % main_address.postal_code
-        address_string2 += "%s - %s" % (main_address.get_city(),
-                                        main_address.get_state())
-        contact_string = (_("Phone: %s")
-                          % format_phone_number(person.phone_number))
+        if main_address:
+            address_string1 = main_address.get_address_string()
+            address_string2 = ""
+            if main_address.postal_code:
+                address_string2 += "%s - " % main_address.postal_code
+            address_string2 += "%s - %s" % (main_address.get_city(),
+                                            main_address.get_state())
+        else:
+            address_string1 = address_string2 = ''
+
+        if person.phone_number:
+            contact_string = (_("Phone: %s")
+                              % format_phone_number(person.phone_number))
+        else:
+            contact_string = ''
         if person.fax_number:
             fax_str = _("Fax: %s") % format_phone_number(person.fax_number)
             contact_string += " - %s" % fax_str
