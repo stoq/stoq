@@ -44,7 +44,7 @@ class SchemaMigration:
 
     def __init__(self):
         self.current_db_version = None
-        self.db_version = stoqlib.__db_version__
+        self.db_version = stoqlib.db_version
 
     def _get_migration_files(self, current_db_version, db_version):
         """Returns a list of all the migration sql files for a certain
@@ -129,7 +129,7 @@ def add_system_table_reference(conn, check_new_db=False, version=None):
     elif not result and not check_new_db:
         raise ValueError('SystemTable should have at least one '
                          'item at this point, got nothing')
-    version = version or stoqlib.__db_version__
+    version = version or stoqlib.db_version
     SystemTable(version=version,
                 update_date=datetime.datetime.now(),
                 connection=conn)

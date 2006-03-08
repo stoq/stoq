@@ -25,13 +25,42 @@
 """Setup file for stoqlib package"""
 
 
-from distutils.command.install_data import install_data
+#
+# Dependencies check
+#
+
+
+dependencies = [('zope.interface', '3.0', None),
+                ('kiwi', (1, 9, 6), lambda x: x.__version__.version),
+                ('gazpacho', '0.6.5', lambda x: x.__version__),
+                ('psycopg', '1.1.18', lambda x: x.__version__),
+                ('sqlobject', '0.7.0', None),
+                ('stoqdrivers', (0,3), lambda x: x.__version__),
+                ('PIL', '1.1.5', None),
+                ('reportlab', '1.20', lambda x: x.Version)]
+
+for package_name, version, attr in dependencies:
+    try:
+        module = __import__(package_name, {}, {}, [])
+        if attr:
+            assert attr(module) >= version
+    except ImportError, AssertionError:
+        raise SystemExit("Stoqlib requires %s %s or higher"
+                         % (package_name, version))
+
+
+#
+# Package installation
+#
+
+
 from distutils.core import setup
+from distutils.command.install_data import install_data
 
 from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
-    listfiles, listpackages)
+                       listfiles, listpackages)
 
-from stoqlib import __version__, __website__
+from stoqlib import version, website
 
 class StoqLibInstallData(KiwiInstallData):
     def run(self):
@@ -46,12 +75,15 @@ class StoqLibInstallLib(KiwiInstallLib):
                             fonts='$datadir/fonts')
 
 setup(name='stoqlib',
-      version=__version__,
+      version=version,
       author="Async Open Source",
-      maintainer="Evandro Vale Miquelito",
-      maintainer_email="evandro@async.com.br",
+      author_email="stoq-devel@async.com.br",
       description="A powerful retail system library",
-      url=__website__,
+      long_description="""
+      This library offers many special tools for retail system applications
+      such reports infrastructure, basic dialogs and searchbars and domain data in a
+      persistent level.""",
+      url=website,
       license="GNU LGPL 2.1 (see COPYING)",
       data_files=[
         ('$datadir/pixmaps',
