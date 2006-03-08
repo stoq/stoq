@@ -29,6 +29,7 @@ import os
 
 from kiwi.environ import Application
 
+# XXX: Do not use application here
 app = Application('stoq', path='stoq.main')
 app.run()
 

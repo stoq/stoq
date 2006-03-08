@@ -32,19 +32,19 @@ if majmin < REQUIRED_VERSION:
                                    version_string))
 
 
-
 try:
     from kiwi.environ import Library
 except ImportError:
     raise SystemExit("Could not find kiwi, is a recent version %s installed?"
                       % KIWI_REQUIRED)
 
+# XXX: Use Application
 lib = Library('stoq')
 if lib.uninstalled:
+    lib.add_resource('locale', 'locale')
     lib.add_global_resource('pixmaps', 'data/pixmaps')
     lib.add_global_resource('glade', 'data')
     lib.add_global_resource('config', 'data/config')
     lib.add_global_resource('docs', '.')
-    lib.add_resources(locale='locale',
-                      basedir='.')
 lib.enable_translation()
+lib.set_application_domain('stoq')
