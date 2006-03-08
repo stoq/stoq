@@ -143,6 +143,10 @@ class POSApp(AppWindow):
         # TODO Waiting for improvements in kiwi entry completion. We need a
         # better way to query strings immediately when typing in the
         # entry
+        # Force synchronization here. This is not a problem since the sale
+        # instance will not be available until we finish the sale through
+        # SaleWizard.
+        self.conn.commit()
         sellables = AbstractSellable.get_available_sellables(self.conn)
         sellables = sellables[:self.max_results]
         items = [(s.get_short_description(), s) for s in sellables]
@@ -245,6 +249,7 @@ class POSApp(AppWindow):
                         parent=self.get_toplevel())
                 return
         self._update_list(sellable, notify_on_entry=True)
+        self._setup_sellables()
         self.warning_box.hide()
         self.product.grab_focus()
 
