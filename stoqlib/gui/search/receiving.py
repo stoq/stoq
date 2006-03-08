@@ -55,7 +55,7 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def get_columns(self):
         return [Column('receival_date', _('Receival Date'),
-                       data_type=datetime.date, sorted=True, width=120),
+                       data_type=datetime.date, sorted=True, width=110),
                 Column('order_number', _('Purchase Order #'), data_type=unicode,
                        width=130),
                 Column('supplier_name', _('Supplier'), data_type=unicode,
@@ -63,9 +63,9 @@ class PurchaseReceivingSearch(SearchDialog):
                 Column('branch_name', _('Branch'), data_type=unicode,
                        width=90, visible=False),
                 Column('invoice_number', _('Invoice #'), data_type=unicode,
-                       width=70),
+                       width=80),
                 Column('invoice_total', _('Invoice Total'),
-                       data_type=currency, width=100)]
+                       data_type=currency, width=120)]
 
     #
     # Callbacks

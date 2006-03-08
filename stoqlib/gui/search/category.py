@@ -57,7 +57,7 @@ class BaseSellableCatSearch(SearchEditor):
         return [ForeignKeyColumn(AbstractSellableCategory,
                                  'description', _('Description'), str,
                                  obj_field='category_data', sorted=True,
-                                 width=300),
+                                 expand=True),
                 ForeignKeyColumn(AbstractSellableCategory,
                                  'suggested_markup', _('Suggested Markup (%)'),
                                  float, obj_field='category_data', width=180),
@@ -74,7 +74,7 @@ class BaseSellableCatSearch(SearchEditor):
 
 
 class SellableCatSearch(SearchEditor):
-    size = (800, 500)
+    size = (700, 500)
     title = _('Sellable Category Search')
 
     def __init__(self, conn):
@@ -86,12 +86,9 @@ class SellableCatSearch(SearchEditor):
         self.set_result_strings(_('category'), _('categories'))
         self.set_searchbar_labels(_('Categories Matching:'))
 
-
     #
     # Hooks
     #
-
-
 
     def get_columns(self):
         return [ForeignKeyColumn(AbstractSellableCategory,
@@ -101,7 +98,7 @@ class SellableCatSearch(SearchEditor):
                                  sorted=True, width=210),
                 ForeignKeyColumn(AbstractSellableCategory,
                                  'description', _('Description'), str,
-                                 obj_field='category_data', width=210),
+                                 obj_field='category_data', expand=True),
                 ForeignKeyColumn(AbstractSellableCategory,
                                  'suggested_markup',
                                  _('Suggested Markup (%)'), str,
@@ -110,7 +107,6 @@ class SellableCatSearch(SearchEditor):
                                  'salesperson_commission',
                                  _('Suggested Commission (%)'), str,
                                  obj_field='category_data', )]
-
 
     def filter_results(self, abstract_objects):
         sellable_objs = SellableCategory.select(connection=self.conn)

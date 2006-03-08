@@ -92,14 +92,14 @@ class GiftCertificateTypeSearch(SearchEditor):
                        data_type=currency, width=90),
                 Column('base_sellable_info.max_discount',
                        _('Max Discount'), data_type=float,
-                       width=110,
+                       width=130,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('base_sellable_info.commission',
                        _('Commission'), data_type=float,
                        width=110,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('on_sale_info.on_sale_price', _('On Sale Price'),
-                       data_type=currency, width=100),
+                       data_type=currency, width=140),
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 

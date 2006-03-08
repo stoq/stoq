@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 # This class implementation will be improved after bug #2406 is fixed
 #
 class ParametersListingDialog(BasicDialog):
-    size = (600, 400)
+    size = (700, 400)
     title = _("Stoq System Parameters")
 
     def __init__(self, conn):
