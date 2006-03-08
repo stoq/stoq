@@ -34,7 +34,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.receiving import ReceivingOrder
-from stoqlib.gui.base.dialogs import print_report
 from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
 
 _ = stoqlib_gettext

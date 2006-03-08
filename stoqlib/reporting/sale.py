@@ -34,7 +34,6 @@ from stoqlib.lib.validators import (get_formatted_price, format_quantity,
                                     format_phone_number)
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.reporting.template import BaseStoqReport, SearchResultsReport
-from stoqlib.domain.sale import Sale
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext

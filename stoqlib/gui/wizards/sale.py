@@ -40,7 +40,6 @@ from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
 from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
 from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
                                               SelectPaymentMethodSlave)
 from stoqlib.gui.slaves.sale import DiscountChargeSlave
@@ -52,7 +51,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             get_volatile_gift_certificate)
-from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson, IClient,
+from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
                                        ICheckPM, ICardPM, IBillPM,
                                        IFinancePM, ISellable,
                                        IRenegotiationGiftCertificate,

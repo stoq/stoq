@@ -34,7 +34,7 @@ from zope.interface import implements
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import SellError, DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.parameters import sysparam

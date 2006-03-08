@@ -30,7 +30,7 @@ from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import SlaveDelegate
-from stoqlib.gui.base.dialogs import run_dialog, print_report
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave
 
 from stoqlib.lib.validators import get_price_format_str
