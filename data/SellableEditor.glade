@@ -278,7 +278,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+combobox+ComboBox" id="unit_combo">
+                            <widget class="ProxyComboBox" id="unit_combo">
                                 <property name="data_type">object</property>
                                 <property name="model_attribute">index</property>
                                 <property name="visible">True</property>
@@ -320,7 +320,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="category_combo">
+                    <widget class="ProxyComboEntry" id="category_combo">
                         <property name="data_type">object</property>
                         <property name="model_attribute">category</property>
                         <property name="visible">True</property>
