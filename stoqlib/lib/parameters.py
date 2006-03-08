@@ -532,9 +532,9 @@ class ParameterAccess(ClassInittableObject):
         person_obj = Person(name=key, connection=self.conn)
         # XXX See ensure_current_branch comment: we have the same problem with
         # cnpj here.
-        person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
-                            connection=self.conn)
-        self._set_schema(key, person_obj.id)
+        company = person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
+                                      connection=self.conn)
+        self._set_schema(key, company.id)
 
     def ensure_payment_destination(self):
         # Note that this method must always be called after
