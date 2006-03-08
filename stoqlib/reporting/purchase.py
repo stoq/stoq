@@ -169,8 +169,8 @@ class PurchaseOrderReport(BaseStoqReport):
         self.add_paragraph(msg, style="Normal-Bold")
 
     def _setup_order_details_table(self):
-        cols = [TC("", width=70), TC("", width=300, expand=True, truncate=True),
-                TC("", width=50), TC("", width=300, expand=True, truncate=True)]
+        cols = [TC("", width=100), TC("", width=285, expand=True, truncate=True),
+                TC("", width=50), TC("", width=285, expand=True, truncate=True)]
         data = [[_("Open Date:"), self._order.get_open_date_as_string(),
                  _("Status:"), self._order.get_status_str()],
                 [_("Supplier:"), self._order.get_supplier_name(),
