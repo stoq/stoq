@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-08 00:54-0300\n"
+"POT-Creation-Date: 2006-03-08 11:31-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -55,12 +55,6 @@ msgstr ""
 msgid "specify an username"
 msgstr ""
 
-#. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:177
-#, python-format
-msgid "Stoq - %s"
-msgstr ""
-
 #: ../stoq/gui/config.py:58
 msgid "Trust"
 msgstr ""
@@ -86,6 +80,12 @@ msgstr ""
 
 #: ../stoq/gui/config.py:132
 msgid "Setting up Stoq"
+msgstr ""
+
+#. This method must be redefined in child when it's needed
+#: ../stoq/gui/application.py:177
+#, python-format
+msgid "Stoq - %s"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:56
@@ -235,7 +235,7 @@ msgid "Salesperson"
 msgstr ""
 
 #: ../stoq/gui/sales/sales.py:122 ../stoq/gui/till/till.py:117
-#: ../stoq/gui/pos/pos.py:337
+#: ../stoq/gui/pos/pos.py:341
 msgid "Total"
 msgstr "Totalt"
 
@@ -321,16 +321,16 @@ msgstr "Ingen produkt vald"
 msgid "<b>Stock Total:</b>"
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:109 ../stoq/gui/pos/pos.py:328
+#: ../stoq/gui/warehouse/warehouse.py:109 ../stoq/gui/pos/pos.py:332
 msgid "Code"
 msgstr "Kod"
 
 #: ../stoq/gui/warehouse/warehouse.py:112
-#: ../stoq/gui/receivable/receivable.py:104 ../stoq/gui/pos/pos.py:331
+#: ../stoq/gui/receivable/receivable.py:104 ../stoq/gui/pos/pos.py:335
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:335
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:339
 msgid "Quantity"
 msgstr "Antal"
 
@@ -375,64 +375,64 @@ msgstr ""
 msgid "You need to open the till before start doing sales."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:87 ../stoq/gui/pos/pos.py:450
-#: ../stoq/gui/pos/pos.py:457
+#: ../stoq/gui/pos/pos.py:87 ../stoq/gui/pos/pos.py:454
+#: ../stoq/gui/pos/pos.py:461
 msgid "Error"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:191
+#: ../stoq/gui/pos/pos.py:195
 #, python-format
 msgid "The item '%s' was already added to the order"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:242
+#: ../stoq/gui/pos/pos.py:246
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:244
+#: ../stoq/gui/pos/pos.py:248
 msgid "Can not sell this product"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:284
+#: ../stoq/gui/pos/pos.py:288
 msgid "It is not possible open a fiscal coupon"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:285
+#: ../stoq/gui/pos/pos.py:289
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:287
+#: ../stoq/gui/pos/pos.py:291
 msgid "Confirm later"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:288
+#: ../stoq/gui/pos/pos.py:292
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:314
+#: ../stoq/gui/pos/pos.py:318
 msgid ""
 "The price supplied by the scale doesn't match the current one registered in "
 "the system and will be ignored"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:318
+#: ../stoq/gui/pos/pos.py:322
 msgid ""
 "The price supplied by the scale is different that the current one registered "
 "in the system"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:333
+#: ../stoq/gui/pos/pos.py:337
 msgid "Price"
 msgstr "Pris"
 
-#: ../stoq/gui/pos/pos.py:449
+#: ../stoq/gui/pos/pos.py:453
 msgid "You don't have products to delivery."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:456
+#: ../stoq/gui/pos/pos.py:460
 msgid "All the products already have delivery instructions"
 msgstr ""
 

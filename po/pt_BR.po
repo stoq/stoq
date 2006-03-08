@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-03-08 00:54-0300\n"
+"POT-Creation-Date: 2006-03-08 11:31-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -74,12 +74,6 @@ msgstr "Controle de acesso"
 msgid "specify an username"
 msgstr "especifique um usuário"
 
-#. This method must be redefined in child when it's needed
-#: ../stoq/gui/application.py:177
-#, python-format
-msgid "Stoq - %s"
-msgstr "Stoq - %s"
-
 #: ../stoq/gui/config.py:58
 msgid "Trust"
 msgstr "Confiavel"
@@ -108,6 +102,12 @@ msgstr "Configuração do banco de dados inválida"
 #: ../stoq/gui/config.py:132
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
+
+#. This method must be redefined in child when it's needed
+#: ../stoq/gui/application.py:177
+#, python-format
+msgid "Stoq - %s"
+msgstr "Stoq - %s"
 
 #: ../stoq/gui/purchase/purchase.py:56
 msgid "Purchase"
@@ -245,7 +245,7 @@ msgid "Salesperson"
 msgstr "Vendedor"
 
 #: ../stoq/gui/sales/sales.py:122 ../stoq/gui/till/till.py:117
-#: ../stoq/gui/pos/pos.py:337
+#: ../stoq/gui/pos/pos.py:341
 msgid "Total"
 msgstr "Total"
 
@@ -334,16 +334,16 @@ msgstr "Exibir produtos em"
 msgid "<b>Stock Total:</b>"
 msgstr "<b>Estoque Total</b>"
 
-#: ../stoq/gui/warehouse/warehouse.py:109 ../stoq/gui/pos/pos.py:328
+#: ../stoq/gui/warehouse/warehouse.py:109 ../stoq/gui/pos/pos.py:332
 msgid "Code"
 msgstr "Código"
 
 #: ../stoq/gui/warehouse/warehouse.py:112
-#: ../stoq/gui/receivable/receivable.py:104 ../stoq/gui/pos/pos.py:331
+#: ../stoq/gui/receivable/receivable.py:104 ../stoq/gui/pos/pos.py:335
 msgid "Description"
 msgstr "Descrição"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:335
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:339
 msgid "Quantity"
 msgstr "Quantidade"
 
@@ -387,17 +387,17 @@ msgstr "Ponto de Vendas"
 msgid "You need to open the till before start doing sales."
 msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
-#: ../stoq/gui/pos/pos.py:87 ../stoq/gui/pos/pos.py:450
-#: ../stoq/gui/pos/pos.py:457
+#: ../stoq/gui/pos/pos.py:87 ../stoq/gui/pos/pos.py:454
+#: ../stoq/gui/pos/pos.py:461
 msgid "Error"
 msgstr "Erro"
 
-#: ../stoq/gui/pos/pos.py:191
+#: ../stoq/gui/pos/pos.py:195
 #, python-format
 msgid "The item '%s' was already added to the order"
 msgstr "O item '%s' já foi adicionado ao pedido"
 
-#: ../stoq/gui/pos/pos.py:242
+#: ../stoq/gui/pos/pos.py:246
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
@@ -405,30 +405,30 @@ msgstr ""
 "Não existe estoque deste produto nesta unidade da empresa. por favor "
 "selecione outro item."
 
-#: ../stoq/gui/pos/pos.py:244
+#: ../stoq/gui/pos/pos.py:248
 msgid "Can not sell this product"
 msgstr "Não é possivel vender este produto"
 
-#: ../stoq/gui/pos/pos.py:284
+#: ../stoq/gui/pos/pos.py:288
 msgid "It is not possible open a fiscal coupon"
 msgstr "Não é possível abrir o coupon fiscal"
 
-#: ../stoq/gui/pos/pos.py:285
+#: ../stoq/gui/pos/pos.py:289
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:287
+#: ../stoq/gui/pos/pos.py:291
 msgid "Confirm later"
 msgstr "Confirmar depois"
 
-#: ../stoq/gui/pos/pos.py:288
+#: ../stoq/gui/pos/pos.py:292
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:314
+#: ../stoq/gui/pos/pos.py:318
 msgid ""
 "The price supplied by the scale doesn't match the current one registered in "
 "the system and will be ignored"
@@ -436,22 +436,22 @@ msgstr ""
 "O preço fornecido pela balança difere do preço registrado no sistema e será "
 "ignorado."
 
-#: ../stoq/gui/pos/pos.py:318
+#: ../stoq/gui/pos/pos.py:322
 msgid ""
 "The price supplied by the scale is different that the current one registered "
 "in the system"
 msgstr ""
 "O preço fornecido pela balança é diferente do valor registrado no sistema"
 
-#: ../stoq/gui/pos/pos.py:333
+#: ../stoq/gui/pos/pos.py:337
 msgid "Price"
 msgstr "Preço"
 
-#: ../stoq/gui/pos/pos.py:449
+#: ../stoq/gui/pos/pos.py:453
 msgid "You don't have products to delivery."
 msgstr "Você não tem produtos para entrega."
 
-#: ../stoq/gui/pos/pos.py:456
+#: ../stoq/gui/pos/pos.py:460
 msgid "All the products already have delivery instructions"
 msgstr "Todos os produtos já tem instruções de entrega"
 
