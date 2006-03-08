@@ -33,6 +33,7 @@ from kiwi.dist import listpackages, listfiles, KiwiInstallData, KiwiInstallLib
 
 class StoqdriversInstallLib(KiwiInstallLib):
     global_resources = dict(conf="$datadir/conf")
+    resources = dict(locale="$prefix/share/locale")
 
 from stoqdrivers import __version__
 
