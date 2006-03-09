@@ -130,10 +130,10 @@ class AppWindow(BaseAppWindow):
 
     def _run_about(self, *args):
         about = gtk.AboutDialog()
-        about.set_name(stoq.__program_name__)
-        about.set_version(stoq.__version__)
-        about.set_website(stoq.__website__)
-        release_date = stoq.__release_date__
+        about.set_name(stoq.program_name)
+        about.set_version(stoq.version)
+        about.set_website(stoq.website)
+        release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
                            datetime.datetime(*release_date).strftime('%x'))
         about.set_copyright('Copyright (C) 2005 Async Open Source')
