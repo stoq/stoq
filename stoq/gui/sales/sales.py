@@ -112,7 +112,7 @@ class SalesApp(SearchableAppWindow):
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date),
                 ForeignKeyColumn(Person, 'name', title=_('Client'),
-                                 data_type=str, width=220,
+                                 data_type=str, expand=True,
                                  obj_field='client', adapted=True),
                 ForeignKeyColumn(Person, 'name', title=_('Salesperson'),
                                  data_type=str, width=180,
@@ -120,7 +120,7 @@ class SalesApp(SearchableAppWindow):
                 Column('status_name', title=_('Status'), width=80,
                        data_type=str),
                 Column('total_sale_amount', title=_('Total'),
-                       data_type=currency)]
+                       width=120, data_type=currency)]
 
     def get_extra_query(self):
         salesperson_table = Person.getAdapterClass(ISalesPerson)
