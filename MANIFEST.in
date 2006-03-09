@@ -2,4 +2,13 @@ recursive-include data *.glade
 recursive-include data/fonts *.ttf
 recursive-include data/pixmaps *.png
 recursive-include data/sql *.sql
+recursive-include docs *
 recursive-include locale stoqlib.mo
+recursive-include po *.po
+include AUTHORS
+include COPYING
+include MANIFEST.in
+include README
+include NEWS
+include INSTALL
+include CONTRIBUTORS
