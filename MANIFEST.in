@@ -4,3 +4,4 @@ include AUTHORS
 include ChangeLog
 include COPYING
 recursive-include stoqdrivers/conf *.ini
+recursive-include po POTFILES.list stoqdrivers.pot
