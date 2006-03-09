@@ -5,24 +5,34 @@
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
-            <widget class="GtkHBox" id="hbox1">
-                <property name="border_width">5</property>
-                <property name="spacing">5</property>
+            <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkEventBox" id="place_holder">
+                    <widget class="GtkHBox" id="hbox1">
+                        <property name="border_width">5</property>
+                        <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkEventBox" id="place_holder">
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
                         </child>
                     </widget>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="search_results_label">
-                        <property name="data_type">unicode</property>
+                    <widget class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                        <property name="yalign">1.0</property>
+                        <child>
+                            <widget class="kiwi+ui+widgets+label+Label" id="search_results_label">
+                                <property name="data_type">unicode</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                                <property name="yalign">1.0</property>
+                            </widget>
+                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
