@@ -74,7 +74,7 @@ PACKAGE = 'stoq'
 class StoqInstallData(KiwiInstallData):
     def run(self):
         self.data_files.extend(compile_po_files(PACKAGE))
-        install_data.run(self)
+        KiwiInstallData.run(self)
 
 class StoqInstallLib(KiwiInstallLib):
     resources = dict(locale='$prefix/share/locale',
