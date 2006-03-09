@@ -434,7 +434,7 @@ class ParameterAccess(ClassInittableObject):
 
     def set_defaults(self):
         self._remove_unused_parameters()
-        self.__cash = {}
+        self._cash = {}
         constants = [c for c in self.constants if c.initial is not None]
 
         # Creating constants
