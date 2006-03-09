@@ -3,3 +3,4 @@ include NEWS
 include AUTHORS
 include ChangeLog
 include COPYING
+recursive-include stoqdrivers/conf *.ini
