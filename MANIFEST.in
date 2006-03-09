@@ -2,3 +2,11 @@ recursive-include data *.glade
 recursive-include data/pixmaps *.jpg
 recursive-include data/config *.cfg
 recursive-include locale stoq.mo
+recursive-include po *.po *.pot POTFILES.list
+include AUTHORS
+include COPYING
+include MANIFEST.in
+include README
+include NEWS
+include INSTALL
+include CONTRIBUTORS

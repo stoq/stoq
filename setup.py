@@ -87,7 +87,6 @@ class StoqInstallLib(KiwiInstallLib):
 data_files = [
     ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.png')),
-    ('$datadir/bin',  ['bin/init-database']),
     ('$datadir/glade',
      listfiles('data', '*.glade')),
     ('$sysconfdir',  ''),
@@ -107,7 +106,7 @@ setup(name=PACKAGE,
       url='http://www.stoq.com.br',
       license='GNU GPL (see COPYING)',
       packages=listpackages(PACKAGE),
-      scripts=['bin/stoq'],
+      scripts=['bin/stoq', 'bin/init-database'],
       data_files=data_files,
       cmdclass=dict(install_lib=StoqInstallLib,
                     install_data=StoqInstallData))
