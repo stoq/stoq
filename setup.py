@@ -25,28 +25,64 @@
 """Setup file for stoqlib package"""
 
 
+
 #
-# Dependencies check
+# Dependency checking
 #
 
 
-dependencies = [('zope.interface', '3.0', None),
-                ('kiwi', (1, 9, 6), lambda x: x.__version__.version),
-                ('gazpacho', '0.6.5', lambda x: x.__version__),
-                ('psycopg', '1.1.18', lambda x: x.__version__),
-                ('sqlobject', '0.7.0', None),
-                ('stoqdrivers', (0,3), lambda x: x.__version__),
-                ('PIL', '1.1.5', None),
-                ('reportlab', '1.20', lambda x: x.Version)]
+dependencies = [('ZopeInterface', 'zope.interface', '3.0',
+                 'http://www.zope.org/Products/ZopeInterface',
+                 None),
+                ('kiwi', 'kiwi', (1, 9, 6),
+                 'http://www.async.com.br/projects/kiwi/',
+                 lambda x: x.kiwi_version),
+                ('Gazpacho', 'gazpacho', '0.6.5',
+                 'http://www.gazpacho.sicem.biz',
+                 lambda x: x.__version__),
+                ('Psycopg', 'psycopg', '1.1.18',
+                 'http://www.initd.org/projects/psycopg1',
+                 (lambda x: x.__version__
+                            and x.__version__ >= '1.1.18'
+                            and x.__version__ < '2.0' or False)),
+                ('SQLObject', 'sqlobject', '0.7.0',
+                 'http://www.sqlobject.org', None),
+                ('Stoqdrivers', 'stoqdrivers', (0, 3),
+                 'http://www.stoq.com.br',
+                 lambda x: x.__version__),
+                ('Python Imaging Library (PIL)', 'PIL', '1.1.5',
+                 'http://www.pythonware.com/products/pil/', None),
+                ('Reportlab', 'reportlab', '1.20',
+                 'http://www.reportlab.org/', lambda x: x.Version)]
 
-for package_name, version, attr in dependencies:
+for (package_name, module_name, required_version, url,
+     get_version) in dependencies:
     try:
-        module = __import__(package_name, {}, {}, [])
-        if attr:
-            assert attr(module) >= version
-    except ImportError, AssertionError:
-        raise SystemExit("Stoqlib requires %s %s or higher"
-                         % (package_name, version))
+        module = __import__(module_name, {}, {}, [])
+    except ImportError:
+        raise SystemExit("The '%s' module could not be found\n"
+                         "Please install %s which can be found at %s"
+                         % (module_name, package_name, url))
+
+    if not get_version:
+        continue
+
+    installed_version = get_version(module)
+    if isinstance(installed_version, bool):
+            if not installed_version:
+                raise SystemExit("The '%s' module was found but it is too "
+                                 "new for stoqlib requirements.\nPlease "
+                                 "install at least version %s of %s. "
+                                 "Visit %s." % (module_name,
+                                                required_version,
+                                                package_name, url))
+
+    elif required_version > installed_version:
+        raise SystemExit("The '%s' module was found but it was not "
+                         "recent enough\nPlease install at least "
+                         "version %s of %s. Visit %s."
+                         % (module_name, required_version, package_name,
+                            url))
 
 
 #
