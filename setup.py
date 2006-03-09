@@ -30,11 +30,11 @@
 # Dependency checking
 #
 
-dependencies = [('Stoqlib', 'stoqlib', '0.7.0',
-                 'http://www.stoq.com.br', lambda x: x.version),
-                ('kiwi', 'kiwi', (1, 9, 6),
+dependencies = [('kiwi', 'kiwi', (1, 9, 6),
                  'http://www.async.com.br/projects/kiwi/',
-                 lambda x: x.kiwi_version)]
+                 lambda x: x.kiwi_version),
+                ('Stoqlib', 'stoqlib', '0.7.0',
+                 'http://www.stoq.com.br', lambda x: x.version)]
 
 for (package_name, module_name, required_version, url,
      get_version) in dependencies:
