@@ -5,20 +5,20 @@
 
 
 #
-# Dependencies check
+# Dependency checking
 #
 
 
 dependencies = [('zope.interface', '3.0', None),
-                ('kiwi', (1, 9, 6), lambda x: x.__version__.version),
-                ('serial', '1.3', None)]
+                ('kiwi', (1, 9, 6), lambda x: x.kiwi_version),
+                ('serial', '2.1', None)]
 for package_name, version, attr in dependencies:
     try:
         module = __import__(package_name, {}, {}, [])
         if attr:
             assert attr(module) >= version
     except (ImportError, AssertionError):
-        raise SystemExit("Stoqdrivers requires %s %s or higher"
+        raise SystemExit("Stoqdrivers requires %s version %s or higher"
                          % (package_name, version))
 
 
