@@ -27,19 +27,33 @@
 """Setup file for Stoq package"""
 
 #
-# Dependencies check
+# Dependency checking
 #
 
-dependencies = [('kiwi', (1, 9, 6), lambda x: x.__version__.version),
-                ('stoqlib', '0.7.0', lambda x: x.version)]
-for package_name, version, attr in dependencies:
+dependencies = [('Stoqlib', 'stoqlib', '0.7.0',
+                 'http://www.stoq.com.br', lambda x: x.version),
+                ('kiwi', 'kiwi', (1, 9, 6),
+                 'http://www.async.com.br/projects/kiwi/',
+                 lambda x: x.kiwi_version)]
+
+for (package_name, module_name, required_version, url,
+     get_version) in dependencies:
     try:
-        module = __import__(package_name, {}, {}, [])
-        if attr:
-            assert attr(module) >= version
-    except ImportError, AssertionError:
-        raise SystemExit("Stoqdrivers requires %s %s or higher"
-                         % (package_name, version))
+        module = __import__(module_name, {}, {}, [])
+    except ImportError:
+        raise SystemExit("The '%s' module could not be found\n"
+                         "Please install %s which can be found at %s"
+                         % (module_name, package_name, url))
+
+    if not get_version:
+        continue
+
+    if required_version > get_version(module):
+        raise SystemExit("The '%s' module was found but it was not "
+                         "recent enough\nPlease install at least "
+                         "version %s of %s. Visit %s."
+                         % (module_name, required_version, package_name,
+                            url))
 
 
 #
