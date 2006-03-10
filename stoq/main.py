@@ -173,6 +173,10 @@ def setup_environment(options=None, verbose=False, force_init_db=False,
     if has_been_installed:
         from stoqlib.lib.parameters import ensure_system_parameters
         ensure_system_parameters()
+    else:
+        from stoqlib.lib.drivers import \
+                            create_virtual_printer_for_current_host
+        create_virtual_printer_for_current_host()
 
 
 def main(args):
