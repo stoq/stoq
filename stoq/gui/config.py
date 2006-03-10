@@ -60,13 +60,17 @@ class DatabaseSettingsStep(BaseWizardStep):
 
     def __init__(self, wizard, model):
         self.wizard_model = model
+        self.authentication_items = None
         BaseWizardStep.__init__(self, None, wizard)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
         self.title_label.set_color('blue')
         self.hint_label.set_size('small')
+        self._update_widgets()
 
     def _update_widgets(self):
+        if not self.authentication_items:
+            return
         selected = self.authentication_type.get_selected_data()
         need_password = selected == self.PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
@@ -110,6 +114,7 @@ class DatabaseSettingsStep(BaseWizardStep):
         items = [(value, key)
                     for key, value in self.authentication_types.items()]
         self.authentication_type.prefill(items)
+        self.authentication_items = items
         self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
         self.wizard_model.stoq_user_data = Settable(password='')
         self.add_proxy(self.wizard_model.stoq_user_data,
