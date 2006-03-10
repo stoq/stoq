@@ -91,7 +91,6 @@ for (package_name, module_name, required_version, url,
 
 
 from distutils.core import setup
-from distutils.command.install_data import install_data
 
 from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
                        listfiles, listpackages)
