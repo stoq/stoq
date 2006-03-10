@@ -78,10 +78,10 @@ class StoqInstallData(KiwiInstallData):
 
 class StoqInstallLib(KiwiInstallLib):
     resources = dict(locale='$prefix/share/locale',
-                     docs='$prefix/share/doc/stoq',
                      basedir='$prefix')
     global_resources = dict(pixmaps='$datadir/pixmaps',
                             glade='$datadir/glade',
+                            docs='$prefix/share/doc/stoq',
                             config='$sysconfdir/stoq')
 
 data_files = [
