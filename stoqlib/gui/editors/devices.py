@@ -26,6 +26,7 @@
 """ Editors implementation for Stoq devices configuration"""
 
 from kiwi.ui.widgets.list import Column
+from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
@@ -33,6 +34,7 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import get_connection
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.lists import AdditionListDialog
@@ -118,7 +120,7 @@ class DeviceSettingsEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
-    
+
     def setup_proxies(self):
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
@@ -134,8 +136,36 @@ class DeviceSettingsEditor(BaseEditor):
         else:
             return _("Add Device")
 
+    def _get_existing_printer_basequery(self):
+        q1 = DeviceSettings.q.host == self.model.host
+        q2 = DeviceSettings.q.type == self.model.type
+        return AND(q1, q2)
+
+
+    def validate_confirm(self):
+        conn = get_connection()
+        basequery = self._get_existing_printer_basequery()
+        q2 = DeviceSettings.q.brand != 'virtual'
+        query = AND(basequery, q2)
+        settings = DeviceSettings.select(query, connection=conn)
+        if settings.count():
+            self.host.set_invalid(_("A device of type %s already exists for "
+                                    "host %s")
+                                    % (self.model.get_device_type_name(),
+                                       self.model.host))
+            return False
+        return True
+
     # FIXME: this part will improved when bug #2334 is fixed.
     def on_confirm(self):
+        conn = get_connection()
+        basequery = self._get_existing_printer_basequery()
+        q2 = DeviceSettings.q.brand == 'virtual'
+        query = AND(basequery, q2)
+        settings = DeviceSettings.select(query, connection=conn)
+        if settings.count():
+            DeviceSettings.delete(settings[0].id, connection=self.conn)
+
         self.conn.commit()
         return self.model
 
@@ -173,7 +203,8 @@ class DeviceSettingsDialog(AdditionListDialog):
                        searchable=True)]
 
     def get_items(self, conn):
-        return DeviceSettings.select(connection=conn)
+        query = DeviceSettings.q.brand != 'virtual'
+        return DeviceSettings.select(query, connection=conn)
 
     #
     # Callbacks
