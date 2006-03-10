@@ -537,7 +537,7 @@ class SalesPersonStep(BaseWizardStep):
         if not self._edit_mode:
             self.model.reset_discount_and_charge()
         self.register_validate_function(self.wizard.refresh_next)
-        if check_virtual_printer_for_current_host(self.conn):
+        if not check_virtual_printer_for_current_host(self.conn):
             self.invoice_number.hide()
             self.invoice_label.hide()
 
