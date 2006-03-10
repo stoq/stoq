@@ -604,11 +604,11 @@ msgstr "Balanças"
 
 #: ../stoqlib/domain/devices.py:62
 msgid "Fiscal Printer"
-msgstr "Impressora"
+msgstr "Impressora Fiscal"
 
 #: ../stoqlib/domain/devices.py:63
 msgid "Cheque Printer"
-msgstr "Impressora"
+msgstr "Impressora de Cheque"
 
 #: ../stoqlib/domain/sellable.py:189
 msgid "Available"
