@@ -43,6 +43,8 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
+from stoqlib.lib.runtime import new_transaction
+from stoqlib.database import finish_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
@@ -51,6 +53,66 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
 _ = stoqlib_gettext
 _printer = None
 _scale = None
+
+
+#
+# General routines
+#
+
+
+def _get_fiscalprinter(conn):
+    """ Returns a FiscalPrinter instance pre-configured to the current
+    workstation.
+    """
+    global _printer
+    if _printer:
+        return _printer
+
+    setting = get_fiscal_printer_settings_by_hostname(conn,
+                                                      socket.gethostname())
+    if setting:
+        _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
+                                 device=setting.get_port_name())
+    else:
+        error(_("There is no fiscal printer configured"),
+                _("There is no fiscal printer configured for this "
+                  "station (\"%s\")" % socket.gethostname()))
+    return _printer
+
+def _get_scale(conn):
+    """ Returns a Scale instance pre-configured for the current
+    workstation.
+    """
+    global _scale
+    if _scale:
+        return _scale
+    setting = get_scale_settings_by_hostname(conn, socket.gethostname())
+    if setting:
+        _scale = Scale(brand=setting.brand, model=setting.model,
+                       device=setting.get_port_name())
+    else:
+        error(_("There is no scale configured"),
+              _("There is no scale configured for this station (\"%s\")"
+                % socket.gethostname()))
+    return _scale
+
+def _emit_reading(conn, cmd):
+    printer = _get_fiscalprinter(conn)
+    if not printer:
+        return False
+    try:
+        getattr(printer, cmd)()
+    except CouponOpenError:
+        return printer.cancel()
+    except DriverError:
+        return False
+    return True
+
+
+#
+# Public API
+#
+
 
 def get_device_settings_by_hostname(conn, hostname, device_type):
     ipaddr = socket.gethostbyname(hostname)
@@ -95,53 +157,28 @@ def get_scale_settings_by_hostname(conn, hostname):
 def get_current_scale_settings(conn):
     return get_scale_settings_by_hostname(conn, socket.gethostname())
 
-def _get_fiscalprinter(conn):
-    """ Returns a FiscalPrinter instance pre-configured to the current
-    workstation.
+def create_virtual_printer_for_current_host():
+    conn = new_transaction()
+    if get_fiscal_printer_settings_by_hostname(conn, socket.gethostname()):
+        finish_transaction(conn)
+        return
+    DeviceSettings(host=socket.gethostname(),
+                   device=DeviceSettings.DEVICE_SERIAL1,
+                   brand='virtual', model='Simple',
+                   type=DeviceSettings.FISCAL_PRINTER_DEVICE,
+                   connection=conn)
+    finish_transaction(conn, 1)
+
+
+def check_virtual_printer_for_current_host(conn):
+    """Returns True if the fiscal printer for the current host is
+    a virtual one
     """
-    global _printer
-    if _printer:
-        return _printer
-
-    setting = get_fiscal_printer_settings_by_hostname(conn,
-                                                      socket.gethostname())
-    if setting:
-        _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
-                                 device=setting.get_port_name())
-    else:
-        error(_("There is no fiscal printer configured"),
-              _("There is no fiscal printer configured for this station (\"%s\")"
-                % socket.gethostname()))
-    return _printer
-
-def _get_scale(conn):
-    """ Returns a Scale instance pre-configured for the current
-    workstation.
-    """
-    global _scale
-    if _scale:
-        return _scale
-    setting = get_scale_settings_by_hostname(conn, socket.gethostname())
-    if setting:
-        _scale = Scale(brand=setting.brand, model=setting.model,
-                       device=setting.get_port_name())
-    else:
-        error(_("There is no scale configured"),
-              _("There is no scale configured for this station (\"%s\")"
-                % socket.gethostname()))
-    return _scale
-
-def _emit_reading(conn, cmd):
     printer = _get_fiscalprinter(conn)
     if not printer:
-        return False
-    try:
-        getattr(printer, cmd)()
-    except CouponOpenError:
-        return printer.cancel()
-    except DriverError:
-        return False
-    return True
+        raise ValueError("There should be a fiscal printer defined "
+                         "at this point")
+    return printer.brand == 'virtual'
 
 def emit_read_X(conn):
     return _emit_reading(conn, 'summarize')
@@ -219,9 +256,11 @@ def print_cheques_for_payment_group(conn, group):
         thirdparty = thirdparty and thirdparty.name[:max_len] or ""
         printer.print_cheque(bank, payment.value, thirdparty, city)
 
+
 #
 # Class definitions
 #
+
 
 class FiscalCoupon:
     """ This class is used just to allow us cancel an item with base in a
@@ -254,6 +293,7 @@ class FiscalCoupon:
             if sellable.unit.index == UNIT_CUSTOM:
                 unit_desc = sellable.unit.description
             unit = sellable.unit.index
+        unit = unit or UNIT_EMPTY
         max_len = get_capability(self.printer, "item_code")
         code = sellable.code[:max_len]
 

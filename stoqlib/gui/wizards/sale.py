@@ -33,7 +33,8 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import print_cheques_for_payment_group
+from stoqlib.lib.drivers import (print_cheques_for_payment_group,
+                                 check_virtual_printer_for_current_host)
 from stoqlib.lib.defaults import (METHOD_MONEY, METHOD_MULTIPLE,
                                   METHOD_GIFT_CERTIFICATE)
 from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
@@ -527,6 +528,7 @@ class SalesPersonStep(BaseWizardStep):
     model_type = Sale
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
+                     'invoice_number',
                      'salesperson_combo')
 
     def __init__(self, wizard, conn, model, edit_mode):
@@ -535,6 +537,9 @@ class SalesPersonStep(BaseWizardStep):
         if not self._edit_mode:
             self.model.reset_discount_and_charge()
         self.register_validate_function(self.wizard.refresh_next)
+        if check_virtual_printer_for_current_host(self.conn):
+            self.invoice_number.hide()
+            self.invoice_label.hide()
 
     def _setup_payment_method_widgets(self):
         if not self._edit_mode:
