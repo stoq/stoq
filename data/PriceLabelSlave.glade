@@ -21,8 +21,10 @@
                 <child>
                     <widget class="kiwi+ui+widgets+label+Label" id="price">
                         <property name="data_type">currency</property>
+                        <property name="ellipsize">end</property>
                         <property name="model_attribute">price</property>
                         <property name="visible">True</property>
+                        <property name="width_chars">12</property>
                         <property name="xalign">0.0</property>
                     </widget>
                     <packing>
