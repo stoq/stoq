@@ -106,15 +106,15 @@ class TillApp(SearchableAppWindow):
         return order_number
 
     def get_columns(self):
-        return [Column('order_number', title=_('Order'), width=100, 
+        return [Column('order_number', title=_('Order'), width=100,
                        format_func=self._format_order_number,
                        data_type=int, sorted=True),
-                Column('open_date', title=_('Date'), width=120, 
+                Column('open_date', title=_('Date'), width=120,
                        data_type=datetime.date),
                 ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
                                  data_type=str, obj_field='client',
                                  adapted=True),
-                Column('total_sale_amount', title=_('Total'), width=150, 
+                Column('total_sale_amount', title=_('Total'), width=150,
                        data_type=currency)]
 
     def get_extra_query(self):
@@ -128,14 +128,14 @@ class TillApp(SearchableAppWindow):
         if get_current_till_operation(self.conn) is not None:
             raise TillError("You already have a till operation opened. "
                             "Close the current Till and open another one.")
-        
+
         # Trying get the operation created by the last till
         # operation closed.  This operation has all the sales
         # not confirmed in the last operation.
         result = Till.select(Till.q.status == Till.STATUS_PENDING,
                              connection=self.conn)
         if result.count() == 0:
-            till = Till(connection=self.conn, 
+            till = Till(connection=self.conn,
                         branch=sysparam(self.conn).CURRENT_BRANCH)
         elif result.count() == 1:
             till = result[0]
@@ -171,7 +171,7 @@ class TillApp(SearchableAppWindow):
         # confirmed. Note that this new till operation isn't
         # opened yet, but it will be considered when opening a
         # new operation
-        new_till = Till(connection=self.conn, 
+        new_till = Till(connection=self.conn,
                         branch=sysparam(self.conn).CURRENT_BRANCH)
         for sale in opened_sales:
             sale.till = new_till
@@ -193,7 +193,7 @@ class TillApp(SearchableAppWindow):
     #
     # Kiwi callbacks
     #
-   
+
     def on_confirm_order_button__clicked(self, *args):
         self._confirm_order()
 
