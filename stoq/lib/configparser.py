@@ -31,7 +31,7 @@ import gettext
 import binascii
 from ConfigParser import SafeConfigParser
 
-from kiwi.environ import environ
+from kiwi.environ import environ, EnvironmentError
 from kiwi.argcheck import argcheck
 from stoqlib.database import (DEFAULT_RDBMS, DatabaseSettings,
                               get_connection_uri)
