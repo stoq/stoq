@@ -980,7 +980,7 @@ msgstr "Porta:"
 
 #: ../data/DatabaseSettingsStep.glade.h:8
 msgid "Postgres Database Settings"
-msgstr "Configurações do Postgres"
+msgstr "Configurações do banco de dados Postgres"
 
 #: ../data/DatabaseSettingsStep.glade.h:9
 msgid "Stoq user 'administrator' password:"
