@@ -51,7 +51,7 @@ msgstr "pedidos"
 #: ../stoqlib/reporting/purchase.py:49 ../stoqlib/reporting/sale.py:102
 #, python-format
 msgid "with status <u>%s</u>"
-msgstr "com situação<u>%s</u>"
+msgstr "com situação <u>%s</u>"
 
 #: ../stoqlib/reporting/purchase.py:66 ../stoqlib/reporting/sale.py:118
 #: ../stoqlib/gui/search/giftcertificate.py:152
