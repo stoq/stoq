@@ -29,7 +29,7 @@ import os
 import tempfile
 
 # a list of programs to be tried when a report needs be viewed
-PROGRAMS = ['xpdf', 'ggv']
+PROGRAMS = [('xpdf', '-z 100'), 'ggv']
 
 def build_report(report_class, *args, **kwargs):
     """ Given a class (BaseReportTemplate instance), build a report. It is
