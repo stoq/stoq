@@ -108,6 +108,7 @@ class POSApp(AppWindow):
         self.client.set_text('')
         self.order_number.set_text('')
         self.salesperson.set_text('')
+        self.product.grab_focus()
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
