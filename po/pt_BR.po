@@ -2692,7 +2692,7 @@ msgstr "Número da Nota Fiscal:"
 
 #: ../data/SalesPersonStep.glade.h:3 ../data/ReceivingInvoiceStep.glade.h:6
 msgid "Notes..."
-msgstr "Notas:"
+msgstr "Notas..."
 
 #: ../data/SalesPersonStep.glade.h:4
 msgid "Order Details"
@@ -2973,7 +2973,7 @@ msgstr "Acréscimo:"
 
 #: ../data/PurchaseDetailsDialog.glade.h:3
 msgid "Additional Info"
-msgstr "Informação Adicional:"
+msgstr "Informações Adicionais"
 
 #: ../data/PurchaseDetailsDialog.glade.h:6
 #: ../data/FinishPurchaseStep.glade.h:2
