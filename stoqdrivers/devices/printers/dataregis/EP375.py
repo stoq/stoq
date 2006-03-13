@@ -482,21 +482,20 @@ class EP375(SerialBase, BaseChequePrinter):
             D = discount
 
         #
-        # A little problem here: the product code can only contain
-        # alphanumeric characters if the taxcode is between 90-99, i.e, if the
-        # product isn't tied to ICMS, otherwise the printer will not
-        # recognizes the command.
+        # FIXME:
+        # A little problem here: the product code can only contain alphanumeric
+        # characters if the taxcode is between 90-99, i.e, if the product isn't
+        # tied to ICMS, otherwise the printer will not recognizes the command.
+        # Sooooo, what can I do? Right now, if the product code has not only
+        # numbers, i'll prefix with 0s to avoid more problems to the callsite,
+        # but my XXX remains *HERE*
         #
         try:
             code_num = int(code[:6])
         except ValueError:
-            if taxcode == TAX_ICMS:
-                raise ValueError("the item code can contains only numbers "
-                                 "if the product is using ICMS")
-
+            code = "0" * 6 +  code
         taxcode = EP375.tax_codes[taxcode]
         unit = EP375.unit_indicators[unit]
-
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)
         item_id = self._get_next_coupon_item_id()
