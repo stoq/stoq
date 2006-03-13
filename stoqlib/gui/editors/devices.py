@@ -143,17 +143,18 @@ class DeviceSettingsEditor(BaseEditor):
 
 
     def validate_confirm(self):
-        conn = get_connection()
-        basequery = self._get_existing_printer_basequery()
-        q2 = DeviceSettings.q.brand != 'virtual'
-        query = AND(basequery, q2)
-        settings = DeviceSettings.select(query, connection=conn)
-        if settings.count():
-            self.host.set_invalid(_("A device of type %s already exists for "
-                                    "host %s")
-                                    % (self.model.get_device_type_name(),
-                                       self.model.host))
-            return False
+        if not self.edit_mode:
+            conn = get_connection()
+            basequery = self._get_existing_printer_basequery()
+            q2 = DeviceSettings.q.brand != 'virtual'
+            query = AND(basequery, q2)
+            settings = DeviceSettings.select(query, connection=conn)
+            if settings.count():
+                self.host.set_invalid(_("A device of type %s already exists "
+                                        "for host %s")
+                                      % (self.model.get_device_type_name(),
+                                         self.model.host))
+                return False
         return True
 
     # FIXME: this part will improved when bug #2334 is fixed.
