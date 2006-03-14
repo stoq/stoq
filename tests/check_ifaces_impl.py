@@ -26,10 +26,8 @@
 ##
 """ This is a simple module to check if all the drivers implements properly
 its interfaces. """
-import sys
-
 from zope.interface.verify import verifyClass
-from zope.interface.exceptions import BrokenMethodImplementation
+from zope.interface.exceptions import Invalid
 
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
@@ -47,7 +45,7 @@ def check():
                 print "\t\t%s" % model.model_name,
                 try:
                     verifyClass(iface, model)
-                except BrokenMethodImplementation, e:
+                except Invalid, e:
                     print "ERROR:", e
                 else:
                     print "OK"
