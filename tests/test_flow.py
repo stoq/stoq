@@ -25,16 +25,14 @@
 ##
 " A simple test case to check if the coupon workflow is managed properly. "
 
-import sys
 from decimal import Decimal
 from unittest import TestCase, makeSuite, TextTestRunner
 
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
-from stoqdrivers.exceptions import (
-    CancelItemError, CloseCouponError, PaymentAdditionError, PendingReduceZ,
-    PendingReadX, CouponNotOpenError, AlreadyTotalized)
-
+from stoqdrivers.exceptions import (CancelItemError, CloseCouponError,
+                                    PaymentAdditionError, CouponNotOpenError,
+                                    AlreadyTotalized)
 
 class FlowTest(TestCase):
     """ Responsible for test the coupon workflow. Currently this test works
