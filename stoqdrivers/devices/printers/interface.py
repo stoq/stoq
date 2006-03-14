@@ -203,10 +203,6 @@ class ICouponPrinter(IPrinter):
     # Getting printer status
     #
 
-    def get_status():
-        """ Returns a 3 sized tuple of boolean: Offline, OutOfPaper, Failure.
-        """
-
     def get_capabilities():
         """ Returns a capabilities dictionary, where the keys are the strings
         below and its values are Capability instances
