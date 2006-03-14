@@ -32,6 +32,7 @@ stoqdrivers/devices/printers/dataregis/EP375.py:
 import time
 import gettext
 from decimal import Decimal
+from datetime import datetime
 
 from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
@@ -618,7 +619,7 @@ class EP375(SerialBase, BaseChequePrinter):
         self.write(chr(EOT))
         return result
 
-    def print_cheque(self, bank, value, thirdparty, city, date):
+    def print_cheque(self, bank, value, thirdparty, city, date=datetime.now()):
         if not isinstance(bank, BankConfiguration):
             raise TypeError("bank parameter must be a BankConfiguration "
                             "instance")
