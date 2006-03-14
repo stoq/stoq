@@ -377,7 +377,7 @@ class FS345(SerialBase):
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
         return float(rv) / 1e2
 
-    def coupon_close(self, message):
+    def coupon_close(self, message=''):
         self._check_status()
         self._verify_coupon_open()
 
