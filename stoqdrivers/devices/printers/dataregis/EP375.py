@@ -619,11 +619,13 @@ class EP375(SerialBase, BaseChequePrinter):
         self.write(chr(EOT))
         return result
 
-    def print_cheque(self, bank, value, thirdparty, city, date=datetime.now()):
+    def print_cheque(self, bank, value, thirdparty, city, date=None):
         if not isinstance(bank, BankConfiguration):
             raise TypeError("bank parameter must be a BankConfiguration "
                             "instance")
-
+        # XXX: Kill me please!
+        if date is None:
+            date = datetime.now()
         value = '%014d' % int(value * 1e2)
         thirdparty = '%-50s' % thirdparty[:50]
         city = "%-20s" % city[:20]
