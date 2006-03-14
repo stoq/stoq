@@ -40,7 +40,7 @@ class FS2100(FS345):
     model_name = "Daruma FS 2100"
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, charge):
+                        taxcode, discount, charge, unit_desc=''):
         if taxcode == TAX_NONE:
             S = 'Nb'
         elif taxcode == TAX_SUBSTITUTION:
@@ -59,6 +59,10 @@ class FS2100(FS345):
         # description; if 0, write in multiple lines, if necessary.
         desc_size = 0
 
+        if unit != UNIT_CUSTOM:
+            unit = self._consts.get_constant_value(unit)
+        else:
+            unit = unit_desc
         # XXX: We need test correctly if the price's calcule is right (we
         # don't can do it right now since the manual isn't so clean).
         data = ('%2s'  # Tributary situation
