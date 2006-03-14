@@ -55,7 +55,7 @@ class ICouponPrinter(IPrinter):
     # Common API
     #
 
-    def identify_customer(customer, address, document):
+    def coupon_identify_customer(customer, address, document):
         """ Identify the customer.  This method doesn't have mandatory
         execution (you can identify the customer only if you like), but when
         executed it must be called before calling any method.
