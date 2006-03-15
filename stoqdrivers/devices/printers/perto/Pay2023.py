@@ -37,9 +37,11 @@ from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter)
+                                                    IChequePrinter,
+                                                    IDriverConstants)
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
+from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, TAX_NONE)
 from stoqdrivers.constants import (UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
@@ -54,6 +56,21 @@ from stoqdrivers.devices.printers.capabilities import Capability
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
+class Pay2023Constants(BaseDriverConstants):
+    _constants = {
+        # TODO Fixup these values
+        TAX_IOF:          '0',
+        TAX_ICMS:         '0',
+        TAX_SUBSTITUTION: '0',
+        TAX_EXEMPTION:    '0',
+        TAX_NONE:         '0',
+        UNIT_WEIGHT:      'km',
+        UNIT_LITERS:      'lt',
+        UNIT_METERS:      'm ',
+        UNIT_EMPTY:       '  ',
+        MONEY_PM:         '1',
+        CHEQUE_PM:        '2',
+        }
 
 class Pay2023(SerialBase, BaseChequePrinter):
     implements(IChequePrinter, ICouponPrinter)
@@ -86,48 +103,36 @@ class Pay2023(SerialBase, BaseChequePrinter):
     CMD_PRINT_CHEQUE = 'ImprimeCheque'
     CMD_GET_COO = "COO"
 
-    errors_dict = {7003: OutofPaperError,
-                   7004: OutofPaperError,
-                   8007: CouponTotalizeError,
-                   8011: PaymentAdditionError,
-                   8013: CouponTotalizeError,
-                   8014: PaymentAdditionError,
-                   8017: CloseCouponError,
-                   8045: CancelItemError,
-                   8068: PaymentAdditionError,
-                   8086: CancelItemError,
-                   15009: PendingReduceZ,
-                   11002: CommandParametersError,
-                   11006: CommandError,
-                   11007: InvalidState,
-                   15007: PendingReadX,
-                   15008: ReadXError,
-                   15011: OutofPaperError}
-
-    # FIXME: this part will be fixed at bug #2246
-    taxcode_dict = {TAX_IOF: '0',
-                    TAX_ICMS: '0',
-                    TAX_SUBSTITUTION: '0',
-                    TAX_EXEMPTION: '0',
-                    TAX_NONE: '0'}
-
-    unit_dict = {UNIT_WEIGHT: 'kg',
-                 UNIT_METERS: 'm ',
-                 UNIT_LITERS: 'lt',
-                 UNIT_EMPTY: '  '}
-
-    payment_methods = {MONEY_PM: '1',
-                       CHEQUE_PM: '2'}
-
+    errors_dict = {
+        7003: OutofPaperError,
+        7004: OutofPaperError,
+        8007: CouponTotalizeError,
+        8011: PaymentAdditionError,
+        8013: CouponTotalizeError,
+        8014: PaymentAdditionError,
+        8017: CloseCouponError,
+        8045: CancelItemError,
+        8068: PaymentAdditionError,
+        8086: CancelItemError,
+        15009: PendingReduceZ,
+        11002: CommandParametersError,
+        11006: CommandError,
+        11007: InvalidState,
+        15007: PendingReadX,
+        15008: ReadXError,
+        15011: OutofPaperError
+        }
     #
     # Cheque elements position
     #
 
     def __init__(self, device, baudrate=115200, bytesize=EIGHTBITS,
-                 parity=PARITY_EVEN, stopbits=STOPBITS_ONE):
+                 parity=PARITY_EVEN, stopbits=STOPBITS_ONE,
+                 consts=Pay2023Constants):
         SerialBase.__init__(self, device, baudrate=baudrate, bytesize=bytesize,
                             parity=parity, stopbits=stopbits)
         BaseChequePrinter.__init__(self)
+        self._consts = consts
         self._customer_name = ''
         self._customer_document = ''
         self._customer_address = ''
@@ -260,9 +265,9 @@ class Pay2023(SerialBase, BaseChequePrinter):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = Pay2023.unit_dict[unit]
-        self.send_command(Pay2023.CMD_ADD_ITEM,
-                          CodAliquota=Pay2023.taxcode_dict[taxcode],
+            unit = self._consts.get_constant_value(unit)
+        taxcode = self._consts.get_constant_value(taxcode)
+        self.send_command(Pay2023.CMD_ADD_ITEM, CodAliquota=taxcode,
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
                           Unidade="\"%02s\"" % unit,
@@ -287,7 +292,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return self.get_coupon_total_value()
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = Pay2023.payment_methods[payment_method]
+        pm = self._consts.get_constant_value(payment_method)
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
                           CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])

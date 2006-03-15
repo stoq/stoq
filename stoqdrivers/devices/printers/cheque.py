@@ -131,8 +131,10 @@ class BaseChequePrinter(BasePrinter):
 
 
 class ChequePrinter(BasePrinter):
-    def __init__(self, brand=None, model=None, device=None, config_file=None):
-        BasePrinter.__init__(self, brand, model, device, config_file)
+    def __init__(self, brand=None, model=None, device=None, config_file=None,
+                 *args, **kwargs):
+        BasePrinter.__init__(self, brand, model, device, config_file, *args,
+                             **kwargs)
         if not IChequePrinter in providedBy(self._driver):
             raise DoesNotImplement("The driver %r doesn't implements the "
                                    "IChequePrinter interface" % self._driver)

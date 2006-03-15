@@ -72,8 +72,10 @@ class payment_method(number):
 #
 
 class FiscalPrinter(BasePrinter):
-    def __init__(self, brand=None, model=None, device=None, config_file=None):
-        BasePrinter.__init__(self, brand, model, device, config_file)
+    def __init__(self, brand=None, model=None, device=None, config_file=None,
+                 *args, **kwargs):
+        BasePrinter.__init__(self, brand, model, device, config_file, *args,
+                             **kwargs)
         self._has_been_totalized = False
         self.payments_total_value = Decimal("0.0")
         self.totalized_value = Decimal("0.0")

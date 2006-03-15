@@ -31,17 +31,31 @@ stoqdrivers/devices/printers/base.py:
 import os
 import gettext
 
-from zope.interface import providedBy
+from zope.interface import providedBy, implements
 from kiwi.python import namedAny
 
 from stoqdrivers.devices import printers
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IDriverConstants,
                                                     IChequePrinter)
 from stoqdrivers.devices.base import BaseDevice
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.constants import PRINTER_DEVICE
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+
+class BaseDriverConstants:
+    implements(IDriverConstants)
+
+    # Must be defined on subclasses
+    _constants = None
+
+    @classmethod
+    def get_constant_value(cls, name):
+        try:
+            return cls._constants[name]
+        except KeyError:
+            raise ValueError("The constant value isn't valid")
 
 class BasePrinter(BaseDevice):
     device_dirname = "printers"

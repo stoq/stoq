@@ -35,8 +35,10 @@ import gettext
 
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_SUBSTITUTION, UNIT_WEIGHT, UNIT_METERS,
-                                   UNIT_LITERS, UNIT_EMPTY, UNIT_CUSTOM)
+from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
+                                   TAX_EXEMPTION, TAX_NONE,  UNIT_WEIGHT,
+                                   UNIT_METERS, UNIT_LITERS, UNIT_EMPTY,
+                                   UNIT_CUSTOM)
 from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     PendingReadX, CommandError,
                                     CouponOpenError, CommandParametersError,
@@ -45,18 +47,30 @@ from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     OutofPaperError, PendingReduceZ,
                                     InvalidState, CancelItemError,
                                     AlreadyTotalized)
-from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IDriverConstants)
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.devices.printers.base import BaseDriverConstants
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
-payment_methods = {
-    MONEY_PM : "01",
-    # FIXME: This value will changed after bug #2246 is fixed
-    CHEQUE_PM : "01"
-}
+class IFS9000IConstants(BaseDriverConstants):
+    # TODO Fixup these values
+    _constants = {
+        TAX_IOF:          'I',
+        TAX_ICMS:         'I',
+        TAX_SUBSTITUTION: 'F',
+        TAX_EXEMPTION:    'I',
+        TAX_NONE:         'I',
+        UNIT_WEIGHT:      '!',
+        UNIT_METERS:      '@',
+        UNIT_LITERS:      ')',
+        UNIT_EMPTY:       '^',
+        MONEY_PM:         '01',
+        CHEQUE_PM:        '01'
+        }
 
 class IFS9000I(SerialBase):
 
@@ -136,11 +150,6 @@ class IFS9000I(SerialBase):
     # represents a label 'ACRESCIMO' in the printed coupon
     STANDARD_CHARGE_CODE ='51'
 
-    unit_indicators = {}
-    unit_indicators[UNIT_WEIGHT] = '!'
-    unit_indicators[UNIT_METERS] = '@'
-    unit_indicators[UNIT_LITERS] = ')'
-    unit_indicators[UNIT_EMPTY]  = '^'
 
     errors_dict = {'DIA ENCERRADO': (PendingReadX, _("A Read X is pending")),
                    'ERRO-COMAND INVALIDO': (CommandError, _("The command is "
@@ -183,6 +192,7 @@ class IFS9000I(SerialBase):
                                                "totalized")),
                    }
     def __init__(self, *args, **kwargs):
+        self._consts = kwargs.pop("consts", IFS9000IConstants)
         SerialBase.__init__(self, *args, **kwargs)
         self._customer_document = None
 
@@ -450,13 +460,8 @@ class IFS9000I(SerialBase):
                         taxcode, dicount, charge, unit_desc=''):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
-
-        if not self.unit_indicators.has_key(unit):
-            raise ValueError('Invalid unit argument. Got %s' % unit)
-
-        unit_code = self.unit_indicators[unit]
+        unit_code = self._consts.get_constant_value(unit)
         code = self._format_string(code, self.PRODUCT_CODE_CHAR_LEN, 'code')
-
         orig_qty = quantity
         quantity = self._format_quantity(quantity, 'quantity')
         orig_price = price
@@ -465,14 +470,8 @@ class IFS9000I(SerialBase):
         total = orig_qty * orig_price
         total = self._format_total(total, 'total')
 
-        # TODO We need to allow using other tax codes here
-        if taxcode == TAX_SUBSTITUTION:
-            taxcode = 'F'
-        else:
-            taxcode = 'I'
-        taxcode = self._format_string(taxcode, 3, 'taxcode',
-                                      left_justify=True)
-
+        taxcode = self._format_string(self._consts.get_constant_value(taxcode),
+                                      3, "taxcode", left_justify=True)
         description = str(description)
         if len(description) > self.DESCRIPTION_CHAR_LEN:
             second_desc = description[self.DESCRIPTION_CHAR_LEN:]
@@ -529,10 +528,7 @@ class IFS9000I(SerialBase):
         self.send_command(self.CMD_COUPON_CANCEL)
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        if not payment_method in payment_methods:
-            raise TypeError("The payment method specified is invalid.")
-
-        pm = payment_methods[payment_method]
+        pm = self._consts.get_constant_value(payment_method)
         if description:
             description = '{' + description
         self.send_command(self.CMD_COUPON_TOTALIZE, pm,

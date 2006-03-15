@@ -45,30 +45,12 @@ from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
-from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IDriverConstants)
 from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.devices.printers.base import BaseDriverConstants
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
-
-#
-# This part will be improved when bug #2246 is fixed
-# Right now, we just set CHEQUE_PM with the same value
-# of MONEY_PM
-#
-payment_methods = {MONEY_PM: "01",
-                   CHEQUE_PM: "01"}
-
-# This is broken, have to educate myself about taxes
-tax_translate_dict = {TAX_IOF: "II",
-                      TAX_ICMS: "II",
-                      TAX_SUBSTITUTION: "II",
-                      TAX_EXEMPTION: "II",
-                      TAX_NONE: "II"}
-
-unit_translate_dict = {UNIT_WEIGHT: "Kg",
-                       UNIT_METERS: "m ",
-                       UNIT_LITERS: "Lt",
-                       UNIT_EMPTY: "  "}
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"
@@ -91,6 +73,22 @@ VAR_PAID_VALUE = 22
 NAK = 21
 ACK = 6
 STX = 2
+
+class MP25Constants(BaseDriverConstants):
+    _constants = {
+        # XXX Fixup these values
+        TAX_IOF:          'II',
+        TAX_ICMS:         'II',
+        TAX_SUBSTITUTION: 'II',
+        TAX_EXEMPTION:    'II',
+        TAX_NONE:         'II',
+        UNIT_WEIGHT:      'Kg',
+        UNIT_METERS:      'm ',
+        UNIT_LITERS:      'Lt',
+        UNIT_EMPTY:       '  ',
+        MONEY_PM:         '01',
+        CHEQUE_PM:        '01'
+        }
 
 #
 # Helper functions
@@ -162,6 +160,7 @@ class MP25(SerialBase):
         176: (DriverError, _("Invalid date"))}
 
     def __init__(self, *args, **kwargs):
+        self._consts = kwargs.pop("consts", MP25Constants)
         SerialBase.__init__(self, *args, **kwargs)
         # XXX: Seems that Bematech doesn't contains any variable with the
         # coupon remainder value, so I need to manage it by myself.
@@ -366,7 +365,7 @@ class MP25(SerialBase):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = unit_translate_dict[unit]
+            unit = self._consts.get_constant_value(unit)
         data = ("%c"       # command
                 "%02s"     # taxcode
                 "%09d"     # value
@@ -377,7 +376,7 @@ class MP25(SerialBase):
                 "%2s"      # unit
                 "%-48s\0"  # code
                 "%-200s\0" # description
-                % (CMD_ADD_ITEM, tax_translate_dict[taxcode],
+                % (CMD_ADD_ITEM, self._consts.get_constant_value(taxcode),
                    int(float(price) * 1e3), int(float(quantity) * 1e3),
                    (discount and int(float(discount) * 1e2) or 0),
                    (markup and int(float(markup) * 1e2) or 0), 0, unit,
@@ -397,7 +396,7 @@ class MP25(SerialBase):
         self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = payment_methods[payment_method]
+        pm = self._consts.get_constant_value(payment_method)
         description = description and description[:80] or ""
         val = "%014d" % int(float(value) * 1e2)
         data = "%c%s%s%s" % (CMD_ADD_PAYMENT, pm, val, description)

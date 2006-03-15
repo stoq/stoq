@@ -32,7 +32,7 @@ stoqdrivers/devices/printers/daruma/FS2100.py:
 import operator
 
 from stoqdrivers.devices.printers.daruma.FS345 import FS345
-from stoqdrivers.constants import TAX_NONE, TAX_SUBSTITUTION
+from stoqdrivers.constants import UNIT_CUSTOM
 
 CMD_ADD_ITEM = 201
 
@@ -41,13 +41,7 @@ class FS2100(FS345):
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge, unit_desc=''):
-        if taxcode == TAX_NONE:
-            S = 'Nb'
-        elif taxcode == TAX_SUBSTITUTION:
-            S = 'Tb'
-        else: # TAX_EXEMPTION
-            S = 'Fb'
-
+        taxcode = self._consts.get_constant_value(taxcode)
         if charge:
             d = 2
             E = charge
@@ -76,8 +70,8 @@ class FS2100(FS345):
                 '%3s'  # Unit of measure
                 '%s'   # Product description
                 '\xff' # EOF
-                % (S, int(quantity), int(price * 1e3), d, int(E * 1e3), 0,
-                   desc_size, code, unit, description[:233]))
+                % (taxcode, int(quantity), int(price * 1e3), d, int(E * 1e3),
+                   0, desc_size, code, unit, description[:233]))
 
         value = self.send_new_command(CMD_ADD_ITEM, data)
         return int(value[3:6])

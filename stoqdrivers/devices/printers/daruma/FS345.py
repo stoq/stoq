@@ -34,7 +34,7 @@ import time
 
 from zope.interface import implements
 
-from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE,
+from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
@@ -44,8 +44,10 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponOpenError)
-from stoqdrivers.devices.printers.interface import ICouponPrinter
+from stoqdrivers.devices.printers.interface import (ICouponPrinter,
+                                                    IDriverConstants)
 from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.devices.printers.base import BaseDriverConstants
 
 _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
 
@@ -120,18 +122,21 @@ def ifset(value, bit, false='', true=''):
     else:
         return true
 
-payment_methods = {
-    MONEY_PM : 'A',
-    CHEQUE_PM : 'B' # XXX: Just a test, the print isn't configured to
-                    # consider the type 'B' as Cheque.
-}
-
-unit_translate_dict = {
-    UNIT_WEIGHT : 'Kg',
-    UNIT_LITERS : 'Lt',
-    UNIT_METERS : 'm ',
-    UNIT_EMPTY : '  '
-}
+class FS345Constants(BaseDriverConstants):
+    # TODO Fixup these values
+    _constants = {
+        TAX_IOF:          'Nb',
+        TAX_ICMS:         'Nb',
+        TAX_SUBSTITUTION: 'Tb',
+        TAX_EXEMPTION:    'Fb',
+        TAX_NONE:         'Nb',
+        UNIT_WEIGHT:      'Kg',
+        UNIT_METERS:      'm ',
+        UNIT_LITERS:      'Lt',
+        UNIT_EMPTY:       '  ',
+        MONEY_PM:         'A',
+        CHEQUE_PM:        'B'
+        }
 
 class FS345(SerialBase):
     log_domain = 'fs345'
@@ -140,6 +145,10 @@ class FS345(SerialBase):
 
     model_name = "Daruma FS 345"
     coupon_printer_charset = "cp850"
+
+    def __init__(self, *args, **kwargs):
+        self._consts = kwargs.pop("consts", FS345Constants)
+        SerialBase.__init__(self, *args, **kwargs)
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
@@ -305,13 +314,7 @@ class FS345(SerialBase):
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge, unit_desc=''):
-        if taxcode == TAX_NONE:
-            S = 'Nb'
-        elif taxcode == TAX_SUBSTITUTION:
-            S = 'Tb'
-        else: # TAX_EXEMPTION
-            S = 'Fb'
-
+        taxcode = self._consts.get_constant_value(taxcode)
         if charge:
             d = 1
             E = charge
@@ -322,13 +325,12 @@ class FS345(SerialBase):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = unit_translate_dict[unit]
-        data = '%2s%13s%d%04d%010d%08d%s%s\xff' % (S, code[:13], d,
-                                                   int(E * 1e2),
-                                                   int(price * 1e3),
-                                                   int(quantity * 1e3),
-                                                   unit,
-                                                   description[:174])
+            unit = self._consts.get_constant_value(unit)
+        data = '%2s%13s%d%04d%010d%08d%s%s\xff' % (taxcode, code[:13], d,
+                                                   int(float(E) * 1e2),
+                                                   int(float(price) * 1e3),
+                                                   int(float(quantity) * 1e3),
+                                                   unit, description[:174])
         value = self.send_command(CMD_ADD_ITEM_3L13D53U, data)
         return int(value[2:5])
 
@@ -336,9 +338,9 @@ class FS345(SerialBase):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
 
     def _add_payment(self, payment_method, value, description=''):
-        pm = payment_methods[payment_method]
+        pm = self._consts.get_constant_value(payment_method)
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
-                               '%c%012d%s\xff' % (pm, int(value * 1e2),
+                               '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
                                                   description[:48]))
         return float(rv) / 1e2
 
@@ -373,7 +375,7 @@ class FS345(SerialBase):
         else: #taxcode == TAX_NONE:
             mode = 1
 
-        data = '%d%012d' % (mode, int(value * 1e2))
+        data = '%d%012d' % (mode, int(float(value) * 1e2))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
         return float(rv) / 1e2
 

@@ -49,7 +49,8 @@ class BaseDevice(Logger):
     required_interfaces = None
     device_type = None
 
-    def __init__(self, brand=None, model=None, device=None, config_file=None):
+    def __init__(self, brand=None, model=None, device=None, config_file=None,
+                 consts=None):
         Logger.__init__(self)
         if not self.device_dirname:
             raise ValueError("Subclasses must define the "
@@ -57,6 +58,7 @@ class BaseDevice(Logger):
         elif self.device_type is None:
             raise ValueError("device_type must be defined")
         self.brand, self.device, self.model = brand, device, model
+        self._driver_constants = consts
         self._load_configuration(config_file)
 
     def _load_configuration(self, config_file):
@@ -83,7 +85,10 @@ class BaseDevice(Logger):
         if not driver_class:
             raise CriticalError("Device driver at %s needs a class called %s"
                                 % (name, class_name))
-        self._driver = driver_class(device=self.device)
+        driver_args = {'device': self.device}
+        if self._driver_constants:
+            driver_args['consts'] = self._driver_constants
+        self._driver = driver_class(**driver_args)
         self.debug(("Config data: brand=%s,device=%s,model=%s\n"
                     % (self.brand, self.device, self.model)))
         self.check_interfaces()

@@ -39,7 +39,8 @@ from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (IChequePrinter,
-                                                    ICouponPrinter)
+                                                    ICouponPrinter,
+                                                    IDriverConstants)
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     PrinterError, CommError, CommandError,
                                     CommandParametersError, ReduceZError,
@@ -52,6 +53,7 @@ from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.devices.printers.base import BaseDriverConstants
 
 EOT = 0x04
 BS = 0x08
@@ -70,6 +72,21 @@ def format_value(value, max_len):
     if len(value) > max_len:
         raise ValueError("The value is too big")
     return value
+
+class EP375Constants(BaseDriverConstants):
+    _constants = {
+        TAX_IOF:          '00',
+        TAX_ICMS:         '01',
+        TAX_SUBSTITUTION: '02',
+        TAX_EXEMPTION:    '03',
+        TAX_NONE:         '04',
+        UNIT_WEIGHT:      0,
+        UNIT_METERS:      4,
+        UNIT_LITERS:      3,
+        UNIT_EMPTY:       2,
+        MONEY_PM:         '00',
+        CHEQUE_PM:        '01'
+        }
 
 #
 # Class implementation to printer status management
@@ -263,31 +280,13 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_GERENCIAL_REPORT = 'j'
     CMD_CLOSE_GERENCIAL_REPORT = 'k'
 
-    payment_methods = {
-        MONEY_PM : '00',
-        CHEQUE_PM : '01'
-        }
-
-    unit_indicators = {
-        UNIT_LITERS: 3,
-        UNIT_METERS: 4,
-        UNIT_WEIGHT: 0,
-        UNIT_EMPTY: 2
-        }
-
-    tax_codes = {
-        TAX_IOF: "00",
-        TAX_ICMS: "01",
-        TAX_SUBSTITUTION: "02",
-        TAX_EXEMPTION: "03",
-        TAX_NONE: "04"
-        }
-
     def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
-                 parity=PARITY_NONE, stopbits=STOPBITS_ONE):
+                 parity=PARITY_NONE, stopbits=STOPBITS_ONE,
+                 consts=EP375Constants):
         SerialBase.__init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                             parity=PARITY_NONE, stopbits=STOPBITS_ONE)
         BaseChequePrinter.__init__(self)
+        self._consts = consts
         self.coupon_discount = Decimal("0.0")
         self.coupon_charge = Decimal("0.0")
         self._command_id = self._item_counter = -1
@@ -495,8 +494,8 @@ class EP375(SerialBase, BaseChequePrinter):
             code_num = int(code[:6])
         except ValueError:
             code = "0" * 6 +  code
-        taxcode = EP375.tax_codes[taxcode]
-        unit = EP375.unit_indicators[unit]
+        taxcode = self._consts.get_constant_value(taxcode)
+        unit = self._consts.get_constant_value(unit)
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)
         item_id = self._get_next_coupon_item_id()
@@ -536,7 +535,7 @@ class EP375(SerialBase, BaseChequePrinter):
         return coupon_total_value
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = EP375.payment_methods[payment_method]
+        pm = self._consts.get_constant_value(payment_method)
         value = "%014d" % int(float(value) * 1e2)
 
         if ((not self._get_status().has_been_totalized())
@@ -551,8 +550,7 @@ class EP375(SerialBase, BaseChequePrinter):
             self._send_command(self.CMD_ADD_PAYMENT_WITH_CHARGE, pm, value, D,
                                type)
         else:
-            self._send_command(self.CMD_ADD_PAYMENT,
-                               EP375.payment_methods[payment_method],  value)
+            self._send_command(self.CMD_ADD_PAYMENT, pm, value)
         return self._get_coupon_remaining_value()
 
     def coupon_close(self, message=''):
@@ -623,7 +621,6 @@ class EP375(SerialBase, BaseChequePrinter):
         if not isinstance(bank, BankConfiguration):
             raise TypeError("bank parameter must be a BankConfiguration "
                             "instance")
-        # XXX: Kill me please!
         if date is None:
             date = datetime.now()
         value = '%014d' % int(value * 1e2)
