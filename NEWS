@@ -29,7 +29,6 @@ Release 0.7.0,  08-March-2006
     - Purchase order report (Henrique Romano)
     - Purchase order list report (Henrique Romano)
     - FirstTimeConfigWizard implementation (Evandro Miquelito)
-    - Python Eggs support (Evandro Miquelito)
     - Debian/Ubuntu packages support (Evandro Miquelito)
 
 
