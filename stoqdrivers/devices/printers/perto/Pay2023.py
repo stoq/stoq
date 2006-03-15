@@ -37,8 +37,7 @@ from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter,
-                                                    IDriverConstants)
+                                                    IChequePrinter)
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants

@@ -39,8 +39,7 @@ from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.interface import (IChequePrinter,
-                                                    ICouponPrinter,
-                                                    IDriverConstants)
+                                                    ICouponPrinter)
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     PrinterError, CommError, CommandError,
                                     CommandParametersError, ReduceZError,

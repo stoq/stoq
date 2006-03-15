@@ -45,8 +45,7 @@ from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
                                    TAX_SUBSTITUTION, MONEY_PM, CHEQUE_PM,
                                    UNIT_WEIGHT, UNIT_METERS, UNIT_LITERS,
                                    UNIT_EMPTY, UNIT_CUSTOM)
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IDriverConstants)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 

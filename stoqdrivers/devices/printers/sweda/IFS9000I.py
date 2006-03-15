@@ -47,8 +47,7 @@ from stoqdrivers.exceptions import (PrinterError, CloseCouponError,
                                     OutofPaperError, PendingReduceZ,
                                     InvalidState, CancelItemError,
                                     AlreadyTotalized)
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IDriverConstants)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.devices.printers.capabilities import Capability

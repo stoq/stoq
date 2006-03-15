@@ -44,8 +44,7 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
                                     CouponOpenError)
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IDriverConstants)
+from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
 
