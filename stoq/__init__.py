@@ -5,12 +5,12 @@ import sys
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
 version         = "0.7.0"
-release_date    = (2006, 3, 8)
+release_date    = (2006, 3, 15)
 
 # Required version of Python
 REQUIRED_VERSION = (2, 4)
 
-KIWI_REQUIRED = '1.9.2'
+KIWI_REQUIRED = '1.9.7'
 
 # Directory name, defaults to name of binary, it is relative to ..
 # a, __init__.py and main.py is expected to be found there.
