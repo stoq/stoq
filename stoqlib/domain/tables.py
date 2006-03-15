@@ -136,7 +136,7 @@ TABLES = [
      ('stoqlib.domain.sellable',           ("SellableUnit",
                                             "AbstractSellableCategory",
                                             "BaseSellableCategory",
-                                            "SellableCategory", 
+                                            "SellableCategory",
                                             "AbstractSellable",
                                             "AbstractSellableItem",
                                             )),
