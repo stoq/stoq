@@ -38,7 +38,7 @@ class PriceSlave(SlaveDelegate):
         else:
             gladefile = "PriceLabelSlave"
         toplevel_name = gladefile
-        SlaveDelegate.__init__(self, toplevel_name, gladefile=gladefile)
+        SlaveDelegate.__init__(self, toplevel_name=toplevel_name, gladefile=gladefile)
         self._proxy = None
 
     def set_model(self, model):

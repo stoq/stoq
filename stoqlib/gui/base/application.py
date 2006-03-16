@@ -59,8 +59,8 @@ class BaseAppWindow(Delegate):
     gladefile = toplevel_name = ''
 
     def __init__(self, app, keyactions=None):
-        Delegate.__init__(self, delete_handler=app.shutdown, 
-                          keyactions=keyactions, widgets=self.widgets,
+        Delegate.__init__(self, delete_handler=app.shutdown,
+                          keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)
 

@@ -66,15 +66,12 @@ class DateSearchSlave(SlaveDelegate):
     gladefile = 'DateSearchSlave'
     proxy_widgets = ('start_date',
                      'end_date')
-    widgets = ('search_label',
-               "anytime_check",
-               "date_check") + proxy_widgets
     gsignal('start-date-selected')
     gsignal('end-date-selected')
 
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets, domain='stoqlib')
+                               domain='stoqlib')
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
         self.model = DateInterval()
@@ -146,10 +143,6 @@ class DateSearchSlave(SlaveDelegate):
 
 class _SearchBarEntry(SlaveDelegate):
     gladefile = 'SearchBarEntry'
-    widgets = ('search_button',
-               'search_label',
-               "search_entry",
-               "search_icon")
     gsignal('selected')
 
     SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
@@ -157,7 +150,7 @@ class _SearchBarEntry(SlaveDelegate):
 
     def __init__(self, filter_slave=None):
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets, domain='stoqlib')
+                               domain='stoqlib')
         self.search_icon.set_from_stock("stoq-searchtool-icon1",
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
@@ -221,7 +214,6 @@ class SearchBar(SlaveDelegate):
     """A portable search bar slave for dialogs and applications"""
 
     gladefile = 'SearchBarHolder'
-    widgets = ('search_results_label',)
 
     gsignal('before-search-activate')
     gsignal('search-activate', object)
@@ -237,8 +229,7 @@ class SearchBar(SlaveDelegate):
                            sent to the sqlobject select method
 
         """
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._animate_search_icon_id = -1
         self.search_results_label.set_text('')
         self.search_results_label.set_size('small')
