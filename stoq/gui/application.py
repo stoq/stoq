@@ -85,16 +85,14 @@ class AppWindow(BaseAppWindow):
     def __init__(self, app):
         self.app = app
         BaseAppWindow.__init__(self, app)
-        self.widgets = self.widgets + ['users_menu', 'help_menu',
-                                       'StoreCookie', 'ClearCookie',
-                                       'ChangeUser']
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
-        self.toplevel.connect('map_event', hide_splash)
+        toplevel = self.get_toplevel()
+        toplevel.connect('map_event', hide_splash)
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
-        self.toplevel.set_title(self.get_title())
+        toplevel.set_title(self.get_title())
         self.setup_focus()
         self.conn = new_transaction()
         self._klist = getattr(self, self.klist_name)
