@@ -42,7 +42,6 @@ class LoginDialog(Delegate, RunnableView):
     def __init__(self, title=None):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
         Delegate.__init__(self, gladefile=self.gladefile,
-                          widgets=self.widgets,
                           keyactions=self.keyactions,
                           delete_handler=gtk.main_quit)
         if title:

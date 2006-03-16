@@ -78,15 +78,15 @@ class FinanceDetailsSlave(BaseEditorSlave):
 
 
 class SelectCashMethodSlave(SlaveDelegate):
-    toplevel = gladefile = 'SelectCashMethodSlave'
+    toplevel_name = gladefile = 'SelectCashMethodSlave'
 
 
 class SelectPaymentMethodSlave(SlaveDelegate):
-    toplevel = gladefile = 'SelectPaymentMethodSlave'
+    toplevel_name = gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
     def __init__(self, active_pm_ifaces):
-        SlaveDelegate.__init__(self, toplevel=self.toplevel,
+        SlaveDelegate.__init__(self, toplevel=self.toplevel_name,
                                gladefile=self.gladefile)
         self._setup_widgets(active_pm_ifaces)
 

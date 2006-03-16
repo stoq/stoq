@@ -40,7 +40,7 @@ class NoteSlave(BaseEditorSlave):
     to work.
     """
     gladefile = 'NoteSlave'
-    widgets = ('notes',)
+    proxy_widgets = ('notes',)
 
     def __init__(self, conn, model):
         self.model = model
@@ -49,7 +49,8 @@ class NoteSlave(BaseEditorSlave):
         self.notes.set_accepts_tab(False)
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model, self.widgets)
+        self.proxy = self.add_proxy(self.model,
+                                    NoteSlave.proxy_widgets)
 
 class PrintDialogSlave(BaseEditorSlave):
     gladefile = 'PrintDialogSlave'

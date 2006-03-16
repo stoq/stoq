@@ -36,7 +36,7 @@ _ = stoqlib_gettext
 class FilterSlave(SlaveDelegate):
     """A generic slave for statuses management useful when combined with
     SearchBar as a filter_slave.
-    
+
     statuses    = a list of tuples where each item has this format:
                   (string, data). This tuple will be used when filling the
                   statuses-combo
@@ -49,8 +49,7 @@ class FilterSlave(SlaveDelegate):
 
 
     def __init__(self, statuses, selected=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile, 
-                               widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile)
         if not isinstance(statuses, (tuple, list)):
             raise TypeError('Argument statuses must be of typle list or '
                             'tuple, got %s instead' % type(statuses))

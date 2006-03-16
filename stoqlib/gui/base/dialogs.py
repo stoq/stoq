@@ -49,12 +49,8 @@ _ = stoqlib_gettext
 
 
 class Warnbox(SlaveDelegate):
-    gladefile = "Warnbox"
-    widgets = ("error_icon", "alert_icon", "label")
-
     def __init__(self):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)
+        SlaveDelegate.__init__(self, gladefile='Warnbox')
 
     def setup_label(self, message):
         self.label.set_bold(True)
@@ -66,13 +62,13 @@ class Warnbox(SlaveDelegate):
         self.alert_icon.hide()
         self.error_icon.show()
         self.setup_label(message)
-        self.toplevel.show()
+        self.get_toplevel().show()
 
     def alert(self, message):
         self.alert_icon.show()
         self.error_icon.hide()
         self.setup_label(message)
-        self.toplevel.show()
+        self.get_toplevel().show()
 
     def clear_notices(self):
         # Don't hide warnbox or the vbox collapses it
@@ -86,10 +82,10 @@ class RunnableView:
 
     def close(self, *args):
         """Handles action to be performed when window is closed."""
-        self.toplevel.hide()
+        self.get_toplevel().hide()
 
     def destroy(self):
-        self.toplevel.destroy()
+        self.get_toplevel().destroy()
 
     def run(self):
         """Handles action to be performed when window is opened. Defaults to
@@ -105,7 +101,6 @@ class RunnableView:
 class AbstractDialog(Delegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
     gladefile = None
-    widgets = ()
 
     def __init__(self, delete_handler=None):
         if not delete_handler:
@@ -113,7 +108,7 @@ class AbstractDialog(Delegate, RunnableView):
 
         self.setup_keyactions()
         Delegate.__init__(self, gladefile=self.gladefile,
-                          delete_handler=delete_handler, widgets=self.widgets,
+                          delete_handler=delete_handler,
                           keyactions=self.keyactions)
 
     def setup_keyactions(self):
@@ -134,16 +129,6 @@ class BasicDialog(AbstractDialog):
     subclassed and customized.
     """
     gladefile = "BasicDialog"
-
-    widgets = ('top_separator',
-               'header',
-               'header_label',
-               'extra_header',
-               'main',
-               'main_label',
-               'ok_button',
-               'cancel_button',
-               'extra_holder')
 
     def __init__(self, delete_handler=None):
         if not delete_handler:
@@ -242,7 +227,7 @@ class BasicPluggableDialog(BasicDialog):
         self.warnbox = Warnbox()
         self.clear_notices()
         self.attach_slave('notice', self.warnbox)
-        self.warnbox.toplevel.hide()
+        self.warnbox.get_toplevel().hide()
 
     def clear_notices(self):
         self.warnbox.clear_notices()
@@ -404,7 +389,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
     # If parent is a BaseView, use GTK+ calls to get the toplevel
     # window. This is a bit of a hack :-/
     if isinstance(parent, BaseView):
-        parent = parent.toplevel.get_toplevel()
+        parent = parent.get_toplevel().get_toplevel()
         if parent:
             dialog.set_transient_for(parent)
     return dialog
@@ -417,7 +402,7 @@ def run_dialog(dialog, parent, *args, **kwargs):
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
 
-    dialog.toplevel.run()
+    dialog.get_toplevel().run()
     retval = dialog.retval
     dialog.destroy()
     return retval
