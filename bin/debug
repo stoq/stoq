@@ -23,11 +23,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
-"""
-bin/debug:
-
-   A debug session for domain objects.
-"""
+""" A debug session for domain objects.  """
 
 import sys
 import code
