@@ -30,7 +30,7 @@ stoqdrivers/constants.py:
 """
 
 #
-# Especial note regarding the constant values: it is *VERY IMPORTANT* each
+# Special note regarding the constant values: it is *VERY IMPORTANT* each
 # constant have an unique value, i.e, two constants can't be have the same
 # value (1, eg) associated.
 #
