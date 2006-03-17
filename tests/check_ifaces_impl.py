@@ -38,7 +38,7 @@ from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
 def check():
     for iface in (ICouponPrinter, IChequePrinter):
         printers = get_supported_printers_by_iface(iface)
-        print "\n\nChecking drivers that implements %r..." % iface
+        print "\n\nChecking drivers that implements %s..." % iface.__name__
         for brand in printers:
             print "\n\tChecking %s printers:" % brand
             for model in printers[brand]:
