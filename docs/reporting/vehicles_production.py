@@ -1,11 +1,8 @@
 #!/usr/bin/env python
-
-from sys import path
-path.insert(0, "..")
+# -*- coding: utf-8 -*-
 
 from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
-from stoqlib.reporting.base.common import read_file, safe_int
 
 class VehiclesProductionReport(ReportTemplate):
     """ Sample report table. Here we don't need columns because we already
@@ -17,7 +14,7 @@ class VehiclesProductionReport(ReportTemplate):
         report_name = 'Vehicles Production Report'
         ReportTemplate.__init__(self, filename, report_name, timestamp=1,
                                 leftMargin=30, topMargin=20,
-                                rightMargin=30, do_header=0)
+                                rightMargin=30, do_header=0, landscape=True)
         rows = self.get_rows()
         self.run_report(rows)
 
@@ -31,8 +28,9 @@ class VehiclesProductionReport(ReportTemplate):
 
     def get_rows(self):
         production = []
-        for data in read_file('csv/vehicles_production.csv'):
-            id = safe_int(data[0])
+        for data in open('csv/vehicles_production.csv').readlines():
+            data = data.split("\t")
+            id = data[0]
             description = data[1]
             type = data[2]
             measurement = data[3]

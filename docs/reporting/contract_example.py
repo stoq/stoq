@@ -1,82 +1,80 @@
 #!/usr/bin/env python
-from sys import path
-path.insert(0, '..')
+# -*- coding: utf-8 -*-
 
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_JUSTIFY
 
 from stoqlib.reporting.base.utils import  build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
-from stoqlib.reporting.base.default_style import STYLE_SHEET
+from stoqlib.reporting.base.default_style import (STYLE_SHEET,
+                                                  DEFAULT_FONTNAME,
+                                                  DEFAULT_FONTSIZE)
 
 class ContractExample(ReportTemplate):
     def __init__(self, filename):
         ReportTemplate.__init__(self, filename, "", do_footer=0, topMargin=0,
                                 bottomMargin=0)
-        self.add_title("Termo de Compromisso de Est·gio")
+        self.add_title("Termo de Compromisso de Est√°gio")
         self.add_info_table()
         self.add_blank_space(10)
         self.add_contract_body()
 
     def create_extra_styles(self):
-        styles = [ParagraphStyle("JustifyParagraph",
-                                 fontName="Helvetica",
-                                 fontSize=10,
-                                 leading=11,
-                                 alignment=TA_JUSTIFY,
-                                 spaceAfter=6)]
-        for style in styles:
-            STYLE_SHEET.add(style)
-    
+        # FIXME: DEFAULT_FONTNAME don't allow use the justify property
+        styles = [ParagraphStyle("JustifyParagraph", fontName=DEFAULT_FONTNAME,
+                                 fontSize=DEFAULT_FONTSIZE, leading=11,
+                                 alignment=TA_JUSTIFY, spaceAfter=6)]
+        map(STYLE_SHEET.add, styles)
+
     def add_info_table(self):
         rows = [["Concedente:", ""],
-                ["EndereÁo:", ""],
-                ["Estagi·rio:", ""],
-                ["InstituiÁ„o de Ensino:", ""],
-                ["EndereÁo:", ""],
-                ["NÌvel:", ""],
+                ["Endere√ßo:", ""],
+                ["Estagi√°rio:", ""],
+                ["Institui√ß√£o de Ensino:", ""],
+                ["Endere√ßo:", ""],
+                ["N√≠vel:", ""],
                 ["Curso:", ""]]
         self.add_data_table(rows)
 
     def add_contract_body(self):
         contract_body = [
             ("As Partes acima justificadas assinam o presente Termo de "
-             "Compromisso regido pelas condiÁıes estabelecidas no "
-             "Instrumento JurÌdico celebrado com a InstituiÁ„o de Ensino e "
-             "mediante as seguintes condiÁıes:"),
-            ("1- O propÛsito do presente est·gio È propiciar ao estagi·rio(a) "
-             "treinamento pr·tico, aperfeiÁoamento tÈcnico, cultural, "
-             "cientÌfico e de relacionamento humano, como complementaÁ„o do "
+             "Compromisso regido pelas condi√ß√µes estabelecidas no "
+             "Instrumento Jur√≠dico celebrado com a Institui√ß√£o de Ensino e "
+             "mediante as seguintes condi√ß√µes:"),
+            ("1- O prop√≥sito do presente est√°gio √© propiciar ao estagi√°rio(a) "
+             "treinamento pr√°tico, aperfei√ßoamento t√©cnico, cultural, "
+             "cient√≠fico e de relacionamento humano, como complementa√ß√£o do "
              "ensino ou aprendizagem a serem planejadas de conformidade com "
-             "os programas e calend·rios escolares."),
-            ("2 - A jornada de atividade do(a) estagi·rio(a), compatÌveis "
-             "com o seu hor·rio escolar e com o hor·rio da CONCEDENTE, Ter· "
+             "os programas e calend√°rios escolares."),
+            ("2 - A jornada de atividade do(a) estagi√°rio(a), compat√≠veis "
+             "com o seu hor√°rio escolar e com o hor√°rio da CONCEDENTE, Ter√° "
              "uma carga de _______ horas semanais. O termo de compromisso "
-             "ter· inÌcio em ____________________ e tÈrmino em "
+             "ter√° in√≠cio em ____________________ e t√©rmino em "
              "____________________, podendo ser interrompido a qualquer "
-             "momento, unilateralmente, mediante comunicaÁ„o escrita. Nos "
-             "perÌodos de fÈrias escolares, a jornada de est·gio ser· "
-             "estabelecida de comum acordo entre o(a) estagi·rio(a) e a "
-             "CONCEDENTE, com o conhecimento da InstituiÁ„o de Ensino "
+             "momento, unilateralmente, mediante comunica√ß√£o escrita. Nos "
+             "per√≠odos de f√©rias escolares, a jornada de est√°gio ser√° "
+             "estabelecida de comum acordo entre o(a) estagi√°rio(a) e a "
+             "CONCEDENTE, com o conhecimento da Institui√ß√£o de Ensino "
              "envolvida."),
-            ("3 - Fica estabelecida a Bolsa de Est·gio de R$ ________,00 por "
-             "mÍs."),
-            ("4 - O presente est·gio n„o cria vÌnculo empregatÌcio de qualquer "
-             "natureza nos termos de legislaÁ„o aplic·vel em vigor. Na "
-             "vigÍncia deste compromisso, o(a) estagi·rio(a) compromete-se a "
-             "observar as normas de seguranÁa bem como as instruÁıes "
-             "aplic·veis a terceiros."),
-            ("A CONCEDENTE incluir· o(a) estagi·rio(a), em uma apÛlice de "
-             "seguros de acidentes pessoais. Se solicitado pela InstituiÁ„o de "
-             "Ensino do(a) estagi·rio(a), a CONCEDENTE expedir· uma DeclaraÁ„o"
-             "de Est·gio."),
-            ("5 - O(a) estagi·rio(a) dever· informar de imediato e por "
-             "escrito ‡ CONCEDENTE, qualquer fato que interrompa, suspenda ou "
-             "cancele sua matrÌcula na InstituiÁ„o de Ensino interveniente, "
-             "ficando ele respons·vel de quaisquer despesas causadas pela "
-             "ausÍncia dessa informaÁ„o."),
-            ("6 - E por estarem de comum acordo com as condiÁıes acima, "
-             "firmam o presente compromisso em trÍs vias de igual teor.")]
+            ("3 - Fica estabelecida a Bolsa de Est√°gio de R$ ________,00 por "
+             "m√™s."),
+            ("4 - O presente est√°gio n√£o cria v√≠nculo empregat√≠cio de qualquer "
+             "natureza nos termos de legisla√ß√£o aplic√°vel em vigor. Na "
+             "vig√™ncia deste compromisso, o(a) estagi√°rio(a) compromete-se a "
+             "observar as normas de seguran√ßa bem como as instru√ß√µes "
+             "aplic√°veis a terceiros."),
+            ("A CONCEDENTE incluir√° o(a) estagi√°rio(a), em uma ap√≥lice de "
+             "seguros de acidentes pessoais. Se solicitado pela Institui√ß√£o de "
+             "Ensino do(a) estagi√°rio(a), a CONCEDENTE expedir√° uma Declara√ß√£o"
+             "de Est√°gio."),
+            ("5 - O(a) estagi√°rio(a) dever√° informar de imediato e por "
+             "escrito √† CONCEDENTE, qualquer fato que interrompa, suspenda ou "
+             "cancele sua matr√≠cula na Institui√ß√£o de Ensino interveniente, "
+             "ficando ele respons√°vel de quaisquer despesas causadas pela "
+             "aus√™ncia dessa informa√ß√£o."),
+            ("6 - E por estarem de comum acordo com as condi√ß√µes acima, "
+             "firmam o presente compromisso em tr√™s vias de igual teor.")]
 
         self.create_extra_styles()
         map(lambda t: self.add_paragraph(t, style="JustifyParagraph"),
@@ -86,9 +84,9 @@ class ContractExample(ReportTemplate):
         self.add_blank_space(10)
         self.add_paragraph("Testemunhas:", style="JustifyParagraph")
 
-        self.add_signatures(["Assinatura do(a) Estagi·rio(a)",
-                             "Respons·vel Legal"], height=20)
-        self.add_signatures(["Respons·vel Legal", "InstituiÁ„o de Ensino"])
+        self.add_signatures(["Assinatura do(a) Estagi√°rio(a)",
+                             "Respons√°vel Legal"], height=20)
+        self.add_signatures(["Respons√°vel Legal", "Institui√ß√£o de Ensino"])
 
 filename = build_report(ContractExample)
 print_preview(filename)

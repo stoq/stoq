@@ -1,7 +1,5 @@
 #!/usr/bin/env python
-
-from sys import path
-path.insert(0, "..")
+# -*- coding: utf-8 -*-
 
 import operator
 
@@ -9,7 +7,6 @@ from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.flowables import RIGHT, CENTER
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
-from stoqlib.reporting.base.common import read_file, safe_float
 
 class Product:
     def __init__(self, qty, unit, description, price):
@@ -36,7 +33,7 @@ class Product:
 
 class PurchaseOrderReport(ReportTemplate):
     """ Sample object table report. For complex data that is stored in a
-    list of objects, an object table is recommended. 
+    list of objects, an object table is recommended.
       """
     def __init__(self, filename, **args):
         report_name = 'Purchase Order Report'
@@ -56,7 +53,7 @@ class PurchaseOrderReport(ReportTemplate):
                              ('Contact:', contact)))
 
     def add_instruction_section(self):
-        self.add_title('Instructions') 
+        self.add_title('Instructions')
         self.add_blank_space()
         text = ('This order must be delivered until next month.\n'
                 'Only three boxes will be allowed for a single product.\n'
@@ -66,20 +63,20 @@ class PurchaseOrderReport(ReportTemplate):
                 continue
             self.add_paragraph(line)
         self.add_blank_space()
-    
+
     def add_item_section(self):
         self.add_title('Items')
-        cols = [OTC("Qty", lambda o: o.get_quantity(), width=45, 
+        cols = [OTC("Qty", lambda o: o.get_quantity(), width=45,
                      align=RIGHT),
                 OTC("Unit", lambda o: o.get_unit(), width=40, truncate=1),
-                OTC("Description", lambda o: o.get_description(), width=150, 
+                OTC("Description", lambda o: o.get_description(), width=150,
                     truncate=1),
                 OTC("Price", lambda o: o.get_price(), width=80),
                 OTC("Total Value", lambda o: o.get_total_value(), width=80)]
         objects = self.get_objects()
         self.add_object_table(objects, cols, align=RIGHT)
         self.add_summary(objects)
-       
+
     def add_summary(self, objects):
         self.add_paragraph('%d products listed.' % len(objects),
                            style='Normal-AlignRight')
@@ -89,19 +86,20 @@ class PurchaseOrderReport(ReportTemplate):
         total_value = '$ %.2f' % total_value
         self.add_data_table((('Total Value:', total_value),),
                              align=RIGHT)
-    
+
     def build_signatures(self):
         labels = ['Company Manager', 'Purchase Supervisor']
         self.add_signatures(labels, align=CENTER)
 
-    
+
     def get_objects(self):
         products = []
-        for data in read_file('csv/products.csv'):
-            quantity = safe_float(data[0])
+        for data in open("csv/products.csv").readlines():
+            data = data.split("\t")
+            quantity = float(data[0])
             unit = data[1]
             description = data[2]
-            price = safe_float(data[3])
+            price = float(data[3])
             product = Product(quantity, unit, description, price)
             products.append(product)
         return products
