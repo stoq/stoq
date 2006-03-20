@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-from sys import path
-path.insert(0, '..')
+# -*- coding: utf-8 -*-
 
 from stoqlib.reporting.base.utils import print_preview, build_report
 from stoqlib.reporting.base.printing import ReportTemplate
@@ -13,7 +12,7 @@ class ObjectTableColumnTest(ReportTemplate):
     def __init__(self, filename, clients):
         ReportTemplate.__init__(self, filename,
                                 self.report_name)
-        self.add_title("Relatório de Clientes")
+        self.add_title("RelatÃ³rio de Clientes")
         self.add_object_table(clients, self.get_cols())
 
     def get_cols(self):

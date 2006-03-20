@@ -5,7 +5,6 @@ path.insert(0, "..")
 from stoqlib.reporting.base.utils import build_report, print_preview
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.reporting.base.tables import TableColumn as TC
-from stoqlib.reporting.base.common import read_file, safe_int
 
 class ClientsReport(ReportTemplate):
     """ Sample column table report. If we have to set a fixed size to our columns
@@ -18,7 +17,7 @@ class ClientsReport(ReportTemplate):
         ReportTemplate.__init__(self, filename, report_name, do_header=0)
         rows = self.get_rows()
         self.add_column_table(rows, self.get_cols())
-        self.add_paragraph('%d clients listed.' % len(rows), 
+        self.add_paragraph('%d clients listed.' % len(rows),
                            style='Normal-AlignRight')
 
     def get_cols(self):
@@ -32,8 +31,9 @@ class ClientsReport(ReportTemplate):
 
     def get_rows(self):
         clients = []
-        for data in read_file('csv/clients.csv'):
-            id = safe_int(data[0])
+        for data in open('csv/clients.csv').readlines():
+            data = data.split("\t")
+            id = int(data[0])
             name = data[1]
             district = data[2]
             city = data[3]
