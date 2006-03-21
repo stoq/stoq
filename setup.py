@@ -89,25 +89,24 @@ for (package_name, module_name, required_version, url,
 # Package installation
 #
 
-
-from distutils.core import setup
-
-from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
-                       listfiles, listpackages)
+from kiwi.dist import setup, listfiles, listpackages
 
 from stoqlib import version, website
 
-class StoqLibInstallData(KiwiInstallData):
-    def run(self):
-        self.data_files.extend(compile_po_files('stoqlib'))
-        KiwiInstallData.run(self)
-
-class StoqLibInstallLib(KiwiInstallLib):
-    resources = dict(locale='$prefix/share/locale')
-    global_resources = dict(pixmaps='$datadir/pixmaps',
-                            sql='$datadir/sql',
-                            glade='$datadir/glade',
-                            fonts='$datadir/fonts')
+data_files = [
+    ('$datadir/pixmaps', listfiles('data/pixmaps', '*.png')),
+    ('$datadir/sql', listfiles('data/sql', '*.sql')),
+    ('$datadir/glade', listfiles('data', '*.glade')),
+    ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
+    ('share/doc/stoqlib',
+     ('AUTHORS', 'CONTRIBUTORS', 'README'))]
+resources = dict(
+    locale='$prefix/share/locale')
+global_resources = dict(
+    pixmaps='$datadir/pixmaps',
+    sql='$datadir/sql',
+    glade='$datadir/glade',
+    fonts='$datadir/fonts')
 
 setup(name='stoqlib',
       version=version,
@@ -116,24 +115,14 @@ setup(name='stoqlib',
       description="A powerful retail system library",
       long_description="""
       This library offers many special tools for retail system applications
-      such reports infrastructure, basic dialogs and searchbars and domain data in a
-      persistent level.""",
+      such reports infrastructure, basic dialogs and searchbars and
+      domain data in a persistent level.
+      """,
       url=website,
       license="GNU LGPL 2.1 (see COPYING)",
-      data_files=[
-        ('$datadir/pixmaps',
-         listfiles('data/pixmaps', '*.png')),
-        ('$datadir/sql',
-         listfiles('data/sql', '*.sql')),
-        ('$datadir/glade',
-         listfiles('data', '*.glade')),
-        ('$datadir/fonts',
-         listfiles('data', 'fonts', '*.ttf')),
-        ('share/doc/stoqlib',
-         ('AUTHORS', 'CONTRIBUTORS', 'README')),
-        ],
-    packages=listpackages('stoqlib', exclude='stoqlib.tests'),
-    cmdclass=dict(install_data=StoqLibInstallData,
-                  install_lib=StoqLibInstallLib),
-    )
+      packages=listpackages('stoqlib', exclude='stoqlib.tests'),
+      data_files=data_files,
+      resources=resources,
+      global_resources=global_resources,
+      )
 
