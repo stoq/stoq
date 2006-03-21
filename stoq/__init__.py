@@ -41,7 +41,6 @@ except ImportError:
 # XXX: Use Application
 lib = Library('stoq')
 if lib.uninstalled:
-    lib.add_resource('locale', 'locale')
     lib.add_global_resource('pixmaps', 'data/pixmaps')
     lib.add_global_resource('glade', 'data')
     lib.add_global_resource('config', 'data/config')
