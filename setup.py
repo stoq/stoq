@@ -39,20 +39,13 @@ for package_name, module_name, version, url, get_version in dependencies:
 # Package installation
 #
 
-
-from distutils.core import setup
-
-from kiwi.dist import listpackages, listfiles, KiwiInstallData, KiwiInstallLib
-
-class StoqdriversInstallLib(KiwiInstallLib):
-    global_resources = dict(conf="$datadir/conf")
-    resources = dict(locale="$prefix/share/locale")
+from kiwi.dist import setup, listpackages, listfiles
 
 from stoqdrivers import __version__
 
 setup(
-    name = "stoqdrivers",
-    version =  ".".join(map(str, __version__)),
+    name="stoqdrivers",
+    version= ".".join(map(str, __version__)),
     author="Async Open Source",
     author_email="stoq-devel@async.com.br",
     description = "Useful drivers for Stoq and retail systems",
@@ -62,11 +55,11 @@ setup(
     unified API for devices like fiscal printers which makes it easy to
     embed in many applications.
     """,
-    url = "http://www.stoq.com.br",
-    license = "GNU LGPL 2.1 (see COPYING)",
-    packages = listpackages('stoqdrivers'),
-    data_files = [("$datadir/conf",
-                   listfiles("stoqdrivers/conf", "*.ini"))],
-    cmdclass=dict(install_lib=StoqdriversInstallLib,
-                  install_data=KiwiInstallData),
+    url="http://www.stoq.com.br",
+    license="GNU LGPL 2.1 (see COPYING)",
+    packages=listpackages('stoqdrivers'),
+    data_files=[
+    ("$datadir/conf", listfiles("stoqdrivers/conf", "*.ini"))],
+    global_resources=dict(conf="$datadir/conf"),
+    resources=dict(locale="$prefix/share/locale"),
     )
