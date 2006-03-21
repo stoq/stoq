@@ -59,30 +59,13 @@ for (package_name, module_name, required_version, url,
 # Package installation
 #
 
-
-from distutils.core import setup
-from distutils.command.install_data import install_data
-
-from kiwi.dist import (KiwiInstallData, KiwiInstallLib, compile_po_files,
-                       listfiles, listpackages)
+from kiwi.dist import setup, listfiles, listpackages
 
 from stoq import version
 
-PACKAGE = 'stoq'
-
-class StoqInstallData(KiwiInstallData):
-    def run(self):
-        self.data_files.extend(compile_po_files(PACKAGE))
-        KiwiInstallData.run(self)
-
-class StoqInstallLib(KiwiInstallLib):
-    resources = dict(locale='$prefix/share/locale',
-                     basedir='$prefix')
-    global_resources = dict(pixmaps='$datadir/pixmaps',
-                            glade='$datadir/glade',
-                            docs='$prefix/share/doc/stoq',
-                            config='$sysconfdir/stoq')
-
+scripts = [
+    'bin/stoq',
+    'bin/init-database']
 data_files = [
     ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.png')),
@@ -90,10 +73,17 @@ data_files = [
      listfiles('data', '*.glade')),
     ('$sysconfdir/stoq',  ''),
     ('share/doc/stoq',
-     ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS']),
-    ]
+     ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS'])]
+resources = dict(
+    locale='$prefix/share/locale',
+    basedir='$prefix')
+global_resources = dict(
+    pixmaps='$datadir/pixmaps',
+    glade='$datadir/glade',
+    docs='$prefix/share/doc/stoq',
+    config='$sysconfdir/stoq')
 
-setup(name=PACKAGE,
+setup(name='stoq',
       version=version,
       author='Async Open Source',
       author_email='stoq-devel@async.com.br',
@@ -104,9 +94,9 @@ setup(name=PACKAGE,
       """,
       url='http://www.stoq.com.br',
       license='GNU GPL (see COPYING)',
-      packages=listpackages(PACKAGE),
-      scripts=['bin/stoq', 'bin/init-database'],
+      packages=listpackages('stoq'),
+      scripts=scripts,
       data_files=data_files,
-      cmdclass=dict(install_lib=StoqInstallLib,
-                    install_data=StoqInstallData))
+      resources=resources,
+      global_resources=global_resources)
 
