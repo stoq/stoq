@@ -374,6 +374,10 @@ class ConnMetaInterface(MetaInterface):
         @returns: If the adaptable object can be adaptable to our interface
         """
 
+        if isinstance(adaptable, Adapter):
+            raise TypeError('Adaptable argument can not be of type Adapter,'
+                            'got %s instead'
+                            % type(adaptable))
         if super(ConnMetaInterface, self).providedBy(adaptable):
             return True
         if self(adaptable) is not None:
