@@ -26,13 +26,12 @@
 
 from kiwi.python import namedAny, ClassInittableObject
 from kiwi.datatypes import currency
-from sqlobject import UnicodeCol, BoolCol
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.database import finish_transaction
-from stoqlib.domain.base import Domain, AbstractModel
+from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        ISellable, IMoneyPM, ICheckPM, IBillPM,
                                        ICardPM, IFinancePM,
@@ -51,8 +50,7 @@ class ParameterDetails:
         self.short_desc = short_desc
         self.long_desc = long_desc
 
-
-parameters_info = {
+_parameter_info = {
     'CURRENT_BRANCH': ParameterDetails(_('General'), _('Current Branch'),
                                        _('The current branch associated with '
                                          'the current system installation.')),
@@ -114,11 +112,12 @@ parameters_info = {
                                              'logic quantities during stock '
                                              'operations. See StockItem '
                                              'documentation.')),
-    'MAX_LATE_DAYS': ParameterDetails(_('Sales'), _('Client Maximum Late Days'),
+    'MAX_LATE_DAYS': ParameterDetails(_('Sales'),
+                                      _('Client Maximum Late Days'),
                                       _('An integer that represents a maximum '
-                                        'number of days which a certain client '
-                                        'can have unpaid payments with normal '
-                                        'status.')),
+                                        'number of days which a certain '
+                                        'client can have unpaid payments  '
+                                        'with normal status.')),
     'ACCEPT_ORDER_PRODUCTS': ParameterDetails(_('Sales'),
                                               _('Accept Order Products'),
                                               _('Can this company make sales '
@@ -254,27 +253,6 @@ parameters_info = {
 }
 
 
-#
-# Infrastructure for system data
-#
-
-class ParameterData(Domain):
-    """ Class to store system parameters.
-
-    field_name = the name of the parameter we want to query on
-    field_value = the current result(or value) of this parameter
-    is_editable = if the item can't be edited through an editor.
-    """
-    field_name = UnicodeCol(alternateID=True)
-    field_value = UnicodeCol()
-    is_editable = BoolCol()
-
-    def get_group(self):
-        return parameters_info[self.field_name].group
-
-    def get_short_description(self):
-        return parameters_info[self.field_name].short_desc
-
 
 class ParameterAttr:
     def __init__(self, key, type, initial=None):
@@ -295,56 +273,58 @@ class ParameterAccess(ClassInittableObject):
 
 
     # New parameters must always be defined here
-    constants = [# Adding constants
-                 ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
-                 ParameterAttr('MAX_LATE_DAYS', int, initial=30),
-                 ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
-                 ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
-                 ParameterAttr('DECIMAL_PRECISION', int,
-                               initial=DEFAULT_DECIMAL_PRECISION),
-                 ParameterAttr('DECIMAL_SIZE', int,
-                               initial=DEFAULT_DECIMAL_SIZE),
-                 ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
-                 ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
-                 ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
-                 ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
-                 ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
-                 ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
-                 ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
-                 ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
-                 ParameterAttr('EDIT_SALES_ORDER_NUMBER', bool, initial=False),
-                 ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
-                 ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
-                               initial=True),
-                 ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', bool,
-                               initial=False),
-                 ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
-                 ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
-                               initial=True),
-                 ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
+    constants = [
+        # Adding constants
+        ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
+        ParameterAttr('MAX_LATE_DAYS', int, initial=30),
+        ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
+        ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
+        ParameterAttr('DECIMAL_PRECISION', int,
+                      initial=DEFAULT_DECIMAL_PRECISION),
+        ParameterAttr('DECIMAL_SIZE', int,
+                      initial=DEFAULT_DECIMAL_SIZE),
+        ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
+        ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
+        ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
+        ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
+        ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
+        ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
+        ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
+        ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
+        ParameterAttr('EDIT_SALES_ORDER_NUMBER', bool, initial=False),
+        ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
+        ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
+                      initial=True),
+        ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', bool,
+                      initial=False),
+        ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
+        ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
+                      initial=True),
+        ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
 
-                 # Adding objects -- Note that all the object referred here must
-                 # implements the IDescribable interface.
-                 ParameterAttr('SUGGESTED_SUPPLIER',
-                               'person.PersonAdaptToSupplier'),
-                 ParameterAttr('CURRENT_BRANCH',
-                               'person.PersonAdaptToBranch'),
-                 ParameterAttr('DEFAULT_BASE_CATEGORY',
-                               'sellable.BaseSellableCategory'),
-                 ParameterAttr('DEFAULT_SALESPERSON_ROLE',
-                               'person.EmployeeRole'),
-                 ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
-                               'payment.destination.StoreDestination'),
-                 ParameterAttr('BASE_PAYMENT_METHOD',
-                               'payment.methods.PaymentMethod'),
-                 ParameterAttr('METHOD_MONEY',
-                               'payment.methods.PMAdaptToMoneyPM'),
-                 ParameterAttr('DELIVERY_SERVICE',
-                               'service.ServiceAdaptToSellable'),
-                 ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
-                               'giftcertificate.GiftCertificateType'),
-                 ParameterAttr('CURRENT_WAREHOUSE',
-                               'person.PersonAdaptToCompany')]
+        # Adding objects -- Note that all the object referred here must
+        # implements the IDescribable interface.
+        ParameterAttr('SUGGESTED_SUPPLIER',
+                      'person.PersonAdaptToSupplier'),
+        ParameterAttr('CURRENT_BRANCH',
+                      'person.PersonAdaptToBranch'),
+        ParameterAttr('DEFAULT_BASE_CATEGORY',
+                      'sellable.BaseSellableCategory'),
+        ParameterAttr('DEFAULT_SALESPERSON_ROLE',
+                      'person.EmployeeRole'),
+        ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
+                      'payment.destination.StoreDestination'),
+        ParameterAttr('BASE_PAYMENT_METHOD',
+                      'payment.methods.PaymentMethod'),
+        ParameterAttr('METHOD_MONEY',
+                      'payment.methods.PMAdaptToMoneyPM'),
+        ParameterAttr('DELIVERY_SERVICE',
+                      'service.ServiceAdaptToSellable'),
+        ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
+                      'giftcertificate.GiftCertificateType'),
+        ParameterAttr('CURRENT_WAREHOUSE',
+                      'person.PersonAdaptToCompany'),
+        ]
 
     _cache = {}
 
@@ -355,8 +335,9 @@ class ParameterAccess(ClassInittableObject):
         """Remove any  parameter found in ParameterData table which is not
         used any longer.
         """
+        global _parameter_info
         for param in ParameterData.select(connection=self.conn):
-            if param.field_name not in parameters_info.keys():
+            if param.field_name not in _parameter_info.keys():
                 ParameterData.delete(param.id, connection=self.conn)
 
     def _set_schema(self, field_name, field_value, is_editable=True):
@@ -375,6 +356,7 @@ class ParameterAccess(ClassInittableObject):
     #
 
     def rebuild_cache_for(self, param_name):
+        from stoqlib.domain.base import AbstractModel
         try:
             value = self._cache[param_name]
         except KeyError:
@@ -405,6 +387,7 @@ class ParameterAccess(ClassInittableObject):
         map(self.rebuild_cache_for, self._cache.keys())
 
     def get_parameter_by_field(self, field_name, field_type):
+        from stoqlib.domain.base import AbstractModel
         if isinstance(field_type, basestring):
             field_type = namedAny('stoqlib.domain.' + field_type)
         if self._cache.has_key(field_name):
@@ -635,8 +618,9 @@ def get_parameter_details(field_name):
     """ Returns a ParameterDetails class for the given parameter name, or
     None if the name supplied isn't a valid parameter name.
     """
+    global _parameter_info
     try:
-        return parameters_info[field_name]
+        return _parameter_info[field_name]
     except KeyError:
         raise NameError("Does not exists no parameters "
                         "with name %s" % field_name)

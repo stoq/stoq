@@ -27,6 +27,9 @@
 tables, removing tables and configuring administration user.
 """
 
+
+from kiwi.argcheck import argcheck
+
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database import setup_tables
@@ -88,7 +91,8 @@ def ensure_sellable_units():
     conn.commit()
     print_msg("done")
 
-def initialize_system(password, delete_only=False, list_tables=False, 
+@argcheck(str, bool, bool, bool)
+def initialize_system(password, delete_only=False, list_tables=False,
                       verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration

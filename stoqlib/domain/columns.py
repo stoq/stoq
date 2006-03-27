@@ -32,8 +32,9 @@ from kiwi.datatypes import currency
 from sqlobject.col import SODecimalCol, Col
 from sqlobject.converters import registerConverter
 
+from stoqlib.domain.parameter import ParameterData
 from stoqlib.lib.runtime import get_connection
-from stoqlib.lib.parameters import (sysparam, ParameterData,
+from stoqlib.lib.parameters import (sysparam,
                                     DEFAULT_DECIMAL_PRECISION,
                                     DEFAULT_DECIMAL_SIZE)
 
