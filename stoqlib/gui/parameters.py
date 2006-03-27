@@ -29,16 +29,17 @@ from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.argcheck import argcheck
 from zope.interface import providedBy
 
+from stoqlib.database import rollback_and_begin
+from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.interfaces import IDescribable
+from stoqlib.domain.parameter import ParameterData
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.parameters import SystemParameterEditor
-from stoqlib.database import rollback_and_begin
-from stoqlib.lib.parameters import ParameterData, sysparam
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.base import AbstractModel
-from stoqlib.domain.interfaces import IDescribable
 
 _ = stoqlib_gettext
 

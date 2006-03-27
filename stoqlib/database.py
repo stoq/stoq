@@ -61,9 +61,9 @@ class DatabaseSettings:
         self.password = password
 
     def get_connection_uri(self):
-        return get_connection_uri(self.address, self.port, self.dbname,
-                                  self.rdbms, self.username,
-                                  self.password)
+        return build_connection_uri(self.address, self.port, self.dbname,
+                                    self.rdbms, self.username,
+                                    self.password)
 
     def check_database_address(self):
         try:
@@ -83,8 +83,8 @@ class DatabaseSettings:
         return check_database_connection(conn_uri)
 
 
-def get_connection_uri(address, port, dbname, rdbms=DEFAULT_RDBMS,
-                       username=None, password=''):
+def build_connection_uri(address, port, dbname, rdbms=DEFAULT_RDBMS,
+                         username=None, password=''):
     if not username:
         username = pwd.getpwuid(os.getuid())[0]
 
@@ -139,7 +139,7 @@ def finish_transaction(conn, model=None, keep_transaction=False):
 
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
-    from stoqlib.lib.parameters import ParameterData
+    from stoqlib.domain.parameter import ParameterData
     if not list_tables and verbose:
         print_msg('Setting up tables... ', break_line=False)
     else:

@@ -38,12 +38,8 @@ from sqlobject.sqlbuilder import SQLOp
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
-from stoqlib.lib.runtime import get_connection
 from stoqlib.database import Adapter
 from stoqlib.exceptions import AdapterError
-
-
-__connection__ = get_connection()
 
 
 DATABASE_ENCODING = 'UTF-8'

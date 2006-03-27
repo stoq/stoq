@@ -27,11 +27,11 @@ import gtk
 from kiwi.ui.widgets.entry import Entry
 from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import AbstractModel
+from stoqlib.domain.parameter import ParameterData
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.lib.parameters import (ParameterData, sysparam,
-                                    get_parameter_details)
+from stoqlib.lib.parameters import sysparam, get_parameter_details
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 

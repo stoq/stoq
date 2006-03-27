@@ -44,10 +44,12 @@ def initialize_connection():
     # Avoiding circular imports
     from stoqlib.database import get_registered_db_settings
     global _connection
-    msg = 'The connection for this application was already set.'
-    assert not _connection, msg
+    assert not _connection, (
+        'The connection for this application was already set.')
 
     db_settings = get_registered_db_settings()
+    assert db_settings, ('You need set register db settings before calling '
+                         'initialize_connection')
     # TODO if port is invalid there will be an error here
     conn = connectionForURI(db_settings.get_connection_uri())
 
