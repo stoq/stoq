@@ -28,24 +28,25 @@
     database already created to run this script properly.
 """
 
-import os
 import sys
 
-from stoqlib.lib.runtime import set_verbose
-
-from stoq.main import setup_environment
-
-
-TEST_MODE = '-t' in sys.argv
-VERBOSE = '-v' in sys.argv
-
+from stoq.lib.configparser import StoqConfig
+from stoq.lib.startup import setup, get_option_parser
 
 def main(args):
-    set_verbose(VERBOSE)
-    setup_environment(verbose=VERBOSE, force_init_db=True,
-                      test_mode=TEST_MODE)
+    parser = get_option_parser()
+    parser.add_option('-e', '--create-examples',
+                      action='store_true',
+                      dest='create_examples')
+    options, args = parser.parse_args(args)
+    options.clean = True
 
-    if '-e' in args:
+    config = StoqConfig()
+    config.load_config()
+    config.check_connection()
+    setup(config, options)
+
+    if options.create_examples:
         from stoqlib.domain.examples.createall import create
         create()
 
