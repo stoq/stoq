@@ -40,8 +40,7 @@ from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
-from stoqlib.domain.tables import check_tables
-
+from stoqlib.domain.tables import get_table_types
 from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
 
@@ -86,9 +85,30 @@ class AppConfig:
     # Application setup.
     #
 
+    def _check_tables(self):
+        # We must check if all the tables are already in the database.
+        conn = get_connection()
+
+        for table_type in get_table_types():
+            classname = table_type.get_db_table_name()
+            try:
+                if not conn.tableExists(classname):
+                    msg = _("Outdated schema. Table %s doesn't exist.\n"
+                            "Run init-database script to fix this problem."
+                            % classname)
+                    raise DatabaseError, msg
+            except:
+                type, value, trace = sys.exc_info()
+                # TODO Raise a proper error if the database doesn't exist.
+                msg = _("An error ocurred trying to access the database\n"
+                        "This is the database error:\n%s. Error type is %s")
+                raise DatabaseError(msg % (value, type))
+
+
     def setup_app(self, appname=None, splash=False):
+
         try:
-            check_tables()
+            self._check_tables()
         except DatabaseError, e:
             self.abort_mission(str(e), _('Database Error'))
 
