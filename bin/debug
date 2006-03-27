@@ -37,15 +37,22 @@ else:
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 
-from stoq.main import setup_environment
-setup_environment()
+from stoq.lib.configparser import StoqConfig
+from stoq.lib.startup import setup, get_option_parser
 
-from stoqlib.lib.runtime import get_connection, new_transaction
+parser = get_option_parser()
+config = StoqConfig()
+config.load_config()
+
+options, args = parser.parse_args(sys.argv)
+options.clean = False
+setup(config, options)
 
 from stoqlib.domain.base import *
 from stoqlib.domain.interfaces import *
 from stoqlib.domain.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import get_connection, new_transaction
 
 names = []
 for table in get_table_types():

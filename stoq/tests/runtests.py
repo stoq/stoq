@@ -31,9 +31,9 @@ import sys
 from kiwi import environ
 from kiwi.log import set_log_level
 
-from stoqlib.lib.runtime import (print_immediately, get_connection,
-                                 set_verbose)
-
+from stoq.lib.configparser import StoqConfig
+from stoq.lib.startup import setup, get_option_parser
+from stoqlib.lib.runtime import print_immediately
 
 DEFAULT_SEPARATORS = 79
 
@@ -51,7 +51,8 @@ def test_gui(options, tests=None):
 
     # Running kiwi-ui tests
     if not tests:
-        test_dir = os.path.abspath(os.path.join(root, 'stoq', 'tests', 'gui'))
+        test_dir = os.path.abspath(
+            os.path.join(root, 'stoq', 'tests', 'gui'))
         tests = [os.path.join(test_dir, filename)
                  for filename in os.listdir(test_dir)
                      if filename.endswith('.py') and filename[0] != '_']
@@ -65,7 +66,10 @@ def test_gui(options, tests=None):
     if 'gtk' in sys.modules:
         raise AssertionError("Gtk cannot be loaded at this point")
 
-    conn = get_connection()
+    # Create examples
+    from stoqlib.domain.examples.createall import create
+    create()
+
     for filename in tests:
         test_name = os.path.basename(filename)
         if options.verbose:
@@ -109,32 +113,25 @@ def test_gui(options, tests=None):
         print_immediately('gui tests ok')
     return 0
 
-
 def main(args):
-    from stoq.main import setup_environment, get_parser
-
-    if '--g-fatal-warnings' in args:
-        args.remove('--g-fatal-warnings')
-
-    parser = get_parser()
-    # Additional options only useful for tests
-    parser.add_option('-v', '--verbose',
-                      action="store_true",
-                      dest="verbose")
-    parser.add_option('-f', '--filename',
-                      action="store",
-                      type="string",
-                      dest="filename",
-                      default="stoq.conf",
-                      help='Use this file name for config file')
+    parser = get_option_parser()
     options, args = parser.parse_args(args)
+    options.clean = True
 
-    setup_environment(options, options.verbose, force_init_db=True,
-                      test_mode=True)
+    # If a filename is specified on the commandline,
+    # send it to all the tests, so we won't end up
+    # using different configuration files
+    if options.filename:
+        os.environ['STOQ_CONFIG'] = options.filename
 
-    from stoqlib.domain.examples.createall import create
-    set_verbose(options.verbose)
-    create()
+    config = StoqConfig()
+    config.load_config()
+
+    if not options.dbname:
+        config.use_test_database()
+
+    setup(config, options)
+
     return test_gui(options, args[1:])
 
 if __name__ == '__main__':

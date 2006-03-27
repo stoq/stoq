@@ -25,16 +25,17 @@
 ##
 """Routines for parsing the configuration file"""
 
+import binascii
+import gettext
 import os
 import sys
-import gettext
-import binascii
 from ConfigParser import SafeConfigParser
 
 from kiwi.environ import environ, EnvironmentError
 from kiwi.argcheck import argcheck
 from stoqlib.database import (DEFAULT_RDBMS, DatabaseSettings,
-                              get_connection_uri)
+                              build_connection_uri,
+                              check_database_connection)
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
 
@@ -42,7 +43,7 @@ _ = gettext.gettext
 _config = None
 
 
-class StoqConfigParser:
+class StoqConfig:
     config_template = \
 """
 [General]
@@ -77,11 +78,13 @@ dbusername=%(DBUSERNAME)s"""
     filename = 'stoq.conf'
     datafile = 'data'
 
-    def __init__(self, test_mode=False):
+    def __init__(self, filename=None):
         self.config = SafeConfigParser()
-        self.test_mode = test_mode
         homepath = self.get_homepath()
-        self.home_filename = os.path.join(homepath, self.filename)
+        if not filename:
+            self.home_filename = os.path.join(homepath, self.filename)
+        else:
+            self.home_filename = filename
 
     def _open_config(self, filename):
         if not os.path.exists(filename):
@@ -176,7 +179,8 @@ dbusername=%(DBUSERNAME)s"""
 
         self._store_password(password, path)
         fd = open(os.path.join(path, self.filename), 'w')
-        config_dict = dict(DOMAIN=self.domain, RDBMS=self.rdbms,
+        config_dict = dict(DOMAIN=self.domain,
+                           RDBMS=self.rdbms,
                            PORT=config_data.port,
                            ADDRESS=config_data.address,
                            DBNAME=config_data.dbname,
@@ -245,7 +249,10 @@ dbusername=%(DBUSERNAME)s"""
             path = environ.get_resource_paths('config')[0]
         self._store_password(password, path)
 
-    def raise_invalid_rdbms_settings(self):
+    def use_test_database(self):
+        self.set_database(self.get_option('testdb', section='Database'))
+
+    def check_connection(self):
         """Checks the stored database rdbms settings and raises ConfigError
         if something is wrong
         """
@@ -254,6 +261,8 @@ dbusername=%(DBUSERNAME)s"""
         except:
             type, value, trace = sys.exc_info()
             raise ConfigError(value)
+
+        check_database_connection(conn_uri)
 
 
     #
@@ -290,29 +299,43 @@ dbusername=%(DBUSERNAME)s"""
 
     def get_connection_uri(self):
         rdbms = self.get_rdbms_name()
-        if self.test_mode:
-            dbname = self.get_option('testdb', section='Database')
-        else:
-            dbname = self.get_option('dbname', section='Database')
+        dbname = self.get_option('dbname', section='Database')
 
         if self.has_option('dbusername', section='Database'):
             username = self.get_option('dbusername', section='Database')
         else:
             username = os.getlogin()
-        return get_connection_uri(self.get_address(), self.get_port(),
-                                  dbname, rdbms, username,
-                                  self.get_password())
+        return build_connection_uri(self.get_address(), self.get_port(),
+                                    dbname, rdbms, username,
+                                    self.get_password())
 
+    def get_settings(self):
+        return DatabaseSettings(self.get_rdbms_name(),
+                                self.get_address(),
+                                self.get_port(),
+                                self.get_dbname(),
+                                self.get_username(),
+                                self.get_password())
 
 #
 # General routines
 #
 
 
-@argcheck(StoqConfigParser)
+
+def _setup_stoqlib(config):
+    from stoqlib.database import register_db_settings
+    from stoqlib.lib.runtime import register_application_names
+    from stoq.lib.applist import get_application_names
+
+    register_db_settings(config.get_settings())
+    register_application_names(get_application_names())
+
+@argcheck(StoqConfig)
 def register_config(config):
     global _config
     _config = config
+    _setup_stoqlib(config=config)
 
 def get_config():
     global _config

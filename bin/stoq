@@ -24,16 +24,8 @@
 ##
 """ Script to start application """
 
-import sys
-import os
-
 from kiwi.environ import Application
 
 # XXX: Do not use application here
 app = Application('stoq', path='stoq.main')
 app.run()
-
-try:
-    sys.exit(main(sys.argv))
-except KeyboardInterrupt:
-    raise SystemExit

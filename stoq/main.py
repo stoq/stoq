@@ -27,48 +27,51 @@
 
 
 import sys
-import optparse
 import gettext
 
-from stoqlib.database import check_database_connection
-
 from stoq.lib.applist import get_application_names
-from stoq.lib.configparser import (StoqConfigParser, register_config,
-                                   get_config)
+from stoq.lib.configparser import StoqConfig
+from stoq.lib.startup import setup, get_option_parser
 
 _ = gettext.gettext
 
+def _run_first_time_wizard(config):
+    from stoqlib.gui.base.dialogs import run_dialog
+    from stoq.gui.config import FirstTimeConfigWizard
+    model = run_dialog(FirstTimeConfigWizard, None)
+    if not model:
+        raise SystemExit("No configuration data provided")
+    return model.db_settings
 
-def get_parser():
-    parser = optparse.OptionParser()
-    parser.add_option('-a', '--address',
-                      action="store",
-                      dest="address",
-                      help='Database address to connect to')
-    parser.add_option('-p', '--port',
-                      action="store",
-                      dest="port",
-                      help='Database port')
-    parser.add_option('-d', '--dbname',
-                      action="store",
-                      dest="dbname",
-                      help='Database name to use')
-    parser.add_option('-u', '--username',
-                      action="store",
-                      dest="username",
-                      help='Database username')
-    parser.add_option('-w', '--password',
-                      action="store",
-                      dest="password",
-                      help='user password')
-    parser.add_option('-c', '--clean',
-                      action="store_true",
-                      dest="clean",
-                      help='Clean database before running')
-    return parser
+def _initialize(options):
+    from kiwi.ui.dialogs import error
+    config = StoqConfig()
 
+    if not config.has_installed_config_data():
+        config.install_default(_run_first_time_wizard(config))
+        options.clean = True
 
-def _run_app(options, config, appname):
+    try:
+        config.load_config()
+        config.check_connection()
+    except:
+        raise
+        type, value, trace = sys.exc_info()
+        error(_('Could not open database config file'),
+              long=_("Invalid config file settings, got error '%s', "
+                     "of type '%s'" % (value, type)))
+        raise SystemExit("Error: bad config file")
+
+    # XXX: progress dialog for connecting (if it takes more than
+    # 2 seconds) or creating the database
+    try:
+        setup(config, options)
+    except Exception, e:
+        raise
+        error(_('Could not connect to database'), long=str(e))
+        raise SystemExit("Error: bad connection settings provided")
+
+def _run_app(options, appname):
     from stoq.lib.stoqconfig import AppConfig
 
     appconf = AppConfig()
@@ -84,101 +87,13 @@ def _run_app(options, config, appname):
     appconf.log("Shutting down application")
 
 
-#
-# Public routines
-#
-
-
-def setup_stoqlib_settings(apps=None, config=None):
-    """A useful function that can be called on the system startup and also
-    when running tests.
-    """
-    from stoqlib.database import register_db_settings, DatabaseSettings
-    from stoqlib.lib.runtime import register_application_names
-    config = config or get_config()
-    if not config:
-        raise ValueError("You should have a valid config instance "
-                         "defined at this point")
-    db_settings = DatabaseSettings(config.get_rdbms_name(),
-                                   config.get_address(),
-                                   config.get_port(),
-                                   config.get_dbname(),
-                                   config.get_username(),
-                                   config.get_password())
-    register_db_settings(db_settings)
-    apps = apps or get_application_names()
-    register_application_names(apps)
-
-
-def setup_environment(options=None, verbose=False, force_init_db=False,
-                      test_mode=False):
-    config = StoqConfigParser(test_mode)
-    has_been_installed = config.has_installed_config_data()
-    if has_been_installed:
-        try:
-            config.load_config()
-            config.raise_invalid_rdbms_settings()
-        except:
-            type, value, trace = sys.exc_info()
-            msg = _("Invalid config file settings, got error '%s', "
-                    "of type '%s'" % (value, type))
-            from kiwi.ui.dialogs import error
-            error(_('Could not open database config file'), long=msg)
-            raise SystemExit("Error: bad config file")
-
-        if options:
-            force_init_db = force_init_db or options.clean
-            if options.address:
-                config.set_hostname(options.address)
-            if options.port:
-                config.set_port(options.port)
-            if options.dbname:
-                config.set_database(options.dbname)
-            if options.username:
-                config.set_username(options.username)
-            if options.password:
-                config.set_password(options.password)
-    else:
-        from stoqlib.gui.base.dialogs import run_dialog
-        from stoq.gui.config import FirstTimeConfigWizard
-        model = run_dialog(FirstTimeConfigWizard, None)
-        if not model:
-            raise SystemExit("No configuration data provided")
-        config.install_default(model.db_settings)
-        config.load_config()
-    register_config(config)
-
-    setup_stoqlib_settings(config=config)
-    if has_been_installed:
-        conn_uri = config.get_connection_uri()
-        conn_ok, error_msg = check_database_connection(conn_uri)
-        if not conn_ok:
-            from kiwi.ui.dialogs import error
-            error(_('Could not connect to database'), long=error_msg)
-            raise SystemExit("Error: bad connection settings provided")
-
-    if not has_been_installed or force_init_db:
-        if force_init_db:
-            password = ""
-        else:
-            password = model.stoq_user_data.password
-        from stoqlib.lib.admin import initialize_system
-        initialize_system(password=password, verbose=verbose)
-
-    from stoqlib.lib.migration import schema_migration
-    schema_migration.update_schema()
-
-    if has_been_installed:
-        from stoqlib.lib.parameters import ensure_system_parameters
-        ensure_system_parameters()
-    else:
-        from stoqlib.lib.drivers import \
-                            create_virtual_printer_for_current_host
-        create_virtual_printer_for_current_host()
-
 
 def main(args):
-    parser = get_parser()
+    parser = get_option_parser()
+    parser.add_option('', '--clean',
+                      action="store_true",
+                      dest="clean",
+                      help='Clean database before running')
     options, args = parser.parse_args(args)
 
     apps = get_application_names()
@@ -191,7 +106,7 @@ def main(args):
 
         if not appname in apps:
             raise SystemExit("'%s' is not an application. "
-                                 "Valid applications are: %s" % (appname, apps))
+                             "Valid applications are: %s" % (appname, apps))
 
-    setup_environment(options)
-    _run_app(options, get_config(), appname)
+    _initialize(options)
+    _run_app(options, appname)
