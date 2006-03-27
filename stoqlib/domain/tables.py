@@ -32,193 +32,137 @@
 
 import sys
 
-from stoqlib.lib.translation import stoqlib_gettext
+from kiwi.python import namedAny
+
 from stoqlib.exceptions import DatabaseError
-from stoqlib.lib.runtime import get_connection
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
 
-TABLES = [
-     ('stoqlib.domain.system',             ("SystemTable",
-                                           )),
-     ('stoqlib.domain.base',               ("InheritableModelAdapter",
-                                            "InheritableModel",
-                                            )),
-     ('stoqlib.lib.parameters',            ("ParameterData",
-                                            )),
-     ('stoqlib.domain.account',            ("BankAccount",
-                                            "Bank",
-                                            )),
-     ('stoqlib.domain.profile',            ("UserProfile",
-                                            "ProfileSettings",
-                                            )),
-     ('stoqlib.domain.person',             ("CityLocation",
-                                            "EmployeeRole",
-                                            "WorkPermitData",
-                                            "MilitaryData",
-                                            "VoterData",
-                                            "Person",
-                                            "Address",
-                                            "Liaison",
-                                            "PersonAdaptToUser",
-                                            "Calls",
-                                            "PersonAdaptToIndividual",
-                                            "PersonAdaptToCompany",
-                                            "PersonAdaptToClient",
-                                            "PersonAdaptToSupplier",
-                                            "PersonAdaptToEmployee",
-                                            "PersonAdaptToBranch",
-                                            "PersonAdaptToSalesPerson",
-                                            "PersonAdaptToBankBranch",
-                                            "PersonAdaptToCreditProvider",
-                                            "PersonAdaptToTransporter",
-                                            "EmployeeRoleHistory",
-                                            )),
-     ('stoqlib.domain.till',               ("Till",
-                                            "TillAdaptToPaymentGroup",
-                                            )),
-     ('stoqlib.domain.payment.destination',("PaymentDestination",
-                                            "StoreDestination",
-                                            "BankDestination",
-                                            )),
-     ('stoqlib.domain.payment.operation',  ("PaymentOperation",
-                                            "POAdaptToPaymentDevolution",
-                                            "POAdaptToPaymentDeposit",
-                                            )),
+_tables = [
+     ('system', ["SystemTable"]),
+     ('base', ["InheritableModelAdapter", "InheritableModel"]),
+     ('parameter', ["ParameterData"]),
+     ('account', ["BankAccount", "Bank"]),
+     ('profile', ["UserProfile", "ProfileSettings"]),
+     ('person', ["CityLocation",
+                 "EmployeeRole",
+                 "WorkPermitData",
+                 "MilitaryData",
+                 "VoterData",
+                 "Person",
+                 "Address",
+                 "Liaison",
+                 "PersonAdaptToUser",
+                 "Calls",
+                 "PersonAdaptToIndividual",
+                 "PersonAdaptToCompany",
+                 "PersonAdaptToClient",
+                 "PersonAdaptToSupplier",
+                 "PersonAdaptToEmployee",
+                 "PersonAdaptToBranch",
+                 "PersonAdaptToSalesPerson",
+                 "PersonAdaptToBankBranch",
+                 "PersonAdaptToCreditProvider",
+                 "PersonAdaptToTransporter",
+                 "EmployeeRoleHistory"]),
+     ('till', ["Till",
+               "TillAdaptToPaymentGroup"]),
+     ('payment.destination', ["PaymentDestination", "StoreDestination",
+                              "BankDestination"]),
+     ('payment.operation', ["PaymentOperation", "POAdaptToPaymentDevolution",
+                            "POAdaptToPaymentDeposit"]),
     # XXX Unfortunately we must add 'methods.py' module in two places
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
-     ('stoqlib.domain.payment.methods',    ("PaymentMethod",
-                                            "AbstractPaymentMethodAdapter",
-                                            "PaymentMethodDetails",
-                                            )),
-     ('stoqlib.domain.renegotiation',      ("RenegotiationData",
-                                            "RenegotiationAdaptToGiftCertificate",
-                                            "RenegotiationAdaptToOutstandingValue",
-                                            )),
-     ('stoqlib.domain.payment.base',       ("AbstractPaymentGroup",
-                                            "Payment",
-                                            "PaymentAdaptToInPayment",
-                                            "PaymentAdaptToOutPayment",
-                                            "CashAdvanceInfo",
-                                            )),
-     ('stoqlib.domain.renegotiation',      ("RenegotiationAdaptToSaleReturnMoney",
-                                            )),
-     ('stoqlib.domain.payment.methods',    ("BillCheckGroupData",
-                                            "PMAdaptToMoneyPM",
-                                            "AbstractCheckBillAdapter",
-                                            "PMAdaptToCheckPM",
-                                            "PMAdaptToBillPM",
-                                            "PMAdaptToCardPM",
-                                            "PMAdaptToFinancePM",
-                                            "PMAdaptToGiftCertificatePM",
-                                            "CardInstallmentSettings",
-                                            "DebitCardDetails",
-                                            "CreditCardDetails",
-                                            "CardInstallmentsStoreDetails",
-                                            "CardInstallmentsProviderDetails",
-                                            "FinanceDetails",
-                                            "CreditProviderGroupData",
-                                            "CheckData",
-                                            )),
-     ('stoqlib.domain.sellable',           ("OnSaleInfo",
-                                            "BaseSellableInfo",
-                                            )),
-     ('stoqlib.domain.giftcertificate',    ("GiftCertificate",
-                                            "GiftCertificateAdaptToSellable",
-                                            "GiftCertificateItem",
-                                            "GiftCertificateType",
-                                            )),
-     ('stoqlib.domain.sale',               ("Sale",
-                                            "SaleAdaptToPaymentGroup")),
-     ('stoqlib.domain.sellable',           ("SellableUnit",
-                                            "AbstractSellableCategory",
-                                            "BaseSellableCategory",
-                                            "SellableCategory",
-                                            "AbstractSellable",
-                                            "AbstractSellableItem",
-                                            )),
-     ('stoqlib.domain.stock',              ("AbstractStockItem",
-                                            )),
-     ('stoqlib.domain.service',            ("Service",
-                                            "ServiceAdaptToSellable",
-                                            "ServiceSellableItem",
-                                            "ServiceSellableItemAdaptToDelivery",
-                                            "DeliveryItem",
-                                            )),
-     ('stoqlib.domain.product',            ("Product",
-                                            "ProductSupplierInfo",
-                                            "ProductSellableItem",
-                                            "ProductStockReference",
-                                            "ProductAdaptToSellable",
-                                            "ProductAdaptToStorable",
-                                            "ProductStockItem",
-                                            )),
-     ('stoqlib.domain.purchase',           ("PurchaseOrder",
-                                            "PurchaseOrderAdaptToPaymentGroup",
-                                            "PurchaseItem",
-                                            )),
-     ('stoqlib.domain.receiving',          ("ReceivingOrder",
-                                            "ReceivingOrderItem",
-                                            )),
-     ('stoqlib.domain.devices',            ("DeviceSettings",
-                                            ))
+     ('payment.methods', ["PaymentMethod",
+                          "AbstractPaymentMethodAdapter",
+                          "PaymentMethodDetails"]),
+     ('renegotiation', ["RenegotiationData",
+                        "RenegotiationAdaptToGiftCertificate",
+                        "RenegotiationAdaptToOutstandingValue"]),
+     ('payment.base', ["AbstractPaymentGroup",
+                       "Payment",
+                       "PaymentAdaptToInPayment",
+                       "PaymentAdaptToOutPayment",
+                       "CashAdvanceInfo"]),
+     ('renegotiation', ["RenegotiationAdaptToSaleReturnMoney"]),
+     ('payment.methods', ["BillCheckGroupData",
+                          "PMAdaptToMoneyPM",
+                          "AbstractCheckBillAdapter",
+                          "PMAdaptToCheckPM",
+                          "PMAdaptToBillPM",
+                          "PMAdaptToCardPM",
+                          "PMAdaptToFinancePM",
+                          "PMAdaptToGiftCertificatePM",
+                          "CardInstallmentSettings",
+                          "DebitCardDetails",
+                          "CreditCardDetails",
+                          "CardInstallmentsStoreDetails",
+                          "CardInstallmentsProviderDetails",
+                          "FinanceDetails",
+                          "CreditProviderGroupData",
+                          "CheckData"]),
+     ('sellable', ["OnSaleInfo", "BaseSellableInfo"]),
+     ('giftcertificate', ["GiftCertificate",
+                          "GiftCertificateAdaptToSellable",
+                          "GiftCertificateItem",
+                          "GiftCertificateType"]),
+     ('sale', ["Sale", "SaleAdaptToPaymentGroup"]),
+     ('sellable', ["SellableUnit",
+                   "AbstractSellableCategory",
+                   "BaseSellableCategory",
+                   "SellableCategory",
+                   "AbstractSellable",
+                   "AbstractSellableItem"]),
+     ('stock', ["AbstractStockItem"]),
+     ('service', ["Service",
+                  "ServiceAdaptToSellable",
+                  "ServiceSellableItem",
+                  "ServiceSellableItemAdaptToDelivery",
+                  "DeliveryItem"]),
+     ('product', ["Product",
+                  "ProductSupplierInfo",
+                  "ProductSellableItem",
+                  "ProductStockReference",
+                  "ProductAdaptToSellable",
+                  "ProductAdaptToStorable",
+                  "ProductStockItem"]),
+     ('purchase', ["PurchaseOrder",
+                   "PurchaseOrderAdaptToPaymentGroup",
+                   "PurchaseItem"]),
+     ('receiving', ["ReceivingOrder", "ReceivingOrderItem"]),
+     ('devices', ["DeviceSettings"]),
 ]
 
-
-#
-# Auxiliar routines
-#
+# fullname (eg "stoqlib.domain.person.Person") -> class
+_table_cache = {}
 
 
-def check_tables():
-    # We must check if all the tables are already in the database.
-    table_types = get_table_types()
-    conn = get_connection()
+def _import():
+    global _table_cache, _tables
 
-    for table_type in table_types:
-        classname = table_type.get_db_table_name()
-        try:
-            if not conn.tableExists(classname):
-                msg = _("Outdated schema. Table %s doesn't exist.\n"
-                        "Run init-database script to fix this problem."
-                        % classname)
-                raise DatabaseError, msg
-        except:
-            type, value, trace = sys.exc_info()
-            # TODO Raise a proper error if the database doesn't exist.
-            msg = _("An error ocurred trying to access the database\n"
-                    "This is the database error:\n%s. Error type is %s")
-            raise DatabaseError(msg % (value, type))
+    for path, table_names in _tables:
+        for table_name in table_names:
+            klass = namedAny('stoqlib.domain.%s.%s' % (path, table_name))
+            _table_cache[path + '.' + table_name] = klass
 
+def get_table_type_by_name(table_name):
+    """
+    Gets a table by name.
 
-def get_table_type_by_name(table_name, path=None):
-    if not path:
-        paths = [t[0] for t in TABLES if table_name in t[1]]
-        assert paths and len(paths) == 1, 'Table %s not found' % table_name
-        path = paths[0]
+    @param table_name: name of the table, including module name after
+      stoqlib.domain, eg person.Person or product.Product
+    """
 
-    try:
-        module = __import__(path, globals(), locals(), table_name)
-    except ImportError, reason:
-        msg = 'Cannot import module %s: %s' % (table_name, reason)
-        raise ImportError, msg
-
-    try:
-        klass = getattr(module, table_name)
-    except AttributeError, reason:
-        raise ImportError, \
-              "Cannot import name %s from module %s: %s" \
-              % (table_name, module.__name__, reason)
-    return klass
-
+    global _table_cache
+    if not _table_cache:
+        _import()
+    return _table_cache[table_name]
 
 def get_table_types():
-    table_types = []
-    for path, table_names in TABLES:
-        for table_name in table_names:
-            klass = get_table_type_by_name(table_name, path)
-            table_types.append(klass)
-    return table_types
-
+    global _table_cache
+    if not _table_cache:
+        _import()
+    return _table_cache.values()
