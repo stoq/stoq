@@ -21,6 +21,7 @@
 ##
 """ Create all objects for an example database used by Stoq applications"""
 
+from stoqlib.lib.runtime import print_msg
 from stoqlib.domain.examples.person import create_persons
 from stoqlib.domain.examples.product import create_products
 from stoqlib.domain.examples.service import create_services
