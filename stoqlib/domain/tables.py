@@ -30,11 +30,8 @@
  (classA, classB, ...).
 """
 
-import sys
-
 from kiwi.python import namedAny
 
-from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
