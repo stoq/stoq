@@ -89,7 +89,7 @@ setup(name='stoq',
       author_email='stoq-devel@async.com.br',
       description="An advanced retail system",
       long_description="""
-      This is an advanced retails system which has as main goals the
+      Stoq is an advanced retails system which has as main goals the
       usability, good devices support, and useful features for retails.
       """,
       url='http://www.stoq.com.br',
