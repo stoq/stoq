@@ -35,6 +35,7 @@ from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLOp
 
+from zope.interface import providedBy
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
@@ -338,10 +339,9 @@ class ConnMetaInterface(MetaInterface):
         Try to adapt `adaptable' to self; return `default' if it
         was passed, otherwise raise L{CannotAdapt}.
         """
-        if not isinstance(adaptable, (Domain, InheritableModel)):
-            raise TypeError('Adaptable argument must be of type Domain '
-                            'or InheritableModel, got %s instead'
-                            % type(adaptable))
+        if isinstance(adaptable, Adapter):
+            raise TypeError('Adaptable argument can not be of type Adapter '
+                            'got %s instead' % type(adaptable))
         default = _Nothing
         registry = getRegistry()
         # should this be `implements' of some kind?
@@ -364,21 +364,16 @@ class ConnMetaInterface(MetaInterface):
                               (adaptable, self))
         return adapter
 
-    def providedBy(self, adaptable):
+    def providedBy(self, adapter):
         """
-        @param adaptable:
-        @returns: If the adaptable object can be adaptable to our interface
+        @param adapter:
+        @returns: If the adapter object implements the given interface
         """
-
-        if isinstance(adaptable, Adapter):
-            raise TypeError('Adaptable argument can not be of type Adapter,'
+        if not isinstance(adapter, Adapter):
+            raise TypeError('adapter argument must be of type Adapter,'
                             'got %s instead'
-                            % type(adaptable))
-        if super(ConnMetaInterface, self).providedBy(adaptable):
-            return True
-        if self(adaptable) is not None:
-            return True
-        return False
+                            % type(adapter))
+        return self in providedBy(adapter)
 
 ConnInterface = ConnMetaInterface('ConnInterface',
                                   __module__='stoq.domain.base')

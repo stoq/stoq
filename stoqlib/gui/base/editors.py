@@ -27,6 +27,7 @@
 
 from kiwi.ui.delegates import SlaveDelegate
 
+from stoqlib.domain.base import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 from stoqlib.exceptions import EditorError
@@ -57,7 +58,9 @@ class BaseEditorSlave(SlaveDelegate):
         self.edit_mode = model is not None
         if self.model_iface:
             model = model or self.create_model(self.conn)
-            if not self.model_iface.providedBy(model):
+            # XXX This part will be improved after bug 2510
+            if (isinstance(model, Adapter) and not
+                self.model_iface.providedBy(model)):
                 raise TypeError(
                     "%s editor requires a model implementing %s, got a %r" % (
                     self.__class__.__name__, self.model_iface.__name__,

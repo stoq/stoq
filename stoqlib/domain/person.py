@@ -236,8 +236,9 @@ class Person(Domain):
     #
 
     def check_individual_or_company_facets(self):
-        if not (IIndividual.providedBy(self) or
-                ICompany.providedBy(self)):
+        conn = self.get_connection()
+        if not (IIndividual(self, connection=conn) or
+                ICompany(self, connection=conn)):
                 msg = ('The person you want to adapt must have at '
                        'least an individual or a company facet')
                 raise CannotAdapt(msg)
