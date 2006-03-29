@@ -196,10 +196,9 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
         if self.group.renegotiation_data is None:
             return None
         cert_adapter = self.group.get_renegotiation_adapter()
-        certificate = cert_adapter.get_adapted()
-        if not IRenegotiationOutstandingValue.providedBy(certificate):
+        if not IRenegotiationOutstandingValue.providedBy(cert_adapter):
             raise ValueError('Invalid adapter for this renegotiation, '
-                             'Got %s' % certificate)
+                             'Got %s' % cert_adapter)
         return cert_adapter
 
     #
@@ -271,8 +270,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
         if not self.wizard.edit_mode:
             return
         cert_adapter = self.group.get_renegotiation_adapter()
-        certificate = cert_adapter.get_adapted()
-        if IRenegotiationGiftCertificate.providedBy(certificate):
+        if IRenegotiationGiftCertificate.providedBy(cert_adapter):
             number = cert_adapter.new_gift_certificate_number
             self.model.number = number
             self.certificate_check.set_active(True)
@@ -306,8 +304,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
         number = self.model.number
         if self.group.renegotiation_data is not None:
             cert_adapter = self.group.get_renegotiation_adapter()
-            certificate = cert_adapter.get_adapted()
-            if IRenegotiationGiftCertificate.providedBy(certificate):
+            if IRenegotiationGiftCertificate.providedBy(cert_adapter):
                 cert_adapter.new_gift_certificate_number = number
         else:
             value = self.overpaid_value

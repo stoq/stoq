@@ -239,7 +239,7 @@ def print_cheques_for_payment_group(conn, group):
     city = main_address.city_location.city[:max_len]
     for idx, payment in enumerate(payments):
         method = payment.method
-        if not ICheckPM.providedBy(method.get_adapted()):
+        if not ICheckPM.providedBy(method):
             continue
         check_data = method.get_check_data_by_payment(payment)
         bank_id = check_data.bank_data.bank_id
@@ -320,10 +320,11 @@ class FiscalCoupon:
 
     def identify_customer(self, person):
         max_len = get_capability(self.printer, "customer_id")
-        if IIndividual.providedBy(person):
+        conn = person.get_connection()
+        if IIndividual(person, connection=conn):
             individual = IIndividual(person, connection=person.get_connection())
             document = individual.cpf[:max_len]
-        elif ICompany.providedBy(person):
+        elif ICompany(person, connection=conn):
             company = ICompany(person, connection=person.get_connection())
             document = company.cnpj[:max_len]
         else:
@@ -404,15 +405,15 @@ class FiscalCoupon:
                                      '')
         else:
             for payment in group.get_items():
-                base_method = payment.method.get_adapted()
-                if ICheckPM.providedBy(base_method):
+                method = payment.method
+                if ICheckPM.providedBy(method):
                     money_type = CHEQUE_PM
-                elif IMoneyPM.providedBy(base_method):
+                elif IMoneyPM.providedBy(method):
                     money_type = MONEY_PM
                 else:
                     warnings.warn(_("The payment type %s isn't supported "
                                     "yet. The default, MONEY_PM, will be "
-                                    "used.") % payment.method.description)
+                                    "used.") % method.description)
                     # FIXME: A default value, this is wrong but can't be better right
                     # now, since stoqdrivers doesn't have support for any payment
                     # method diferent than money and cheque.  This will be improved

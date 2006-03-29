@@ -458,7 +458,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         if self.renegotiation_data is None:
             return self.default_method
         adapter = self.get_renegotiation_adapter()
-        if IRenegotiationOutstandingValue.providedBy(adapter.get_adapted()):
+        if IRenegotiationOutstandingValue.providedBy(adapter):
             return adapter.payment_method
         else:
             return self.default_method
