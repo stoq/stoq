@@ -114,7 +114,7 @@ setup(name='stoqlib',
       author_email="stoq-devel@async.com.br",
       description="A powerful retail system library",
       long_description="""
-      This library offers many special tools for retail system applications
+      Stoqlib offers many special tools for retail system applications
       such reports infrastructure, basic dialogs and searchbars and
       domain data in a persistent level.
       """,
