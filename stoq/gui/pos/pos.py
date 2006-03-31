@@ -102,11 +102,7 @@ class POSApp(AppWindow):
         self.ResetOrder.set_sensitive(True)
         self.new_order_button.set_sensitive(True)
         self.sale = None
-        # FIXME Hack, waiting for a bug fix in kiwi, see bug #2473
-        self.order_proxy.new_model(None, relax_type=True)
-        self.client.set_text('')
-        self.order_number.set_text('')
-        self.salesperson.set_text('')
+        self.order_proxy.set_model(None, relax_type=True)
         self.product.grab_focus()
 
     def _delete_sellable_item(self, item):
@@ -127,7 +123,6 @@ class POSApp(AppWindow):
         if (sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT
             and get_current_scale_settings(self.conn)):
             self._read_scale()
-        self.quantity.grab_focus()
 
     def _setup_proxies(self):
         self.order_proxy = self.add_proxy(widgets=POSApp.order_widgets)
@@ -150,6 +145,8 @@ class POSApp(AppWindow):
         sellables = AbstractSellable.get_available_sellables(self.conn)
         sellables = sellables[:self.max_results]
         items = [(s.get_short_description(), s) for s in sellables]
+        # XXX Waiting for a bug fix in kiwi comboentry, we can not search by
+        # description on the combo
         self.product.prefill(items)
 
     def _setup_widgets(self):
@@ -264,7 +261,7 @@ class POSApp(AppWindow):
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
         if self.sale:
             self.sellables.clear()
-            self.order_proxy.new_model(self.sale)
+            self.order_proxy.set_model(self.sale)
             self._update_widgets()
             self._update_totals()
             for widget in (self.search_box, self.order_details_hbox,
@@ -397,9 +394,9 @@ class POSApp(AppWindow):
     def on_add_button__clicked(self, *args):
         self.add_sellable_item()
 
-
     def on_product__activate(self, *args):
         self._set_product_on_sale()
+        self.quantity.grab_focus()
 
     def on_quantity__activate(self, *args):
         if sysparam(self.conn).EDIT_SELLABLE_PRICE:
@@ -419,14 +416,14 @@ class POSApp(AppWindow):
         if not (sellable and self.product.get_text()):
             model = FancySellable(quantity=decimal.Decimal('1.0'),
                                   price=currency(0))
-            self.sellable_proxy.new_model(model)
+            self.sellable_proxy.set_model(model)
             self.price_slave.set_model(model)
             return
         sellable_item = FancySellable(price=sellable.get_price(),
                                       quantity=decimal.Decimal('1.0'),
                                       unit=sellable.unit)
         self.price_slave.set_model(sellable_item)
-        self.sellable_proxy.new_model(sellable_item)
+        self.sellable_proxy.set_model(sellable_item)
 
     def on_remove_item_button__clicked(self, *args):
         item = self.sellables.get_selected()
