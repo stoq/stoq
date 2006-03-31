@@ -119,15 +119,25 @@ class AppConfig:
         homepath = self.config.get_homepath()
         self.check_dir_and_create(homepath)
 
+        # Clean this up after #2450 is solved, disable this since it hides
+        # bugs inside the application log
         env_log = os.environ.get('%s_LOGFILE' %
                                  self.config.domain.upper())
         if env_log:
-            sys.stderr = open(env_log, 'a', 0)
+            fd = open(env_log, 'a', 0)
         elif self.config.has_option("logfile"):
             option = self.config.get_option("logfile")
             logfile = os.path.expanduser(option)
-            sys.stderr = open(logfile, 'a', 0)
+            fd = open(logfile, 'a', 0)
 
+        class Output:
+            def __init__(self, *fds):
+                self._fds = fds
+
+            def write(self, text):
+                for fd in self._fds:
+                    fd.write(text)
+        sys.stderr = Output(sys.stderr, fd)
 
         # Registering some new important stock icons
         register_iconsets()
