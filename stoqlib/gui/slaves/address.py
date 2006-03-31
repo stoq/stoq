@@ -51,7 +51,7 @@ class AddressSlave(BaseEditorSlave):
         'complement_lbl',
         'postal_code_lbl',
         'state_lbl'
-        ) 
+        )
 
     proxy_widgets = (
         'number',
@@ -59,7 +59,7 @@ class AddressSlave(BaseEditorSlave):
         'country',
         'city',
         ) + left_proxy
-    
+
     def __init__(self, conn, model=None, is_main_address=True):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
@@ -130,7 +130,7 @@ class AddressSlave(BaseEditorSlave):
         attached as an container for the main address and the main address
         needs be changed, so this slave must reflect the new address
         defined.  """
-        self.proxy.new_model(model)
+        self.proxy.set_model(model)
 
     #
     # BaseEditorSlave hooks
