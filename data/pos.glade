@@ -81,7 +81,7 @@
                         <property name="name">EditClient</property>
                         <property name="label" translatable="yes">Edit Current Client...</property>
                         <signal handler="on_edit_current_client_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;u</property>
+                        <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
                 </child>
                 <child>
@@ -238,7 +238,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="order_number">
+                                    <widget class="ProxyLabel" id="order_number">
                                         <property name="data_type">int</property>
                                         <property name="model_attribute">order_number</property>
                                         <property name="visible">True</property>
@@ -271,13 +271,13 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="client">
+                                    <widget class="ProxyLabel" id="client">
                                         <property name="data_type">unicode</property>
+                                        <property name="ellipsize">end</property>
                                         <property name="label" context="yes" translatable="yes">Anonymous</property>
                                         <property name="model_attribute">client_name</property>
-                                        <property name="ellipsize">end</property>
-                                        <property name="width_chars">12</property>
                                         <property name="visible">True</property>
+                                        <property name="width_chars">12</property>
                                         <property name="xalign">0.0</property>
                                     </widget>
                                     <packing>
@@ -306,12 +306,12 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="salesperson">
+                                    <widget class="ProxyLabel" id="salesperson">
                                         <property name="data_type">unicode</property>
+                                        <property name="ellipsize">end</property>
                                         <property name="model_attribute">salesperson_name</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">12</property>
-                                        <property name="ellipsize">end</property>
                                         <property name="xalign">0.0</property>
                                     </widget>
                                     <packing>
@@ -342,7 +342,7 @@
                                         <property name="spacing">5</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                            <widget class="ProxyLabel" id="kiwilabel1">
                                                 <property name="data_type">unicode</property>
                                                 <property name="label" context="yes" translatable="yes">Item:</property>
                                                 <property name="visible">True</property>
@@ -360,7 +360,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                            <widget class="ProxyLabel" id="kiwilabel2">
                                                 <property name="label" context="yes" translatable="yes">Quantity:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -371,7 +371,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="quantity">
+                                            <widget class="ProxySpinButton" id="quantity">
                                                 <property name="adjustment">0 1 100000 1 10 0</property>
                                                 <property name="data_type">Decimal</property>
                                                 <property name="digits">2</property>
@@ -387,11 +387,11 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="sellable_unit_label">
+                                            <widget class="ProxyLabel" id="sellable_unit_label">
                                                 <property name="data_type">unicode</property>
+                                                <property name="ellipsize">end</property>
                                                 <property name="model_attribute">unit_description</property>
                                                 <property name="visible">True</property>
-                                                <property name="ellipsize">end</property>
                                                 <property name="width_chars">4</property>
                                             </widget>
                                             <packing>
@@ -512,7 +512,7 @@
                                             </widget>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="warning_label">
+                                            <widget class="ProxyLabel" id="warning_label">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                                 <property name="xpad">10</property>
