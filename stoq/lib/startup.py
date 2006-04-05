@@ -35,7 +35,7 @@ from stoqlib.lib.migration import schema_migration
 from stoqlib.lib.parameters import ensure_system_parameters
 from stoqlib.lib.runtime import get_connection, set_verbose
 
-from stoq.lib.configparser import register_config
+from stoq.lib.configparser import StoqConfig, register_config
 
 def _update_config(config, options):
     if options.address:
@@ -130,3 +130,24 @@ def get_option_parser():
     parser.add_option_group(group)
 
     return parser
+
+def simple_setup(args, **kwargs):
+    """
+    Simplified setup:
+      - Parses arguments
+      - Loads configuration
+      - Doing the rest of the initialization
+    @param args: command line parameters, normally sys.argv
+    @param kwargs: override arguments
+    """
+    parser = get_option_parser()
+    config = StoqConfig()
+    config.load_config()
+
+    options, args = parser.parse_args(args)
+    if not 'clean' in kwargs:
+        kwargs['clean'] = False
+    for key, value in kwargs.items():
+        setattr(options, key, value)
+    setup(config, options)
+
