@@ -123,6 +123,7 @@ class AppConfig:
         # bugs inside the application log
         env_log = os.environ.get('%s_LOGFILE' %
                                  self.config.domain.upper())
+        fd = -1
         if env_log:
             fd = open(env_log, 'a', 0)
         elif self.config.has_option("logfile"):
@@ -137,7 +138,8 @@ class AppConfig:
             def write(self, text):
                 for fd in self._fds:
                     fd.write(text)
-        sys.stderr = Output(sys.stderr, fd)
+        if fd != -1:
+            sys.stderr = Output(sys.stderr, fd)
 
         # Registering some new important stock icons
         register_iconsets()
