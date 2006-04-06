@@ -32,7 +32,7 @@ from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
                                   METHOD_CHECK, METHOD_MONEY)
 from stoqlib.lib.validators import format_quantity
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.wizards.abstract import AbstractProductStep
@@ -54,7 +54,7 @@ _ = stoqlib_gettext
 #
 
 
-class FinishPurchaseStep(BaseWizardStep):
+class FinishPurchaseStep(WizardEditorStep):
     gladefile = 'FinishPurchaseStep'
     model_type = PurchaseOrder
     proxy_widgets = ('salesperson_name',
@@ -63,7 +63,7 @@ class FinishPurchaseStep(BaseWizardStep):
                      'notes')
 
     def __init__(self, wizard, previous, conn, model):
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_transporter_entry(self):
         table = Person.getAdapterClass(ITransporter)
@@ -105,7 +105,7 @@ class FinishPurchaseStep(BaseWizardStep):
         print_report(PurchaseOrderReport, self.model)
 
 
-class PurchasePaymentStep(BaseWizardStep):
+class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
     model_iface = IPaymentGroup
     payment_widgets = ('method_combo',)
@@ -126,7 +126,7 @@ class PurchasePaymentStep(BaseWizardStep):
                                    connection=conn)
         self.slave = None
         self.discount_charge_slave = None
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
         table = self.model_type
@@ -253,7 +253,7 @@ class PurchaseProductStep(AbstractProductStep):
             rollback_and_begin(self.conn)
 
 
-class StartPurchaseStep(BaseWizardStep):
+class StartPurchaseStep(WizardEditorStep):
     gladefile = 'StartPurchaseStep'
     model_type = PurchaseOrder
     proxy_widgets = ('open_date',
@@ -263,7 +263,7 @@ class StartPurchaseStep(BaseWizardStep):
                      'freight')
 
     def __init__(self, wizard, conn, model):
-        BaseWizardStep.__init__(self, conn, wizard, model)
+        WizardEditorStep.__init__(self, conn, wizard, model)
         self._update_widgets()
 
     def _setup_supplier_entry(self):
