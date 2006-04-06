@@ -87,19 +87,13 @@ class ReceivableApp(SearchableAppWindow):
         items.append((_('Any'), ALL_ITEMS_INDEX))
         return items
 
-    def _get_payment_id(self, value):
-        if not value:
-            return
-        return '%03d' % value
-
     #
     # SearchBar hooks
     #
 
     def get_columns(self):
-        return [Column('payment_id', title=_('Number'), width=100,
-                       data_type=str, sorted=True,
-                       format_func=self._get_payment_id),
+        return [Column('identifier', title=_('Number'), width=100,
+                       data_type=str, sorted=True, format='%03d'),
                 Column('description', title=_('Description'), width=220,
                        data_type=str),
                 Column('thirdparty_name', title=_('Drawee'), data_type=str,
