@@ -104,12 +104,13 @@ class PurchaseApp(SearchableAppWindow):
         return order
 
     def _edit_order(self):
-        order = self.orders.get_selected_rows()
-        qty = len(order)
+        selected = self.orders.get_selected_rows()
+        qty = len(selected)
         if qty != 1:
             raise ValueError('You should have only one order selected, '
                              'got %d instead' % qty )
-        self._open_order(order[0], edit_mode=True)
+        order = PurchaseOrder.get(selected[0].id, connection=self.conn)
+        self._open_order(order, edit_mode=True)
         self.searchbar.search_items()
 
     def _run_details_dialog(self, *args):
