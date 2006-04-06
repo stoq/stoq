@@ -44,7 +44,7 @@ class PriceSlave(SlaveDelegate):
         if self._proxy is None:
             self._proxy = self.add_proxy(model, ("price",))
         else:
-            self._proxy.new_model(model)
+            self._proxy.set_model(model)
 
     def get_widget(self):
         return self.price
