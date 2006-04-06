@@ -40,12 +40,14 @@ from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
+from stoqlib.domain.base import BaseSQLView
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
+from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
 
@@ -257,7 +259,7 @@ class SearchBar(SlaveDelegate):
         self.table_type = table_type
         self.query_args = query_args
         self._slave_callback = search_callback
-        self._split_field_types()
+        self.split_field_types()
 
     # Callbacks
 
@@ -292,7 +294,7 @@ class SearchBar(SlaveDelegate):
                   and value not in self.dtime_fields):
                  self.dtime_fields.append(value)
 
-    def _split_field_types(self):
+    def split_field_types(self):
         self.int_fields = []
         self.float_fields = []
         self.str_fields = []
@@ -421,20 +423,27 @@ class SearchBar(SlaveDelegate):
     #
 
     def _run_query(self):
+        if self._extra_query_callback:
+            extra_query = self._extra_query_callback()
+        else:
+            extra_query = None
+
         search_str = self._slave.get_search_string()
         if isinstance(self._slave, DateSearchSlave):
             search_dates = self._slave.get_search_dates()
         else:
             search_dates = None
 
-        query = self.table_type.q._is_valid_model == True
+        if not issubclass(self.table_type, BaseSQLView):
+            # Views already have this filter internally
+            query = self.table_type.q._is_valid_model == True
+        else:
+            query = 1 == 1
+
         if search_str or search_dates:
             query = AND(query, self._build_query(search_str, search_dates))
-
-        if self._extra_query_callback:
-            extra_query = self._extra_query_callback()
-            if extra_query:
-                query = AND(query, extra_query)
+        if extra_query:
+            query = AND(query, extra_query)
 
         kwargs = {'connection': self.conn}
         if self.query_args:
@@ -452,14 +461,13 @@ class SearchBar(SlaveDelegate):
             search_results = self.table_type.select(**kwargs)
 
         max_search_results = get_max_search_results()
-        if search_results.count() > max_search_results:
-            self._blocked_results_counter = (search_results.count()
-                                             - max_search_results)
+        total = search_results.count()
+        if total > max_search_results:
+            self._blocked_results_counter = total - max_search_results
         else:
             self._blocked_results_counter = 0
         objs = search_results[:max_search_results]
 
-        total = search_results.count()
         if not self._result_strings:
             self._result_strings = _('result'), _('results')
             warnings.warn('You must define result strings before performing '
@@ -494,6 +502,10 @@ class SearchBar(SlaveDelegate):
     #
     # Public API
     #
+
+    def set_searchtable(self, search_table):
+        self.table_type = search_table
+        self.split_field_types()
 
     def register_extra_query_callback(self, query):
         """Register an extra query that will be added in the main query of
@@ -759,6 +771,10 @@ class SearchDialog(BasicDialog):
     # Public API
     #
 
+    def set_searchtable(self, search_table):
+        self.search_table = search_table
+        self.search_bar.set_searchtable(search_table)
+
     def setup_slaves(self, **kwargs):
         self.disable_ok()
         self._setup_klist()
@@ -827,11 +843,6 @@ class SearchDialog(BasicDialog):
     # Hooks
     #
 
-    def get_selected_instance(self):
-        """Overwrite this method on parent when it's needed. It must returns
-        an object that we want to have selected on the list
-        """
-
     def update_klist(self, slave, objs):
         """A hook called by SearchBar and instances."""
         if not objs:
@@ -850,18 +861,8 @@ class SearchDialog(BasicDialog):
 
         if count:
             self.klist.add_list(objs)
-            selected = self.get_selected_instance()
-            if selected:
-                # XXX We must deal in a better way with performance here.
-                # Waiting for bug 2275
-                objs = [obj for obj in self.klist
-                                    if obj.id == selected.id]
-                if not len(objs) == 1:
-                    raise ValueError('Invalid selected object')
-                selected = objs[0]
-            else:
-                objs = iter(objs)
-                selected = objs.next()
+            objs = iter(objs)
+            selected = objs.next()
             self.klist.select(selected)
             self.enable_ok()
         self.update_widgets()
@@ -891,6 +892,8 @@ class SearchEditor(SearchDialog):
     interface = The interface which we need to apply to the objects in
                 kiwi list to get adapter for the editor.
     """
+    model_editor_lookup_attr = 'id'
+    model_list_lookup_attr = 'id'
 
     def __init__(self, conn, table, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
@@ -929,34 +932,35 @@ class SearchEditor(SearchDialog):
     def hide_new_button(self):
         self._toolbar.new_button.hide()
 
-    def get_selected_instance(self):
-        return self._selected
-
     def run(self, obj=None):
+        self._selected = obj
         if obj:
-            if self.interface:
-                if isinstance(obj, Adapter):
-                    adapted = obj.get_adapted()
-                else:
-                    adapted = obj
-                obj = self.interface(adapted, connection=self.conn)
+            obj = self.get_editor_model(obj)
+        if obj and self.interface:
+            if isinstance(obj, Adapter):
+                adapted = obj.get_adapted()
             else:
-                obj = self.table.get(id=obj.id, connection=self.conn)
+                adapted = obj
+            obj = self.interface(adapted, connection=self.conn)
         rv = self.run_editor(obj)
         if not rv:
             rollback_and_begin(self.conn)
             return
 
-        self.conn.commit()
-        if self.interface and isinstance(rv, Adapter):
-            # This SearchDialog has original objects in the kiwi list and
-            # that's why I need to get them back here.
+        if self.editor_class.model_iface:
             rv = rv.get_adapted()
-        if not isinstance(rv, self.search_table):
-            raise TypeError('Invalid type for selected object, it should '
-                            'be %s' % self.search_table)
-        self._selected = rv
-        self.search_bar.search_items()
+
+        self.conn.commit()
+        if self._selected:
+            selected = self._selected
+            selected.sync()
+            self.klist.update(selected)
+        else:
+            # user just added a new instance
+            selected = self.get_searchlist_model(rv)
+            self.klist.append(selected)
+        self.klist.select(selected)
+        self.enable_ok()
 
     def run_editor(self, obj):
         return run_dialog(self.editor_class, self, self.conn, obj)
@@ -974,7 +978,6 @@ class SearchEditor(SearchDialog):
             else:
                 obj = self.klist.get_selected()
                 assert obj, msg % 0
-        obj = self.get_model(obj)
         self.run(obj)
 
     def _on_toolbar__new(self, toolbar):
@@ -984,7 +987,18 @@ class SearchEditor(SearchDialog):
     # Hooks
     #
 
-    def get_model(self, model):
+    def get_searchlist_model(self, model):
+        attr = self.model_list_lookup_attr
+        query = getattr(self.search_table.q, attr) == model.id
+        items = self.search_table.select(query, connection=self.conn)
+        qty = items.count()
+        if not qty == 1:
+            raise DatabaseInconsistency("There should be one item for "
+                                        "instance %r, got %d" % (model,
+                                        qty))
+        return items[0]
+
+    def get_editor_model(self, model):
         """This hook must be redefined on child when changing the type of
         the model is a requirement for edit method.
         """

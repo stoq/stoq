@@ -29,9 +29,11 @@ from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.argcheck import argcheck
+
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave
-
+from stoqlib.domain.sale import SaleView
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -182,8 +184,9 @@ class SaleListToolbar(SlaveDelegate):
                   self.details_button):
             w.set_sensitive(enabled)
 
-    def _run_details_dialog(self, sale):
-        run_dialog(SaleDetailsDialog, self.parent, self.conn, sale)
+    @argcheck(SaleView)
+    def _run_details_dialog(self, sale_view):
+        run_dialog(SaleDetailsDialog, self.parent, self.conn, sale_view)
 
     #
     # Kiwi callbacks

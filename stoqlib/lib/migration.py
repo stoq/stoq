@@ -24,15 +24,16 @@
 ##
 """ Routines for database schema migration"""
 
-import sys
 import datetime
 
 from kiwi.environ import environ
 
 import stoqlib
-from stoqlib.exceptions import SQLError, DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.runtime import new_transaction
-from stoqlib.database import finish_transaction, get_registered_db_settings
+from stoqlib.lib.admin import create_base_schema
+from stoqlib.database import (finish_transaction,
+                              get_registered_db_settings, run_sql_file)
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.domain.tables import get_table_types
@@ -99,13 +100,7 @@ class SchemaMigration:
         sql_files = self._get_migration_files(self.current_db_version,
                                               self.db_version)
         for sql_file in sql_files:
-            file_data = open(sql_file).read()
-            try:
-                conn.query(file_data)
-            except:
-                type, value, trace = sys.exc_info()
-                raise SQLError("Bad sql script, got error %s, of type %s"
-                               % (value, type))
+            run_sql_file(sql_file, conn)
             parts = sql_file.replace('.sql', '').split('-')
             version = parts[-1]
             try:
@@ -117,6 +112,8 @@ class SchemaMigration:
         # profiles on the system
         update_profile_applications(conn)
         finish_transaction(conn, 1)
+        # Update the base schema
+        create_base_schema()
 
 
 def add_system_table_reference(conn, check_new_db=False, version=None):

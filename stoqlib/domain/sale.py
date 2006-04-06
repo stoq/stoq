@@ -27,7 +27,7 @@
 import decimal
 from datetime import datetime
 
-from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol
+from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -35,8 +35,8 @@ from kiwi.datatypes import currency
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.columns import PriceCol
-from stoqlib.domain.base import Domain
+from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellableItem
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.product import ProductSellableItem
@@ -144,11 +144,11 @@ class Sale(Domain):
             return _(u'Anonymous')
         return self.client.get_name()
 
-    def get_status_name(self):
-        if not self.status in self.statuses:
-            raise DatabaseInconsistency("Invalid status for sale %s: %d"
-                                        % (self.order_number, self.status))
-        return self.statuses[self.status]
+    @classmethod
+    def get_status_name(cls, status):
+        if not status in cls.statuses:
+            raise DatabaseInconsistency("Invalid status %d" % status)
+        return cls.statuses[status]
 
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
@@ -258,9 +258,6 @@ class Sale(Domain):
         total = sum([item.get_total() for item in self.get_items()],
                    currency(0))
         return currency(total)
-
-    def get_open_date_as_string(self):
-        return self.open_date.strftime("%x")
 
     def update_items(self):
         conn = self.get_connection()
@@ -464,3 +461,33 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             return self.default_method
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
+
+
+#
+# Views
+#
+
+
+class SaleView(SQLObject, BaseSQLView):
+    """Stores general informatios about sales"""
+    coupon_id = IntCol()
+    order_number = IntCol()
+    open_date = DateTimeCol()
+    close_date = DateTimeCol()
+    status = IntCol()
+    salesperson_name = UnicodeCol()
+    client_name = UnicodeCol()
+    charge_value = PriceCol()
+    discount_value = PriceCol()
+    subtotal = PriceCol()
+    total = PriceCol()
+    total_quantity = DecimalCol()
+
+    def get_client_name(self):
+        return self.client_name or u""
+
+    def get_open_date_as_string(self):
+        return self.open_date.strftime("%x")
+
+    def get_status_name(self):
+        return Sale.get_status_name(self.status)

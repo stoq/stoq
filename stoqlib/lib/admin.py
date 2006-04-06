@@ -29,10 +29,12 @@ tables, removing tables and configuring administration user.
 
 
 from kiwi.argcheck import argcheck
+from kiwi.environ import environ
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database import setup_tables
+from stoqlib.database import (setup_tables, get_registered_db_settings,
+                              finish_transaction, run_sql_file)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -74,7 +76,7 @@ def ensure_admin_user(administrator_password):
     ret = table.select(table.q.username == username, connection=conn)
     assert ret, ret.count() == 1
     assert ret[0].password == administrator_password
-    conn.commit()
+    finish_transaction(conn, 1)
     print_msg('done')
     return user
 
@@ -88,8 +90,16 @@ def ensure_sellable_units():
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
         SellableUnit(description=desc, index=index, connection=conn)
-    conn.commit()
+    finish_transaction(conn, 1)
     print_msg("done")
+
+def create_base_schema():
+    rdbms_name = get_registered_db_settings().rdbms
+    filename = '%s-schema.sql' % rdbms_name
+    sql_file = environ.find_resource('sql', filename)
+    conn = new_transaction()
+    run_sql_file(sql_file, conn)
+    finish_transaction(conn, 1)
 
 @argcheck(str, bool, bool, bool)
 def initialize_system(password, delete_only=False, list_tables=False,
@@ -99,6 +109,7 @@ def initialize_system(password, delete_only=False, list_tables=False,
     """
     setup_tables(delete_only=delete_only, list_tables=list_tables,
                  verbose=verbose)
+    create_base_schema()
     ensure_system_parameters()
     ensure_admin_user(password)
     ensure_sellable_units()
