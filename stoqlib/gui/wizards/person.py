@@ -26,21 +26,21 @@
 
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import OR, LIKE
-from kiwi.datatypes import ValidationError
+from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.person import Person
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.templates.person import BasePersonRoleEditor
 from stoqlib.gui.editors.person import (BranchEditor,
                                         ClientEditor, SupplierEditor,
                                         EmployeeEditor,
                                         CreditProviderEditor)
-from stoqlib.lib.validators import (validate_phone_number, format_phone_number,
-                                    raw_phone_number)
+from stoqlib.lib.validators import format_phone_number, raw_phone_number
 
 
 _ = stoqlib_gettext
@@ -51,14 +51,16 @@ _ = stoqlib_gettext
 
 class RoleEditorStep(BaseWizardStep):
     gladefile = 'HolderTemplate'
-    model_type = None
 
-    def __init__(self, wizard, conn, previous, role_type, person=None):
+    def __init__(self, wizard, conn, previous, role_type, person=None,
+                 phone_number=None):
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         role_editor = self.wizard.role_editor(self.conn,
                                               person=person,
                                               role_type=role_type)
         self.wizard.set_editor(role_editor)
+        if phone_number is not None:
+            role_editor.set_phone_number(phone_number)
         self.person_slave = role_editor.get_person_slave()
         self.person_slave.get_toplevel().reparent(self.place_holder)
 
@@ -73,9 +75,10 @@ class RoleEditorStep(BaseWizardStep):
 
 class ExistingPersonStep(BaseWizardStep):
     gladefile = 'ExistingPersonStep'
-    model_type = None
 
-    def __init__(self, wizard, conn, previous, role_type, person_list):
+    def __init__(self, wizard, conn, previous, role_type, person_list,
+                 phone_number=''):
+        self.phone_number = phone_number
         self.role_type = role_type
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         self._setup_widgets(person_list)
@@ -92,6 +95,7 @@ class ExistingPersonStep(BaseWizardStep):
         self.question_label.set_bold(True)
         self.person_list.set_columns(self._get_columns())
         self.person_list.add_list(person_list)
+        self.person_list.select(person_list[0])
 
     def _get_columns(self):
         return [Column('name', title=_('Name'), sorted=True,
@@ -112,18 +116,20 @@ class ExistingPersonStep(BaseWizardStep):
     def next_step(self):
         if self.existing_person_check.get_active():
             person = self.person_list.get_selected()
+            phone_number = None
         else:
             person = None
+            phone_number = self.phone_number
         return RoleEditorStep(self.wizard, self.conn, self,
-                              self.role_type, person)
+                              self.role_type, person, phone_number)
 
 
-class PersonRoleTypeStep(BaseWizardStep):
+class PersonRoleTypeStep(WizardEditorStep):
     gladefile = 'PersonRoleTypeStep'
-    model_type = None
+    model_type = Settable
 
     def __init__(self, wizard, conn):
-        BaseWizardStep.__init__(self, conn, wizard)
+        WizardEditorStep.__init__(self, conn, wizard)
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -139,17 +145,18 @@ class PersonRoleTypeStep(BaseWizardStep):
         self.person_role_label.set_size('large')
         self.person_role_label.set_bold(True)
 
-    def on_phone_number__validate(self, entry, phone_number):
-        if not validate_phone_number(phone_number):
-            # XXX Improve this error message
-            return ValidationError("Invalid Phone Number")
-
     #
     # WizardStep hooks
     #
 
+    def create_model(self, conn):
+        return Settable(phone_number=u'')
+
+    def setup_proxies(self):
+        self.add_proxy(self.model, ['phone_number'])
+
     def next_step(self):
-        phone_number = self.phone_number.get_text()
+        phone_number = self.model.phone_number
         if phone_number:
             phone_number = '%%%s%%' % raw_phone_number(phone_number)
             query = OR(LIKE(Person.q.phone_number, phone_number),
@@ -161,11 +168,12 @@ class PersonRoleTypeStep(BaseWizardStep):
             role_type = Person.ROLE_INDIVIDUAL
         else:
             role_type = Person.ROLE_COMPANY
-        step_args = [self.wizard, self.conn, self, role_type]
         if persons and persons.count():
-            step_args.append(persons)
-            return ExistingPersonStep(*step_args)
-        return RoleEditorStep(*step_args)
+            return ExistingPersonStep(self.wizard, self.conn, self,
+                                      role_type, persons,
+                                      phone_number=phone_number)
+        return RoleEditorStep(self.wizard, self.conn, self, role_type,
+                              phone_number=phone_number)
 
     def has_previous_step(self):
         return False
@@ -218,6 +226,6 @@ argcheck(BasePersonRoleEditor, object, Transaction, object)
 def run_person_role_dialog(role_editor, parent, conn, model=None,
                            **editor_kwargs):
     if not model:
-        model = role_editor
-        role_editor = PersonRoleWizard
+        return run_dialog(PersonRoleWizard, parent, conn, role_editor,
+                          **editor_kwargs)
     return run_dialog(role_editor, parent, conn, model, **editor_kwargs)

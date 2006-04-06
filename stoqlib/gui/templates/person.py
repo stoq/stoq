@@ -61,6 +61,10 @@ class PersonEditorTemplate(BaseEditorSlave):
         'email'
         ) + left_proxy_widgets
 
+    def set_phone_number(self, phone_number):
+        self.model.phone_number = phone_number
+        self.proxy.update('phone_number')
+
     def attach_custom_slave(self, slave, tab_label):
         self.custom_tab.show()
         tab_child = self.custom_tab
@@ -75,10 +79,6 @@ class PersonEditorTemplate(BaseEditorSlave):
         tab_child = self.extra_tab
         self.person_notebook.set_tab_label_text(tab_child, tab_label)
         self.attach_slave('extra_holder', slave)
-
-    def create_model(self, conn):
-        # XXX: Waiting fix for bug 2163
-        return Person(name="", connection=conn)
 
     def attach_model_slave(self, name, slave_type, slave_model):
         slave = slave_type(self.conn, slave_model)
@@ -148,6 +148,10 @@ class PersonEditorTemplate(BaseEditorSlave):
     #
     # BaseEditorSlave hooks
     #
+
+    def create_model(self, conn):
+        # XXX: Waiting fix for bug 2163
+        return Person(name="", connection=conn)
 
     def setup_proxies(self):
         self._setup_widgets()
@@ -287,6 +291,10 @@ class BasePersonRoleEditor(BaseEditor):
 
     def get_person_slave(self):
         return self.main_slave.get_person_slave()
+
+    def set_phone_number(self, phone_number):
+        slave = self.get_person_slave()
+        slave.set_phone_number(phone_number)
 
     def _check_role_type(self):
         available_types = Person.ROLE_INDIVIDUAL, Person.ROLE_COMPANY
