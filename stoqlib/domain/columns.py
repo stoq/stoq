@@ -103,8 +103,7 @@ class SOPriceCol(AbstractDecimalCol):
 
 class SOAutoIncCol(SOIntCol):
     def __init__(self, **kw):
-        kw['default'] = func.nextval(kw['seq_name'])
-        del kw['seq_name']
+        kw['default'] = func.nextval(kw.pop('seq_name'))
         kw['alternateID'] = True
         SOIntCol.__init__(self, **kw)
 
