@@ -26,7 +26,7 @@
 """ Address slave implementation"""
 
 
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, func
 
 from stoqlib.database import finish_transaction
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -64,6 +64,8 @@ class AddressSlave(BaseEditorSlave):
         """ model: A Address object or nothing """
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
+        if model and model.city_location is not None:
+            model.city_location = model.city_location.clone()
         BaseEditorSlave.__init__(self, conn, model)
 
     def get_left_widgets(self):
@@ -72,31 +74,14 @@ class AddressSlave(BaseEditorSlave):
                                  AddressSlave.left_widgets)]
 
     def create_model(self, conn):
-        # XXX: Waiting fix for bug #2043. We should create Address and
-        # CityLocation objects not persistents.
-        return Address(person=None, city_location=None,
+        city = sysparam(conn).CITY_SUGGESTED
+        state = sysparam(conn).STATE_SUGGESTED
+        country = sysparam(conn).COUNTRY_SUGGESTED
+        city_loc = CityLocation(connection=conn, city=city, country=country,
+                                state=state)
+        return Address(person=None, city_location=city_loc,
                        is_main_address=self.is_main_address,
                        connection=conn)
-
-    def setup_entries_completion(self):
-        cities = [sysparam(self.conn).CITY_SUGGESTED]
-        countries = [sysparam(self.conn).COUNTRY_SUGGESTED]
-        states = get_country_states()
-
-        # XXX: Maybe we can to do a "select distinct" and remove this loop
-        for city_loc in CityLocation.select(connection=self.conn):
-            if city_loc.city and city_loc.city not in cities:
-                cities.append(city_loc.city)
-
-            if city_loc.country and city_loc.country not in countries:
-                countries.append(city_loc.country)
-
-            if city_loc.state and city_loc.state not in states:
-                states.append(city_loc.state)
-
-        self.city.set_completion_strings(cities)
-        self.country.set_completion_strings(countries)
-        self.state.set_completion_strings(states)
 
     def ensure_address(self):
         """ Check if we already have the city location specified by the
@@ -107,9 +92,9 @@ class AddressSlave(BaseEditorSlave):
             self.model.city_location = None
             CityLocation.delete(cityloc.id, connection=self.conn)
 
-        q1 = CityLocation.q.city == cityloc.city
-        q2 = CityLocation.q.state == cityloc.state
-        q3 = CityLocation.q.country == cityloc.country
+        q1 = func.UPPER(CityLocation.q.city) == cityloc.city.upper()
+        q2 = func.UPPER(CityLocation.q.state) == cityloc.state.upper()
+        q3 = func.UPPER(CityLocation.q.country) == cityloc.country.upper()
         query = AND(q1, q2, q3)
         conn = new_transaction()
         result = CityLocation.select(query, connection=conn)
@@ -137,16 +122,8 @@ class AddressSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        self.setup_entries_completion()
-
-        # XXX: Waiting fix for bug #2043. We should create Address and
-        # CityLocation objects not persistents.
-        if self.model.city_location is None:
-            city_loc = CityLocation(connection=self.conn)
-        else:
-            city_loc = self.model.city_location.clone()
-        self.model.city_location = city_loc
-
+        states = get_country_states()
+        self.state.prefill(states)
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
 
