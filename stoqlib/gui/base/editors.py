@@ -56,28 +56,31 @@ class BaseEditorSlave(SlaveDelegate):
         # The model attribute represents the
         self.conn = conn
         self.edit_mode = model is not None
+
+        model = model or self.create_model(self.conn)
+        if not model:
+            raise ValueError("Editors must define a model at this point")
+
         if self.model_iface:
-            model = model or self.create_model(self.conn)
-            # XXX This part will be improved after bug 2510
-            if (isinstance(model, Adapter) and not
-                self.model_iface.providedBy(model)):
+            if not isinstance(model, Adapter):
+                model = self.model_iface(model, connection=self.conn)
+            elif not self.model_iface.providedBy(model):
                 raise TypeError(
                     "%s editor requires a model implementing %s, got a %r" % (
                     self.__class__.__name__, self.model_iface.__name__,
                     model))
-            if not self.model_type:
-                # XXX: Some code use model type
-                self.model_type = type(model)
+            self.model_type = self.model_type or type(model)
 
         elif self.model_type:
-            model = model or self.create_model(self.conn)
-            if model and not isinstance(model, self.model_type):
+            if not isinstance(model, self.model_type):
                 raise TypeError(
                     '%s editor requires a model of type %s, got a %r' % (
                     self.__class__.__name__, self.model_type.__name__,
                     model))
         else:
-            model = None
+            raise ValueError("Editors must define a model_type or "
+                             "model_iface attributes")
+
         self.model = model
         SlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.setup_proxies()
@@ -156,7 +159,7 @@ class BaseEditor(BaseEditorSlave):
         # We can not use self.model for get_title since we will create a new
         # one in BaseEditorSlave if model is None.
         self.main_dialog = BasicWrappingDialog(self,
-                                               self.get_title(model),
+                                               self.get_title(self.model),
                                                self.header, self.size)
         if self.hide_footer:
             self.main_dialog.hide_footer()
