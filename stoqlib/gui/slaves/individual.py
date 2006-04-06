@@ -30,7 +30,6 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.domain.person import CityLocation
 from stoqlib.domain.interfaces import IIndividual
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 
 
@@ -65,29 +64,15 @@ class IndividualDetailsSlave(BaseEditorSlave):
         'marital_status',
         )
 
-    def setup_entries_completion(self):
-        cities = [sysparam(self.conn).CITY_SUGGESTED]
-        states = get_country_states()
-        countries = [sysparam(self.conn).COUNTRY_SUGGESTED]
-
-        for city_loc in CityLocation.select(connection=self.conn):
-            if city_loc.city and city_loc.city not in cities:
-                cities.append(city_loc.city)
-            if city_loc.country and city_loc.country not in countries:
-                countries.append(city_loc.country)
-            if city_loc.state and city_loc.state not in states:
-                states.append(city_loc.state)
-
-        self.birth_loc_city.set_completion_strings(cities)
-        self.birth_loc_country.set_completion_strings(countries)
-        self.birth_loc_state.set_completion_strings(states)
-
     def _setup_widgets(self):
-        is_male = self.model.gender == self.model_type.GENDER_MALE    
+        is_male = self.model.gender == self.model_type.GENDER_MALE
         is_female = self.model.gender == self.model_type.GENDER_FEMALE
         self.male_check.set_active(is_male)
         self.female_check.set_active(is_female)
-        self.setup_entries_completion()
+
+        states = get_country_states()
+        self.birth_loc_state.prefill(states)
+
         self.marital_status.prefill(self.model.get_marital_statuses())
 
     def ensure_city_location(self):
@@ -124,7 +109,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
             self.spouse_name.show()
         else:
             self.spouse_lbl.hide()
-            self.spouse_name.hide()    
+            self.spouse_name.hide()
 
     #
     # Kiwi handlers
@@ -132,7 +117,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
     def on_marital_status__changed(self, *args):
         self.update_marital_status()
-       
+
     #
     # BaseEditorSlave hooks
     #
