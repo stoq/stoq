@@ -100,9 +100,7 @@ def create_purchases():
 
         purchase_args = purchase_data[index]
         order = PurchaseOrder(connection=conn, supplier=supplier,
-                              branch=branch,
-                              order_number=index + 1,
-                              **purchase_args)
+                              branch=branch, **purchase_args)
         order.set_valid()
 
 

@@ -184,13 +184,6 @@ _parameter_info = {
                                                 'coupon will be printed on '
                                                 'that application instead of '
                                                 'Point of Sales')),
-    'EDIT_SALES_ORDER_NUMBER': ParameterDetails(_('Sales'),
-                                              _('Edit Sales Order Number'),
-                                              _('Once this parameter is set '
-                                                'to true, every time we '
-                                                'create a new sale order, the '
-                                                'user will be asked for a '
-                                                'order number')),
     'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_('Sales'),
                                               _('Accept Change Salesperson'),
                                               _('Once this parameter is set '
@@ -291,7 +284,6 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
         ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
-        ParameterAttr('EDIT_SALES_ORDER_NUMBER', bool, initial=False),
         ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
         ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
                       initial=True),
@@ -561,7 +553,7 @@ class ParameterAccess(ClassInittableObject):
 
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=_('Delivery'))
-        sellable = service.addFacet(ISellable, code='SD',
+        sellable = service.addFacet(ISellable,
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
         self._set_schema(key, sellable.id)

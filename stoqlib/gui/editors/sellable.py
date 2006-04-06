@@ -34,6 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.database import finish_transaction
 from stoqlib.domain.sellable import (SellableCategory, AbstractSellable,
                                      SellableUnit)
 from stoqlib.domain.interfaces import ISellable, IStorable
@@ -158,6 +159,7 @@ class SellableEditor(BaseEditor):
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
     sellable_widgets = ('code',
+                        'barcode',
                         'description',
                         'category_combo',
                         'cost',
@@ -170,7 +172,7 @@ class SellableEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
-        self._original_code = self.sellable_proxy.model.code
+        self._original_barcode = self.sellable_proxy.model.barcode
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
@@ -280,16 +282,16 @@ class SellableEditor(BaseEditor):
         self.edit_sale_price()
 
     def validate_confirm(self, *args):
-        code = self.code.get_text()
+        barcode = self.barcode.get_text()
         confirmed = True
-        if code != self._original_code:
+        if barcode and barcode != self._original_barcode:
             conn = new_transaction()
-            qty = AbstractSellable.selectBy(code=code, connection=conn).count()
+            qty = AbstractSellable.selectBy(barcode=barcode, connection=conn).count()
             if qty:
-                msg = _('This code already exists!')
-                self.code.set_invalid(msg)
+                msg = _('This barcode already exists!')
+                self.barcode.set_invalid(msg)
                 confirmed = False
-            conn._connection.close()
+            finish_transaction(conn)
         if confirmed:
             self.ensure_sellable_unit()
         return confirmed

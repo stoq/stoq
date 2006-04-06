@@ -307,10 +307,11 @@ class PurchaseSelectionStep(WizardEditorStep):
         self._update_view()
 
     def on_details_button__clicked(self, *args):
-        order = self.orders.get_selected()
-        if not order:
+        selected = self.orders.get_selected()
+        if not selected:
             raise ValueError('You should have one order selected '
                              'at this point, got nothing')
+        order = PurchaseOrder.get(selected.id, connection=self.conn)
         run_dialog(PurchaseDetailsDialog, self, self.conn, model=order)
 
 

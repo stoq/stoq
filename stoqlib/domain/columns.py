@@ -29,7 +29,8 @@ import decimal
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
-from sqlobject.col import SODecimalCol, Col
+from sqlobject.col import SODecimalCol, Col, SOIntCol
+from sqlobject.sqlbuilder import func
 from sqlobject.converters import registerConverter
 
 from stoqlib.domain.parameter import ParameterData
@@ -44,6 +45,11 @@ def _CurrencyConverter(value, db):
 registerConverter(currency, _CurrencyConverter)
 
 
+#
+# Validators
+#
+
+
 class _PriceValidator(Validator):
 
     def to_python(self, value, state):
@@ -55,7 +61,6 @@ class _PriceValidator(Validator):
 
     def from_python(self, value, state):
         return value
-
 
 class _DecimalValidator(Validator):
 
@@ -70,8 +75,12 @@ class _DecimalValidator(Validator):
         return value
 
 
-class AbstractDecimalCol(SODecimalCol):
+#
+# Abstract Classes
+#
 
+
+class AbstractDecimalCol(SODecimalCol):
     def __init__(self, **kw):
         conn = get_connection()
         if conn.tableExists(ParameterData.get_db_table_name()):
@@ -88,15 +97,38 @@ class AbstractDecimalCol(SODecimalCol):
         return ([_DecimalValidator()] +
                 super(AbstractDecimalCol, self).createValidators())
 
-
-class DecimalCol(Col):
-    baseClass = AbstractDecimalCol
-
-
 class SOPriceCol(AbstractDecimalCol):
     def createValidators(self):
         return [_PriceValidator()] + super(SOPriceCol, self).createValidators()
 
+class SOAutoIncCol(SOIntCol):
+    def __init__(self, **kw):
+        kw['default'] = func.nextval(kw['seq_name'])
+        del kw['seq_name']
+        kw['alternateID'] = True
+        SOIntCol.__init__(self, **kw)
+
+
+#
+# Custom SQLObject columns
+#
+
+
+class DecimalCol(Col):
+    baseClass = AbstractDecimalCol
 
 class PriceCol(DecimalCol):
     baseClass = SOPriceCol
+
+class AutoIncCol(Col):
+    """This column defines an auto increment integer column. Domain classes
+    must always supply a 'sequence name' argument when instantiating this
+    column.
+
+    @cvar seq_name: the postgres database sequence name
+    """
+    baseClass = SOAutoIncCol
+
+    def __init__(self, seq_name, *args, **kw):
+        kw['seq_name'] = seq_name
+        Col.__init__(self, *args, **kw)

@@ -39,7 +39,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.base import AbstractPaymentGroup
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                        IPaymentGroup)
 from stoqlib.lib.validators import format_quantity
@@ -122,8 +122,7 @@ class PurchaseOrder(Domain):
                      FREIGHT_CIF    : _(u'CIF')}
 
     status = IntCol(default=ORDER_QUOTING)
-    # Field order_number must be unique. Waiting for bug 2214
-    order_number = IntCol(default=None)
+    order_number = AutoIncCol('stoqlib_purchase_ordernumber_seq')
     open_date = DateTimeCol(default=datetime.datetime.now)
     quote_deadline = DateTimeCol(default=None)
     expected_receival_date = DateTimeCol(default=None)
@@ -282,10 +281,7 @@ class PurchaseOrder(Domain):
         return self.transporter.get_adapted().name
 
     def get_order_number_str(self):
-        if self.order_number:
-            return u'%03d' % self.order_number
-        return u""
-
+        return u'%05d' % self.order_number
 
     def get_purchase_subtotal(self):
         total = sum([i.get_total() for i in self.get_items()], currency(0))

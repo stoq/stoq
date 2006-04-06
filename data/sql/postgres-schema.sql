@@ -24,6 +24,12 @@
 
 
 --
+-- Functions definitions
+--
+
+
+CREATE OR REPLACE FUNCTION drop_existing_view(text)
+--
 -- Checks if a certain view exists and drop it. We need this feature
 -- since CREATE OR REPLACE statement doesn't apply when changing or
 -- adding view attributes.
@@ -31,7 +37,6 @@
 -- the information_schema catalog so we can not fetch a list of user defined
 -- views and drop then in one call of this function.
 --
-CREATE OR REPLACE FUNCTION drop_existing_view(text)
 RETURNS integer AS '
 DECLARE
     view_exists int;
@@ -48,6 +53,44 @@ BEGIN
 END;
 '  LANGUAGE 'plpgsql';
 
+
+CREATE OR REPLACE FUNCTION create_stoqlib_sequence(text)
+--
+-- Checks if a certain sequence exists and create it if it doesn't exists
+--
+RETURNS integer AS '
+DECLARE
+    sequence_exists int;
+    currschema text;
+BEGIN
+
+    select into currschema current_schema();
+    select into sequence_exists count(*) from pg_statio_user_sequences
+        where schemaname = currschema and relname = $1;
+
+    IF sequence_exists = 0 THEN
+        execute ''CREATE SEQUENCE '' || quote_ident($1);
+    END IF;
+
+    RETURN 1;
+END;
+'  LANGUAGE 'plpgsql';
+
+
+--
+-- Sequences
+--
+-- Note that every sequence name must have a 'stoqlib' prefix to
+-- avoid conflicts with SQLObject sequences.
+--
+
+
+select create_stoqlib_sequence('stoqlib_payment_identifier_seq');
+select create_stoqlib_sequence('stoqlib_sale_ordernumber_seq');
+select create_stoqlib_sequence('stoqlib_purchase_ordernumber_seq');
+select create_stoqlib_sequence('stoqlib_sellable_code_seq');
+
+
 --
 -- Abstract Views: do not use them on directly on applications
 --
@@ -55,19 +98,21 @@ END;
 
 select drop_existing_view('abstract_stock_view');
 CREATE VIEW abstract_stock_view AS
- --
- -- This is an abstract view which stores stock informations to other views.
- -- Available fields are:
- --     id              - the id of the abstract_sellable table
- --     code            - the product code
- --     status          - the product status
- --     stock           - the total amount of stock for a certain product
- --     branch_id       - the id of the person_adapt_to_branch table
- --     stock_cost      - the total cost for the given stock
- --     product_id      - the id of product table
- --
+  --
+  -- This is an abstract view which stores stock informations to other views.
+  -- Available fields are:
+  --     id              - the id of the abstract_sellable table
+  --     code            - the product code
+  --     barcode         - the product barcode
+  --     status          - the product status
+  --     stock           - the total amount of stock for a certain product
+  --     branch_id       - the id of the person_adapt_to_branch table
+  --     stock_cost      - the total cost for the given stock
+  --     product_id      - the id of product table
+  --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.status,
+  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
+  abstract_sellable.status,
   abstract_stock_item.quantity + abstract_stock_item.logic_quantity as stock,
   abstract_stock_item.branch_id, abstract_stock_item.stock_cost,
   product.id as product_id
@@ -239,6 +284,7 @@ CREATE VIEW sellable_view AS
   -- Available fields are:
   --     id                 - the id of the abstract_sellable table
   --     code               - the sellable code
+  --     barcode            - the sellable barcode
   --     status             - the sellable status
   --     stock              - the stock in case the sellable is a product
   --     branch_id          - the if of person_adapt_to_branch table
@@ -253,7 +299,8 @@ CREATE VIEW sellable_view AS
   --     product_id         - the id of the product table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.status,
+  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
+  abstract_sellable.status,
   sum(abstract_stock_view.stock) as stock, abstract_stock_view.branch_id,
   abstract_sellable.cost, base_sellable_info.price,
   base_sellable_info.is_valid_model,
@@ -278,7 +325,8 @@ CREATE VIEW sellable_view AS
         base_sellable_info.id AND base_sellable_info.is_valid_model = 't')
 
     group by abstract_sellable.code, abstract_sellable.status,
-    abstract_sellable.id, abstract_sellable.cost, base_sellable_info.price,
+    abstract_sellable.barcode, abstract_sellable.id,
+    abstract_sellable.cost, base_sellable_info.price,
     base_sellable_info.description, sellable_unit.description,
     base_sellable_info.is_valid_model, abstract_stock_view.branch_id,
     abstract_product_supplier_view.supplier_name, abstract_stock_view.product_id;
@@ -293,13 +341,13 @@ CREATE VIEW sellable_full_stock_view AS
   -- Available fields are: the same fields of sellable_view table.
   --
   SELECT DISTINCT
-  sum(stock) as stock, id, code, status, 0 as branch_id, cost, price, is_valid_model,
-  description, unit, supplier_name, product_id
+  sum(stock) as stock, id, code, barcode, status, 0 as branch_id, cost,
+  price, is_valid_model, description, unit, supplier_name, product_id
 
   FROM sellable_view
 
-    GROUP BY code, status, id, cost, price, is_valid_model, description,
-    unit, supplier_name, product_id;
+    GROUP BY code, barcode, status, id, cost, price, is_valid_model,
+    description, unit, supplier_name, product_id;
 
 
 select drop_existing_view('product_full_stock_view');
@@ -321,6 +369,7 @@ CREATE VIEW service_view AS
   -- Available fields are:
   --     id                 - the id of the abstract_sellable table
   --     code               - the sellable code
+  --     barcode            - the sellable barcode
   --     status             - the sellable status
   --     cost               - the sellable cost
   --     price              - the sellable price
@@ -331,7 +380,8 @@ CREATE VIEW service_view AS
   --     service_id         - the id of the service table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.status,
+  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
+  abstract_sellable.status,
   abstract_sellable.cost, base_sellable_info.price,
   base_sellable_info.is_valid_model,
   base_sellable_info.description, sellable_unit.description as unit,

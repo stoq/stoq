@@ -109,10 +109,10 @@ class GiftCertificateEditor(BaseEditor):
         self.last_number.set_sensitive(not single)
         self.number.set_sensitive(single)
 
-    def _create_gift_certificate(self, sellable_info, code):
+    def _create_gift_certificate(self, sellable_info, barcode):
         certificate = GiftCertificate(connection=self.conn)
         certificate.addFacet(ISellable, connection=self.conn,
-                             code=unicode(code),
+                             barcode=unicode(barcode),
                              base_sellable_info=sellable_info)
 
     #

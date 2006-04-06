@@ -70,8 +70,6 @@ def create_products():
                      'LCD',
                      'AMD Durom']
 
-    codes = ['K15', 'M73', 'M025', 'P83']
-
     descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG',
                     'Monitor LCD SXDF', 'Processor AMD Durom 1.2Ghz']
 
@@ -125,11 +123,10 @@ def create_products():
                                          price=price)
 
         cost = random.randrange(*COST_RANGE)
-        code = codes[index]
         unit = units[index]
 
         product_obj.addFacet(ISellable, connection=conn, category=cat,
-                             code=code, cost=cost, unit=unit,
+                             cost=cost, unit=unit,
                              base_sellable_info=sellable_info)
 
         storable = product_obj.addFacet(IStorable, connection=conn)

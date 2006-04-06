@@ -79,6 +79,6 @@ class ServiceEditor(SellableEditor):
         model = Service(connection=conn)
         sellable_info = BaseSellableInfo(connection=conn,
                                          description='', price=currency(0))
-        model.addFacet(ISellable, code='', base_sellable_info=sellable_info,
+        model.addFacet(ISellable, base_sellable_info=sellable_info,
                        connection=conn)
         return model

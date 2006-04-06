@@ -36,7 +36,7 @@ from stoqlib.exceptions import PaymentError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
                                   METHOD_MULTIPLE, METHOD_MONEY)
-from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
@@ -75,9 +75,7 @@ class Payment(Domain):
                 STATUS_CONFIRMED: _(u'Confirmed'),
                 STATUS_CANCELLED: _(u'Cancelled')}
 
-    # XXX The payment_id attribute will be an alternateID after
-    # fixing bug 2214
-    payment_id = IntCol(default=None)
+    identifier = AutoIncCol('stoqlib_payment_identifier_seq')
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
@@ -175,9 +173,8 @@ class Payment(Domain):
             self._check_status(self.STATUS_TO_PAY, 'reverse selection')
             self.status = self.STATUS_CANCELLED
             payment = self.clone()
-            # payment_id should be incremented automatically.
-            # Waiting for bug 2214.
-            description = _('Cancellation of payment number %s') % self.payment_id
+            description = (_('Cancellation of payment number %s')
+                           % self.identifier)
             payment.description = description
             payment.value *= -1
             payment.due_date = datetime.datetime.now()

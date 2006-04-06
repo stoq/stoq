@@ -294,7 +294,8 @@ class FiscalCoupon:
             unit = sellable.unit.index
         unit = unit or UNIT_EMPTY
         max_len = get_capability(self.printer, "item_code")
-        code = sellable.code[:max_len]
+        code_str = str(sellable.code)
+        code = code_str[:max_len]
 
         # FIXME: TAX_NONE is a HACK, waiting for bug #2269
         item_id = self.printer.add_item(code, item.quantity, item.price,

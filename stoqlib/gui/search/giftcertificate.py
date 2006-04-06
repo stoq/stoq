@@ -147,9 +147,14 @@ class GiftCertificateSearch(SearchEditor):
     # SearchEditor Hooks
     #
 
+    def update_edited_item(self, *args):
+        self.search_bar.search_items()
+
     def get_columns(self):
-        return [Column('code', _('Number'), data_type=str,
-                       width=120),
+        return [Column('code', _('Number'), data_type=int,
+                       format='%03d', width=80),
+                Column('barcode', title=_('Barcode'), data_type=str,
+                       visible=True, width=80),
                 Column('base_sellable_info.description',
                        _('Type Name'), data_type=str, width=260),
                 Column('base_sellable_info.price', _('Price'),

@@ -54,7 +54,8 @@ class ProductReport(SearchResultsReport):
         self._setup_items_table()
 
     def _get_columns(self):
-        return [OTC(_("Code"), lambda obj: obj.code, width=120, truncate=True),
+        return [OTC(_("Code"), lambda obj: '%03d' % obj.code, width=120,
+                      truncate=True),
                 OTC(_("Description"), lambda obj: obj.description,
                     width=265, expand=True, expand_factor=1, truncate=True),
                 OTC(_("Supplier"),
