@@ -16,7 +16,7 @@
                     <placeholder/>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                    <widget class="ProxyLabel" id="kiwilabel2">
                         <property name="label" context="yes" translatable="yes">Salesperson:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -26,7 +26,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                    <widget class="ProxyLabel" id="kiwilabel1">
                         <property name="label" context="yes" translatable="yes">Client:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -94,7 +94,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
+                    <widget class="ProxyLabel" id="kiwilabel10">
                         <property name="label" context="yes" translatable="yes">Order Number:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -118,11 +118,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="order_number">
-                        <property name="data_type">int</property>
-                        <property name="model_attribute">order_number</property>
+                    <widget class="ProxyLabel" id="order_number">
+                        <property name="data_type">unicode</property>
+                        <property name="model_attribute">order_number_str</property>
                         <property name="visible">True</property>
-                        <property name="width_chars">6</property>
                         <property name="xalign">1.0</property>
                     </widget>
                     <packing>

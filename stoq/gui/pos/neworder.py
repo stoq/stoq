@@ -32,7 +32,6 @@ from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.runtime import get_current_user
-from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.editors.person import ClientEditor
 
@@ -55,8 +54,6 @@ class NewOrderEditor(BaseEditor):
         self.client.prefill(items)
 
     def _setup_widgets(self):
-        if not sysparam(self.conn).EDIT_SALES_ORDER_NUMBER:
-            self.order_number.set_sensitive(False)
         # Waiting for bug 2319
         self.details_button.set_sensitive(False)
         self._setup_client_entry()

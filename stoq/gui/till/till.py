@@ -97,15 +97,9 @@ class TillApp(SearchableAppWindow):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
         self._update_widgets()
 
-    def _format_order_number(self, order_number):
-        # FIXME We will remove this method after bug 2214
-        if not order_number:
-            return 0
-        return order_number
-
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,
-                       data_type=int, sorted=True),
+                       data_type=int, format='%03d', sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),

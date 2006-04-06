@@ -101,7 +101,7 @@ class SalesApp(SearchableAppWindow):
 
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,
-                       data_type=int, sorted=True),
+                       format='%05d', data_type=int, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
