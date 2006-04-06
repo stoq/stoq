@@ -35,10 +35,8 @@ def create_giftcertificates():
     print_msg('Creating gift certificates...', break_line=False)
     conn = new_transaction()
 
-    general_data = [dict(code='GC23', 
-                         status=AbstractSellable.STATUS_SOLD),
-                    dict(code='GC34',
-                         status=AbstractSellable.STATUS_AVAILABLE)]
+    statuses = [AbstractSellable.STATUS_SOLD,
+                AbstractSellable.STATUS_AVAILABLE]
 
     sellable_data = [dict(description='Christmas Gift Certificate',
                           price=430),
@@ -54,10 +52,10 @@ def create_giftcertificates():
                                         base_sellable_info=sellable_info)
         certificate = GiftCertificate(connection=conn)
 
-        cert_data = general_data[index]
+        status = statuses[index]
         certificate.addFacet(ISellable, connection=conn,
                              base_sellable_info=sellable_info,
-                             **cert_data)
+                             status=status)
     conn.commit()
     print_msg('done.')
 

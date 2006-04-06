@@ -206,7 +206,5 @@ class PurchaseOrderReport(BaseStoqReport):
     #
 
     def get_title(self):
-        order_number = self._order.get_order_number_str()
-        if order_number:
-            order_number = "#" + order_number
+        order_number = '#' + self._order.get_order_number_str()
         return _("Purchase Order %s") % order_number

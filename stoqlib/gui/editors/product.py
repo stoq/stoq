@@ -221,7 +221,7 @@ class ProductEditor(SellableEditor):
         sellable_info = BaseSellableInfo(connection=conn)
 
         model.addFacet(ISellable, base_sellable_info=sellable_info,
-                       code='', connection=conn)
+                       connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
         supplier_info = ProductSupplierInfo(connection=conn,
@@ -247,4 +247,4 @@ class ProductEditor(SellableEditor):
                   or decimal.Decimal("0.0"))
         price = cost + ((markup / 100) * cost)
         self.sellable_proxy.model.base_sellable_info.price = price
-        self.sellable_proxy.update('price')
+        self.sellable_proxy.update('base_sellable_info.price')

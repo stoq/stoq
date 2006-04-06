@@ -31,38 +31,34 @@ from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 MAX_SERVICES_NUMBER = 4
-PRICE_RANGE = 100, 200 
+PRICE_RANGE = 100, 200
 COST_RANGE = 1, 99
 
 def create_services():
     print_msg('Creating services...', break_line=False)
     conn = new_transaction()
-    
+
 
     descriptions = ['General Service', 'Cleanness', 'Computer Maintenance',
                     'Computer Components Switch']
-    codes = ['General89', 'C762', '872626', 'S123']
-
 
     # Creating services and facets
     for index in range(MAX_SERVICES_NUMBER):
         service_obj = Service(connection=conn)
-        
+
         price = round(random.uniform(*PRICE_RANGE))
         description = descriptions[index]
 
-        sellable_info = BaseSellableInfo(connection=conn, 
+        sellable_info = BaseSellableInfo(connection=conn,
                                          description=description,
                                          price=price)
         cost = round(random.uniform(*COST_RANGE))
-        code = codes[index]
-        
         service_obj.addFacet(ISellable, connection=conn,
                              base_sellable_info=sellable_info,
-                             cost=cost, code=code)
+                             cost=cost)
 
     conn.commit()
     print_msg('done.')
-    
+
 if __name__ == "__main__":
     create_services()

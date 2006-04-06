@@ -932,6 +932,22 @@ class SearchEditor(SearchDialog):
     def hide_new_button(self):
         self._toolbar.new_button.hide()
 
+    def update_edited_item(self, model):
+        """Update the edited item to its proper type and select it on the
+        list results.
+        This method must be overwritten on subclasses when editors don't
+        return a valid instance or when returning more than one model.
+        """
+        if self._selected:
+            selected = self._selected
+            selected.sync()
+            self.klist.update(selected)
+        else:
+            # user just added a new instance
+            selected = self.get_searchlist_model(model)
+            self.klist.append(selected)
+        self.klist.select(selected)
+
     def run(self, obj=None):
         self._selected = obj
         if obj:
@@ -951,15 +967,7 @@ class SearchEditor(SearchDialog):
             rv = rv.get_adapted()
 
         self.conn.commit()
-        if self._selected:
-            selected = self._selected
-            selected.sync()
-            self.klist.update(selected)
-        else:
-            # user just added a new instance
-            selected = self.get_searchlist_model(rv)
-            self.klist.append(selected)
-        self.klist.select(selected)
+        self.update_edited_item(rv)
         self.enable_ok()
 
     def run_editor(self, obj):

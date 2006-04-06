@@ -165,7 +165,8 @@ Service.registerFacet(ServiceAdaptToSellable, ISellable)
 
 class ServiceView(SQLObject, BaseSQLView):
     """Stores service informations """
-    code = UnicodeCol()
+    code = IntCol()
+    barcode = UnicodeCol()
     status = IntCol()
     cost = PriceCol()
     price = PriceCol()

@@ -151,18 +151,9 @@ class TillOperationDialog(SlaveDelegate):
         else:
             self.total_balance_label.set_color('black')
 
-    def _get_payment_id(self, value):
-        # Attribute payment_id will be mandatory soon.
-        # Waiting for bug 2214.
-        if not value:
-            return 0
-        return '%03d' % value
-
     def _get_columns(self, *args):
-        return [Column('payment_id', _('Number'), data_type=int, width=100,
-                        format_func=self._get_payment_id, sorted=True),
-                       # XXX Waiting for bug 2214
-                       # format='%03d'),
+        return [Column('identifier', _('Number'), data_type=int, width=100,
+                        format='%03d', sorted=True),
                 Column('due_date', _('Due Date'),
                        data_type=datetime.date, width=120),
                 Column('description', _('Description'), data_type=str,
@@ -207,7 +198,7 @@ class TillOperationDialog(SlaveDelegate):
         # This method is wrong.
         # A good way to get the initial cash amount payment would be to
         # use the payment_id.
-        # Waiting for bug 2214.
+        # Waiting for bug 2524
         for item in self.selected_item:
             if item.description == _('Initial cash amount'):
                 return True

@@ -117,9 +117,6 @@ def create_sales():
     method = sysparam(conn).BASE_PAYMENT_METHOD
     check_method = ICheckPM(method, connection=conn)
 
-    # We need to increment payment_id attribute automatically. Waiting
-    # for SQLObject support
-    payment_id = 1
     for index in range(DEFAULT_SALE_NUMBER):
 
         #
@@ -131,8 +128,7 @@ def create_sales():
         salesperson = salespersons[index]
         # Order number field will be filled automatically after bug 2214
         sale = Sale(connection=conn, till=till, client=clients[index],
-                    order_number=index + 1, status=status,
-                    open_date=open_date, salesperson=salesperson)
+                    status=status, open_date=open_date, salesperson=salesperson)
         sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
         sale_total = sellable_facet.base_sellable_info.price

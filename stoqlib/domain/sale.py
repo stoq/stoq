@@ -35,7 +35,7 @@ from kiwi.datatypes import currency
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellableItem
 from stoqlib.domain.payment.base import AbstractPaymentGroup
@@ -91,7 +91,7 @@ class Sale(Domain):
                 STATUS_REVIEWING:   _(u"Reviewing")}
 
     coupon_id = IntCol(default=None)
-    order_number = IntCol(default=None)
+    order_number = AutoIncCol('stoqlib_sale_ordernumber_seq')
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
@@ -135,6 +135,9 @@ class Sale(Domain):
     #
     # Auxiliar methods
     #
+
+    def get_order_number_str(self):
+        return u'%05d' % self.order_number
 
     def get_salesperson_name(self):
         return self.salesperson.get_adapted().name

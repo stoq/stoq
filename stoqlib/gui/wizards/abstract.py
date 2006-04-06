@@ -95,10 +95,10 @@ class AbstractProductStep(WizardEditorStep):
         else:
             sellable = None
         if not sellable:
-            code = self.product.get_text()
+            barcode = self.product.get_text()
             table = self.table
-            sellable = table.get_availables_and_sold_by_code(self.conn, code,
-                                                             self._product_notify)
+            sellable = table.get_availables_and_sold_by_barcode(self.conn,
+                                            barcode, self._product_notify)
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions

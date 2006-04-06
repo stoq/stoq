@@ -10,7 +10,7 @@
                 <property name="border_width">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="title_label">
+                    <widget class="ProxyLabel" id="title_label">
                         <property name="label" context="yes" translatable="yes">How many gift certificates would you like to create ?</property>
                         <property name="visible">True</property>
                     </widget>
@@ -23,12 +23,12 @@
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
+                            <widget class="ProxyLabel" id="kiwilabel6">
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
+                            <widget class="ProxyLabel" id="kiwilabel7">
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -44,7 +44,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="single_check">
+                            <widget class="ProxyRadioButton" id="single_check">
                                 <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes"></property>
@@ -56,7 +56,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="multiple_check">
+                            <widget class="ProxyRadioButton" id="multiple_check">
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
                                 <property name="group">single_check</property>
@@ -80,8 +80,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="label111">
-                                <property name="label" context="yes" translatable="yes">Only one with number</property>
+                            <widget class="ProxyLabel" id="label111">
+                                <property name="label" context="yes" translatable="yes">Only one with barcode</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -92,8 +92,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="label11123">
-                                <property name="label" context="yes" translatable="yes">Multiple. From number</property>
+                            <widget class="ProxyLabel" id="label11123">
+                                <property name="label" context="yes" translatable="yes">Multiple. From barcode</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
                             </widget>
@@ -114,7 +114,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="number">
+                            <widget class="ProxyEntry" id="number">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">number</property>
                                 <property name="visible">True</property>
@@ -126,7 +126,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="first_number">
+                            <widget class="ProxyEntry" id="first_number">
                                 <property name="data_type">int</property>
                                 <property name="model_attribute">first_number</property>
                                 <property name="visible">True</property>
@@ -157,7 +157,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                            <widget class="ProxyLabel" id="kiwilabel5">
                                 <property name="label" context="yes" translatable="yes">To</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -185,7 +185,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="last_number">
+                            <widget class="ProxyEntry" id="last_number">
                                 <property name="data_type">int</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">last_number</property>
@@ -221,7 +221,7 @@
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel8">
+                            <widget class="ProxyLabel" id="kiwilabel8">
                                 <property name="label" context="yes" translatable="yes">Type of Gift Certificate:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>

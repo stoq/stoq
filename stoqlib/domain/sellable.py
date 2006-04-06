@@ -37,7 +37,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel, BaseSQLView)
@@ -190,7 +190,8 @@ class AbstractSellable(InheritableModelAdapter):
                 STATUS_CLOSED:      _(u"Closed"),
                 STATUS_BLOCKED:     _(u"Blocked")}
 
-    code = UnicodeCol(alternateID=True)
+    code = AutoIncCol('stoqlib_sellable_code_seq')
+    barcode = UnicodeCol(default="")
     status = IntCol(default=STATUS_AVAILABLE)
     markup = DecimalCol(default=0)
     cost = PriceCol(default=0)
@@ -287,6 +288,9 @@ class AbstractSellable(InheritableModelAdapter):
     # Accessors
     #
 
+    def get_code_str(self):
+        return u"%05d" % self.code
+
     def get_price_string(self):
         return get_formatted_price(self.get_price())
 
@@ -339,52 +343,52 @@ class AbstractSellable(InheritableModelAdapter):
 
 
     @classmethod
-    def _get_sellables_by_code(cls, conn, code, extra_query,
+    def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
                               notify_callback):
-        query = AND(cls.q.code == code, extra_query)
+        query = AND(cls.q.barcode == barcode, extra_query)
         sellables = cls.select(query, connection=conn)
         qty = sellables.count()
         if not qty:
-            msg = _("The sellable with code '%s' doesn't exists" % code)
+            msg = _("The sellable with barcode '%s' doesn't exists" % barcode)
             notify_callback(msg)
             return
         if qty != 1:
             raise DatabaseInconsistency('You should have only one '
-                                        'sellable with code %s'
-                                        % code)
+                                        'sellable with barcode %s'
+                                        % barcode)
         return sellables[0]
 
     @classmethod
-    def get_availables_by_code(cls, conn, code, notify_callback):
+    def get_availables_by_barcode(cls, conn, barcode, notify_callback):
         """Returns a list of avaliable sellables that can be sold.
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
         @param conn: a sqlobject Transaction instance
-        @param code: a string representing a sellable code
+        @param barcode: a string representing a sellable barcode
         @notify_callback: a function which is a callback that will be called
-                          if the sellable code doesn't exists
+                          if the sellable barcode doesn't exists
 
         """
         extra_query = cls.q.status == cls.STATUS_AVAILABLE
-        return cls._get_sellables_by_code(conn, code, extra_query,
+        return cls._get_sellables_by_barcode(conn, barcode, extra_query,
                                           notify_callback)
 
     @classmethod
-    def get_availables_and_sold_by_code(cls, conn, code, notify_callback):
+    def get_availables_and_sold_by_barcode(cls, conn, barcode, notify_callback):
         """Returns a list of avaliable sellables and also sellables that
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_SOLD
 
         @param conn: a sqlobject Transaction instance
-        @param code: a string representing a sellable code
+        @param barcode: a string representing a sellable barcode
         @notify_callback: a function which is a callback that will be called
-                          if the sellable code doesn't exists
+                          if the sellable barcode doesn't exists
 
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
         extra_query = IN(cls.q.status, statuses)
-        return cls._get_sellables_by_code(conn, code, extra_query,
+        return cls._get_sellables_by_barcode(conn, barcode, extra_query,
                                           notify_callback)
 
     #
@@ -392,13 +396,13 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
 
-    def _set_code(self, code):
+    def _set_barcode(self, barcode):
         conn = get_connection()
-        query = AbstractSellable.q.code == code
+        query = AbstractSellable.q.barcode == barcode
         # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing code. Waiting for kiwi support
+        # an existing barcode. Waiting for kiwi support
         if not AbstractSellable.select(query, connection=conn).count():
-            self._SO_set_code(code)
+            self._SO_set_barcode(barcode)
 
     def set_default_commission(self):
         if not self.category:
@@ -418,7 +422,8 @@ class SellableView(SQLObject, BaseSQLView):
     companies
     """
     stock = DecimalCol()
-    code = UnicodeCol()
+    code = IntCol()
+    barcode = UnicodeCol()
     status = IntCol()
     cost = PriceCol()
     price = PriceCol()
@@ -434,5 +439,8 @@ class SellableView(SQLObject, BaseSQLView):
     def get_unit(self):
         return self.unit or u""
 
+
 class SellableFullStockView(SellableView):
-    pass
+    """Stores the total stock in all branch companies and other general
+    informations for sellables
+    """
