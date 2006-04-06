@@ -25,21 +25,20 @@
 """ Implementation of till application.  """
 
 import gettext
-import datetime
+import decimal
+from datetime import date, datetime
 
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.ui.dialogs import messagedialog
-from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import TillError
 from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.person import Person, PersonAdaptToClient
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
-from stoqlib.gui.base.columns import ForeignKeyColumn
+from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
 from stoqlib.gui.wizards.sale import SaleWizard
@@ -54,7 +53,7 @@ class TillApp(SearchableAppWindow):
     app_name = _('Till')
     app_icon_name = 'stoq-till-app'
     gladefile = 'till'
-    searchbar_table = Sale
+    searchbar_table = SaleView
     searchbar_result_strings = (_('sale'), _('sales'))
     searchbar_labels = (_('Sales Matching:'),)
     klist_name = 'sales'
@@ -69,7 +68,7 @@ class TillApp(SearchableAppWindow):
 
     def get_title(self):
         today_format = _('%d of %B')
-        today_str = datetime.datetime.today().strftime(today_format)
+        today_str = datetime.today().strftime(today_format)
         return _('Stoq - %s of %s') % (self.app_name, today_str)
 
     def _update_total(self, *args):
@@ -78,7 +77,7 @@ class TillApp(SearchableAppWindow):
     def _setup_widgets(self):
         value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sales,
-                                          column='total_sale_amount',
+                                          column='total',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
         self.summary_label.show()
@@ -105,22 +104,22 @@ class TillApp(SearchableAppWindow):
         return order_number
 
     def get_columns(self):
-        return [Column('order_number', title=_('Order'), width=100,
-                       format_func=self._format_order_number,
+        return [Column('order_number', title=_('Number'), width=80,
                        data_type=int, sorted=True),
-                Column('open_date', title=_('Date'), width=120,
-                       data_type=datetime.date),
-                ForeignKeyColumn(Person, 'name', title=_('Client'), expand=True,
-                                 data_type=str, obj_field='client',
-                                 adapted=True),
-                Column('total_sale_amount', title=_('Total'), width=150,
-                       data_type=currency)]
+                Column('open_date', title=_('Date Started'), width=120,
+                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                Column('client_name', title=_('Client'),
+                       data_type=str, width=160),
+                Column('salesperson_name', title=_('Salesperson'),
+                       data_type=str, width=160),
+                Column('total_quantity', title=_('Items Quantity'),
+                       data_type=decimal.Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Total'), data_type=currency,
+                       width=120)]
 
     def get_extra_query(self):
-        q1 = Sale.q.clientID == PersonAdaptToClient.q.id
-        q2 = PersonAdaptToClient.q._originalID == Person.q.id
-        q3 = Sale.q.status == Sale.STATUS_OPENED
-        return AND(q1, q2, q3)
+        return SaleView.q.status == Sale.STATUS_OPENED
 
     def open_till(self):
         rollback_and_begin(self.conn)
@@ -178,7 +177,8 @@ class TillApp(SearchableAppWindow):
 
     def _confirm_order(self):
         rollback_and_begin(self.conn)
-        sale = self.sales.get_selected()
+        selected = self.sales.get_selected()
+        sale = Sale.get(selected.id, connection=self.conn)
         title = _('Confirm Sale')
         model = self.run_dialog(SaleWizard, self.conn, sale, title=title,
                                 edit_mode=True)

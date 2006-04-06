@@ -26,18 +26,14 @@
 
 import gettext
 import datetime
+from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND
-from stoqlib.gui.base.columns import ForeignKeyColumn
-from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.database import rollback_and_begin
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import ISupplier
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchase import PurchaseWizard
 from stoqlib.gui.search.category import (BaseSellableCatSearch,
@@ -46,6 +42,8 @@ from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.validators import format_quantity
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -55,7 +53,7 @@ class PurchaseApp(SearchableAppWindow):
     app_name = _('Purchase')
     app_icon_name = 'stoq-purchase-app'
     gladefile = "purchase"
-    searchbar_table = PurchaseOrder
+    searchbar_table = PurchaseOrderView
     searchbar_use_dates = True
     searchbar_result_strings = (_('order'), _('orders'))
     searchbar_labels = (_('matching:'),)
@@ -70,23 +68,16 @@ class PurchaseApp(SearchableAppWindow):
 
     def _setup_widgets(self):
         value_format = '<b>%s</b>'
-        label = '<b>%s</b>' % _('Totals:')
+        label = '<b>%s</b>' % _('Total:')
         self.summary_total = SummaryLabel(klist=self.orders,
-                                          column='purchase_total',
+                                          column='total',
                                           label=label,
                                           value_format=value_format)
         self.summary_total.show()
-        self.summary_received = SummaryLabel(klist=self.orders,
-                                             column='received_total',
-                                             label='',
-                                             value_format=value_format)
-        self.summary_received.show()
         self.summary_hbox.pack_start(self.summary_total, False)
-        self.summary_hbox.pack_end(self.summary_received, False)
 
     def _update_totals(self):
         self.summary_total.update_total()
-        self.summary_received.update_total()
         self._update_view()
 
     def _update_list_aware_widgets(self, has_items):
@@ -127,7 +118,8 @@ class PurchaseApp(SearchableAppWindow):
         if qty != 1:
             raise ValueError('You should have only one order selected '
                              'at this point, got %d' % qty)
-        self.run_dialog(PurchaseDetailsDialog, self.conn, model=orders[0])
+        order = PurchaseOrder.get(orders[0].id, connection=self.conn)
+        self.run_dialog(PurchaseDetailsDialog, self.conn, model=order)
 
     def _send_selected_items_to_supplier(self):
         rollback_and_begin(self.conn)
@@ -152,7 +144,8 @@ class PurchaseApp(SearchableAppWindow):
         title = _('Send order to supplier')
         if not confirm_dialog(msg, title, ok_label="C_onfirm"):
             return
-        for order in valid_orders:
+        for item in valid_orders:
+            order = PurchaseOrder.get(item.id, connection=self.conn)
             order.confirm_order()
         self.conn.commit()
         self.searchbar.search_items()
@@ -166,14 +159,12 @@ class PurchaseApp(SearchableAppWindow):
     #
 
     def get_extra_query(self):
-        supplier_table = Person.getAdapterClass(ISupplier)
-        q1 = PurchaseOrder.q.supplierID == supplier_table.q.id
-        q2 = supplier_table.q._originalID == Person.q.id
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
-            q3 = PurchaseOrder.q.status == status
-            return AND(q1, q2, q3)
-        return AND(q1, q2)
+            return PurchaseOrderView.q.status == status
+
+    def get_filterslave_default_selected_item(self):
+        return PurchaseOrder.ORDER_CONFIRMED
 
     def get_filter_slave_items(self):
         items = [(text, value)
@@ -187,20 +178,20 @@ class PurchaseApp(SearchableAppWindow):
         self._update_totals()
 
     def get_columns(self):
-        return [Column('order_number_str', title=_('Number'), sorted=True,
+        return [Column('order_number', title=_('Number'), sorted=True,
                        data_type=str, width=100),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date),
-                ForeignKeyColumn(Person, 'name', title=_('Supplier'),
-                                 data_type=str,
-                                 obj_field='supplier', adapted=True,
-                                 searchable=True, width=220),
-                Column('status_str', title=_('Status'), data_type=str,
-                       width=100),
-                Column('purchase_total', title=_('Ordered'),
-                       data_type=currency, width=120),
-                Column('received_total', title=_('Received'),
-                       data_type=currency)]
+                Column('supplier_name', title=_('Supplier'),
+                       data_type=str, searchable=True, width=220),
+                Column('ordered_quantity', title=_('Qty Ordered'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('received_quantity', title=_('Qty Received'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Order Total'),
+                       data_type=currency, width=120)]
 
     #
     # Kiwi Callbacks

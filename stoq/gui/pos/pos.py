@@ -40,7 +40,8 @@ from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
-from stoqlib.domain.sellable import AbstractSellable, FancySellable
+from stoqlib.domain.sellable import (AbstractSellable, FancySellable,
+                                     SellableView)
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.product import ProductSellableItem, Product
 from stoqlib.domain.person import Person
@@ -182,18 +183,19 @@ class POSApp(AppWindow):
             return
         self.coupon.add_item(sellable_item)
 
-    def _update_list(self, sellable, notify_on_entry=False):
-        table = type(sellable)
-        if not ISellable.implementedBy(table):
-            raise TypeError("The object must implement a sellable facet.")
-        sellables = [s.sellable for s in self.sellables]
-        if sellable in sellables:
+    def _update_list(self, item, notify_on_entry=False):
+        if not isinstance(item, SellableView):
+            raise TypeError("The object me be of type SellableView, got %r "
+                            "instead." % type(item))
+        sellables = [s.sellable.id for s in self.sellables]
+        if item.id in sellables:
             if notify_on_entry:
                 msg = _("The item '%s' was already added to the order"
-                        % sellable.base_sellable_info.description)
+                        % item.description)
                 self.product.set_invalid(msg)
             return
         else:
+            sellable = AbstractSellable.get(item.id, connection=self.conn)
             quantity = self.sellable_proxy.model.quantity
             price = self.sellable_proxy.model.price
             sellable_item = sellable.add_sellable_item(self.sale,
@@ -245,7 +247,8 @@ class POSApp(AppWindow):
                 warning(_("Can not sell this product"), long=msg,
                         parent=self.get_toplevel())
                 return
-        self._update_list(sellable, notify_on_entry=True)
+        item = SellableView.get(sellable.id, connection=self.conn)
+        self._update_list(item, notify_on_entry=True)
         self._setup_sellables()
         self.warning_box.hide()
         self.product.grab_focus()

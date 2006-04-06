@@ -243,7 +243,8 @@ class SearchableAppWindow(AppWindow):
         items = self.get_filter_slave_items()
         if not items:
             return
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        selected = self.get_filterslave_default_selected_item()
+        self.filter_slave = FilterSlave(items, selected)
         if not self.filter_slave_label:
             raise ValueError('You must define a valid filter_slave_label '
                              'attribute')
@@ -264,6 +265,13 @@ class SearchableAppWindow(AppWindow):
     #
     # Public API
     #
+
+    def set_searchtable(self, search_table):
+        self.searchbar_table = search_table
+        self.searchbar.set_searchtable(search_table)
+
+    def get_filterslave_default_selected_item(self):
+        return ALL_ITEMS_INDEX
 
     def filter_results(self, objects):
         """A hook method for stoqlib SearchBar
