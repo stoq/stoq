@@ -86,8 +86,6 @@ def _run_app(options, appname):
     gtk.main()
     appconf.log("Shutting down application")
 
-
-
 def main(args):
     parser = get_option_parser()
     parser.add_option('', '--clean',

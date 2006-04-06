@@ -24,17 +24,16 @@
 """ Implementation of sales application.  """
 
 import gettext
+import decimal
 from datetime import date
 
+import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND, LEFTJOINOn
 
-from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IClient, ISalesPerson
+from stoqlib.lib.validators import format_quantity
+from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
@@ -52,7 +51,7 @@ class SalesApp(SearchableAppWindow):
     app_name = _('Sales')
     app_icon_name = 'stoq-sales-app'
     gladefile = 'sales_app'
-    searchbar_table = Sale
+    searchbar_table = SaleView
     searchbar_use_dates = True
     searchbar_result_strings = (_('sale'), _('sales'))
     searchbar_labels = (_('matching:'),)
@@ -68,7 +67,7 @@ class SalesApp(SearchableAppWindow):
     def _setup_widgets(self):
         value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sales,
-                                          column='total_sale_amount',
+                                          column='total',
                                           label='<b>Total:</b>',
                                           value_format=value_format)
         self.summary_label.show()
@@ -93,43 +92,31 @@ class SalesApp(SearchableAppWindow):
         items.append((_('Any'), ALL_ITEMS_INDEX))
         return items
 
-    def get_query_args(self):
-        # It seems that there is a bug in SQLObject which doesn't allow us
-        # to have and LEFTJoin and single joins at the same time.
-        # See bug 2207
-        client_table = Person.getAdapterClass(IClient)
-        return dict(join=LEFTJOINOn(Sale, client_table,
-                                    Sale.q.clientID == client_table.q.id))
+    #
+    # Hooks
+    #
 
-    #
-    # SearchBar hooks
-    #
+    def get_filterslave_default_selected_item(self):
+        return Sale.STATUS_OPENED
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=100,
+        return [Column('order_number', title=_('Number'), width=80,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
-                       data_type=date),
-                ForeignKeyColumn(Person, 'name', title=_('Client'),
-                                 data_type=str, expand=True,
-                                 obj_field='client', adapted=True),
-                ForeignKeyColumn(Person, 'name', title=_('Salesperson'),
-                                 data_type=str, width=180,
-                                 obj_field='salesperson', adapted=True),
-                Column('status_name', title=_('Status'), width=80,
-                       data_type=str),
-                Column('total_sale_amount', title=_('Total'),
-                       width=120, data_type=currency)]
+                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                Column('client_name', title=_('Client'),
+                       data_type=str, width=140),
+                Column('salesperson_name', title=_('Salesperson'),
+                       data_type=str, width=210),
+                Column('total_quantity', title=_('Items Quantity'),
+                       data_type=decimal.Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Total'), data_type=currency)]
 
     def get_extra_query(self):
-        salesperson_table = Person.getAdapterClass(ISalesPerson)
-        q1 = Sale.q.salespersonID == salesperson_table.q.id
-        q2 = salesperson_table.q._originalID == Person.q.id
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
-            q3 = Sale.q.status == status
-            return AND(q1, q2, q3)
-        return AND(q1, q2)
+            return SaleView.q.status == status
 
     #
     # Kiwi callbacks

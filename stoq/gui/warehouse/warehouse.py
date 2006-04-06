@@ -29,17 +29,18 @@ import decimal
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
-from stoq.gui.application import SearchableAppWindow
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.gui.search.receiving import PurchaseReceivingSearch
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import Product
-from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
-from stoqlib.domain.interfaces import ISellable, IStorable, IBranch
+from stoqlib.domain.product import Product, ProductFullStockView
+from stoqlib.domain.sellable import SellableView
+from stoqlib.domain.interfaces import ISellable, IBranch
 from stoqlib.reporting.product import ProductReport
+
+from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
 
@@ -48,7 +49,7 @@ class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
-    searchbar_table = AbstractSellable
+    searchbar_table = SellableView
     searchbar_result_strings = (_('product'), _('products'))
     searchbar_labels = (_('Matching:'),)
     filter_slave_label = _('Show products at:')
@@ -59,12 +60,12 @@ class WarehouseApp(SearchableAppWindow):
         SearchableAppWindow.__init__(self, app)
         self.table = Product.getAdapterClass(ISellable)
         self._setup_widgets()
-        self._update_view()
+        self._update_widgets()
 
     def _setup_widgets(self):
         value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.products,
-                                          column='quantity',
+                                          column='stock',
                                           label=_('<b>Stock Total:</b>'),
                                           value_format=value_format)
         self.summary_label.show()
@@ -80,7 +81,7 @@ class WarehouseApp(SearchableAppWindow):
         items.append(ALL_BRANCHES)
         return items
 
-    def _update_view(self, *args):
+    def _update_widgets(self, *args):
         has_stock = len(self.products) > 0
         self.retention_button.set_sensitive(has_stock)
         one_selected = len(self.products.get_selected_rows()) == 1
@@ -88,11 +89,8 @@ class WarehouseApp(SearchableAppWindow):
         self._update_stock_total()
 
     def on_searchbar_activate(self, slave, objs):
-        # We are going to improve accessor columns soon, so we will not need
-        # to clear the list here any more. Bug 2275
-        self._klist.clear()
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_view()
+        self._update_widgets()
 
     def _update_stock_total(self):
         self.summary_label.update_total()
@@ -107,67 +105,35 @@ class WarehouseApp(SearchableAppWindow):
     def get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
                        data_type=str, width=120),
-                ForeignKeyColumn(BaseSellableInfo, 'description',
-                                 title=_('Description'), data_type=str,
-                                 obj_field='base_sellable_info',
-                                 expand=True, searchable=True),
-                AccessorColumn('supplier', self._get_supplier,
-                               title=_('Supplier'), data_type=str),
-                AccessorColumn('quantity', self._get_stock_balance,
-                               title=_('Quantity'), data_type=decimal.Decimal),
-                Column('unit_description', title=_("Unit"), data_type=str,
+                Column('description', title=_("Description"),
+                       data_type=str, expand=True),
+                Column('supplier_name', title=('Supplier'),
+                       data_type=str, width=160),
+                Column('stock', title=_('Quantity'),
+                       data_type=decimal.Decimal, width=80),
+                Column('unit', title=_("Unit"), data_type=str,
                        width=50)]
-    #
-    # Accessor
-    #
-
-    def _get_supplier(self, instance):
-        """Accessor called by AccessorColumn"""
-        adapted = instance.get_adapted()
-        main_supplier_info = adapted.get_main_supplier_info()
-        if not main_supplier_info:
-            return ''
-        if not main_supplier_info.supplier:
-            raise DatabaseInconsistency('A ProductSupplierInfo object must '
-                                        'have a supplier set. Found None '
-                                        'instead')
-        person = main_supplier_info.supplier.get_adapted()
-        return person.name
-
-    def _get_storable(self, instance):
-        adapted = instance.get_adapted()
-        conn = adapted.get_connection()
-        return IStorable(adapted, connection=conn)
-
-    def _get_stock_balance(self, instance):
-        branch = self.filter_slave.get_selected_status()
-        if branch == ALL_ITEMS_INDEX:
-            branch = None
-        storable = self._get_storable(instance)
-        return storable.get_full_balance(branch)
-
     #
     # Hooks
     #
 
+    def get_filterslave_default_selected_item(self):
+        return sysparam(self.conn).CURRENT_BRANCH
+
     def get_extra_query(self):
         """Hook called by SearchBar"""
-        # TODO search by supplier name too. Bug 2180
-        return (AbstractSellable.q.base_sellable_infoID ==
-                BaseSellableInfo.q.id)
-
-    def filter_results(self, sellables):
-        """Hook called by SearchBar"""
-        return [sellable for sellable in sellables
-                        if isinstance(sellable, self.table)]
+        branch = self.filter_slave.get_selected_status()
+        if branch != ALL_ITEMS_INDEX:
+            self.set_searchtable(SellableView)
+            return SellableView.q.branch_id == branch.id
+        self.set_searchtable(ProductFullStockView)
 
     #
     # Callbacks
     #
 
-
     def on_products__selection_changed(self, *args):
-        self._update_view()
+        self._update_widgets()
 
     def _on_receive_action_clicked(self, *args):
         model = self.run_dialog(ReceivingOrderWizard, self.conn)
