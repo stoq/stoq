@@ -31,7 +31,7 @@ from kiwi.datatypes import currency
 from kiwi.python import Settable
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import BaseWizardStep
+from stoqlib.gui.base.wizards import WizardEditorStep
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
@@ -44,7 +44,7 @@ _ = stoqlib_gettext
 #
 
 
-class AbstractProductStep(BaseWizardStep):
+class AbstractProductStep(WizardEditorStep):
     """An abstract product step for purchases and receiving orders."""
     gladefile = 'AbstractProductStep'
     product_widgets = ('product',)
@@ -57,7 +57,7 @@ class AbstractProductStep(BaseWizardStep):
     summary_label_text = None
 
     def __init__(self, wizard, previous, conn, model):
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self._update_widgets()
         self.unit_label.set_bold(True)
 
@@ -126,7 +126,7 @@ class AbstractProductStep(BaseWizardStep):
         order_item = self.get_order_item(product, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
-        self.proxy.new_model(None, relax_type=True)
+        self.proxy.set_model(None, relax_type=True)
         self.product.set_text('')
         self.product.grab_focus()
 
@@ -215,12 +215,12 @@ class AbstractProductStep(BaseWizardStep):
         self._update_widgets()
         product = self.product_proxy.model.product
         if not (product and self.product.get_text()):
-            self.proxy.new_model(None, relax_type=True)
+            self.proxy.set_model(None, relax_type=True)
             return
         cost = product.cost
         model = Settable(quantity=decimal.Decimal('1.0'), cost=cost,
                          product=product)
-        self.proxy.new_model(model)
+        self.proxy.set_model(model)
 
     def on_quantity__activate(self, *args):
         self._add_item()
