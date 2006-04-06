@@ -29,7 +29,7 @@ import gettext
 from kiwi.python import Settable
 from kiwi.ui.dialogs import error
 
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.database import DatabaseSettings
 
 
@@ -41,7 +41,7 @@ _ = gettext.gettext
 #
 
 
-class DatabaseSettingsStep(BaseWizardStep):
+class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
     model_type = DatabaseSettings
     proxy_widgets = ('address',
@@ -60,7 +60,7 @@ class DatabaseSettingsStep(BaseWizardStep):
     def __init__(self, wizard, model):
         self.wizard_model = model
         self.authentication_items = None
-        BaseWizardStep.__init__(self, None, wizard)
+        WizardEditorStep.__init__(self, None, wizard)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
         self.title_label.set_color('blue')
