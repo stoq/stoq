@@ -137,7 +137,7 @@ class ProductSupplierEditor(BaseEditor):
         else:
             model = ProductSupplierInfo(connection=self.conn, product=None,
                                         supplier=selected_supplier)
-        self.prod_supplier_proxy.new_model(model)
+        self.prod_supplier_proxy.set_model(model)
 
         # updating the field for the widget validation works fine
         self.prod_supplier_proxy.update('base_cost')
