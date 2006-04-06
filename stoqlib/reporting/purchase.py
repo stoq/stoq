@@ -20,11 +20,12 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Henrique Romano         <henrique@async.com.br>
+##              Evandro Miquelito       <evandro@async.com.br>
 ##
 ##
 """ Purchase report implementation """
 
-import decimal
+from decimal import Decimal
 
 from kiwi.datatypes import currency
 
@@ -37,7 +38,7 @@ from stoqlib.lib.validators import get_formatted_price, format_quantity
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, METHOD_MONEY
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.template import SearchResultsReport, BaseStoqReport
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.interfaces import IPaymentGroup
 
 _ = stoqlib_gettext
@@ -46,48 +47,52 @@ class PurchaseReport(SearchResultsReport):
     report_name = _("Purchase Order Report")
     main_object_name = _("orders")
     filter_format_string = _("with status <u>%s</u>")
+    # This should be properly verified on SearchResultsReport. Waiting for
+    # bug 2517
+    obj_type = PurchaseOrderView
 
     def __init__(self, filename, purchases, status, *args, **kwargs):
-        if status:
-            self._landscape_mode = status == ALL_ITEMS_INDEX
+        self.show_status_column = status == ALL_ITEMS_INDEX
         self._purchases = purchases
         SearchResultsReport.__init__(self, filename, purchases,
                                      PurchaseReport.report_name,
-                                     landscape=self._landscape_mode,
-                                     *args, **kwargs)
+                                     landscape=1, *args, **kwargs)
         self._setup_table()
 
     def _get_columns(self):
         # XXX Bug #2430 will improve this part
-        person_col_width = 180
-        if self._landscape_mode:
-            person_col_width += 169
-        columns = [OTC(_("Number"), lambda obj: obj.get_order_number_str(),
+        columns = [OTC(_("Number"), lambda obj: obj.order_number,
                        width=60, align=RIGHT),
                    OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
                        width=70),
-                   OTC(_("Supplier"), lambda obj: obj.get_supplier_name(),
-                       width=person_col_width, truncate=True),
-                   OTC(_("Ordered"),
-                       lambda obj: get_formatted_price(obj.get_purchase_total()),
+                   OTC(_("Supplier"), lambda obj: obj.supplier_name,
+                       width=250, truncate=True),
+                   OTC(_("Qty Ordered"),
+                       lambda obj: format_quantity(obj.ordered_quantity),
                        width=85, align=RIGHT),
-                   OTC(_("Received"),
-                       lambda obj: get_formatted_price(obj.get_received_total()),
+                   OTC(_("Qty Received"),
+                       lambda obj: format_quantity(obj.received_quantity),
+                       width=85, align=RIGHT),
+                   OTC(_("Total"),
+                       lambda obj: get_formatted_price(obj.total),
                        width=85, align=RIGHT)]
-        if self._landscape_mode:
-            columns.insert(-2, OTC(_("Status"),
+        if self.show_status_column:
+            columns.insert(-4, OTC(_("Status"),
                                    lambda obj: obj.get_status_str(), width=80))
         return columns
 
     def _setup_table(self):
-        totals = [(purchase.get_purchase_total(), purchase.get_received_total())
+        totals = [(purchase.ordered_quantity, purchase.received_quantity,
+                   purchase.total)
                       for purchase in self._purchases]
-        ordered, received = zip(*totals)
-        total_ordered, total_received = (sum(ordered, currency(0)),
-                                         sum(received,currency(0)))
-        summary_row = ["", "", _("Totals:"), get_formatted_price(total_ordered),
-                       get_formatted_price(total_received)]
-        if self._landscape_mode:
+        ordered, received , total = zip(*totals)
+        total_ordered, total_received, total = (sum(ordered, Decimal('0')),
+                                                sum(received, Decimal('0')),
+                                                sum(total, currency(0)))
+        summary_row = ["", "", _("Totals:"), format_quantity(total_ordered),
+                       format_quantity(total_received),
+                       get_formatted_price(total)]
+        if self.show_status_column:
             summary_row.insert(0, "")
         self.add_object_table(self._purchases, self._get_columns(),
                               summary_row=summary_row)
@@ -120,8 +125,8 @@ class PurchaseOrderReport(BaseStoqReport):
                 ]
 
     def _add_items_table(self, items):
-        total_cost = decimal.Decimal("0.0")
-        total_value = decimal.Decimal("0.0")
+        total_cost = Decimal("0.0")
+        total_value = Decimal("0.0")
         for item in items:
             total_value += item.quantity * item.cost
             total_cost += item.cost

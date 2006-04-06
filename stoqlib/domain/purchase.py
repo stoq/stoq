@@ -29,14 +29,15 @@ import decimal
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
-from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
+from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
+                       SQLObject)
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
                                   METHOD_MONEY)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.base import Domain
+from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
@@ -156,7 +157,7 @@ class PurchaseOrder(Domain):
         if self.status != self.ORDER_PENDING:
             raise ValueError('Invalid order status, it should be '
                              'ORDER_PENDING, got %s'
-                             % self.get_status_str())
+                             % PurchaseOrder.get_status_str(self.status))
         conn = self.get_connection()
         if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
             group = IPaymentGroup(self, connection=conn)
@@ -246,8 +247,22 @@ class PurchaseOrder(Domain):
         item.quantity_received += quantity_received
 
     #
+    # Classmethods
+    #
+
+    @classmethod
+    def translate_status(cls, status):
+        if not cls.statuses.has_key(status):
+            raise DatabaseInconsistency('Got an unexpected status value: '
+                                        '%s' % status)
+        return cls.statuses[status]
+
+    #
     # Accessors
     #
+
+    def get_status_str(self):
+        return PurchaseOrder.translate_status(self.status)
 
     def get_freight_type_name(self):
         if not self.freight_type in self.freight_types.keys():
@@ -271,11 +286,6 @@ class PurchaseOrder(Domain):
             return u'%03d' % self.order_number
         return u""
 
-    def get_status_str(self):
-        if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Got an unexpected status value: '
-                                        '%s' % self.status)
-        return self.statuses[self.status]
 
     def get_purchase_subtotal(self):
         total = sum([i.get_total() for i in self.get_items()], currency(0))
@@ -364,3 +374,39 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
                                  self.intervals, total)
 
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
+
+
+#
+# Views
+#
+
+class PurchaseOrderView(SQLObject, BaseSQLView):
+    """General information about purchase orders"""
+    status = IntCol()
+    order_number = IntCol()
+    open_date = DateTimeCol()
+    quote_deadline = DateTimeCol()
+    expected_receival_date = DateTimeCol()
+    expected_pay_date = DateTimeCol()
+    receival_date = DateTimeCol()
+    confirm_date = DateTimeCol()
+    salesperson_name = UnicodeCol()
+    freight = DecimalCol()
+    charge_value = PriceCol()
+    discount_value = PriceCol()
+    supplier_name = UnicodeCol()
+    transporter_name = UnicodeCol()
+    branch_name = UnicodeCol()
+    ordered_quantity = DecimalCol()
+    received_quantity = DecimalCol()
+    subtotal = DecimalCol()
+    total = DecimalCol()
+
+    def get_transporter_name(self):
+        return self.transporter_name or u""
+
+    def get_open_date_as_string(self):
+        return self.open_date.strftime("%x")
+
+    def get_status_str(self):
+        return PurchaseOrder.translate_status(self.status)

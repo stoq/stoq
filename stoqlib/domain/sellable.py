@@ -27,7 +27,7 @@ or a service, implemented in your own modules.
 
 import datetime
 
-from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey
+from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
 from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 from kiwi.datatypes import currency
@@ -40,7 +40,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
-                                 InheritableModel)
+                                 InheritableModel, BaseSQLView)
 
 _ = stoqlib_gettext
 
@@ -407,3 +407,32 @@ class AbstractSellable(InheritableModelAdapter):
             commission = self.category.base_category.get_commission()
             self.commission = (self.category.get_commission()
                                or commission)
+
+#
+# Views
+#
+
+
+class SellableView(SQLObject, BaseSQLView):
+    """Stores general sellable informations and stock for all branch
+    companies
+    """
+    stock = DecimalCol()
+    code = UnicodeCol()
+    status = IntCol()
+    cost = PriceCol()
+    price = PriceCol()
+    description = UnicodeCol()
+    supplier_name = UnicodeCol()
+    unit = UnicodeCol()
+    branch_id = IntCol()
+    product_id = IntCol()
+
+    def get_supplier_name(self):
+        return self.supplier_name or u""
+
+    def get_unit(self):
+        return self.unit or u""
+
+class SellableFullStockView(SellableView):
+    pass

@@ -27,6 +27,7 @@
 
 from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
+from kiwi.argcheck import argcheck
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
@@ -40,10 +41,11 @@ from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.slaves.filter import FilterSlave
-from stoqlib.domain.interfaces import (ICompany, IIndividual, ISupplier,
-                                       IEmployee, IClient, ICreditProvider,
+from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
+                                       IClient, ICreditProvider,
                                        ITransporter, IBranch)
-from stoqlib.domain.person import (Person, EmployeeRole)
+from stoqlib.domain.person import (Person, EmployeeRole, ClientView,
+                                   PersonAdaptToClient)
 from stoqlib.gui.wizards.person import run_person_role_dialog
 
 _ = stoqlib_gettext
@@ -212,8 +214,7 @@ class FinanceProviderSearch(AbstractCreditProviderSearch):
 class ClientSearch(BasePersonSearch):
     title = _('Client Search')
     editor_class = ClientEditor
-    table = Person
-    interface = IClient
+    table = ClientView
     search_lbl_text = _('matching:')
     result_strings = _('client'), _('clients')
 
@@ -235,30 +236,23 @@ class ClientSearch(BasePersonSearch):
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
 
+    @argcheck(ClientView)
+    def get_editor_model(self, model):
+        return PersonAdaptToClient.get(model.client_id,
+                                       connection=self.conn)
+
     def get_columns(self):
         return [Column('name', _('Name'), str,
                        sorted=True, width=250),
                 Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number),
-                FacetColumn(IIndividual, 'cpf', _('CPF'), str,
-                            width=130),
-                FacetColumn(IIndividual, 'rg_number', _('RG'), str,
-                            width=130),
-                FacetColumn(IClient, 'status_string', _('Status'), str)]
+                       format_func=format_phone_number, width=180),
+                Column('cpf', _('CPF'), str, width=130),
+                Column('rg_number', _('RG'), str)]
 
     def get_extra_query(self):
-        client_table = Person.getAdapterClass(IClient)
-        query = Person.q.id == client_table.q._originalID
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
-            query = AND(query, client_table.q.status == status)
-        return query
-
-    def get_query_args(self):
-        individual_table = Person.getAdapterClass(IIndividual)
-        return dict(join=LEFTJOINOn(Person, individual_table,
-                                    Person.q.id ==
-                                    individual_table.q._originalID))
+            return self.table.q.status == status
 
 
 class TransporterSearch(BasePersonSearch):
@@ -312,7 +306,6 @@ class EmployeeRoleSearch(SearchEditor):
                               EmployeeRoleSearch.editor_class)
         self.set_searchbar_labels(_('Role Matching'))
         self.set_result_strings(_('role'), _('roles'))
-
 
     #
     # SearchEditor Hooks

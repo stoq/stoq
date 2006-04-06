@@ -30,14 +30,15 @@
 import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
-                       ForeignKey, MultipleJoin, BoolCol)
+                       ForeignKey, MultipleJoin, BoolCol, SQLObject)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number
-from stoqlib.domain.base import CannotAdapt, Domain, ModelAdapter
+from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
+                                 BaseSQLView)
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
@@ -429,7 +430,7 @@ class PersonAdaptToClient(ModelAdapter):
     def get_name(self):
         return self.get_adapted().name
 
-    def get_status_string(self):
+    def get_status_string(self, status):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Invalid status for client, '
                                         'got %d' % self.status)
@@ -802,6 +803,7 @@ class PersonAdaptToTransporter(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToTransporter, ITransporter)
 
+
 class LoginInfo:
     """ This class is used by password editor only for validation of the
         fields.
@@ -812,6 +814,7 @@ class LoginInfo:
     new_password = None
     confirm_password = None
 
+
 class EmployeeRoleHistory(Domain):
     """Base class to store the employee role history."""
 
@@ -821,3 +824,16 @@ class EmployeeRoleHistory(Domain):
     role = ForeignKey('EmployeeRole')
     employee = ForeignKey('PersonAdaptToEmployee')
     is_active = BoolCol(default=True)
+
+
+#
+# Views
+#
+
+class ClientView(SQLObject, BaseSQLView):
+    name = UnicodeCol()
+    status = IntCol()
+    client_id = IntCol()
+    cpf = UnicodeCol()
+    rg_number = UnicodeCol()
+    phone_number = UnicodeCol()

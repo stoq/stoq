@@ -26,15 +26,16 @@
 
 import datetime
 
-from sqlobject import UnicodeCol, DateTimeCol, ForeignKey
+from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, SQLObject,
+                       IntCol)
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
-from stoqlib.domain.columns import DecimalCol
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.domain.columns import DecimalCol, PriceCol
+from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
@@ -155,3 +156,22 @@ class ServiceAdaptToSellable(AbstractSellable):
     sellableitem_table = ServiceSellableItem
 
 Service.registerFacet(ServiceAdaptToSellable, ISellable)
+
+
+#
+# Views
+#
+
+
+class ServiceView(SQLObject, BaseSQLView):
+    """Stores service informations """
+    code = UnicodeCol()
+    status = IntCol()
+    cost = PriceCol()
+    price = PriceCol()
+    description = UnicodeCol()
+    unit = UnicodeCol()
+    service_id = IntCol()
+
+    def get_unit(self):
+        return self.unit or u""

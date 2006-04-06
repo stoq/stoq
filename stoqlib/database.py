@@ -32,7 +32,7 @@ import socket
 from kiwi.argcheck import argcheck
 from sqlobject import connectionForURI
 
-from stoqlib.exceptions import ConfigError
+from stoqlib.exceptions import ConfigError, SQLError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.tables import get_table_types
@@ -136,6 +136,18 @@ def finish_transaction(conn, model=None, keep_transaction=False):
         # simple method do this in a simple way.
         conn._connection.close()
     return model
+
+def run_sql_file(sql_file, conn):
+    """This method takes a full sql_file name and run it in a given
+    connection
+    """
+    file_data = open(sql_file).read()
+    try:
+        conn.query(file_data)
+    except:
+        type, value, trace = sys.exc_info()
+        raise SQLError("Bad sql script, got error %s, of type %s"
+                       % (value, type))
 
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):

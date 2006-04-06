@@ -30,19 +30,19 @@ import decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, OR
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.base.columns import AccessorColumn, ForeignKeyColumn
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.sellable import AbstractSellable, BaseSellableInfo
+from stoqlib.domain.sellable import (AbstractSellable, SellableView,
+                                     SellableFullStockView)
 from stoqlib.domain.product import Product
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IStorable, IBranch, ISellable
+from stoqlib.domain.interfaces import IBranch, ISellable
 
 _ = stoqlib_gettext
 
@@ -50,8 +50,9 @@ _ = stoqlib_gettext
 class SellableSearch(SearchEditor):
     title = _('Search for sale items')
     size = (750, 500)
-    table = search_table = AbstractSellable
+    table = search_table = SellableView
     editor_class = None
+    model_list_lookup_attr = 'product_id'
     footer_ok_label = _('_Add sale items')
     searchbar_result_strings = (_('sale item'), _('sale items'))
 
@@ -59,8 +60,8 @@ class SellableSearch(SearchEditor):
                  selection_mode=gtk.SELECTION_MULTIPLE):
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
         SearchEditor.__init__(self, conn, table=self.table,
-                              editor_class=self.editor_class,
                               search_table=self.search_table,
+                              editor_class=self.editor_class,
                               hide_footer=hide_footer,
                               hide_toolbar=hide_toolbar,
                               selection_mode=selection_mode)
@@ -79,43 +80,42 @@ class SellableSearch(SearchEditor):
             branch = None
         return branch
 
-    def get_stock_balance(self, product):
-        if not isinstance(product, self.product_table):
-            return decimal.Decimal('0.0')
-        branch = self.get_branch()
-        adapted = product.get_adapted()
-        conn = adapted.get_connection()
-        storable = IStorable(adapted, connection=conn)
-        return storable.get_full_balance(branch)
-
     #
     # Hooks
     #
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        columns = [Column('code', _('Code'), data_type=str, sorted=True,
-                          width=80),
-                   ForeignKeyColumn(BaseSellableInfo, 'description',
-                                    _('Description'), data_type=str,
-                                    obj_field='base_sellable_info',
-                                    width=260),
-                   ForeignKeyColumn(BaseSellableInfo, 'price',
-                                    _('Price'), data_type=currency,
-                                    obj_field='base_sellable_info',
-                                    width=80)]
+        columns = [Column('code', title=_('Code'), data_type=str,
+                          sorted=True, width=150),
+                   Column('description', title= _('Description'),
+                          data_type=str, expand=True),
+                   Column('supplier_name', title= _('Supplier'),
+                          data_type=str, width=150),
+                   Column('price', title=_('Price'), data_type=currency,
+                          width=80)]
         if self.has_stock_mode:
-            column = AccessorColumn('stock', self.get_stock_balance,
-                                    format_func=format_quantity,
-                                    title=_('Stock'), data_type=float)
+            column = Column('stock', title=_('Stock'),
+                            format_func=format_quantity,
+                            data_type=decimal.Decimal,
+                            width=80)
             columns.append(column)
         return columns
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
-        q1 = BaseSellableInfo.q.id == AbstractSellable.q.base_sellable_infoID
-        q2 = AbstractSellable.get_available_sellables_query(self.conn)
-        return AND(q1, q2)
+        service = sysparam(self.conn).DELIVERY_SERVICE
+        branch = self.filter_slave.get_selected_status()
+        if branch != ALL_ITEMS_INDEX:
+            self.set_searchtable(SellableView)
+            q3 = OR(SellableView.q.branch_id == branch.id,
+                    SellableView.q.branch_id == None)
+        else:
+            self.set_searchtable(SellableFullStockView)
+            q3 = 1 == 1
+        q1 = self.search_table.q.id != service.id
+        q2 = self.search_table.q.status == AbstractSellable.STATUS_AVAILABLE
+        return AND(q1, q2, q3)
 
     def get_filter_slave(self):
         if not self.has_stock_mode:
@@ -128,7 +128,8 @@ class SellableSearch(SearchEditor):
             raise ValueError('You should have at least one branch at '
                              'this point')
         items.append(ALL_BRANCHES)
-        self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        selected = sysparam(self.conn).CURRENT_BRANCH
+        self.filter_slave = FilterSlave(items, selected=selected)
         self.filter_slave.set_filter_label(_('Show sale items at'))
         return self.filter_slave
 

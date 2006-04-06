@@ -24,8 +24,7 @@
 import decimal
 
 from kiwi.datatypes import currency
-from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
-                       BoolCol)
+from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
@@ -33,7 +32,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import StockError, SellError, DatabaseInconsistency
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
+from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
+                                     SellableView)
 from stoqlib.domain.person import PersonAdaptToBranch
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
@@ -452,6 +452,15 @@ class ProductAdaptToStorable(ModelAdapter):
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
 
+
+#
+# Views
+#
+
+class ProductFullStockView(SellableView):
+    """Stores general informations about products and the stock total in
+    all branch companies"
+    """
 
 #
 # Auxiliary functions

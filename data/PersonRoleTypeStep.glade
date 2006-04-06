@@ -10,7 +10,7 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="person_role_label">
+                    <widget class="ProxyLabel" id="person_role_label">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">What kind of client are you adding ?</property>
                         <property name="visible">True</property>
@@ -23,13 +23,13 @@
                         <property name="row_spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                            <widget class="ProxyLabel" id="kiwilabel3">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -70,7 +70,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                    <widget class="ProxyLabel" id="kiwilabel4">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">What is their phone number ?</property>
                         <property name="visible">True</property>
@@ -83,15 +83,16 @@
                     <widget class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                            <widget class="ProxyLabel" id="kiwilabel5">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="phone_number">
+                            <widget class="ProxyEntry" id="phone_number">
                                 <property name="data_type">unicode</property>
-                                <property name="model_attribute"></property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">phone_number</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -99,7 +100,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
+                            <widget class="ProxyLabel" id="kiwilabel6">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>

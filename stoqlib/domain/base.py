@@ -426,6 +426,8 @@ class InheritableModel(AbstractModel, InheritableSQLObject, Adaptable):
         InheritableSQLObject.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
 
+class BaseSQLView:
+    """A base marker class for SQL Views"""
 
 #
 # Adapters

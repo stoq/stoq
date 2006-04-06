@@ -20,12 +20,14 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Henrique Romano         <henrique@async.com.br>
+##              Evandro Miquelito       <evandro@async.com.br>
 ##
 ##
 """ Sales report implementation """
 
 from kiwi.datatypes import currency
 
+from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
 from stoqlib.lib.parameters import sysparam
@@ -96,6 +98,9 @@ class SaleOrderReport(BaseStoqReport):
                    sysparam(self.conn).MAX_SALE_ORDER_VALIDITY))
 
 class SalesReport(SearchResultsReport):
+    # This should be properly verified on BaseStoqReport. Waiting for
+    # bug 2517
+    obj_type = SaleView
     report_name = _("Sales Report")
     main_object_name = _("sales")
     filter_format_string = _("with status <u>%s</u>")
@@ -119,16 +124,12 @@ class SalesReport(SearchResultsReport):
                    OTC(_("Date"), lambda obj: obj.get_open_date_as_string(),
                        width=70, align=RIGHT),
                    OTC(_("Client"),
-                       data_source=lambda obj: (obj.client and
-                                                obj.client.get_name() or ""),
+                       data_source=lambda obj: obj.get_client_name(),
                        width=person_col_width),
-                   OTC(_("Salesperson"),
-                       lambda obj: (obj.salesperson and
-                                    obj.salesperson.get_adapted().name or ""),
+                   OTC(_("Salesperson"), lambda obj: obj.salesperson_name,
                        width=person_col_width, truncate=True),
-                   OTC(_("Total"),
-                       lambda obj: obj.get_total_amount_as_string(), width=80,
-                       align=RIGHT)]
+                   OTC(_("Total"), lambda obj: get_formatted_price(obj.total),
+                       width=80, align=RIGHT)]
         if self._landscape_mode:
             columns.insert(-1, OTC(_("Status"),
                                    lambda obj: (obj.get_status_name()),
@@ -136,7 +137,7 @@ class SalesReport(SearchResultsReport):
         return columns
 
     def _setup_sales_table(self):
-        total = sum([sale.get_total_sale_amount()
+        total = sum([sale.total
                          for sale in self.sale_list], currency(0))
         total_str = _("Total %s") % get_formatted_price(total)
         summary_row = ["", "", "", "", total_str]

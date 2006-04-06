@@ -25,16 +25,15 @@
 """ Receiving wizard definition """
 
 import datetime
+from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
-from sqlobject.sqlbuilder import AND
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.search import SearchBar
-from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.slaves.sale import DiscountChargeSlave
@@ -45,7 +44,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.person import Person
-from stoqlib.domain.purchase import PurchaseOrder
+from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
@@ -59,7 +58,7 @@ _ = stoqlib_gettext
 #
 
 
-class ReceivingInvoiceStep(BaseWizardStep):
+class ReceivingInvoiceStep(WizardEditorStep):
     gladefile = 'ReceivingInvoiceStep'
     model_type = ReceivingOrder
     proxy_widgets = ('transporter',
@@ -217,12 +216,12 @@ class ReceivingOrderProductStep(AbstractProductStep):
             self._update_list(product)
 
 
-class PurchaseSelectionStep(BaseWizardStep):
+class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
     model_type = ReceivingOrder
 
     def __init__(self, wizard, conn, model):
-        BaseWizardStep.__init__(self, conn, wizard, model)
+        WizardEditorStep.__init__(self, conn, wizard, model)
         self._update_view()
 
     def _refresh_next(self, validation_value):
@@ -233,25 +232,23 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.wizard.refresh_next(validation_value)
 
     def _get_columns(self):
-        return [Column('order_number_str', title=_('Number'), sorted=True,
+        return [Column('order_number', title=_('Number'), sorted=True,
                        data_type=str, width=100),
                 Column('open_date', title=_('Date Started'),
-                       data_type=datetime.date, justify=gtk.JUSTIFY_RIGHT),
-                ForeignKeyColumn(Person, 'name', title=_('Supplier'),
-                                 data_type=str,
-                                 obj_field='supplier', adapted=True,
-                                 searchable=True, width=270),
-                Column('purchase_total', title=_('Ordered'),
-                       data_type=currency, width=120),
-                Column('received_total', title=_('Received'),
-                       data_type=currency)]
+                       data_type=datetime.date),
+                Column('supplier_name', title=_('Supplier'),
+                       data_type=str, searchable=True, width=160),
+                Column('ordered_quantity', title=_('Qty Ordered'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('received_quantity', title=_('Qty Received'),
+                       data_type=Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Order Total'),
+                       data_type=currency, width=120)]
 
     def _get_extra_query(self):
-        supplier_table = Person.getAdapterClass(ISupplier)
-        q1 = PurchaseOrder.q.supplierID == supplier_table.q.id
-        q2 = supplier_table.q._originalID == Person.q.id
-        q3 = PurchaseOrder.q.status == PurchaseOrder.ORDER_CONFIRMED
-        return AND(q1, q2, q3)
+        return PurchaseOrderView.q.status == PurchaseOrder.ORDER_CONFIRMED
 
     def on_searchbar_before_activate(self, *args):
         self.conn.commit()
@@ -273,7 +270,12 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.force_validation()
 
     def next_step(self):
-        self.model.purchase = self.orders.get_selected()
+        selected = self.orders.get_selected()
+        if selected:
+            self.model.purchase = PurchaseOrder.get(selected.id,
+                                                    connection=self.conn)
+        else:
+            self.model.purchase = None
         return ReceivingOrderProductStep(self.wizard, self, self.conn,
                                          self.model)
 
@@ -284,7 +286,7 @@ class PurchaseSelectionStep(BaseWizardStep):
         self.order_label.set_size('large')
         self.order_label.set_bold(True)
         self.orders.set_columns(self._get_columns())
-        self.searchbar = SearchBar(self.conn, PurchaseOrder,
+        self.searchbar = SearchBar(self.conn, PurchaseOrderView,
                                    self._get_columns(),
                                    searching_by_date=True)
         self.searchbar.register_extra_query_callback(self._get_extra_query)

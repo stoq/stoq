@@ -24,16 +24,18 @@
 ##
 """ Search dialogs for product objects """
 
+import decimal
+
 import gtk
 from kiwi.datatypes import currency
+from kiwi.argcheck import argcheck
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.columns import Column, AccessorColumn, ForeignKeyColumn
+from stoqlib.gui.base.columns import Column
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.interfaces import ISellable
-from stoqlib.domain.product import Product
+from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.product import Product, ProductFullStockView
 from stoqlib.gui.editors.product import ProductEditor
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.search.sellable import SellableSearch
@@ -45,7 +47,7 @@ _ = stoqlib_gettext
 class ProductSearch(SellableSearch):
     title = _('Product Search')
     table = Product
-    search_table = Product.getAdapterClass(ISellable)
+    search_table = ProductFullStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
     searchbar_result_strings = (_('product'), _('products'))
@@ -90,7 +92,7 @@ class ProductSearch(SellableSearch):
 
     def get_filter_slave(self):
         statuses = [(value, key)
-                        for key, value in self.search_table.statuses.items()]
+                        for key, value in AbstractSellable.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
         if self.use_product_statuses:
             statuses = [(value, key) for value, key in statuses
@@ -111,42 +113,26 @@ class ProductSearch(SellableSearch):
     # SearchEditor Hooks
     #
 
-    def get_model(self, model):
-        return model.get_adapted()
-
-    def get_main_supplier_name(self, sellable):
-        return sellable.get_adapted().get_main_supplier_name()
-
+    @argcheck(ProductFullStockView)
+    def get_editor_model(self, model):
+        return Product.get(model.product_id, connection=self.conn)
 
     def get_columns(self):
-        return [Column('code', _('Code'), data_type=str, sorted=True,
+        return [Column('code', title=_('Code'), data_type=str, sorted=True,
                        width=80),
-                ForeignKeyColumn(BaseSellableInfo, 'description',
-                                 _('Description'), data_type=str,
-                                 obj_field='base_sellable_info',
-                                 width=200),
-                AccessorColumn('suppliers', self.get_main_supplier_name,
-                               title=_('Supplier'), data_type=str,
-                               width=150),
+                Column('description', title=_('Description'), data_type=str,
+                       expand=True),
+                Column('supplier_name', title=_('Supplier'), data_type=str,
+                       width=150),
                 Column('cost', _('Cost'), data_type=currency,
                        width=80),
-                ForeignKeyColumn(BaseSellableInfo, 'price',
-                                 _('Price'), data_type=currency,
-                                 obj_field='base_sellable_info',
-                                 width=80),
-                Column('status_string', _('Status'),
-                       data_type=str),
-                AccessorColumn('stock', self.get_stock_balance,
-                               format_func=format_quantity,
-                               title=_('Stock Total'), data_type=float)]
-
+                Column('price', title=_('Price'), data_type=currency,
+                       width=80),
+                Column('stock', title=_('Stock Total'),
+                       format_func=format_quantity,
+                       data_type=decimal.Decimal, width=80)]
 
     def get_extra_query(self):
-        # FIXME Waiting for a SQLObject bug Fix. We can not create sqlbuilder
-        # queries for foreignkeys and inherited tables
-        # table = self.search_table
-        # q1 = AbstractSellable.q.id == table.q.id
-        # q2 = BaseSellableInfo.q.id == table.q.base_sellable_infoID
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
             return self.search_table.q.status == status

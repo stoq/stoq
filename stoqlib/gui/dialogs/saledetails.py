@@ -34,14 +34,14 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.sale import Sale
+from stoqlib.domain.sale import SaleView, Sale
 
 _ = stoqlib_gettext
 
 
 class SaleDetailsDialog(BaseEditor):
     gladefile = "SaleDetailsDialog"
-    model_type = Sale
+    model_type = SaleView
     title = _("Sale Details")
     size = (650, 460)
     hide_footer = True
@@ -61,8 +61,9 @@ class SaleDetailsDialog(BaseEditor):
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
 
-        self.items_list.add_list(self.model.get_items())
-        group = IPaymentGroup(self.model, connection=self.conn)
+        sale = Sale.get(self.model.id, connection=self.conn)
+        self.items_list.add_list(sale.get_items())
+        group = IPaymentGroup(sale, connection=self.conn)
         self.payments_list.add_list(group.get_items())
 
         value_format = '<b>%s</b>'
