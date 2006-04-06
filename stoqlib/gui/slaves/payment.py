@@ -47,7 +47,8 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CardInstallmentsStoreDetails,
                                             CardInstallmentsProviderDetails,
                                             FinanceDetails,
-                                            PaymentMethodDetails)
+                                            PaymentMethodDetails,
+                                            AbstractPaymentMethodAdapter)
 
 _ = stoqlib_gettext
 
@@ -63,6 +64,7 @@ class PaymentListSlave(BaseEditorSlave):
     """
 
     gladefile = 'PaymentListSlave'
+    model_type = AbstractPaymentMethodAdapter
 
     gsignal('remove-slave')
     gsignal('add-slave')
@@ -70,13 +72,12 @@ class PaymentListSlave(BaseEditorSlave):
 
     def __init__(self, parent, conn, payment_method, sale_total):
         self.parent = parent
-        self.payment_method = payment_method
         self.sale_total = sale_total
         self.max_installments_number = None
         # This dict stores a reference of each toplevel widget with its own
         # kiwi object, the slave.
         self.payment_slaves = {}
-        BaseEditorSlave.__init__(self, conn)
+        BaseEditorSlave.__init__(self, conn, payment_method)
         self._update_view()
 
     def _update_view(self):
