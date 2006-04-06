@@ -37,7 +37,7 @@ from stoqlib.lib.drivers import (print_cheques_for_payment_group,
 from stoqlib.lib.defaults import (METHOD_MONEY, METHOD_MULTIPLE,
                                   METHOD_GIFT_CERTIFICATE)
 from stoqlib.gui.base.dialogs import run_dialog, notify_dialog
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
@@ -65,7 +65,7 @@ _ = stoqlib_gettext
 # Wizard Steps
 #
 
-class PaymentMethodStep(BaseWizardStep):
+class PaymentMethodStep(WizardEditorStep):
     gladefile = 'PaymentMethodStep'
     model_type = Sale
     slave_holder = 'method_holder'
@@ -87,7 +87,7 @@ class PaymentMethodStep(BaseWizardStep):
         self.outstanding_value = outstanding_value
         self.group = wizard.get_payment_group()
         self.renegotiation_mode = outstanding_value > currency(0)
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
         self.method_slave = None
         self.setup_combo()
         self._update_payment_method_slave()
@@ -163,7 +163,7 @@ class PaymentMethodStep(BaseWizardStep):
         self._update_payment_method_slave()
 
 
-class GiftCertificateOutstandingStep(BaseWizardStep):
+class GiftCertificateOutstandingStep(WizardEditorStep):
     gladefile = 'GiftCertificateOutstandingStep'
     model_type = None
 
@@ -172,7 +172,7 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
         self.sale = sale
         self.group = wizard.get_payment_group()
         self._is_last = True
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        WizardEditorStep.__init__(self, conn, wizard, previous=previous)
         self.register_validate_function(self.wizard.refresh_next)
         self._setup_widgets()
 
@@ -243,7 +243,7 @@ class GiftCertificateOutstandingStep(BaseWizardStep):
         self.wizard.disable_finish()
 
 
-class GiftCertificateOverpaidStep(BaseWizardStep):
+class GiftCertificateOverpaidStep(WizardEditorStep):
     gladefile = 'GiftCertificateOverpaidStep'
     model_type = Settable
     proxy_widgets = ('certificate_number',)
@@ -252,7 +252,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
         self.overpaid_value = overpaid_value
         self.sale = sale
         self.group = wizard.get_payment_group()
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        WizardEditorStep.__init__(self, conn, wizard, previous=previous)
         self.register_validate_function(self.refresh_next)
 
     def _setup_widgets(self):
@@ -341,7 +341,7 @@ class GiftCertificateOverpaidStep(BaseWizardStep):
         self._update_widgets()
 
 
-class GiftCertificateSelectionStep(BaseWizardStep):
+class GiftCertificateSelectionStep(WizardEditorStep):
     gladefile = 'GiftCertificateSelectionStep'
     model_type = Settable
     proxy_widgets = ('certificate_number',)
@@ -351,7 +351,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         self.table = GiftCertificate.getAdapterClass(ISellable)
         self.sale_total = self.sale.get_total_sale_amount()
         self.group = wizard.get_payment_group()
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        WizardEditorStep.__init__(self, conn, wizard, previous=previous)
         self.register_validate_function(self.wizard.refresh_next)
         self._update_total()
 
@@ -519,7 +519,7 @@ class GiftCertificateSelectionStep(BaseWizardStep):
         self._update_total()
 
 
-class SalesPersonStep(BaseWizardStep):
+class SalesPersonStep(WizardEditorStep):
     gladefile = 'SalesPersonStep'
     model_type = Sale
     proxy_widgets = ('total_lbl',
@@ -529,7 +529,7 @@ class SalesPersonStep(BaseWizardStep):
 
     def __init__(self, wizard, conn, model, edit_mode):
         self._edit_mode = edit_mode
-        BaseWizardStep.__init__(self, conn, wizard, model)
+        WizardEditorStep.__init__(self, conn, wizard, model)
         if not self._edit_mode:
             self.model.reset_discount_and_charge()
         self.register_validate_function(self.wizard.refresh_next)
