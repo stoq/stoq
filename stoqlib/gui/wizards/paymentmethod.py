@@ -22,7 +22,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 ##
-""" Payment method management wizards"""
+"""Payment method management wizards"""
 
 import decimal
 
@@ -30,7 +30,7 @@ from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 from sqlobject.dbconnection import Transaction
 
-from stoqlib.gui.base.wizards import BaseWizardStep, BaseWizard
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.slaves.paymentmethod import InstallmentsNumberSettingsSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ICreditProvider
@@ -52,13 +52,13 @@ _ = stoqlib_gettext
 #
 
 
-class AbstractCreditCardStep(BaseWizardStep):
+class AbstractCreditCardStep(WizardEditorStep):
     gladefile = None
     proxy_widgets = None
 
     def __init__(self, conn, wizard, model, previous):
         self.model_type = type(model)
-        BaseWizardStep.__init__(self, conn, wizard, model, previous)
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     #
     # WizardStep hooks
@@ -104,7 +104,7 @@ class DebitCardDetailsStep(AbstractCreditCardStep):
         self.add_proxy(self.model, DebitCardDetailsStep.proxy_widgets)
 
 
-class PMDetailsGeneralDataStep(BaseWizardStep):
+class PMDetailsGeneralDataStep(WizardEditorStep):
     gladefile = 'PMDetailsGeneralDataStep'
     model_type = None
     general_widgets = ('destination',
@@ -114,7 +114,7 @@ class PMDetailsGeneralDataStep(BaseWizardStep):
 
     def __init__(self, conn, wizard, model):
         self.model_type = type(model)
-        BaseWizardStep.__init__(self, conn, wizard, model)
+        WizardEditorStep.__init__(self, conn, wizard, model)
         if self.wizard.edit_mode:
             self.payment_type.set_sensitive(False)
 
