@@ -24,13 +24,26 @@
 """ Base classes for wizards """
 
 from kiwi.ui.wizard import PluggableWizard, WizardStep
+from kiwi.ui.delegates import SlaveDelegate
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import AbstractDialog
 
 
-class BaseWizardStep(BaseEditorSlave, WizardStep):
+class BaseWizardStep(WizardStep, SlaveDelegate):
     """A wizard step base class definition"""
+    gladefile = None
+
+    def __init__(self, conn, wizard, previous=None):
+        self.conn = conn
+        self.wizard = wizard
+        WizardStep.__init__(self, previous)
+        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+
+
+class WizardEditorStep(BaseEditorSlave, WizardStep):
+    """A wizard step base class definition used when we have a model to be
+    edited or created"""
 
     def __init__(self, conn, wizard, model=None, previous=None):
         self.wizard = wizard
