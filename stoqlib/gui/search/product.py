@@ -99,7 +99,7 @@ class ProductSearch(SellableSearch):
                             if key in self.use_product_statuses]
             selected = self.use_product_statuses[0]
         else:
-            selected = ALL_ITEMS_INDEX
+            selected = AbstractSellable.STATUS_AVAILABLE
         self.filter_slave = FilterSlave(statuses, selected=selected)
         self.filter_slave.set_filter_label(_('Show products with status'))
         return self.filter_slave

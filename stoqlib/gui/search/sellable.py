@@ -86,8 +86,10 @@ class SellableSearch(SearchEditor):
 
     def get_columns(self):
         """Hook called by SearchEditor"""
-        columns = [Column('code', title=_('Code'), data_type=str,
-                          sorted=True, width=150),
+        columns = [Column('code', title=_('Code'), data_type=int,
+                          format="%03d", sorted=True, width=90),
+                   Column('barcode', title=_('Barcode'), data_type=str,
+                          width=90, visible=False),
                    Column('description', title= _('Description'),
                           data_type=str, expand=True),
                    Column('supplier_name', title= _('Supplier'),
