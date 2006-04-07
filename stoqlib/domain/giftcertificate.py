@@ -24,7 +24,7 @@
 """ Gift Certificate implementation """
 
 
-from sqlobject import UnicodeCol, ForeignKey, BoolCol
+from sqlobject import UnicodeCol, ForeignKey, BoolCol, SQLObject, IntCol
 from kiwi.python import Settable
 from zope.interface import implements
 
@@ -32,7 +32,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                      OnSaleInfo)
 from stoqlib.domain.interfaces import ISellable, IDescribable
-from stoqlib.domain.base import Domain
+from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.base import Domain, BaseSQLView
 
 _ = stoqlib_gettext
 
@@ -116,3 +117,20 @@ GiftCertificate.registerFacet(GiftCertificateAdaptToSellable, ISellable)
 def get_volatile_gift_certificate():
     return Settable(number=None, first_number=None, last_number=None,
                     gift_certificate_type=None)
+
+
+#
+# Views
+#
+
+
+class GiftCertificateView(SQLObject, BaseSQLView):
+    """Stores general gift certificate informations"""
+    code = IntCol()
+    barcode = UnicodeCol()
+    status = IntCol()
+    cost = PriceCol()
+    price = PriceCol()
+    on_sale_price = PriceCol()
+    description = UnicodeCol()
+    giftcertificate_id = IntCol()
