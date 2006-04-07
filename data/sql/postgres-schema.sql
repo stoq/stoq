@@ -373,7 +373,6 @@ CREATE VIEW service_view AS
   --     status             - the sellable status
   --     cost               - the sellable cost
   --     price              - the sellable price
-  --     is_valid_model     - the sellable is_valid_model system attribute
   --     description        - the sellable description
   --     unit               - the unit in case the sellable is not a gift
   --                          certificate
@@ -383,7 +382,6 @@ CREATE VIEW service_view AS
   abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
   abstract_sellable.status,
   abstract_sellable.cost, base_sellable_info.price,
-  base_sellable_info.is_valid_model,
   base_sellable_info.description, sellable_unit.description as unit,
   service.id as service_id
     FROM abstract_sellable
@@ -400,7 +398,46 @@ CREATE VIEW service_view AS
       LEFT JOIN sellable_unit
       ON (abstract_sellable.unit_id = sellable_unit.id)
 
-        WHERE base_sellable_info.is_valid_model = 't';
+        WHERE service.is_valid_model = 't';
+
+
+select drop_existing_view('giftcertificate_view');
+CREATE VIEW gift_certificate_view AS
+  --
+  -- Stores information about gift certificates
+  --
+  -- Available fields are:
+  --     id                 - the id of the abstract_sellable table
+  --     code               - the sellable code
+  --     barcode            - the sellable barcode
+  --     status             - the sellable status
+  --     cost               - the sellable cost
+  --     price              - the sellable price
+  --     on_sale_price      - the sellable price when the item is on sale
+  --     description        - the sellable description
+  --     giftcertificate_id - the id of giftcertificate table
+  --
+  SELECT DISTINCT
+  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
+  abstract_sellable.status,
+  abstract_sellable.cost, base_sellable_info.price,
+  on_sale_info.on_sale_price,
+  base_sellable_info.description, gift_certificate.id as giftcertificate_id
+    FROM abstract_sellable
+
+      INNER JOIN base_sellable_info
+      ON (abstract_sellable.base_sellable_info_id = base_sellable_info.id)
+
+      INNER JOIN on_sale_info
+      ON (abstract_sellable.on_sale_info_id = on_sale_info.id)
+
+      INNER JOIN gift_certificate_adapt_to_sellable
+      ON (abstract_sellable.id = gift_certificate_adapt_to_sellable.id)
+
+      INNER JOIN gift_certificate
+      ON (gift_certificate_adapt_to_sellable.original_id = gift_certificate.id)
+
+        WHERE gift_certificate.is_valid_model = 't';
 
 
 select drop_existing_view('sale_view');
