@@ -58,6 +58,9 @@ from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.sellable import SellableSearch
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
+from stoqlib.gui.search.product import ProductSearch
+from stoqlib.gui.search.service import ServiceSearch
+from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.slaves.price import PriceSlave
 from stoqlib.reporting.sale import SaleOrderReport
 
@@ -328,8 +331,21 @@ class POSApp(AppWindow):
         else:
             self.warning_box.hide()
 
+    def _run_search_dialog(self, dialog_type, **kwargs):
+        # Save the current state of order before calling a search dialog
+        self.conn.commit()
+        self.run_dialog(dialog_type, self.conn, **kwargs)
+
+    #
+    # AppWindow Hooks
+    #
+
+    def setup_focus(self):
+        self.search_box.set_focus_chain([self.product, self.quantity,
+                                         self.add_button])
+
     def get_columns(self):
-        return [Column('sellable.code', title=_('Code'), sorted=True,
+        return [Column('sellable.code_str', title=_('Code'), sorted=True,
                        data_type=str, width=90),
                 Column('sellable.base_sellable_info.description',
                        title=_('Description'), data_type=str, expand=True,
@@ -340,18 +356,6 @@ class POSApp(AppWindow):
                        width=90, format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
-
-    def _search_clients(self):
-        self.run_dialog(ClientSearch, self.conn, hide_footer=True)
-
-
-    #
-    # AppWindow Hooks
-    #
-
-    def setup_focus(self):
-        self.search_box.set_focus_chain([self.product, self.quantity,
-                                         self.add_button])
 
     #
     # Callbacks
@@ -410,9 +414,6 @@ class POSApp(AppWindow):
     def on_sellables__selection_changed(self, *args):
         self._update_widgets()
 
-    def _on_clients_action__clicked(self, *args):
-        self._search_clients()
-
     def after_product__changed(self, *args):
         self._update_widgets()
         sellable = self.product_proxy.model.product
@@ -445,8 +446,23 @@ class POSApp(AppWindow):
     def _on_resetorder_action__clicked(self, *args):
         self._new_order()
 
+    def _on_clients_action__clicked(self, *args):
+        self._run_search_dialog(ClientSearch, hide_footer=True)
+
     def _on_sales_action__clicked(self, *args):
-        self.run_dialog(SaleSearch, self.conn)
+        self._run_search_dialog(SaleSearch)
+
+    def _on_products_action__clicked(self, *args):
+        self._run_search_dialog(ProductSearch, hide_footer=True,
+                                hide_toolbar=True, hide_cost_column=True)
+
+    def _on_services_action__clicked(self, *args):
+        self._run_search_dialog(ServiceSearch, hide_toolbar=True,
+                                hide_cost_column=True)
+
+    def _on_giftcertificates_action__clicked(self, *args):
+        self._run_search_dialog(GiftCertificateSearch, hide_footer=True,
+                                hide_toolbar=True)
 
     def on_delivery_button__clicked(self, *args):
         if not self.sellables:
