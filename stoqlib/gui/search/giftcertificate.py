@@ -30,14 +30,14 @@ from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
-                                            GiftCertificate)
-from stoqlib.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
-                                                 GiftCertificateEditor)
+                                            GiftCertificateView)
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import Column
+from stoqlib.gui.editors.giftcertificate import (GiftCertificateTypeEditor,
+                                                 GiftCertificateEditor)
 
 _ = stoqlib_gettext
 
@@ -114,12 +114,13 @@ class GiftCertificateSearch(SearchEditor):
     """
     title = _('Gift Certificate Search')
     size = (800, 450)
-    table = GiftCertificate.getAdapterClass(ISellable)
+    table = GiftCertificateView
     editor_class = GiftCertificateEditor
 
-    def __init__(self, conn, hide_footer=True):
+    def __init__(self, conn, hide_footer=True, hide_toolbar=False):
         SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               hide_footer=hide_footer,
+                              hide_toolbar=hide_toolbar,
                               title=self.title)
         self.hide_edit_button()
         self.search_bar.set_result_strings(_('gift certificate'),
@@ -132,9 +133,10 @@ class GiftCertificateSearch(SearchEditor):
 
     def get_filter_slave(self):
         statuses = [(value, constant)
-                        for constant, value in self.table.statuses.items()]
+                    for constant, value in AbstractSellable.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
+        selected = AbstractSellable.STATUS_AVAILABLE
+        self.filter_slave = FilterSlave(statuses, selected=selected)
         self.filter_slave.set_filter_label(_('Show gift certificates with '
                                              'status'))
         return self.filter_slave
@@ -155,13 +157,12 @@ class GiftCertificateSearch(SearchEditor):
                        format='%03d', width=80),
                 Column('barcode', title=_('Barcode'), data_type=str,
                        visible=True, width=80),
-                Column('base_sellable_info.description',
-                       _('Type Name'), data_type=str, width=260),
-                Column('base_sellable_info.price', _('Price'),
+                Column('description', title=_('Type Name'),
+                       data_type=str, width=260),
+                Column('price', title=_('Price'),
                        data_type=currency, width=120),
-                Column('on_sale_info.on_sale_price', _('On Sale Price'),
-                       data_type=currency, width=120),
-                Column('status_string', _('Status'), data_type=str)]
+                Column('on_sale_price', title=_('On Sale Price'),
+                       data_type=currency, width=120)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
