@@ -289,7 +289,7 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def get_code_str(self):
-        return u"%05d" % self.code
+        return u"%03d" % self.code
 
     def get_price_string(self):
         return get_formatted_price(self.get_price())
