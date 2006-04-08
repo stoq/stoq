@@ -28,6 +28,7 @@ import decimal
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
+from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -133,6 +134,23 @@ class Sale(Domain):
         table.delete(item.id, connection=conn)
 
     #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_available_sales(cls, conn, till):
+        """Returns a list of all available sales for a given
+        till operation
+
+        @param conn: a Transaction sqlobject instance
+        @param till: a Till instance
+        """
+        q1 = cls.q._is_valid_model == True
+        q2 = cls.q.tillID == till.id
+        query = AND(q1, q2)
+        return cls.select(query, connection=conn)
+
+    #
     # Auxiliar methods
     #
 
@@ -144,7 +162,7 @@ class Sale(Domain):
 
     def get_client_name(self):
         if not self.client:
-            return _(u'Anonymous')
+            return _(u'Not Specified')
         return self.client.get_name()
 
     @classmethod
