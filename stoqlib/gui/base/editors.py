@@ -170,11 +170,12 @@ class BaseEditor(BaseEditorSlave):
         if self.title:
             return self.title
         if model:
+            if self.model_name:
+                return _('Add %s') % self.model_name
             model_attr = self.get_title_model_attribute(model)
             return _('Edit "%s" Details') % model_attr
-        if not self.model_name:
-            raise EditorError('A model_name attribute is required')
-        return _('Add %s') % self.model_name
+        else:
+            raise ValueError("A model should be defined at this point")
 
     def get_title_model_attribute(self, model):
         raise NotImplementedError
