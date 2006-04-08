@@ -290,6 +290,7 @@ class CashAdvanceEditor(BaseEditor):
 
 class CashInEditor(BaseEditor):
     model_name = _('Cash In')
+    model_type = Payment
     gladefile = 'BaseTemplate'
 
     #
@@ -297,27 +298,32 @@ class CashInEditor(BaseEditor):
     #
 
     def setup_slaves(self):
-        current_till = get_current_till_operation(self.conn)
+        if not self.cash_slave:
+            raise ValueError("The cash_slave attribute should be defined at "
+                             "this point")
+        self.attach_slave("main_holder", self.cash_slave)
+
+    def create_model(self, conn):
+        current_till = get_current_till_operation(conn)
         branch = Person.iget(IBranch, current_till.branch.id,
-                             connection=self.conn)
+                             connection=conn)
         branch_name = branch.get_adapted().name
         payment_description = (_('Cash in for branch: %s') %
                                branch_name)
         self.cash_slave = BaseCashSlave(payment_description=payment_description,
-                                        conn=self.conn)
-        self.attach_slave("main_holder", self.cash_slave)
+                                        conn=conn)
+        return self.cash_slave.model
 
     def validate_confirm(self):
         return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
-        value = self.cash_slave.model.value
-        self.cash_slave.model.value = value
         return self.cash_slave.on_confirm()
 
 
 class CashOutEditor(BaseEditor):
     model_name = _('Cash Out')
+    model_type = Payment
     gladefile = 'CashOutEditor'
     label_widgets = ('reason_lbl',)
     entry_widgets = ('reason',)
@@ -350,9 +356,15 @@ class CashOutEditor(BaseEditor):
     # BaseEditorSlave Hooks
     #
 
-    def setup_slaves(self):
+    def create_model(self, conn):
         self.cash_slave = BaseCashSlave(self.conn, payment_description=None,
                                         payment_iface=self.payment_iface)
+        return self.cash_slave.model
+
+    def setup_slaves(self):
+        if not self.cash_slave:
+            raise ValueError("The cash_slave attribute should be defined at "
+                             "this point")
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -366,7 +378,6 @@ class CashOutEditor(BaseEditor):
             payment_description = _('Cash out: %s') % reason
         else:
             payment_description = _('Cash out')
-        self.cash_slave.model.description = payment_description
-        model = self.cash_slave.model
-        model.value = -model.value
+        self.model.description = payment_description
+        self.model.value = -self.model.value
         return self.cash_slave.on_confirm()
