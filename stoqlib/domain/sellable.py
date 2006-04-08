@@ -133,8 +133,7 @@ class AbstractSellableItem(InheritableModel):
 
     def sell(self):
         conn = self.get_connection()
-        sellable = ISellable(self.sellable, connection=conn)
-        sellable.sell()
+        self.sellable.sell()
 
     #
     # Accessors
