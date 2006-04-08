@@ -86,7 +86,7 @@ class RenegotiationAdaptToGiftCertificate(ModelAdapter):
         certificate = GiftCertificate(connection=conn)
         cert_number = self.new_gift_certificate_number
         sellable_cert = certificate.addFacet(ISellable, connection=conn,
-                                             code=cert_number,
+                                             barcode=cert_number,
                                              base_sellable_info=
                                              sellable_info)
         sellable_cert.sell()
