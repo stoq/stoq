@@ -57,9 +57,6 @@ class NewOrderEditor(BaseEditor):
         # Waiting for bug 2319
         self.details_button.set_sensitive(False)
         self._setup_client_entry()
-        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
-        items = [(s.get_adapted().name, s) for s in salespersons]
-        self.salesperson.prefill(items)
         self._update_client_widgets()
 
     def _update_client_widgets(self):
@@ -89,13 +86,16 @@ class NewOrderEditor(BaseEditor):
     #
 
     def on_client_button__clicked(self, *args):
-        if run_person_role_dialog(ClientEditor, self, self.conn,
-                                  self.model.client):
+        client = run_person_role_dialog(ClientEditor, self, self.conn,
+                                        self.model.client)
+        if client:
             self.conn.commit()
             # FIXME waiting for entry completion bug fix in kiwi. This part
             # doesn't work properly when editing a client previously set in
             # POS interface
             self._setup_client_entry()
+            self.model.client = client
+            self.proxy.update('client')
 
     def on_client_check__toggled(self, *args):
         self._update_client_widgets()
