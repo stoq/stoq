@@ -29,7 +29,7 @@ import gettext
 import decimal
 
 import gtk
-from kiwi.ui.dialogs import warning
+from kiwi.ui.dialogs import warning, messagedialog
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from kiwi.python import Settable
@@ -104,10 +104,10 @@ class POSApp(AppWindow):
                        self.list_vbox, self.CancelOrder):
             widget.set_sensitive(False)
         self.ResetOrder.set_sensitive(True)
-        self.new_order_button.set_sensitive(True)
         self.sale = None
         self.order_proxy.set_model(None, relax_type=True)
         self.product.grab_focus()
+        self._update_widgets()
 
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
@@ -263,6 +263,8 @@ class POSApp(AppWindow):
             self.sellables.select(self.sellables[0])
 
     def _new_order(self):
+        if self.coupon is not None:
+            self._cancel_order()
         rollback_and_begin(self.conn)
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
         if self.sale:
@@ -276,7 +278,6 @@ class POSApp(AppWindow):
                 widget.set_sensitive(True)
             self.ResetOrder.set_sensitive(False)
             self.product.grab_focus()
-            self.new_order_button.set_sensitive(False)
         else:
             rollback_and_begin(self.conn)
             return
@@ -335,6 +336,19 @@ class POSApp(AppWindow):
         # Save the current state of order before calling a search dialog
         self.conn.commit()
         self.run_dialog(dialog_type, self.conn, **kwargs)
+
+    def _cancel_order(self):
+        if self.sale is not None:
+            msg = _('The current order will be canceled, Confirm?')
+            default=gtk.RESPONSE_YES
+            if not messagedialog(gtk.MESSAGE_QUESTION, msg,
+                                 parent=self.get_toplevel(),
+                                 buttons=gtk.BUTTONS_YES_NO,
+                                 default=default) == default:
+                return
+        self._clear_order()
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.coupon.cancel()
 
     #
     # AppWindow Hooks
@@ -438,10 +452,9 @@ class POSApp(AppWindow):
         self.select_first_item()
         self._update_widgets()
 
+
     def _on_cancel_order_action_clicked(self, *args):
-        self._clear_order()
-        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.coupon.cancel()
+        self._cancel_order()
 
     def _on_resetorder_action__clicked(self, *args):
         self._new_order()
