@@ -88,9 +88,8 @@ class Till(Domain):
         """
 
         conn = self.get_connection()
-        result = Sale.selectBy(till=self, connection=conn)
-
         query = AND(Sale.q.status == Sale.STATUS_CONFIRMED,
+                    Sale.q._is_valid_model == True,
                     Sale.q.tillID == self.id)
         result = Sale.select(query, connection=conn)
         payments = []
@@ -134,7 +133,7 @@ class Till(Domain):
             raise ValueError("This till is already closed. Open a new till "
                              "before close it.")
         conn = self.get_connection()
-        sales = Sale.selectBy(till=self, connection=conn)
+        sales = Sale.get_available_sales(conn, self)
 
         opened_sales = []
 
