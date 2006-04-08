@@ -165,14 +165,15 @@ class PaymentMethodStep(WizardEditorStep):
 
 class GiftCertificateOutstandingStep(WizardEditorStep):
     gladefile = 'GiftCertificateOutstandingStep'
-    model_type = None
+    model_type = Sale
 
     def __init__(self, wizard, previous, conn, sale, outstanding_value):
         self.outstanding_value = outstanding_value
         self.sale = sale
         self.group = wizard.get_payment_group()
         self._is_last = True
-        WizardEditorStep.__init__(self, conn, wizard, previous=previous)
+        WizardEditorStep.__init__(self, conn, wizard, model=sale,
+                                  previous=previous)
         self.register_validate_function(self.wizard.refresh_next)
         self._setup_widgets()
 
