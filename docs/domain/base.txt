@@ -108,7 +108,7 @@ To create a unique code for a ProductAdaptToSellable object, I use datetime
 module
 
     >>> import datetime
-    >>> product_code =  'test_code' + str(datetime.datetime.now())
+    >>> product_barcode =  'test_code' + str(datetime.datetime.now())
 
 The BaseSellableInfo class stores basic information about sellables. This
 object is mandatory for every new sellable.
@@ -125,7 +125,7 @@ method.
     >>> adapter = test_product.addFacet(ISellable,
     ...                                 base_sellable_info=sellable_info,
     ...                                 connection=conn,
-    ...                                 code=product_code)
+    ...                                 barcode=product_barcode)
 
 Then you can check if the returned instance is of a correct adapter type:
 
