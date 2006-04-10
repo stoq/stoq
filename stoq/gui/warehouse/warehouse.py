@@ -29,7 +29,8 @@ import decimal
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database import rollback_and_begin
+from stoqlib.database import finish_transaction
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
@@ -136,10 +137,9 @@ class WarehouseApp(SearchableAppWindow):
         self._update_widgets()
 
     def _on_receive_action_clicked(self, *args):
-        model = self.run_dialog(ReceivingOrderWizard, self.conn)
-        if not model:
-            rollback_and_begin(self.conn)
-        self.conn.commit()
+        conn = new_transaction()
+        model = self.run_dialog(ReceivingOrderWizard, conn)
+        finish_transaction(conn, model)
 
     def on_stock_transfer_action_clicked(self, *args):
         # TODO To be implemented
