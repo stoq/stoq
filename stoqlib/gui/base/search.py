@@ -47,6 +47,7 @@ from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
@@ -232,6 +233,8 @@ class SearchBar(SlaveDelegate):
 
         """
         SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        self.conn = conn
+        self.max_search_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self._animate_search_icon_id = -1
         self.search_results_label.set_text('')
         self.search_results_label.set_size('small')
@@ -248,7 +251,6 @@ class SearchBar(SlaveDelegate):
             entry_slave = self._slave
 
         entry_slave.connect('selected', self._on_search_entry__selected)
-        self.conn = conn
         self._extra_query_callback = None
         self._filter_results_callback = None
         self._blocked_results_counter = None
@@ -460,20 +462,19 @@ class SearchBar(SlaveDelegate):
         else:
             search_results = self.table_type.select(**kwargs)
 
-        max_search_results = get_max_search_results()
         total = search_results.count()
-        if total > max_search_results:
-            self._blocked_results_counter = total - max_search_results
+        if total > self.max_search_results:
+            self._blocked_results_counter = total - self.max_search_results
         else:
             self._blocked_results_counter = 0
-        objs = search_results[:max_search_results]
+        objs = search_results[:self.max_search_results]
 
         if not self._result_strings:
             self._result_strings = _('result'), _('results')
             warnings.warn('You must define result strings before performing '
                           'searches in the SearchBar')
 
-        msg = self._get_search_results_msg(total, max_search_results)
+        msg = self._get_search_results_msg(total, self.max_search_results)
         self.search_results_label.set_text(msg)
 
         if self._filter_results_callback:
@@ -1011,15 +1012,3 @@ class SearchEditor(SearchDialog):
         the model is a requirement for edit method.
         """
         return model
-
-
-max_search_results = None
-
-def set_max_search_results(max):
-    global max_search_results
-    assert max
-    max_search_results = max
-
-def get_max_search_results():
-    global max_search_results
-    return max_search_results
