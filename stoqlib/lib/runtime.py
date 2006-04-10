@@ -26,6 +26,7 @@
 import sys
 
 from sqlobject import connectionForURI
+from sqlobject.dbconnection import Transaction
 from kiwi.argcheck import argcheck
 
 _connection = None
@@ -39,6 +40,13 @@ _database_settings = None
 #
 # Working with connections and transactions
 #
+
+class StoqlibTransaction(Transaction):
+
+    def close(self):
+        self._connection.close()
+        self._obsolete = True
+
 
 def initialize_connection():
     # Avoiding circular imports
@@ -70,7 +78,7 @@ def get_connection():
 
 
 def new_transaction():
-    _transaction = get_connection().transaction()
+    _transaction = StoqlibTransaction(get_connection())
     assert _transaction is not None
     return _transaction
 

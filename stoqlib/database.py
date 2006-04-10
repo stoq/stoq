@@ -34,7 +34,7 @@ from sqlobject import connectionForURI
 
 from stoqlib.exceptions import ConfigError, SQLError
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction, print_msg, set_verbose
 from stoqlib.domain.tables import get_table_types
 
 _ = stoqlib_gettext
@@ -134,7 +134,7 @@ def finish_transaction(conn, model=None, keep_transaction=False):
     if not keep_transaction:
         # XXX Waiting for SQLObject improvements. We need there a
         # simple method do this in a simple way.
-        conn._connection.close()
+        conn.close()
     return model
 
 def run_sql_file(sql_file, conn):
@@ -152,6 +152,7 @@ def run_sql_file(sql_file, conn):
 
 def setup_tables(delete_only=False, list_tables=False, verbose=False):
     from stoqlib.domain.parameter import ParameterData
+    set_verbose(verbose)
     if not list_tables and verbose:
         print_msg('Setting up tables... ', break_line=False)
     else:
