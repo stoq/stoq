@@ -213,8 +213,6 @@ class Adaptable:
         k = qual(iface)
         adapter = self._adapterCache.get(k)
         if adapter is not None:
-            if connection:
-                adapter._connection = connection
             return adapter
 
         adapterClass = self._facets.get(k)
@@ -347,9 +345,8 @@ class ConnMetaInterface(MetaInterface):
         # should this be `implements' of some kind?
         if ((persist is None or persist)
             and hasattr(adaptable, '_getComponent')):
-            conn = adaptable.get_connection()
             adapter = adaptable._getComponent(self, registry,
-                                              connection=conn)
+                                              connection=connection)
         else:
             adapter = registry.getAdapter(adaptable, self, _NoImplementor,
                                           persist=persist)
