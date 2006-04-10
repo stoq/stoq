@@ -265,8 +265,6 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def __init__(self, _original=None, *args, **kwargs):
         ModelAdapter.__init__(self, _original, *args, **kwargs)
-        conn = self.get_connection()
-        self.precision = sysparam(conn).DECIMAL_PRECISION
 
     #
     # IContainer implementation
@@ -403,7 +401,9 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def get_full_balance_string(self, branch=None, full_balance=None):
         full_balance = full_balance or self.get_full_balance(branch)
-        return '%.*f' % (int(self.precision), full_balance)
+        conn = self.get_connection()
+        precision = sysparam(conn).DECIMAL_PRECISION
+        return '%.*f' % (int(precision), full_balance)
 
     #
     # General methods
