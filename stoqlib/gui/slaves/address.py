@@ -106,7 +106,8 @@ class AddressSlave(BaseEditorSlave):
                "have a database inconsistency.")
         assert result.count() == 1, msg
 
-        self.model.city_location = CityLocation.get(result[0].id)
+        self.model.city_location = CityLocation.get(result[0].id,
+                                                    connection=self.conn)
         CityLocation.delete(cityloc.id, connection=self.conn)
         finish_transaction(conn)
 
