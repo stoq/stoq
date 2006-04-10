@@ -55,7 +55,7 @@ def ensure_global_data():
     branch = sysparam(conn).CURRENT_BRANCH
     base_sellable_info = BaseSellableInfo(connection=conn)
     global_data['base_sellable_info'] = base_sellable_info
-    global_data['sellable'] = product.addFacet(ISellable, code='abcd',
+    global_data['sellable'] = product.addFacet(ISellable, barcode='abcd',
                                                base_sellable_info=base_sellable_info,
                                                connection=conn)
     conn.commit()
@@ -76,21 +76,21 @@ class TestProductSupplierInfo(BaseDomainTest):
         return (get_global_data('product', cls.conn),
                 get_global_data('supplier', cls.conn))
 
-    def test_get_name(self):
+    def test_3_get_name(self):
         assert (self._instance.get_name()
                 == self._instance.supplier.get_adapted().name)
 
 class TestProduct(BaseDomainTest):
     _table = Product
 
-    def test_facet_IStorable_add (self):
+    def test_3_facet_IStorable_add (self):
         assert not IStorable(self._instance, connection=self.conn)
         storable = self._instance.addFacet(IStorable, connection=self.conn)
         table = Person.getAdapterClass(IBranch)
         branches_count = table.select(connection=self.conn).count()
         assert storable.get_stocks().count() == branches_count
 
-    def test_get_main_supplier_info (self):
+    def test_4_get_main_supplier_info (self):
         assert not self._instance.get_main_supplier_info()
         supplier = get_global_data('supplier', self.conn)
         ProductSupplierInfo(connection=self.conn, supplier=supplier,
@@ -129,14 +129,14 @@ class TestProductSellableItem(BaseDomainTest):
         sellable = get_global_data('sellable', cls.conn)
         return sale, sellable
 
-    def test_sell(self):
+    def test_3_sell(self):
         # Makes the whole process a bit more consistent and creating a new
         # sellable from the beginning
         product = Product(connection=self.conn)
         base_sellable_info = global_data['base_sellable_info']
-        sellable = product.addFacet(ISellable, code='xyz',
-                                   base_sellable_info=base_sellable_info,
-                                   connection=self.conn)
+        sellable = product.addFacet(ISellable, barcode='xyz',
+                                    base_sellable_info=base_sellable_info,
+                                    connection=self.conn)
         self._instance.sellable = sellable
         storable = product.addFacet(IStorable, connection=self.conn)
 
