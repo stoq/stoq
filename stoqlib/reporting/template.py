@@ -71,7 +71,7 @@ class BaseStoqReport(ReportTemplate):
     def draw_header(self, canvas):
         canvas.saveState()
         person = sysparam(self.conn).CURRENT_BRANCH.get_adapted()
-        company = ICompany(person)
+        company = ICompany(person, connection=self.conn)
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border
