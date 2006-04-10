@@ -35,7 +35,6 @@ import gobject
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.base.dialogs import notify_dialog
-from stoqlib.gui.base.search import set_max_search_results
 from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
@@ -145,8 +144,6 @@ class AppConfig:
         register_iconsets()
 
         conn = get_connection()
-        max_search_results = sysparam(conn).MAX_SEARCH_RESULTS
-        set_max_search_results(max_search_results)
         if not self.validate_user():
             LoginError('Could not authenticate in the system')
         return self.appname
