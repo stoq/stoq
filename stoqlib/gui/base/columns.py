@@ -36,11 +36,11 @@ class FacetColumn(Column):
         Column.__init__(self, *args, **kwargs)
 
     def get_attribute(self, instance, name, default=None):
+        conn = instance.get_connection()
         if not isinstance(instance, Adapter):
-            obj = self._facet(instance)
+            obj = self._facet(instance, connection=conn)
         else:
             original = instance.get_adapted()
-            conn = instance.get_connection()
             obj = self._facet(original, connection=conn)
         if not obj:
             return
