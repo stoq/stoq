@@ -49,7 +49,6 @@ from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.interfaces import (ISellable, IClient, IDelivery,
                                        IStorable)
 from stoqlib.gui.base.dialogs import notify_dialog
-from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
@@ -89,7 +88,7 @@ class POSApp(AppWindow):
             notify_dialog(_("You need to open the till before start doing "
                             "sales."), _("Error"))
             self.app.shutdown()
-        self.max_results = get_max_search_results()
+        self.max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self.client_table = Person.getAdapterClass(IClient)
         self.coupon = None
         self._setup_widgets()

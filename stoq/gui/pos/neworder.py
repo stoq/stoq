@@ -26,12 +26,12 @@
 import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IClient, ISalesPerson
 from stoqlib.lib.runtime import get_current_user
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.editors.person import ClientEditor
 
@@ -49,7 +49,8 @@ class NewOrderEditor(BaseEditor):
     def _setup_client_entry(self):
         client_table = Person.getAdapterClass(IClient)
         clients = client_table.get_active_clients(self.conn)
-        clients = clients[:get_max_search_results()]
+        max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
+        clients = clients[:max_results]
         items = [(c.get_adapted().name, c) for c in clients]
         self.client.prefill(items)
 
