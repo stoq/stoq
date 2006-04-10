@@ -30,8 +30,8 @@ from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profile import UserProfileEditor
@@ -114,7 +114,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def __init__(self, conn, model, app_list, show_password_fields=True):
         self.show_password_fields = show_password_fields
         self.app_list = app_list
-        self.max_results = get_max_search_results()
+        self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         BaseEditorSlave.__init__(self, conn, model)
 
     def _setup_size_group(self, size_group, widgets, obj):

@@ -37,7 +37,6 @@ from kiwi.datatypes import ValidationError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.search import get_max_search_results
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.domain.account import BankAccount
@@ -166,7 +165,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
                      'salary',)
 
     def __init__(self, conn, employee, edit_mode):
-        self.max_results = get_max_search_results()
+        self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         self.employee = employee
         self.person = employee.get_adapted()
         self.salesperson = ISalesPerson(self.person, connection=conn)
