@@ -25,6 +25,7 @@
 
 import gtk
 from kiwi.ui.delegates import Delegate
+from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.dialogs import get_dialog, run_dialog
 
@@ -57,12 +58,23 @@ class BaseApp:
 class BaseAppWindow(Delegate):
     """ Class to be inherited by applications main window.  """
     gladefile = toplevel_name = ''
+    title = ''
+    size = tuple()
 
+    @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
+        self.app = app
         Delegate.__init__(self, delete_handler=app.shutdown,
                           keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)
+        if self.size:
+            self.get_toplevel().set_size_request(*self.size)
+        self.get_toplevel().set_title(self.get_title())
+
+    def get_title(self):
+        """This method must be overwritten on child when it's needed"""
+        return self.title
 
     def set_sensitive(self, widgets, value):
         """Sets one or more widgets to state sensitive. XXX: Kiwi?"""
@@ -77,3 +89,9 @@ class BaseAppWindow(Delegate):
         """ Encapsuled method for running dialogs. """
         return run_dialog(dialog_class, self, *args, **kwargs)
 
+    #
+    # Callbacks
+    #   
+
+    def _on_quit_action__clicked(self, *args):
+        self.app.shutdown()
