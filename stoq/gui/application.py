@@ -82,7 +82,6 @@ class AppWindow(BaseAppWindow):
     klist_selection_mode = gtk.SELECTION_BROWSE
 
     def __init__(self, app):
-        self.app = app
         BaseAppWindow.__init__(self, app)
         user_menu_label = get_current_user().username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
