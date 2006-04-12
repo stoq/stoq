@@ -896,7 +896,7 @@ class SearchEditor(SearchDialog):
     model_editor_lookup_attr = 'id'
     model_list_lookup_attr = 'id'
 
-    def __init__(self, conn, table, editor_class=None, interface=None,
+    def __init__(self, conn, table=None, editor_class=None, interface=None,
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False):
@@ -904,14 +904,14 @@ class SearchEditor(SearchDialog):
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode)
         self.interface = interface
+        self.editor_class = editor_class or self.editor_class
         if hide_toolbar:
             self.accept_edit_data = False
             self._toolbar.get_toplevel().hide()
         else:
             self.accept_edit_data = True
-            if not editor_class:
+            if not self.editor_class:
                 raise ValueError('An editor_class argument is required')
-        self.editor_class = editor_class
         self._selected = None
         self.klist.connect('double_click', self._on_toolbar__edit)
         self.update_widgets()
