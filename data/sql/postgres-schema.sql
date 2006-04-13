@@ -188,7 +188,7 @@ CREATE VIEW abstract_sales_product_view AS
   --
   SELECT
   sum(quantity) as total_quantity, sum(price) as subtotal,
-  sum(price) - sale.discount_value + sale.charge_value as total,
+  sum(price) * sum(quantity) - sale.discount_value + sale.charge_value as total,
   sale_id
     FROM abstract_sellable_item, sale
       GROUP BY
