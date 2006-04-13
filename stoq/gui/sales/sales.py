@@ -39,6 +39,9 @@ from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.slaves.sale import SaleListToolbar
+from stoqlib.gui.editors.invoice import InvoiceDetailsEditor
+from stoqlib.lib.invoice import SaleInvoice
+from stoqlib.gui.base.dialogs import print_report
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -76,6 +79,9 @@ class SalesApp(SearchableAppWindow):
     def _setup_slaves(self):
         slave = SaleListToolbar(self.conn, self.searchbar, self.sales)
         self.attach_slave("list_toolbar_holder", slave)
+        self._klist.connect("selection-changed",
+                            self._update_print_invoice_action)
+        self._update_print_invoice_action()
 
     def on_searchbar_activate(self, slave, objs):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
@@ -84,6 +90,12 @@ class SalesApp(SearchableAppWindow):
     def _update_widgets(self):
         self._update_total_label()
 
+    def _update_print_invoice_action(self, *args):
+        selected_rows = self._klist.get_selected_rows()
+        is_enabled = (len(selected_rows) == 1
+                      and selected_rows[0].client_name is not None)
+        self.print_invoice.set_sensitive(is_enabled)
+
     def _update_total_label(self):
         self.summary_label.update_total()
 
@@ -91,6 +103,22 @@ class SalesApp(SearchableAppWindow):
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.append((_('Any'), ALL_ITEMS_INDEX))
         return items
+
+    def _preview_invoice_as_pdf(self, fiscal_note, sale, *args, **kwargs):
+        raise NotImplementedError("not implemented yet :)")
+
+    def _print_invoice(self):
+        assert len(self._klist.get_selected_rows()) == 1
+        invoice_data = self.run_dialog(InvoiceDetailsEditor, self.conn)
+        if not invoice_data:
+            return
+        sale_view = self._klist.get_selected_rows()[0]
+        sale = Sale.get(sale_view.id, connection=self.conn)
+        print_report(SaleInvoice, sale, date=invoice_data,
+                     default_filename=SaleInvoice.default_filename,
+                     preview_callback=self._preview_invoice_as_pdf,
+                     title=_(u"Printing Invoice"),
+                     preview_label=_(u"Preview Model"))
 
     #
     # Hooks
@@ -135,3 +163,7 @@ class SalesApp(SearchableAppWindow):
     def _on_services_action_clicked(self, *args):
         self.run_dialog(ServiceSearch, self.conn, hide_cost_column=True,
                         hide_toolbar=True)
+
+    def _on_print_invoice__activate(self, *args):
+        return self._print_invoice()
+
