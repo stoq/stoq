@@ -80,6 +80,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="NewUser">
+                        <property name="name">NewUser</property>
+                        <property name="label" translatable="yes">New User...</property>
+                        <signal handler="_on_new_user_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;n</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Open">
                         <property name="name">Open</property>
                         <property name="tooltip" translatable="yes">Open a file</property>
@@ -134,7 +142,7 @@
                 <child>
                     <widget class="GtkAction" id="SearchMenu">
                         <property name="name">SearchMenu</property>
-                        <property name="label" translatable="yes">Sea_rch</property>
+                        <property name="label" translatable="yes">Sear_ch</property>
                     </widget>
                 </child>
                 <child>
@@ -212,7 +220,7 @@
 <menubar action="menubar" name="menubar">
 
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="NewUser" name="NewUser"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="admin">
