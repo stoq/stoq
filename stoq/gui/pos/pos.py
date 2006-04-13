@@ -282,8 +282,7 @@ class POSApp(AppWindow):
             return
         if sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             return
-        if not self.coupon:
-            self.coupon = FiscalCoupon(self.conn, self.sale)
+        self.coupon = FiscalCoupon(self.conn, self.sale)
         if self.sale.client:
             self.coupon.identify_customer(self.sale.client.get_adapted())
         while not self.coupon.open():
@@ -291,7 +290,7 @@ class POSApp(AppWindow):
                 _("It is not possible open a fiscal coupon"),
                 _("It is not possible to start a new sale if the "
                   "fiscal coupon cannot be opened."),
-                buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
+                buttons=((_("Cancel"), gtk.RESPONSE_CANCEL),
                          (_("Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                 self.app.shutdown()
 
@@ -504,6 +503,12 @@ class POSApp(AppWindow):
         self.sellables.select(service)
         self._coupon_add_item(service)
 
+    def _finish_coupon(self):
+        totalize = self.coupon.totalize()
+        has_payments = self.coupon.setup_payments()
+        close = self.coupon.close()
+        return totalize and has_payments and close
+
     def _sale_checkout(self, *args):
         param = sysparam(self.conn)
         skip_payment_step = (param.CONFIRM_SALES_ON_TILL and
@@ -511,10 +516,9 @@ class POSApp(AppWindow):
         if self.run_dialog(SaleWizard, self.conn, self.sale,
                            skip_payment_step=skip_payment_step):
             if not skip_payment_step and not param.CONFIRM_SALES_ON_TILL:
-                if (not self.coupon.totalize()
-                    or not self.coupon.setup_payments()
-                    or not self.coupon.close()):
+                if not self._finish_coupon():
                     return
+            self.coupon = self.sale = None
             self.conn.commit()
             self._clear_order()
 
