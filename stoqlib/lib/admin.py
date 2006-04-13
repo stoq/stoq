@@ -36,13 +36,16 @@ from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 from stoqlib.database import (setup_tables, get_registered_db_settings,
                               finish_transaction, run_sql_file)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import (new_transaction, print_msg,
+                                 set_current_user, get_connection)
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 
 _ = stoqlib_gettext
 
+USER_ADMIN_DEFAULT_NAME = _('administrator')
 
 def ensure_admin_user(administrator_password):
     from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
@@ -68,7 +71,7 @@ def ensure_admin_user(administrator_password):
     profile = UserProfile.create_profile_template(conn, _('Administrator'),
                                                   has_full_permission=True)
 
-    username = _('administrator')
+    username = USER_ADMIN_DEFAULT_NAME
     user = person_obj.addFacet(IUser, username=username,
                                password=administrator_password,
                                profile=profile, connection=conn)
@@ -79,6 +82,16 @@ def ensure_admin_user(administrator_password):
     finish_transaction(conn, 1)
     print_msg('done')
     return user
+
+def set_current_user_admin():
+    from stoqlib.domain.person import PersonAdaptToUser
+    conn = get_connection()
+    branch = sysparam(conn).CURRENT_BRANCH
+    user = IUser(branch.get_adapted(), connection=conn)
+    if not user:
+        raise DatabaseInconsistency("You should have a user admin set "
+                                    "at this point")
+    set_current_user(user)
 
 def ensure_sellable_units():
     from stoqlib.domain.sellable import SellableUnit
@@ -102,8 +115,8 @@ def create_base_schema():
     finish_transaction(conn, 1)
 
 @argcheck(str, bool, bool, bool)
-def initialize_system(password, delete_only=False, list_tables=False,
-                      verbose=False):
+def initialize_system(password='', delete_only=False, 
+                      list_tables=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
