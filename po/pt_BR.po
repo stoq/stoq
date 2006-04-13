@@ -851,7 +851,7 @@ msgstr ""
 
 #: ../stoqlib/lib/parameters.py:59
 msgid "Current Warehouse"
-msgstr "Al_moxarifado _atual"
+msgstr "Almoxarifado Atual"
 
 #: ../stoqlib/lib/parameters.py:60
 msgid "The company's warehouse"
