@@ -121,9 +121,9 @@ class SystemParameterEditor(BaseEditor):
             self._setup_comboboxentry_slave()
         elif isinstance(data, bool):
             self._setup_radio_slave()
-        elif type(data) in (int, float):
+        elif isinstance(data, (int, float)):
             self._setup_entry_slave()
-        elif type(data) is str:
+        elif isinstance(data, unicode):
             self._setup_entry_slave()
         else:
             raise TypeError("ParameterData for `%s' has an invalid "

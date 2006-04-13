@@ -51,151 +51,151 @@ class ParameterDetails:
         self.long_desc = long_desc
 
 _parameter_info = {
-    'CURRENT_BRANCH': ParameterDetails(_('General'), _('Current Branch'),
-                                       _('The current branch associated with '
+    'CURRENT_BRANCH': ParameterDetails(_(u'General'), _(u'Current Branch'),
+                                       _(u'The current branch associated with '
                                          'the current system installation.')),
-    'CURRENT_WAREHOUSE': ParameterDetails(_('General'), _('Current Warehouse'),
-                                          _('The company\'s warehouse')),
-    'DEFAULT_SALESPERSON_ROLE': ParameterDetails(_('Sales'),
-                                                 _('Default Salesperson Role'),
-                                                 _('Defines which of the '
+    'CURRENT_WAREHOUSE': ParameterDetails(_(u'General'), _(u'Current Warehouse'),
+                                          _(u'The company\'s warehouse')),
+    'DEFAULT_SALESPERSON_ROLE': ParameterDetails(_(u'Sales'),
+                                                 _(u'Default Salesperson Role'),
+                                                 _(u'Defines which of the '
                                                    'employee roles existent '
                                                    'in the system is the '
                                                    'salesperson role')),
-    'SUGGESTED_SUPPLIER': ParameterDetails(_('Purchase'),
-                                           _('Suggested Supplier'),
-                                           _('The supplier suggested when we '
+    'SUGGESTED_SUPPLIER': ParameterDetails(_(u'Purchase'),
+                                           _(u'Suggested Supplier'),
+                                           _(u'The supplier suggested when we '
                                              'are adding a new product\'s '
                                              'supplier in the system')),
-    'DEFAULT_BASE_CATEGORY': ParameterDetails(_('Purchase'),
-                                              _('Default Base Sellable '
+    'DEFAULT_BASE_CATEGORY': ParameterDetails(_(u'Purchase'),
+                                              _(u'Default Base Sellable '
                                                 'Category'),
-                                              _('A default base sellable '
+                                              _(u'A default base sellable '
                                                 'category which we always '
                                                 'get as a suggestion when '
                                                 'adding a new Sellable on '
                                                 'the system')),
-    'DEFAULT_PAYMENT_DESTINATION': ParameterDetails(_('Financial'),
-                                                    _('Default Payment '
+    'DEFAULT_PAYMENT_DESTINATION': ParameterDetails(_(u'Financial'),
+                                                    _(u'Default Payment '
                                                       'Destination'),
-                                                    _('A default payment '
+                                                    _(u'A default payment '
                                                       'destination which will '
                                                       'be used for all the '
                                                       'created payments until '
                                                       'the user change the '
                                                       'destination of each '
                                                       'payment method.')),
-    'BASE_PAYMENT_METHOD': ParameterDetails(_('Financial'),
-                                            _('Base Payment Method'),
-                                            _('The base payment method which '
+    'BASE_PAYMENT_METHOD': ParameterDetails(_(u'Financial'),
+                                            _(u'Base Payment Method'),
+                                            _(u'The base payment method which '
                                               'can easily be converted to '
                                               'other methods like check and '
                                               'bill.')),
-    'METHOD_MONEY': ParameterDetails(_('Financial'), _('Money Payment Method'),
-                                     _('Definition of the money payment '
+    'METHOD_MONEY': ParameterDetails(_(u'Financial'), _(u'Money Payment Method'),
+                                     _(u'Definition of the money payment '
                                        'method. This parameter is not '
                                        'editable')),
-    'DELIVERY_SERVICE': ParameterDetails(_('Sales'), _('Delivery Service'),
-                                         _('The default delivery service '
+    'DELIVERY_SERVICE': ParameterDetails(_(u'Sales'), _(u'Delivery Service'),
+                                         _(u'The default delivery service '
                                            'in the system.')),
-    'DEFAULT_GIFT_CERTIFICATE_TYPE': ParameterDetails(_('Sales'),
-                                                      _('Default Gift '
+    'DEFAULT_GIFT_CERTIFICATE_TYPE': ParameterDetails(_(u'Sales'),
+                                                      _(u'Default Gift '
                                                         'Certificate Type'),
-                                                      _('The default gift '
+                                                      _(u'The default gift '
                                                         'certificate type '
                                                         'used when canceling '
                                                         'sales and during '
                                                         'renegotiations.')),
-    'USE_LOGIC_QUANTITY': ParameterDetails(_('Stock'), _('Use Logic Quantity'),
-                                           _('An integer that defines if the '
+    'USE_LOGIC_QUANTITY': ParameterDetails(_(u'Stock'), _(u'Use Logic Quantity'),
+                                           _(u'An integer that defines if the '
                                              'company can work or not with '
                                              'logic quantities during stock '
                                              'operations. See StockItem '
                                              'documentation.')),
-    'MAX_LATE_DAYS': ParameterDetails(_('Sales'),
-                                      _('Client Maximum Late Days'),
-                                      _('An integer that represents a maximum '
+    'MAX_LATE_DAYS': ParameterDetails(_(u'Sales'),
+                                      _(u'Client Maximum Late Days'),
+                                      _(u'An integer that represents a maximum '
                                         'number of days which a certain '
                                         'client can have unpaid payments  '
                                         'with normal status.')),
-    'ACCEPT_ORDER_PRODUCTS': ParameterDetails(_('Sales'),
-                                              _('Accept Order Products'),
-                                              _('Can this company make sales '
+    'ACCEPT_ORDER_PRODUCTS': ParameterDetails(_(u'Sales'),
+                                              _(u'Accept Order Products'),
+                                              _(u'Can this company make sales '
                                                 'for products that doesn\'t '
                                                 'actually exist in the '
                                                 'stock ? If this parameter '
                                                 'is True we can order '
                                                 'products.')),
-    'DECIMAL_SIZE': ParameterDetails(_('General'), _('Decimal Size'),
-                                     _('The total size of digits used '
+    'DECIMAL_SIZE': ParameterDetails(_(u'General'), _(u'Decimal Size'),
+                                     _(u'The total size of digits used '
                                        'by decimal numbers in Stoq '
                                        'applications. Decimal numbers '
                                        'can be quantities, prices and '
                                        'payment values.')),
-    'DECIMAL_PRECISION': ParameterDetails(_('General'), _('Decimal Precision'),
-                                          _('The precision size used '
+    'DECIMAL_PRECISION': ParameterDetails(_(u'General'), _(u'Decimal Precision'),
+                                          _(u'The precision size used '
                                             'by decimal numbers in Stoq '
                                             'applications. Decimal numbers '
                                             'can be quantities, prices and '
                                             'payment values.')),
-    'CITY_SUGGESTED': ParameterDetails(_('General'), _('City Suggested'),
-                                       _('When adding a new address for a '
+    'CITY_SUGGESTED': ParameterDetails(_(u'General'), _(u'City Suggested'),
+                                       _(u'When adding a new address for a '
                                          'certain person we will always '
                                          'suggest this city.')),
-    'STATE_SUGGESTED': ParameterDetails(_('General'), _('State Suggested'),
-                                        _('When adding a new address for a '
+    'STATE_SUGGESTED': ParameterDetails(_(u'General'), _(u'State Suggested'),
+                                        _(u'When adding a new address for a '
                                           'certain person we will always '
                                           'suggest this state.')),
-    'COUNTRY_SUGGESTED': ParameterDetails(_('General'), _('Country Suggested'),
-                                          _('When adding a new address for a '
+    'COUNTRY_SUGGESTED': ParameterDetails(_(u'General'), _(u'Country Suggested'),
+                                          _(u'When adding a new address for a '
                                             'certain person we will always '
                                             'suggest this country.')),
-    'HAS_DELIVERY_MODE': ParameterDetails(_('Sales'), _('Has Delivery Mode'),
-                                          _('Does this branch work with '
+    'HAS_DELIVERY_MODE': ParameterDetails(_(u'Sales'), _(u'Has Delivery Mode'),
+                                          _(u'Does this branch work with '
                                             'delivery service? If not, the '
                                             'delivery option will be disable '
                                             'on Point of Sales Application.')),
-    'HAS_STOCK_MODE': ParameterDetails(_('Stock'), _('Has Stock Mode'),
-                                       _('Does this branch work with storable '
+    'HAS_STOCK_MODE': ParameterDetails(_(u'Stock'), _(u'Has Stock Mode'),
+                                       _(u'Does this branch work with storable '
                                          'items? If the answer is negative, '
                                          'we will disable stock operations in '
                                          'the system.')),
-    'EDIT_SELLABLE_PRICE': ParameterDetails(_('Sales'),
-                                            _('Edit Sellable Price'),
+    'EDIT_SELLABLE_PRICE': ParameterDetails(_(u'Sales'),
+                                            _(u'Edit Sellable Price'),
                                             _('Can we change the price '
                                               'attribute of a SellableItem '
                                               'object during a sale?')),
-    'MAX_SEARCH_RESULTS': ParameterDetails(_('General'), _('Max Search Results'),
-                                           _('The maximum number of results '
+    'MAX_SEARCH_RESULTS': ParameterDetails(_(u'General'), _(u'Max Search Results'),
+                                           _(u'The maximum number of results '
                                              'we must show after searching '
                                              'in any dialog.')),
-    'MANDATORY_INTEREST_CHARGE': ParameterDetails(_('Sales'),
-                                                  _('Mandatory Interest Charge'),
-                                                  _('Once this paramter is set,'
+    'MANDATORY_INTEREST_CHARGE': ParameterDetails(_(u'Sales'),
+                                                  _(u'Mandatory Interest Charge'),
+                                                  _(u'Once this paramter is set,'
                                                     ' the charge of monthly '
                                                     'interest will be mandatory '
                                                     'for every payment')),
-    'CONFIRM_SALES_ON_TILL': ParameterDetails(_('Sales'),
-                                              _('Confirm Sales on Till'),
-                                              _('Once this parameter is set, '
+    'CONFIRM_SALES_ON_TILL': ParameterDetails(_(u'Sales'),
+                                              _(u'Confirm Sales on Till'),
+                                              _(u'Once this parameter is set, '
                                                 'the sales confirmation are '
                                                 'only made on till '
                                                 'application and the fiscal '
                                                 'coupon will be printed on '
                                                 'that application instead of '
                                                 'Point of Sales')),
-    'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_('Sales'),
-                                              _('Accept Change Salesperson'),
-                                              _('Once this parameter is set '
+    'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_(u'Sales'),
+                                              _(u'Accept Change Salesperson'),
+                                              _(u'Once this parameter is set '
                                                 'to true, the user will be '
                                                 'able to change the '
                                                 'salesperson of an opened '
                                                 'order on sale checkout '
                                                 'dialog')),
-    'SET_PAYMENT_METHODS_ON_TILL': ParameterDetails(_('Financial'),
-                                                    _('Set Payment Methods on '
+    'SET_PAYMENT_METHODS_ON_TILL': ParameterDetails(_(u'Financial'),
+                                                    _(u'Set Payment Methods on '
                                                       'Till'),
-                                                    _('Do not show payment '
+                                                    _(u'Do not show payment '
                                                       'method definitions step '
                                                       'on SaleWizard through '
                                                       'POS application if '
@@ -203,10 +203,10 @@ _parameter_info = {
                                                       'is set. This step will '
                                                       'only be show on Till '
                                                       'application.')),
-    'USE_PURCHASE_PREVIEW_PAYMENTS': ParameterDetails(_('Purchase'),
-                                                      _('Use Purchase Preview '
+    'USE_PURCHASE_PREVIEW_PAYMENTS': ParameterDetails(_(u'Purchase'),
+                                                      _(u'Use Purchase Preview '
                                                         'Payments'),
-                                                      _('Generate preview '
+                                                      _(u'Generate preview '
                                                         'payments for new '
                                                         'purchases which are '
                                                         'not received yet. '
@@ -216,18 +216,18 @@ _parameter_info = {
                                                         'also confirmed as '
                                                         'valid payments with '
                                                         'STATUS_TO_PAY')),
-    'RETURN_MONEY_ON_SALES': ParameterDetails(_('Sales'),
-                                              _('Return Money On Sales'),
-                                              _('Once this parameter is set '
+    'RETURN_MONEY_ON_SALES': ParameterDetails(_(u'Sales'),
+                                              _(u'Return Money On Sales'),
+                                              _(u'Once this parameter is set '
                                                 'the salesperson can return '
                                                 'money to clients when there '
                                                 'is overpaid values in sales '
                                                 'with gift certificates as '
                                                 'payment method.')),
-    'RECEIVE_PRODUCTS_WITHOUT_ORDER': ParameterDetails(_('Purchase'),
-                                                       _('Receive Products '
+    'RECEIVE_PRODUCTS_WITHOUT_ORDER': ParameterDetails(_(u'Purchase'),
+                                                       _(u'Receive Products '
                                                          'Without Order'),
-                                                       _('Can we receive '
+                                                       _(u'Can we receive '
                                                          'products without '
                                                          'having a purchase '
                                                          'order created for '
@@ -238,9 +238,9 @@ _parameter_info = {
                                                          'to the second step '
                                                          'with no order '
                                                          'selected.')),
-    'MAX_SALE_ORDER_VALIDITY': ParameterDetails(_('Sales'),
-                                                _('Max sale order validity'),
-                                                _('The max number of days '
+    'MAX_SALE_ORDER_VALIDITY': ParameterDetails(_(u'Sales'),
+                                                _(u'Max sale order validity'),
+                                                _(u'The max number of days '
                                                   'that a sale order is '
                                                   'valid'))
 }
@@ -280,9 +280,9 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
-        ParameterAttr('CITY_SUGGESTED', str, initial='Belo Horizonte'),
-        ParameterAttr('STATE_SUGGESTED', str, initial='MG'),
-        ParameterAttr('COUNTRY_SUGGESTED', str, initial='Brasil'),
+        ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Belo Horizonte'),
+        ParameterAttr('STATE_SUGGESTED', unicode, initial=u'MG'),
+        ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brasil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
         ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
@@ -297,25 +297,25 @@ class ParameterAccess(ClassInittableObject):
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('SUGGESTED_SUPPLIER',
-                      'person.PersonAdaptToSupplier'),
+                      u'person.PersonAdaptToSupplier'),
         ParameterAttr('CURRENT_BRANCH',
-                      'person.PersonAdaptToBranch'),
+                      u'person.PersonAdaptToBranch'),
         ParameterAttr('DEFAULT_BASE_CATEGORY',
-                      'sellable.BaseSellableCategory'),
+                      u'sellable.BaseSellableCategory'),
         ParameterAttr('DEFAULT_SALESPERSON_ROLE',
-                      'person.EmployeeRole'),
+                      u'person.EmployeeRole'),
         ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
-                      'payment.destination.StoreDestination'),
+                      u'payment.destination.StoreDestination'),
         ParameterAttr('BASE_PAYMENT_METHOD',
-                      'payment.methods.PaymentMethod'),
+                      u'payment.methods.PaymentMethod'),
         ParameterAttr('METHOD_MONEY',
-                      'payment.methods.PMAdaptToMoneyPM'),
+                      u'payment.methods.PMAdaptToMoneyPM'),
         ParameterAttr('DELIVERY_SERVICE',
-                      'service.ServiceAdaptToSellable'),
+                      u'service.ServiceAdaptToSellable'),
         ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
-                      'giftcertificate.GiftCertificateType'),
+                      u'giftcertificate.GiftCertificateType'),
         ParameterAttr('CURRENT_WAREHOUSE',
-                      'person.PersonAdaptToCompany'),
+                      u'person.PersonAdaptToCompany'),
         ]
 
     _cache = {}
@@ -334,7 +334,7 @@ class ParameterAccess(ClassInittableObject):
 
     def _set_schema(self, field_name, field_value, is_editable=True):
         ParameterData(connection=self.conn, field_name=field_name,
-                      field_value=str(field_value), is_editable=is_editable)
+                      field_value=unicode(field_value), is_editable=is_editable)
 
     @classmethod
     def __class_init__(cls, namespace):
@@ -380,7 +380,7 @@ class ParameterAccess(ClassInittableObject):
 
     def get_parameter_by_field(self, field_name, field_type):
         from stoqlib.domain.base import AbstractModel
-        if isinstance(field_type, basestring):
+        if isinstance(field_type, unicode):
             field_type = namedAny('stoqlib.domain.' + field_type)
         if self._cache.has_key(field_name):
             param = self._cache[field_name]
@@ -470,7 +470,7 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_SALESPERSON_ROLE"
         if self.get_parameter_by_field(key, EmployeeRole):
             return
-        role = EmployeeRole(name='Salesperson',
+        role = EmployeeRole(name=u'Salesperson',
                             connection=self.conn)
         self._set_schema(key, role.id, is_editable=False)
 
@@ -481,21 +481,21 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, table):
             return
 
-        person_obj = Person(name="Async Open Source",
-                            phone_number="33760125", fax_number="35015394",
+        person_obj = Person(name=u"Async Open Source",
+                            phone_number=u"33760125", fax_number=u"35015394",
                             connection=self.conn)
-        city_location = CityLocation(city="Sao Carlos", state="SP",
-                                     country="Brasil", connection=self.conn)
-        main_address = Address(street="Orlando Damiano", number=2212,
-                               district="Jd Macarengo", postal_code="13560-450",
-                               is_main_address=True, person=person_obj,
-                               city_location=city_location,
+        city_location = CityLocation(city=u"São Carlos", state=u"SP",
+                                     country=u"Brasil", connection=self.conn)
+        main_address = Address(street=u"Orlando Damiano", number=2212,
+                               district=u"Jd Macarengo",
+                               postal_code=u"13560-450", is_main_address=True,
+                               person=person_obj, city_location=city_location,
                                connection=self.conn)
         person_obj.addFacet(ICompany, cnpj='03.852.995/0001-07',
-                            fancy_name="Async Open Source",
+                            fancy_name=u"Async Open Source",
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
-        branch.manager = Person(connection=self.conn, name="Manager")
+        branch.manager = Person(connection=self.conn, name=u"Manager")
         self._set_schema(key, branch.id)
 
     def ensure_current_warehouse(self):
@@ -519,7 +519,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, StoreDestination):
             return
         branch = self.CURRENT_BRANCH
-        pm = StoreDestination(description=_('Default Store Destination'),
+        pm = StoreDestination(description=_(u'Default Store Destination'),
                               branch=branch,
                               connection=self.conn)
         self._set_schema(key, pm.id)
@@ -552,7 +552,7 @@ class ParameterAccess(ClassInittableObject):
         service = Service(connection=self.conn)
 
         sellable_info = BaseSellableInfo(connection=self.conn,
-                                         description=_('Delivery'))
+                                         description=_(u'Delivery'))
         sellable = service.addFacet(ISellable,
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
@@ -567,7 +567,7 @@ class ParameterAccess(ClassInittableObject):
         key = "DEFAULT_GIFT_CERTIFICATE_TYPE"
         if self.get_parameter_by_field(key, GiftCertificateType):
             return
-        description = _('General Gift Certificate')
+        description = _(u'General Gift Certificate')
         sellable_info = BaseSellableInfo(connection=self.conn,
                                          description=description,
                                          price=currency(0))

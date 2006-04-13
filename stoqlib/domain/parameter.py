@@ -24,7 +24,7 @@
 ##
 """ Domain classes for handling parameters """
 
-from sqlobject import UnicodeCol, BoolCol
+from sqlobject import UnicodeCol, BoolCol, StringCol
 
 from stoqlib.domain.base import Domain
 
@@ -35,7 +35,7 @@ class ParameterData(Domain):
     field_value = the current result(or value) of this parameter
     is_editable = if the item can't be edited through an editor.
     """
-    field_name = UnicodeCol(alternateID=True)
+    field_name = StringCol(alternateID=True)
     field_value = UnicodeCol()
     is_editable = BoolCol()
 
