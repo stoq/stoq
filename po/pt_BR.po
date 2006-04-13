@@ -411,7 +411,7 @@ msgstr "Não é possivel vender este produto"
 
 #: ../stoq/gui/pos/pos.py:288
 msgid "It is not possible open a fiscal coupon"
-msgstr "Não é possível abrir o coupon fiscal"
+msgstr "Não é possível abrir o cupom fiscal"
 
 #: ../stoq/gui/pos/pos.py:289
 msgid ""
