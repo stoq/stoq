@@ -344,11 +344,13 @@ class AbstractSellable(InheritableModelAdapter):
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
                               notify_callback):
-        query = AND(cls.q.barcode == barcode, extra_query)
-        sellables = cls.select(query, connection=conn)
+        q1 = AbstractSellable.q.barcode == barcode
+        query = AND(q1, extra_query)
+        sellables = AbstractSellable.select(query, connection=conn)
         qty = sellables.count()
         if not qty:
-            msg = _("The sellable with barcode '%s' doesn't exists" % barcode)
+            msg = _("The sellable with barcode '%s' doesn't exists or is "
+                    "not available to be sold" % barcode)
             notify_callback(msg)
             return
         if qty != 1:
@@ -369,7 +371,7 @@ class AbstractSellable(InheritableModelAdapter):
                           if the sellable barcode doesn't exists
 
         """
-        extra_query = cls.q.status == cls.STATUS_AVAILABLE
+        extra_query = AbstractSellable.q.status == AbstractSellable.STATUS_AVAILABLE
         return cls._get_sellables_by_barcode(conn, barcode, extra_query,
                                           notify_callback)
 
