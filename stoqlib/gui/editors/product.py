@@ -34,6 +34,7 @@ from kiwi.utils import gsignal
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.slaves.product import TributarySituationSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.product import ProductSupplierInfo, Product
@@ -44,11 +45,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-
 #
 # Slaves
 #
-
 
 class ProductSupplierSlave(BaseEditorSlave):
     """ A basic slave for suppliers selection.  This slave emits the
@@ -200,7 +199,6 @@ class ProductSupplierEditor(BaseEditor):
         if not value or value <= currency(0):
             return ValidationError("Value must be greater than zero.")
 
-
 class ProductEditor(SellableEditor):
     model_name = _('Product')
     model_type = Product
@@ -210,6 +208,9 @@ class ProductEditor(SellableEditor):
         supplier_slave.connect("cost-changed",
                                self._on_supplier_slave__cost_changed)
         self.attach_slave('product_supplier_holder', supplier_slave)
+        tax_slave = TributarySituationSlave(self.conn, ISellable(self.model))
+        # XXX: tax_holder is a Brazil-specifc area
+        self.attach_slave("tax_holder", tax_slave)
 
     def setup_widgets(self):
         self.notes_lbl.set_text(_('Product details'))

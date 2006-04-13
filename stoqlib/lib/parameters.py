@@ -242,9 +242,18 @@ _parameter_info = {
                                                 _(u'Max sale order validity'),
                                                 _(u'The max number of days '
                                                   'that a sale order is '
-                                                  'valid'))
+                                                  'valid')),
+    # These two parameters are Brazil-specific
+    'ICMS_TAX': ParameterDetails(_("Sales"),
+                                 _("Default ICMS value"),
+                                 _("Default ICMS to be applied on all the "
+                                   "products of a sale. ")),
+    'SUBSTITUTION_TAX': ParameterDetails(_("Sales"),
+                                         _("Default Substitution tax"),
+                                         _("The tax applied on all sale "
+                                           "products with substitution "
+                                           "tax type")),
 }
-
 
 
 class ParameterAttr:
@@ -263,7 +272,6 @@ class ParameterAccess(ClassInittableObject):
 
         parameter = sysparam(conn).parameter_name
     """
-
 
     # New parameters must always be defined here
     constants = [
@@ -293,6 +301,8 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
+                 ParameterAttr('ICMS_TAX', int, initial=18),
+                 ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
 
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.

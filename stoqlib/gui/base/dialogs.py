@@ -316,11 +316,10 @@ class PrintDialog(BasicDialog):
     title = _("Print Dialog")
 
     def __init__(self, report_class, *args, **kwargs):
-        if not issubclass(report_class, BaseDocTemplate):
-            raise TypeError("Invalid report class type specified: %r"
-                            % report_class)
+        # We don't have to check the relation of report_class with
+        # BaseDocTemplate,  since we can just use the PrintDialog
+        # to print a text file, for instance.
         BasicDialog.__init__(self)
-
         self._report_class = report_class
         preview_label = kwargs.pop("preview_label", None)
         default_filename = kwargs.pop("default_filename", None)
@@ -434,4 +433,3 @@ def confirm_dialog(msg, title=None, size=None, ok_label=None):
 
 def print_report(report_class, *args, **kwargs):
     run_dialog(PrintDialog, None, report_class, *args, **kwargs)
-

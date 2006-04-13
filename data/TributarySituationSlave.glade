@@ -1,0 +1,71 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="TributarySituationSlave">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkHBox" id="hbox1">
+                <property name="border_width">5</property>
+                <property name="spacing">5</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="label1">
+                        <property name="label" context="yes" translatable="yes">Tributary Situation:</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboBox" id="tax_type">
+                        <property name="data_type">int</property>
+                        <property name="model_attribute">tax_type</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkHBox" id="tax_box">
+                        <property name="spacing">5</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxySpinButton" id="tax_value">
+                                <property name="adjustment">0 0 100 1 10 0</property>
+                                <property name="data_type">currency</property>
+                                <property name="digits">2</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">tax_value</property>
+                                <property name="text" context="yes" translatable="yes">0,00</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">5</property>
+                            </widget>
+                            <packing>
+                                <property name="fill">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">%</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
