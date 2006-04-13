@@ -126,9 +126,20 @@ class AdminApp(SearchableAppWindow):
             raise ValueError('Invalid status for User table. got %s'
                              % status)
 
+    def _add_user(self):
+        conn = new_transaction()
+        model = run_person_role_dialog(UserEditor, self, conn)
+        if finish_transaction(conn, model):
+            self.searchbar.search_items()
+            model = self.table.get(model.id, connection=self.conn)
+            self.users.select(model)
+
     #
     # Callbacks
     #
+
+    def _on_new_user_action_clicked(self, *args):
+        self._add_user()
 
     def on_users__double_click(self, *args):
         self._edit_user()
@@ -150,12 +161,7 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(BranchSearch, self.conn, hide_footer=True)
 
     def on_add_button__clicked(self, *args):
-        conn = new_transaction()
-        model = run_person_role_dialog(UserEditor, self, conn)
-        if finish_transaction(conn, model):
-            self.searchbar.search_items()
-            model = self.table.get(model.id, connection=self.conn)
-            self.users.select(model)
+        self._add_user()
 
     def on_edit_button__clicked(self, *args):
         self._edit_user()
