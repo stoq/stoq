@@ -29,7 +29,8 @@ from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IClient, ISalesPerson
+from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
+                                       ICompany)
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.person import run_person_role_dialog
@@ -44,7 +45,8 @@ class NewOrderEditor(BaseEditor):
     gladefile = 'NewOrderEditor'
     proxy_widgets = ('client',
                      'order_number',
-                     'salesperson')
+                     'salesperson',
+                     'individual_role_button')
 
     def _setup_client_entry(self):
         client_table = Person.getAdapterClass(IClient)
@@ -59,10 +61,37 @@ class NewOrderEditor(BaseEditor):
         self.details_button.set_sensitive(False)
         self._setup_client_entry()
         self._update_client_widgets()
+        self._update_client_role_box()
+        for radio_button, data_value in [(self.individual_role_button,
+                                          Sale.CLIENT_INDIVIDUAL),
+                                         (self.company_role_button,
+                                          Sale.CLIENT_COMPANY)]:
+            radio_button.set_property("data-type", int)
+            radio_button.set_property("data-value", data_value)
 
     def _update_client_widgets(self):
         client_selected = self.client_check.get_active()
         self.client.set_sensitive(client_selected)
+
+    def _update_client_role_box(self):
+        if self.model.client:
+            person = self.model.client.get_adapted()
+            if (ICompany(person, connection=self.conn)
+                and IIndividual(person, connection=self.conn)):
+                self.clientrole_box.show()
+                return
+        self.clientrole_box.hide()
+
+    def _update_client_role(self):
+        if not self.model.client:
+            self.model.client_role = None
+            return
+        person = self.model.client.get_adapted()
+        if (ICompany(person, connection=self.conn)
+            and not IIndividual(person, connection=self.conn)):
+            self.model.client_role = Sale.CLIENT_COMPANY
+        else:
+            self.model.client_role = Sale.CLIENT_INDIVIDUAL
 
     #
     # BaseEditor hooks
@@ -86,6 +115,10 @@ class NewOrderEditor(BaseEditor):
     # Callbacks
     #
 
+    def on_client__changed(self, combo):
+        self._update_client_role_box()
+        self._update_client_role()
+
     def on_client_button__clicked(self, *args):
         client = run_person_role_dialog(ClientEditor, self, self.conn,
                                         self.model.client)
@@ -100,8 +133,10 @@ class NewOrderEditor(BaseEditor):
 
     def on_client_check__toggled(self, *args):
         self._update_client_widgets()
+        self._update_client_role_box()
 
     def on_anonymous_check__toggled(self, *args):
         self._update_client_widgets()
-        self.client.model = None
-        self.client.set_text('')
+        self.model.client = None
+        self.proxy.update('client')
+        self._update_client_role_box()
