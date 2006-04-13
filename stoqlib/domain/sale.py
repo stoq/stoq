@@ -50,15 +50,14 @@ from stoqlib.domain.interfaces import (IContainer, IClient,
                                        IPaymentGroup, ISellable,
                                        IRenegotiationSaleReturnMoney,
                                        IRenegotiationGiftCertificate,
-                                       IRenegotiationOutstandingValue)
+                                       IRenegotiationOutstandingValue,
+                                       IIndividual, ICompany)
 
 _ = stoqlib_gettext
-
 
 #
 # Base Domain Classes
 #
-
 
 class Sale(Domain):
     """Sale object implementation.
@@ -75,6 +74,11 @@ class Sale(Domain):
         - I{till}: The Till operation where this sale lives. Note that every
                    sale and payment generated are always in a till operation
                    which defines a financial history of a store.
+        - I{client_role}: This field indicates what client role is tied with
+                          the sale order. This is important since a client
+                          can have two roles associated, i.e, Individual and/or
+                          Company. This is useful when printing the sale
+                          invoice.
     """
 
     implements(IContainer)
@@ -84,6 +88,9 @@ class Sale(Domain):
      STATUS_CLOSED,
      STATUS_CANCELLED,
      STATUS_REVIEWING) = range(5)
+
+    (CLIENT_INDIVIDUAL,
+     CLIENT_COMPANY) = range(2)
 
     statuses = {STATUS_OPENED:      _(u"Opened"),
                 STATUS_CONFIRMED:   _(u"Confirmed"),
@@ -99,6 +106,7 @@ class Sale(Domain):
     discount_value = PriceCol(default=0)
     charge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
+    client_role = IntCol(default=None)
 
     client = ForeignKey('PersonAdaptToClient', default=None)
     till = ForeignKey('Till')
@@ -153,6 +161,36 @@ class Sale(Domain):
     #
     # Auxiliar methods
     #
+
+    # Warning: "get_client_role" would be a Kiwi accessor here and this is not
+    # what we want.
+    def get_sale_client_role(self):
+        if not self.client:
+            return None
+        conn = self.get_connection()
+        person = self.client.get_adapted()
+        if self.client_role is None:
+            raise DatabaseInconsistency("The sale %r have a client but no "
+                                        "client_role defined." % self)
+        elif self.client_role == Sale.CLIENT_INDIVIDUAL:
+            individual = IIndividual(person, connection=conn)
+            if not individual:
+                raise DatabaseInconsistency("The client_role for sale %r says "
+                                            "that the client is an individual,"
+                                            " but it doesn't have an Individual"
+                                            " facet" % self)
+            return individual
+        elif self.client_role == Sale.CLIENT_COMPANY:
+            company = ICompany(person, connection=conn)
+            if not company:
+                raise DatabaseInconsistency("The client_role for sale %r says "
+                                            "that the client is a company but "
+                                            "it doesn't have a Company facet"
+                                            % self)
+            return company
+        else:
+            raise DatabaseInconsistency("Invalid client_role for sale %r, "
+                                        "got %r" % (self, self.client_role))
 
     def get_order_number_str(self):
         return u'%05d' % self.order_number

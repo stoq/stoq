@@ -24,9 +24,11 @@
 import decimal
 
 from kiwi.datatypes import currency
-from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
+from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
+                       BoolCol, IntCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
+from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import StockError, SellError, DatabaseInconsistency
@@ -72,6 +74,7 @@ class ProductSupplierInfo(Domain):
     icms = DecimalCol(default=0)
     supplier =  ForeignKey('PersonAdaptToSupplier')
     product =  ForeignKey('Product')
+
 
     #
     # Auxiliary methods
@@ -253,7 +256,25 @@ class ProductAdaptToSellable(AbstractSellable):
     """A product implementation as a sellable facet."""
 
     sellableitem_table = ProductSellableItem
+    tax_type = IntCol(default=TAX_ICMS)
+    tax_value = PriceCol(default=0)
 
+    tax_type_names = {
+        TAX_ICMS: _("Aliquot"),
+        TAX_SUBSTITUTION: _("Substitution"),
+        TAX_NONE: _("Isent"),
+        }
+
+    def _create(self, id, **kw):
+        if not 'tax_type' in kw:
+            kw['tax_type'] = TAX_ICMS
+        if not 'tax_value' in kw:
+            if kw['tax_type'] == TAX_ICMS:
+                kw['tax_value'] = sysparam(self.get_connection()).ICMS_TAX
+            else:
+                kw['tax_value'] = \
+                          sysparam(self.get_connection()).SUBSTITUTION_TAX
+        AbstractSellable._create(self, id, **kw)
 
 Product.registerFacet(ProductAdaptToSellable, ISellable)
 
