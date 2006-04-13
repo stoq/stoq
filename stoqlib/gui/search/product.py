@@ -121,7 +121,7 @@ class ProductSearch(SellableSearch):
         return [Column('code', title=_('Code'), data_type=int, sorted=True,
                        format='%03d', width=80),
                 Column('barcode', title=_('Barcode'), data_type=str,
-                       visible=False, width=80),
+                       width=80),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
@@ -132,7 +132,7 @@ class ProductSearch(SellableSearch):
                        width=80),
                 Column('stock', title=_('Stock Total'),
                        format_func=format_quantity,
-                       data_type=decimal.Decimal, width=80)]
+                       data_type=decimal.Decimal, width=100)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
