@@ -49,12 +49,11 @@ setup(
     author="Async Open Source",
     author_email="stoq-devel@async.com.br",
     description = "Useful drivers for Stoq and retail systems",
-    long_description="""
-    This is a powerful collection of device drivers written in Python and
-    totally focused on retail systems. Stoqdrivers also offers an
-    unified API for devices like fiscal printers which makes it easy to
-    embed in many applications.
-    """,
+    long_description=("This is a powerful collection of device drivers "
+                      "written in Python and totally focused on retail "
+                      "systems. Stoqdrivers also offers an unified API "
+                      "for devices like fiscal printers which makes it "
+                      "easy to embed in many applications."),
     url="http://www.stoq.com.br",
     license="GNU LGPL 2.1 (see COPYING)",
     packages=listpackages('stoqdrivers'),
@@ -63,3 +62,4 @@ setup(
     global_resources=dict(conf="$datadir/conf"),
     resources=dict(locale="$prefix/share/locale"),
     )
+
