@@ -46,7 +46,7 @@ setup(
     version= ".".join(map(str, __version__)),
     author="Async Open Source",
     author_email="stoq-devel@async.com.br",
-    description = "Useful drivers for Stoq and retail systems",
+    description="Useful drivers for Stoq and retail systems",
     long_description=("This is a powerful collection of device drivers "
                       "written in Python and totally focused on retail "
                       "systems. Stoqdrivers also offers an unified API "
