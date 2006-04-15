@@ -3,11 +3,9 @@
 # Setup file for StoqDrivers
 # Code by Async Open Source <http://www.async.com.br>
 
-
 #
 # Dependency checking
 #
-
 
 dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  'http://www.zope.org/Products/ZopeInterface',
