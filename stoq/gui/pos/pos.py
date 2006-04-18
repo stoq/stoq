@@ -173,6 +173,7 @@ class POSApp(AppWindow):
         self.sellable_unit_label.set_size("small")
         self.sellable_unit_label.set_bold(True)
         self.warning_label.set_size("small")
+        self.warning_box.hide()
 
     def _update_totals(self, *args):
         self.summary_label.update_total()
@@ -327,8 +328,6 @@ class POSApp(AppWindow):
                 self.price_slave.update()
                 self.warning_label.set_text(msg)
                 self.warning_box.show()
-        else:
-            self.warning_box.hide()
 
     def _run_search_dialog(self, dialog_type, **kwargs):
         # Save the current state of order before calling a search dialog
