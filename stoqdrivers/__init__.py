@@ -1,6 +1,6 @@
 __version__ = (0,3)
 
-from kiwi.environ import Library, EnvironmentError
+from kiwi.environ import Library
 
 __all__ = ["library"]
 
