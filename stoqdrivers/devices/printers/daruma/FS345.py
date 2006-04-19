@@ -148,6 +148,9 @@ class FS345(SerialBase):
     def __init__(self, *args, **kwargs):
         self._consts = kwargs.pop("consts", FS345Constants)
         SerialBase.__init__(self, *args, **kwargs)
+        self._customer_name = u""
+        self._customer_document = u""
+        self._customer_address = u""
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
