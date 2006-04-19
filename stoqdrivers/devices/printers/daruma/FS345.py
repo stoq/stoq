@@ -43,7 +43,8 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
                                     AuthenticationFailure, CommError,
                                     PendingReadX, CouponNotOpenError,
                                     OutofPaperError, PrinterOfflineError,
-                                    CouponOpenError)
+                                    CouponOpenError, CancelItemError,
+                                    CloseCouponError)
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
@@ -236,6 +237,11 @@ class FS345(SerialBase):
             raise DriverError("Bad discount/markup parameter")
         elif error == 10:
             raise CouponOpenError(_("Document is already open"))
+        elif error == 11:
+            raise CouponNotOpenError(_("Coupon is not open"))
+        elif error == 15:
+            raise CancelItemError(_("There is no such item in"
+                                    "coupon"))
         else:
             raise DriverError("Unhandled error: %d" % error)
 
@@ -401,7 +407,11 @@ class FS345(SerialBase):
                 l.append(message[i:i+LINE_LEN])
             message = '\n'.join(l)
 
-        self.send_command(CMD_CLOSE_COUPON, message + '\xff')
+        try:
+            self.send_command(CMD_CLOSE_COUPON, message + '\xff')
+        except DriverError:
+            raise CloseCouponError(_("It is not possible to close the "
+                                     "coupon"))
         return self._get_coupon_number()
 
     def summarize(self):
