@@ -331,7 +331,7 @@ class FS345(SerialBase):
                                                    int(float(quantity) * 1e3),
                                                    unit, description[:174])
         value = self.send_command(CMD_ADD_ITEM_3L13D53U, data)
-        return int(value[2:5])
+        return int(value[1:4])
 
     def coupon_cancel_item(self, item_id):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
