@@ -305,6 +305,18 @@ class FS345(SerialBase):
     def _get_coupon_number(self):
         return int(self._get_totalizers()[8:14])
 
+    def _add_payment(self, payment_method, value, description=''):
+        pm = self._consts.get_constant_value(payment_method)
+        rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
+                               '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
+                                                  description[:48]))
+        return float(rv) / 1e2
+
+    def _add_voucher(self, type, value):
+        data = "%s1%s%012d\xff" % (type, "0" * 12, # padding
+                                   int(float(value) * 1e2))
+        self.send_command(CMD_OPEN_VOUCHER, data)
+
     #
     # API implementation
     #
@@ -344,13 +356,6 @@ class FS345(SerialBase):
 
     def coupon_cancel_item(self, item_id):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
-
-    def _add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
-        rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
-                               '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
-                                                  description[:48]))
-        return float(rv) / 1e2
 
     def coupon_add_payment(self, payment_method, value, description=''):
         self._check_status()
@@ -426,11 +431,6 @@ class FS345(SerialBase):
 
         date = time.strftime('%d%m%y%H%M%S', time.localtime())
         self.send_command(CMD_REDUCE_Z, date)
-
-    def _add_voucher(self, type, value):
-        data = "%s1%s%012d\xff" % (type, "0" * 12, # padding
-                                   int(float(value) * 1e2))
-        self.send_command(CMD_OPEN_VOUCHER, data)
 
     def till_add_cash(self, value):
         self._add_voucher(CASH_IN_TYPE, value)
