@@ -85,10 +85,10 @@ def test_gui(options, tests=None):
         if not pid:
             # Do thread initialization here, in the child process
             # avoids strange X errors
-            from kiwi.ui.test.player import TimeOutError
+            from kiwi.ui.test.player import play_file, TimeOutError
 
             try:
-                execfile(filename, globs)
+                play_file(filename, globs)
             except TimeOutError, e:
                 print '*' * 50
                 print '* TIMEOUT ERROR: %s' % e
