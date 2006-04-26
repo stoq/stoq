@@ -306,7 +306,7 @@ class FS345(SerialBase):
         return int(self._get_totalizers()[8:14])
 
     def _add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
+        pm = self._consts.get_value(payment_method)
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
                                '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
                                                   description[:48]))
@@ -334,7 +334,7 @@ class FS345(SerialBase):
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge, unit_desc=''):
-        taxcode = self._consts.get_constant_value(taxcode)
+        taxcode = self._consts.get_value(taxcode)
         if charge:
             d = 1
             E = charge
@@ -345,7 +345,7 @@ class FS345(SerialBase):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = self._consts.get_constant_value(unit)
+            unit = self._consts.get_value(unit)
         data = '%2s%13s%d%04d%010d%08d%s%s\xff' % (taxcode, code[:13], d,
                                                    int(float(E) * 1e2),
                                                    int(float(price) * 1e3),

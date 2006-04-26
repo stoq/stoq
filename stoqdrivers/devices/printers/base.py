@@ -51,11 +51,16 @@ class BaseDriverConstants:
     _constants = None
 
     @classmethod
-    def get_constant_value(cls, name):
+    def get_items(cls):
+        return cls._constants.keys()
+
+    @classmethod
+    def get_value(cls, identifier):
         try:
-            return cls._constants[name]
+            return cls._constants[identifier]
         except KeyError:
-            raise ValueError("The constant value isn't valid")
+            raise ValueError("The constant identifier %r "
+                             "isn't valid", identifier)
 
 class BasePrinter(BaseDevice):
     device_dirname = "printers"

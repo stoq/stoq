@@ -41,7 +41,7 @@ class FS2100(FS345):
 
     def coupon_add_item(self, code, quantity, price, unit, description,
                         taxcode, discount, charge, unit_desc=''):
-        taxcode = self._consts.get_constant_value(taxcode)
+        taxcode = self._consts.get_value(taxcode)
         if charge:
             d = 2
             E = charge
@@ -54,7 +54,7 @@ class FS2100(FS345):
         desc_size = 0
 
         if unit != UNIT_CUSTOM:
-            unit = self._consts.get_constant_value(unit)
+            unit = self._consts.get_value(unit)
         else:
             unit = unit_desc
         # XXX: We need test correctly if the price's calcule is right (we

@@ -109,4 +109,3 @@ class BaseDevice(Logger):
         """
         gobject.io_add_watch(self._driver.fd, gobject.IO_IN,
                              lambda fd, cond: func(self, cond))
-

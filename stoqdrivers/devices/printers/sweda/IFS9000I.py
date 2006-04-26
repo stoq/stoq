@@ -459,7 +459,7 @@ class IFS9000I(SerialBase):
                         taxcode, dicount, charge, unit_desc=''):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
-        unit_code = self._consts.get_constant_value(unit)
+        unit_code = self._consts.get_value(unit)
         code = self._format_string(code, self.PRODUCT_CODE_CHAR_LEN, 'code')
         orig_qty = quantity
         quantity = self._format_quantity(quantity, 'quantity')
@@ -469,7 +469,7 @@ class IFS9000I(SerialBase):
         total = orig_qty * orig_price
         total = self._format_total(total, 'total')
 
-        taxcode = self._format_string(self._consts.get_constant_value(taxcode),
+        taxcode = self._format_string(self._consts.get_value(taxcode),
                                       3, "taxcode", left_justify=True)
         description = str(description)
         if len(description) > self.DESCRIPTION_CHAR_LEN:
@@ -527,7 +527,7 @@ class IFS9000I(SerialBase):
         self.send_command(self.CMD_COUPON_CANCEL)
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
+        pm = self._consts.get_value(payment_method)
         if description:
             description = '{' + description
         self.send_command(self.CMD_COUPON_TOTALIZE, pm,

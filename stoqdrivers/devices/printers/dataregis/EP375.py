@@ -493,8 +493,8 @@ class EP375(SerialBase, BaseChequePrinter):
             code_num = int(code[:6])
         except ValueError:
             code = "0" * 6 +  code
-        taxcode = self._consts.get_constant_value(taxcode)
-        unit = self._consts.get_constant_value(unit)
+        taxcode = self._consts.get_value(taxcode)
+        unit = self._consts.get_value(unit)
         item = CouponItem(code, description, taxcode, quantity, price,
                           discount, surcharge, unit)
         item_id = self._get_next_coupon_item_id()
@@ -534,7 +534,7 @@ class EP375(SerialBase, BaseChequePrinter):
         return coupon_total_value
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
+        pm = self._consts.get_value(payment_method)
         value = "%014d" % int(float(value) * 1e2)
 
         if ((not self._get_status().has_been_totalized())

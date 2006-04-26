@@ -35,13 +35,18 @@ stoqdrivers/devices/printers/interface.py:
 from zope.interface import Interface, Attribute
 
 class IDriverConstants(Interface):
-    """ This interface offers a simple method to get a constant printer value
-    (like a payment method code) through a common stoqdrivers constants.
+    """ This interface determines the methods to be implemented by all objects
+    that wants didacte constant values for stoqdrivers devices drivers.
     """
 
-    def get_constant_value(constant):
+    def get_items(self):
+        """ Returns all the constant identifiers which this object has
+        values assigned to.
+        """
+
+    def get_value(constant):
         """ Given one of the constants defined on stoqdrivers.constants,
-        returns the value recognized by the printer.
+        returns its value.
         """
 
 class IPrinter(Interface):

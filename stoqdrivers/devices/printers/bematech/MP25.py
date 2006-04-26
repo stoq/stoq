@@ -364,7 +364,7 @@ class MP25(SerialBase):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = self._consts.get_constant_value(unit)
+            unit = self._consts.get_value(unit)
         data = ("%c"       # command
                 "%02s"     # taxcode
                 "%09d"     # value
@@ -375,7 +375,7 @@ class MP25(SerialBase):
                 "%2s"      # unit
                 "%-48s\0"  # code
                 "%-200s\0" # description
-                % (CMD_ADD_ITEM, self._consts.get_constant_value(taxcode),
+                % (CMD_ADD_ITEM, self._consts.get_value(taxcode),
                    int(float(price) * 1e3), int(float(quantity) * 1e3),
                    (discount and int(float(discount) * 1e2) or 0),
                    (markup and int(float(markup) * 1e2) or 0), 0, unit,
@@ -395,7 +395,7 @@ class MP25(SerialBase):
         self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
+        pm = self._consts.get_value(payment_method)
         description = description and description[:80] or ""
         val = "%014d" % int(float(value) * 1e2)
         data = "%c%s%s%s" % (CMD_ADD_PAYMENT, pm, val, description)

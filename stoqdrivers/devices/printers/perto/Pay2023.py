@@ -264,8 +264,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
-            unit = self._consts.get_constant_value(unit)
-        taxcode = self._consts.get_constant_value(taxcode)
+            unit = self._consts.get_value(unit)
+        taxcode = self._consts.get_value(taxcode)
         self.send_command(Pay2023.CMD_ADD_ITEM, CodAliquota=taxcode,
                           CodProduto="\"%s\"" % code[:48],
                           NomeProduto="\"%s\"" % description[:200],
@@ -291,7 +291,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         return self.get_coupon_total_value()
 
     def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_constant_value(payment_method)
+        pm = self._consts.get_value(payment_method)
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
                           CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])
