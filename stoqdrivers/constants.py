@@ -31,8 +31,9 @@ stoqdrivers/constants.py:
 
 #
 # Special note regarding the constant values: it is *VERY IMPORTANT* each
-# constant have an unique value, i.e, two constants can't be have the same
-# value (1, eg) associated.
+# constant have an unique value. When adding new constants, add this at
+# the end of the tuple, *never* at middle or top, this can break user's
+# application.
 #
 (
     # Constants for product unit labels
