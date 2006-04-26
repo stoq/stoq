@@ -135,11 +135,12 @@ class SalesApp(SearchableAppWindow):
                 Column('client_name', title=_('Client'),
                        data_type=str, width=140),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=210),
+                       data_type=str, width=130),
                 Column('total_quantity', title=_('Items Quantity'),
                        data_type=decimal.Decimal, width=120,
                        format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency)]
+                Column('total', title=_('Total'), data_type=currency,
+                       width=120)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
