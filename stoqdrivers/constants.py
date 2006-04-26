@@ -29,6 +29,10 @@ stoqdrivers/constants.py:
     StoqDrivers constants
 """
 
+import gettext
+
+_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+
 #
 # Special note regarding the constant values: it is *VERY IMPORTANT* each
 # constant have an unique value. When adding new constants, add this at
@@ -55,4 +59,28 @@ stoqdrivers/constants.py:
     PRINTER_DEVICE,
     SCALE_DEVICE,
 ) = range(14)
+
+
+# TODO: Improve these descriptions
+_constant_descriptions = {
+    UNIT_WEIGHT: _(u"Weight unit"),
+    UNIT_METERS: _(u"Meters unit"),
+    UNIT_LITERS: _(u"Liters unit"),
+    UNIT_EMPTY: _(u"Empty unit"),
+    TAX_IOF: _(u"IOF tax"),
+    TAX_ICMS: _(u"ICMS tax"),
+    TAX_SUBSTITUTION: _(u"Substitution tax"),
+    TAX_EXEMPTION: _(u"Exemption tax"),
+    TAX_NONE: _(u"No tax"),
+    MONEY_PM: _(u"Money Payment Method"),
+    CHEQUE_PM: _(u"Cheque Payment Method"),
+    }
+
+def describe_constant(constant_id):
+    """ Given the constant identifier, return a short string describing it """
+    global _constant_descriptions
+    if not constant_id in _constant_descriptions:
+        raise ValueError("The constant by id %r doesn't exists or there "
+                         "is no description for it." % constant_id)
+    return _constant_descriptions[constant_id]
 
