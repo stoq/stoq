@@ -237,6 +237,11 @@ class ICouponPrinter(IPrinter):
         * remove_cash_value   (float)
         """
 
+    def get_constants():
+        """ Returns the object that implements IDriverConstants where the printer
+        is going to get constant values from.
+        """
+
 class IChequePrinter(IPrinter):
     """ Interface specification for cheque printers. """
 

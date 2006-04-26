@@ -439,6 +439,9 @@ class MP25(SerialBase):
             'remove_cash_value': Capability(min_size=0.1, digits=12, decimals=2),
             }
 
+    def get_constants(self):
+        return self._consts
+
     #
     # Here ends the implementation of the ICouponPrinter Driver Interface
     #

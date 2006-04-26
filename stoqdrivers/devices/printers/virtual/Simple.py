@@ -59,7 +59,8 @@ class Simple:
     coupon_printer_charset = "latin-1"
 
     def __init__(self, brand=None, model=None, device=None,
-                 config_file=None):
+                 config_file=None, consts=None):
+        self._consts = consts
         self._reset_flags()
 
     #
@@ -181,6 +182,9 @@ class Simple:
                     cheque_thirdparty=Capability(max_len=45),
                     cheque_value=Capability(digits=14, decimals=4),
                     cheque_city=Capability(max_len=27))
+
+    def get_constants(self):
+        return self._consts
 
     def summarize(self):
         return

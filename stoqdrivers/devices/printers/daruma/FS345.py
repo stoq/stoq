@@ -455,3 +455,6 @@ class FS345(SerialBase):
                                                  decimals=2),
                     add_cash_value=Capability(min_size=1, digits=10,
                                               decimals=2))
+
+    def get_constants(self):
+        return self._consts

@@ -604,6 +604,9 @@ class EP375(SerialBase, BaseChequePrinter):
                     remove_cash_value=Capability(min_size=1, digits=30,
                                                  decimals=2))
 
+    def get_constants(self):
+        return self._consts
+
     #
     # IChequePrinter implementation
     #

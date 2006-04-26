@@ -73,6 +73,9 @@ class BasePrinter(BaseDevice):
             raise TypeError("The driver `%r' doesn't implements a valid "
                             "interface" % self._driver)
 
+    def get_constants(self):
+        return self._driver.get_constants()
+
 def get_virtual_printer():
     from stoqdrivers.devices.printers.fiscal import FiscalPrinter
     return FiscalPrinter(brand='virtual', model='Simple')

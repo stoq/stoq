@@ -360,3 +360,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
                     cheque_thirdparty=Capability(max_len=45),
                     cheque_value=Capability(digits=14, decimals=4),
                     cheque_city=Capability(max_len=27))
+
+    def get_constants(self):
+        return self._consts

@@ -616,6 +616,9 @@ class IFS9000I(SerialBase):
                     remove_cash_value=Capability(digits=10,
                                                  decimals=2))
 
+    def get_constants(self):
+        return self._consts
+
     #
     # Auxiliar methods
     #
