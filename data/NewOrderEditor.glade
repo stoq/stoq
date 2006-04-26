@@ -23,14 +23,10 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="kiwilabel1">
-                                <property name="label" context="yes" translatable="yes">Salesperson:</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
-                                <property name="bottom_attach">2</property>
                                 <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -71,17 +67,12 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="salesperson">
-                                <property name="data_type">unicode</property>
-                                <property name="model_attribute">salesperson_name</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
+                            <placeholder/>
                             <packing>
-                                <property name="bottom_attach">2</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">1</property>
+                                <property name="bottom_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -120,10 +111,34 @@
                             </packing>
                         </child>
                         <child>
-                            <placeholder/>
+                            <widget class="GtkHBox" id="hbox2">
+                                <property name="spacing">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ProxyLabel" id="kiwilabel1">
+                                        <property name="label" context="yes" translatable="yes">Salesperson:</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                                <child>
+                                    <widget class="ProxyLabel" id="salesperson">
+                                        <property name="data_type">unicode</property>
+                                        <property name="model_attribute">salesperson_name</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
                             <packing>
                                 <property name="left_attach">2</property>
-                                <property name="right_attach">3</property>
+                                <property name="right_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -171,13 +186,6 @@
                             <packing>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">3</property>
-                                <property name="right_attach">4</property>
                                 <property name="top_attach">1</property>
                                 <property name="bottom_attach">2</property>
                             </packing>
@@ -210,13 +218,6 @@
                                 <property name="right_attach">4</property>
                                 <property name="top_attach">4</property>
                                 <property name="bottom_attach">5</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
                             </packing>
                         </child>
                         <child>
@@ -265,8 +266,6 @@
                 </child>
                 <child>
                     <widget class="GtkVBox" id="clientrole_box">
-                        <property name="border_width">6</property>
-                        <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkLabel" id="label3">
