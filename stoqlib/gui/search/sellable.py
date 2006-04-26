@@ -93,7 +93,7 @@ class SellableSearch(SearchEditor):
                    Column('description', title= _('Description'),
                           data_type=str, expand=True),
                    Column('supplier_name', title= _('Supplier'),
-                          data_type=str, width=150),
+                          data_type=str, width=120),
                    Column('price', title=_('Price'), data_type=currency,
                           width=80)]
         if self.has_stock_mode:
