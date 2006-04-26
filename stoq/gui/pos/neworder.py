@@ -42,6 +42,7 @@ _ = gettext.gettext
 
 class NewOrderEditor(BaseEditor):
     model_type = Sale
+    size = (620, 230)
     gladefile = 'NewOrderEditor'
     proxy_widgets = ('client',
                      'order_number',
