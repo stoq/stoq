@@ -337,7 +337,7 @@ class Sale(Domain):
         if not self.status == self.STATUS_OPENED:
             raise SellError('The sale must have STATUS_OPENED for this '
                             'operation, got status %s instead'
-                            % self.get_status_name())
+                            % self.get_status_name(self.status))
         conn = self.get_connection()
         group = IPaymentGroup(self, connection=conn)
         if not group:
