@@ -58,7 +58,9 @@ _ = lambda msg: gettext.dgettext("stoqdrivers", msg)
     # Constants for device types
     PRINTER_DEVICE,
     SCALE_DEVICE,
-) = range(14)
+    # Custom payment method
+    CUSTOM_PM,
+) = range(15)
 
 
 # TODO: Improve these descriptions

@@ -305,8 +305,12 @@ class FS345(SerialBase):
     def _get_coupon_number(self):
         return int(self._get_totalizers()[8:14])
 
-    def _add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_value(payment_method)
+    def _add_payment(self, payment_method, value, description='',
+                     custom_pm=''):
+        if not custom_pm:
+            pm = self._consts.get_value(payment_method)
+        else:
+            pm = custom_pm
         rv = self.send_command(CMD_DESCRIBE_PAYMENT_FORM,
                                '%c%012d%s\xff' % (pm, int(float(value) * 1e2),
                                                   description[:48]))
@@ -357,10 +361,12 @@ class FS345(SerialBase):
     def coupon_cancel_item(self, item_id):
         self.send_command(CMD_CANCEL_ITEM, "%03d" % item_id)
 
-    def coupon_add_payment(self, payment_method, value, description=''):
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
         self._check_status()
         self._verify_coupon_open()
-        return self._add_payment(payment_method, value, description)
+        return self._add_payment(payment_method, value, description,
+                                 custom_pm)
 
     def coupon_cancel(self):
         self._check_status()

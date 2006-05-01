@@ -533,8 +533,12 @@ class EP375(SerialBase, BaseChequePrinter):
                               - discount)
         return coupon_total_value
 
-    def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_value(payment_method)
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
+        if not custom_pm:
+            pm = self._consts.get_value(payment_method)
+        else:
+            pm = custom_pm
         value = "%014d" % int(float(value) * 1e2)
 
         if ((not self._get_status().has_been_totalized())

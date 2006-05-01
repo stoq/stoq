@@ -526,8 +526,12 @@ class IFS9000I(SerialBase):
     def coupon_cancel(self):
         self.send_command(self.CMD_COUPON_CANCEL)
 
-    def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_value(payment_method)
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
+        if not custom_pm:
+            pm = self._consts.get_value(payment_method)
+        else:
+            pm = custom_pm
         if description:
             description = '{' + description
         self.send_command(self.CMD_COUPON_TOTALIZE, pm,

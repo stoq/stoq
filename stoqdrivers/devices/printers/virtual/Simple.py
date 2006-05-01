@@ -144,7 +144,8 @@ class Simple:
         self.is_coupon_totalized = True
         return self.totalized_value
 
-    def coupon_add_payment(self, payment_method, value, description):
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
         if not self.is_coupon_totalized:
             raise PaymentAdditionError(_("Isn't possible add payments to the "
                                          "coupon since it isn't totalized"))

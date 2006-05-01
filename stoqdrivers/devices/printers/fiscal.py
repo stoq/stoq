@@ -36,7 +36,7 @@ from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
-                                   UNIT_CUSTOM)
+                                   UNIT_CUSTOM, CUSTOM_PM)
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.devices.printers.capabilities import capcheck
 from stoqdrivers.utils import encode_text
@@ -64,7 +64,7 @@ class unit(number):
 class payment_method(number):
     @classmethod
     def value_check(cls, name, value):
-        if value not in (MONEY_PM, CHEQUE_PM):
+        if value not in (MONEY_PM, CHEQUE_PM, CUSTOM_PM):
             raise ValueError("%s must be one of *_PM constants" % name)
 
 #
@@ -134,16 +134,24 @@ class FiscalPrinter(BasePrinter):
         self.totalized_value = result
         return result
 
-    @capcheck(payment_method, Decimal, basestring)
+    @capcheck(payment_method, Decimal, basestring, basestring)
     def add_payment(self, payment_method, payment_value,
-                    payment_description=''):
+                    payment_description='', custom_pm=''):
         self.info('coupon_add_payment')
         if not self._has_been_totalized:
             raise PaymentAdditionError(_("You must totalize the coupon "
                                          "before add payments."))
+        if custom_pm and payment_method != CUSTOM_PM:
+            raise ValueError("You can't specify a custom payment method "
+                             "string if you aren't using this payment "
+                             "method type")
+        elif not custom_pm and payment_method == CUSTOM_PM:
+            raise ValueError("You must specify the payment method string "
+                             "when using CUSTOM_PM")
         result = self._driver.coupon_add_payment(
             payment_method, payment_value,
-            self._format_text(payment_description))
+            self._format_text(payment_description),
+            custom_pm=custom_pm)
         self.payments_total_value += payment_value
         return result
 
@@ -221,8 +229,8 @@ def test():
                     u"Heineken", TAX_NONE, Decimal("0"), Decimal("0"))
     p.cancel_item(i1)
     coupon_total = p.totalize(Decimal('1.0'), Decimal('0.0'), TAX_NONE)
-    p.add_payment(MONEY_PM, Decimal('2.00'), '')
-    p.add_payment(MONEY_PM, Decimal('11.00'), '')
+    p.add_payment(MONEY_PM, Decimal('2.00'))
+    p.add_payment(MONEY_PM, Decimal('11.00'))
     coupon_id = p.close()
     print "+++ coupon %d created." % coupon_id
 

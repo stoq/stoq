@@ -290,8 +290,12 @@ class Pay2023(SerialBase, BaseChequePrinter):
                               ValorPercentual="%.02f" % value)
         return self.get_coupon_total_value()
 
-    def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_value(payment_method)
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
+        if not custom_pm:
+            pm = self._consts.get_value(payment_method)
+        else:
+            pm = custom_pm
         self.send_command(Pay2023.CMD_ADD_PAYMENT,
                           CodMeioPagamento=pm, Valor=self.format_value(value),
                           TextoAdicional="\"%s\"" % description[:80])

@@ -394,8 +394,12 @@ class MP25(SerialBase):
             item_id = self.get_last_item_id()
         self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
-    def coupon_add_payment(self, payment_method, value, description=''):
-        pm = self._consts.get_value(payment_method)
+    def coupon_add_payment(self, payment_method, value, description='',
+                           custom_pm=''):
+        if not custom_pm:
+            pm = self._consts.get_value(payment_method)
+        else:
+            pm = custom_pm
         description = description and description[:80] or ""
         val = "%014d" % int(float(value) * 1e2)
         data = "%c%s%s%s" % (CMD_ADD_PAYMENT, pm, val, description)

@@ -157,7 +157,7 @@ class ICouponPrinter(IPrinter):
         @returns          the coupon total value
         """
 
-    def coupon_add_payment(payment_method, value, description):
+    def coupon_add_payment(payment_method, value, description='', custom_pm=''):
         """
         @param payment_method: The payment method.
         @type payment_method:  A constant (defined in the constants.py module)
@@ -169,6 +169,10 @@ class ICouponPrinter(IPrinter):
         @param description: A simple description of the payment method to be
                             appended to the coupon.
         @type value:      str
+
+        @param custom_pm: When using CUSTOM_PM as argument for 'payment_method',
+                          you must specify its value with this parameter.
+        @type custom_pm:  str
 
         @rtype:           Decimal
         @returns          the total remaining amount
