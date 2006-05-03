@@ -262,7 +262,7 @@ class ProductAdaptToSellable(AbstractSellable):
     tax_type_names = {
         TAX_ICMS: _("Aliquot"),
         TAX_SUBSTITUTION: _("Substitution"),
-        TAX_NONE: _("Isent"),
+        TAX_NONE: _("Exempt"),
         }
 
     def _create(self, id, **kw):
