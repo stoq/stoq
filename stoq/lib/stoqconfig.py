@@ -36,7 +36,6 @@ from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.gtkadds import register_iconsets
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
