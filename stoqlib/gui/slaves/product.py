@@ -24,8 +24,7 @@
 """ Slaves for products """
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.domain.product import (ProductSupplierInfo, Product,
-                                    ProductAdaptToSellable)
+from stoqlib.domain.product import ProductAdaptToSellable
 from stoqdrivers.constants import TAX_NONE
 
 class TributarySituationSlave(BaseEditorSlave):

@@ -30,7 +30,6 @@ from kiwi.ui.delegates import SlaveDelegate
 from stoqlib.domain.base import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
-from stoqlib.exceptions import EditorError
 
 _ = stoqlib_gettext
 
