@@ -84,7 +84,6 @@ def ensure_admin_user(administrator_password):
     return user
 
 def set_current_user_admin():
-    from stoqlib.domain.person import PersonAdaptToUser
     conn = get_connection()
     branch = sysparam(conn).CURRENT_BRANCH
     user = IUser(branch.get_adapted(), connection=conn)

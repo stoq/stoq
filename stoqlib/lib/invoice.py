@@ -29,7 +29,6 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck, number
 from kiwi.python import ClassInittableObject
-from stoqdrivers.utils import encode_text
 from stoqdrivers.constants import TAX_SUBSTITUTION, TAX_ICMS
 
 from stoqlib.lib.runtime import new_transaction

@@ -39,7 +39,6 @@ from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.reporting.base.utils import print_file
-from stoqlib.reporting.base.template import BaseDocTemplate
 
 _ = stoqlib_gettext
 
