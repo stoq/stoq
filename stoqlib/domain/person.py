@@ -430,7 +430,7 @@ class PersonAdaptToClient(ModelAdapter):
     def get_name(self):
         return self.get_adapted().name
 
-    def get_status_string(self, status):
+    def get_status_string(self):
         if not self.statuses.has_key(self.status):
             raise DatabaseInconsistency('Invalid status for client, '
                                         'got %d' % self.status)
