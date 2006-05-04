@@ -89,7 +89,6 @@ class Till(Domain):
 
         conn = self.get_connection()
         query = AND(Sale.q.status == Sale.STATUS_CONFIRMED,
-                    Sale.q._is_valid_model == True,
                     Sale.q.tillID == self.id)
         result = Sale.select(query, connection=conn)
         payments = []
