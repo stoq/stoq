@@ -28,7 +28,6 @@ import decimal
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
-from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -153,9 +152,7 @@ class Sale(Domain):
         @param conn: a Transaction sqlobject instance
         @param till: a Till instance
         """
-        q1 = cls.q._is_valid_model == True
-        q2 = cls.q.tillID == till.id
-        query = AND(q1, q2)
+        query = cls.q.tillID == till.id
         return cls.select(query, connection=conn)
 
     #

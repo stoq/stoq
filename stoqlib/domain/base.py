@@ -33,14 +33,14 @@ from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
-from sqlobject.sqlbuilder import SQLOp
+from sqlobject.sqlbuilder import SQLExpression, AND
 
 from zope.interface import providedBy
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
 from stoqlib.database import Adapter
-from stoqlib.exceptions import AdapterError
+from stoqlib.exceptions import AdapterError, DatabaseInconsistency
 
 
 DATABASE_ENCODING = 'UTF-8'
@@ -82,8 +82,16 @@ class AbstractModel(object):
         from stoqlib.database import get_registered_db_settings
         rdbms_name = get_registered_db_settings().rdbms
         cls._check_connection(connection)
+        if clause and not isinstance(clause, SQLExpression):
+            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
+        query = cls.q._is_valid_model == True
+        if clause:
+            # This make queries in stoqlib applications consistent
+            clause = AND(query, clause)
+        else:
+            clause = query
         clause_repr = sqlrepr(clause, rdbms_name)
-        if isinstance(clause, SQLOp) and isinstance(clause_repr, unicode):
+        if isinstance(clause_repr, unicode):
             clause = clause_repr.encode(DATABASE_ENCODING)
         return super(AbstractModel, cls).select(clause=clause,
                                                 connection=connection,
@@ -91,6 +99,8 @@ class AbstractModel(object):
 
     @classmethod
     def selectBy(cls, connection=None, **kw):
+        # This make queries in stoqlib applications consistent
+        kw['_is_valid_model'] = True
         cls._check_connection(connection)
         for field_name, search_str in kw.items():
             if not isinstance(search_str, unicode):
@@ -108,6 +118,21 @@ class AbstractModel(object):
         assert issubclass(cls, SQLObject)
         className = cls.__name__
         return (className[0].lower() + mixedToUnder(className[1:]))
+
+    @classmethod
+    def _check_connection(cls, connection):
+        if connection is None and issubclass(cls, InheritableSQLObject):
+            # For an uncertain reason SQLObject doesn't send child
+            # connection to its parent. the interesting thing is that
+            # the connection is actually properly set on the instances
+            return
+        if connection is None:
+            raise ValueError("You must provide a valid connection "
+                             "argument for class %s" % cls)
+        if not isinstance(connection, (Transaction, DBAPI)):
+            raise TypeError("The argument connection must be of type "
+                            "Transaction, or DBAPI got %r instead"
+                            % connection)
 
     #
     # Useful methods to deal with transaction isolation problems. See
@@ -131,21 +156,6 @@ class AbstractModel(object):
     # Auxiliar methods
     #
 
-    @classmethod
-    def _check_connection(cls, connection):
-        if connection is None and issubclass(cls, InheritableSQLObject):
-            # For an uncertain reason SQLObject doesn't send child
-            # connection to its parent. the interesting thing is that
-            # the connection is actually properly set on the instances
-            return
-        if connection is None:
-            raise ValueError("You must provide a valid connection "
-                             "argument for class %s" % cls)
-        if not isinstance(connection, (Transaction, DBAPI)):
-            raise TypeError("The argument connection must be of type "
-                            "Transaction, or DBAPI got %r instead"
-                            % connection)
-
     def clone(self):
         """Get a persistent copy of an existent object. Remember that we can
         not use copy because this approach will not activate SQLObject
@@ -163,7 +173,7 @@ class AbstractModel(object):
             # This is an InheritableSQLObject object and we also
             # need to copy data from the parent.
             # XXX SQLObject should provide a get_parent method.
-            columns += self._parentClass.sqlmeta.columnList
+            columns += self.sqlmeta.parentClass.sqlmeta.columnList
         for column in columns:
             if column.origName == 'childName':
                 continue
@@ -217,11 +227,13 @@ class Adaptable:
 
         adapterClass = self._facets.get(k)
         if adapterClass:
-            query = adapterClass.q._originalID == self.id
-            results = adapterClass.select(query,
-                                          connection=connection)
+            results = adapterClass.selectBy(_originalID=self.id,
+                                            connection=connection)
 
-            assert not results.count() > 1
+            if results.count() > 1:
+               raise DatabaseInconsistency("You should never have more then "
+                                           "one adapter with the same "
+                                           "original_id.")
             if results.count() == 1:
                 adapter = results[0]
                 self._adapterCache[k] = adapter

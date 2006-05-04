@@ -130,7 +130,7 @@ class BaseDomainTest(object):
             table = type(data)
             if cls._check_foreign_key(table, fkey_name):
                 return data
-            table = table._parentClass
+            table = table.sqlmeta.parentClass
             if table and cls._check_foreign_key(table, fkey_name):
                 return data
 
@@ -145,7 +145,7 @@ class BaseDomainTest(object):
         cols = column_type_data
 
         columns = cls._table.sqlmeta.columns.values()
-        table = cls._table._parentClass
+        table = cls._table.sqlmeta.parentClass
         if table:
             columns += table.sqlmeta.columns.values()
 

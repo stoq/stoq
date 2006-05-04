@@ -40,7 +40,6 @@ from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
                            SODateTimeCol, SODateCol)
 
 import stoqlib
-from stoqlib.domain.base import BaseSQLView
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
@@ -327,10 +326,10 @@ class SearchBar(SlaveDelegate):
 
             columns = table_type.sqlmeta.columns.values()
             self._set_field_types(columns, attributes, table_type)
-            if table_type._parentClass:
-                columns = table_type._parentClass.sqlmeta.columns.values()
-                self._set_field_types(columns, attributes,
-                                      table_type._parentClass)
+            parent_class = table_type.sqlmeta.parentClass
+            if parent_class:
+                columns = parent_class.sqlmeta.columns.values()
+                self._set_field_types(columns, attributes, parent_class)
 
     @argcheck(str, list)
     def _set_query_str(self, search_str, query):
@@ -436,16 +435,11 @@ class SearchBar(SlaveDelegate):
         else:
             search_dates = None
 
-        if not issubclass(self.table_type, BaseSQLView):
-            # Views already have this filter internally
-            query = self.table_type.q._is_valid_model == True
-        else:
-            query = 1 == 1
-
+        query = None
         if search_str or search_dates:
-            query = AND(query, self._build_query(search_str, search_dates))
+            query = self._build_query(search_str, search_dates)
         if extra_query:
-            query = AND(query, extra_query)
+            query = query and AND(query, extra_query) or extra_query
 
         kwargs = {'connection': self.conn}
         if self.query_args:
