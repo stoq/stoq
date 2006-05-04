@@ -454,6 +454,7 @@ CREATE VIEW sale_view AS
   --     status             - the sale status
   --     salesperson_name   - the salesperson name
   --     client_name        - the sale client name
+  --     client_id          - the if of the client table
   --     subtotal           - the sum of all items in the sale
   --     charge_value       - the sale charge value
   --     discount_value     - the sale discount value
@@ -465,6 +466,7 @@ CREATE VIEW sale_view AS
   sale.close_date, sale.status, person.name as salesperson_name,
   sale.charge_value, sale.discount_value,
   abstract_sales_client_view.client_name,
+  abstract_sales_client_view.client_id,
   abstract_sales_product_view.total,
   abstract_sales_product_view.subtotal,
   abstract_sales_product_view.total_quantity

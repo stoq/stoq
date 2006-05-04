@@ -114,6 +114,15 @@ class Payment(Domain):
                                         'instance, got %d' % self.status)
         return self.statuses[self.status]
 
+
+    def get_days_late(self):
+        days_late = datetime.datetime.today() - self.due_date
+        if days_late.days < 0:
+            return 0
+        else:
+            return days_late.days
+
+
     def is_to_pay(self):
         return self.status == self.STATUS_TO_PAY
 
