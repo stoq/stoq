@@ -62,6 +62,7 @@ from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.slaves.price import PriceSlave
 from stoqlib.reporting.sale import SaleOrderReport
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.neworder import NewOrderEditor
@@ -383,8 +384,10 @@ class POSApp(AppWindow):
             self.conn.commit()
 
     def on_client_details_action_clicked(self, *args):
-        # Waiting for bug 2319
-        pass
+        if not (self.sale and self.sale.client):
+            raise ValueError("You should have a client defined at this point")
+        self.run_dialog(ClientDetailsDialog, self.conn, self.sale.client)
+
 
     #
     # Kiwi callbacks
