@@ -35,6 +35,7 @@ from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import get_connection
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
@@ -445,6 +446,24 @@ class PersonAdaptToClient(ModelAdapter):
         if extra_query:
             query = AND(query, extra_query)
         return cls.select(query, connection=conn)
+
+    def get_client_sales(self):
+        """Returns a list of sales from a SaleView tied with the
+        current client
+        """
+        from stoqlib.domain.sale import SaleView
+        conn = get_connection()
+        query = SaleView.q.client_id == self.id
+        return SaleView.select(query, connection=conn,
+                               orderBy=SaleView.q.open_date)
+
+    def get_last_purchase_date(self):
+        sales = self.get_client_sales()
+        if sales.count():
+            # The get_client_sales method already returns a sorted list of
+            # sales by open_date column
+            return sales[-1].open_date
+
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 

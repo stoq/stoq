@@ -533,6 +533,7 @@ class SaleView(SQLObject, BaseSQLView):
     status = IntCol()
     salesperson_name = UnicodeCol()
     client_name = UnicodeCol()
+    client_id = IntCol()
     charge_value = PriceCol()
     discount_value = PriceCol()
     subtotal = PriceCol()
