@@ -31,7 +31,7 @@ from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.gui.slaves.address import AddressSlave
-from stoqlib.domain.person import Address, CityLocation
+from stoqlib.domain.person import Address, Person, get_city_location_template
 
 _ = stoqlib_gettext
 
@@ -86,7 +86,11 @@ class AddressEditor(BaseEditor):
 
     proxy_widgets = ('is_main_address_checkbutton', )
 
-    def __init__(self, conn, model=None, person=None):
+    def __init__(self, conn, person, model=None):
+        if not isinstance(person, Person):
+            raise TypeError("Invalid type for person argument. It should "
+                            "be of type Person, got %s instead"
+                            % type(person))
         self.person = person
         BaseEditor.__init__(self, conn, model)
 
@@ -95,18 +99,18 @@ class AddressEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        ct_location = CityLocation(connection=self.conn)
+        ct_location = get_city_location_template(conn)
         return Address(connection=self.conn, person=self.person,
                        city_location=ct_location)
-        
+
 
     def get_title_model_attribute(self, model):
         return self.model_name
 
     def setup_slaves(self):
-        self.address_slave = AddressSlave(self.conn, self.model, False)
-        self.proxy.new_model(self.address_slave.model)
-
+        self.address_slave = AddressSlave(self.conn, self.person, self.model,
+                                          False)
+        self.proxy.set_model(self.address_slave.model)
         self.attach_slave('main_holder', self.address_slave)
 
     def setup_proxies(self):
