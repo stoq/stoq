@@ -21,6 +21,7 @@
 ## USA.
 ##
 ## Author(s):   Henrique Romano             <henrique@async.com.br>
+##              Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """ Sales invoice implementation. All this module is brazil-specific """
 
@@ -185,8 +186,7 @@ class SaleInvoice(ClassInittableObject):
 
     @argcheck(basestring, Sale, datetime, InvoiceType, basestring)
     def __init__(self, filename, sale, date=datetime.now(),
-                 invoice_type=INVOICE_TYPE_OUT,
-                 type_desc=u"Revenda de Produtos"):
+                 invoice_type=INVOICE_TYPE_OUT):
         """
         @param filename:  The filename where the invoice will be saved in.
         @type filename:   basestring
@@ -211,12 +211,12 @@ class SaleInvoice(ClassInittableObject):
                              "sale without client")
         self._syscoord = SysCoordinate(SaleInvoice.ROWS_QTY,
                                        SaleInvoice.COLS_QTY)
-        self.branch_cfop = "5.102"
+        self.branch_cfop = sale.cfop.code
+        self._type_desc = sale.cfop.description
         self._sale = sale
         self._products_qty = 0
         self._date = date
         self._type = invoice_type
-        self._type_desc = type_desc
         self._filename = filename
 
     @classmethod
