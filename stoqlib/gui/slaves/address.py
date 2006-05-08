@@ -26,14 +26,9 @@
 """ Address slave implementation"""
 
 
-from sqlobject.sqlbuilder import AND, func
-
-from stoqlib.database import finish_transaction
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
-from stoqlib.domain.person import CityLocation, Address
-from stoqlib.lib.runtime import new_transaction
-from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.person import Address, Person, get_city_location_template
 
 
 class AddressSlave(BaseEditorSlave):
@@ -60,12 +55,13 @@ class AddressSlave(BaseEditorSlave):
         'city',
         ) + left_proxy
 
-    def __init__(self, conn, model=None, is_main_address=True):
-        """ model: A Address object or nothing """
+    def __init__(self, conn, person, model=None, is_main_address=True):
+        if not isinstance(person, Person):
+            raise TypeError("Invalid type for person argument. It should "
+                            "be of type Person, got %s" % type(person))
+        self.person = person
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
-        if model and model.city_location is not None:
-            model.city_location = model.city_location.clone()
         BaseEditorSlave.__init__(self, conn, model)
 
     def get_left_widgets(self):
@@ -74,49 +70,20 @@ class AddressSlave(BaseEditorSlave):
                                  AddressSlave.left_widgets)]
 
     def create_model(self, conn):
-        city = sysparam(conn).CITY_SUGGESTED
-        state = sysparam(conn).STATE_SUGGESTED
-        country = sysparam(conn).COUNTRY_SUGGESTED
-        city_loc = CityLocation(connection=conn, city=city, country=country,
-                                state=state)
-        return Address(person=None, city_location=city_loc,
+        city_loc = get_city_location_template(conn)
+        return Address(person=self.person, city_location=city_loc,
                        is_main_address=self.is_main_address,
                        connection=conn)
 
-    def ensure_address(self):
-        """ Check if we already have the city location specified by the
-        user, if so reuse it. """
-        cityloc = self.model.city_location
-
-        if not cityloc.is_valid_model():
-            self.model.city_location = None
-            CityLocation.delete(cityloc.id, connection=self.conn)
-
-        q1 = func.UPPER(CityLocation.q.city) == cityloc.city.upper()
-        q2 = func.UPPER(CityLocation.q.state) == cityloc.state.upper()
-        q3 = func.UPPER(CityLocation.q.country) == cityloc.country.upper()
-        query = AND(q1, q2, q3)
-        conn = new_transaction()
-        result = CityLocation.select(query, connection=conn)
-
-        if not result.count():
-            return
-
-        msg = ("You should get just one city_location instance. Probably you "
-               "have a database inconsistency.")
-        assert result.count() == 1, msg
-
-        self.model.city_location = CityLocation.get(result[0].id,
-                                                    connection=self.conn)
-        CityLocation.delete(cityloc.id, connection=self.conn)
-        finish_transaction(conn)
-
     def set_model(self, model):
         """ Changes proxy model.  This method is used when this slave is
-        attached as an container for the main address and the main address
-        needs be changed, so this slave must reflect the new address
-        defined.  """
-        self.proxy.set_model(model)
+        attached as a container for the main address and the main address
+        needs to be changed, so this slave must reflect the new address
+        defined.
+        """
+        self.model.ensure_address()
+        self.model = model
+        self.proxy.set_model(self.model)
 
     #
     # BaseEditorSlave hooks
@@ -132,7 +99,5 @@ class AddressSlave(BaseEditorSlave):
         return self.model.is_valid_model()
 
     def on_confirm(self):
-        self.ensure_address()
+        self.model.ensure_address()
         return self.model
-
-

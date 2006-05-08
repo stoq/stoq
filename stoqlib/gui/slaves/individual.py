@@ -30,7 +30,6 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.domain.person import CityLocation
 from stoqlib.domain.interfaces import IIndividual
-from stoqlib.lib.runtime import new_transaction
 
 
 class IndividualDocuments(BaseEditorSlave):
@@ -79,27 +78,14 @@ class IndividualDetailsSlave(BaseEditorSlave):
         """ Search for the birth location fields in database, if found some
         item, reuse the city location object """
         birthloc = self.model.birth_location
-
         if not birthloc.is_valid_model():
             self.model.birth_location = None
             CityLocation.delete(birthloc.id, connection=self.conn)
             return
-
-        query = ("city = '%s' and state = '%s' and country = '%s'"
-                 % (birthloc.city, birthloc.state, birthloc.country))
-        conn = new_transaction()
-        result = CityLocation.select(query, connection=conn)
-        conn.close()
-
-        if not result.count():
-            return
-
-        msg = ("You should get just one city_location instance. Probably you "
-               "have a database inconsistency.")
-        assert result.count() == 1, msg
-
-        self.model.birth_location = CityLocation.get(result[0].id)
-        CityLocation.delete(birthloc.id, connection=self.conn)
+        new_birthloc = birthloc.get_validated()
+        if new_birthloc:
+            self.model.birth_location = new_birthloc
+            CityLocation.delete(birthloc.id, connection=self.conn)
 
     def update_marital_status(self):
         marital_status = self.marital_status.get_selected_data()
@@ -130,8 +116,8 @@ class IndividualDetailsSlave(BaseEditorSlave):
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()
         else:
-            c = CityLocation(connection=self.conn)
-            self.model.birth_location = c
+            cityloc = CityLocation(connection=self.conn)
+            self.model.birth_location = cityloc
         self.birth_loc_proxy = self.add_proxy(
             self.model.birth_location,
             IndividualDetailsSlave.birth_loc_widgets)

@@ -29,13 +29,15 @@
 
 import gtk
 
+from kiwi.ui.dialogs import warning
+
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.domain.interfaces import IIndividual, ICompany
+from stoqlib.domain.person import Person
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
-from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.domain.interfaces import IIndividual, ICompany
-from stoqlib.domain.person import Person, CityLocation
 from stoqlib.gui.editors.address import AddressAdditionDialog
 from stoqlib.gui.slaves.liaison import LiaisonListDialog
 from stoqlib.gui.slaves.address import AddressSlave
@@ -120,8 +122,14 @@ class PersonEditorTemplate(BaseEditorSlave):
     #
 
     def on_address_button__clicked(self, *args):
-        addresses = self.model.addresses
         main_address = self.model.get_main_address()
+        if not main_address.is_valid_model():
+            msg = _("You must define a valid main address before\n"
+                    "adding additional addresses")
+            warning(msg)
+            return
+
+        addresses = self.model.addresses
         if addresses and main_address:
             addresses.remove(main_address)
 
@@ -131,13 +139,12 @@ class PersonEditorTemplate(BaseEditorSlave):
             return
 
         new_main_address = None
-
         for address in result:
             if address.is_main_address:
                 new_main_address = address
                 if main_address:
                     main_address.is_main_address = False
-
+                break
         if new_main_address:
             self.address_slave.set_model(new_main_address)
 
@@ -150,7 +157,6 @@ class PersonEditorTemplate(BaseEditorSlave):
     #
 
     def create_model(self, conn):
-        # XXX: Waiting fix for bug 2163
         return Person(name="", connection=conn)
 
     def setup_proxies(self):
@@ -160,9 +166,9 @@ class PersonEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         main_address = self.model.get_main_address()
-        self.address_slave = self.attach_model_slave('address_holder',
-                                                     AddressSlave,
-                                                     main_address)
+        self.address_slave = AddressSlave(self.conn, self.model,
+                                          main_address)
+        self.attach_slave('address_holder', self.address_slave)
         address_widgets = self.address_slave.get_left_widgets()
         for widget in address_widgets:
             self.size_group.add_widget(widget)
@@ -186,24 +192,6 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
     def get_person_slave(self):
         return self._person_slave
-
-    def ensure_city_location_objects(self):
-        """ This method ensure that, if the city location objects for birth
-        location and main address city location has the same contents, only
-        one CityLocation object is created. """
-
-        birthloc = self.model.birth_location
-        person = self.model.get_adapted()
-        main_address = person.get_main_address()
-        addrloc = main_address.city_location
-
-        same_contents = (addrloc.city == birthloc.city
-                         and addrloc.country == birthloc.country
-                         and addrloc.state == birthloc.state)
-
-        if (birthloc.id != addrloc.id) and same_contents:
-            main_address.city_location = birthloc
-            CityLocation.delete(addrloc.id, connection=self.conn)
 
     def attach_person_slave(self, slave):
         self._person_slave.attach_slave('person_status_holder', slave)
@@ -234,8 +222,6 @@ class IndividualEditorTemplate(BaseEditorSlave):
         self.details_slave.on_confirm()
         if confirm_person:
             self._person_slave.on_confirm()
-        if self.model.birth_location:
-            self.ensure_city_location_objects()
         return self.model
 
 

@@ -31,13 +31,15 @@ import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol, SQLObject)
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import AND, func
 from zope.interface import implements
+from kiwi.argcheck import argcheck
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_connection
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.runtime import get_connection, StoqlibTransaction
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import raw_phone_number
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
                                  BaseSQLView)
 from stoqlib.domain.columns import PriceCol, DecimalCol
@@ -110,6 +112,36 @@ class CityLocation(Domain):
     def is_valid_model(self):
         return self.country and self.city and self.state
 
+    def check_existing_citylocation(self, conn):
+        q1 = func.UPPER(CityLocation.q.city) == self.city.upper()
+        q2 = func.UPPER(CityLocation.q.state) == self.state.upper()
+        q3 = func.UPPER(CityLocation.q.country) == self.country.upper()
+        query = AND(q1, q2, q3)
+        return CityLocation.select(query, connection=conn)
+
+    def get_validated(self):
+        """For a given CityLocation instance checks if there is an existing
+        instance with the same attribute values and reuse it.
+        If there is no existing city location matching all attribute values of
+        the given cityloc argument, returns False.
+        """
+        if not self.is_valid_model():
+            raise ValueError("You should have a valid city location "
+                             "defined at this point")
+
+        obj_conn = self.get_connection()
+        conn = get_connection()
+        result = self.check_existing_citylocation(conn)
+        if result.count() > 1:
+            raise ValueError("You should have only one city_location "
+                             "instance with the same attribute values "
+                             "at this point")
+        elif result.count() == 1:
+            if result[0].id == self.id:
+                return False
+            return CityLocation.get(result[0].id, connection=obj_conn)
+
+
 class Address(Domain):
     """Class to store person's addresses.
 
@@ -130,6 +162,14 @@ class Address(Domain):
     def is_valid_model(self):
         return (self.street and self.number and self.district
                 and self.city_location.is_valid_model())
+
+    def ensure_address(self):
+        cityloc = self.city_location
+        new_cityloc = cityloc.get_validated()
+        if new_cityloc:
+            self.city_location = new_cityloc
+            conn = self.get_connection()
+            CityLocation.delete(cityloc.id, connection=conn)
 
     def get_city(self):
         return self.city_location.city
@@ -856,3 +896,15 @@ class ClientView(SQLObject, BaseSQLView):
     cpf = UnicodeCol()
     rg_number = UnicodeCol()
     phone_number = UnicodeCol()
+
+#
+# General routines
+#
+
+@argcheck(StoqlibTransaction)
+def get_city_location_template(conn):
+    city = sysparam(conn).CITY_SUGGESTED
+    state = sysparam(conn).STATE_SUGGESTED
+    country = sysparam(conn).COUNTRY_SUGGESTED
+    return CityLocation(city=city, state=state, country=country,
+                        connection=conn)
