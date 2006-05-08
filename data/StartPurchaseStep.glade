@@ -75,6 +75,7 @@
                         <child>
                             <widget class="ProxyComboEntry" id="branch">
                                 <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
                                 <property name="model_attribute">branch</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -89,6 +90,7 @@
                         <child>
                             <widget class="ProxyComboEntry" id="supplier">
                                 <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
                                 <property name="model_attribute">supplier</property>
                                 <property name="visible">True</property>
                             </widget>
