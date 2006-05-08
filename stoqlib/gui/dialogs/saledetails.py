@@ -33,6 +33,9 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import SaleView, Sale
 
@@ -55,9 +58,8 @@ class SaleDetailsDialog(BaseEditor):
                      'discount_lbl')
 
     def _setup_widgets(self):
-        # TODO Waiting for bug 2360
-        self.details_button.set_sensitive(False)
-
+        if not self.model.client_id:
+            self.details_button.set_sensitive(False)
         self.items_list.set_columns(self._get_items_columns())
         self.payments_list.set_columns(self._get_payments_columns())
 
@@ -98,8 +100,9 @@ class SaleDetailsDialog(BaseEditor):
     #
 
     def on_details_button__clicked(self, *args):
-        # This button will be implemeted after bug 2360 fix.
-        pass
+        client = PersonAdaptToClient.get(self.model.client_id,
+                                         connection=self.conn)
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     #
     # BaseEditor hooks
