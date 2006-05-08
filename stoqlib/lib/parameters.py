@@ -243,7 +243,12 @@ _parameter_info = {
                                                 _(u'The max number of days '
                                                   'that a sale order is '
                                                   'valid')),
-    # These two parameters are Brazil-specific
+    # These parameters are Brazil-specific
+    'DEFAULT_SALES_CFOP': ParameterDetails(_("Sales"),
+                                 _("Default Sales CFOP"),
+                                 _("Default CFOP (Fiscal Code of Operations) "
+                                   "used when generating fiscal book "
+                                   "entries.")),
     'ICMS_TAX': ParameterDetails(_("Sales"),
                                  _("Default ICMS value"),
                                  _("Default ICMS to be applied on all the "
@@ -301,11 +306,12 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
-                 ParameterAttr('ICMS_TAX', int, initial=18),
-                 ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
+        ParameterAttr('ICMS_TAX', int, initial=18),
+        ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
 
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
+        ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
         ParameterAttr('CURRENT_BRANCH',
@@ -437,6 +443,7 @@ class ParameterAccess(ClassInittableObject):
         # Creating system objects
         # When creating new methods for system objects creation add them
         # always here
+        self.ensure_default_sales_cfop()
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
@@ -584,6 +591,16 @@ class ParameterAccess(ClassInittableObject):
         certificate = GiftCertificateType(connection=self.conn,
                                           base_sellable_info=sellable_info)
         self._set_schema(key, certificate.id)
+
+    def ensure_default_sales_cfop(self):
+        from stoqlib.domain.fiscal import CfopData
+        key = "DEFAULT_SALES_CFOP"
+        if self.get_parameter_by_field(key, CfopData):
+            return
+        desc = u"Venda de Mercadoria Adquirida"
+        data = CfopData(code=u"5.102", description=desc,
+                        connection=self.conn)
+        self._set_schema(key, data.id)
 
 
 #

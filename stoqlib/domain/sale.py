@@ -108,6 +108,7 @@ class Sale(Domain):
     client_role = IntCol(default=None)
 
     client = ForeignKey('PersonAdaptToClient', default=None)
+    cfop = ForeignKey("CfopData")
     till = ForeignKey('Till')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
 

@@ -42,6 +42,7 @@ _tables = [
      ('base', ["InheritableModelAdapter", "InheritableModel"]),
      ('parameter', ["ParameterData"]),
      ('account', ["BankAccount", "Bank"]),
+     ('fiscal', ["CfopData"]),
      ('profile', ["UserProfile", "ProfileSettings"]),
      ('person', ["CityLocation",
                  "EmployeeRole",
