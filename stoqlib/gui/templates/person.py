@@ -27,8 +27,6 @@
 """ Templates implementation for person editors.  """
 
 
-import gtk
-
 from kiwi.ui.dialogs import warning
 
 from stoqlib.lib.translation import stoqlib_gettext
