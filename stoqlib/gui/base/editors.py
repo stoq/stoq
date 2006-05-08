@@ -169,7 +169,7 @@ class BaseEditor(BaseEditorSlave):
         if self.title:
             return self.title
         if model:
-            if self.model_name:
+            if self.model_name and not self.edit_mode:
                 return _('Add %s') % self.model_name
             model_attr = self.get_title_model_attribute(model)
             return _('Edit "%s" Details') % model_attr
