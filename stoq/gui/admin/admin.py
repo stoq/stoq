@@ -46,6 +46,7 @@ from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.search.profile import UserProfileSearch
 from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.search.fiscal import CfopSearch
 from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                        BranchSearch)
 
@@ -146,6 +147,9 @@ class AdminApp(SearchableAppWindow):
 
     def on_users__selection_changed(self, *args):
         self._update_view()
+
+    def _on_cfop_action_clicked(self, *args):
+        self.run_dialog(CfopSearch, self.conn, hide_footer=True)
 
     def _on_employees_action_clicked(self, *args):
         self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
