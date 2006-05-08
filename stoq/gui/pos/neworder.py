@@ -34,6 +34,8 @@ from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
                                        ICompany)
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.parameters import sysparam
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.editors.person import ClientEditor
 
@@ -60,8 +62,6 @@ class NewOrderEditor(BaseEditor):
         self.client.prefill(items)
 
     def _setup_widgets(self):
-        # Waiting for bug 2319
-        self.details_button.set_sensitive(False)
         cfop_items = [(item.get_full_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop_combo.prefill(cfop_items)
@@ -78,6 +78,7 @@ class NewOrderEditor(BaseEditor):
     def _update_client_widgets(self):
         client_selected = self.client_check.get_active()
         self.client.set_sensitive(client_selected)
+        self.details_button.set_sensitive(self.model.client is not None)
 
     def _update_client_role_box(self):
         if self.model.client:
@@ -126,6 +127,12 @@ class NewOrderEditor(BaseEditor):
     def on_client__changed(self, combo):
         self._update_client_role_box()
         self._update_client_role()
+        self._update_client_widgets()
+
+    def on_details_button__clicked(self, *args):
+        if not self.model.client:
+            raise ValueError("You should have a client defined at this point")
+        run_dialog(ClientDetailsDialog, self, self.conn, self.model.client)
 
     def on_client_button__clicked(self, *args):
         client = run_person_role_dialog(ClientEditor, self, self.conn,
