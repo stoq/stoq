@@ -23,8 +23,8 @@
 ##
 """ Purchase management """
 
-import datetime
 import decimal
+from datetime import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -123,9 +123,9 @@ class PurchaseOrder(Domain):
 
     status = IntCol(default=ORDER_QUOTING)
     order_number = AutoIncCol('stoqlib_purchase_ordernumber_seq')
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default=datetime.now)
     quote_deadline = DateTimeCol(default=None)
-    expected_receival_date = DateTimeCol(default=None)
+    expected_receival_date = DateTimeCol(default=datetime.now)
     expected_pay_date = DateTimeCol(default=None)
     receival_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
@@ -152,7 +152,7 @@ class PurchaseOrder(Domain):
     # General methods
     #
 
-    def confirm_order(self, confirm_date=datetime.datetime.now()):
+    def confirm_order(self, confirm_date=datetime.now()):
         if self.status != self.ORDER_PENDING:
             raise ValueError('Invalid order status, it should be '
                              'ORDER_PENDING, got %s'

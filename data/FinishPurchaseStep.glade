@@ -18,7 +18,7 @@
                         <property name="row_spacing">10</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Salesperson Name:</property>
                                 <property name="visible">True</property>
@@ -26,7 +26,7 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Transporter:</property>
                                 <property name="visible">True</property>
@@ -38,7 +38,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                            <widget class="ProxyLabel" id="kiwilabel3">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Expected Receival Date:</property>
                                 <property name="visible">True</property>
@@ -50,7 +50,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                            <widget class="ProxyLabel" id="kiwilabel4">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Notes:</property>
                                 <property name="visible">True</property>
@@ -90,7 +90,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="salesperson_name">
+                            <widget class="ProxyEntry" id="salesperson_name">
                                 <property name="data_type">unicode</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">salesperson_name</property>
@@ -120,6 +120,7 @@
                                 <child>
                                     <widget class="ProxyDateEntry" id="receival_date">
                                         <property name="data_type">date</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">expected_receival_date</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -128,7 +129,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                                    <widget class="ProxyLabel" id="kiwilabel5">
                                         <property name="data_type">unicode</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -145,13 +146,22 @@
                             </packing>
                         </child>
                         <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">3</property>
+                                <property name="bottom_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
                             <widget class="GtkScrolledWindow" id="scrolled_notes_window">
                                 <property name="hscrollbar_policy">automatic</property>
                                 <property name="shadow_type">in</property>
                                 <property name="visible">True</property>
                                 <property name="vscrollbar_policy">automatic</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
+                                    <widget class="ProxyTextView" id="notes">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">notes</property>
@@ -164,15 +174,6 @@
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">3</property>
                                 <property name="top_attach">3</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <placeholder/>
-                            <packing>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">3</property>
-                                <property name="bottom_attach">4</property>
                             </packing>
                         </child>
                         <child>
