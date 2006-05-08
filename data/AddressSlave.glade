@@ -1,6 +1,9 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="left_group">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="AddressSlave">
         <property name="role"></property>
         <property name="title" context="yes" translatable="yes"></property>
@@ -14,6 +17,7 @@
                 <child>
                     <widget class="GtkLabel" id="address_lbl">
                         <property name="label" context="yes" translatable="yes">Street:</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -24,6 +28,7 @@
                 <child>
                     <widget class="GtkLabel" id="complement_lbl">
                         <property name="label" context="yes" translatable="yes">Complement:</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                         <property name="xpad">2</property>
@@ -37,6 +42,7 @@
                 <child>
                     <widget class="GtkLabel" id="postal_code_lbl">
                         <property name="label" context="yes" translatable="yes">Postal Code:</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -49,6 +55,7 @@
                 <child>
                     <widget class="GtkLabel" id="state_lbl">
                         <property name="label" context="yes" translatable="yes">State:</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                         <property name="xpad">2</property>
@@ -60,11 +67,12 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="street">
+                    <widget class="ProxyEntry" id="street">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">street</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -73,9 +81,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="complement">
+                    <widget class="ProxyEntry" id="complement">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">complement</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -86,9 +95,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="postal_code">
+                    <widget class="ProxyEntry" id="postal_code">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">postal_code</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -99,13 +109,14 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="state">
+                    <widget class="ProxyEntry" id="state">
                         <property name="completion">True</property>
                         <property name="data_type">unicode</property>
-                        <property name="exact_completion">False</property>
+                        <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="max_length">2</property>
                         <property name="model_attribute">city_location.state</property>
+                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -173,12 +184,13 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="number">
+                    <widget class="ProxyEntry" id="number">
                         <property name="data_type">int</property>
                         <property name="mandatory">True</property>
                         <property name="max_length">9</property>
                         <property name="model_attribute">number</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="left_attach">3</property>
@@ -186,7 +198,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="district">
+                    <widget class="ProxyEntry" id="district">
                         <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">district</property>
@@ -200,10 +212,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="city">
+                    <widget class="ProxyEntry" id="city">
                         <property name="completion">True</property>
                         <property name="data_type">unicode</property>
-                        <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.city</property>
                         <property name="visible">True</property>
@@ -216,10 +227,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="country">
+                    <widget class="ProxyEntry" id="country">
                         <property name="completion">True</property>
                         <property name="data_type">unicode</property>
-                        <property name="exact_completion">False</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.country</property>
                         <property name="visible">True</property>

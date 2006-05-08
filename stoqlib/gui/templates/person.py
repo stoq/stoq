@@ -52,16 +52,11 @@ class PersonEditorTemplate(BaseEditorSlave):
     model_type = Person
     gladefile = 'PersonEditorTemplate'
 
-    left_proxy_widgets = (
-        'name',
-        'phone_number',
-        'fax_number'
-        )
-
-    proxy_widgets = (
-        'mobile_number',
-        'email'
-        ) + left_proxy_widgets
+    proxy_widgets = ('name',
+                     'phone_number',
+                     'fax_number',
+                     'mobile_number',
+                     'email')
 
     def set_phone_number(self, phone_number):
         self.model.phone_number = phone_number
@@ -111,11 +106,6 @@ class PersonEditorTemplate(BaseEditorSlave):
             self.company_frame.set_label('')
             self.company_frame.show()
         self.person_notebook.set_tab_label_text(tab_child, tab_text)
-
-        self.size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        for widget_name in PersonEditorTemplate.left_proxy_widgets:
-            widget = getattr(self, widget_name)
-            self.size_group.add_widget(widget)
 
     #
     # Kiwi handlers
@@ -169,9 +159,6 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.address_slave = AddressSlave(self.conn, self.model,
                                           main_address)
         self.attach_slave('address_holder', self.address_slave)
-        address_widgets = self.address_slave.get_left_widgets()
-        for widget in address_widgets:
-            self.size_group.add_widget(widget)
         self.attach_model_slave('note_holder', NoteSlave, self.model)
 
     def on_confirm(self):
