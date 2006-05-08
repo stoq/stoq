@@ -184,7 +184,7 @@ class SaleInvoice(ClassInittableObject):
     # default filename for the invoice
     default_filename = _(u"invoice") + ".txt"
 
-    @argcheck(basestring, Sale, datetime, InvoiceType, basestring)
+    @argcheck(basestring, Sale, datetime, InvoiceType)
     def __init__(self, filename, sale, date=datetime.now(),
                  invoice_type=INVOICE_TYPE_OUT):
         """
