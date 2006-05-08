@@ -26,6 +26,7 @@
 import gettext
 
 from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.person import Person
@@ -42,10 +43,11 @@ _ = gettext.gettext
 
 class NewOrderEditor(BaseEditor):
     model_type = Sale
-    size = (620, 230)
+    size = (620, 210)
     gladefile = 'NewOrderEditor'
     proxy_widgets = ('client',
                      'order_number',
+                     'cfop_combo',
                      'salesperson',
                      'individual_role_button')
 
@@ -60,6 +62,9 @@ class NewOrderEditor(BaseEditor):
     def _setup_widgets(self):
         # Waiting for bug 2319
         self.details_button.set_sensitive(False)
+        cfop_items = [(item.get_full_description(), item)
+                        for item in CfopData.select(connection=self.conn)]
+        self.cfop_combo.prefill(cfop_items)
         self._setup_client_entry()
         self._update_client_widgets()
         self._update_client_role_box()
@@ -105,7 +110,9 @@ class NewOrderEditor(BaseEditor):
         till = get_current_till_operation(conn)
         user = get_current_user()
         salesperson = ISalesPerson(user.get_adapted(), connection=conn)
-        return Sale(connection=conn, till=till, salesperson=salesperson)
+        cfop = sysparam(conn).DEFAULT_SALES_CFOP
+        return Sale(connection=conn, till=till, salesperson=salesperson,
+                    cfop=cfop)
 
     def setup_proxies(self):
         self._setup_widgets()
