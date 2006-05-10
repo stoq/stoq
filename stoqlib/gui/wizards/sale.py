@@ -533,7 +533,6 @@ class SalesPersonStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model)
         if not self._edit_mode:
             self.model.reset_discount_and_charge()
-        self.register_validate_function(self.wizard.refresh_next)
         if not check_virtual_printer_for_current_host(self.conn):
             self.invoice_number.hide()
             self.invoice_label.hide()
@@ -588,6 +587,8 @@ class SalesPersonStep(WizardEditorStep):
         self.salesperson_combo.grab_focus()
         if self._get_selected_payment_method() is IMoneyPM:
             self.wizard.enable_finish()
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
 
     def next_step(self):
         step_class = None

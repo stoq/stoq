@@ -42,7 +42,8 @@ _tables = [
      ('base', ["InheritableModelAdapter", "InheritableModel"]),
      ('parameter', ["ParameterData"]),
      ('account', ["BankAccount", "Bank"]),
-     ('fiscal', ["CfopData"]),
+     ('fiscal', ["CfopData", "InvoiceInfo", "IcmsIpiBookEntry",
+                 "IssBookEntry"]),
      ('profile', ["UserProfile", "ProfileSettings"]),
      ('person', ["CityLocation",
                  "EmployeeRole",
@@ -130,7 +131,8 @@ _tables = [
      ('purchase', ["PurchaseOrder",
                    "PurchaseOrderAdaptToPaymentGroup",
                    "PurchaseItem"]),
-     ('receiving', ["ReceivingOrder", "ReceivingOrderItem"]),
+     ('receiving', ["ReceivingOrder", "ReceivingOrderItem",
+                    "ReceivingOrderAdaptToPaymentGroup"]),
      ('devices', ["DeviceSettings"]),
 ]
 

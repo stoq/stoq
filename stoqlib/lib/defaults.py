@@ -106,6 +106,20 @@ def get_all_methods_dict():
             METHOD_MULTIPLE: IMultiplePM}
 
 #
+# Fiscal constants
+# This is a Brazil-specific session
+#
+
+(ICMS_BOOK_ENTRY,
+ IPI_BOOK_ENTRY,
+ ISS_BOOK_ENTRY) = range(3)
+
+fiscal_book_entries = {ICMS_BOOK_ENTRY: _("ICMS"),
+                       IPI_BOOK_ENTRY: _("IPI"),
+                       ISS_BOOK_ENTRY: _("ISS")}
+
+
+#
 # Kiwi combobox
 #
 

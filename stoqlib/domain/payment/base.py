@@ -24,18 +24,21 @@
 ##
 """ Payment management implementations."""
 
-import datetime
+from datetime import datetime
+from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import PaymentError, DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
                                   METHOD_MULTIPLE, METHOD_MONEY)
+from stoqlib.domain.fiscal import (CfopData, IssBookEntry, IcmsIpiBookEntry,
+                                   InvoiceInfo)
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
@@ -116,7 +119,7 @@ class Payment(Domain):
 
 
     def get_days_late(self):
-        days_late = datetime.datetime.today() - self.due_date
+        days_late = datetime.today() - self.due_date
         if days_late.days < 0:
             return 0
         else:
@@ -141,7 +144,7 @@ class Payment(Domain):
                                "the payment")
 
         self.paid_value = self.value - self.discount + self.interest
-        self.paid_date = paid_date or datetime.datetime.now()
+        self.paid_date = paid_date or datetime.now()
         self.status = self.STATUS_PAID
 
     def _check_status(self, status, operation_name):
@@ -150,7 +153,7 @@ class Payment(Domain):
                                        self.statuses[self.status]))
 
     def _register_payment_operation(self,
-                                    operation_date=datetime.datetime.now()):
+                                    operation_date=datetime.now()):
         conn = self.get_connection()
         operation = PaymentOperation(connection=conn,
                                      operation_date=operation_date)
@@ -186,7 +189,7 @@ class Payment(Domain):
                            % self.identifier)
             payment.description = description
             payment.value *= -1
-            payment.due_date = datetime.datetime.now()
+            payment.due_date = datetime.now()
 
     def get_payable_value(self, paid_date=None):
         """ Returns the calculated payment value with the daily penalty.
@@ -198,12 +201,12 @@ class Payment(Domain):
         if self.status in [self.STATUS_PAID, self.STATUS_REVIEWING,
                            self.STATUS_CONFIRMED]:
             return self.paid_value
-        if paid_date and not isinstance(paid_date, datetime.datetime.date):
+        if paid_date and not isinstance(paid_date, datetime.date):
             raise TypeError('Argument paid_date must be of type '
                             'datetime.date, got %s instead' %
                             type(paid_date))
         if self.method.get_implemented_iface() in (ICheckPM, IBillPM):
-            paid_date = paid_date or datetime.datetime.now()
+            paid_date = paid_date or datetime.now()
             days = (paid_date - self.due_date).days
             if days <= 0:
                 return self.value
@@ -235,7 +238,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     implements(IPaymentGroup, IContainer)
 
     status = IntCol(default=STATUS_OPEN)
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
     installments_number = IntCol(default=1)
@@ -263,7 +266,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return sum([s.value for s in self.get_items()])
 
     def add_payment(self, value, description, method, destination,
-                    due_date=datetime.datetime.now()):
+                    due_date=datetime.now()):
         """Add a new payment sending correct arguments to Payment
         class
         """
@@ -326,6 +329,32 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """
         for payment in self.get_items():
             payment.set_to_pay()
+
+    @argcheck(CfopData, int)
+    def _get_invoice_data(self, cfop, invoice_number):
+        conn = self.get_connection()
+        drawee = self.get_thirdparty()
+        branch = sysparam(conn).CURRENT_BRANCH
+        return InvoiceInfo(date=datetime.now(),
+                           invoice_number=invoice_number,
+                           cfop=cfop, drawee=drawee,
+                           branch=branch, payment_group=self,
+                           connection=conn)
+
+    @argcheck(CfopData, int, Decimal, Decimal)
+    def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
+                                  ipi_value=Decimal("0.0")):
+        conn = self.get_connection()
+        invoice_data = self._get_invoice_data(cfop, invoice_number)
+        IcmsIpiBookEntry(icms_value=icms_value, ipi_value=ipi_value,
+                         invoice_data=invoice_data, connection=conn)
+
+    @argcheck(CfopData, int, Decimal)
+    def create_iss_book_entry(self, cfop, invoice_number, iss_value):
+        conn = self.get_connection()
+        invoice_data = self._get_invoice_data(cfop, invoice_number)
+        IssBookEntry(iss_value=iss_value, invoice_data=invoice_data,
+                     connection=conn)
 
     #
     # IContainer implementation
@@ -407,5 +436,5 @@ Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 class CashAdvanceInfo(Domain):
     employee = ForeignKey("PersonAdaptToEmployee")
     payment = ForeignKey("Payment")
-    open_date = DateTimeCol(default=datetime.datetime.now)
+    open_date = DateTimeCol(default=datetime.now)
 

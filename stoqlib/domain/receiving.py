@@ -23,7 +23,7 @@
 ##
 """ Receiving management """
 
-import datetime
+from datetime import datetime
 import decimal
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
@@ -31,11 +31,13 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import METHOD_BILL
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IStorable
+from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 
 
 _ = stoqlib_gettext
@@ -68,11 +70,10 @@ class ReceivingOrder(Domain):
     (STATUS_PENDING,
      STATUS_CLOSED) = range(2)
 
+    receiving_number = AutoIncCol("stoqlib_purchasereceiving_number_seq")
     status = IntCol(default=STATUS_PENDING)
-    receival_date = DateTimeCol(default=datetime.datetime.now)
+    receival_date = DateTimeCol(default=datetime.now)
     confirm_date = DateTimeCol(default=None)
-    invoice_number = UnicodeCol(default='')
-    invoice_total = PriceCol(default=0)
     notes = UnicodeCol(default='')
     freight_total = PriceCol(default=0)
     charge_value = PriceCol(default=0)
@@ -81,6 +82,9 @@ class ReceivingOrder(Domain):
     # This is Brazil-specific information
     icms_total = PriceCol(default=0)
     ipi_total = PriceCol(default=0)
+    invoice_number = IntCol()
+    invoice_total = PriceCol(default=0)
+    cfop = ForeignKey("CfopData")
 
     responsible = ForeignKey('PersonAdaptToUser')
     supplier = ForeignKey('PersonAdaptToSupplier')
@@ -92,6 +96,34 @@ class ReceivingOrder(Domain):
         # ReceiveOrder objects must be set as valid explicitly
         kw['_is_valid_model'] = False
         Domain._create(self, id, **kw)
+
+    def _get_payment_group(self):
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
+        if group:
+            raise ValueError("You should not have a IPaymentGroup facet "
+                             "defined at this point")
+        if self.purchase:
+            purchase_group = IPaymentGroup(self.purchase,
+                                                 connection=conn)
+            if not purchase_group:
+                raise DatabaseInconsistency("Purchase order should have "
+                                            "a IPaymentGroup facet defined "
+                                            "at this point")
+            default_method = purchase_group.default_method
+            installments_number = purchase_group.installments_number
+            interval_type = purchase_group.interval_type
+            intervals = purchase_group.intervals
+        else:
+            default_method = METHOD_BILL
+            installments_number = 1
+            interval_type = intervals = None
+
+        return self.addFacet(IPaymentGroup, open_date=datetime.now(),
+                             default_method=default_method,
+                             installments_number=installments_number,
+                             interval_type=interval_type,
+                             intervals=intervals, connection=conn)
 
     def confirm(self):
         conn = self.get_connection()
@@ -107,6 +139,11 @@ class ReceivingOrder(Domain):
             storable.increase_stock(quantity, self.branch)
             if self.purchase:
                 self.purchase.increase_quantity_received(sellable, quantity)
+
+        group = self._get_payment_group()
+        group.create_icmsipi_book_entry(self.cfop, self.invoice_number,
+                                        self.icms_total, self.ipi_total)
+
         if self.purchase and self.purchase.can_close():
             self.purchase.close()
 
@@ -119,26 +156,21 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
+    def get_receiving_number_str(self):
+        return u"%04d" % self.receiving_number
+
     def get_branch_name(self):
         return self.branch.get_adapted().name
 
     def get_supplier_name(self):
+        if not self.supplier:
+            return u""
         return self.supplier.get_adapted().name
 
     def get_products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
                      currency(0))
         return currency(total)
-
-    def get_order_total(self):
-        products_total = self.get_products_total()
-        order_total = (products_total + self.charge_value -
-                       self.discount_value + self.icms_total +
-                       self.ipi_total + self.freight_total)
-        if order_total < 0:
-            raise DatabaseInconsistency('Order total must be greater '
-                                        'than zero')
-        return currency(order_total)
 
     def get_order_number(self):
         if not self.purchase:
@@ -202,6 +234,27 @@ class ReceivingOrder(Domain):
 
     charge_percentage = property(_get_charge_by_percentage,
                                  _set_charge_by_percentage)
+
+
+class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
+
+    #
+    # IPaymentGroup implementation
+    #
+
+    def get_thirdparty(self):
+        order = self.get_adapted()
+        supplier = order.supplier
+        return supplier.get_adapted()
+
+    def set_thirdparty(self):
+        raise NotImplementedError
+
+    def get_group_description(self):
+        order = self.get_adapted()
+        return _(u'purchase receiving %s') % order.receiving_number
+
+ReceivingOrder.registerFacet(ReceivingOrderAdaptToPaymentGroup, IPaymentGroup)
 
 
 @argcheck(PurchaseOrder, ReceivingOrder)

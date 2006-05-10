@@ -129,7 +129,7 @@ def create_sales():
         # Order number field will be filled automatically after bug 2214
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
         sale = Sale(connection=conn, till=till, client=clients[index],
-                    status=status, open_date=open_date,
+                    status=status, open_date=open_date, coupon_id=index,
                     salesperson=salesperson, cfop=cfop)
         sellable_facet = ISellable(product_list[index], connection=conn)
         sellable_facet.add_sellable_item(sale=sale)
