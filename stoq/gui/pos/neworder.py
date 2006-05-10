@@ -113,7 +113,7 @@ class NewOrderEditor(BaseEditor):
         salesperson = ISalesPerson(user.get_adapted(), connection=conn)
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
         return Sale(connection=conn, till=till, salesperson=salesperson,
-                    cfop=cfop)
+                    cfop=cfop, coupon_id=None)
 
     def setup_proxies(self):
         self._setup_widgets()

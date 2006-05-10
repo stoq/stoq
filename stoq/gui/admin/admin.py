@@ -22,11 +22,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
 ##
-"""
-stoq/gui/admin/admin.py:
-
-    Main gui definition for admin application.
-"""
+""" Main gui definition for admin application.  """
 
 import gettext
 
@@ -46,7 +42,7 @@ from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.search.profile import UserProfileSearch
 from stoqlib.gui.wizards.person import run_person_role_dialog
-from stoqlib.gui.search.fiscal import CfopSearch
+from stoqlib.gui.search.fiscal import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                        BranchSearch)
 
@@ -138,6 +134,9 @@ class AdminApp(SearchableAppWindow):
     #
     # Callbacks
     #
+
+    def _on_fiscalbook_action_clicked(self, *args):
+        self.run_dialog(FiscalBookEntrySearch, self.conn, hide_footer=True)
 
     def _on_new_user_action_clicked(self, *args):
         self._add_user()
