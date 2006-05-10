@@ -35,8 +35,10 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.gui.search.receiving import PurchaseReceivingSearch
+from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import Product, ProductFullStockView
+from stoqlib.domain.product import (Product, ProductFullStockView,
+                                    ProductAdaptToSellable)
 from stoqlib.domain.sellable import SellableView
 from stoqlib.domain.interfaces import ISellable, IBranch
 from stoqlib.reporting.product import ProductReport
@@ -150,3 +152,12 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         self.searchbar.print_report(ProductReport, self.products)
+
+    def on_history_button__clicked(self, button):
+        selected = self._klist.get_selected_rows()
+        if len(selected) != 1:
+            raise ValueError("You should have only one selected item at "
+                             "this point")
+        sellable = ProductAdaptToSellable.get(selected[0].id,
+                                              connection=self.conn)
+        self.run_dialog(ProductStockHistoryDialog, self.conn, sellable)
