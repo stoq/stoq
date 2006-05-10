@@ -19,7 +19,7 @@
 -- Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 --
 --
--- Views definition for Stoqlib based applications
+-- Views and sequences definition for Stoqlib based applications
 --
 
 
@@ -89,6 +89,9 @@ select create_stoqlib_sequence('stoqlib_payment_identifier_seq');
 select create_stoqlib_sequence('stoqlib_sale_ordernumber_seq');
 select create_stoqlib_sequence('stoqlib_purchase_ordernumber_seq');
 select create_stoqlib_sequence('stoqlib_sellable_code_seq');
+select create_stoqlib_sequence('stoqlib_purchasereceiving_number_seq');
+select create_stoqlib_sequence('stoqlib_icmsbook_identifier_seq');
+select create_stoqlib_sequence('stoqlib_issbook_identifier_seq');
 
 
 --
@@ -572,3 +575,81 @@ CREATE VIEW purchase_order_view AS
       ON (purchase_order.id = abstract_purchase_product_view.order_id)
 
         WHERE purchase_order.is_valid_model = 't';
+
+
+select drop_existing_view('icms_ipi_view');
+CREATE VIEW icms_ipi_view AS
+  --
+  -- Stores information about clients.
+  -- Available fields are:
+  --    id                  - the id of the icms_ipi_book_entry table
+  --    identifier          - the identifier of icms_ipi_book_entry table
+  --    icms_value          - the total value of icms
+  --    ipi_value           - the total value of ipi
+  --    date                - the date when the entry was created
+  --    invoice_number      - the invoice number
+  --    invoice_data_id     - the id of the invoice_info table
+  --    cfop_data_id        - the if of the cfop_data table
+  --    cfop_code           - the code of the cfop
+  --    drawee_name         - the drawee name
+  --    branch_id           - the id of the person_adapt_to_branch table
+  --    payment_group_id    - the if of the abstract_payment_group table
+  --
+  SELECT DISTINCT
+  icms_ipi_book_entry.id, icms_ipi_book_entry.identifier,
+  icms_ipi_book_entry.icms_value, icms_ipi_book_entry.ipi_value,
+  invoice_info.date, invoice_info.invoice_number,
+  invoice_info.id as invoice_data_id,
+  invoice_info.cfop_id as cfop_data_id,
+  cfop_data.code as cfop_code, person.name as drawee_name,
+  invoice_info.branch_id, invoice_info.payment_group_id
+    FROM icms_ipi_book_entry
+
+      INNER JOIN invoice_info
+      ON (invoice_info.id = icms_ipi_book_entry.invoice_data_id)
+
+      INNER JOIN cfop_data
+      ON (cfop_data.id = invoice_info.cfop_id)
+
+      INNER JOIN person
+      ON (invoice_info.drawee_id = person.id)
+
+        WHERE icms_ipi_book_entry.is_valid_model = 't';
+
+
+select drop_existing_view('iss_view');
+CREATE VIEW iss_view AS
+  --
+  -- Stores information about clients.
+  -- Available fields are:
+  --    id                  - the id of the iss_book_entry table
+  --    identifier          - the identifier of iss_book_entry table
+  --    iss_value           - the total value of iss
+  --    date                - the date when the entry was created
+  --    invoice_number      - the invoice number
+  --    invoice_data_id     - the id of the invoice_info table
+  --    cfop_data_id        - the if of the cfop_data table
+  --    cfop_code           - the code of the cfop
+  --    drawee_name         - the drawee name
+  --    branch_id           - the id of the person_adapt_to_branch table
+  --    payment_group_id    - the if of the abstract_payment_group table
+  --
+  SELECT DISTINCT
+  iss_book_entry.id, iss_book_entry.identifier,
+  iss_book_entry.iss_value, invoice_info.date, invoice_info.invoice_number,
+  invoice_info.id as invoice_data_id,
+  invoice_info.cfop_id as cfop_data_id,
+  cfop_data.code as cfop_code, person.name as drawee_name,
+  invoice_info.branch_id, invoice_info.payment_group_id
+    FROM iss_book_entry
+
+      INNER JOIN invoice_info
+      ON (invoice_info.id = iss_book_entry.invoice_data_id)
+
+      INNER JOIN cfop_data
+      ON (cfop_data.id = invoice_info.cfop_id)
+
+      INNER JOIN person
+      ON (invoice_info.drawee_id = person.id)
+
+        WHERE iss_book_entry.is_valid_model = 't';

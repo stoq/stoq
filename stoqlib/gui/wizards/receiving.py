@@ -43,6 +43,7 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity
+from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
@@ -63,17 +64,20 @@ class ReceivingInvoiceStep(WizardEditorStep):
     model_type = ReceivingOrder
     proxy_widgets = ('transporter',
                      'products_total',
-                     'order_total',
                      'freight',
                      'ipi',
+                     'cfop',
+                     'receiving_number',
+                     'branch',
                      'supplier',
+                     'supplier_label',
                      'order_number',
                      'invoice_total',
                      'invoice_number',
                      'icms_total')
 
     def _update_totals(self, *args):
-        self.proxy.update_many(['products_total', 'order_total'])
+        self.proxy.update('products_total')
 
     # We will avoid duplicating code like when setting up entry completions
     # on bug 2275.
@@ -90,10 +94,25 @@ class ReceivingInvoiceStep(WizardEditorStep):
         self.supplier.prefill(items)
 
     def _setup_widgets(self):
+        purchase_widgets = (self.purchase_details_label,
+                            self.purchase_number_label,
+                            self.purchase_supplier_label,
+                            self.order_number, self.supplier_label)
         if self.model.purchase:
-            self.supplier.set_sensitive(False)
+            for widget in purchase_widgets:
+                widget.show()
+            self.receiving_supplier_label.hide()
+            self.supplier.hide()
+        else:
+            for widget in purchase_widgets:
+                widget.hide()
+            self.receiving_supplier_label.show()
+            self.supplier.show()
         self._setup_transporter_entry()
         self._setup_supplier_entry()
+        cfop_items = [(item.get_full_description(), item)
+                        for item in CfopData.select(connection=self.conn)]
+        self.cfop.prefill(cfop_items)
 
     #
     # WizardStep hooks
@@ -113,7 +132,7 @@ class ReceivingInvoiceStep(WizardEditorStep):
                                     ReceivingInvoiceStep.proxy_widgets)
         if self.wizard.edit_mode:
             return
-        self.model.invoice_total = self.model.get_order_total()
+        self.model.invoice_total = self.model.get_products_total()
         self.proxy.update('invoice_total')
         purchase = self.model.purchase
         if purchase:
@@ -274,6 +293,8 @@ class PurchaseSelectionStep(WizardEditorStep):
         if selected:
             self.model.purchase = PurchaseOrder.get(selected.id,
                                                     connection=self.conn)
+            self.model.supplier = self.model.purchase.supplier
+            self.model.transporter = self.model.purchase.transporter
         else:
             self.model.purchase = None
         return ReceivingOrderProductStep(self.wizard, self, self.conn,
@@ -321,7 +342,7 @@ class PurchaseSelectionStep(WizardEditorStep):
 
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
-    size = (750, 500)
+    size = (750, 550)
 
     def __init__(self, conn):
         model = self._create_model(conn)
@@ -332,8 +353,10 @@ class ReceivingOrderWizard(BaseWizard):
         current_user = get_current_user()
         current_user = Person.iget(IUser, current_user.id, connection=conn)
         branch = sysparam(conn).CURRENT_BRANCH
+        cfop = sysparam(conn).DEFAULT_RECEIVING_CFOP
         return ReceivingOrder(responsible=current_user, supplier=None,
-                              branch=branch, connection=conn)
+                              invoice_number=None, branch=branch, cfop=cfop,
+                              connection=conn)
 
     #
     # WizardStep hooks

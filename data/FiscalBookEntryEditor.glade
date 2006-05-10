@@ -1,0 +1,103 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="FiscalBookEntryEditor">
+        <property name="border_width">6</property>
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">4</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="label" context="yes" translatable="yes">CFOP:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">Date:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyComboEntry" id="cfop">
+                                <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">cfop</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyDateEntry" id="date">
+                                <property name="data_type">date</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">date</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="yes" translatable="yes">Invoice Number:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="invoice_number">
+                                <property name="data_type">int</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">invoice_number</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">12</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

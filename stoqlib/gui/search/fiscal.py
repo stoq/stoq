@@ -24,12 +24,20 @@
 ##
 """ Search dialogs for fiscal objects """
 
+from datetime import date
+
+import gtk
 from kiwi.ui.widgets.list import Column
+from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, IPI_BOOK_ENTRY,
+                                  ISS_BOOK_ENTRY, ALL_ITEMS_INDEX)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.fiscal import CfopEditor
-from stoqlib.domain.fiscal import CfopData
+from stoqlib.gui.slaves.fiscal import FiscalBookEntryFilterSlave
+from stoqlib.gui.editors.fiscal import FiscalBookEntryEditor
+from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 
 
 _ = stoqlib_gettext
@@ -51,3 +59,83 @@ class CfopSearch(SearchEditor):
                        width=90),
                 Column('description', _('Description'), data_type=str,
                        searchable=True, expand=True)]
+
+
+class FiscalBookEntrySearch(SearchEditor):
+    title = _("Search for fiscal entries")
+    size = (750, 450)
+    search_table = IcmsIpiView
+    editor_class = FiscalBookEntryEditor
+    searching_by_date = True
+    has_new_button = False
+    searchbar_result_strings = _("fiscal entry"), _("fiscal entries")
+
+    def _setup_columns(self, columns, table, col_name, summary_label_text):
+        label_text = '<b>%s</b>' % summary_label_text
+        self.klist.set_columns(columns)
+        self.set_searchtable(table)
+        self.setup_summary_label(col_name, label_text)
+
+    def _setup_icms_columns(self):
+        cols = self.get_columns() + [Column('icms_value',
+                                            title=_('ICMS Total'),
+                                            data_type=currency, width=120)]
+        self._setup_columns(cols, IcmsIpiView, 'icms_value',
+                            _("ICMS Total:"))
+
+    def _setup_ipi_columns(self):
+        cols = self.get_columns() + [Column('ipi_value',
+                                            title=_('IPI Total'),
+                                            data_type=currency, width=120)]
+        self._setup_columns(cols, IcmsIpiView, 'ipi_value',
+                            _("IPI Total:"))
+
+    def _setup_iss_columns(self):
+        cols = self.get_columns() + [Column('iss_value',
+                                            title=_('ISS Total'),
+                                            data_type=currency, width=120)]
+        self._setup_columns(cols, IssView, 'iss_value',
+                            _("ISS Total:"))
+
+    #
+    # SearchBar Hooks
+    #
+
+    def get_columns(self):
+        return [Column('identifier', title=_('#'), width=80,
+                       data_type=int, sorted=True),
+                Column('date', title=_('Date'), width=80,
+                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                Column('invoice_number', title=_('Invoice'),
+                       data_type=int, width=90),
+                Column('cfop_code', title=_('CFOP'), data_type=str, width=90),
+                Column('drawee_name', title=_('Drawee'),
+                       data_type=str, expand=True)]
+
+
+    def get_extra_query(self):
+        branch = self.filter_slave.get_selected_branch()
+        entry_type = self.filter_slave.get_selected_entry_type()
+        if entry_type == ICMS_BOOK_ENTRY:
+            self._setup_icms_columns()
+        elif entry_type == ISS_BOOK_ENTRY:
+            self._setup_iss_columns()
+        elif entry_type == IPI_BOOK_ENTRY:
+            self._setup_ipi_columns()
+        else:
+            raise ValueError("Invalid fical book entry type, got %s"
+                             % entry_type)
+        if branch != ALL_ITEMS_INDEX:
+            return self.search_table.q.branch_id == branch.id
+
+    #
+    # SearchDialog Hooks
+    #
+
+    def get_filter_slave(self):
+        self.filter_slave = FiscalBookEntryFilterSlave(self.conn)
+        return self.filter_slave
+
+    def after_search_bar_created(self):
+        self.filter_slave.connect('status-changed',
+                                  self.search_bar.search_items)

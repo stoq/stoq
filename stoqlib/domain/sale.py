@@ -24,10 +24,11 @@
 ##
 """ Sale object and related objects implementation """
 
-import decimal
+from decimal import Decimal
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
+from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
@@ -35,6 +36,7 @@ from kiwi.datatypes import currency
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellableItem
@@ -97,7 +99,7 @@ class Sale(Domain):
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_REVIEWING:   _(u"Reviewing")}
 
-    coupon_id = IntCol(default=None)
+    coupon_id = IntCol()
     order_number = AutoIncCol('stoqlib_sale_ordernumber_seq')
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
@@ -223,8 +225,8 @@ class Sale(Domain):
         if not percentage:
             return currency(0)
         subtotal = self.get_sale_subtotal()
-        percentage = decimal.Decimal(str(percentage))
-        perc_value = subtotal * (percentage / decimal.Decimal('100.0'))
+        percentage = Decimal(str(percentage))
+        perc_value = subtotal * (percentage / Decimal('100.0'))
         return currency(perc_value)
 
     def _set_discount_by_percentage(self, value):
@@ -237,7 +239,7 @@ class Sale(Domain):
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
-            return decimal.Decimal('0.0')
+            return Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
@@ -258,7 +260,7 @@ class Sale(Domain):
     def _get_charge_by_percentage(self):
         charge_value = self.charge_value
         if not charge_value:
-            return decimal.Decimal('0.0')
+            return Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
@@ -282,8 +284,8 @@ class Sale(Domain):
         calculated by:.
         Sale total = Sum(product and service prices) + charge +
                      interest - discount"""
-        charge_value = self.charge_value or decimal.Decimal('0.0')
-        discount_value = self.discount_value or decimal.Decimal('0.0')
+        charge_value = self.charge_value or Decimal('0.0')
+        discount_value = self.discount_value or Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         total_amount = subtotal + charge_value - discount_value
         return currency(total_amount)
@@ -309,7 +311,7 @@ class Sale(Domain):
 
     def get_items_total_quantity(self):
         return sum([item.quantity for item in self.get_items()],
-                   decimal.Decimal("0.0"))
+                   Decimal("0.0"))
 
     def get_items_total_value(self):
         total = sum([item.get_total() for item in self.get_items()],
@@ -405,7 +407,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         self.renegotiation_data = reneg_data
         return reneg_data
 
-    @argcheck(decimal.Decimal)
+    @argcheck(Decimal)
     def create_renegotiation_return_data(self, overpaid_value):
         renegotiation = self._get_stored_renegotiation()
         reneg_type = self.RENEGOTIATION_RETURN
@@ -416,7 +418,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                payment_group=self,
                                overpaid_value=overpaid_value)
 
-    @argcheck(unicode, decimal.Decimal)
+    @argcheck(unicode, Decimal)
     def create_renegotiation_giftcertificate_data(self, certificate_number,
                                                   overpaid_value):
         if not certificate_number:
@@ -432,7 +434,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                new_gift_certificate_number=number,
                                overpaid_value=overpaid_value)
 
-    @argcheck(decimal.Decimal, int)
+    @argcheck(Decimal, int)
     def create_renegotiation_outstanding_data(self, outstanding_value,
                                               preview_payment_method):
         reneg_type = self.RENEGOTIATION_OUTSTANDING
@@ -490,11 +492,88 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         sale = self.get_adapted()
         return sale.get_total_sale_amount() - self.get_pm_commission_total()
 
+    @argcheck(Decimal)
+    def _get_icms_total(self, av_difference):
+        """A Brazil-specific method
+        Calculates the icms total value
+
+        @param av_difference: the average difference for the sale items.
+                              it means the average discount or surcharge
+                              applied over all sale items
+        """
+        icms_total = Decimal("0.0")
+        conn = self.get_connection()
+        icms_tax = sysparam(conn).ICMS_TAX / Decimal("100.0")
+        sale = self.get_adapted()
+        for item in sale.get_products():
+            price = item.price + av_difference
+            sellable = item.sellable
+            if (sellable.tax_type == TAX_SUBSTITUTION or
+                sellable.tax_type == TAX_NONE):
+                continue
+            elif sellable.tax_type == TAX_ICMS:
+                icms_total += icms_tax * (price * item.quantity)
+            else:
+                raise ValueError("Invalid tax type for product %s. "
+                                 "Got %d" % (sellable, sellable.tax_type))
+        return icms_total
+
+    @argcheck(Decimal)
+    def _get_iss_total(self, av_difference):
+        """A Brazil-specific method
+        Calculates the iss total value
+
+        @param av_difference: the average difference for the sale items.
+                              it means the average discount or surcharge
+                              applied over all sale items
+        """
+        iss_total = Decimal('0.0')
+        conn = self.get_connection()
+        iss_tax = sysparam(conn).ISS_TAX / Decimal("100.0")
+        sale = self.get_adapted()
+        for item in sale.get_services():
+            price = item.price + av_difference
+            iss_total += iss_tax * (price * item.quantity)
+        return iss_total
+
+    def _create_fiscal_entries(self):
+        """A Brazil-specific method
+        Create new ICMS and ISS entries in the fiscal book
+        for a given sale.
+
+        Important: freight and interest are not part of the base value for
+        ICMS. Only product values and surcharge which applies increasing the
+        product totals are considered here.
+
+        Note that we are not calculating ICMS or ISS for gift certificates since
+        it will be calculated for the products sold when using gift
+        certificates as payment methods.
+        """
+        sale = self.get_adapted()
+        total = (sale.get_total_sale_amount() -
+                 self.get_pm_commission_total())
+        total_quantity = sale.get_items_total_quantity()
+        if not total_quantity:
+            raise DatabaseInconsistency("Sale total quantity should never "
+                                        "be zero")
+        # If there is a discount or a surcharge applied in the whole total
+        # sale amount, we must share it between all the item values
+        # otherwise the icms and iss won't be calculated properly
+        subtotal = sale.get_sale_subtotal()
+        av_difference = (total - subtotal) / total_quantity
+
+        icms_total = self._get_icms_total(av_difference)
+        self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id, icms_total)
+
+        iss_total = self._get_iss_total(av_difference)
+        self.create_iss_book_entry(sale.cfop, sale.coupon_id, iss_total)
+
     def confirm(self):
         """Validate the current payment group, create payments and setup the
         associated gift certificates properly.
         """
         self.setup_inpayments()
+        self._create_fiscal_entries()
         if self.default_method == METHOD_GIFT_CERTIFICATE:
             self.confirm_gift_certificates()
         if self.renegotiation_type is None:

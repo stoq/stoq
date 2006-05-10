@@ -249,15 +249,34 @@ _parameter_info = {
                                  _("Default CFOP (Fiscal Code of Operations) "
                                    "used when generating fiscal book "
                                    "entries.")),
+    'DEFAULT_RECEIVING_CFOP': ParameterDetails(_("Purchase"),
+                                 _("Default Receiving CFOP"),
+                                 _("Default CFOP (Fiscal Code of Operations) "
+                                   "used when receiving products in the"
+                                   "warehouse application.")),
     'ICMS_TAX': ParameterDetails(_("Sales"),
-                                 _("Default ICMS value"),
+                                 _("Default ICMS tax"),
                                  _("Default ICMS to be applied on all the "
-                                   "products of a sale. ")),
+                                   "products of a sale. Note that this a "
+                                   "percentage value and must be set as the "
+                                   "format: 0 < value < 100. E.g: 18, which "
+                                   "means 18% of tax.")),
+    'ISS_TAX': ParameterDetails(_("Sales"),
+                                 _("Default ISS tax"),
+                                 _("Default ISS to be applied on all the "
+                                   "services of a sale. Note that this a "
+                                   "percentage value and must be set as the "
+                                   "format: 0 < value < 100. E.g: 12, which "
+                                   "means 12% of tax.")),
     'SUBSTITUTION_TAX': ParameterDetails(_("Sales"),
                                          _("Default Substitution tax"),
                                          _("The tax applied on all sale "
                                            "products with substitution "
-                                           "tax type")),
+                                           "tax type. Note that this a "
+                                           "percentage value and must be "
+                                           "set as the format: "
+                                           "0 < value < 100. E.g: 16, "
+                                           "which means 16% of tax.")),
 }
 
 
@@ -307,11 +326,13 @@ class ParameterAccess(ClassInittableObject):
                       initial=True),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
         ParameterAttr('ICMS_TAX', int, initial=18),
+        ParameterAttr('ISS_TAX', int, initial=18),
         ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
 
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
+        ParameterAttr('DEFAULT_RECEIVING_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
         ParameterAttr('CURRENT_BRANCH',
@@ -444,6 +465,7 @@ class ParameterAccess(ClassInittableObject):
         # When creating new methods for system objects creation add them
         # always here
         self.ensure_default_sales_cfop()
+        self.ensure_default_receiving_cfop()
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
@@ -599,6 +621,16 @@ class ParameterAccess(ClassInittableObject):
             return
         desc = u"Venda de Mercadoria Adquirida"
         data = CfopData(code=u"5.102", description=desc,
+                        connection=self.conn)
+        self._set_schema(key, data.id)
+
+    def ensure_default_receiving_cfop(self):
+        from stoqlib.domain.fiscal import CfopData
+        key = "DEFAULT_RECEIVING_CFOP"
+        if self.get_parameter_by_field(key, CfopData):
+            return
+        desc = u"Compra para Comercializacao"
+        data = CfopData(code=u"1.102", description=desc,
                         connection=self.conn)
         self._set_schema(key, data.id)
 

@@ -52,15 +52,17 @@ class PurchaseReceivingSearch(SearchDialog):
     #
 
     def get_columns(self):
-        return [Column('receival_date', _('Receival Date'),
-                       data_type=datetime.date, sorted=True, width=110),
+        return [Column('receiving_number_str', _('#'), data_type=unicode,
+                       width=80,),
+                Column('receival_date', _('Receival Date'),
+                       data_type=datetime.date, sorted=True, width=130),
                 Column('order_number', _('Purchase Order #'), data_type=unicode,
                        width=130),
                 Column('supplier_name', _('Supplier'), data_type=unicode,
                        expand=True),
                 Column('branch_name', _('Branch'), data_type=unicode,
                        width=90, visible=False),
-                Column('invoice_number', _('Invoice #'), data_type=unicode,
+                Column('invoice_number', _('Invoice #'), data_type=int,
                        width=80),
                 Column('invoice_total', _('Invoice Total'),
                        data_type=currency, width=120)]
