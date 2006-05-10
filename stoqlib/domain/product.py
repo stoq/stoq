@@ -422,9 +422,10 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def get_full_balance_string(self, branch=None, full_balance=None):
         full_balance = full_balance or self.get_full_balance(branch)
+        adapted = self.get_adapted()
         conn = self.get_connection()
-        precision = sysparam(conn).DECIMAL_PRECISION
-        return '%.*f' % (int(precision), full_balance)
+        sellable = ISellable(adapted, connection=conn)
+        return u"%s %s" % (full_balance, sellable.get_unit_description())
 
     #
     # General methods
