@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-04 13:10-0300\n"
+"POT-Creation-Date: 2006-05-08 15:53-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -41,11 +41,13 @@ msgstr ""
 #: ../stoqlib/gui/search/sale.py:74 ../stoqlib/gui/wizards/receiving.py:235
 #: ../stoqlib/gui/wizards/sale.py:368
 #: ../stoqlib/gui/dialogs/tilloperation.py:155
+#: ../stoqlib/gui/dialogs/productstockdetails.py:119
 #: ../stoqlib/gui/dialogs/clientdetails.py:149
 msgid "Number"
 msgstr ""
 
 #: ../stoqlib/reporting/purchase.py:66 ../stoqlib/reporting/sale.py:124
+#: ../stoqlib/gui/dialogs/productstockdetails.py:103
 #: ../stoqlib/gui/dialogs/clientdetails.py:120
 msgid "Date"
 msgstr ""
@@ -55,6 +57,7 @@ msgstr ""
 #: ../stoqlib/gui/editors/person.py:366 ../stoqlib/gui/search/receiving.py:59
 #: ../stoqlib/gui/search/product.py:127 ../stoqlib/gui/search/sellable.py:95
 #: ../stoqlib/gui/wizards/receiving.py:239
+#: ../stoqlib/gui/dialogs/productstockdetails.py:110
 msgid "Supplier"
 msgstr ""
 
@@ -94,6 +97,7 @@ msgstr "Noteringar:"
 
 #: ../stoqlib/reporting/purchase.py:101
 #: ../stoqlib/reporting/purchase_receival.py:48
+#: ../stoqlib/gui/dialogs/productstockdetails.py:107
 msgid "Purchase Order"
 msgstr ""
 
@@ -107,6 +111,8 @@ msgstr ""
 #: ../stoqlib/gui/wizards/receiving.py:172
 #: ../stoqlib/gui/dialogs/purchasedetails.py:84
 #: ../stoqlib/gui/dialogs/saledetails.py:92
+#: ../stoqlib/gui/dialogs/productstockdetails.py:113
+#: ../stoqlib/gui/dialogs/productstockdetails.py:127
 msgid "Quantity"
 msgstr ""
 
@@ -165,8 +171,8 @@ msgstr ""
 msgid "Open Date:"
 msgstr ""
 
-#: ../stoqlib/reporting/purchase.py:179 ../data/SaleDetailsDialog.glade.h:8
-#: ../data/UserStatusSlave.glade.h:4 ../data/ClientDetailsDialog.glade.h:8
+#: ../stoqlib/reporting/purchase.py:179 ../data/ClientDetailsDialog.glade.h:8
+#: ../data/SaleDetailsDialog.glade.h:8 ../data/UserStatusSlave.glade.h:4
 msgid "Status:"
 msgstr ""
 
@@ -285,6 +291,8 @@ msgstr ""
 
 #: ../stoqlib/reporting/product.py:73
 #: ../stoqlib/reporting/purchase_receival.py:63
+#: ../stoqlib/gui/dialogs/productstockdetails.py:81
+#: ../stoqlib/gui/dialogs/productstockdetails.py:91
 #: ../stoqlib/gui/dialogs/clientdetails.py:107
 #: ../data/SaleDetailsDialog.glade.h:11 ../data/SalesPersonStep.glade.h:7
 #: ../data/PurchasePaymentStep.glade.h:4 ../data/SellableItemEditor.glade.h:4
@@ -298,6 +306,7 @@ msgstr ""
 
 #: ../stoqlib/reporting/sale.py:57 ../stoqlib/reporting/sale.py:126
 #: ../stoqlib/gui/editors/person.py:67 ../stoqlib/gui/search/sale.py:78
+#: ../stoqlib/gui/dialogs/productstockdetails.py:126
 msgid "Client"
 msgstr ""
 
@@ -378,10 +387,10 @@ msgstr ""
 msgid "Page % 2d"
 msgstr ""
 
-#: ../stoqlib/domain/giftcertificate.py:70 ../stoqlib/domain/person.py:482
-#: ../stoqlib/domain/person.py:563 ../stoqlib/domain/person.py:585
-#: ../stoqlib/domain/person.py:597 ../stoqlib/domain/person.py:617
-#: ../stoqlib/domain/person.py:783 ../stoqlib/domain/person.py:810
+#: ../stoqlib/domain/giftcertificate.py:70 ../stoqlib/domain/person.py:522
+#: ../stoqlib/domain/person.py:603 ../stoqlib/domain/person.py:625
+#: ../stoqlib/domain/person.py:637 ../stoqlib/domain/person.py:657
+#: ../stoqlib/domain/person.py:823 ../stoqlib/domain/person.py:850
 #: ../stoqlib/gui/editors/person.py:227
 #: ../stoqlib/gui/search/giftcertificate.py:65
 #: ../stoqlib/gui/search/giftcertificate.py:102
@@ -392,11 +401,11 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: ../stoqlib/domain/giftcertificate.py:71 ../stoqlib/domain/person.py:406
-#: ../stoqlib/domain/person.py:483 ../stoqlib/domain/person.py:564
-#: ../stoqlib/domain/person.py:586 ../stoqlib/domain/person.py:598
-#: ../stoqlib/domain/person.py:618 ../stoqlib/domain/person.py:784
-#: ../stoqlib/domain/person.py:811 ../stoqlib/gui/search/giftcertificate.py:65
+#: ../stoqlib/domain/giftcertificate.py:71 ../stoqlib/domain/person.py:446
+#: ../stoqlib/domain/person.py:523 ../stoqlib/domain/person.py:604
+#: ../stoqlib/domain/person.py:626 ../stoqlib/domain/person.py:638
+#: ../stoqlib/domain/person.py:658 ../stoqlib/domain/person.py:824
+#: ../stoqlib/domain/person.py:851 ../stoqlib/gui/search/giftcertificate.py:65
 #: ../data/UserStatusSlave.glade.h:3 ../data/TransporterDataSlave.glade.h:5
 #: ../data/BranchDetailsSlave.glade.h:4
 msgid "Inactive"
@@ -411,103 +420,103 @@ msgstr ""
 msgid "till of %s"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:332
+#: ../stoqlib/domain/person.py:372
 msgid "Single"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:333
+#: ../stoqlib/domain/person.py:373
 msgid "Married"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:334
+#: ../stoqlib/domain/person.py:374
 msgid "Divorced"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:335
+#: ../stoqlib/domain/person.py:375
 msgid "Widowed"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:336
+#: ../stoqlib/domain/person.py:376
 msgid "Separated"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:337
+#: ../stoqlib/domain/person.py:377
 msgid "Cohabitation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:342 ../data/IndividualDetailsSlave.glade.h:8
+#: ../stoqlib/domain/person.py:382 ../data/IndividualDetailsSlave.glade.h:8
 msgid "Male"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:343 ../data/IndividualDetailsSlave.glade.h:6
+#: ../stoqlib/domain/person.py:383 ../data/IndividualDetailsSlave.glade.h:6
 msgid "Female"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:403
+#: ../stoqlib/domain/person.py:443
 msgid "Solvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:404
+#: ../stoqlib/domain/person.py:444
 msgid "Indebted"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:405
+#: ../stoqlib/domain/person.py:445
 msgid "Insolvent"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:484 ../stoqlib/domain/sellable.py:190
+#: ../stoqlib/domain/person.py:524 ../stoqlib/domain/sellable.py:190
 msgid "Blocked"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:516
+#: ../stoqlib/domain/person.py:556
 msgid "Normal"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:517
+#: ../stoqlib/domain/person.py:557
 msgid "Away"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:518
+#: ../stoqlib/domain/person.py:558
 msgid "Vacation"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:519
+#: ../stoqlib/domain/person.py:559
 msgid "Off"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:666
+#: ../stoqlib/domain/person.py:706
 msgid "Card Provider"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:667
+#: ../stoqlib/domain/person.py:707
 msgid "Finance Provider"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:744
+#: ../stoqlib/domain/person.py:784
 msgid "Globally"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:745
+#: ../stoqlib/domain/person.py:785
 msgid "By Salesperson"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:746
+#: ../stoqlib/domain/person.py:786
 msgid "By Sellable"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:747
+#: ../stoqlib/domain/person.py:787
 msgid "By Payment Method"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:748
+#: ../stoqlib/domain/person.py:788
 msgid "By Base Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:751
+#: ../stoqlib/domain/person.py:791
 msgid "By Sellable Category"
 msgstr ""
 
-#: ../stoqlib/domain/person.py:753
+#: ../stoqlib/domain/person.py:793
 msgid "By Sale Total"
 msgstr ""
 
@@ -847,6 +856,7 @@ msgstr ""
 #: ../stoqlib/lib/parameters.py:219 ../stoqlib/lib/parameters.py:241
 #: ../stoqlib/lib/parameters.py:247 ../stoqlib/lib/parameters.py:251
 #: ../data/ClientDetailsDialog.glade.h:6
+#: ../data/ProductStockHistoryDialog.glade.h:4
 msgid "Sales"
 msgstr ""
 
@@ -1238,21 +1248,26 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: ../stoqlib/gui/templates/person.py:96
+#: ../stoqlib/gui/templates/person.py:91
 #: ../data/PersonEditorTemplate.glade.h:10
 msgid "Individual/Company Data"
 msgstr ""
 
-#: ../stoqlib/gui/templates/person.py:97
-#: ../stoqlib/gui/templates/person.py:107
+#: ../stoqlib/gui/templates/person.py:92
+#: ../stoqlib/gui/templates/person.py:102
 #: ../data/PersonEditorTemplate.glade.h:2
 msgid "Company Data"
 msgstr ""
 
-#: ../stoqlib/gui/templates/person.py:99
-#: ../stoqlib/gui/templates/person.py:102
+#: ../stoqlib/gui/templates/person.py:94 ../stoqlib/gui/templates/person.py:97
 #: ../data/PersonEditorTemplate.glade.h:9
 msgid "Individual Data"
+msgstr ""
+
+#: ../stoqlib/gui/templates/person.py:115
+msgid ""
+"You must define a valid main address before\n"
+"adding additional addresses"
 msgstr ""
 
 #: ../stoqlib/gui/slaves/liaison.py:45
@@ -1909,6 +1924,7 @@ msgid "sale"
 msgstr ""
 
 #: ../stoqlib/gui/search/sale.py:76 ../stoqlib/gui/wizards/receiving.py:237
+#: ../stoqlib/gui/dialogs/productstockdetails.py:123
 msgid "Date Started"
 msgstr ""
 
@@ -2325,6 +2341,14 @@ msgid ""
 "It's not possible to cancel this payment."
 msgstr ""
 
+#: ../stoqlib/gui/dialogs/productstockdetails.py:58
+msgid "Product Stock History"
+msgstr ""
+
+#: ../stoqlib/gui/dialogs/productstockdetails.py:111
+msgid "Invoice"
+msgstr ""
+
 #: ../stoqlib/gui/dialogs/clientdetails.py:54
 #, fuzzy
 msgid "Client Details"
@@ -2362,8 +2386,8 @@ msgstr ""
 #: ../data/PMDetailsGeneralDataStep.glade.h:2
 #: ../data/FinanceDetailsSlave.glade.h:2
 #: ../data/SellableCategoryDataSlave.glade.h:2
-#: ../data/SellablePriceEditor.glade.h:2
 #: ../data/TributarySituationSlave.glade.h:2
+#: ../data/SellablePriceEditor.glade.h:2
 #, no-c-format
 msgid "%"
 msgstr ""
@@ -2399,6 +2423,32 @@ msgstr ""
 #: ../data/PriceEntrySlave.glade.h:1 ../data/PriceLabelSlave.glade.h:1
 #: ../data/SellableItemEditor.glade.h:2 ../data/OnSaleInfoSlave.glade.h:3
 msgid "Price:"
+msgstr ""
+
+#: ../data/ClientDetailsDialog.glade.h:1 ../data/SaleDetailsDialog.glade.h:1
+#, fuzzy
+msgid "Client:"
+msgstr "Sök"
+
+#: ../data/ClientDetailsDialog.glade.h:2
+#, fuzzy
+msgid "Further Details"
+msgstr "Sök"
+
+#: ../data/ClientDetailsDialog.glade.h:3
+msgid "Last Purchase Date:"
+msgstr ""
+
+#: ../data/ClientDetailsDialog.glade.h:4 ../data/SaleDetailsDialog.glade.h:6
+msgid "Payments"
+msgstr ""
+
+#: ../data/ClientDetailsDialog.glade.h:5
+msgid "Products"
+msgstr ""
+
+#: ../data/ClientDetailsDialog.glade.h:7
+msgid "Services"
 msgstr ""
 
 #: ../data/TillOperationDialog.glade.h:1 ../data/TillClosing.glade.h:2
@@ -2449,11 +2499,6 @@ msgstr ""
 msgid "Select Payment Method:"
 msgstr ""
 
-#: ../data/SaleDetailsDialog.glade.h:1 ../data/ClientDetailsDialog.glade.h:1
-#, fuzzy
-msgid "Client:"
-msgstr "Sök"
-
 #: ../data/SaleDetailsDialog.glade.h:2
 #: ../data/SearchDialogDetailsSlave.glade.h:1
 #: ../data/SaleListToolbar.glade.h:1
@@ -2467,10 +2512,6 @@ msgstr ""
 
 #: ../data/SaleDetailsDialog.glade.h:4
 msgid "Items"
-msgstr ""
-
-#: ../data/SaleDetailsDialog.glade.h:6 ../data/ClientDetailsDialog.glade.h:4
-msgid "Payments"
 msgstr ""
 
 #: ../data/SaleDetailsDialog.glade.h:7 ../data/SalesPersonStep.glade.h:5
@@ -2836,6 +2877,22 @@ msgstr ""
 msgid "Transporter Status:"
 msgstr ""
 
+#: ../data/InvoiceDetailsEditor.glade.h:1
+msgid "  -  -    "
+msgstr ""
+
+#: ../data/InvoiceDetailsEditor.glade.h:2
+msgid "  :  "
+msgstr ""
+
+#: ../data/InvoiceDetailsEditor.glade.h:3
+msgid "Expedition Date:"
+msgstr ""
+
+#: ../data/InvoiceDetailsEditor.glade.h:4
+msgid "Time:"
+msgstr ""
+
 #: ../data/IndividualDocuments.glade.h:1
 msgid "CPF:"
 msgstr ""
@@ -2970,6 +3027,23 @@ msgstr "Noteringar:"
 msgid "Charge:"
 msgstr ""
 
+#: ../data/ContactEditor.glade.h:1 ../data/PersonEditorTemplate.glade.h:14
+msgid "Name:"
+msgstr ""
+
+#: ../data/ContactEditor.glade.h:2 ../data/PersonEditorTemplate.glade.h:15
+msgid "Phone Number:"
+msgstr ""
+
+#: ../data/GiftCertificateSelectionStep.glade.h:1
+msgid "Add to List"
+msgstr ""
+
+#: ../data/GiftCertificateSelectionStep.glade.h:3
+#, fuzzy
+msgid "Select Gift Certificates"
+msgstr "Välj föremål"
+
 #: ../data/PurchaseDetailsDialog.glade.h:3
 msgid "Additional Info"
 msgstr ""
@@ -2994,23 +3068,6 @@ msgstr ""
 
 #: ../data/PurchaseDetailsDialog.glade.h:16
 msgid "Received"
-msgstr ""
-
-#: ../data/GiftCertificateSelectionStep.glade.h:1
-msgid "Add to List"
-msgstr ""
-
-#: ../data/GiftCertificateSelectionStep.glade.h:3
-#, fuzzy
-msgid "Select Gift Certificates"
-msgstr "Välj föremål"
-
-#: ../data/ContactEditor.glade.h:1 ../data/PersonEditorTemplate.glade.h:14
-msgid "Name:"
-msgstr ""
-
-#: ../data/ContactEditor.glade.h:2 ../data/PersonEditorTemplate.glade.h:15
-msgid "Phone Number:"
 msgstr ""
 
 #: ../data/PMDetailsGeneralDataStep.glade.h:4
@@ -3150,6 +3207,15 @@ msgstr ""
 msgid "Username:"
 msgstr ""
 
+#: ../data/TributarySituationSlave.glade.h:3
+#: ../data/SellablePriceEditor.glade.h:5
+msgid "0,00"
+msgstr ""
+
+#: ../data/TributarySituationSlave.glade.h:4
+msgid "Tributary Situation:"
+msgstr ""
+
 #: ../data/Warnbox.glade.h:1 ../data/BasicDialog.glade.h:2
 msgid "label"
 msgstr "ettiket"
@@ -3225,6 +3291,7 @@ msgid "Add"
 msgstr ""
 
 #: ../data/AbstractProductStep.glade.h:5
+#: ../data/ProductStockHistoryDialog.glade.h:2
 msgid "Product:"
 msgstr ""
 
@@ -3311,11 +3378,6 @@ msgstr ""
 #: ../data/SellablePriceEditor.glade.h:4
 #, no-c-format
 msgid "%  "
-msgstr ""
-
-#: ../data/SellablePriceEditor.glade.h:5
-#: ../data/TributarySituationSlave.glade.h:3
-msgid "0,00"
 msgstr ""
 
 #: ../data/SellablePriceEditor.glade.h:7
@@ -3448,23 +3510,6 @@ msgstr ""
 msgid "Spouse:"
 msgstr ""
 
-#: ../data/ClientDetailsDialog.glade.h:2
-#, fuzzy
-msgid "Further Details"
-msgstr "Sök"
-
-#: ../data/ClientDetailsDialog.glade.h:3
-msgid "Last Purchase Date:"
-msgstr ""
-
-#: ../data/ClientDetailsDialog.glade.h:5
-msgid "Products"
-msgstr ""
-
-#: ../data/ClientDetailsDialog.glade.h:7
-msgid "Services"
-msgstr ""
-
 #: ../data/InstallmentsNumberSettingsSlave.glade.h:2
 msgid "Maximum Number of Installments:"
 msgstr ""
@@ -3477,24 +3522,12 @@ msgstr ""
 msgid "Return Sale"
 msgstr ""
 
-#: ../data/InvoiceDetailsEditor.glade.h:1
-msgid "  -  -    "
+#: ../data/ProductStockHistoryDialog.glade.h:1
+msgid "Current Stock Balance:"
 msgstr ""
 
-#: ../data/InvoiceDetailsEditor.glade.h:2
-msgid "  :  "
-msgstr ""
-
-#: ../data/InvoiceDetailsEditor.glade.h:3
-msgid "Expedition Date:"
-msgstr ""
-
-#: ../data/InvoiceDetailsEditor.glade.h:4
-msgid "Time:"
-msgstr ""
-
-#: ../data/TributarySituationSlave.glade.h:4
-msgid "Tributary Situation:"
+#: ../data/ProductStockHistoryDialog.glade.h:3
+msgid "Receiving"
 msgstr ""
 
 #~ msgid "Are you sure you want delete this item?"
