@@ -32,6 +32,7 @@ import gobject
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.objectlist import Column, ObjectList
+from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
@@ -685,6 +686,7 @@ class SearchDialog(BasicDialog):
         BasicDialog.__init__(self)
         title = title or self.title
         self.selection_mode = selection_mode or self.selection_mode
+        self.summary_label = None
         avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
         if self.selection_mode not in avaliable_modes:
             raise ValueError('Invalid selection mode %d' % self.selection_mode)
@@ -692,7 +694,7 @@ class SearchDialog(BasicDialog):
                                 main_label_text=self.main_label_text,
                                 title=title, size=self.size)
         self.set_ok_label(_('Se_lect Items'))
-        self.table = table or self.table
+        self.table = table or self.table or self.search_table
         if not self.table:
             raise ValueError("Child must define a table attribute")
         self.search_table = search_table or self.table
@@ -737,11 +739,14 @@ class SearchDialog(BasicDialog):
         self.attach_slave('header', self.search_bar)
 
     def _setup_klist(self):
+        self.klist_vbox = gtk.VBox()
         self.klist = ObjectList(self.get_columns(), mode=self.selection_mode)
+        self.klist_vbox.pack_start(self.klist)
+        self.klist_vbox.show_all()
         # XXX: I think that BasicDialog must be redesigned, if so we don't
         # need this ".remove" crap
         self.main.remove(self.main_label)
-        self.main.add(self.klist)
+        self.main.add(self.klist_vbox)
         self.klist.show()
         self.klist.connect('cell_edited', self.on_cell_edited)
 
@@ -769,6 +774,18 @@ class SearchDialog(BasicDialog):
     def set_searchtable(self, search_table):
         self.search_table = search_table
         self.search_bar.set_searchtable(search_table)
+
+    def setup_summary_label(self, column_name, label_text):
+        if self.summary_label is not None:
+            self.klist_vbox.remove(self.summary_label)
+        value_format = '<b>%s</b>'
+        self.clear_klist()
+        self.summary_label = SummaryLabel(klist=self.klist,
+                                          column=column_name,
+                                          label=label_text,
+                                          value_format=value_format)
+        self.summary_label.show()
+        self.klist_vbox.pack_start(self.summary_label, False)
 
     def setup_slaves(self, **kwargs):
         self.disable_ok()
@@ -860,6 +877,8 @@ class SearchDialog(BasicDialog):
             selected = objs.next()
             self.klist.select(selected)
             self.enable_ok()
+        if self.summary_label:
+            self.summary_label.update_total()
         self.update_widgets()
 
     def update_widgets(self, *args):
@@ -888,6 +907,7 @@ class SearchEditor(SearchDialog):
                 kiwi list to get adapter for the editor.
     """
     model_editor_lookup_attr = 'id'
+    has_new_button = has_edit_button = True
     model_list_lookup_attr = 'id'
 
     def __init__(self, conn, table=None, editor_class=None, interface=None,
@@ -903,9 +923,17 @@ class SearchEditor(SearchDialog):
             self.accept_edit_data = False
             self._toolbar.get_toplevel().hide()
         else:
-            self.accept_edit_data = True
+            if not (self.has_new_button or self.has_edit_button):
+                raise ValueError("You must set hide_footer=False instead "
+                                 "of disable these two attributes.")
             if not self.editor_class:
                 raise ValueError('An editor_class argument is required')
+
+            self.accept_edit_data = self.has_edit_button
+            if not self.has_new_button:
+                self.hide_new_button()
+            if not self.has_edit_button:
+                self.hide_edit_button()
         self._selected = None
         self.klist.connect('double_click', self._on_toolbar__edit)
         self.update_widgets()
