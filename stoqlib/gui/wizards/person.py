@@ -31,6 +31,8 @@ from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import format_phone_number, raw_phone_number
+from stoqlib.database import rollback_and_begin
 from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
@@ -40,7 +42,6 @@ from stoqlib.gui.editors.person import (BranchEditor,
                                         ClientEditor, SupplierEditor,
                                         EmployeeEditor,
                                         CreditProviderEditor)
-from stoqlib.lib.validators import format_phone_number, raw_phone_number
 
 
 _ = stoqlib_gettext
@@ -54,6 +55,10 @@ class RoleEditorStep(BaseWizardStep):
 
     def __init__(self, wizard, conn, previous, role_type, person=None,
                  phone_number=None):
+        # We don't want to create duplicate person objects when switching
+        # steps.
+        rollback_and_begin(conn)
+
         BaseWizardStep.__init__(self, conn, wizard, previous=previous)
         role_editor = self.wizard.role_editor(self.conn,
                                               person=person,
