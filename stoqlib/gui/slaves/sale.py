@@ -57,9 +57,9 @@ class DiscountChargeSlave(BaseEditorSlave):
                      'charge_perc')
     gsignal('discount-changed')
 
-    def __init__(self, conn, model, model_type):
+    def __init__(self, conn, model, model_type, visual_mode=False):
         self.model_type = model_type
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def setup_widgets(self):
         format_str = get_price_format_str()

@@ -35,21 +35,19 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.editors import NoteEditor
-from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.receiving import ReceivingInvoiceSlave
 from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.interfaces import IUser, ISupplier, ISellable, ITransporter
+from stoqlib.domain.interfaces import IUser, ISellable
 
 _ = stoqlib_gettext
 
@@ -60,59 +58,8 @@ _ = stoqlib_gettext
 
 
 class ReceivingInvoiceStep(WizardEditorStep):
-    gladefile = 'ReceivingInvoiceStep'
+    gladefile = 'HolderTemplate'
     model_type = ReceivingOrder
-    proxy_widgets = ('transporter',
-                     'products_total',
-                     'freight',
-                     'ipi',
-                     'cfop',
-                     'receiving_number',
-                     'branch',
-                     'supplier',
-                     'supplier_label',
-                     'order_number',
-                     'invoice_total',
-                     'invoice_number',
-                     'icms_total')
-
-    def _update_totals(self, *args):
-        self.proxy.update('products_total')
-
-    # We will avoid duplicating code like when setting up entry completions
-    # on bug 2275.
-    def _setup_transporter_entry(self):
-        table = Person.getAdapterClass(ITransporter)
-        transporters = table.get_active_transporters(self.conn)
-        items = [(t.get_adapted().name, t) for t in transporters]
-        self.transporter.prefill(items)
-
-    def _setup_supplier_entry(self):
-        table = Person.getAdapterClass(ISupplier)
-        suppliers = table.get_active_suppliers(self.conn)
-        items = [(s.get_adapted().name, s) for s in suppliers]
-        self.supplier.prefill(items)
-
-    def _setup_widgets(self):
-        purchase_widgets = (self.purchase_details_label,
-                            self.purchase_number_label,
-                            self.purchase_supplier_label,
-                            self.order_number, self.supplier_label)
-        if self.model.purchase:
-            for widget in purchase_widgets:
-                widget.show()
-            self.receiving_supplier_label.hide()
-            self.supplier.hide()
-        else:
-            for widget in purchase_widgets:
-                widget.hide()
-            self.receiving_supplier_label.show()
-            self.supplier.show()
-        self._setup_transporter_entry()
-        self._setup_supplier_entry()
-        cfop_items = [(item.get_full_description(), item)
-                        for item in CfopData.select(connection=self.conn)]
-        self.cfop.prefill(cfop_items)
 
     #
     # WizardStep hooks
@@ -122,57 +69,10 @@ class ReceivingInvoiceStep(WizardEditorStep):
         return False
 
     def post_init(self):
-        self.transporter.grab_focus()
+        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
+        self.attach_slave("place_holder", self.invoice_slave)
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    ReceivingInvoiceStep.proxy_widgets)
-        if self.wizard.edit_mode:
-            return
-        self.model.invoice_total = self.model.get_products_total()
-        self.proxy.update('invoice_total')
-        purchase = self.model.purchase
-        if purchase:
-            transporter = purchase.transporter
-            self.model.transporter = transporter
-            self.proxy.update('transporter')
-            self.model.supplier = purchase.supplier
-            self.proxy.update('supplier')
-            if purchase.freight:
-                freight_value = (self.model.get_products_total() *
-                                 purchase.freight / 100)
-                self.model.freight_total = freight_value
-                self.proxy.update('freight_total')
-
-    def setup_slaves(self):
-        slave_holder = 'discount_charge_holder'
-        if self.get_slave(slave_holder):
-            return
-        if not self.wizard.edit_mode:
-            self.model.reset_discount_and_charge()
-        self.discount_charge_slave = DiscountChargeSlave(self.conn, self.model,
-                                                         ReceivingOrder)
-        self.attach_slave(slave_holder, self.discount_charge_slave)
-        self.discount_charge_slave.connect('discount-changed',
-                                           self._update_totals)
-        self._update_totals()
-
-    #
-    # Callbacks
-    #
-
-    def after_ipi__changed(self, *args):
-        self._update_totals()
-
-    def after_freight__changed(self, *args):
-        self._update_totals()
-
-    def on_notes_button__clicked(self, *args):
-        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
-                   title=_('Additional Information'))
 
 
 class ReceivingOrderProductStep(AbstractProductStep):
@@ -342,7 +242,7 @@ class PurchaseSelectionStep(WizardEditorStep):
 
 class ReceivingOrderWizard(BaseWizard):
     title = _("Receiving Order")
-    size = (750, 550)
+    size = (750, 560)
 
     def __init__(self, conn):
         model = self._create_model(conn)

@@ -39,10 +39,11 @@ _ = stoqlib_gettext
 class AddressAdditionDialog(AdditionListDialog):
     title = _('Additional Addresses')
 
-    def __init__(self, conn, klist_objects, **editor_kwargs):
+    def __init__(self, conn, klist_objects, visual_mode=False, **editor_kwargs):
         cols = self.get_columns()
         AdditionListDialog.__init__(self, conn, AddressEditor,
-                                    cols, klist_objects, self.title)
+                                    cols, klist_objects, self.title,
+                                    visual_mode=visual_mode)
         self.register_editor_kwargs(**editor_kwargs)
         self.set_before_delete_items(self.before_delete_items)
         self.set_on_add_item(self.on_add_item)
@@ -86,13 +87,13 @@ class AddressEditor(BaseEditor):
 
     proxy_widgets = ('is_main_address_checkbutton', )
 
-    def __init__(self, conn, person, model=None):
+    def __init__(self, conn, person, model=None, visual_mode=False):
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
                             "be of type Person, got %s instead"
                             % type(person))
         self.person = person
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
 
     #
     # BaseEditor Hooks
@@ -109,7 +110,8 @@ class AddressEditor(BaseEditor):
 
     def setup_slaves(self):
         self.address_slave = AddressSlave(self.conn, self.person, self.model,
-                                          False)
+                                          False,
+                                          visual_mode=self.visual_mode)
         self.proxy.set_model(self.address_slave.model)
         self.attach_slave('main_holder', self.address_slave)
 

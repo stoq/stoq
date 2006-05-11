@@ -76,7 +76,8 @@ class PersonEditorTemplate(BaseEditorSlave):
         self.attach_slave('extra_holder', slave)
 
     def attach_model_slave(self, name, slave_type, slave_model):
-        slave = slave_type(self.conn, slave_model)
+        slave = slave_type(self.conn, slave_model,
+                           visual_mode=self.visual_mode)
         self.attach_slave(name, slave)
         return slave
 
@@ -122,7 +123,8 @@ class PersonEditorTemplate(BaseEditorSlave):
             addresses.remove(main_address)
 
         result = run_dialog(AddressAdditionDialog, self, self.conn,
-                            addresses, person=self.model)
+                            addresses, person=self.model,
+                            visual_mode=self.visual_mode)
         if not result:
             return
 
@@ -138,7 +140,7 @@ class PersonEditorTemplate(BaseEditorSlave):
 
     def on_contacts_button__clicked(self, *args):
         run_dialog(LiaisonListDialog, self, self.conn, self.model,
-                   self.model.liaisons)
+                   self.model.liaisons, visual_mode=self.visual_mode)
 
     #
     # BaseEditorSlave hooks
@@ -155,7 +157,8 @@ class PersonEditorTemplate(BaseEditorSlave):
     def setup_slaves(self):
         main_address = self.model.get_main_address()
         self.address_slave = AddressSlave(self.conn, self.model,
-                                          main_address)
+                                          main_address,
+                                          visual_mode=self.visual_mode)
         self.attach_slave('address_holder', self.address_slave)
         self.attach_model_slave('note_holder', NoteSlave, self.model)
 
@@ -171,9 +174,10 @@ class IndividualEditorTemplate(BaseEditorSlave):
     gladefile = 'BaseTemplate'
 
 
-    def __init__(self, conn, model=None, person_slave=None):
+    def __init__(self, conn, model=None, person_slave=None,
+                 visual_mode=False):
         self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def get_person_slave(self):
         return self._person_slave
@@ -187,18 +191,18 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         if not self._person_slave:
-            self._person_slave = PersonEditorTemplate(self.conn,
-                                                      self.model.get_adapted())
+            klass = PersonEditorTemplate
+            self._person_slave = klass(self.conn, self.model.get_adapted(),
+                                       visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
 
-        slave_class = IndividualDocuments
         slave = self._person_slave
+        slave_class = IndividualDocuments
         self.documents_slave = slave.attach_model_slave('individual_holder',
                                                         slave_class,
                                                         self.model)
         holder_name = 'details_holder'
         slave_class = IndividualDetailsSlave
-        slave = self._person_slave
         self.details_slave = slave.attach_model_slave(holder_name,
                                                       slave_class,
                                                       self.model)
@@ -214,9 +218,10 @@ class CompanyEditorTemplate(BaseEditorSlave):
     model_iface = ICompany
     gladefile = 'BaseTemplate'
 
-    def __init__(self, conn, model=None, person_slave=None):
+    def __init__(self, conn, model=None, person_slave=None,
+                 visual_mode=False):
         self._person_slave = person_slave
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def get_person_slave(self):
         return self._person_slave
@@ -224,14 +229,20 @@ class CompanyEditorTemplate(BaseEditorSlave):
     def attach_person_slave(self, slave):
         self._person_slave.attach_slave('person_status_holder', slave)
 
+    #
+    # BaseEditor hooks
+    #
+
     def setup_slaves(self):
         if not self._person_slave:
-            self._person_slave = PersonEditorTemplate(self.conn,
-                                                      self.model.get_adapted())
+            klass = PersonEditorTemplate
+            self._person_slave = klass(self.conn, self.model.get_adapted(),
+                                       visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
 
-        self.company_docs_slave = CompanyDocumentsSlave(self.conn,
-                                                        self.model)
+        klass = CompanyDocumentsSlave
+        self.company_docs_slave = klass(self.conn, self.model,
+                                        visual_mode=self.visual_mode)
         self._person_slave.attach_slave('company_holder',
                                        self.company_docs_slave)
 
@@ -250,15 +261,13 @@ class BasePersonRoleEditor(BaseEditor):
                       or ROLE_COMPANY
     """
 
-    def __init__(self, conn, model=None, role_type=None, person=None):
+    def __init__(self, conn, model=None, role_type=None, person=None,
+                 visual_mode=False):
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')
         self.role_type = role_type
         self.person = person
-        BaseEditor.__init__(self, conn, model)
-
-    def get_title_model_attribute(self, model):
-        return model.get_adapted().name
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
 
     def get_person_slave(self):
         return self.main_slave.get_person_slave()
@@ -271,6 +280,28 @@ class BasePersonRoleEditor(BaseEditor):
         available_types = Person.ROLE_INDIVIDUAL, Person.ROLE_COMPANY
         if not self.role_type in available_types:
             raise ValueError('Invalid value for role_type attribute')
+
+    def _create_company_slave(self, company, person_slave=None):
+        klass = CompanyEditorTemplate
+        self.company_slave = klass(self.conn, company,
+                                   person_slave=person_slave,
+                                   visual_mode=self.visual_mode)
+        return self.company_slave
+
+    def _create_individual_slave(self, individual, person_slave=None):
+        klass = IndividualEditorTemplate
+        self.individual_slave = klass(self.conn, individual,
+                                      person_slave=person_slave,
+                                      visual_mode=self.visual_mode)
+        return self.individual_slave
+
+    #
+    # BaseEditor hooks
+    #
+
+    def get_title_model_attribute(self, model):
+        return model.get_adapted().name
+
 
     def create_model(self, conn):
         # XXX: Waiting fix for bug 2163. We should not need anymore to
@@ -298,20 +329,16 @@ class BasePersonRoleEditor(BaseEditor):
                              'IIndividual or ICompany facets')
 
         if individual and company:
-            self.individual_slave = IndividualEditorTemplate(self.conn,
-                                                             individual)
-            slave = self.individual_slave
-            person_slave = self.individual_slave.get_person_slave()
-            self.company_slave = CompanyEditorTemplate(self.conn,
-                                                       company, person_slave)
+            slave = self._create_individual_slave(individual)
+            person_slave = slave.get_person_slave()
+            self._create_company_slave(company, person_slave)
+
         elif individual:
-            self.individual_slave = IndividualEditorTemplate(self.conn,
-                                                             individual)
-            slave = self.individual_slave
+            slave = self._create_individual_slave(individual)
             self.company_slave = None
+
         else:
-            self.company_slave = CompanyEditorTemplate(self.conn, company)
-            slave = self.company_slave
+            slave = self._create_company_slave(company)
             self.individual_slave = None
 
         self.attach_slave('main_holder', slave)

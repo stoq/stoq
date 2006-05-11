@@ -164,14 +164,14 @@ class EmployeeRoleSlave(BaseEditorSlave):
     proxy_widgets = ('role',
                      'salary',)
 
-    def __init__(self, conn, employee, edit_mode):
+    def __init__(self, conn, employee, edit_mode, visual_mode=False):
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         self.employee = employee
         self.person = employee.get_adapted()
         self.salesperson = ISalesPerson(self.person, connection=conn)
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()
-        BaseEditorSlave.__init__(self, conn)
+        BaseEditorSlave.__init__(self, conn, visual_mode=visual_mode)
 
     def _setup_entry_completion(self):
         roles = [role for role in

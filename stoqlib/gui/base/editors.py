@@ -26,6 +26,7 @@
 
 
 from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.domain.base import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
@@ -45,16 +46,20 @@ class BaseEditorSlave(SlaveDelegate):
     gladefile = None
     model_type = None
     model_iface = None
+    proxy_widgets = ()
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, visual_mode=False):
         """
         @param conn: a connection
-        @param model:
+        @param model: the object model tied with the proxy widgets
+        @param visual_mode: does this slave must be opened in visual mode?
+                            if so, all the proxy widgets will be disable
         """
 
         # The model attribute represents the
         self.conn = conn
         self.edit_mode = model is not None
+        self.visual_mode = visual_mode
 
         model = model or self.create_model(self.conn)
         if not model:
@@ -82,8 +87,18 @@ class BaseEditorSlave(SlaveDelegate):
 
         self.model = model
         SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        if self.visual_mode:
+            self._setup_visual_mode()
         self.setup_proxies()
         self.setup_slaves()
+
+    def _setup_visual_mode(self):
+        for widget_name in self.proxy_widgets:
+            widget = getattr(self, widget_name)
+            if isinstance(widget, ProxyLabel):
+                continue
+            widget.set_sensitive(False)
+        self.update_visual_mode()
 
     def create_model(self, conn):
         """
@@ -119,6 +134,11 @@ class BaseEditorSlave(SlaveDelegate):
         action needs to be executed when confirming in the dialog. """
         return self.model
 
+    def update_visual_mode(self):
+        """This method must be overwritten on child if some addition task in
+        visual mode are needed
+        """
+
     def validate_confirm(self):
         """ Must be redefined by childs and will perform some validations
         after the click of ok_button. It is interesting to use with some
@@ -153,28 +173,37 @@ class BaseEditor(BaseEditorSlave):
     title = None
     hide_footer = False
 
-    def __init__(self, conn, model=None):
-        BaseEditorSlave.__init__(self, conn, model)
+    def __init__(self, conn, model=None, visual_mode=False):
+        BaseEditorSlave.__init__(self, conn, model,
+                                 visual_mode=visual_mode)
         # We can not use self.model for get_title since we will create a new
         # one in BaseEditorSlave if model is None.
         self.main_dialog = BasicWrappingDialog(self,
                                                self.get_title(self.model),
                                                self.header, self.size)
-        if self.hide_footer:
+        if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
         self.register_validate_function(self.refresh_ok)
         self.force_validation()
 
+    def _get_title_format(self):
+        if self.visual_mode:
+            return _("Details of %s")
+        if self.edit_mode:
+            return _('Edit "%s" Details')
+        return _("Add %s")
+
     def get_title(self, model):
         if self.title:
             return self.title
-        if model:
-            if self.model_name and not self.edit_mode:
-                return _('Add %s') % self.model_name
-            model_attr = self.get_title_model_attribute(model)
-            return _('Edit "%s" Details') % model_attr
-        else:
+        if not model:
             raise ValueError("A model should be defined at this point")
+
+        title_format = self._get_title_format()
+        if self.model_name and not self.edit_mode:
+            return title_format % self.model_name
+        model_attr = self.get_title_model_attribute(model)
+        return title_format % model_attr
 
     def get_title_model_attribute(self, model):
         raise NotImplementedError
@@ -189,10 +218,10 @@ class SimpleEntryEditor(BaseEditor):
     gladefile = "SimpleEntryEditor"
 
     def __init__(self, conn, model, attr_name, name_entry_label='Name:',
-                 title=''):
+                 title='', visual_mode=False):
         self.title = title
         self.attr_name = attr_name
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         self.name_entry_label.set_text(name_entry_label)
 
     def on_name_entry__activate(self, entry):
@@ -209,7 +238,8 @@ class NoteEditor(BaseEditor):
     proxy_widgets = ('notes',)
     size = (500, 200)
 
-    def __init__(self, conn, model, attr_name, title='', label_text=None):
+    def __init__(self, conn, model, attr_name, title='', label_text=None,
+                 visual_mode=False):
         assert model, ("You must supply a valid model to this editor "
                        "(%r)" % self)
         self.model_type = type(model)
@@ -217,7 +247,7 @@ class NoteEditor(BaseEditor):
         self.label_text = label_text
         self.attr_name = attr_name
 
-        BaseEditor.__init__(self, conn, model)
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _setup_widgets(self):
