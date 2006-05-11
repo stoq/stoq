@@ -111,11 +111,12 @@ class UserDetailsSlave(BaseEditorSlave):
     size_group_widgets = ('username_lbl',
                           'profile_lbl') + proxy_widgets
 
-    def __init__(self, conn, model, app_list, show_password_fields=True):
+    def __init__(self, conn, model, app_list, show_password_fields=True,
+                 visual_mode=False):
         self.show_password_fields = show_password_fields
         self.app_list = app_list
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _setup_size_group(self, size_group, widgets, obj):
         for widget_name in widgets:
@@ -142,7 +143,8 @@ class UserDetailsSlave(BaseEditorSlave):
         self.profile.prefill(items)
 
     def _attach_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn)
+        klass = PasswordEditorSlave
+        self.password_slave = klass(self.conn, visual_mode=self.visual_mode)
         self.attach_slave('password_holder', self.password_slave)
 
     #

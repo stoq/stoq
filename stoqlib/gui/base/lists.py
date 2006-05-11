@@ -54,7 +54,8 @@ class AdditionListSlave(SlaveDelegate):
     gsignal('before-delete-items', object)
     gsignal('after-delete-items')
 
-    def __init__(self, conn, columns, editor_class=None, klist_objects=[]):
+    def __init__(self, conn, columns, editor_class=None, klist_objects=[],
+                 visual_mode=False):
         """
         @param conn:          a connection
         @param columns:       column definitions
@@ -70,11 +71,16 @@ class AdditionListSlave(SlaveDelegate):
 
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
+        self.visual_mode = visual_mode
         self.conn = conn
         self._editor_class = editor_class
         self._editor_kwargs = dict()
         self._columns = columns
         self._can_edit = True
+        if self.visual_mode:
+            self.hide_add_button()
+            self.hide_edit_button()
+            self.hide_del_button()
         self._setup_klist(klist_objects)
         self._update_sensitivity()
 
@@ -84,6 +90,8 @@ class AdditionListSlave(SlaveDelegate):
         self.klist.add_list(klist_objects)
 
     def _update_sensitivity(self, *args):
+        if self.visual_mode:
+            return
         can_delete = _can_edit = True
         objs = self.get_selection()
         if not objs:
@@ -175,7 +183,7 @@ class AdditionListSlave(SlaveDelegate):
         self.edit_button.hide()
 
     def hide_del_button(self):
-        self.del_button.hide()
+        self.delete_button.hide()
 
     #
     # Signal handlers
@@ -201,20 +209,24 @@ class AdditionListDialog(BasicPluggableDialog):
     size = (500, 500)
 
     def __init__(self, conn, editor_class, columns, klist_objects,
-                 title=''):
+                 title='', visual_mode=False):
         self.title = title
         BasicPluggableDialog.__init__(self)
         self.conn = conn
+        self.visual_mode = visual_mode
         self._initialize(editor_class, columns, klist_objects)
 
     def _initialize(self, editor_class, columns, klist_objects):
         self.addition_list = AdditionListSlave(self.conn, columns,
-                                               editor_class, klist_objects)
+                                               editor_class, klist_objects,
+                                               visual_mode=self.visual_mode)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm
+        hide_footer = self.visual_mode
         BasicPluggableDialog._initialize(self, self.addition_list,
-                                         size=self.size, title=self.title)
+                                         size=self.size, title=self.title,
+                                         hide_footer=hide_footer)
 
     def register_editor_kwargs(self, **kwargs):
         self.addition_list.register_editor_kwargs(**kwargs)

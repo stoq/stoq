@@ -38,11 +38,13 @@ _ = stoqlib_gettext
 
 class LiaisonListDialog(AdditionListDialog):
 
-    def __init__(self, conn, person, liaison_list=None):
+    def __init__(self, conn, person, liaison_list=None,
+                 visual_mode=False):
         self.person = person
         AdditionListDialog.__init__(self, conn, ContactEditor,
                                     self.get_columns(), liaison_list,
-                                    _('Additional Contacts'))
+                                    _('Additional Contacts'),
+                                    visual_mode=visual_mode)
         self.set_before_delete_items(self.before_delete_items)
         self.set_on_add_item(self.on_add_item)
 
@@ -58,7 +60,7 @@ class LiaisonListDialog(AdditionListDialog):
 
     #
     # Callbacks
-    # 
+    #
 
     def before_delete_items(self, slave, items):
         for item in items:

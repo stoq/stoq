@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
-    <widget class="GtkWindow" id="ReceivingInvoiceStep">
+    <widget class="GtkWindow" id="ReceivingInvoiceSlave">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
@@ -832,7 +832,7 @@
                     <widget class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkExpander" id="expander1">
+                            <widget class="GtkExpander" id="discount_charge_expander">
                                 <property name="label" context="yes" translatable="yes">Further Details</property>
                                 <property name="visible">True</property>
                                 <child>

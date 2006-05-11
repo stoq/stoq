@@ -55,14 +55,15 @@ class AddressSlave(BaseEditorSlave):
         'city',
         ) + left_proxy
 
-    def __init__(self, conn, person, model=None, is_main_address=True):
+    def __init__(self, conn, person, model=None, is_main_address=True,
+                 visual_mode=False):
         if not isinstance(person, Person):
             raise TypeError("Invalid type for person argument. It should "
                             "be of type Person, got %s" % type(person))
         self.person = person
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
-        BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def get_left_widgets(self):
         return [getattr(self, name)

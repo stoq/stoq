@@ -79,7 +79,8 @@ class ClientEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.status_slave = ClientStatusSlave(self.conn, self.model)
+        self.status_slave = ClientStatusSlave(self.conn, self.model,
+                                              visual_mode=self.visual_mode)
         self.main_slave.attach_person_slave(self.status_slave)
 
 
@@ -90,9 +91,10 @@ class UserEditor(BasePersonRoleEditor):
     USER_TAB_POSITION = 0
 
     def __init__(self, conn, model=None, role_type=None, person=None,
-                 app_list=None):
+                 app_list=None, visual_mode=False):
         self.app_list = app_list
-        BasePersonRoleEditor.__init__(self, conn, model, role_type, person)
+        BasePersonRoleEditor.__init__(self, conn, model, role_type, person,
+                                      visual_mode=visual_mode)
 
 
     #
@@ -112,7 +114,8 @@ class UserEditor(BasePersonRoleEditor):
         passwd_fields = not self.edit_mode
         klass = UserDetailsSlave
         self.user_details = klass(self.conn, self.model, self.app_list,
-                                  show_password_fields=passwd_fields)
+                                  show_password_fields=passwd_fields,
+                                  visual_mode=self.visual_mode)
         tab_text = _('User Details')
         self.main_slave._person_slave.attach_custom_slave(self.user_details,
                                                           tab_text)
@@ -133,9 +136,9 @@ class PasswordEditor(BaseEditor):
     proxy_widgets = ('current_password',)
     size_group_widgets = ('current_password_lbl',)
 
-    def __init__(self, conn, user):
+    def __init__(self, conn, user, visual_mode=False):
         self.user = user
-        BaseEditor.__init__(self, conn)
+        BaseEditor.__init__(self, conn, vsual_mode=visual_mode)
         self._setup_widgets()
 
     def _setup_size_group(self, size_group, widgets, obj):
@@ -166,7 +169,8 @@ class PasswordEditor(BaseEditor):
         return LoginInfo()
 
     def setup_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn, self.model)
+        self.password_slave = PasswordEditorSlave(self.conn, self.model,
+                                                  visual_mode=self.visual_mode)
         self.attach_slave('password_holder', self.password_slave)
 
     def setup_proxies(self):
@@ -207,8 +211,9 @@ class CreditProviderEditor(BasePersonRoleEditor):
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
-        self.details_slave = CreditProviderDetailsSlave(self.conn,
-                                                        self.model)
+        klass = CreditProviderDetailsSlave
+        self.details_slave = klass(self.conn, self.model,
+                                   visual_mode=self.visual_mode)
         slave = self.main_slave.get_person_slave()
         slave.attach_slave('person_status_holder', self.details_slave)
 
@@ -298,15 +303,18 @@ class EmployeeEditor(BasePersonRoleEditor):
         BasePersonRoleEditor.setup_slaves(self)
         if not self.individual_slave:
             raise ValueError('This editor must have an individual slave')
-        self.details_slave = EmployeeDetailsSlave(self.conn, self.model)
+        self.details_slave = EmployeeDetailsSlave(self.conn, self.model,
+                                                  visual_mode=self.visual_mode)
         custom_tab_label = _('Employee Data')
         slave = self.individual_slave
         slave._person_slave.attach_custom_slave(self.details_slave,
                                                 custom_tab_label)
-        self.status_slave = EmployeeStatusSlave(self.conn, self.model)
+        self.status_slave = EmployeeStatusSlave(self.conn, self.model,
+                                                visual_mode=self.visual_mode)
         slave.attach_person_slave(self.status_slave)
         self.role_slave = EmployeeRoleSlave(self.conn, self.model,
-                                            edit_mode=self.edit_mode)
+                                            edit_mode=self.edit_mode,
+                                            visual_mode=self.visual_mode)
         slave._person_slave.attach_role_slave(self.role_slave)
         history_tab_label = _("Role History")
         history_slave = EmployeeRoleHistorySlave(self.model)
@@ -325,9 +333,10 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     model_name = _('Employee Role')
     size = (330, 130)
 
-    def __init__(self, conn, model):
+    def __init__(self, conn, model, visual_mode=False):
         SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
-                                   name_entry_label=_('Role Name:'))
+                                   name_entry_label=_('Role Name:'),
+                                   visual_mode=visual_mode)
 
     #
     # BaseEditor Hooks

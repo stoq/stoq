@@ -54,7 +54,7 @@ class IndividualDetailsSlave(BaseEditorSlave):
         'birth_loc_state'
         )
 
-    proxy_widgets = (
+    general_widgets = (
         'birth_date',
         'mother_name',
         'father_name',
@@ -62,6 +62,8 @@ class IndividualDetailsSlave(BaseEditorSlave):
         'spouse_name',
         'marital_status',
         )
+
+    proxy_widgets = general_widgets + birth_loc_widgets
 
     def _setup_widgets(self):
         is_male = self.model.gender == self.model_type.GENDER_MALE
@@ -108,10 +110,14 @@ class IndividualDetailsSlave(BaseEditorSlave):
     # BaseEditorSlave hooks
     #
 
+    def update_visual_mode(self):
+        self.male_check.set_sensitive(False)
+        self.female_check.set_sensitive(False)
+
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                                    IndividualDetailsSlave.proxy_widgets)
+                                    IndividualDetailsSlave.general_widgets)
         self.update_marital_status()
         if self.model.birth_location:
             self.model.birth_location = self.model.birth_location.clone()

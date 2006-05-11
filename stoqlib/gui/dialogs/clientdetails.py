@@ -39,6 +39,8 @@ from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.person import ClientEditor
+from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -63,8 +65,6 @@ class ClientDetailsDialog(BaseEditor):
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
         self._setup_widgets()
-        # Waiting for bug 2360
-        self.further_details_button.set_sensitive(False)
 
     def _build_data(self, sales):
         self.services = []
@@ -168,3 +168,12 @@ class ClientDetailsDialog(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_further_details_button__clicked(self, *args):
+        run_person_role_dialog(ClientEditor, self, self.conn,
+                               self.model, visual_mode=True)
+
