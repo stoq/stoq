@@ -107,7 +107,7 @@ class WarehouseApp(SearchableAppWindow):
 
     def get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
-                       data_type=str, width=120),
+                       data_type=int, format='%03d', width=120),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True),
                 Column('supplier_name', title=('Supplier'),
