@@ -396,15 +396,6 @@ class AbstractSellable(InheritableModelAdapter):
     # General methods
     #
 
-
-    def _set_barcode(self, barcode):
-        conn = get_connection()
-        query = AbstractSellable.q.barcode == barcode
-        # FIXME We should raise a proper stoqlib exception here if we find
-        # an existing barcode. Waiting for kiwi support
-        if not AbstractSellable.select(query, connection=conn).count():
-            self._SO_set_barcode(barcode)
-
     def set_default_commission(self):
         if not self.category:
             self.commission = 0
