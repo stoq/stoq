@@ -29,7 +29,7 @@ from stoqlib.domain.person import PersonAdaptToCompany
 class CompanyDocumentsSlave(BaseEditorSlave):
     model_type = PersonAdaptToCompany
     gladefile = 'CompanyDocumentsSlave'
-    proxy_widgets = ('cnpj', 
+    proxy_widgets = ('cnpj',
                      'fancy_name',
                      'state_registry')
 
