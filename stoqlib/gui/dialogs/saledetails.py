@@ -77,7 +77,8 @@ class SaleDetailsDialog(BaseEditor):
         self.payments_vbox.pack_start(payments_summary_label, False)
 
     def _get_payments_columns(self):
-        return [Column('payment_number', "#", data_type=int, width=50),
+        return [Column('identifier', "#", data_type=int, width=50,
+                       format='%04d'),
                 Column('method.description', _("Method of Payment"),
                        expand=True, data_type=str, width=200),
                 Column('due_date', _("Due Date"), sorted=True,
