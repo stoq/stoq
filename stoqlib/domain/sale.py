@@ -88,7 +88,7 @@ class Sale(Domain):
      STATUS_CONFIRMED,
      STATUS_CLOSED,
      STATUS_CANCELLED,
-     STATUS_REVIEWING) = range(5)
+     STATUS_ORDER) = range(5)
 
     (CLIENT_INDIVIDUAL,
      CLIENT_COMPANY) = range(2)
@@ -97,12 +97,14 @@ class Sale(Domain):
                 STATUS_CONFIRMED:   _(u"Confirmed"),
                 STATUS_CLOSED:      _(u"Closed"),
                 STATUS_CANCELLED:   _(u"Cancelled"),
-                STATUS_REVIEWING:   _(u"Reviewing")}
+                STATUS_ORDER:       _(u"Order")}
 
     coupon_id = IntCol()
     order_number = AutoIncCol('stoqlib_sale_ordernumber_seq')
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
+    confirm_date = DateTimeCol(default=None)
+    cancel_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
     discount_value = PriceCol(default=0)
     charge_value = PriceCol(default=0)
@@ -158,56 +160,15 @@ class Sale(Domain):
         query = cls.q.tillID == till.id
         return cls.select(query, connection=conn)
 
-    #
-    # Auxiliar methods
-    #
-
-    # Warning: "get_client_role" would be a Kiwi accessor here and this is not
-    # what we want.
-    def get_sale_client_role(self):
-        if not self.client:
-            return None
-        conn = self.get_connection()
-        person = self.client.get_adapted()
-        if self.client_role is None:
-            raise DatabaseInconsistency("The sale %r have a client but no "
-                                        "client_role defined." % self)
-        elif self.client_role == Sale.CLIENT_INDIVIDUAL:
-            individual = IIndividual(person, connection=conn)
-            if not individual:
-                raise DatabaseInconsistency("The client_role for sale %r says "
-                                            "that the client is an individual,"
-                                            " but it doesn't have an Individual"
-                                            " facet" % self)
-            return individual
-        elif self.client_role == Sale.CLIENT_COMPANY:
-            company = ICompany(person, connection=conn)
-            if not company:
-                raise DatabaseInconsistency("The client_role for sale %r says "
-                                            "that the client is a company but "
-                                            "it doesn't have a Company facet"
-                                            % self)
-            return company
-        else:
-            raise DatabaseInconsistency("Invalid client_role for sale %r, "
-                                        "got %r" % (self, self.client_role))
-
-    def get_order_number_str(self):
-        return u'%05d' % self.order_number
-
-    def get_salesperson_name(self):
-        return self.salesperson.get_adapted().name
-
-    def get_client_name(self):
-        if not self.client:
-            return _(u'Not Specified')
-        return self.client.get_name()
-
     @classmethod
     def get_status_name(cls, status):
         if not status in cls.statuses:
             raise DatabaseInconsistency("Invalid status %d" % status)
         return cls.statuses[status]
+
+    #
+    # Sale methods
+    #
 
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
@@ -271,6 +232,97 @@ class Sale(Domain):
     charge_percentage = property(_get_charge_by_percentage,
                                  _set_charge_by_percentage)
 
+    def update_items(self):
+        conn = self.get_connection()
+        branch = self.get_till_branch()
+        for item in self.get_items():
+            if isinstance(item, ProductSellableItem):
+                # TODO add support for ordering products, bug #2469
+                item.sell(branch)
+                continue
+            item.sell()
+
+    def check_close(self):
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
+        if not group.check_close():
+            return
+        self.close_date = datetime.now()
+
+    def validate(self):
+        if not self.get_items().count():
+            raise SellError('The sale must have sellable items')
+        if self.client and not self.client.is_active:
+            raise SellError('Unable to make sales for clients with status '
+                            '%s' % self.client.get_status_string())
+        if not self.status == self.STATUS_OPENED:
+            raise SellError('The sale must have STATUS_OPENED for this '
+                            'operation, got status %s instead'
+                            % self.get_status_name(self.status))
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
+        if not group:
+            raise ValueError("Sale %s doesn't have an IPaymentGroup "
+                             "facet at this point" % self)
+        if not self.get_valid():
+            self.set_valid()
+
+    def confirm_sale(self):
+        self.validate()
+        conn = self.get_connection()
+        self.update_items()
+        group = IPaymentGroup(self, connection=conn)
+        group.confirm()
+        self.status = self.STATUS_CONFIRMED
+        self.confirm_date = datetime.now()
+        self.check_close()
+
+
+    #
+    # Accessors
+    #
+
+    def get_order_number_str(self):
+        return u'%05d' % self.order_number
+
+    def get_salesperson_name(self):
+        return self.salesperson.get_adapted().name
+
+    def get_client_name(self):
+        if not self.client:
+            return _(u'Not Specified')
+        return self.client.get_name()
+
+    # Warning: "get_client_role" would be a Kiwi accessor here and this is not
+    # what we want.
+    def get_sale_client_role(self):
+        if not self.client:
+            return None
+        conn = self.get_connection()
+        person = self.client.get_adapted()
+        if self.client_role is None:
+            raise DatabaseInconsistency("The sale %r have a client but no "
+                                        "client_role defined." % self)
+        elif self.client_role == Sale.CLIENT_INDIVIDUAL:
+            individual = IIndividual(person, connection=conn)
+            if not individual:
+                raise DatabaseInconsistency("The client_role for sale %r says "
+                                            "that the client is an individual,"
+                                            " but it doesn't have an Individual"
+                                            " facet" % self)
+            return individual
+        elif self.client_role == Sale.CLIENT_COMPANY:
+            company = ICompany(person, connection=conn)
+            if not company:
+                raise DatabaseInconsistency("The client_role for sale %r says "
+                                            "that the client is a company but "
+                                            "it doesn't have a Company facet"
+                                            % self)
+            return company
+        else:
+            raise DatabaseInconsistency("Invalid client_role for sale %r, "
+                                        "got %r" % (self, self.client_role))
+
     def get_till_branch(self):
         return self.till.branch
 
@@ -318,42 +370,7 @@ class Sale(Domain):
                    currency(0))
         return currency(total)
 
-    def update_items(self):
-        conn = self.get_connection()
-        branch = self.get_till_branch()
-        for item in self.get_items():
-            if isinstance(item, ProductSellableItem):
-                # TODO add support for ordering products, bug #2469
-                item.sell(branch)
-                continue
-            item.sell()
 
-    def validate(self):
-        if not self.get_items().count():
-            raise SellError('The sale must have sellable items')
-        if self.client and not self.client.is_active:
-            raise SellError('Unable to make sales for clients with status '
-                            '%s' % self.client.get_status_string())
-        if not self.status == self.STATUS_OPENED:
-            raise SellError('The sale must have STATUS_OPENED for this '
-                            'operation, got status %s instead'
-                            % self.get_status_name(self.status))
-        conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
-        if not group:
-            raise ValueError("Sale %s doesn't have an IPaymentGroup "
-                             "facet at this point" % self)
-        if not self.get_valid():
-            self.set_valid()
-
-    def confirm_sale(self):
-        self.validate()
-        conn = self.get_connection()
-        self.update_items()
-        group = IPaymentGroup(self, connection=conn)
-        group.confirm()
-        self.status = self.STATUS_CONFIRMED
-        self.close_date = datetime.now()
 
 #
 # Adapters
@@ -610,6 +627,8 @@ class SaleView(SQLObject, BaseSQLView):
     order_number = IntCol()
     open_date = DateTimeCol()
     close_date = DateTimeCol()
+    confirm_date = DateTimeCol()
+    cancel_date = DateTimeCol()
     status = IntCol()
     salesperson_name = UnicodeCol()
     client_name = UnicodeCol()
