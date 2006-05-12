@@ -37,12 +37,12 @@ from kiwi.argcheck import argcheck
 from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
-from sqlobject.col import (SOUnicodeCol, SODecimalCol, SOIntCol,
-                           SODateTimeCol, SODateCol)
+from sqlobject.col import SOUnicodeCol, SOIntCol, SODateTimeCol, SODateCol
 
 import stoqlib
 from stoqlib.common import is_integer, is_float
 from stoqlib.database import rollback_and_begin, Adapter
+from stoqlib.domain.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
@@ -289,16 +289,16 @@ class SearchBar(SlaveDelegate):
             elif (isinstance(column, SOIntCol)
                   and value not in self.int_fields):
                  self.int_fields.append(value)
-            elif (isinstance(column, SODecimalCol)
-                  and value not in self.float_fields):
-                 self.float_fields.append(value)
+            elif (isinstance(column, (SOPriceCol, AbstractDecimalCol))
+                  and value not in self.decimal_fields):
+                 self.decimal_fields.append(value)
             elif (isinstance(column, (SODateTimeCol, SODateCol))
                   and value not in self.dtime_fields):
                  self.dtime_fields.append(value)
 
     def split_field_types(self):
         self.int_fields = []
-        self.float_fields = []
+        self.decimal_fields = []
         self.str_fields = []
         self.dtime_fields = []
         if not self.columns:
@@ -343,7 +343,7 @@ class SearchBar(SlaveDelegate):
     @argcheck(str, list)
     def _set_query_float(self, search_str, query):
         search_str = float(search_str)
-        for field_name, table_type in self.float_fields:
+        for field_name, table_type in self.decimal_fields:
             table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
@@ -503,6 +503,10 @@ class SearchBar(SlaveDelegate):
         self.table_type = search_table
         self.split_field_types()
 
+    def set_columns(self, columns):
+        self.columns = columns
+        self.split_field_types()
+
     def register_extra_query_callback(self, query):
         """Register an extra query that will be added in the main query of
         SearchBar
@@ -540,7 +544,6 @@ class SearchBar(SlaveDelegate):
             self._slave.set_search_label(search_entry_lbl, date_search_lbl)
         else:
             self._slave.set_search_label(search_entry_lbl)
-
 
     def search_items(self, *args):
         self._slave.start_animate_search_icon()
@@ -775,6 +778,9 @@ class SearchDialog(BasicDialog):
     def set_searchtable(self, search_table):
         self.search_table = search_table
         self.search_bar.set_searchtable(search_table)
+
+    def set_searchbar_columns(self, columns):
+        self.search_bar.set_columns(columns)
 
     def setup_summary_label(self, column_name, label_text):
         if self.summary_label is not None:
