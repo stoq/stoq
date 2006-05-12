@@ -156,6 +156,12 @@ class ReceivingOrder(Domain):
     # Accessors
     #
 
+
+    def get_transporter_name(self):
+        if not self.transporter:
+            return u""
+        return self.transporter.get_adapted().name
+    
     def get_receiving_number_str(self):
         return u"%04d" % self.receiving_number
 
@@ -167,6 +173,9 @@ class ReceivingOrder(Domain):
             return u""
         return self.supplier.get_adapted().name
 
+    def get_responsible_name(self):
+        return self.responsible.get_adapted().name
+
     def get_products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
                      currency(0))
@@ -176,6 +185,9 @@ class ReceivingOrder(Domain):
         if not self.purchase:
             return _(u'No order set')
         return self.purchase.get_order_number_str()
+
+    def get_receival_date_str(self):
+        return self.receival_date.strftime("%x")
 
     #
     # General methods

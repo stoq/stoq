@@ -34,6 +34,8 @@ from stoqlib.gui.base.columns import Column
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.reporting.purchase_receival import PurchaseReceivalReport
+from stoqlib.gui.dialogs.receivingdialog import ReceivingOrderDetailsDialog
+from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext
 
@@ -73,3 +75,17 @@ class PurchaseReceivingSearch(SearchDialog):
 
     def on_print_button_clicked(self, *args):
         self.search_bar.print_report(PurchaseReceivalReport, list(self.klist))
+
+    def on_details_button_clicked(self, *args):
+        items = self.klist.get_selected_rows()
+        if  not len(items) == 1:
+            raise ValueError("You should have only one item selected at "
+                             "this point ")
+        selected = items[0]
+        order = ReceivingOrder.get(selected.id, connection=self.conn)
+        run_dialog(ReceivingOrderDetailsDialog, self, self.conn, order)
+
+    def update_widgets(self, *args):
+        items = self.klist.get_selected_rows()
+        has_one_selected = len(items) == 1
+        self.set_details_button_sensitive(has_one_selected)
