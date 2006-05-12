@@ -26,7 +26,7 @@
 """ Main interface definition for pos application.  """
 
 import gettext
-import decimal
+from decimal import Decimal
 
 import gtk
 from kiwi.ui.dialogs import warning, messagedialog
@@ -130,7 +130,7 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.order_proxy = self.add_proxy(widgets=POSApp.order_widgets)
-        model = FancySellable(quantity=decimal.Decimal('1.0'),
+        model = FancySellable(quantity=Decimal('1.0'),
                               price=currency(0))
         self.sellable_proxy = self.add_proxy(model,
                                              widgets=POSApp.sellable_widgets)
@@ -364,8 +364,8 @@ class POSApp(AppWindow):
                        searchable=True),
                 Column('price', title=_('Price'), data_type=currency,
                        width=90),
-                Column('quantity', title=_('Quantity'), data_type=float,
-                       width=90, format_func=format_quantity),
+                Column('quantity', title=_('Quantity'), data_type=Decimal,
+                       width=110, format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=100)]
 
@@ -432,13 +432,13 @@ class POSApp(AppWindow):
         self._update_widgets()
         sellable = self.product_proxy.model.product
         if not (sellable and self.product.get_text()):
-            model = FancySellable(quantity=decimal.Decimal('1.0'),
+            model = FancySellable(quantity=Decimal('1.0'),
                                   price=currency(0))
             self.sellable_proxy.set_model(model)
             self.price_slave.set_model(model)
             return
         sellable_item = FancySellable(price=sellable.get_price(),
-                                      quantity=decimal.Decimal('1.0'),
+                                      quantity=Decimal('1.0'),
                                       unit=sellable.unit)
         self.price_slave.set_model(sellable_item)
         self.sellable_proxy.set_model(sellable_item)
