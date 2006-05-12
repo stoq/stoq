@@ -749,6 +749,7 @@ class SearchDialog(BasicDialog):
         self.main.add(self.klist_vbox)
         self.klist.show()
         self.klist.connect('cell_edited', self.on_cell_edited)
+        self.klist.connect('selection-changed', self.update_widgets)
 
     def _setup_details_slave(self):
         has_details_btn = hasattr(self, 'on_details_button_clicked')
@@ -792,6 +793,10 @@ class SearchDialog(BasicDialog):
         self._setup_klist()
         self._setup_searchbar()
         self._setup_details_slave()
+
+    @argcheck(bool)
+    def set_details_button_sensitive(self, value):
+        self._details_slave.details_button.set_sensitive(value)
 
     def get_query_args(self):
         """An optional list of SQLObject arguments for select function."""
