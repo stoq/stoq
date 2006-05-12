@@ -235,6 +235,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      STATUS_CLOSED,
      STATUS_CANCELLED) = range(4)
 
+    statuses = {STATUS_PREVIEW: _("Preview"),
+                STATUS_OPEN: _("Open"),
+                STATUS_CLOSED: _("Closed"),
+                STATUS_CANCELLED: _("Cancelled")}
+
     implements(IPaymentGroup, IContainer)
 
     status = IntCol(default=STATUS_OPEN)
@@ -278,57 +283,25 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.add_item(payment)
         return payment
 
-    def get_method_id_by_iface(self, iface):
-        methods = get_all_methods_dict()
-        if not iface in methods.values():
-            raise ValueError('Invalid interface, got %s' % iface)
-        method_data = [method_id for method_id, m_iface in methods.items()
-                            if m_iface is iface]
-        qty = len(method_data)
-        if not qty == 1:
-            raise ValueError('It should have only one item on method_data '
-                             'list, got %d instead' % qty)
-        return method_data[0]
+    #
+    # IContainer implementation
+    #
 
-    def set_method(self, method_iface):
-        items = get_all_methods_dict().items()
-        method = [method_id for method_id, iface in items
-                        if method_iface is iface]
-        if len(method) != 1:
-            raise TypeError('Invalid method_class argument, got type %s'
-                            % method_iface)
-        self.default_method = method[0]
+    @argcheck(Payment)
+    def add_item(self, payment):
+        payment.group = self
 
-    def get_default_payment_method(self):
-        """This hook must be redefined in a subclass when it's necessary"""
-        return self.default_method
+    @argcheck(Payment)
+    def remove_item(self, payment):
+        Payment.delete(payment.id, connection=self.get_connection())
 
-    def get_default_payment_method_name(self):
-        """This hook must be redefined in a subclass when it's necessary"""
-        method_names = get_method_names()
-        if not self.default_method in method_names.keys():
-            raise DatabaseInconsistency('Invalid payment method, got %d'
-                                        % self.default_method)
-        return method_names[self.default_method]
+    def get_items(self):
+        return Payment.selectBy(group=self,
+                                connection=self.get_connection())
 
-    def setup_inpayments(self):
-        methods = get_all_methods_dict()
-        payment_method = self.get_default_payment_method()
-        if payment_method != METHOD_MULTIPLE:
-            self.clear_preview_payments(methods[payment_method])
-        payments = self.get_items()
-        if not payments.count():
-            raise ValueError('You must have at least one payment for each '
-                             'payment group')
-        self.installments_number = payments.count()
-        self.set_payments_to_pay()
-
-    def set_payments_to_pay(self):
-        """Checks if all the payments have STATUS_PREVIEW and set them as
-        STATUS_TO_PAY
-        """
-        for payment in self.get_items():
-            payment.set_to_pay()
+    #
+    # Fiscal methods
+    #
 
     @argcheck(CfopData, int)
     def _get_invoice_data(self, cfop, invoice_number):
@@ -357,24 +330,54 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                      connection=conn)
 
     #
-    # IContainer implementation
+    # General methods
     #
 
-    @argcheck(Payment)
-    def add_item(self, payment):
-        payment.group = self
+    def set_method(self, method_iface):
+        items = get_all_methods_dict().items()
+        method = [method_id for method_id, iface in items
+                        if method_iface is iface]
+        if len(method) != 1:
+            raise TypeError('Invalid method_class argument, got type %s'
+                            % method_iface)
+        self.default_method = method[0]
 
-    @argcheck(Payment)
-    def remove_item(self, payment):
-        Payment.delete(payment.id, connection=self.get_connection())
 
-    def get_items(self):
-        return Payment.selectBy(group=self,
-                                connection=self.get_connection())
+    def setup_inpayments(self):
+        methods = get_all_methods_dict()
+        payment_method = self.get_default_payment_method()
+        if payment_method != METHOD_MULTIPLE:
+            self.clear_preview_payments(methods[payment_method])
+        payments = self.get_items()
+        if not payments.count():
+            raise ValueError('You must have at least one payment for each '
+                             'payment group')
+        self.installments_number = payments.count()
+        self.set_payments_to_pay()
 
-    #
-    # Auxiliar method
-    #
+    def set_payments_to_pay(self):
+        """Checks if all the payments have STATUS_PREVIEW and set them as
+        STATUS_TO_PAY
+        """
+        for payment in self.get_items():
+            payment.set_to_pay()
+
+    def check_close(self):
+        """Verifies if the payment group can be closed and close it.
+
+        @returns: the close status, True if it has been closed or
+                 False if not.
+        """
+        if not self.status == AbstractPaymentGroup.STATUS_OPEN:
+            raise ValueError("The status for this payment group should be "
+                             "opened, got %s" % self.get_status_str())
+        payments = self.get_items()
+        statuses = [Payment.STATUS_CONFIRMED, Payment.STATUS_CANCELLED]
+        for payment in payments:
+            if payment.status not in statuses:
+                return False
+        self.status = AbstractPaymentGroup.STATUS_CLOSED
+        return True
 
     def clear_preview_payments(self, ignore_method_iface=None):
         """Delete payments of preview status associated to the current
@@ -400,6 +403,40 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             if not inpayment:
                 continue
             payment.method.delete_inpayment(inpayment)
+
+    #
+    # Accessors
+    #
+
+    def get_status_string(self):
+        if not self.status in AbstractPaymentGroup.statuses.keys():
+            raise DatabaseInconsistency("Invalid status, got %d"
+                                        % self.status)
+        return self.statuses[self.status]
+
+    def get_default_payment_method(self):
+        """This hook must be redefined in a subclass when it's necessary"""
+        return self.default_method
+
+    def get_default_payment_method_name(self):
+        """This hook must be redefined in a subclass when it's necessary"""
+        method_names = get_method_names()
+        if not self.default_method in method_names.keys():
+            raise DatabaseInconsistency('Invalid payment method, got %d'
+                                        % self.default_method)
+        return method_names[self.default_method]
+
+    def get_method_id_by_iface(self, iface):
+        methods = get_all_methods_dict()
+        if not iface in methods.values():
+            raise ValueError('Invalid interface, got %s' % iface)
+        method_data = [method_id for method_id, m_iface in methods.items()
+                            if m_iface is iface]
+        qty = len(method_data)
+        if not qty == 1:
+            raise ValueError('It should have only one item on method_data '
+                             'list, got %d instead' % qty)
+        return method_data[0]
 
 
 #

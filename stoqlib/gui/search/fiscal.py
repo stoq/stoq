@@ -74,6 +74,7 @@ class FiscalBookEntrySearch(SearchEditor):
         label_text = '<b>%s</b>' % summary_label_text
         self.klist.set_columns(columns)
         self.set_searchtable(table)
+        self.set_searchbar_columns(columns)
         self.setup_summary_label(col_name, label_text)
 
     def _setup_icms_columns(self):
