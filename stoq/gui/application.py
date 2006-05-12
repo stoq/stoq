@@ -269,6 +269,9 @@ class SearchableAppWindow(AppWindow):
         self.searchbar_table = search_table
         self.searchbar.set_searchtable(search_table)
 
+    def set_searchbar_columns(self, columns):
+        self.searchbar.set_columns(columns)
+
     def get_filterslave_default_selected_item(self):
         return ALL_ITEMS_INDEX
 
