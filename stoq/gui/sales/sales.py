@@ -61,13 +61,22 @@ class SalesApp(SearchableAppWindow):
     filter_slave_label = _('Show sales with status')
     klist_name = 'sales'
 
+    cols_info = {Sale.STATUS_OPENED: ('open_date', _("Date Started")),
+                 Sale.STATUS_CONFIRMED: ('confirm_date', _("Confirm Date")),
+                 Sale.STATUS_CLOSED: ('close_date', _("Close Date")),
+                 Sale.STATUS_CANCELLED: ('cancel_date', _("Cancel Date"))}
+
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        self._setup_widgets()
+        self.summary_label = None
+        self._create_summary_label()
         self._update_widgets()
+        self._setup_columns()
         self._setup_slaves()
 
-    def _setup_widgets(self):
+    def _create_summary_label(self):
+        if self.summary_label is not None:
+            self.list_vbox.remove(self.summary_label)
         value_format = '<b>%s</b>'
         self.summary_label = SummaryLabel(klist=self.sales,
                                           column='total',
@@ -100,7 +109,9 @@ class SalesApp(SearchableAppWindow):
         self.summary_label.update_total()
 
     def get_filter_slave_items(self):
-        items = [(value, key) for key, value in Sale.statuses.items()]
+        items = [(value, key) for key, value in Sale.statuses.items()
+                    # No reason to show orders in sales app
+                    if key != Sale.STATUS_ORDER]
         items.append((_('Any'), ALL_ITEMS_INDEX))
         return items
 
@@ -120,18 +131,35 @@ class SalesApp(SearchableAppWindow):
                      title=_(u"Printing Invoice"),
                      preview_label=_(u"Preview Model"))
 
+    def _setup_columns(self, sale_status=Sale.STATUS_CONFIRMED):
+        if sale_status == ALL_ITEMS_INDEX:
+            # When there is no filter for sale status, show the
+            # 'date started' column by default
+            sale_status = Sale.STATUS_OPENED
+        cols = self.get_columns()
+        if not sale_status in self.cols_info.keys():
+            raise ValueError("Invalid Sale status, got %d" % sale_status)
+
+        attr_name, title = self.cols_info[sale_status]
+        date_col = Column(attr_name, title=title, width=120,
+                          data_type=date, justify=gtk.JUSTIFY_RIGHT)
+        cols.insert(1, date_col)
+        self._klist.set_columns(cols)
+        # Adding summary label again and make it properly aligned with the
+        # new columns setup
+        self._create_summary_label()
+        self.set_searchbar_columns(cols)
+
     #
     # Hooks
     #
 
     def get_filterslave_default_selected_item(self):
-        return Sale.STATUS_OPENED
+        return Sale.STATUS_CONFIRMED
 
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,
                        format='%05d', data_type=int, sorted=True),
-                Column('open_date', title=_('Date Started'), width=120,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
                        data_type=str, width=140),
                 Column('salesperson_name', title=_('Salesperson'),
@@ -144,8 +172,10 @@ class SalesApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return SaleView.q.status == status
+        self._setup_columns(status)
+        if status == ALL_ITEMS_INDEX:
+            return
+        return SaleView.q.status == status
 
     #
     # Kiwi callbacks
@@ -167,4 +197,3 @@ class SalesApp(SearchableAppWindow):
 
     def _on_print_invoice__activate(self, *args):
         return self._print_invoice()
-
