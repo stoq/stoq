@@ -277,6 +277,11 @@ class IPaymentGroup(ConnInterface):
         """Return the thirdparty attached to the payment group. It must be
         always a Person instance"""
 
+    def update_thirdparty_status():
+        """Verifies if we still have payments in late to be paid and update
+        the thirdparty financial status
+        """
+
     def get_group_description():
         """Returns a group description which will be used when building
         descriptions for payments"""
