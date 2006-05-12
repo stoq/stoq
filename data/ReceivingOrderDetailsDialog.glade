@@ -1,0 +1,89 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="stoqlib">
+    <widget class="GtkWindow" id="ReceivingOrderDetailsDialog">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkLabel" id="header_label">
+                        <property name="justify">right</property>
+                        <property name="use_markup">True</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkNotebook" id="values_list">
+                        <property name="border_width">6</property>
+                        <property name="is_focus">True</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkVBox" id="products_vbox">
+                                <property name="border_width">6</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="ObjectList" id="product_list">
+                                        <property name="border_width">6</property>
+                                        <property name="visible">True</property>
+                                        <property name="width_request">0</property>
+                                    </widget>
+                                </child>
+                                <child>
+                                    <placeholder/>
+                                    <packing>
+                                        <property name="position">1</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="tab_label" context="yes" translatable="yes">Received Products</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkEventBox" id="details_holder">
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                                <property name="tab_label" context="yes" translatable="yes">Receiving Details</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                                <property name="border_width">6</property>
+                                <property name="hscrollbar_policy">automatic</property>
+                                <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <child>
+                                    <widget class="ProxyTextView" id="notes">
+                                        <property name="data_type">unicode</property>
+                                        <property name="editable">False</property>
+                                        <property name="model_attribute">notes</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="position">2</property>
+                                <property name="tab_label" context="yes" translatable="yes">Notes</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
