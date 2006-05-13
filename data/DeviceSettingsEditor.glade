@@ -9,7 +9,7 @@
                 <property name="border_width">6</property>
                 <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
-                <property name="n_rows">4</property>
+                <property name="n_rows">5</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
@@ -66,7 +66,14 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="type_combo">
+                    <placeholder/>
+                    <packing>
+                        <property name="top_attach">4</property>
+                        <property name="bottom_attach">5</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyComboBox" id="type_combo">
                         <property name="data_type">int</property>
                         <property name="model_attribute">type</property>
                         <property name="visible">True</property>
@@ -78,7 +85,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="brand_combo">
+                    <widget class="ProxyComboBox" id="brand_combo">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">brand</property>
                         <property name="visible">True</property>
@@ -92,7 +99,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="device_combo">
+                    <widget class="ProxyComboBox" id="device_combo">
                         <property name="data_type">int</property>
                         <property name="model_attribute">device</property>
                         <property name="visible">True</property>
@@ -103,6 +110,20 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">3</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyCheckButton" id="is_active_button">
+                        <property name="data_type">bool</property>
+                        <property name="label" context="yes" translatable="yes">Active</property>
+                        <property name="model_attribute">is_active</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">4</property>
                     </packing>
                 </child>
                 <child>
@@ -146,7 +167,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBox" id="model_combo">
+                    <widget class="ProxyComboBox" id="model_combo">
                         <property name="data_type">unicode</property>
                         <property name="model_attribute">model</property>
                         <property name="visible">True</property>
@@ -160,7 +181,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="host">
+                    <widget class="ProxyEntry" id="host">
                         <property name="data_type">unicode</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">host</property>
@@ -172,6 +193,19 @@
                         <property name="right_attach">4</property>
                         <property name="top_attach">3</property>
                         <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkButton" id="constants_button">
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">Edit Constants...</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">5</property>
+                        <property name="left_attach">3</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">4</property>
                     </packing>
                 </child>
             </widget>

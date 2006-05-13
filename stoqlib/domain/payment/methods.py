@@ -321,13 +321,23 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     #
 
     def get_implemented_iface(self):
-        all_ifaces = get_all_methods_dict().values()
-        for iface in all_ifaces:
-            if iface in implementedBy(type(self)):
-                return iface
-        else:
-            raise ValueError("Invalid implemented interfaces, got %r "
-                             % implementedBy(self))
+        """ Return the payment method interface implemented. If there is more
+        than one, raise a ValueError exception -- This should not happens,
+        if so, this is a bug.
+        """
+        res = []
+        for iface in get_all_methods_dict().values():
+            if iface.providedBy(self):
+                res.append(iface)
+        if len(res) == 0:
+            raise DatabaseInconsistency("The payment method of ID %d doesn't "
+                                        "implements a valid payment method "
+                                        "interface" % self.id)
+        elif len(res) > 1:
+            raise DatabaseInconsistency("The payment method of ID %d "
+                                        "implements more than one payment "
+                                        "method iface (= %r)" % (self, res))
+        return res[0]
 
     def _check_installments_number(self, installments_number, max=None):
         max = max or self.get_max_installments_number()

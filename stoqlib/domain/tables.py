@@ -133,7 +133,8 @@ _tables = [
                    "PurchaseItem"]),
      ('receiving', ["ReceivingOrder", "ReceivingOrderItem",
                     "ReceivingOrderAdaptToPaymentGroup"]),
-     ('devices', ["DeviceSettings"]),
+     ('devices', ["DeviceSettings",
+                  "DeviceConstants"]),
 ]
 
 # fullname (eg "stoqlib.domain.person.Person") -> class
