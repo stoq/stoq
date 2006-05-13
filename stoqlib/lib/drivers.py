@@ -25,7 +25,6 @@
 """ Useful functions for StoqDrivers interaction """
 
 import socket
-import warnings
 
 import gtk
 from zope.interface import implements
@@ -35,19 +34,19 @@ from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
-                                   MONEY_PM, CHEQUE_PM)
+                                   MONEY_PM, CHEQUE_PM, CUSTOM_PM)
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
+from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.database import finish_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
-                                       IMoneyPM, ICheckPM, IContainer)
+                                       ICheckPM, IMoneyPM, IContainer)
 
 _ = stoqlib_gettext
 _printer = None
@@ -69,13 +68,15 @@ def _get_fiscalprinter(conn):
 
     setting = get_fiscal_printer_settings_by_hostname(conn,
                                                       socket.gethostname())
-    if setting:
+    if setting and setting.is_active:
         _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
-                                 device=setting.get_port_name())
+                                 device=setting.get_port_name(),
+                                 consts=setting.constants)
     else:
-        error(_("There is no fiscal printer configured"),
+        error(_("There is no fiscal printer"),
                 _("There is no fiscal printer configured for this "
-                  "station (\"%s\")" % socket.gethostname()))
+                  "station (\"%s\") or the printer is not enabled "
+                  "currently." % socket.gethostname()))
     return _printer
 
 def _get_scale(conn):
@@ -86,12 +87,13 @@ def _get_scale(conn):
     if _scale:
         return _scale
     setting = get_scale_settings_by_hostname(conn, socket.gethostname())
-    if setting:
+    if setting and setting.is_active:
         _scale = Scale(brand=setting.brand, model=setting.model,
                        device=setting.get_port_name())
     else:
         error(_("There is no scale configured"),
-              _("There is no scale configured for this station (\"%s\")"
+              _("There is no scale configured for this station "
+                "(\"%s\") or the scale is not enabled currently"
                 % socket.gethostname()))
     return _scale
 
@@ -403,23 +405,41 @@ class FiscalCoupon:
         if group.default_method == METHOD_GIFT_CERTIFICATE:
             self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount(),
                                      '')
-        else:
-            for payment in group.get_items():
-                method = payment.method
-                if ICheckPM.providedBy(method):
-                    money_type = CHEQUE_PM
-                elif IMoneyPM.providedBy(method):
-                    money_type = MONEY_PM
+            return True
+
+        settings = get_fiscal_printer_settings_by_hostname(self.conn,
+                                                           socket.gethostname())
+        pm_constants = settings.pm_constants
+        if not pm_constants:
+            raise ValueError("It is not possible to setup the payments for sale "
+                             "%r, since there is no payment methods defined for "
+                             "the current printer being used (%r)"
+                             % (sale, self.printer))
+        all_methods = get_all_methods_dict()
+        for payment in group.get_items():
+            method = payment.method
+            method_iface = method.get_implemented_iface()
+            if method_iface in (ICheckPM, IMoneyPM):
+                if method_iface is ICheckPM:
+                    method_id = CHEQUE_PM
                 else:
-                    warnings.warn(_("The payment type %s isn't supported "
-                                    "yet. The default, MONEY_PM, will be "
-                                    "used.") % method.description)
-                    # FIXME: A default value, this is wrong but can't be better right
-                    # now, since stoqdrivers doesn't have support for any payment
-                    # method diferent than money and cheque.  This will be improved
-                    # when bug #2246 is fixed.
-                    money_type = MONEY_PM
-                self.printer.add_payment(money_type, payment.base_value, '')
+                    method_id = MONEY_PM
+                self.printer.add_payment(method_id, payment.base_value)
+                continue
+            method_id = None
+            for identifier, iface in all_methods.items():
+                if iface is method_iface:
+                    if method_id is not None:
+                        raise TypeError("There is the same identifier for two "
+                                        "different payment method interfaces. "
+                                        "The identifier is %d" % method_id)
+                    method_id = identifier
+            if method_id is None:
+                raise ValueError("Can't find a valid identifier for the payment"
+                                 " method interface: %r. It is not possible add"
+                                 " the payment on the coupon" % method_iface)
+            self.printer.add_payment(CUSTOM_PM, payment.base_value,
+                                     custom_pm=pm_constants.get_value(method_id))
         return True
 
     def close(self):

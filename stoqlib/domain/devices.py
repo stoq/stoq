@@ -27,19 +27,68 @@ stoq/domain/devices.py
    Domain classes related to stoqdrivers package.
 """
 
-from sqlobject import UnicodeCol, IntCol
+from sqlobject import UnicodeCol, IntCol, PickleCol, ForeignKey, BoolCol
+from zope.interface import implements
+from stoqdrivers.devices.printers.interface import IDriverConstants
+from stoqdrivers.devices.printers.fiscal import FiscalPrinter
+from stoqdrivers.devices.printers.cheque import ChequePrinter
+from stoqdrivers.devices.scales.scales import Scale
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import (get_all_methods_dict, METHOD_MONEY,
+                                  METHOD_CHECK, METHOD_MULTIPLE)
 from stoqlib.domain.base import Domain
+from stoqlib.domain.interfaces import IActive
+from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
 
+class DeviceConstants(Domain):
+    """ This class stores information about custom device constants.
+    There is only an dictionary attribute, where keys and its values
+    are in the following form:
+
+    {
+     CONSTANT_ID: value,
+    }
+    """
+    implements(IDriverConstants)
+
+    constants = PickleCol()
+
+    def _check_identifier(self, identifier):
+        if not identifier in self.constants:
+            raise ValueError("The constant with ID %d "
+                             "doesn't exists" % identifier)
+
+    def set_constants(self, constants):
+        self.constants = constants
+
+    #
+    # IDriverConstants implementation
+    #
+
+    def get_items(self):
+        return self.constants.keys()
+
+    def get_value(self, identifier):
+        self._check_identifier(identifier)
+        return self.constants[identifier]
+
 class DeviceSettings(Domain):
+    implements(IActive)
+
     type = IntCol()
     brand = UnicodeCol()
     model = UnicodeCol()
     device = IntCol()
     host = UnicodeCol()
+    constants = ForeignKey("DeviceConstants", default=None)
+    # Here we are going to store Stoq specific constants for payment
+    # methods. It's interesting to have a unique field for that and
+    # and avoid value conflicts.
+    pm_constants = ForeignKey("DeviceConstants", default=None)
+    is_active = BoolCol(default=True)
 
     (DEVICE_SERIAL1,
      DEVICE_SERIAL2,
@@ -61,6 +110,22 @@ class DeviceSettings(Domain):
                     FISCAL_PRINTER_DEVICE: _('Fiscal Printer'),
                     CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
 
+    def _create(self, id, **kw):
+        if 'pm_constants' in kw:
+            raise DatabaseInconsistency("You should not specify a value "
+                                        "for pm_constants, since it will "
+                                        "be created internally")
+        data = {}
+        for payment_method, iface in get_all_methods_dict().items():
+            # We don't store these constants to reach compatibility with
+            # stoqdrivers.
+            if payment_method not in (METHOD_MONEY, METHOD_CHECK,
+                                      METHOD_MULTIPLE):
+                data[payment_method] = None
+        kw['pm_constants'] = DeviceConstants(constants=data,
+                                             connection=self.get_connection())
+        Domain._create(self, id, **kw)
+
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)
 
@@ -72,3 +137,31 @@ class DeviceSettings(Domain):
 
     def get_device_type_name(self, type=None):
         return DeviceSettings.device_types[type or self.type]
+
+    # XXX: Maybe stoqdrivers can implement a generic way to do this?
+    def get_interface(self):
+        """ Based on the column values instantiate the stoqdrivers interface
+        for the device itself.
+        """
+        if self.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
+            return FiscalPrinter(brand=self.brand, model=self.model,
+                                 device=self.get_port_name())
+        elif self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
+            return ChequePrinter(brand=self.brand, model=self.model,
+                                 device=self.get_port_name())
+        elif self.type == DeviceSettings.SCALE_DEVICE:
+            return Scale(brand=self.brand, model=self.model,
+                         device=self.get_port_name())
+        raise DatabaseInconsistency("The device type referred by this "
+                                    "record (%r) is invalid, given %r."
+                                    % (self, self.type))
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        self.is_active = False
+
+    def activate(self):
+        self.is_active = True

@@ -35,6 +35,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+#
+# Unicode related
+#
+
+# "Used to replace an incoming character whose value is unknown or
+#  undefined in Unicode"
+UNKNOWN_CHARACTER = u"\N{REPLACEMENT CHARACTER}"
 
 #
 # Dates and time
@@ -104,6 +111,7 @@ def get_all_methods_dict():
             METHOD_GIFT_CERTIFICATE: IGiftCertificatePM,
             METHOD_FINANCE: IFinancePM,
             METHOD_MULTIPLE: IMultiplePM}
+
 
 #
 # Fiscal constants
