@@ -24,7 +24,8 @@
 """ System parameters editor"""
 
 import gtk
-from kiwi.ui.widgets.entry import Entry
+from kiwi.ui.widgets.entry import ProxyEntry
+from kiwi.ui.widgets.combo import ProxyComboEntry
 from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 
 from stoqlib.domain.base import AbstractModel
@@ -57,18 +58,17 @@ class SystemParameterEditor(BaseEditor):
         self.parameter_desc.set_size("small")
 
     def _setup_entry_slave(self, justify_type=gtk.JUSTIFY_LEFT):
-        widget = Entry()
+        widget = ProxyEntry()
         widget.data_type = unicode
-        widget.set_property("model-attribute", "field_value")
+        widget.model_attribute = "field_value"
         self.proxy.add_widget("field_value", widget)
         self.container.add(widget)
         widget.show()
 
     def _setup_comboboxentry_slave(self):
-        widget = ComboBoxEntry()
+        widget = ProxyComboEntry()
+        widget.model_attribute = "field_value"
         widget.data_type = unicode
-        widget.set_property("model-attribute", "field_value")
-        widget.set_mode(COMBO_MODE_DATA)
         table = type(getattr(sysparam(self.conn), self.model.field_name))
         result = table.select(connection=self.conn)
         data = [(res.get_description(), str(res.id)) for res in result]

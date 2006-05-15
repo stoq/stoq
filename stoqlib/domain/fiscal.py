@@ -31,8 +31,10 @@ Note that this whole module is Brazil-specific.
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
+from zope.interface import implements
 
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.interfaces import IDescribable
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 
 
@@ -40,10 +42,12 @@ class CfopData(Domain):
     """A Brazil-specific class wich defines a fiscal code of operations.
     In Brazil it means 'Codigo fiscal de operacoes e prestacoes'
     """
+    implements(IDescribable)
+
     code = UnicodeCol()
     description = UnicodeCol()
 
-    def get_full_description(self):
+    def get_description(self):
         return u"%s %s" % (self.code, self.description)
 
 

@@ -244,39 +244,39 @@ _parameter_info = {
                                                   'that a sale order is '
                                                   'valid')),
     # These parameters are Brazil-specific
-    'DEFAULT_SALES_CFOP': ParameterDetails(_("Sales"),
-                                 _("Default Sales CFOP"),
-                                 _("Default CFOP (Fiscal Code of Operations) "
-                                   "used when generating fiscal book "
-                                   "entries.")),
-    'DEFAULT_RECEIVING_CFOP': ParameterDetails(_("Purchase"),
-                                 _("Default Receiving CFOP"),
-                                 _("Default CFOP (Fiscal Code of Operations) "
-                                   "used when receiving products in the"
-                                   "warehouse application.")),
-    'ICMS_TAX': ParameterDetails(_("Sales"),
-                                 _("Default ICMS tax"),
-                                 _("Default ICMS to be applied on all the "
-                                   "products of a sale. Note that this a "
-                                   "percentage value and must be set as the "
-                                   "format: 0 < value < 100. E.g: 18, which "
-                                   "means 18% of tax.")),
-    'ISS_TAX': ParameterDetails(_("Sales"),
-                                 _("Default ISS tax"),
-                                 _("Default ISS to be applied on all the "
-                                   "services of a sale. Note that this a "
-                                   "percentage value and must be set as the "
-                                   "format: 0 < value < 100. E.g: 12, which "
-                                   "means 12% of tax.")),
-    'SUBSTITUTION_TAX': ParameterDetails(_("Sales"),
-                                         _("Default Substitution tax"),
-                                         _("The tax applied on all sale "
-                                           "products with substitution "
-                                           "tax type. Note that this a "
-                                           "percentage value and must be "
-                                           "set as the format: "
-                                           "0 < value < 100. E.g: 16, "
-                                           "which means 16% of tax.")),
+    'DEFAULT_SALES_CFOP': ParameterDetails(_(u'Sales'),
+                                 _(u'Default Sales CFOP'),
+                                 _(u'Default CFOP (Fiscal Code of Operations) '
+                                    'used when generating fiscal book '
+                                    'entries.')),
+    'DEFAULT_RECEIVING_CFOP': ParameterDetails(_(u'Purchase'),
+                                 _(u'Default Receiving CFOP'),
+                                 _(u'Default CFOP (Fiscal Code of Operations) '
+                                    'used when receiving products in the'
+                                    'warehouse application.')),
+    'ICMS_TAX': ParameterDetails(_(u'Sales'),
+                                 _(u'Default ICMS tax'),
+                                 _(u'Default ICMS to be applied on all the '
+                                    'products of a sale. Note that this a '
+                                    'percentage value and must be set as the '
+                                    'format: 0 < value < 100. E.g: 18, which '
+                                    'means 18% of tax.')),
+    'ISS_TAX': ParameterDetails(_(u'Sales'),
+                                 _(u'Default ISS tax'),
+                                 _(u'Default ISS to be applied on all the '
+                                    'services of a sale. Note that this a '
+                                    'percentage value and must be set as the '
+                                    'format: 0 < value < 100. E.g: 12, which '
+                                    'means 12% of tax.')),
+    'SUBSTITUTION_TAX': ParameterDetails(_(u'Sales'),
+                                         _(u'Default Substitution tax'),
+                                         _(u'The tax applied on all sale '
+                                            'products with substitution '
+                                            'tax type. Note that this a '
+                                            'percentage value and must be '
+                                            'set as the format: '
+                                            '0 < value < 100. E.g: 16, '
+                                            'which means 16% of tax.')),
 }
 
 
