@@ -27,6 +27,7 @@
 
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import ParameterAccess, sysparam
+from stoqlib.database import finish_transaction
 from stoqlib.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.sellable import BaseSellableCategory
@@ -36,10 +37,14 @@ from stoqlib.domain.service import ServiceAdaptToSellable
 
 class TestParameter:
 
-    def setup_class(self):
-        self.conn = new_transaction()
-        self.sparam = sysparam(self.conn)
-        assert isinstance(self.sparam, ParameterAccess)
+    @classmethod
+    def setup_class(cls):
+        cls.conn = new_transaction()
+        cls.sparam = sysparam(cls.conn)
+        assert isinstance(cls.sparam, ParameterAccess)
+
+    def teardown_class(cls):
+        finish_transaction(cls.conn)
 
     # System instances based on stoq.lib.parameters
 

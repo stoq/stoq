@@ -99,6 +99,7 @@ class BaseDomainTest(object):
     skip_attrs = ['model_modified','_is_valid_model','model_created',
                   'childName']
 
+    @classmethod
     def setup_class(cls):
         cls.conn = new_transaction()
         cls._table_count = cls._table.select(connection=cls.conn).count()
@@ -106,8 +107,8 @@ class BaseDomainTest(object):
         cls.insert_dict, cls.edit_dict = cls._generate_test_data()
         cls._generate_foreign_key_attrs()
 
+    @classmethod
     def teardown_class(cls):
-        cls.conn.commit()
         finish_transaction(cls.conn)
 
     #
@@ -182,6 +183,11 @@ class BaseDomainTest(object):
     #
 
     def _check_set_and_get(self, test_value, db_value, key):
+        if isinstance(test_value, datetime.datetime):
+            # There is no microseconds stored in the database and that's
+            # why we are ignoring them here
+            assert abs(test_value - db_value) < datetime.timedelta(seconds=1)
+            return
         assert test_value == db_value
 
     #
@@ -211,7 +217,6 @@ class BaseDomainTest(object):
         """
         self._instance = self._table(connection=self.conn, **self.insert_dict)
         assert self._instance is not None
-        self.conn.commit()
         self._table_count = long(self._table_count + 1)
         assert (self._table_count ==
                 self._table.select(connection=self.conn).count())
@@ -224,4 +229,4 @@ class BaseDomainTest(object):
             value = self.edit_dict[key]
             setattr(self._instance, key, value)
             db_value = getattr(self._instance, key)
-            yield self._check_set_and_get, value, db_value, key
+            self._check_set_and_get(value, db_value, key)

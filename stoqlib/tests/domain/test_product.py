@@ -37,35 +37,20 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.tests.domain.base import BaseDomainTest
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import new_transaction
 
 
-global_data = {}
-
-def ensure_global_data():
-    conn = new_transaction()
+def get_supplier(conn):
     person = Person(name='Gilberto', connection=conn)
     person.addFacet(ICompany, fancy_name='Lojas ABC', connection=conn)
-    global_data['supplier'] = person.addFacet(ISupplier, connection=conn)
+    return person.addFacet(ISupplier, connection=conn)
 
-    # Instances of domain/product
+
+def get_sellable(conn):
     product = Product(connection=conn)
-    global_data['product'] = product
-    storable = product.addFacet(IStorable, connection=conn)
-    branch = sysparam(conn).CURRENT_BRANCH
     base_sellable_info = BaseSellableInfo(connection=conn)
-    global_data['base_sellable_info'] = base_sellable_info
-    global_data['sellable'] = product.addFacet(ISellable, barcode='abcd',
-                                               base_sellable_info=base_sellable_info,
-                                               connection=conn)
-    conn.commit()
-
-def get_global_data(key, conn):
-    obj = global_data[key]
-    table = type(obj)
-    return table.get(obj.id, connection=conn)
-
-ensure_global_data()
+    return product.addFacet(ISellable, barcode='abcd',
+                            base_sellable_info=base_sellable_info,
+                            connection=conn)
 
 
 class TestProductSupplierInfo(BaseDomainTest):
@@ -73,29 +58,27 @@ class TestProductSupplierInfo(BaseDomainTest):
 
     @classmethod
     def get_foreign_key_data(cls):
-        return (get_global_data('product', cls.conn),
-                get_global_data('supplier', cls.conn))
+        return (Product(connection=cls.conn), get_supplier(cls.conn))
 
-    def test_3_get_name(self):
+    def test_get_name(self):
         assert (self._instance.get_name()
                 == self._instance.supplier.get_adapted().name)
 
 class TestProduct(BaseDomainTest):
     _table = Product
 
-    def test_3_facet_IStorable_add (self):
+    def test_facet_IStorable_add (self):
         assert not IStorable(self._instance, connection=self.conn)
         storable = self._instance.addFacet(IStorable, connection=self.conn)
         table = Person.getAdapterClass(IBranch)
         branches_count = table.select(connection=self.conn).count()
         assert storable.get_stocks().count() == branches_count
 
-    def test_4_get_main_supplier_info (self):
+    def test_get_main_supplier_info (self):
         assert not self._instance.get_main_supplier_info()
-        supplier = get_global_data('supplier', self.conn)
+        supplier = get_supplier(self.conn)
         ProductSupplierInfo(connection=self.conn, supplier=supplier,
                             product=self._instance, is_main_supplier=True)
-        self.conn.commit()
         assert self._instance.get_main_supplier_info() is not None
 
 
@@ -104,12 +87,11 @@ class TestProductStockReference(BaseDomainTest):
 
     @classmethod
     def get_foreign_key_data(cls):
-        sellable = get_global_data('sellable', cls.conn)
+        sellable = get_sellable(cls.conn)
         sales = Sale.select(connection=cls.conn)
         assert sales.count() > 0
         sale = sales[0]
         product_item = sellable.add_sellable_item(sale)
-        cls.conn.commit()
         branch = sysparam(cls.conn).CURRENT_BRANCH
         return branch, product_item
 
@@ -125,15 +107,17 @@ class TestProductSellableItem(BaseDomainTest):
         role = EmployeeRole(connection=cls.conn, name="god")
         person.addFacet(IEmployee, connection=cls.conn, role=role)
         salesperson = person.addFacet(ISalesPerson, connection=cls.conn)
-        sale = Sale(connection=cls.conn, till=till, salesperson=salesperson)
-        sellable = get_global_data('sellable', cls.conn)
+        sales = Sale.select(connection=cls.conn)
+        assert sales.count() > 0
+        sale = sales[0]
+        sellable = get_sellable(cls.conn)
         return sale, sellable
 
-    def test_3_sell(self):
+    def test_sell(self):
         # Makes the whole process a bit more consistent and creating a new
         # sellable from the beginning
         product = Product(connection=self.conn)
-        base_sellable_info = global_data['base_sellable_info']
+        base_sellable_info = BaseSellableInfo(connection=self.conn)
         sellable = product.addFacet(ISellable, barcode='xyz',
                                     base_sellable_info=base_sellable_info,
                                     connection=self.conn)
@@ -151,7 +135,6 @@ class TestProductSellableItem(BaseDomainTest):
         storable.increase_stock(sold_qty, branch)
         assert storable.get_stocks(branch).count() == 1
         assert storable.get_stocks(branch)[0].quantity == sold_qty
-        self.conn.commit()
         # now setting the proper sold quantity in the sellable item
         self._instance.quantity = sold_qty
         self._instance.sell(branch)
