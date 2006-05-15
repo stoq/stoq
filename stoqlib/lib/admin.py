@@ -114,7 +114,7 @@ def create_base_schema():
     finish_transaction(conn, 1)
 
 @argcheck(str, bool, bool, bool)
-def initialize_system(password='', delete_only=False, 
+def initialize_system(password='', delete_only=False,
                       list_tables=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
