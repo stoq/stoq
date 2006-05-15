@@ -35,8 +35,9 @@ import sys
 import gobject
 gobject.threads_init()
 import py
+from kiwi.environ import environ
 
-from stoqlib.lib.runtime import (print_immediately, set_verbose,
+from stoqlib.lib.runtime import (print_msg, set_verbose,
                                  register_application_names)
 
 DEFAULT_SEPARATORS = 79
@@ -44,41 +45,50 @@ DEFAULT_SEPARATORS = 79
 
 def setup(options):
     from stoqlib.domain.examples.createall import create
-    from stoqlib.lib.admin import initialize_system, setup_tables
-
-    set_verbose(False)
-    setup_tables(delete_only=True, list_tables=True, verbose=True)
-    set_verbose(options.verbose)
-    initialize_system("", verbose=True)
+    from stoqlib.lib.admin import initialize_system
+    initialize_system("", verbose=options.verbose)
     create()
 
 
 def test_domain(options):
-    if options.verbose:
-        print_immediately('Running domain doctests... ')
+    pytest_filename = options.filename.startswith('test_')
 
-    # Running doctests
-    domain_tests_dir = os.path.abspath(os.path.join(
-        os.path.dirname(sys.argv[0]), '..', '..', 'docs', 'domain'))
-    doc_files = [filename for filename in os.listdir(domain_tests_dir)
-                              if filename.endswith('.txt')]
+    has_doctests = not options.filename or not pytest_filename
+    if has_doctests:
+        # Running doctests
+        print_msg('Running domain doctests... ')
+        domain_tests_dir = os.path.abspath(os.path.join(
+            os.path.dirname(sys.argv[0]), '..', '..', 'docs', 'domain'))
 
-    for doc_file in doc_files:
-        doc_file = os.path.join(domain_tests_dir, doc_file)
-        doctest.testfile(doc_file,
-                         verbose=options.verbose,
-                         module_relative=False)
+        if options.filename:
+            doc_file = os.path.join(domain_tests_dir, options.filename)
+            doctest.testfile(doc_file, verbose=options.verbose,
+                             module_relative=False)
+        else:
+            doc_files = [filename for filename in os.listdir(domain_tests_dir)
+                                      if filename.endswith('.txt')]
+            for doc_file in doc_files:
+                doc_file = os.path.join(domain_tests_dir, doc_file)
+                doctest.testfile(doc_file, verbose=options.verbose,
+                                 module_relative=False)
 
-    if options.verbose:
-        print_immediately('Running domain unittests... ')
+    has_pytests = not options.filename or pytest_filename
+    if has_pytests:
+        # Running py.test
+        print_msg('Running domain py.test... ')
 
-    sys.argv = sys.argv[:1]
-    if options.nocapture:
+        sys.argv = sys.argv[:1]
+        if options.filename:
+            paths = environ.get_resource_paths('domain_tests')
+            if len(paths) != 1:
+                raise ValueError("You should have only one path for "
+                                 "resource domain_tests")
+            path = paths[0]
+            sys.argv.append(os.path.join(path, options.filename))
+
         sys.argv.append('--nocapture')
-    py.test.cmdline.main()
-
-    if options.verbose:
-        print_immediately('Domain tests are ok')
+        py.test.cmdline.main()
+    print_msg('Domain tests are ok')
 
 
 def get_parser():
@@ -114,13 +124,20 @@ def get_parser():
                       help='user password')
 
     # Additional options
+    parser.add_option('-f', '--filename',
+                      action="store",
+                      default='',
+                      help='test filename',
+                      dest="filename")
+    parser.add_option('-s', '--skipsetup',
+                      action="store_true",
+                      default=False,
+                      help='skip setup database',
+                      dest="skipsetup")
     parser.add_option('-v', '--verbose',
+                      default=False,
                       action="store_true",
                       dest="verbose")
-    parser.add_option('-c', '--nocapture',
-                      action="store_true",
-                      dest="nocapture",
-                      help='Get print outputs on tests')
     return parser
 
 
@@ -141,8 +158,10 @@ def main(args):
 
     register_db_settings(db_settings)
     register_application_names(["stoqlib_app"])
+    set_verbose(options.verbose)
 
-    setup(options)
+    if not options.skipsetup:
+        setup(options)
     test_domain(options)
 
 
