@@ -25,7 +25,8 @@
 """ Dialogs for payment method management"""
 
 import gtk
-from kiwi.ui.widgets.list import Column, List
+from kiwi.ui.objectlist import ObjectList
+from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database import finish_transaction
@@ -68,8 +69,8 @@ class PaymentMethodsDialog(BasicDialog):
 
     def _setup_list(self):
         methods = AbstractPaymentMethodAdapter.select(connection=self.conn)
-        self.klist = List(self._get_columns(), methods,
-                          gtk.SELECTION_BROWSE)
+        self.klist = ObjectList(self._get_columns(), methods,
+                                gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
         self.klist.connect("double-click", self._on_klist__double_click)
