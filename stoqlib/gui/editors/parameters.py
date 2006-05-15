@@ -26,7 +26,6 @@
 import gtk
 from kiwi.ui.widgets.entry import ProxyEntry
 from kiwi.ui.widgets.combo import ProxyComboEntry
-from kiwi.ui.widgets.combobox import ComboBoxEntry, COMBO_MODE_DATA
 
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.parameter import ParameterData
