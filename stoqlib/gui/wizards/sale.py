@@ -163,8 +163,8 @@ class PaymentMethodStep(WizardEditorStep):
         self._update_payment_method_slave()
 
 
-class GiftCertificateOutstandingStep(WizardEditorStep):
-    gladefile = 'GiftCertificateOutstandingStep'
+class SaleRenegotiationOutstandingStep(WizardEditorStep):
+    gladefile = 'SaleRenegotiationOutstandingStep'
     model_type = Sale
 
     def __init__(self, wizard, previous, conn, sale, outstanding_value):
@@ -244,8 +244,8 @@ class GiftCertificateOutstandingStep(WizardEditorStep):
         self.wizard.disable_finish()
 
 
-class GiftCertificateOverpaidStep(WizardEditorStep):
-    gladefile = 'GiftCertificateOverpaidStep'
+class SaleRenegotiationOverpaidStep(WizardEditorStep):
+    gladefile = 'SaleRenegotiationOverpaidStep'
     model_type = Settable
     proxy_widgets = ('certificate_number',)
 
@@ -294,7 +294,7 @@ class GiftCertificateOverpaidStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        klass = GiftCertificateOverpaidStep
+        klass = SaleRenegotiationOverpaidStep
         self.proxy = self.add_proxy(self.model, klass.proxy_widgets)
 
     #
@@ -427,14 +427,14 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             return
         elif self.sale_total > gift_total:
             outstanding_value = self.sale_total - gift_total
-            return GiftCertificateOutstandingStep(self.wizard, self,
-                                                  self.conn, self.sale,
-                                                  outstanding_value)
+            return SaleRenegotiationOutstandingStep(self.wizard, self,
+                                                    self.conn, self.sale,
+                                                    outstanding_value)
         else:
             overpaid_value = gift_total - self.sale_total
-            return GiftCertificateOverpaidStep(self.wizard, self,
-                                               self.conn, self.sale,
-                                               overpaid_value)
+            return SaleRenegotiationOverpaidStep(self.wizard, self,
+                                                 self.conn, self.sale,
+                                                 overpaid_value)
 
     def post_init(self):
         self.certificate_number.grab_focus()
@@ -678,7 +678,7 @@ class SaleWizard(BaseWizard):
             group.clear_preview_payments()
 
     #
-    # WizardStep hooks
+    # BaseWizard hooks
     #
 
     def finish(self):
@@ -698,7 +698,7 @@ class SaleWizard(BaseWizard):
         self.close()
 
     #
-    # Auxiliar methods
+    # General methods
     #
 
     def get_payment_group(self):
