@@ -146,9 +146,9 @@ class ClientDetailsDialog(BaseEditor):
                       width=130,data_type=date)]
 
     def _get_payments_columns(self):
-        return [Column("identifier", title=_("Number"),
+        return [Column("identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       width=80, sorted=True),
+                       format='%04d', width=80, sorted=True),
                 Column("method.description", title=_("Payment Method"),
                        data_type=str, searchable=True, expand=True),
                 Column("due_date", title=_("Due Date"), width=90,
