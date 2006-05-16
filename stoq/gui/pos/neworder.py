@@ -62,7 +62,7 @@ class NewOrderEditor(BaseEditor):
         self.client.prefill(items)
 
     def _setup_widgets(self):
-        cfop_items = [(item.get_full_description(), item)
+        cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop_combo.prefill(cfop_items)
         self._setup_client_entry()
