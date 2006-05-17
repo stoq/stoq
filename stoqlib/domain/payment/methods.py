@@ -173,10 +173,10 @@ class PaymentMethodDetails(InheritableModel):
         group_desc = payment_group.get_group_description()
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
-            description = _(u'%s (%s of %s) from %s') % (self.description,
-                                                         number + 1,
-                                                         installments_number,
-                                                         group_desc)
+            description = _(u'%s/%s %s for %s') % (self.description,
+                                                   number + 1,
+                                                   installments_number,
+                                                   group_desc)
             payment = self.create_inpayment(payment_group, due_date,
                                             payment_value, method,
                                             description,
@@ -379,8 +379,8 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         'allowed for this payment method')
         if not description:
             group_desc = payment_group.get_group_description()
-            description = _(u'%s (1 of 1) from %s') % (self.description,
-                                                       group_desc)
+            description = _(u'1/1 %s for %s') % (self.description,
+                                                 group_desc)
         payment = Payment(connection=conn, group=payment_group,
                           method=self, destination=destination,
                           method_details=method_details,
@@ -458,8 +458,8 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         self._check_installments_number(installments_number)
         due_date = datetime.today()
         group_desc = group.get_group_description()
-        description = _(u'%s (1 of 1) from %s') % (self.description,
-                                                   group_desc)
+        description = _(u'1/1 %s for %s') % (self.description,
+                                             group_desc)
         payment = group.add_payment(total, description, self,
                                     self.destination, due_date)
         return payment
@@ -492,13 +492,27 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
     #
 
     def _get_new_payment(self, total, group, installments_number):
-        raise NotImplementedError("Not supported by gift certificates")
+        self._check_installments_number(installments_number)
+        due_date = datetime.today()
+        group_desc = group.get_group_description()
+        description = _(u'1/1 %s for %s') % (self.description,
+                                             group_desc)
+        conn = self.get_connection()
+        destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
+        payment = group.add_payment(total, description, self,
+                                    destination, due_date)
+        return payment
 
     def setup_outpayments(self, total, group, installments_number=None):
         raise NotImplementedError("Not supported by gift certificates")
 
     def setup_inpayments(self, total, group, installments_number=None):
-        raise NotImplementedError("Not supported by gift certificates")
+        installments_number = (installments_number or
+                               self.get_max_installments_number())
+        payment = self._get_new_payment(total, group, installments_number)
+        conn = self.get_connection()
+        payment.addFacet(IInPayment, connection=conn)
+        return payment
 
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
@@ -515,11 +529,9 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
                           iface=IInPayment, base_value=None):
         raise NotImplementedError("Not supported by gift certificates")
 
-    def delete_inpayment(self, inpayment):
-        raise NotImplementedError("Not supported by gift certificates")
-
     def get_max_installments_number(self):
-        raise NotImplementedError("Not supported by gift certificates")
+        # Gift Certificates only support one installment
+        return 1
 
 PaymentMethod.registerFacet(PMAdaptToGiftCertificatePM, IGiftCertificatePM)
 
@@ -628,10 +640,10 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         group_desc = payment_group.get_group_description()
         for i in range(installments_number):
             due_date = first_duedate + timedelta((i * calc_interval))
-            description = _(u'%s (%s of %s) from %s') % (self.description,
-                                                        i + 1,
-                                                        installments_number,
-                                                        group_desc)
+            description = _(u'%s/%s %s for %s') % (self.description,
+                                                   i + 1,
+                                                   installments_number,
+                                                   group_desc)
             payment = self.add_payment(payment_group, due_date, value,
                                        description=description,
                                        iface=iface)

@@ -45,10 +45,10 @@ from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.giftcertificate import (GiftCertificateItem,
-                                            GiftCertificate)
+                                            GiftCertificateAdaptToSellable)
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.domain.interfaces import (IContainer, IClient,
-                                       IPaymentGroup, ISellable,
+                                       IPaymentGroup,
                                        IRenegotiationSaleReturnMoney,
                                        IRenegotiationGiftCertificate,
                                        IRenegotiationOutstandingValue,
@@ -448,6 +448,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         renegotiation = self._get_stored_renegotiation()
         renegotiation.addFacet(IRenegotiationGiftCertificate,
                                connection=conn,
+                               payment_group=self,
                                new_gift_certificate_number=number,
                                overpaid_value=overpaid_value)
 
@@ -467,15 +468,16 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_gift_certificates(self):
         conn = self.get_connection()
-        table = GiftCertificate.getAdapterClass(ISellable)
+        table = GiftCertificateAdaptToSellable
         return table.selectBy(groupID=self.id, connection=conn)
 
     def confirm_gift_certificates(self):
         """Update gift certificates of the current sale, setting their
         status properly.
         """
-        certificates = self.get_gift_certificates()
-        for item in certificates:
+        if not self.default_method == METHOD_GIFT_CERTIFICATE:
+            return
+        for item in self.get_gift_certificates():
             item.apply_as_payment_method()
 
     def get_renegotiation_adapter(self):
@@ -590,9 +592,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         associated gift certificates properly.
         """
         self.setup_inpayments()
+        self.confirm_gift_certificates()
         self._create_fiscal_entries()
-        if self.default_method == METHOD_GIFT_CERTIFICATE:
-            self.confirm_gift_certificates()
         if self.renegotiation_type is None:
             return
         # Here we have the payment method set as gift certificate but there
