@@ -67,6 +67,7 @@ class RenegotiationAdaptToGiftCertificate(ModelAdapter):
     new_gift_certificate_number = UnicodeCol()
     overpaid_value = PriceCol()
     status = IntCol(default=STATUS_PENDING)
+    payment_group = ForeignKey('AbstractPaymentGroup')
 
     def confirm(self):
         """Confirm the renegotiation and creates the new gift
@@ -89,6 +90,11 @@ class RenegotiationAdaptToGiftCertificate(ModelAdapter):
                                              barcode=cert_number,
                                              base_sellable_info=
                                              sellable_info)
+        # The new gift certificate which has been created is actually an
+        # item of our sale order
+        sale = self.payment_group.get_adapted()
+        sellable_cert.add_sellable_item(sale)
+
         sellable_cert.sell()
         self.status = self.STATUS_CLOSED
 
@@ -114,19 +120,17 @@ class RenegotiationAdaptToSaleReturnMoney(ModelAdapter):
     payment_group = ForeignKey('AbstractPaymentGroup')
 
     def confirm(self):
-        # Avoid circular imports here
-        from stoqlib.domain.till import get_current_till_operation
         """Confirm the renegotiation and create the payment."""
         if self.status != self.STATUS_PENDING:
             raise ValueError('Invalid status for renegotiation data, '
                              'it should be pending at this point.'
                              '\n Got status: %d' % self.status)
-        conn = self.get_connection()
-        current_till = get_current_till_operation(conn)
         order_number = self.payment_group.get_adapted().order_number
-        reason = _('Renegotiation with return value for sale %s'
-                   % order_number)
-        current_till.create_debit(self.overpaid_value, reason)
+        reason = _(u'1/1 Money returned for gift certificate acquittance on '
+                    'sale %04d' % order_number)
+        payment = self.payment_group.create_debit(self.overpaid_value,
+                                                  reason)
+        payment.pay()
         self.status = self.STATUS_CLOSED
 
 RenegotiationData.registerFacet(RenegotiationAdaptToSaleReturnMoney,

@@ -136,14 +136,15 @@ class Payment(Domain):
         self._check_status(self.STATUS_PREVIEW, 'set_to_pay')
         self.status = self.STATUS_TO_PAY
 
-    def pay(self, paid_date=None):
+    def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_TO_PAY, 'pay')
         if self.group.get_thirdparty() is None:
-            raise PaymentError("You must have a thirdparty to quit "
-                               "the payment")
-
-        self.paid_value = self.value - self.discount + self.interest
+            raise PaymentError("You must have a thirdparty for payment"
+                               "acquittance")
+        paid_value = paid_value or (self.value - self.discount +
+                                    self.interest)
+        self.paid_value = paid_value
         self.paid_date = paid_date or datetime.now()
         self.status = self.STATUS_PAID
 
@@ -160,7 +161,7 @@ class Payment(Domain):
         return operation
 
     def submit(self, submit_date=None):
-        """The first stage of payment acquitance is submiting and mark a
+        """The first stage of payment acquittance is submiting and mark a
         payment with STATUS_REVIEWING
         """
         self._check_status(self.STATUS_PAID, 'submit')
@@ -171,7 +172,7 @@ class Payment(Domain):
 
     def reject(self, reason, reject_date=None):
         """If there is some problems in the  first stage of payment
-        acquitance we must call reject for it.
+        acquittance we must call reject for it.
         """
         self._check_status(self.STATUS_REVIEWING, 'reject')
         operation = self._register_payment_operation(reject_date)
@@ -235,10 +236,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
      STATUS_CLOSED,
      STATUS_CANCELLED) = range(4)
 
-    statuses = {STATUS_PREVIEW: _("Preview"),
-                STATUS_OPEN: _("Open"),
-                STATUS_CLOSED: _("Closed"),
-                STATUS_CANCELLED: _("Cancelled")}
+    statuses = {STATUS_PREVIEW: _(u"Preview"),
+                STATUS_OPEN: _(u"Open"),
+                STATUS_CLOSED: _(u"Closed"),
+                STATUS_CANCELLED: _(u"Cancelled")}
 
     implements(IPaymentGroup, IContainer)
 
@@ -270,17 +271,18 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def get_balance(self):
         return sum([s.value for s in self.get_items()])
 
-    def add_payment(self, value, description, method, destination,
-                    due_date=datetime.now()):
+    def add_payment(self, value, description, method, destination=None,
+                    due_date=datetime.now(), status=Payment.STATUS_PREVIEW):
         """Add a new payment sending correct arguments to Payment
         class
         """
         conn = self.get_connection()
+        destination= destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
+        conn = self.get_connection()
         payment = Payment(due_date=due_date, value=value,
                           description=description, group=self,
-                          method=method, destination=method.destination,
-                          connection=conn)
-        self.add_item(payment)
+                          method=method, destination=destination,
+                          status=status, connection=conn)
         return payment
 
     #
@@ -332,6 +334,27 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     #
     # General methods
     #
+
+    def _get_money_payment(self, value, description):
+        conn = self.get_connection()
+        method = sysparam(conn).METHOD_MONEY
+        status = Payment.STATUS_TO_PAY
+        return self.add_payment(value, description, method,
+                                status=status)
+
+    @argcheck(Decimal, unicode)
+    def create_debit(self, value, description):
+        value = - abs(value)
+        payment = self._get_money_payment(value, description)
+        conn = self.get_connection()
+        return payment.addFacet(IOutPayment, connection=conn)
+
+    @argcheck(Decimal, unicode)
+    def create_credit(self, value, description):
+        value = abs(value)
+        payment = self._get_money_payment(value, description)
+        conn = self.get_connection()
+        return payment.addFacet(IInPayment, connection=conn)
 
     def set_method(self, method_iface):
         items = get_all_methods_dict().items()
@@ -454,6 +477,7 @@ class PaymentAdaptToInPayment(ModelAdapter):
             raise ValueError("This payment is already received.")
         payment.pay()
         payment.group.update_thirdparty_status()
+        # TODO we must also add new till entries here
 
 Payment.registerFacet(PaymentAdaptToInPayment, IInPayment)
 
@@ -467,6 +491,7 @@ class PaymentAdaptToOutPayment(ModelAdapter):
         if not payment.is_to_pay():
             raise ValueError("This payment is already paid.")
         payment.pay()
+        # TODO we must also add new till entries here
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 

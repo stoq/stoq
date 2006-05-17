@@ -11,7 +11,7 @@
                 <property name="spacing">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="header_label">
+                    <widget class="ProxyLabel" id="header_label">
                         <property name="label" context="yes" translatable="yes">There is %s overpaid.</property>
                         <property name="visible">True</property>
                     </widget>
@@ -95,7 +95,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="certificate_label">
+                            <widget class="ProxyLabel" id="certificate_label">
                                 <property name="label" context="yes" translatable="yes">Create a %s with this value.</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -110,15 +110,16 @@
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
-                                        <property name="label" context="yes" translatable="yes">Gift Certificate Number:</property>
+                                    <widget class="ProxyLabel" id="kiwilabel1">
+                                        <property name="label" context="yes" translatable="yes">Gift Certificate Barcode:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">0.0</property>
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="certificate_number">
+                                    <widget class="ProxyEntry" id="certificate_number">
                                         <property name="data_type">unicode</property>
+                                        <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -135,7 +136,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -146,7 +147,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="labelx">
+                            <widget class="ProxyLabel" id="labelx">
                                 <property name="label" context="yes" translatable="yes">Return the value in money</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -199,7 +200,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                    <widget class="ProxyLabel" id="kiwilabel4">
                         <property name="visible">True</property>
                     </widget>
                     <packing>

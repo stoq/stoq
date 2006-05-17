@@ -43,7 +43,7 @@ _ = stoqlib_gettext
 
 
 class TillOpeningEditor(BaseEditor):
-    model_name = _('Till Opening')
+    model_name = _(u'Till Opening')
     model_type = Till
     gladefile = 'TillOpening'
     proxy_widgets = ('open_date',
@@ -56,7 +56,7 @@ class TillOpeningEditor(BaseEditor):
         if self.model.initial_cash_amount > 0:
             current_till = get_current_till_operation(self.conn)
             value = self.model.initial_cash_amount
-            reason = _('Initial cash amount')
+            reason = _(u'Initial cash amount')
             current_till.create_credit(value, reason)
             self.conn.commit()
 
@@ -75,7 +75,7 @@ class TillOpeningEditor(BaseEditor):
 
 
 class TillClosingEditor(BaseEditor):
-    model_name = _('Till Closing')
+    model_name = _(u'Till Closing')
     model_type = Till
     gladefile = 'TillClosing'
     proxy_widgets = ('final_cash_amount',
@@ -137,7 +137,7 @@ class TillClosingEditor(BaseEditor):
     #
 
     def get_title(self, *args):
-        return _('Closing current till')
+        return _(u'Closing current till')
 
     def setup_proxies(self):
         self._payment_query()
@@ -197,9 +197,9 @@ class BaseCashSlave(BaseEditorSlave):
         payment_value = currency(0)
         args = [payment_value, reason]
         if self.payment_iface is IInPayment:
-            return current_till.create_credit(*args)
+            return current_till.create_credit(*args).get_adapted()
         elif self.payment_iface is IOutPayment:
-            return current_till.create_debit(*args)
+            return current_till.create_debit(*args).get_adapted()
         else:
             raise ValueError('Invalid interface, got %s'
                              % self.payment_iface)
@@ -221,7 +221,7 @@ class BaseCashSlave(BaseEditorSlave):
 
 
 class CashAdvanceEditor(BaseEditor):
-    model_name = _('Cash Advance')
+    model_name = _(u'Cash Advance')
     model_type = CashAdvanceInfo
     gladefile = 'CashAdvanceEditor'
     label_widgets = ('employee_lbl',)
@@ -267,7 +267,7 @@ class CashAdvanceEditor(BaseEditor):
 
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(conn=self.conn,
-                                        payment_description=None,
+                                        payment_description=u"",
                                         payment_iface=self.payment_iface)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
@@ -279,8 +279,8 @@ class CashAdvanceEditor(BaseEditor):
         self.model.employee = self.employee_combo.get_selected_data()
         self.model.payment = self.cash_slave.model
         employee_name = self.employee_combo.get_selected_label()
-        payment_description = (_('Cash advance paid to employee: %s')
-                               % employee_name)
+        payment_description = (_(u'Cash advance paid to employee: %s')
+                                 % employee_name)
         self.cash_slave.model.description = payment_description
         value = self.cash_slave.model.value
         value *= -1
@@ -289,7 +289,7 @@ class CashAdvanceEditor(BaseEditor):
 
 
 class CashInEditor(BaseEditor):
-    model_name = _('Cash In')
+    model_name = _(u'Cash In')
     model_type = Payment
     gladefile = 'BaseTemplate'
 
@@ -308,8 +308,7 @@ class CashInEditor(BaseEditor):
         branch = Person.iget(IBranch, current_till.branch.id,
                              connection=conn)
         branch_name = branch.get_adapted().name
-        payment_description = (_('Cash in for branch: %s') %
-                               branch_name)
+        payment_description = (_(u'Cash in for branch: %s') % branch_name)
         self.cash_slave = BaseCashSlave(payment_description=payment_description,
                                         conn=conn)
         return self.cash_slave.model
@@ -322,12 +321,12 @@ class CashInEditor(BaseEditor):
 
 
 class CashOutEditor(BaseEditor):
-    model_name = _('Cash Out')
+    model_name = _(u'Cash Out')
     model_type = Payment
     gladefile = 'CashOutEditor'
     label_widgets = ('reason_lbl',)
     entry_widgets = ('reason',)
-    title = _('Reverse Payment')
+    title = _(u'Reverse Payment')
 
     payment_iface = IOutPayment
 
@@ -357,7 +356,7 @@ class CashOutEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        self.cash_slave = BaseCashSlave(self.conn, payment_description=None,
+        self.cash_slave = BaseCashSlave(self.conn, payment_description=u"",
                                         payment_iface=self.payment_iface)
         return self.cash_slave.model
 
@@ -375,9 +374,9 @@ class CashOutEditor(BaseEditor):
         reason = self.reason.get_text()
         if reason:
             # %s is the description used when removing money
-            payment_description = _('Cash out: %s') % reason
+            payment_description = _(u'Cash out: %s') % reason
         else:
-            payment_description = _('Cash out')
+            payment_description = _(u'Cash out')
         self.model.description = payment_description
         self.model.value = -self.model.value
         return self.cash_slave.on_confirm()

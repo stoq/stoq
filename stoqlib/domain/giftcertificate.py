@@ -29,11 +29,13 @@ from kiwi.python import Settable
 from zope.interface import implements
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
-                                     OnSaleInfo)
-from stoqlib.domain.interfaces import ISellable, IDescribable
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
+                                     OnSaleInfo)
+from stoqlib.domain.interfaces import (ISellable, IDescribable,
+                                       IGiftCertificatePM)
 
 _ = stoqlib_gettext
 
@@ -106,7 +108,13 @@ class GiftCertificateAdaptToSellable(AbstractSellable):
         if self.status != self.STATUS_SOLD:
             raise ValueError('This gift certificate must be sold to '
                              'be used as a payment method.')
+        conn = self.get_connection()
+        base_method = sysparam(conn).BASE_PAYMENT_METHOD
+        adapter = IGiftCertificatePM(base_method, connection=conn)
+        payment = adapter.setup_inpayments(self.get_price(), self.group)
+        payment.set_to_pay()
         self.status = self.STATUS_CLOSED
+
 
 GiftCertificate.registerFacet(GiftCertificateAdaptToSellable, ISellable)
 
