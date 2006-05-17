@@ -37,6 +37,8 @@ from sqlobject.sqlbuilder import AND, IN
 
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
@@ -47,7 +49,6 @@ from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
                                       confirm_dialog, notify_dialog)
 from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor,
                                       CashOutEditor)
-from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
@@ -91,9 +92,6 @@ class TillOperationDialog(SlaveDelegate):
         today_format = _('%d of %B')
         today_str = datetime.date.today().strftime(today_format)
         return _('Stoq - %s of %s') % (self.app_name, today_str)
-
-    def _colorize(self, column_data):
-        return column_data < 0
 
     def _sync(self, *args):
         rollback_and_begin(self.conn)
@@ -159,7 +157,7 @@ class TillOperationDialog(SlaveDelegate):
                 Column('description', _('Description'), data_type=str,
                        expand=True),
                 ColoredColumn('value', _('Value'), data_type=currency,
-                              color='red', data_func=self._colorize,
+                              color='red', data_func=payment_value_colorize,
                               width=120)]
 
     def _reverse_selection(self):
