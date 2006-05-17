@@ -89,5 +89,18 @@ class UserProfileError(Exception):
 class LoginError(Exception):
     """Raise when an username or password is invalid"""
 
+
 class SQLError(Exception):
     """Bad syntax for sql scripts"""
+
+
+class GiftCertificateError(Exception):
+    """Errors for gift certificates"""
+
+
+class SellableError(Exception):
+    """Errors for sellables"""
+
+
+class StoqlibError(Exception):
+    """General Error for stoqlib domain classes and dialogs"""
