@@ -135,13 +135,10 @@ class NewOrderEditor(BaseEditor):
         run_dialog(ClientDetailsDialog, self, self.conn, self.model.client)
 
     def on_client_button__clicked(self, *args):
+        self.conn.commit()
         client = run_person_role_dialog(ClientEditor, self, self.conn,
                                         self.model.client)
         if client:
-            self.conn.commit()
-            # FIXME waiting for entry completion bug fix in kiwi. This part
-            # doesn't work properly when editing a client previously set in
-            # POS interface
             self._setup_client_entry()
             self.model.client = client
             self.proxy.update('client')
