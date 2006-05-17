@@ -31,7 +31,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.python import Settable
-from kiwi.ui.objectlist import Column
+from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
@@ -42,6 +42,7 @@ from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import payment_value_colorize
 
 
 _ = stoqlib_gettext
@@ -55,7 +56,7 @@ class ClientDetailsDialog(BaseEditor):
     """
     title = _("Client Details")
     hide_footer = True
-    size = (700, 400)
+    size = (780, 400)
     model_type = PersonAdaptToClient
     gladefile = "ClientDetailsDialog"
     proxy_widgets = ('client',
@@ -114,9 +115,9 @@ class ClientDetailsDialog(BaseEditor):
         self.sales_vbox.pack_start(sales_summary_label, False)
 
     def _get_sale_columns(self):
-        return [Column("order_number", title=_("Order Number"),
+        return [Column("order_number", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       width=145, sorted=True),
+                       format='%04d', width=90, sorted=True),
                 Column("open_date", title=_("Date"), data_type=date,
                        justify=gtk.JUSTIFY_RIGHT, width=80),
                 Column("salesperson_name", title=_("Salesperson"),
@@ -128,7 +129,8 @@ class ClientDetailsDialog(BaseEditor):
 
     def _get_product_columns(self):
         return [Column("code", title=_("Code"), data_type=int,
-                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                       format='%04d', justify=gtk.JUSTIFY_RIGHT,
+                       width=90, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
                 Column("total_qty", title=_("Total Quantity"),
@@ -148,16 +150,20 @@ class ClientDetailsDialog(BaseEditor):
     def _get_payments_columns(self):
         return [Column("identifier", title=_("#"),
                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d', width=80, sorted=True),
-                Column("method.description", title=_("Payment Method"),
-                       data_type=str, searchable=True, expand=True),
+                       format='%04d', width=50),
+                Column("method.description", title=_("Type"),
+                       data_type=str, width=90),
+                Column("description", title=_("Description"),
+                       data_type=str, searchable=True, width=190),
                 Column("due_date", title=_("Due Date"), width=90,
-                       data_type=date),
+                       data_type=date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
-                Column("value", title=_("Value"), justify=gtk.JUSTIFY_RIGHT,
-                       data_type=currency, width=100),
-                Column("days_late", title=_("Days Late"), width=105,
+                ColoredColumn("value", title=_("Value"),
+                              justify=gtk.JUSTIFY_RIGHT, data_type=currency,
+                              color='red', width=100,
+                              data_func=payment_value_colorize),
+                Column("days_late", title=_("Days Late"), width=80,
                        format_func=(lambda days_late: days_late and
                                     str(days_late) or u""),
                        justify=gtk.JUSTIFY_RIGHT, data_type=str)]
