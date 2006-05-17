@@ -29,12 +29,12 @@ import decimal
 
 from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
+from kiwi.python import Settable
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.database import finish_transaction
 from stoqlib.domain.sellable import (SellableCategory, AbstractSellable,
                                      SellableUnit)
 from stoqlib.domain.interfaces import ISellable, IStorable
@@ -158,21 +158,23 @@ class SellableEditor(BaseEditor):
     product_widgets = ('notes',)
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
+    barcode_widgets = 'barcode',
     sellable_widgets = ('code',
-                        'barcode',
                         'description',
                         'category_combo',
                         'cost',
                         'price')
+    proxy_widgets = (product_widgets + sellable_unit_widgets +
+                     sellable_widgets + barcode_widgets)
 
     storable_widgets = ('stock_total_lbl',)
 
     def __init__(self, conn, model=None):
         self._sellable = None
         BaseEditor.__init__(self, conn, model)
+        self._original_barcode = self._sellable.barcode
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
-        self._original_barcode = self.sellable_proxy.model.barcode
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
@@ -255,6 +257,11 @@ class SellableEditor(BaseEditor):
         self.main_proxy = self.add_proxy(self.model,
                                          SellableEditor.product_widgets)
         self._sellable = ISellable(self.model, connection=self.conn)
+
+        barcode = self._sellable.barcode
+        self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
+                                            SellableEditor.barcode_widgets)
+
         self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
         storable = IStorable(self.model, connection=self.conn)
@@ -282,20 +289,15 @@ class SellableEditor(BaseEditor):
         self.edit_sale_price()
 
     def validate_confirm(self, *args):
-        barcode = self.barcode.get_text()
-        confirmed = True
-        if barcode and barcode != self._original_barcode:
-            conn = new_transaction()
-            qty = AbstractSellable.selectBy(barcode=barcode, connection=conn).count()
-            if qty:
-                msg = _('This barcode already exists!')
+        barcode = self.barcode_proxy.model.barcode
+        if barcode != self._original_barcode:
+            if AbstractSellable.check_barcode_exists(barcode):
+                msg = _('The barcode %s already exists' % barcode)
                 self.barcode.set_invalid(msg)
-                confirmed = False
-            finish_transaction(conn)
-        if confirmed:
-            self.ensure_sellable_unit()
-        return confirmed
-
+                return False
+            self._sellable.barcode = barcode
+        self.ensure_sellable_unit()
+        return True
 
 class SellableItemEditor(BaseEditor):
     gladefile = 'SellableItemEditor'

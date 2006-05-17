@@ -32,8 +32,9 @@ from sqlobject.sqlbuilder import AND, IN
 from zope.interface import implements
 from kiwi.datatypes import currency
 
+from stoqlib.exceptions import DatabaseInconsistency, SellableError
+from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
@@ -206,6 +207,15 @@ class AbstractSellable(InheritableModelAdapter):
         InheritableModelAdapter._create(self, id, **kw)
 
     #
+    # SQLObject setters
+    #
+
+    def _set_barcode(self, barcode):
+        if AbstractSellable.check_barcode_exists(barcode):
+            raise SellableError("The barcode %s alread exists" % barcode)
+        self._SO_set_barcode(barcode)
+
+    #
     # IContainer methods
     #
 
@@ -313,6 +323,19 @@ class AbstractSellable(InheritableModelAdapter):
     #
     # Classmethods
     #
+
+    @classmethod
+    def check_barcode_exists(cls, barcode):
+        """Returns True if we already have a sellable with the given barcode
+        in the database.
+        """
+        if not barcode:
+            return False
+        conn = get_connection()
+        # XXX Do not use cls instead of AbstractSellable here since SQLObject can deal
+        # properly with queries in inherited tables in this case
+        results = AbstractSellable.selectBy(barcode=barcode, connection=conn)
+        return results.count()
 
     @classmethod
     def get_available_sellables_query(cls, conn):
