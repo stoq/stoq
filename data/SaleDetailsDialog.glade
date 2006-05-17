@@ -199,7 +199,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="discount">
+                                            <widget class="GtkLabel" id="label8">
                                                 <property name="label" context="yes" translatable="yes">Discount:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -245,7 +245,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="surcharge">
+                                            <widget class="GtkLabel" id="label7">
                                                 <property name="label" context="yes" translatable="yes">Surcharge:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -282,8 +282,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="subtotal">
-                                                <property name="data_type">bool</property>
+                                            <widget class="GtkLabel" id="label4">
                                                 <property name="label" context="yes" translatable="yes">Subtotal:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -296,8 +295,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="ProxyLabel" id="total">
-                                                <property name="data_type">bool</property>
+                                            <widget class="GtkLabel" id="label3">
                                                 <property name="label" context="yes" translatable="yes">Total:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>

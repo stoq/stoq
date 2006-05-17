@@ -28,10 +28,13 @@
 
 import datetime
 
+import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
@@ -57,38 +60,53 @@ class SaleDetailsDialog(BaseEditor):
                      'surcharge_lbl',
                      'discount_lbl')
 
+    def _setup_columns(self):
+        self.items_list.set_columns(self._get_items_columns())
+        self.payments_list.set_columns(self._get_payments_columns())
+
+    def _setup_summary_labels(self):
+        value_format = '<b>%s</b>'
+        total_text = '<b>%s</b>' % _(u"Total:")
+        summary_label = SummaryLabel(klist=self.payments_list,
+                                     column='value',
+                                     label=total_text,
+                                     value_format=value_format)
+        summary_label.show()
+        self.payments_vbox.pack_start(summary_label, False)
+
     def _setup_widgets(self):
         if not self.model.client_id:
             self.details_button.set_sensitive(False)
-        self.items_list.set_columns(self._get_items_columns())
-        self.payments_list.set_columns(self._get_payments_columns())
+        self._setup_columns()
 
         sale = Sale.get(self.model.id, connection=self.conn)
         self.items_list.add_list(sale.get_items())
         group = IPaymentGroup(sale, connection=self.conn)
+        if not group:
+            raise DatabaseInconsistency("Sale order must have a payment "
+                                        "group set at this point")
         self.payments_list.add_list(group.get_items())
-
-        value_format = '<b>%s</b>'
-        payments_summary_label = SummaryLabel(klist=self.payments_list,
-                                              column='value',
-                                              label='<b>Total:</b>',
-                                              value_format=value_format)
-        payments_summary_label.show()
-        self.payments_vbox.pack_start(payments_summary_label, False)
+        self._setup_summary_labels()
 
     def _get_payments_columns(self):
         return [Column('identifier', "#", data_type=int, width=50,
-                       format='%04d'),
-                Column('method.description', _("Method of Payment"),
-                       expand=True, data_type=str, width=200),
+                       format='%04d', justify=gtk.JUSTIFY_RIGHT),
+                Column('method.description', _("Type"),
+                       data_type=str, width=90),
+                Column('description', _("Description"), data_type=str,
+                       width=190),
                 Column('due_date', _("Due Date"), sorted=True,
-                       data_type=datetime.date, width=120),
-                Column('status_str', _("Status"), data_type=str, width=100),
-                Column('value', _("Value"), data_type=currency, width=100)]
+                       data_type=datetime.date, width=90,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column('status_str', _("Status"), data_type=str, width=80),
+                ColoredColumn('value', _("Value"), data_type=currency,
+                              width=90, color='red',
+                              justify=gtk.JUSTIFY_RIGHT,
+                              data_func=payment_value_colorize)]
 
     def _get_items_columns(self):
         return [Column('sellable.code', _("Code"), sorted=True,
-                       data_type=str, width=80),
+                       data_type=int, width=80, format='%04d'),
                 Column('sellable.base_sellable_info.description',
                        _("Description"), data_type=str, expand=True,
                        width=200),
