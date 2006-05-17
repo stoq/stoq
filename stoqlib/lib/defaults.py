@@ -83,7 +83,7 @@ def calculate_interval(interval_type, intervals):
     return interval_values[interval_type] * intervals
 
 #
-# Payment Methods
+# Payments
 #
 
 (METHOD_MONEY,
@@ -112,6 +112,11 @@ def get_all_methods_dict():
             METHOD_FINANCE: IFinancePM,
             METHOD_MULTIPLE: IMultiplePM}
 
+def payment_value_colorize(column_data):
+    """A helper method for payment value columns used to set different
+    colors for negative values
+    """
+    return column_data < 0
 
 #
 # Fiscal constants
