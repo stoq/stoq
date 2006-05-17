@@ -49,6 +49,7 @@ from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
 from stoqlib.domain.payment.methods import get_active_pm_ifaces
 from stoqlib.domain.person import Person
 from stoqlib.domain.sale import Sale
+from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             get_volatile_gift_certificate)
 from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
@@ -281,8 +282,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     def refresh_next(self, validation_value):
         if (self.certificate_check.get_active()
             and not self.model.number):
-            self.wizard.disable_next()
-            return
+            validation_value = False
         self.wizard.refresh_next(validation_value)
 
     #
@@ -303,6 +303,10 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
 
     def validate_step(self):
         number = self.model.number
+        if AbstractSellable.check_barcode_exists(number):
+            msg = _(u"The barcode %s already exists" % number)
+            self.certificate_number.set_invalid(msg)
+            return False
         if self.group.renegotiation_data is not None:
             cert_adapter = self.group.get_renegotiation_adapter()
             if IRenegotiationGiftCertificate.providedBy(cert_adapter):
@@ -320,8 +324,8 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
         return False
 
     def post_init(self):
-        self.certificate_number.grab_focus()
         self._update_widgets()
+        self.certificate_number.grab_focus()
 
     #
     # Callbacks
@@ -353,8 +357,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.sale_total = self.sale.get_total_sale_amount()
         self.group = wizard.get_payment_group()
         WizardEditorStep.__init__(self, conn, wizard, previous=previous)
-        self.register_validate_function(self.wizard.refresh_next)
-        self._update_total()
 
     def _setup_widgets(self):
         self.header_label.set_size('large')
@@ -437,6 +439,8 @@ class GiftCertificateSelectionStep(WizardEditorStep):
                                                  overpaid_value)
 
     def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self._update_total()
         self.certificate_number.grab_focus()
 
     #
