@@ -177,6 +177,21 @@ CREATE VIEW abstract_sales_client_view AS
       ON (person_adapt_to_client.original_id = person.id);
 
 
+select drop_existing_view('abstract_product_item_view');
+CREATE VIEW abstract_product_item_view AS
+  --
+  -- Stores information about abstract_sellable_item objects
+  --
+  -- Available fields are:
+  --     sale_id            - the id of the sale table
+  --     quantity           - the quantity sold for a sellable item
+  --     subtotal           - the subtotal for a sellable item
+  --
+  SELECT
+  sale_id, quantity, quantity * price as subtotal
+    FROM abstract_sellable_item;
+
+
 select drop_existing_view('abstract_sales_product_view');
 CREATE VIEW abstract_sales_product_view AS
   --
@@ -190,10 +205,11 @@ CREATE VIEW abstract_sales_product_view AS
   --                          and charge
   --
   SELECT
-  sum(quantity) as total_quantity, sum(price) as subtotal,
-  sum(price) * sum(quantity) - sale.discount_value + sale.charge_value as total,
+  sum(quantity) as total_quantity,
+  sum(subtotal) as subtotal,
+  sum(subtotal) - sale.discount_value + sale.charge_value as total,
   sale_id
-    FROM abstract_sellable_item, sale
+    FROM abstract_product_item_view, sale
       GROUP BY
         sale_id, sale.discount_value, sale.charge_value, sale.id
           HAVING
