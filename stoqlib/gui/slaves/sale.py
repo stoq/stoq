@@ -33,10 +33,13 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.domain.sale import SaleView
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.database import finish_transaction
+from stoqlib.exceptions import StoqlibError
 from stoqlib.reporting.sale import SalesReport
 
 _ = stoqlib_gettext
@@ -175,6 +178,16 @@ class SaleListToolbar(SlaveDelegate):
     def hide_edit_button(self):
         self.edit_button.hide()
 
+    def _lookup_sale_order(self, object):
+        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            return object[0]
+        return object
+
+    def _get_selected(self):
+        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
+            return self.klist.get_selected_rows()
+        return self.klist.get_selected()
+
     def _update_print_button(self, klist, enabled):
         self.print_button.set_sensitive(enabled)
 
@@ -195,12 +208,16 @@ class SaleListToolbar(SlaveDelegate):
     def on_klist_selection_changed(self, widget, sale):
         self._update_buttons(len(sale) == 1)
 
-    def on_klist_double_clicked(self, widget, sale):
+    def on_klist_double_clicked(self, widget, sales):
+        sale = self._lookup_sale_order(sales)
         self._run_details_dialog(sale)
 
     def on_return_sale_button__clicked(self, *args):
-        # TODO: implements this method
-        pass
+        from stoqlib.gui.wizards.salereturn import SaleReturnWizard
+        selected = self._get_selected()
+        sale = self._lookup_sale_order(selected)
+        retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
+        finish_transaction(self.conn, retval, keep_transaction=True)
 
     def on_edit_button__clicked(self, *args):
         # TODO: this method will be implemented on bug #2189
@@ -213,3 +230,97 @@ class SaleListToolbar(SlaveDelegate):
         self.searchbar.print_report(SalesReport,
                                     (self.klist.get_selected_rows()
                                      or self.klist))
+
+
+class SaleReturnSlave(BaseEditorSlave):
+    """A slave for sale return data """
+    gladefile = 'SaleReturnSlave'
+    model_type = Sale
+    sale_widgets = ('order_total',
+                    'cancel_date')
+    renegotiationdata_widgets = ('responsible',
+                                 'reason',
+                                 'invoice_number',
+                                 'return_total',
+                                 'paid_total',
+                                 'penalty_value')
+    salereturn_widgets = ('cancellation_type',
+                          'return_value_desc')
+    proxy_widgets = (renegotiationdata_widgets + salereturn_widgets +
+                     sale_widgets)
+    gsignal('on-penalty-changed', object)
+
+    def __init__(self, conn, model, return_adapter, visual_mode=False):
+        if not isinstance(return_adapter, AbstractRenegotiationAdapter):
+            raise StoqlibError("Invalid Type for return_adapter argument. "
+                               "It should be AbstractRenegotiationAdapter, "
+                               "got %s" % return_adapter.__class__)
+        self._return_adapter = return_adapter
+        self._adapted = self._return_adapter.get_adapted()
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
+
+    def _hide_status_widgets(self):
+        for widget in [self.status_label, self.cancellation_type,
+                       self.cancellation_details_button,
+                       self.return_value_desc, self.cancel_date_label,
+                       self.cancel_date]:
+            widget.hide()
+
+    def _setup_widgets(self):
+        if not self.visual_mode:
+            has_paid_value = self._adapted.paid_total > 0
+            self.penalty_value.set_sensitive(has_paid_value)
+            self._hide_status_widgets()
+
+        if self._adapted.new_order is None:
+            self.new_order_button.hide()
+        else:
+            self.new_order_button.show()
+
+        # TODO to be implemented on bugs 2230 and 2190
+        self.cancellation_details_button.hide()
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_proxies(self):
+        self._setup_widgets()
+
+        widgets = SaleReturnSlave.renegotiationdata_widgets
+        self.adaptable_proxy = self.add_proxy(self._adapted, widgets)
+
+        self.sale_proxy = self.add_proxy(self.model,
+                                         SaleReturnSlave.sale_widgets)
+
+        widgets = SaleReturnSlave.salereturn_widgets
+        self.return_proxy = self.add_proxy(self._return_adapter, widgets)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_penalty_value__validate(self, entry, value):
+        if value < 0 :
+            return ValidationError(_(u"Deduction value can not be "
+                                      "lesser then 0"))
+        if value > self._adapted.paid_total:
+            return ValidationError(_(u"Deduction value can not be greater "
+                                      "then the paid value"))
+
+    def after_penalty_value__changed(self, *args):
+        model = self.adaptable_proxy.model
+        self.emit('on-penalty-changed', model.get_return_total())
+        self.adaptable_proxy.update('return_total')
+
+    def on_cancellation_details_button__clicked(self, *args):
+        # TODO to be implemented on bugs 2230 and 2190
+        pass
+
+    def on_new_order_button__clicked(self, *args):
+        new_order = self._adapted.new_order
+        if not new_order:
+            raise StoqlibError("The renegotiation instance must have a "
+                               "new_order attribute set at this point")
+        sale_view = SaleView.get(new_order.id, connection=self.conn)
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)

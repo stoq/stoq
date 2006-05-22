@@ -156,10 +156,6 @@ class TestParameter:
         param = self.sparam.CONFIRM_SALES_ON_TILL
         assert isinstance(param, int)
 
-    def test_SetPaymentMethodsOnTill(self):
-        param = self.sparam.SET_PAYMENT_METHODS_ON_TILL
-        assert isinstance (param, int)
-
     def test_PurchasePreviewPayment(self):
         param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
         assert isinstance (param, int)

@@ -192,17 +192,6 @@ _parameter_info = {
                                                 'salesperson of an opened '
                                                 'order on sale checkout '
                                                 'dialog')),
-    'SET_PAYMENT_METHODS_ON_TILL': ParameterDetails(_(u'Financial'),
-                                                    _(u'Set Payment Methods on '
-                                                      'Till'),
-                                                    _(u'Do not show payment '
-                                                      'method definitions step '
-                                                      'on SaleWizard through '
-                                                      'POS application if '
-                                                      'CONFIRM_SALES_ON_TILL '
-                                                      'is set. This step will '
-                                                      'only be show on Till '
-                                                      'application.')),
     'USE_PURCHASE_PREVIEW_PAYMENTS': ParameterDetails(_(u'Purchase'),
                                                       _(u'Use Purchase Preview '
                                                         'Payments'),
@@ -249,6 +238,10 @@ _parameter_info = {
                                  _(u'Default CFOP (Fiscal Code of Operations) '
                                     'used when generating fiscal book '
                                     'entries.')),
+    'DEFAULT_RETURN_SALES_CFOP': ParameterDetails(_(u'Sales'),
+                                 _(u'Default Return Sales CFOP'),
+                                 _(u'Default CFOP (Fiscal Code of Operations) '
+                                    'used when returning sale orders ')),
     'DEFAULT_RECEIVING_CFOP': ParameterDetails(_(u'Purchase'),
                                  _(u'Default Receiving CFOP'),
                                  _(u'Default CFOP (Fiscal Code of Operations) '
@@ -319,8 +312,6 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
         ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
                       initial=True),
-        ParameterAttr('SET_PAYMENT_METHODS_ON_TILL', bool,
-                      initial=False),
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),
@@ -332,6 +323,7 @@ class ParameterAccess(ClassInittableObject):
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),
+        ParameterAttr('DEFAULT_RETURN_SALES_CFOP', u'fiscal.CfopData'),
         ParameterAttr('DEFAULT_RECEIVING_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
@@ -465,6 +457,7 @@ class ParameterAccess(ClassInittableObject):
         # When creating new methods for system objects creation add them
         # always here
         self.ensure_default_sales_cfop()
+        self.ensure_default_return_sales_cfop()
         self.ensure_default_receiving_cfop()
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
@@ -614,25 +607,28 @@ class ParameterAccess(ClassInittableObject):
                                           base_sellable_info=sellable_info)
         self._set_schema(key, certificate.id)
 
-    def ensure_default_sales_cfop(self):
+    def _ensure_cfop(self, key, description, code):
         from stoqlib.domain.fiscal import CfopData
-        key = "DEFAULT_SALES_CFOP"
         if self.get_parameter_by_field(key, CfopData):
             return
-        desc = u"Venda de Mercadoria Adquirida"
-        data = CfopData(code=u"5.102", description=desc,
+        data = CfopData(code=code, description=description,
                         connection=self.conn)
         self._set_schema(key, data.id)
 
+    def ensure_default_return_sales_cfop(self):
+        key = "DEFAULT_RETURN_SALES_CFOP"
+        desc = u"Devolucao"
+        self._ensure_cfop(key, desc, u"5.202")
+
+    def ensure_default_sales_cfop(self):
+        key = "DEFAULT_SALES_CFOP"
+        desc = u"Venda de Mercadoria Adquirida"
+        self._ensure_cfop(key, desc, u"5.102")
+
     def ensure_default_receiving_cfop(self):
-        from stoqlib.domain.fiscal import CfopData
         key = "DEFAULT_RECEIVING_CFOP"
-        if self.get_parameter_by_field(key, CfopData):
-            return
         desc = u"Compra para Comercializacao"
-        data = CfopData(code=u"1.102", description=desc,
-                        connection=self.conn)
-        self._set_schema(key, data.id)
+        self._ensure_cfop(key, desc, u"1.102")
 
 
 #

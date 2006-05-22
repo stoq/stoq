@@ -23,18 +23,19 @@
 ##
 """ Domain classes for renegotiation management """
 
-from sqlobject import IntCol, ForeignKey, UnicodeCol
+from sqlobject import ForeignKey, UnicodeCol, IntCol
 from zope.interface import implements
+from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.columns import PriceCol
-from stoqlib.domain.interfaces import (IRenegotiationGiftCertificate,
-                                       ISellable,
-                                       IRenegotiationSaleReturnMoney,
-                                       IRenegotiationOutstandingValue)
-from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.lib.parameters import sysparam
+from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.domain.base import Domain, InheritableModelAdapter
+from stoqlib.domain.columns import PriceCol
+from stoqlib.domain.interfaces import (IRenegotiationReturnSale,
+                                       IDescribable, IPaymentGroup,
+                                       IMoneyPM, IRenegotiationExchange,
+                                       IRenegotiationInstallments)
 
 _ = stoqlib_gettext
 
@@ -44,124 +45,162 @@ _ = stoqlib_gettext
 #
 
 class RenegotiationData(Domain):
-    responsible = ForeignKey('Person')
+    """A base class for sale order renegotiations
+
+    Note: if return_total > 0: the store must return money to customer
+          if return_total < 0: the customer must pay to store this value
+          if return_total = 0: there is no financial transaction tied with
+                               this return operation
+    """
+
     reason = UnicodeCol(default=None)
+    paid_total = PriceCol()
+    invoice_number = IntCol()
+    penalty_value = PriceCol(default=0)
+    responsible = ForeignKey('Person')
+    new_order = ForeignKey("Sale", default=None)
+
+    #
+    # SQLObject setters
+    #
+
+    def _set_paid_total(self, value):
+        if value < 0:
+            raise StoqlibError("The paid value should never be "
+                               "lesser then zero")
+        self._SO_set_paid_total(value)
+
+    #
+    # Accessors
+    #
+
+    def get_return_total(self):
+        total = self.paid_total - self.penalty_value
+        return currency(total)
+
+    def get_new_order_number(self):
+        if not self.new_order:
+            return u""
+        return self.new_order.get_order_number_str()
+
 
 #
 # Adapters
 #
 
-class RenegotiationAdaptToGiftCertificate(ModelAdapter):
-    """This class is used when paying a sale with gift certificate payment
-    method and the total amount of gift certificates is greater them the
-    sale total amount. In this case the overpaid value will be paid through
-    creating a new gift certificate. This class stores information about
-    this new object which will created.
-    """
+class AbstractRenegotiationAdapter(InheritableModelAdapter):
+    implements(IDescribable)
 
-    implements(IRenegotiationGiftCertificate)
+    type_description = None
 
-    (STATUS_PENDING,
-     STATUS_CLOSED) = range(2)
+    def get_description(self):
+        return self.type_description
 
-    new_gift_certificate_number = UnicodeCol()
-    overpaid_value = PriceCol()
-    status = IntCol(default=STATUS_PENDING)
-    payment_group = ForeignKey('AbstractPaymentGroup')
+    def get_return_value_description(self):
+        adapted = self.get_adapted()
+        if not adapted.get_return_total():
+            return u""
+        if adapted.new_order is None:
+            return _(u"Paid by Money")
+        return _(u"Paid on sale order %s"
+                 % adapted.new_order.get_order_number_str())
 
-    def confirm(self):
-        """Confirm the renegotiation and creates the new gift
-        certificate
-        """
-        if self.status != self.STATUS_PENDING:
-            raise ValueError('Invalid status for renegotiation data, '
-                             'it should be pending at this point.'
-                             '\n Got status: %d' % self.status)
+
+class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
+    implements(IRenegotiationReturnSale, IDescribable)
+
+    type_description = _(u"Return Sale")
+
+    def _setup_giftcert_renegotiation(self, sale_order, giftcert_number,
+                                      overpaid_value, reason):
+        from stoqlib.domain.till import get_current_till_operation
+        clone = sale_order.get_clone()
         conn = self.get_connection()
-        cert_type = sysparam(conn).DEFAULT_GIFT_CERTIFICATE_TYPE
-        sellable_info = cert_type.base_sellable_info.clone()
-        sellable_info.price = self.overpaid_value
-        if not sellable_info:
-            raise ValueError('A valid gift certificate type must be '
-                             'provided at this point')
-        certificate = GiftCertificate(connection=conn)
-        cert_number = self.new_gift_certificate_number
-        sellable_cert = certificate.addFacet(ISellable, connection=conn,
-                                             barcode=cert_number,
-                                             base_sellable_info=
-                                             sellable_info)
-        # The new gift certificate which has been created is actually an
-        # item of our sale order
-        sale = self.payment_group.get_adapted()
-        sellable_cert.add_sellable_item(sale)
 
-        sellable_cert.sell()
-        self.status = self.STATUS_CLOSED
+        if not giftcert_number:
+            raise StoqlibError("You should provide a valid gift "
+                               "certificate number at this point")
+        cert = clone.add_custom_gift_certificate(overpaid_value,
+                                                 giftcert_number)
 
-RenegotiationData.registerFacet(RenegotiationAdaptToGiftCertificate,
-                                IRenegotiationGiftCertificate)
+        group = clone.addFacet(IPaymentGroup, connection=conn)
+        base_method = sysparam(conn).BASE_PAYMENT_METHOD
+        adapter = IMoneyPM(base_method, connection=conn)
+        payment = adapter.setup_inpayments(overpaid_value, group)
+        clone.confirm_sale()
 
-
-class RenegotiationAdaptToSaleReturnMoney(ModelAdapter):
-    """This class is used when paying a sale with gift certificate payment
-    method and the total amount of gift certificates is greater them the
-    sale total amount. In this case the overpaid value will be paid by
-    money. This class stores information about the total amount to be paid
-    in money and if the payment was already created or not.
-    """
-
-    implements(IRenegotiationSaleReturnMoney)
-
-    (STATUS_PENDING,
-     STATUS_CLOSED) = range(2)
-
-    overpaid_value = PriceCol()
-    status = IntCol(default=STATUS_PENDING)
-    payment_group = ForeignKey('AbstractPaymentGroup')
-
-    def confirm(self):
-        """Confirm the renegotiation and create the payment."""
-        if self.status != self.STATUS_PENDING:
-            raise ValueError('Invalid status for renegotiation data, '
-                             'it should be pending at this point.'
-                             '\n Got status: %d' % self.status)
-        order_number = self.payment_group.get_adapted().order_number
-        reason = _(u'1/1 Money returned for gift certificate acquittance on '
-                    'sale %04d' % order_number)
-        payment = self.payment_group.create_debit(self.overpaid_value,
-                                                  reason)
+        # The new payment for the new sale has it's value already paid
+        # in the old sale order. So, create a reversal one
+        till = get_current_till_operation(conn)
+        till_group = IPaymentGroup(till, connection=conn)
+        if not till_group:
+            raise DatabaseInconsistency("You should have a IPaymentGroup "
+                                        "facet for the current till at "
+                                        "this point")
+        payment = till_group.create_debit(-overpaid_value, reason)
         payment.pay()
-        self.status = self.STATUS_CLOSED
+        return clone
 
-RenegotiationData.registerFacet(RenegotiationAdaptToSaleReturnMoney,
-                                IRenegotiationSaleReturnMoney)
+    def confirm(self, sale_order, gift_certificate_settings=None):
+        """Confirm the return operation """
+        from stoqlib.domain.sale import GiftCertificateOverpaidSettings
+        adapted = self.get_adapted()
+        if not adapted.get_return_total():
+            # There is no return value and also nothing special to be done
+            sale_order.cancel(self)
+            return
+
+        if not gift_certificate_settings:
+            raise StoqlibError("You must specify informations about how "
+                               "to deal with the return value")
+
+        regtype = gift_certificate_settings.renegotiation_type
+        overpaid_value = gift_certificate_settings.renegotiation_value
+        group = sale_order.check_payment_group()
+        reason = (u'1/1 Money returned for renegotiation of sale %s'
+                  % sale_order.get_order_number_str())
+
+        if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
+            payment = group.create_debit(-overpaid_value, reason)
+            payment.pay()
+
+        elif (regtype ==
+              GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
+            number = gift_certificate_settings.gift_certificate_number
+            clone = self._setup_giftcert_renegotiation(sale_order, number,
+                                                       overpaid_value, reason)
+            adapted.new_order = clone
+
+        else:
+            raise StoqlibError("Invalid renegotiation type, got %s"
+                               % regtype)
+        sale_order.cancel(self)
+
+RenegotiationData.registerFacet(RenegotiationAdaptToReturnSale,
+                                IRenegotiationReturnSale)
 
 
-class RenegotiationAdaptToOutstandingValue(ModelAdapter):
-    """When paying by gift certificate it's possible to have an outstanding
-    value if the sale total is greater than the sum of the gift
-    certificates. In this case the customer must pay the remaining value.
-    This adapter stores information about this process.
-    """
+class RenegotiationAdaptToExchange(AbstractRenegotiationAdapter):
+    implements(IRenegotiationExchange, IDescribable)
 
-    implements(IRenegotiationOutstandingValue)
-
-    (STATUS_PENDING,
-     STATUS_CLOSED) = range(2)
-
-    outstanding_value = PriceCol()
-    status = IntCol(default=STATUS_PENDING)
-    preview_payment_method = IntCol()
-    payment_method = IntCol(default=None)
+    type_description = _("Exchange")
 
     def confirm(self):
-        """Confirm the renegotiation and create the payments """
-        if self.status != self.STATUS_PENDING:
-            raise ValueError('Invalid status for renegotiation data, '
-                             'it should be pending at this point.'
-                             '\n Got status: %d' % self.status)
-        conn = self.get_connection()
-        self.status = self.STATUS_CLOSED
+        """Confirm the exchange operation """
+        # TODO to be implemented on bug 2230
 
-RenegotiationData.registerFacet(RenegotiationAdaptToOutstandingValue,
-                                IRenegotiationOutstandingValue)
+RenegotiationData.registerFacet(RenegotiationAdaptToExchange,
+                                IRenegotiationExchange)
+
+
+class RenegotiationAdaptToChangeInstallments(AbstractRenegotiationAdapter):
+    implements(IRenegotiationInstallments, IDescribable)
+
+    type_description = _("Installments Renegotiation")
+
+    def confirm(self):
+        """Confirm the operation """
+        # TODO to be implemented on bug 2190
+
+RenegotiationData.registerFacet(RenegotiationAdaptToChangeInstallments,
+                                IRenegotiationInstallments)

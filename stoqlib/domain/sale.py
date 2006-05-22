@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -37,28 +37,45 @@ from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import get_current_user
+from stoqlib.exceptions import (SellError, DatabaseInconsistency,
+                                StoqlibError)
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.domain.renegotiation import (RenegotiationData,
+                                          AbstractRenegotiationAdapter)
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellableItem
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.service import ServiceSellableItem
-from stoqlib.domain.renegotiation import RenegotiationData
 from stoqlib.domain.giftcertificate import (GiftCertificateItem,
-                                            GiftCertificateAdaptToSellable)
-from stoqlib.exceptions import SellError, DatabaseInconsistency
+                                            GiftCertificateAdaptToSellable,
+                                            GiftCertificate)
 from stoqlib.domain.interfaces import (IContainer, IClient,
-                                       IPaymentGroup,
-                                       IRenegotiationSaleReturnMoney,
-                                       IRenegotiationGiftCertificate,
-                                       IRenegotiationOutstandingValue,
-                                       IIndividual, ICompany)
+                                       IPaymentGroup, ISellable,
+                                       IIndividual, ICompany,
+                                       IRenegotiationReturnSale)
 
 _ = stoqlib_gettext
 
 #
 # Base Domain Classes
 #
+
+
+class GiftCertificateOverpaidSettings:
+    """Stores general settings for sale orders with gift certificates and
+    when the sum of gift certificate values is greater then the total sale
+    amount
+    """
+
+    (TYPE_RETURN_MONEY,
+     TYPE_GIFT_CERTIFICATE) = range(2)
+
+    renegotiation_type = TYPE_GIFT_CERTIFICATE
+    renegotiation_value = Decimal("0.0")
+    gift_certificate_number = None
+
 
 class Sale(Domain):
     """Sale object implementation.
@@ -115,6 +132,58 @@ class Sale(Domain):
     cfop = ForeignKey("CfopData")
     till = ForeignKey('Till')
     salesperson = ForeignKey('PersonAdaptToSalesPerson')
+    renegotiation_data = ForeignKey("AbstractRenegotiationAdapter",
+                                    default=None)
+
+    def _get_percentage_value(self, percentage):
+        if not percentage:
+            return currency(0)
+        subtotal = self.get_sale_subtotal()
+        percentage = Decimal(str(percentage))
+        perc_value = subtotal * (percentage / Decimal('100.0'))
+        return currency(perc_value)
+
+    def _set_discount_by_percentage(self, value):
+        """Sets a discount by percentage.
+        Note that percentage must be added as an absolute value not as a
+        factor like 1.05 = 5 % of charge
+        The correct form is 'percentage = 3' for a discount of 3 %"""
+        self.discount_value = self._get_percentage_value(value)
+
+    def _get_discount_by_percentage(self):
+        discount_value = self.discount_value
+        if not discount_value:
+            return Decimal('0.0')
+        subtotal = self.get_sale_subtotal()
+        assert subtotal > 0, ('the sale subtotal should not be zero '
+                              'at this point')
+        total = subtotal - discount_value
+        percentage = (1 - total / subtotal) * 100
+        return percentage
+
+    discount_percentage = property(_get_discount_by_percentage,
+                                   _set_discount_by_percentage)
+
+    def _set_charge_by_percentage(self, value):
+        """Sets a charge by percentage.
+        Note that charge must be added as an absolute value not as a
+        factor like 0.97 = 3 % of discount.
+        The correct form is 'percentage = 3' for a charge of 3 %"""
+        self.charge_value = self._get_percentage_value(value)
+
+    def _get_charge_by_percentage(self):
+        charge_value = self.charge_value
+        if not charge_value:
+            return Decimal('0.0')
+        subtotal = self.get_sale_subtotal()
+        assert subtotal > 0, ('the sale subtotal should not be zero '
+                              'at this point')
+        total = subtotal + charge_value
+        percentage = ((total / subtotal) - 1) * 100
+        return percentage
+
+    charge_percentage = property(_get_charge_by_percentage,
+                                 _set_charge_by_percentage)
 
     #
     # SQLObject hooks
@@ -167,8 +236,49 @@ class Sale(Domain):
         return cls.statuses[status]
 
     #
-    # Sale methods
+    # Public API
     #
+
+    @argcheck(Decimal, unicode)
+    def add_custom_gift_certificate(self, certificate_value,
+                                    certificate_number):
+        """This method adds a new custom gift certificate to the current
+        sale order.
+
+        @returns: a GiftCertificateAdaptToSellable instance
+        """
+        conn = self.get_connection()
+        cert_type = sysparam(conn).DEFAULT_GIFT_CERTIFICATE_TYPE
+        sellable_info = cert_type.base_sellable_info.clone()
+        if not sellable_info:
+            raise ValueError('A valid gift certificate type must be '
+                             'provided at this point')
+        sellable_info.price = certificate_value
+        certificate = GiftCertificate(connection=conn)
+        sellable_cert = certificate.addFacet(ISellable, connection=conn,
+                                             barcode=certificate_number,
+                                             base_sellable_info=
+                                             sellable_info)
+        # The new gift certificate which has been created is actually an
+        # item of our sale order
+        sellable_cert.add_sellable_item(self)
+        return sellable_cert
+
+    def get_clone(self):
+        from stoqlib.domain.till import get_current_till_operation
+        conn = self.get_connection()
+        till = get_current_till_operation(conn)
+        return Sale(client_role=self.client_role, client=self.client,
+                    cfop=self.cfop, till=till, coupon_id=None,
+                    salesperson=self.salesperson, connection=conn)
+
+    def check_payment_group(self):
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
+        if not group:
+            raise ValueError("Sale %s doesn't have an IPaymentGroup "
+                             "facet at this point" % self)
+        return group
 
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
@@ -182,58 +292,10 @@ class Sale(Domain):
     def reset_discount_and_charge(self):
         self.discount_value = self.charge_value = currency(0)
 
-    def _get_percentage_value(self, percentage):
-        if not percentage:
-            return currency(0)
-        subtotal = self.get_sale_subtotal()
-        percentage = Decimal(str(percentage))
-        perc_value = subtotal * (percentage / Decimal('100.0'))
-        return currency(perc_value)
-
-    def _set_discount_by_percentage(self, value):
-        """Sets a discount by percentage.
-        Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of charge
-        The correct form is 'percentage = 3' for a discount of 3 %"""
-        self.discount_value = self._get_percentage_value(value)
-
-    def _get_discount_by_percentage(self):
-        discount_value = self.discount_value
-        if not discount_value:
-            return Decimal('0.0')
-        subtotal = self.get_sale_subtotal()
-        assert subtotal > 0, ('the sale subtotal should not be zero '
-                              'at this point')
-        total = subtotal - discount_value
-        percentage = (1 - total / subtotal) * 100
-        return percentage
-
-    discount_percentage = property(_get_discount_by_percentage,
-                                   _set_discount_by_percentage)
-
-    def _set_charge_by_percentage(self, value):
-        """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a
-        factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a charge of 3 %"""
-        self.charge_value = self._get_percentage_value(value)
-
-    def _get_charge_by_percentage(self):
-        charge_value = self.charge_value
-        if not charge_value:
-            return Decimal('0.0')
-        subtotal = self.get_sale_subtotal()
-        assert subtotal > 0, ('the sale subtotal should not be zero '
-                              'at this point')
-        total = subtotal + charge_value
-        percentage = ((total / subtotal) - 1) * 100
-        return percentage
-
-    charge_percentage = property(_get_charge_by_percentage,
-                                 _set_charge_by_percentage)
-
-    def update_items(self):
-        conn = self.get_connection()
+    def sell_items(self):
+        """Update the stock of all products tied with the current
+        sale order
+        """
         branch = self.get_till_branch()
         for item in self.get_items():
             if isinstance(item, ProductSellableItem):
@@ -242,12 +304,55 @@ class Sale(Domain):
                 continue
             item.sell()
 
+    def cancel_items(self):
+        """Restore the stock of all sellable items tied with the current
+        sale order
+        """
+        branch = self.get_till_branch()
+        for item in self.get_items():
+            if isinstance(item, ProductSellableItem):
+                item.cancel(branch)
+                continue
+            item.cancel(branch)
+
     def check_close(self):
+        """Checks if the payment group has all the payments paid and close
+        the group and the sale order
+        """
         conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
+        group = self.check_payment_group()
         if not group.check_close():
             return
         self.close_date = datetime.now()
+
+    def create_sale_return_adapter(self):
+        conn = self.get_connection()
+        user = get_current_user(conn)
+        responsible = user.get_adapted()
+        group = self.check_payment_group()
+        paid_total = group.get_total_paid()
+        reg_data = RenegotiationData(connection=conn,
+                                     paid_total=paid_total,
+                                     invoice_number=None,
+                                     responsible=responsible)
+        return reg_data.addFacet(IRenegotiationReturnSale, connection=conn)
+
+    @argcheck(AbstractRenegotiationAdapter)
+    def cancel(self, renegotiation_adapter):
+        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDER
+        if self.status in rejected:
+            raise StoqlibError("Invalid status for cancel operation, got %s"
+                               % Sale.get_status_name(self.status))
+        self.cancel_items()
+        self.cancel_date = datetime.now()
+        group = self.check_payment_group()
+
+        adapted = renegotiation_adapter.get_adapted()
+        return_invoice_number = adapted.invoice_number
+        group.cancel(return_invoice_number)
+
+        self.renegotiation_data = renegotiation_adapter
+        self.status = self.STATUS_CANCELLED
 
     def validate(self):
         if not self.get_items().count():
@@ -260,23 +365,20 @@ class Sale(Domain):
                             'operation, got status %s instead'
                             % self.get_status_name(self.status))
         conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
-        if not group:
-            raise ValueError("Sale %s doesn't have an IPaymentGroup "
-                             "facet at this point" % self)
+        self.check_payment_group()
         if not self.get_valid():
             self.set_valid()
 
-    def confirm_sale(self):
+    @argcheck(GiftCertificateOverpaidSettings)
+    def confirm_sale(self, gift_certificate_settings=None):
         self.validate()
         conn = self.get_connection()
-        self.update_items()
+        self.sell_items()
         group = IPaymentGroup(self, connection=conn)
-        group.confirm()
+        group.confirm(gift_certificate_settings)
         self.status = self.STATUS_CONFIRMED
         self.confirm_date = datetime.now()
         self.check_close()
-
 
     #
     # Accessors
@@ -348,6 +450,15 @@ class Sale(Domain):
     def get_total_interest(self):
         raise NotImplementedError
 
+    def has_products(self):
+        return len(self.get_products()) > 0
+
+    def has_services(self):
+        return len(self.get_services()) > 0
+
+    def has_gift_certifificates(self):
+        return len(self.get_gift_certificates()) > 0
+
     def get_services(self):
         return [item for item in self.get_items()
                     if isinstance(item, ServiceSellableItem)]
@@ -371,23 +482,12 @@ class Sale(Domain):
         return currency(total)
 
 
-
 #
 # Adapters
 #
 
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
-
-    (RENEGOTIATION_GIFT_CERTIFICATE,
-     RENEGOTIATION_RETURN,
-     RENEGOTIATION_OUTSTANDING) = range(3)
-
-    ifaces = {RENEGOTIATION_GIFT_CERTIFICATE: IRenegotiationGiftCertificate,
-              RENEGOTIATION_RETURN: IRenegotiationSaleReturnMoney,
-              RENEGOTIATION_OUTSTANDING:IRenegotiationOutstandingValue}
-
-    renegotiation_type = IntCol(default=None)
 
     #
     # IPaymentGroup implementation
@@ -403,68 +503,11 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def get_group_description(self):
         sale = self.get_adapted()
-        return _(u'sale %s') % sale.order_number
+        return _(u'sale %s') % sale.get_order_number_str()
 
     #
     # Auxiliar methods
     #
-
-
-    def _get_stored_renegotiation(self, reason=None):
-        if self.renegotiation_data is not None:
-            return ValueError('You already have a renegotiation data '
-                              'defined')
-        sale = self.get_adapted()
-        responsible = sale.salesperson.get_adapted()
-        conn = self.get_connection()
-        reason = reason or _('Overpaid value of sale using gift certificates')
-        reneg_data = RenegotiationData(connection=conn,
-                                       responsible=responsible,
-                                       reason=reason)
-        self.renegotiation_data = reneg_data
-        return reneg_data
-
-    @argcheck(Decimal)
-    def create_renegotiation_return_data(self, overpaid_value):
-        renegotiation = self._get_stored_renegotiation()
-        reneg_type = self.RENEGOTIATION_RETURN
-        self.renegotiation_type = reneg_type
-        conn = self.get_connection()
-        renegotiation.addFacet(IRenegotiationSaleReturnMoney,
-                               connection=conn,
-                               payment_group=self,
-                               overpaid_value=overpaid_value)
-
-    @argcheck(unicode, Decimal)
-    def create_renegotiation_giftcertificate_data(self, certificate_number,
-                                                  overpaid_value):
-        if not certificate_number:
-            raise ValueError('You must provide a valid certificate number')
-        table = type(self)
-        reneg_type = table.RENEGOTIATION_GIFT_CERTIFICATE
-        self.renegotiation_type = reneg_type
-        conn = self.get_connection()
-        number = certificate_number
-        renegotiation = self._get_stored_renegotiation()
-        renegotiation.addFacet(IRenegotiationGiftCertificate,
-                               connection=conn,
-                               payment_group=self,
-                               new_gift_certificate_number=number,
-                               overpaid_value=overpaid_value)
-
-    @argcheck(Decimal, int)
-    def create_renegotiation_outstanding_data(self, outstanding_value,
-                                              preview_payment_method):
-        reneg_type = self.RENEGOTIATION_OUTSTANDING
-        self.renegotiation_type = reneg_type
-        conn = self.get_connection()
-        reason = _('Outstanding value of sale using gift certificates')
-        renegotiation = self._get_stored_renegotiation(reason)
-        renegotiation.addFacet(IRenegotiationOutstandingValue,
-                               connection=conn,
-                               preview_payment_method=preview_payment_method,
-                               payment_method=preview_payment_method,
-                               outstanding_value=outstanding_value)
 
     def get_gift_certificates(self):
         conn = self.get_connection()
@@ -479,24 +522,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             return
         for item in self.get_gift_certificates():
             item.apply_as_payment_method()
-
-    def get_renegotiation_adapter(self):
-        if self.renegotiation_type is None:
-            raise ValueError('You should have a renegotiation_type defined '
-                             'at this point')
-        if self.renegotiation_type not in self.ifaces.keys():
-            raise ValueError('Invalid renegotiation_type, got %d'
-                             % self.renegotiation_type)
-        iface = self.ifaces[self.renegotiation_type]
-        conn = self.get_connection()
-        return iface(self.renegotiation_data, connection=conn)
-
-    def setup_inpayments(self):
-        reneg_type = self.RENEGOTIATION_OUTSTANDING
-        if (self.default_method == METHOD_GIFT_CERTIFICATE
-            and not self.renegotiation_type == reneg_type):
-            return
-        AbstractPaymentGroup.setup_inpayments(self)
 
     def get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
@@ -581,38 +606,68 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         subtotal = sale.get_sale_subtotal()
         av_difference = (total - subtotal) / total_quantity
 
-        icms_total = self._get_icms_total(av_difference)
-        self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id, icms_total)
+        if sale.has_products():
+            icms_total = self._get_icms_total(av_difference)
+            self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id,
+                                           icms_total)
+        elif sale.has_services():
+            iss_total = self._get_iss_total(av_difference)
+            self.create_iss_book_entry(sale.cfop, sale.coupon_id,
+                                       iss_total)
+        elif not sale.has_gift_certifificates():
+            raise DatabaseInconsistency("Sale orders must have items, which "
+                                        "means products or services or gift "
+                                        "certificates")
 
-        iss_total = self._get_iss_total(av_difference)
-        self.create_iss_book_entry(sale.cfop, sale.coupon_id, iss_total)
+    @argcheck(GiftCertificateOverpaidSettings)
+    def _setup_gift_certificate_overpaid_value(self,
+                                               gift_certificate_settings):
+        regtype = gift_certificate_settings.renegotiation_type
+        overpaid_value = gift_certificate_settings.renegotiation_value
+        number = gift_certificate_settings.gift_certificate_number
 
-    def confirm(self):
+        order = self.get_adapted()
+        if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
+            order_number = order.order_number
+            reason = _(u'1/1 Money returned for gift certificate '
+                        'acquittance on sale %04d' % order_number)
+            payment = self.create_debit(overpaid_value, reason)
+            payment.pay()
+
+        elif (regtype ==
+              GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
+            sellable_cert = order.add_custom_gift_certificate(overpaid_value,
+                                                              number)
+            sellable_cert.sell()
+
+        else:
+            raise StoqlibError("Invalid type for "
+                               "GiftCertificateOverpaidSettings instance "
+                               "got %s" % regtype)
+
+    @argcheck(GiftCertificateOverpaidSettings)
+    def confirm(self, gift_certificate_settings=None):
         """Validate the current payment group, create payments and setup the
         associated gift certificates properly.
         """
-        self.setup_inpayments()
+        has_overpaid = gift_certificate_settings is not None
+        if not has_overpaid:
+            self.setup_inpayments()
+            self.confirm_money_payments()
         self.confirm_gift_certificates()
         self._create_fiscal_entries()
-        if self.renegotiation_type is None:
+        if gift_certificate_settings is None:
             return
         # Here we have the payment method set as gift certificate but there
-        # is an outstanding or overpaid values to deal with.
-        adapter = self.get_renegotiation_adapter()
-        adapter.confirm()
+        # is an overpaid value to deal with.
+        self._setup_gift_certificate_overpaid_value(gift_certificate_settings)
 
     #
     # AbstractPaymentGroup hooks
     #
 
     def get_default_payment_method(self):
-        if self.renegotiation_data is None:
-            return self.default_method
-        adapter = self.get_renegotiation_adapter()
-        if IRenegotiationOutstandingValue.providedBy(adapter):
-            return adapter.payment_method
-        else:
-            return self.default_method
+        return self.default_method
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
 
@@ -642,6 +697,9 @@ class SaleView(SQLObject, BaseSQLView):
 
     def get_client_name(self):
         return self.client_name or u""
+
+    def get_order_number_str(self):
+        return u"%05d" % self.order_number
 
     def get_open_date_as_string(self):
         return self.open_date.strftime("%x")

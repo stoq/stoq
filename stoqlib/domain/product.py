@@ -31,7 +31,8 @@ from zope.interface import implements
 from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import StockError, SellError, DatabaseInconsistency
+from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
+                                StoqlibError)
 from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
@@ -187,9 +188,8 @@ class ProductSellableItem(AbstractSellableItem):
             raise SellError(msg)
 
         if order_product:
-            # If order_product is True we will not update the stock for this
-            # product
-            return
+            # TODO waiting for bug 2469
+            raise StoqlibError("Order products is not a valid feature yet")
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted, connection=conn)
         # Update the stock
@@ -202,6 +202,13 @@ class ProductSellableItem(AbstractSellableItem):
         balance = storable.get_full_balance() - logic_qty
         if not balance:
             self.sellable.sell()
+
+    def cancel(self, branch):
+        conn = self.get_connection()
+        adapted = self.sellable.get_adapted()
+        storable = IStorable(adapted, connection=conn)
+        # Update the stock
+        storable.increase_stock(self.quantity, branch)
 
     #
     # General methods

@@ -32,7 +32,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.editors import BaseEditor
@@ -48,7 +48,7 @@ _ = stoqlib_gettext
 class SaleDetailsDialog(BaseEditor):
     gladefile = "SaleDetailsDialog"
     model_type = SaleView
-    title = _("Sale Details")
+    title = _(u"Sale Details")
     size = (650, 460)
     hide_footer = True
     proxy_widgets = ('status_lbl',
@@ -56,6 +56,7 @@ class SaleDetailsDialog(BaseEditor):
                      'salesperson_lbl',
                      'open_date_lbl',
                      'total_lbl',
+                     'order_number',
                      'subtotal_lbl',
                      'surcharge_lbl',
                      'discount_lbl')
@@ -79,9 +80,15 @@ class SaleDetailsDialog(BaseEditor):
             self.details_button.set_sensitive(False)
         self._setup_columns()
 
-        sale = Sale.get(self.model.id, connection=self.conn)
-        self.items_list.add_list(sale.get_items())
-        group = IPaymentGroup(sale, connection=self.conn)
+        self.sale_order = Sale.get(self.model.id, connection=self.conn)
+
+        if self.sale_order.status == Sale.STATUS_CANCELLED:
+            self.cancel_details_button.show()
+        else:
+            self.cancel_details_button.hide()
+
+        self.items_list.add_list(self.sale_order.get_items())
+        group = IPaymentGroup(self.sale_order, connection=self.conn)
         if not group:
             raise DatabaseInconsistency("Sale order must have a payment "
                                         "group set at this point")
@@ -115,18 +122,43 @@ class SaleDetailsDialog(BaseEditor):
                 Column('total', _("Total"), data_type=currency, width=100)]
 
     #
-    # Kiwi handlers
-    #
-
-    def on_details_button__clicked(self, *args):
-        client = PersonAdaptToClient.get(self.model.client_id,
-                                         connection=self.conn)
-        run_dialog(ClientDetailsDialog, self, self.conn, client)
-
-    #
     # BaseEditor hooks
     #
 
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, SaleDetailsDialog.proxy_widgets)
+
+    #
+    # Kiwi handlers
+    #
+
+    def on_details_button__clicked(self, *args):
+        if not self.model.client_id:
+            raise StoqlibError("You should never call ClientDetailsDialog "
+                               "for sales which clients were not specified")
+        client = PersonAdaptToClient.get(self.model.client_id,
+                                         connection=self.conn)
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
+
+    def on_cancel_details_button__clicked(self, *args):
+        run_dialog(SaleCancellationDetailsDialog, self, self.conn,
+                   self.sale_order)
+
+
+class SaleCancellationDetailsDialog(BaseEditor):
+    gladefile = "HolderTemplate"
+    model_type = Sale
+    title = _(u"Sale Cancellation Details")
+    size = (650, 350)
+    hide_footer = True
+
+    def setup_slaves(self):
+        from stoqlib.gui.slaves.sale import SaleReturnSlave
+        if self.model.status != Sale.STATUS_CANCELLED:
+            raise StoqlibError("Invalid status for sale order, it should be "
+                               "cancelled")
+        adapter = self.model.renegotiation_data
+        self.slave = SaleReturnSlave(self.conn, self.model, adapter,
+                                     visual_mode=True)
+        self.attach_slave("place_holder", self.slave)

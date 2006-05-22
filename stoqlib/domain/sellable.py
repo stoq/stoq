@@ -132,8 +132,10 @@ class AbstractSellableItem(InheritableModel):
         InheritableModel._create(self, id, **kw)
 
     def sell(self):
-        conn = self.get_connection()
         self.sellable.sell()
+
+    def cancel(self):
+        self.sellable.cancel()
 
     #
     # Accessors
@@ -263,6 +265,12 @@ class AbstractSellable(InheritableModelAdapter):
             raise ValueError('This sellable is not available '
                              'to be sold')
         self.status = self.STATUS_SOLD
+
+    def cancel(self):
+        if self.can_be_sold():
+            raise ValueError('This sellable is already available '
+                             'to be sold')
+        self.status = self.STATUS_AVAILABLE
 
     def get_price(self):
         if self.on_sale_info.on_sale_price:
