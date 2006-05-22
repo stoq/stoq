@@ -173,9 +173,9 @@ class PaymentMethodDetails(InheritableModel):
         group_desc = payment_group.get_group_description()
         for number in range(installments_number):
             due_date = self.calculate_payment_duedate(due_date)
-            description = _(u'%s/%s %s for %s') % (self.description,
-                                                   number + 1,
+            description = _(u'%s/%s %s for %s') % (number + 1,
                                                    installments_number,
+                                                   self.description,
                                                    group_desc)
             payment = self.create_inpayment(payment_group, due_date,
                                             payment_value, method,
@@ -478,6 +478,7 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         payment = self._get_new_payment(total, group, installments_number)
         conn = self.get_connection()
         payment.addFacet(IInPayment, connection=conn)
+        return payment
 
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 
@@ -640,9 +641,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         group_desc = payment_group.get_group_description()
         for i in range(installments_number):
             due_date = first_duedate + timedelta((i * calc_interval))
-            description = _(u'%s/%s %s for %s') % (self.description,
-                                                   i + 1,
+            description = _(u'%s/%s %s for %s') % (i + 1,
                                                    installments_number,
+                                                   self.description,
                                                    group_desc)
             payment = self.add_payment(payment_group, due_date, value,
                                        description=description,
