@@ -106,15 +106,22 @@ def print_msg(message, break_line=True):
     print_immediately(message, break_line)
 
 
-def get_current_user():
+def get_current_user(conn):
+    """Returns a PersonAdaptToUser instance which represents the current
+    logged user on the system
+    """
+    from stoqlib.domain.person import Person
+    from stoqlib.domain.interfaces import IUser
     global _current_user
-    return _current_user
+    return Person.iget(IUser, _current_user.id, connection=conn)
 
 
 def set_current_user(user):
+    """Sets a PersonAdaptToUser instance which represents the current
+    logged user on the system
+    """
     global _current_user
     assert user
-    # Here we store a PersonAdaptToUser object.
     _current_user = user
 
 

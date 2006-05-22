@@ -42,12 +42,11 @@ from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
-from stoqlib.domain.interfaces import IUser, ISellable
+from stoqlib.domain.interfaces import ISellable
 
 _ = stoqlib_gettext
 
@@ -250,8 +249,7 @@ class ReceivingOrderWizard(BaseWizard):
         BaseWizard.__init__(self, conn, first_step, model)
 
     def _create_model(self, conn):
-        current_user = get_current_user()
-        current_user = Person.iget(IUser, current_user.id, connection=conn)
+        current_user = get_current_user(conn)
         branch = sysparam(conn).CURRENT_BRANCH
         cfop = sysparam(conn).DEFAULT_RECEIVING_CFOP
         return ReceivingOrder(responsible=current_user, supplier=None,
