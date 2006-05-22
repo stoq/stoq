@@ -90,8 +90,7 @@ select create_stoqlib_sequence('stoqlib_sale_ordernumber_seq');
 select create_stoqlib_sequence('stoqlib_purchase_ordernumber_seq');
 select create_stoqlib_sequence('stoqlib_sellable_code_seq');
 select create_stoqlib_sequence('stoqlib_purchasereceiving_number_seq');
-select create_stoqlib_sequence('stoqlib_icmsbook_identifier_seq');
-select create_stoqlib_sequence('stoqlib_issbook_identifier_seq');
+select create_stoqlib_sequence('stoqlib_abstract_bookentry_seq');
 
 
 --
@@ -607,33 +606,39 @@ CREATE VIEW icms_ipi_view AS
   --    ipi_value           - the total value of ipi
   --    date                - the date when the entry was created
   --    invoice_number      - the invoice number
-  --    invoice_data_id     - the id of the invoice_info table
   --    cfop_data_id        - the if of the cfop_data table
   --    cfop_code           - the code of the cfop
   --    drawee_name         - the drawee name
+  --    drawee_id           - the if of Person table
   --    branch_id           - the id of the person_adapt_to_branch table
-  --    payment_group_id    - the if of the abstract_payment_group table
+  --    payment_group_id    - the id of the abstract_payment_group table
   --
   SELECT DISTINCT
-  icms_ipi_book_entry.id, icms_ipi_book_entry.identifier,
-  icms_ipi_book_entry.icms_value, icms_ipi_book_entry.ipi_value,
-  invoice_info.date, invoice_info.invoice_number,
-  invoice_info.id as invoice_data_id,
-  invoice_info.cfop_id as cfop_data_id,
-  cfop_data.code as cfop_code, person.name as drawee_name,
-  invoice_info.branch_id, invoice_info.payment_group_id
+  icms_ipi_book_entry.id,
+  icms_ipi_book_entry.icms_value,
+  icms_ipi_book_entry.ipi_value,
+
+  abstract_fiscal_book_entry.identifier,
+  abstract_fiscal_book_entry.date,
+  abstract_fiscal_book_entry.invoice_number,
+  abstract_fiscal_book_entry.cfop_id as cfop_data_id,
+  abstract_fiscal_book_entry.branch_id,
+  abstract_fiscal_book_entry.drawee_id,
+  abstract_fiscal_book_entry.payment_group_id,
+
+  cfop_data.code as cfop_code,
+  person.name as drawee_name
+
     FROM icms_ipi_book_entry
 
-      INNER JOIN invoice_info
-      ON (invoice_info.id = icms_ipi_book_entry.invoice_data_id)
+      INNER JOIN abstract_fiscal_book_entry
+      ON (icms_ipi_book_entry.id = abstract_fiscal_book_entry.id)
 
       INNER JOIN cfop_data
-      ON (cfop_data.id = invoice_info.cfop_id)
+      ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
 
       INNER JOIN person
-      ON (invoice_info.drawee_id = person.id)
-
-        WHERE icms_ipi_book_entry.is_valid_model = 't';
+      ON (abstract_fiscal_book_entry.drawee_id = person.id);
 
 
 select drop_existing_view('iss_view');
@@ -646,7 +651,6 @@ CREATE VIEW iss_view AS
   --    iss_value           - the total value of iss
   --    date                - the date when the entry was created
   --    invoice_number      - the invoice number
-  --    invoice_data_id     - the id of the invoice_info table
   --    cfop_data_id        - the if of the cfop_data table
   --    cfop_code           - the code of the cfop
   --    drawee_name         - the drawee name
@@ -654,21 +658,27 @@ CREATE VIEW iss_view AS
   --    payment_group_id    - the if of the abstract_payment_group table
   --
   SELECT DISTINCT
-  iss_book_entry.id, iss_book_entry.identifier,
-  iss_book_entry.iss_value, invoice_info.date, invoice_info.invoice_number,
-  invoice_info.id as invoice_data_id,
-  invoice_info.cfop_id as cfop_data_id,
-  cfop_data.code as cfop_code, person.name as drawee_name,
-  invoice_info.branch_id, invoice_info.payment_group_id
+  iss_book_entry.id,
+  iss_book_entry.iss_value,
+
+  abstract_fiscal_book_entry.identifier,
+  abstract_fiscal_book_entry.date,
+  abstract_fiscal_book_entry.invoice_number,
+  abstract_fiscal_book_entry.cfop_id as cfop_data_id,
+  abstract_fiscal_book_entry.branch_id,
+  abstract_fiscal_book_entry.drawee_id,
+  abstract_fiscal_book_entry.payment_group_id,
+
+  cfop_data.code as cfop_code,
+  person.name as drawee_name
+
     FROM iss_book_entry
 
-      INNER JOIN invoice_info
-      ON (invoice_info.id = iss_book_entry.invoice_data_id)
+      INNER JOIN abstract_fiscal_book_entry
+      ON (iss_book_entry.id = abstract_fiscal_book_entry.id)
 
       INNER JOIN cfop_data
-      ON (cfop_data.id = invoice_info.cfop_id)
+      ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
 
       INNER JOIN person
-      ON (invoice_info.drawee_id = person.id)
-
-        WHERE iss_book_entry.is_valid_model = 't';
+      ON (abstract_fiscal_book_entry.drawee_id = person.id);

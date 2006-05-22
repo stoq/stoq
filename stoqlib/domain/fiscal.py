@@ -33,8 +33,9 @@ from datetime import datetime
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
 from zope.interface import implements
 
-from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.interfaces import IDescribable
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.base import Domain, BaseSQLView, InheritableModel
+from stoqlib.domain.interfaces import IDescribable, IReversal
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 
 
@@ -51,7 +52,10 @@ class CfopData(Domain):
         return u"%s %s" % (self.code, self.description)
 
 
-class InvoiceInfo(Domain):
+class AbstractFiscalBookEntry(InheritableModel):
+    implements(IReversal)
+
+    identifier = AutoIncCol("stoqlib_abstract_bookentry_seq")
     date = DateTimeCol(default=datetime.now)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")
@@ -59,18 +63,36 @@ class InvoiceInfo(Domain):
     drawee = ForeignKey("Person")
     payment_group = ForeignKey("AbstractPaymentGroup")
 
+    def reverse_entry(self):
+        raise NotImplementedError("This method must be overwrited on child")
 
-class IcmsIpiBookEntry(Domain):
-    identifier = AutoIncCol("stoqlib_icmsbook_identifier_seq")
+    def get_reversal_clone(self, invoice_number, **kwargs):
+        conn = self.get_connection()
+        cfop = sysparam(conn).DEFAULT_RETURN_SALES_CFOP
+        cls = self.__class__
+        return cls(connection=conn, cfop=cfop, branch=self.branch,
+                   invoice_number=invoice_number, drawee=self.drawee,
+                   payment_group=self.payment_group, **kwargs)
+
+
+class IcmsIpiBookEntry(AbstractFiscalBookEntry):
+
     icms_value = PriceCol()
     ipi_value = PriceCol()
-    invoice_data = ForeignKey("InvoiceInfo")
 
+    def reverse_entry(self, invoice_number):
+        icms = -self.icms_value
+        ipi = -self.ipi_value
+        return self.get_reversal_clone(invoice_number, icms_value=icms,
+                                       ipi_value=ipi)
 
-class IssBookEntry(Domain):
-    identifier = AutoIncCol("stoqlib_issbook_identifier_seq")
+class IssBookEntry(AbstractFiscalBookEntry):
+
     iss_value = PriceCol()
-    invoice_data = ForeignKey("InvoiceInfo")
+
+    def reverse_entry(self, invoice_number):
+        iss = -self.iss_value
+        return self.get_reversal_clone(invoice_number, iss_value=iss)
 
 #
 # Views
@@ -84,8 +106,8 @@ class AbstractFiscalView(SQLObject, BaseSQLView):
     invoice_number = IntCol()
     cfop_code = UnicodeCol()
     cfop_data_id = IntCol()
-    invoice_data_id = IntCol()
     drawee_name = UnicodeCol()
+    drawee_id = IntCol()
     branch_id = IntCol()
     payment_group_id = IntCol()
 

@@ -6,16 +6,27 @@
         <property name="default_width">440</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
-                <property name="border_width">12</property>
+                <property name="border_width">6</property>
                 <property name="spacing">18</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkTable" id="table1">
-                        <property name="column_spacing">12</property>
+                        <property name="column_spacing">6</property>
                         <property name="n_columns">5</property>
-                        <property name="n_rows">2</property>
+                        <property name="n_rows">3</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkLabel" id="label9">
+                                <property name="label" context="yes" translatable="yes">Order Number:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
                         <child>
                             <widget class="GtkLabel" id="label1">
                                 <property name="label" context="yes" translatable="yes">Open Date:</property>
@@ -23,6 +34,8 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -34,9 +47,20 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="x_options">fill</property>
+                                <property name="bottom_attach">3</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="order_number">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">order_number_str</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                                 <property name="y_options">fill</property>
                             </packing>
                         </child>
@@ -48,8 +72,10 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
+                                <property name="bottom_attach">2</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
                                 <property name="y_options">fill</property>
                             </packing>
                         </child>
@@ -61,11 +87,19 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
-                                <property name="top_attach">1</property>
-                                <property name="y_options">fill</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                             </packing>
                         </child>
                         <child>
@@ -75,8 +109,10 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
+                                <property name="bottom_attach">2</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -88,12 +124,19 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="top_attach">1</property>
-                                <property name="x_options">fill</property>
-                                <property name="y_options">fill</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">3</property>
+                                <property name="right_attach">4</property>
+                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                             </packing>
                         </child>
                         <child>
@@ -104,8 +147,10 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
+                                <property name="bottom_attach">2</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
+                                <property name="top_attach">1</property>
                                 <property name="x_options">fill</property>
                                 <property name="y_options">fill</property>
                             </packing>
@@ -118,25 +163,10 @@
                                 <property name="xalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="bottom_attach">2</property>
+                                <property name="bottom_attach">3</property>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="top_attach">1</property>
-                                <property name="x_options">fill</property>
-                                <property name="y_options">fill</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkButton" id="details_button">
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">Details</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="left_attach">4</property>
-                                <property name="right_attach">5</property>
-                                <property name="x_options">fill</property>
-                                <property name="y_options">fill</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -144,10 +174,50 @@
                             <packing>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
-                                <property name="top_attach">1</property>
-                                <property name="bottom_attach">2</property>
                                 <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
                                 <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox1">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkButton" id="details_button">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Details</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkHBox" id="hbox2">
+                                <property name="visible">True</property>
+                                <child>
+                                    <widget class="GtkButton" id="cancel_details_button">
+                                        <property name="is_focus">True</property>
+                                        <property name="label" context="yes" translatable="yes">Details</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="left_attach">4</property>
+                                <property name="right_attach">5</property>
+                                <property name="top_attach">2</property>
                             </packing>
                         </child>
                     </widget>
@@ -162,10 +232,11 @@
                         <child>
                             <widget class="GtkVBox" id="vbox">
                                 <property name="border_width">6</property>
-                                <property name="spacing">18</property>
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkVBox" id="items_vbox">
+                                        <property name="spacing">6</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="ObjectList" id="items_list">
@@ -186,7 +257,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkTable" id="table2">
-                                        <property name="column_spacing">12</property>
+                                        <property name="column_spacing">6</property>
                                         <property name="n_columns">6</property>
                                         <property name="n_rows">2</property>
                                         <property name="row_spacing">6</property>
@@ -352,7 +423,7 @@
                         <child>
                             <widget class="GtkVBox" id="payments_vbox">
                                 <property name="border_width">6</property>
-                                <property name="spacing">18</property>
+                                <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="ObjectList" id="payments_list">

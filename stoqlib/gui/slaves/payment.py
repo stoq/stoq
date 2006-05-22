@@ -322,7 +322,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         # This is very useful when calculating the total amount outstanding
         # or overpaid of the payments
         self.interest_total = currency(0)
-        self.payment_group = self.wizard.get_payment_group()
+        self.payment_group = self.wizard.payment_group
         self.payment_list = None
         self.reset_btn_validation_ok = True
         self.total_value = (outstanding_value or
@@ -385,7 +385,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             self.payment_list.add_slave(slave)
 
     def get_created_inpayments(self):
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         q1 = Payment.q.methodID == self.method.id
         q2 = Payment.q.groupID == group.id
         q3 = Payment.q.status == Payment.STATUS_PREVIEW
@@ -399,7 +399,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         return inpayments
 
     def _setup_payments(self):
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         inst_number = self.model.installments_number
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
@@ -464,7 +464,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         if not self._data_slave_class:
             raise ValueError('Child classes must define a data_slave_class '
                              'attribute')
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         due_date = datetime.datetime.today()
         if not self.payment_list.get_children_number():
             total = self.total_value
@@ -506,7 +506,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.interval_type_combo.select_item_by_data(INTERVALTYPE_MONTH)
 
     def create_model(self, conn):
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         check_group = self.method.get_check_group_data(group)
         if check_group:
             return check_group
@@ -606,7 +606,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self.sale = sale_obj
         self.wizard = wizard
         self.method = payment_method
-        self.payment_group = self.wizard.get_payment_group()
+        self.payment_group = self.wizard.payment_group
         self._pmdetails_objs = None
         self.total_value = outstanding_value or self.sale.get_total_sale_amount()
         self.providers = self._get_credit_providers()
@@ -667,7 +667,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self._setup_payment_types()
 
     def _setup_payments(self):
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         inst_number = self.model.installments_number
         payment_type = self.model.payment_type
         first_due_date = self.sale.open_date
@@ -695,7 +695,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
                              'sales')
-        group = self.wizard.get_payment_group()
+        group = self.wizard.payment_group
         return CreditProviderGroupData(connection=conn, group=group,
                                        payment_type=None,
                                        provider=None)

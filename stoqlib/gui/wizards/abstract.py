@@ -22,25 +22,241 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 ##
-""" Abstract wizard steps definition """
+""" Abstract wizard and wizard steps definition
+
+Note that a good aproach for all wizards steps defined here is do
+not require some specific implementation details for the main wizard. Use
+instead signals and interfaces for that.
+"""
 
 import decimal
 
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.datatypes import currency
 from kiwi.python import Settable
+from kiwi.argcheck import argcheck
 
+from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.wizards import WizardEditorStep
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.defaults import (METHOD_MONEY, METHOD_MULTIPLE,
+                                  METHOD_GIFT_CERTIFICATE)
+from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
+                                              SelectPaymentMethodSlave)
+from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
+from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.methods import get_active_pm_ifaces
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
+                                       IMultiplePM, IMoneyPM,
+                                       IGiftCertificatePM)
 
 _ = stoqlib_gettext
 
+#
+# Abstract Wizards for sales
+#
+
+class AbstractSaleWizard(BaseWizard):
+    """An abstract wizard for sale orders"""
+    size = (600, 400)
+    first_step = None
+    title = None
+
+    def __init__(self, conn, model):
+        self._check_payment_group(model, conn)
+        self.initialize()
+        # Saves the initial state of the sale order and allow us to call
+        # rollback safely when it's needed
+        conn.commit()
+        first_step = self.first_step(self, conn, model, self.payment_group)
+        BaseWizard.__init__(self, conn, first_step, model)
+
+    def _check_payment_group(self, model, conn):
+        if not isinstance(model, Sale):
+            raise StoqlibError("Invalid datatype for model, it should be "
+                               "of type Sale, got %s instead" % model)
+        group = IPaymentGroup(model, connection=conn)
+        if not group:
+            group = model.addFacet(IPaymentGroup, connection=conn)
+        self.payment_group = group
+
+    #
+    # Hooks
+    #
+
+    def initialize(self):
+        """Overwrite this method on child when performing some tasks before
+        calling the wizard constructor is an important requirement
+        """
+
+    #
+    # Public API
+    #
+
+    def setup_cash_payment(self, total=None):
+        money_method = sysparam(self.conn).METHOD_MONEY
+        total = total or self.payment_group.get_total_received()
+        money_method.setup_inpayments(total, self.payment_group)
+
+    #
+    # BaseWizard hooks
+    #
+
+    def finish(self):
+        raise NotImplementedError("This method must be overwritten on child")
+
+
+
+class AbstractSalesPersonStep(WizardEditorStep):
+    """An abstract step which allows defining salesperson a general
+    informations for sale orders
+    """
+    gladefile = 'SalesPersonStep'
+    model_type = Sale
+    proxy_widgets = ('total_lbl',
+                     'subtotal_lbl',
+                     'invoice_number',
+                     'salesperson_combo')
+
+    @argcheck(BaseWizard, StoqlibTransaction, Sale, AbstractPaymentGroup)
+    def __init__(self, wizard, conn, model, payment_group):
+        self.payment_group = payment_group
+        WizardEditorStep.__init__(self, conn, wizard, model)
+        self.update_discount_and_charge()
+        self.setup_invoice_number_widgets()
+
+    def _update_totals(self):
+        for field_name in ('total_sale_amount', 'sale_subtotal'):
+            self.proxy.update(field_name)
+
+    def setup_widgets(self):
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        items = [(s.get_adapted().name, s) for s in salespersons]
+        self.salesperson_combo.prefill(items)
+        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
+            self.salesperson_combo.set_sensitive(False)
+        else:
+            self.salesperson_combo.grab_focus()
+
+    def _get_selected_payment_method(self):
+        if (isinstance(self.pm_slave, SelectCashMethodSlave)
+            or self.pm_slave.cash_check.get_active()):
+            return IMoneyPM
+        elif self.pm_slave.certificate_check.get_active():
+            return IGiftCertificatePM
+        else:
+            return IMultiplePM
+
+    def _setup_payment_method_widgets(self):
+        group = IPaymentGroup(self.model, connection=self.conn)
+        if not group:
+            raise ValueError('You should have a IPaymentGroup facet '
+                             'defined at this point')
+        if group.default_method == METHOD_MONEY:
+            self.pm_slave.cash_check.set_active(True)
+        elif group.default_method == METHOD_GIFT_CERTIFICATE:
+            self.pm_slave.certificate_check.set_active(True)
+        else:
+            self.pm_slave.othermethods_check.set_active(True)
+
+    #
+    # Public API
+    #
+
+    def hide_invoice_number_widgets(self):
+        self.invoice_number.hide()
+        self.invoice_label.hide()
+
+    #
+    # Hooks
+    #
+
+    def update_discount_and_charge(self):
+        """Update discount and charge values when it's needed"""
+
+    def setup_invoice_number_widgets(self):
+        """Perform some operations for invoice number widgets when it's
+        needed
+        """
+
+    def on_payment_method_changed(self, slave, method_iface):
+        """Overwrite this method when controling the status of finish button
+        is a required task when changing payment methods
+        """
+
+    def on_next_step(self):
+        raise NotImplementedError("Overwrite on child to return the "
+                                  "proper next step or None for finish")
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        raise NotImplementedError("This method must be overwritten on child")
+
+    def next_step(self):
+        selected_method = self._get_selected_payment_method()
+        group = self.payment_group
+        if selected_method is IMoneyPM:
+            group.default_method = METHOD_MONEY
+        elif selected_method is IGiftCertificatePM:
+            group.default_method = METHOD_GIFT_CERTIFICATE
+        else:
+            group.default_method = METHOD_MULTIPLE
+        return self.on_next_step()
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_slaves(self):
+        self.disccharge_slave = DiscountChargeSlave(self.conn, self.model,
+                                                    self.model_type)
+        self.disccharge_slave.connect('discount-changed',
+                                      self.on_disccharge_slave_changed)
+        slave_holder = 'discount_charge_slave'
+        if self.get_slave(slave_holder):
+            self.detach_slave(slave_holder)
+        self.attach_slave('discount_charge_slave', self.disccharge_slave)
+        pm_ifaces = get_active_pm_ifaces()
+        if len(pm_ifaces) == 1:
+            self.pm_slave = SelectCashMethodSlave()
+        else:
+            self.pm_slave = SelectPaymentMethodSlave(pm_ifaces)
+            self._setup_payment_method_widgets()
+        self.pm_slave.connect('method-changed',
+                              self.on_payment_method_changed)
+        self.attach_slave('select_method_holder', self.pm_slave)
+
+    def setup_proxies(self):
+        self.setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    AbstractSalesPersonStep.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_disccharge_slave_changed(self, slave):
+        self._update_totals()
+
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_("Additional Information"))
+
 
 #
-# Wizard Steps
+# Abstract Wizards for products
 #
 
 

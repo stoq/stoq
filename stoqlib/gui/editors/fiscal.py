@@ -27,9 +27,11 @@
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.domain.fiscal import CfopData, AbstractFiscalView, InvoiceInfo
+from stoqlib.domain.fiscal import (CfopData, AbstractFiscalView,
+                                   AbstractFiscalBookEntry)
 
 _ = stoqlib_gettext
+
 
 class CfopEditor(BaseEditor):
     model_name = _('CFOP')
@@ -73,6 +75,6 @@ class FiscalBookEntryEditor(BaseEditor):
 
     def setup_proxies(self):
         self._setup_widgets()
-        invoice_data = InvoiceInfo.get(self.model.invoice_data_id,
-                                       connection=self.conn)
+        table = AbstractFiscalBookEntry
+        invoice_data = table.get(self.model.id, connection=self.conn)
         self.add_proxy(invoice_data, FiscalBookEntryEditor.proxy_widgets)

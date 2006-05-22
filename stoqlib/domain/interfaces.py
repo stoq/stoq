@@ -353,72 +353,23 @@ class ITillOperation(ConnInterface):
     def cancel_payment(payment, reason, date=None):
         """Cancel a payment in the current till"""
 
-class IRenegotiationGiftCertificate(ConnInterface):
-    """ A renegotiation information between a sale and a gift certificate.
-    When paying a sale through gift certificates it's possible to have
-    overpaid values. In this case we have to create a new gift
-    certificate with it's value and store here a general information about
-    this process.
 
-    @itype status enum
-    @itype new_gift_certificate_number string
-    @itype overpaid_value float
-    """
-    new_gift_certificate_number = Attribute('Stores the number of the new '
-                                            'gift certificate that will be'
-                                            'created')
-    overpaid_value = Attribute('The value of the new gift certificate and '
-                               'which also represents the overpaid value in '
-                               'the sale.')
-    status = Attribute('status of the object is in')
-
-    def confirm():
-        """Confirm this object means conclude the renegotiation
-        process and create a new gift certification with the overpaid value.
-        """
-
-class IRenegotiationSaleReturnMoney(ConnInterface):
-    """ A renegotiation information between a sale and a gift certificate.
-    When paying a sale through gift certificates it's possible to have
-    overpaid values. In this case we have to create a new outpayment related
-    to the return value and store here a general information about this
-    process.
-
-    @itype status enum
-    @itype overpaid_value float
-    """
-
-    overpaid_value = Attribute('The value of the new outpayment and '
-                               'which also represents the overpaid value in '
-                               'the sale.')
-    status = Attribute('status of the object is in')
+class IRenegotiationReturnSale(ConnInterface):
+    """A definition of a return (or cancellation) of a sale order."""
 
     def confirm(payment_group):
-        """Confirm this object means conclude the renegotiation
-        process and create a new outpayment for the return value.
-        """
+        """Confirm the sale return process."""
 
-class IRenegotiationOutstandingValue(ConnInterface):
-    """When using gift certificates as a payment method in a sale it's
-    possible to have an outstanding value remaining to be paid.
-    In this case, objects which implement this interface store information
-    about this process.
 
-    @itype status enum
-    @itype outstanding_value float
-    @itype payment_method int
-    """
+class IRenegotiationExchange(ConnInterface):
+    # TODO to be implemented on bug 2230
+    pass
 
-    outstanding_value = Attribute('The value of the new inpayment and '
-                                  'which also represents the outstanding '
-                                  'value in the sale.')
-    status = Attribute('status of the object is in')
-    payment_method = Attribute('The payment method of this renegotiation')
 
-    def confirm(payment_group):
-        """Confirm this object means conclude the renegotiation
-        process and create a new inpayment.
-        """
+class IRenegotiationInstallments(ConnInterface):
+    # TODO to be implemented on bug 2190
+    pass
+
 
 class IPaymentDevolution(ConnInterface):
     """A devolution payment operation"""
@@ -477,3 +428,11 @@ class IDescribable(ConnInterface):
     def get_description():
         """ Returns a description that identifies the object """
 
+
+class IReversal(ConnInterface):
+    """A financial entry which support reversal operations"""
+
+    def reverse_entry():
+        """Takes a financial entry and reverse it, creating a new instance
+        with an oposite value
+        """

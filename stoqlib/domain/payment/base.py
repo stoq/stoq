@@ -28,17 +28,18 @@ from datetime import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
+from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
-from stoqlib.exceptions import PaymentError, DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
-                                  METHOD_MULTIPLE, METHOD_MONEY)
+                                  METHOD_MONEY)
 from stoqlib.domain.fiscal import (CfopData, IssBookEntry, IcmsIpiBookEntry,
-                                   InvoiceInfo)
+                                   AbstractFiscalBookEntry)
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
@@ -82,6 +83,7 @@ class Payment(Domain):
     status = IntCol(default=STATUS_PREVIEW)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
+    cancel_date = DateTimeCol(default=None)
     paid_value = PriceCol(default=0)
     base_value = PriceCol()
     value = PriceCol()
@@ -95,6 +97,17 @@ class Payment(Domain):
     group = ForeignKey('AbstractPaymentGroup')
     destination = ForeignKey('PaymentDestination')
 
+    def _check_status(self, status, operation_name):
+        assert self.status == status, ('Invalid status for %s '
+                                       'operation: %s' % (operation_name,
+                                       self.statuses[self.status]))
+
+    def _register_payment_operation(self,
+                                    operation_date=datetime.now()):
+        conn = self.get_connection()
+        operation = PaymentOperation(connection=conn,
+                                     operation_date=operation_date)
+        return operation
 
     #
     # SQLObject hooks
@@ -108,7 +121,7 @@ class Payment(Domain):
         Domain._create(self, id, **kw)
 
     #
-    # General methods
+    # Public API
     #
 
     def get_status_str(self):
@@ -117,14 +130,12 @@ class Payment(Domain):
                                         'instance, got %d' % self.status)
         return self.statuses[self.status]
 
-
     def get_days_late(self):
         days_late = datetime.today() - self.due_date
         if days_late.days < 0:
             return 0
         else:
             return days_late.days
-
 
     def is_to_pay(self):
         return self.status == self.STATUS_TO_PAY
@@ -139,26 +150,11 @@ class Payment(Domain):
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
         self._check_status(self.STATUS_TO_PAY, 'pay')
-        if self.group.get_thirdparty() is None:
-            raise PaymentError("You must have a thirdparty for payment"
-                               "acquittance")
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
         self.paid_date = paid_date or datetime.now()
         self.status = self.STATUS_PAID
-
-    def _check_status(self, status, operation_name):
-        assert self.status == status, ('Invalid status for %s '
-                                       'operation: %s' % (operation_name,
-                                       self.statuses[self.status]))
-
-    def _register_payment_operation(self,
-                                    operation_date=datetime.now()):
-        conn = self.get_connection()
-        operation = PaymentOperation(connection=conn,
-                                     operation_date=operation_date)
-        return operation
 
     def submit(self, submit_date=None):
         """The first stage of payment acquittance is submiting and mark a
@@ -181,16 +177,26 @@ class Payment(Domain):
                            reason=reason)
         self.status = self.STATUS_PAID
 
-    def cancel_payment(self):
-        if self.status != Payment.STATUS_CANCELLED:
-            self._check_status(self.STATUS_TO_PAY, 'reverse selection')
-            self.status = self.STATUS_CANCELLED
-            payment = self.clone()
-            description = (_('Cancellation of payment number %s')
-                           % self.identifier)
-            payment.description = description
-            payment.value *= -1
-            payment.due_date = datetime.now()
+    def cancel_till_entry(self):
+        if self.status == Payment.STATUS_CANCELLED:
+            raise StoqlibError("This payment is already cancelled")
+        self._check_status(self.STATUS_TO_PAY, 'reverse selection')
+        self.status = self.STATUS_CANCELLED
+        payment = self.clone()
+        description = (_('Cancellation of payment number %s')
+                       % self.identifier)
+        payment.description = description
+        payment.value *= -1
+        payment.due_date = datetime.now()
+
+    def cancel(self):
+        # TODO Check for till entries here and call cancel_till_entry if
+        # it's possible. Bug 2598
+        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_TO_PAY]:
+            raise StoqlibError("Invalid status for cancel operation, "
+                                "got %s" % self.get_status_str())
+        self.status = self.STATUS_CANCELLED
+        self.cancel_date = datetime.now()
 
     def get_payable_value(self, paid_date=None):
         """ Returns the calculated payment value with the daily penalty.
@@ -246,11 +252,18 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     status = IntCol(default=STATUS_OPEN)
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
+    cancel_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
     installments_number = IntCol(default=1)
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
-    renegotiation_data = ForeignKey('RenegotiationData', default=None)
+
+    def _get_money_payment(self, value, description):
+        conn = self.get_connection()
+        method = sysparam(conn).METHOD_MONEY
+        status = Payment.STATUS_TO_PAY
+        return self.add_payment(value, description, method,
+                                status=status)
 
     #
     # IPaymentGroup implementation
@@ -305,42 +318,48 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     # Fiscal methods
     #
 
-    @argcheck(CfopData, int)
-    def _get_invoice_data(self, cfop, invoice_number):
+    def _create_fiscal_entry(self, table, cfop, invoice_number, **kwargs):
         conn = self.get_connection()
         drawee = self.get_thirdparty()
         branch = sysparam(conn).CURRENT_BRANCH
-        return InvoiceInfo(date=datetime.now(),
-                           invoice_number=invoice_number,
-                           cfop=cfop, drawee=drawee,
-                           branch=branch, payment_group=self,
-                           connection=conn)
+        return table(connection=conn, invoice_number=invoice_number,
+                     cfop=cfop, drawee=drawee, branch=branch,
+                     date=datetime.now(), payment_group=self, **kwargs)
 
     @argcheck(CfopData, int, Decimal, Decimal)
     def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
                                   ipi_value=Decimal("0.0")):
-        conn = self.get_connection()
-        invoice_data = self._get_invoice_data(cfop, invoice_number)
-        IcmsIpiBookEntry(icms_value=icms_value, ipi_value=ipi_value,
-                         invoice_data=invoice_data, connection=conn)
+        self._create_fiscal_entry(IcmsIpiBookEntry, cfop, invoice_number,
+                                  icms_value=icms_value, ipi_value=ipi_value)
 
     @argcheck(CfopData, int, Decimal)
     def create_iss_book_entry(self, cfop, invoice_number, iss_value):
+        self._create_fiscal_entry(IssBookEntry, cfop, invoice_number,
+                                  iss_value=iss_value)
+
+    def revert_fiscal_entry(self, invoice_number):
         conn = self.get_connection()
-        invoice_data = self._get_invoice_data(cfop, invoice_number)
-        IssBookEntry(iss_value=iss_value, invoice_data=invoice_data,
-                     connection=conn)
+        entries = AbstractFiscalBookEntry.selectBy(payment_groupID=self.id,
+                                                   connection=conn)
+        if entries.count() > 1:
+            raise DatabaseInconsistency("You should have only one fiscal "
+                                        "entry per payment group")
+        if not entries.count():
+            return
+        entries[0].reverse_entry(invoice_number)
 
     #
-    # General methods
+    # Public API
     #
 
-    def _get_money_payment(self, value, description):
-        conn = self.get_connection()
-        method = sysparam(conn).METHOD_MONEY
-        status = Payment.STATUS_TO_PAY
-        return self.add_payment(value, description, method,
-                                status=status)
+    def cancel(self, invoice_number):
+        if self.status == AbstractPaymentGroup.STATUS_CANCELLED:
+            raise StoqlibError("This payment group is already cancelled")
+        for payment in self.get_unpaid_payments():
+            payment.cancel()
+        self.status = AbstractPaymentGroup.STATUS_CANCELLED
+        self.cancel_date = datetime.now()
+        self.revert_fiscal_entry(invoice_number)
 
     @argcheck(Decimal, unicode)
     def create_debit(self, value, description):
@@ -356,6 +375,20 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         conn = self.get_connection()
         return payment.addFacet(IInPayment, connection=conn)
 
+    def get_paid_payments(self):
+        statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
+                    Payment.STATUS_CONFIRMED)
+        return [p for p in self.get_items() if p.status in statuses]
+
+    def get_unpaid_payments(self):
+        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_TO_PAY
+        return [p for p in self.get_items() if p.status in statuses]
+
+    def get_total_paid(self):
+        paid_values = [payment.paid_value
+                            for payment in self.get_paid_payments()]
+        return sum(paid_values, currency(0))
+
     def set_method(self, method_iface):
         items = get_all_methods_dict().items()
         method = [method_id for method_id, iface in items
@@ -365,18 +398,20 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                             % method_iface)
         self.default_method = method[0]
 
-
     def setup_inpayments(self):
-        methods = get_all_methods_dict()
-        payment_method = self.get_default_payment_method()
-        if payment_method != METHOD_MULTIPLE:
-            self.clear_preview_payments(methods[payment_method])
         payments = self.get_items()
         if not payments.count():
             raise ValueError('You must have at least one payment for each '
                              'payment group')
         self.installments_number = payments.count()
         self.set_payments_to_pay()
+
+    def confirm_money_payments(self):
+        from stoqlib.domain.payment.methods import PMAdaptToMoneyPM
+        for payment in self.get_items():
+            if not isinstance(payment.method, PMAdaptToMoneyPM):
+                continue
+            payment.pay()
 
     def set_payments_to_pay(self):
         """Checks if all the payments have STATUS_PREVIEW and set them as

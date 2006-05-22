@@ -33,7 +33,7 @@ from kiwi.datatypes import currency
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
-from sqlobject.sqlbuilder import AND, IN
+from sqlobject.sqlbuilder import IN
 
 from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
@@ -187,7 +187,7 @@ class TillOperationDialog(SlaveDelegate):
             return
         if confirm_dialog(text, title=title, size=size):
             for item in self.selected_item:
-                item.cancel_payment()
+                item.cancel_till_entry()
             self.conn.commit()
         self.search_bar.search_items()
         self._select_last_item()
@@ -219,10 +219,7 @@ class TillOperationDialog(SlaveDelegate):
                 raise DatabaseInconsistency("Sale instance must have a"
                                             "IPaymentGroup facet")
             group_ids.append(group.id)
-        statuses = [Payment.STATUS_TO_PAY, Payment.STATUS_CANCELLED]
-        q1 = IN(Payment.q.groupID, group_ids)
-        q2 = IN(Payment.q.status, statuses)
-        return AND(q1, q2)
+        return IN(Payment.q.groupID, group_ids)
 
     #
     # Kiwi handlers
