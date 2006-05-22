@@ -89,7 +89,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.supplier.show()
         self._setup_transporter_entry()
         self._setup_supplier_entry()
-        cfop_items = [(item.get_full_description(), item)
+        cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
         self.transporter.grab_focus()
