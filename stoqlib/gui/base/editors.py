@@ -93,7 +93,8 @@ class BaseEditorSlave(SlaveDelegate):
         self.setup_slaves()
 
     def _setup_visual_mode(self):
-        for widget_name in self.proxy_widgets:
+        widgets = self.__class__.proxy_widgets
+        for widget_name in widgets:
             widget = getattr(self, widget_name)
             if isinstance(widget, ProxyLabel):
                 continue
