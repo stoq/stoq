@@ -109,7 +109,7 @@ class NewOrderEditor(BaseEditor):
 
     def create_model(self, conn):
         till = get_current_till_operation(conn)
-        user = get_current_user()
+        user = get_current_user(conn)
         salesperson = ISalesPerson(user.get_adapted(), connection=conn)
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
         return Sale(connection=conn, till=till, salesperson=salesperson,
