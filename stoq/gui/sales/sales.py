@@ -86,11 +86,12 @@ class SalesApp(SearchableAppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
 
     def _setup_slaves(self):
-        slave = SaleListToolbar(self.conn, self.searchbar, self.sales)
-        self.attach_slave("list_toolbar_holder", slave)
+        self.sale_toolbar = SaleListToolbar(self.conn, self.searchbar,
+                                            self.sales)
+        self.attach_slave("list_toolbar_holder", self.sale_toolbar)
         self._klist.connect("selection-changed",
-                            self._update_print_invoice_action)
-        self._update_print_invoice_action()
+                            self._update_toolbar)
+        self._update_toolbar()
 
     def on_searchbar_activate(self, slave, objs):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
@@ -99,11 +100,17 @@ class SalesApp(SearchableAppWindow):
     def _update_widgets(self):
         self._update_total_label()
 
-    def _update_print_invoice_action(self, *args):
+    def _update_toolbar(self, *args):
         selected_rows = self._klist.get_selected_rows()
-        is_enabled = (len(selected_rows) == 1
-                      and selected_rows[0].client_name is not None)
-        self.print_invoice.set_sensitive(is_enabled)
+        one_selected = len(selected_rows) == 1
+        can_print_invoice = (one_selected
+                             and selected_rows[0].client_name is not None)
+        self.print_invoice.set_sensitive(can_print_invoice)
+
+        rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDER
+        can_cancel = (one_selected
+                      and selected_rows[0].status not in rejected)
+        self.sale_toolbar.return_sale_button.set_sensitive(can_cancel)
 
     def _update_total_label(self):
         self.summary_label.update_total()

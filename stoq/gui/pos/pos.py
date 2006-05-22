@@ -52,7 +52,7 @@ from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
-from stoqlib.gui.wizards.sale import SaleWizard
+from stoqlib.gui.wizards.sale import ConfirmSaleWizard, PreOrderWizard
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.sellable import SellableSearch
 from stoqlib.gui.search.person import ClientSearch
@@ -512,17 +512,21 @@ class POSApp(AppWindow):
         return totalize and has_payments and close
 
     def _sale_checkout(self, *args):
-        param = sysparam(self.conn)
-        skip_payment_step = (param.CONFIRM_SALES_ON_TILL and
-                             param.SET_PAYMENT_METHODS_ON_TILL)
-        if self.run_dialog(SaleWizard, self.conn, self.sale,
-                           skip_payment_step=skip_payment_step):
-            if not skip_payment_step and not param.CONFIRM_SALES_ON_TILL:
+        can_confirm = not sysparam(self.conn).CONFIRM_SALES_ON_TILL
+        if can_confirm:
+            wizard = ConfirmSaleWizard
+        else:
+            wizard = PreOrderWizard
+
+        if self.run_dialog(wizard, self.conn, self.sale):
+            if can_confirm:
                 if not self._finish_coupon():
                     return
             self.coupon = self.sale = None
             self.conn.commit()
             self._clear_order()
+        else:
+            rollback_and_begin(self.conn)
 
     def on_checkout_button__clicked(self, *args):
         self._sale_checkout()
