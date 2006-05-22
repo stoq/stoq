@@ -41,7 +41,7 @@ from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
-from stoqlib.gui.wizards.sale import SaleWizard
+from stoqlib.gui.wizards.sale import ConfirmSaleWizard
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -174,8 +174,7 @@ class TillApp(SearchableAppWindow):
         selected = self.sales.get_selected()
         sale = Sale.get(selected.id, connection=self.conn)
         title = _('Confirm Sale')
-        model = self.run_dialog(SaleWizard, self.conn, sale, title=title,
-                                edit_mode=True)
+        model = self.run_dialog(ConfirmSaleWizard, self.conn, sale)
         if not finish_transaction(self.conn, model, keep_transaction=True):
             return
         if not emit_coupon(sale, self.conn):
