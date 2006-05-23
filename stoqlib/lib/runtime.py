@@ -24,6 +24,7 @@
 """ Runtime routines for applications"""
 
 import sys
+from datetime import datetime
 
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
@@ -42,6 +43,30 @@ _database_settings = None
 #
 
 class StoqlibTransaction(Transaction):
+
+    def __init__(self, *args, **kwargs):
+        self._change_data = []
+        Transaction.__init__(self, *args, **kwargs)
+
+    def update_change_data(self, new_obj):
+        obj_ids = [id(obj) for obj in self._change_data]
+        if id(new_obj) not in obj_ids:
+            self._change_data.append(new_obj)
+
+    def commit(self, *args, **kwargs):
+        current_user = get_current_user(get_connection())
+        for obj in self._change_data:
+            if obj.sqlmeta._obsolete:
+                continue
+            obj.model_modified = datetime.now()
+            if current_user is not None:
+                obj.last_user_id = current_user.id
+        Transaction.commit(self, *args, **kwargs)
+        self._change_data = []
+
+    def rollback(self, *args, **kwargs):
+        self._change_data = []
+        Transaction.rollback(self, *args, **kwargs)
 
     def close(self):
         self._connection.close()
@@ -113,6 +138,8 @@ def get_current_user(conn):
     from stoqlib.domain.person import Person
     from stoqlib.domain.interfaces import IUser
     global _current_user
+    if _current_user is None:
+        return
     return Person.iget(IUser, _current_user.id, connection=conn)
 
 
