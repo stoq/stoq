@@ -637,7 +637,7 @@ CREATE VIEW icms_ipi_view AS
       INNER JOIN cfop_data
       ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
 
-      INNER JOIN person
+      LEFT JOIN person
       ON (abstract_fiscal_book_entry.drawee_id = person.id);
 
 
@@ -680,5 +680,5 @@ CREATE VIEW iss_view AS
       INNER JOIN cfop_data
       ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
 
-      INNER JOIN person
+      LEFT JOIN person
       ON (abstract_fiscal_book_entry.drawee_id = person.id);
