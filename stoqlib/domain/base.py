@@ -28,7 +28,7 @@ import datetime
 
 from kiwi.python import qual
 from sqlobject import SQLObject
-from sqlobject import DateTimeCol, ForeignKey, BoolCol
+from sqlobject import DateTimeCol, ForeignKey, BoolCol, IntCol
 from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
@@ -40,7 +40,9 @@ from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
 from stoqlib.database import Adapter
-from stoqlib.exceptions import AdapterError, DatabaseInconsistency
+from stoqlib.lib.runtime import StoqlibTransaction
+from stoqlib.exceptions import (AdapterError, DatabaseInconsistency,
+                                StoqlibError)
 
 
 DATABASE_ENCODING = 'UTF-8'
@@ -76,6 +78,21 @@ class AbstractModel(object):
     #
     # Overwriting some SQLObject methods
     #
+
+    def _SO_setValue(self, *args, **kwargs):
+        conn = self.get_connection()
+        if not isinstance(conn, StoqlibTransaction):
+            raise StoqlibError("Only StoqlibTransactions can edit data")
+        conn.update_change_data(self)
+        cls = self.__class__
+        if issubclass(cls, InheritableSQLObject):
+            InheritableSQLObject._SO_setValue(self, *args, **kwargs)
+        elif issubclass(cls, SQLObject):
+            SQLObject._SO_setValue(self, *args, **kwargs)
+        else:
+            raise StoqlibError("Invalid domain class type, it should be "
+                               "a subclass of SQLObject or "
+                               "InheritableSQLObject, got %s" % cls)
 
     @classmethod
     def select(cls, clause=None, connection=None, **kwargs):
@@ -465,13 +482,11 @@ for klass in (InheritableModel, Domain, ModelAdapter,
                                         default=datetime.datetime.now))
     klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
                                         default=datetime.datetime.now))
+    # Do not use ForeignKey field for this attribute since it must be added in
+    # all tables, inclusively the PersonAdaptToUser table
+    klass.sqlmeta.addColumn(IntCol(name='last_user_id', default=None))
     klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                                     forceDBName=True))
-    # FIXME Waiting for SQLObject bug fix. Select method doesn't work
-    # properly with parent tables for inherited tables. E.g:
-    # list(AbstractSellable.select()) = list of AbstractSellable
-    # objects instead child table objects.
-    # lazyUpdate = True
 
 _registry = AdapterRegistry()
 
