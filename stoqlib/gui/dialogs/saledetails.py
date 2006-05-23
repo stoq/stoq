@@ -56,6 +56,7 @@ class SaleDetailsDialog(BaseEditor):
                      'salesperson_lbl',
                      'open_date_lbl',
                      'total_lbl',
+                     'notes',
                      'order_number',
                      'subtotal_lbl',
                      'surcharge_lbl',

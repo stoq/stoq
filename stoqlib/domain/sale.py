@@ -686,6 +686,7 @@ class SaleView(SQLObject, BaseSQLView):
     confirm_date = DateTimeCol()
     cancel_date = DateTimeCol()
     status = IntCol()
+    notes = UnicodeCol()
     salesperson_name = UnicodeCol()
     client_name = UnicodeCol()
     client_id = IntCol()

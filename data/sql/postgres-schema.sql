@@ -471,6 +471,7 @@ CREATE VIEW sale_view AS
   --     confirm_date       - the date when the sale was confirmed
   --     close_date         - the date when the sale was closed
   --     cancel_date        - the date when the sale was cancelled
+  --     notes              - sale order general notes
   --     status             - the sale status
   --     salesperson_name   - the salesperson name
   --     client_name        - the sale client name
@@ -485,7 +486,7 @@ CREATE VIEW sale_view AS
   sale.id, sale.coupon_id, sale.order_number, sale.open_date,
   sale.close_date, sale.status, person.name as salesperson_name,
   sale.charge_value, sale.discount_value, sale.confirm_date,
-  sale.cancel_date,
+  sale.cancel_date, sale.notes,
   abstract_sales_client_view.client_name,
   abstract_sales_client_view.client_id,
   abstract_sales_product_view.total,
