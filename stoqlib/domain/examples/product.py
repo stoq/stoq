@@ -65,6 +65,8 @@ def create_products():
                          'Monitor',
                          'Processor']
 
+    barcodes = ['015432', '32587', '65742', '12478']
+
     category_data = ['Generic',
                      'Optical',
                      'LCD',
@@ -124,9 +126,10 @@ def create_products():
 
         cost = random.randrange(*COST_RANGE)
         unit = units[index]
+        barcode = barcodes[index]
 
         product_obj.addFacet(ISellable, connection=conn, category=cat,
-                             cost=cost, unit=unit,
+                             cost=cost, unit=unit, barcode=barcode,
                              base_sellable_info=sellable_info)
 
         storable = product_obj.addFacet(IStorable, connection=conn)
