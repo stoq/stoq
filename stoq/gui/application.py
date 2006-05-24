@@ -92,10 +92,10 @@ class AppWindow(BaseAppWindow):
             raise ValueError('Child classes must define an app_name '
                              'attribute')
         toplevel.set_title(self.get_title())
-        self.setup_focus()
         self._klist = getattr(self, self.klist_name)
         self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
+        self.setup_focus()
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
