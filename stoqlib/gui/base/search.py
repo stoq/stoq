@@ -782,6 +782,12 @@ class SearchDialog(BasicDialog):
     def set_searchbar_columns(self, columns):
         self.search_bar.set_columns(columns)
 
+    def set_searchbar_search_string(self, search_str):
+        self.search_bar.set_search_string(search_str)
+
+    def perform_search(self):
+        self.search_bar.search_items()
+
     def setup_summary_label(self, column_name, label_text):
         if self.summary_label is not None:
             self.klist_vbox.remove(self.summary_label)
