@@ -57,7 +57,7 @@ class SellableSearch(SearchEditor):
     searchbar_result_strings = (_('sale item'), _('sale items'))
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
-                 selection_mode=gtk.SELECTION_MULTIPLE):
+                 selection_mode=gtk.SELECTION_MULTIPLE, search_str=None):
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
@@ -69,6 +69,9 @@ class SellableSearch(SearchEditor):
         self.set_result_strings(*self.searchbar_result_strings)
         self.set_ok_label(self.footer_ok_label)
         self.product_table = Product.getAdapterClass(ISellable)
+        if search_str:
+            self.set_searchbar_search_string(search_str)
+            self.perform_search()
 
     #
     # Accessors
@@ -87,7 +90,8 @@ class SellableSearch(SearchEditor):
     def get_columns(self):
         """Hook called by SearchEditor"""
         columns = [Column('code', title=_('Code'), data_type=int,
-                          format="%03d", sorted=True, width=90),
+                          format="%03d", sorted=True, width=90,
+                          justify=gtk.JUSTIFY_RIGHT),
                    Column('barcode', title=_('Barcode'), data_type=str,
                           width=90, visible=False),
                    Column('description', title= _('Description'),
@@ -95,7 +99,7 @@ class SellableSearch(SearchEditor):
                    Column('supplier_name', title= _('Supplier'),
                           data_type=str, width=120),
                    Column('price', title=_('Price'), data_type=currency,
-                          width=80)]
+                          width=80, justify=gtk.JUSTIFY_RIGHT)]
         if self.has_stock_mode:
             column = Column('stock', title=_('Stock'),
                             format_func=format_quantity,
