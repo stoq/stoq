@@ -80,6 +80,7 @@ class FiscalBookEntrySearch(SearchEditor):
     def _setup_icms_columns(self):
         cols = self.get_columns() + [Column('icms_value',
                                             title=_('ICMS Total'),
+                                            justify=gtk.JUSTIFY_RIGHT,
                                             data_type=currency, width=120)]
         self._setup_columns(cols, IcmsIpiView, 'icms_value',
                             _("ICMS Total:"))
@@ -87,6 +88,7 @@ class FiscalBookEntrySearch(SearchEditor):
     def _setup_ipi_columns(self):
         cols = self.get_columns() + [Column('ipi_value',
                                             title=_('IPI Total'),
+                                            justify=gtk.JUSTIFY_RIGHT,
                                             data_type=currency, width=120)]
         self._setup_columns(cols, IcmsIpiView, 'ipi_value',
                             _("IPI Total:"))
@@ -94,6 +96,7 @@ class FiscalBookEntrySearch(SearchEditor):
     def _setup_iss_columns(self):
         cols = self.get_columns() + [Column('iss_value',
                                             title=_('ISS Total'),
+                                            justify=gtk.JUSTIFY_RIGHT,
                                             data_type=currency, width=120)]
         self._setup_columns(cols, IssView, 'iss_value',
                             _("ISS Total:"))
