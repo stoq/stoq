@@ -174,6 +174,7 @@ class BaseSellableInfo(Domain):
     def get_description(self):
         return self.description
 
+
 class AbstractSellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
@@ -373,10 +374,10 @@ class AbstractSellable(InheritableModelAdapter):
 
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
-                              notify_callback):
+                                  notify_callback):
         q1 = AbstractSellable.q.barcode == barcode
         query = AND(q1, extra_query)
-        sellables = AbstractSellable.select(query, connection=conn)
+        sellables = cls.select(query, connection=conn)
         qty = sellables.count()
         if not qty:
             msg = _("The sellable with barcode '%s' doesn't exists or is "
@@ -403,7 +404,7 @@ class AbstractSellable(InheritableModelAdapter):
         """
         extra_query = AbstractSellable.q.status == AbstractSellable.STATUS_AVAILABLE
         return cls._get_sellables_by_barcode(conn, barcode, extra_query,
-                                          notify_callback)
+                                             notify_callback)
 
     @classmethod
     def get_availables_and_sold_by_barcode(cls, conn, barcode, notify_callback):
