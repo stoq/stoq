@@ -118,6 +118,16 @@ _parameter_info = {
                                         'number of days which a certain '
                                         'client can have unpaid payments  '
                                         'with normal status.')),
+
+    # XXX This parameter is Stoq-specific. How to deal with that
+    # in a better way?
+    'POS_FULL_SCREEN': ParameterDetails(_(u'Sales'),
+                                        _(u'Show POS Application Full Screen'),
+                                        _(u'Once this parameter is set '
+                                          'the Point of Sale application '
+                                          'will be showed as full screen'
+                                          )),
+
     'ACCEPT_ORDER_PRODUCTS': ParameterDetails(_(u'Sales'),
                                               _(u'Accept Order Products'),
                                               _(u'Can this company make sales '
@@ -294,6 +304,7 @@ class ParameterAccess(ClassInittableObject):
     constants = [
         # Adding constants
         ParameterAttr('USE_LOGIC_QUANTITY', bool, initial=True),
+        ParameterAttr('POS_FULL_SCREEN', bool, initial=False),
         ParameterAttr('MAX_LATE_DAYS', int, initial=30),
         ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
