@@ -26,13 +26,13 @@
 
 import gettext
 import decimal
-from datetime import date, datetime
+from datetime import date
 
 import gtk
-from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column, SummaryLabel
+from kiwi.datatypes import currency, converter
+from kiwi.ui.widgets.list import Column
 from kiwi.ui.dialogs import messagedialog
-from stoqlib.exceptions import TillError
+from stoqlib.exceptions import TillError, StoqlibError
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import get_current_till_operation, Till
@@ -40,12 +40,14 @@ from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoqlib.lib.validators import format_quantity
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
-from stoqlib.gui.wizards.sale import SaleWizard, ConfirmSaleWizard
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard
+from stoqlib.gui.wizards.salereturn import SaleReturnWizard
 
 
 from stoq.gui.application import SearchableAppWindow
@@ -55,75 +57,89 @@ _ = gettext.gettext
 
 class TillApp(SearchableAppWindow):
 
-    app_name = _('Till')
+    app_name = _(u'Till')
     app_icon_name = 'stoq-till-app'
     gladefile = 'till'
     searchbar_table = SaleView
-    searchbar_result_strings = (_('sale'), _('sales'))
-    searchbar_labels = (_('Sales Matching:'),)
+    searchbar_use_dates = True
+    searchbar_result_strings = (_(u'order'), _(u'orders'))
+    searchbar_labels = (_(u'matching:'),)
+    filter_slave_label = _(u"Show orders with status")
     klist_name = 'sales'
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
-        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
-            self.confirm_order_button.hide()
         self._setup_widgets()
         self.searchbar.search_items()
         self._update_widgets()
 
-    def get_title(self):
-        today_format = _('%d of %B')
-        today_str = datetime.today().strftime(today_format)
-        return _('Stoq - %s of %s') % (self.app_name, today_str)
-
     def _update_total(self, *args):
-        self.summary_label.update_total()
+        if len(self.sales):
+            totals = [sale.total for sale in self.sales]
+            subtotal = currency(sum(totals, currency(0)))
+        else:
+            subtotal = currency(0)
+        text = _(u"Total: %s") % converter.as_string(currency, subtotal)
+        self.total_label.set_text(text)
 
     def _setup_widgets(self):
-        value_format = '<b>%s</b>'
-        self.summary_label = SummaryLabel(klist=self.sales,
-                                          column='total',
-                                          label='<b>Total:</b>',
-                                          value_format=value_format)
-        self.summary_label.show()
-        self.list_vbox.pack_start(self.summary_label, False)
+        self.total_label.set_size('xx-large')
+        self.total_label.set_bold(True)
+        self.till_status_label.set_size('large')
+        self.till_status_label.set_bold(True)
+
+    def _update_toolbar_buttons(self):
+        has_sales = len(self.sales) > 0
+        has_selected = bool(has_sales and self.sales.get_selected())
+        for widget in [self.confirm_order_button, self.details_button,
+                       self.return_button]:
+            widget.set_sensitive(has_selected)
+        if not has_selected:
+            return
+        status = self.sales.get_selected().status
+        accept_confirm = status == Sale.STATUS_OPENED
+        self.confirm_order_button.set_sensitive(accept_confirm)
 
     def _update_widgets(self, *args):
         has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
         self.TillOperations.set_sensitive(has_till)
-        has_sales = len(self.sales) > 0
-        is_sensitive = bool(has_sales and self.sales.get_selected())
-        self.confirm_order_button.set_sensitive(is_sensitive)
+
+        till = get_current_till_operation(self.conn)
+        if not till:
+            text = _(u"Till Closed")
+            self.sales.clear()
+            self.searchbar.clear()
+        else:
+            opendate = till.opening_date
+            datestr = opendate.strftime('%x')
+            text = _(u"Till Opened on %s") % datestr
+        self.till_status_label.set_text(text)
+        self.app_vbox.set_sensitive(till is not None)
+
+        self._update_toolbar_buttons()
         self._update_total()
+
+    def _check_selected(self):
+        sale_view = self.sales.get_selected()
+        if not sale_view:
+            raise StoqlibError("You should have a selected item at "
+                               "this point")
+        return sale_view
 
     def _run_search_dialog(self, dialog_type, **kwargs):
         conn = new_transaction()
         self.run_dialog(dialog_type, conn, **kwargs)
         finish_transaction(conn)
 
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
+    def _run_details_dialog(self):
+        sale_view = self._check_selected()
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
-    def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=80,
-                       data_type=int, format='%03d', sorted=True),
-                Column('open_date', title=_('Date Started'), width=120,
-                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
-                Column('client_name', title=_('Client'),
-                       data_type=str, width=160),
-                Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=160),
-                Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=120,
-                       format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=120)]
-
-    def get_extra_query(self):
-        return SaleView.q.status == Sale.STATUS_OPENED
+    #
+    # Till methods
+    #
 
     def open_till(self):
         rollback_and_begin(self.conn)
@@ -138,7 +154,7 @@ class TillApp(SearchableAppWindow):
                              connection=self.conn)
         if result.count() == 0:
             till = Till(connection=self.conn,
-                        branch=sysparam(self.conn).CURRENT_BRANCH)
+                        branch=self.param.CURRENT_BRANCH)
         elif result.count() == 1:
             till = result[0]
         else:
@@ -160,10 +176,9 @@ class TillApp(SearchableAppWindow):
         if not self.run_dialog(TillClosingEditor, self.conn, till):
             rollback_and_begin(self.conn)
             return
-
         self.conn.commit()
-        self._update_widgets()
 
+        self._update_widgets()
         opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
                                    connection=self.conn)
         if opened_sales.count() == 0:
@@ -174,7 +189,7 @@ class TillApp(SearchableAppWindow):
         # opened yet, but it will be considered when opening a
         # new operation
         new_till = Till(connection=self.conn,
-                        branch=sysparam(self.conn).CURRENT_BRANCH)
+                        branch=self.param.CURRENT_BRANCH)
         for sale in opened_sales:
             sale.till = new_till
         self.conn.commit()
@@ -193,11 +208,57 @@ class TillApp(SearchableAppWindow):
         self.searchbar.search_items()
 
     #
-    # Kiwi callbacks
+    # SearchableAppWindow hooks
     #
 
-    def on_confirm_order_button__clicked(self, *args):
-        self._confirm_order()
+    def setup_focus(self):
+        # Groups
+        self.main_vbox.set_focus_chain([self.app_vbox])
+        self.app_vbox.set_focus_chain([self.searchbar_holder, self.list_vbox])
+
+        # Setting up the toolbar
+        self.list_vbox.set_focus_chain([self.footer_hbox])
+        self.footer_hbox.set_focus_chain([self.confirm_order_button,
+                                          self.return_button,
+                                          self.details_button])
+
+    def get_filter_slave_items(self):
+        statuses = Sale.STATUS_OPENED, Sale.STATUS_CONFIRMED
+        return [(value, key) for key, value in Sale.statuses.items()
+                    if key in statuses]
+
+    def get_filterslave_default_selected_item(self):
+        return Sale.STATUS_OPENED
+
+    def get_title(self):
+        self.param = sysparam(self.conn)
+        # XXX The current approch to get the current branch is going to
+        # be improved after bug 2621
+        branch = self.param.CURRENT_BRANCH
+        return _('Stoq - Till for Branch %03d') % branch.identifier
+
+    def get_columns(self):
+        return [Column('order_number', title=_('Number'), width=80,
+                       data_type=int, format='%05d', sorted=True),
+                Column('open_date', title=_('Date Started'), width=120,
+                       data_type=date, justify=gtk.JUSTIFY_RIGHT),
+                Column('client_name', title=_('Client'),
+                       data_type=str, width=160),
+                Column('salesperson_name', title=_('Salesperson'),
+                       data_type=str, width=160),
+                Column('total_quantity', title=_('Items Quantity'),
+                       data_type=decimal.Decimal, width=120,
+                       format_func=format_quantity),
+                Column('total', title=_('Total'), data_type=currency,
+                       width=120)]
+
+    def get_extra_query(self):
+        status = self.filter_slave.get_selected_status()
+        return SaleView.q.status == status
+
+    #
+    # Actions
+    #
 
     def _on_close_till_action__clicked(self, *args):
         if not emit_reduce_Z(self.conn):
@@ -232,6 +293,22 @@ class TillApp(SearchableAppWindow):
         dialog.connect('close-till', self.close_till)
         self.run_dialog(dialog, self.conn)
 
+    #
+    # Callbacks
+    #
+
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_toolbar_buttons()
+        self._update_total()
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_confirm_order_button__clicked(self, *args):
+        self._confirm_order()
+
     def _on_client_search_action__clicked(self, *args):
         self._run_search_dialog(ClientSearch, hide_footer=True)
 
@@ -239,7 +316,15 @@ class TillApp(SearchableAppWindow):
         self._run_search_dialog(SaleSearch)
 
     def on_sales__double_click(self, *args):
-        self._confirm_order()
+        self._run_details_dialog()
 
     def on_sales__selection_changed(self, klist, data):
-        self.confirm_order_button.set_sensitive(bool(data))
+        self._update_toolbar_buttons()
+
+    def on_details_button__clicked(self, *args):
+        self._run_details_dialog()
+
+    def on_return_button__clicked(self, *args):
+        sale_view = self._check_selected()
+        retval = run_dialog(SaleReturnWizard, self, self.conn, sale_view)
+        finish_transaction(self.conn, retval, keep_transaction=True)
