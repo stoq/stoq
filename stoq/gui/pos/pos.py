@@ -456,7 +456,7 @@ class POSApp(AppWindow):
     def get_columns(self):
         return [Column('sellable.code', title=_('Reference'), sorted=True,
                        data_type=int, width=95, justify=gtk.JUSTIFY_RIGHT,
-                       format='%04d'),
+                       format='%05d'),
                 Column('sellable.base_sellable_info.description',
                        title=_('Description'), data_type=str, expand=True,
                        searchable=True),
