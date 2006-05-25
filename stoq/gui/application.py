@@ -82,8 +82,8 @@ class AppWindow(BaseAppWindow):
     klist_selection_mode = gtk.SELECTION_BROWSE
 
     def __init__(self, app):
-        BaseAppWindow.__init__(self, app)
         self.conn = new_transaction()
+        BaseAppWindow.__init__(self, app)
         user_menu_label = get_current_user(self.conn).username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
         toplevel = self.get_toplevel()
@@ -91,7 +91,6 @@ class AppWindow(BaseAppWindow):
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
-        toplevel.set_title(self.get_title())
         self._klist = getattr(self, self.klist_name)
         self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
@@ -272,6 +271,13 @@ class SearchableAppWindow(AppWindow):
     def set_searchbar_columns(self, columns):
         self.searchbar.set_columns(columns)
 
+    def search_items(self):
+        self.searchbar.search_items()
+
+    #
+    # Hooks
+    #
+
     def get_filterslave_default_selected_item(self):
         return ALL_ITEMS_INDEX
 
@@ -286,7 +292,6 @@ class SearchableAppWindow(AppWindow):
         @returns: a sqlbuilder operator that will be added in the searchbar
                   main query
         """
-
 
     def get_filter_slave_items(self):
         """Define this method on parent when a FilterSlave is needed to be
