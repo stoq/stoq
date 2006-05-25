@@ -36,12 +36,17 @@ from stoqlib.exceptions import TillError
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
+from stoqlib.gui.search.person import ClientSearch
+from stoqlib.gui.search.sale import SaleSearch
+from stoqlib.gui.wizards.sale import SaleWizard, ConfirmSaleWizard
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard
+
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -92,6 +97,11 @@ class TillApp(SearchableAppWindow):
         is_sensitive = bool(has_sales and self.sales.get_selected())
         self.confirm_order_button.set_sensitive(is_sensitive)
         self._update_total()
+
+    def _run_search_dialog(self, dialog_type, **kwargs):
+        conn = new_transaction()
+        self.run_dialog(dialog_type, conn, **kwargs)
+        finish_transaction(conn)
 
     def on_searchbar_activate(self, slave, objs):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
@@ -221,6 +231,12 @@ class TillApp(SearchableAppWindow):
         dialog = TillOperationDialog(self.conn)
         dialog.connect('close-till', self.close_till)
         self.run_dialog(dialog, self.conn)
+
+    def _on_client_search_action__clicked(self, *args):
+        self._run_search_dialog(ClientSearch, hide_footer=True)
+
+    def _on_sale_search_action__clicked(self, *args):
+        self._run_search_dialog(SaleSearch)
 
     def on_sales__double_click(self, *args):
         self._confirm_order()
