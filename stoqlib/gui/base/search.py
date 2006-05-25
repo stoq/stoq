@@ -127,6 +127,10 @@ class DateSearchSlave(SlaveDelegate):
     def stop_animate_search_icon(self):
         self._slave.stop_animate_search_icon()
 
+    def clear(self):
+        self.start_date.set_text('')
+        self.end_date.set_text('')
+
     #
     # Kiwi callbacks
     #
@@ -169,6 +173,9 @@ class _SearchBarEntry(SlaveDelegate):
 
     def set_search_string(self, search_str):
         return self.search_entry.set_text(search_str)
+
+    def clear(self):
+        self.search_entry.set_text('')
 
     #
     # Kiwi callbacks
@@ -498,6 +505,10 @@ class SearchBar(SlaveDelegate):
     #
     # Public API
     #
+
+    def clear(self):
+        self._slave.clear()
+        self.search_results_label.set_text('')
 
     def set_searchtable(self, search_table):
         self.table_type = search_table
