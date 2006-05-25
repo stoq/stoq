@@ -75,51 +75,79 @@ dbusername=%(DBUSERNAME)s"""
     # Only Postgresql database is supported right now
     rdbms = DEFAULT_RDBMS
     domain = 'stoq'
-    filename = 'stoq.conf'
     datafile = 'data'
 
     def __init__(self, filename=None):
-        self.config = SafeConfigParser()
-        homepath = self.get_homepath()
         if not filename:
-            self.home_filename = os.path.join(homepath, self.filename)
-        else:
-            self.home_filename = filename
+            filename = self._get_config_file()
+
+        self._config = SafeConfigParser()
+
+        if filename:
+            if not self._open_config(filename):
+                filename = None
+
+        self._filename = filename
+
+    def _get_config_file(self):
+        filename = self.domain + '.conf'
+        configdir = self.get_config_directory()
+        standard = os.path.join(configdir, filename)
+        if os.path.exists(standard):
+            return standard
+
+        try:
+            conf_file = environ.find_resource('config', filename)
+        except EnvironmentError, e:
+            return
+        return conf_file
+
+    def get_config_directory(self):
+        return os.path.join(os.getenv('HOME'), '.' + self.domain)
 
     def _open_config(self, filename):
         if not os.path.exists(filename):
-            return 0
-        self.config.read(filename)
+            return False
+        self._config.read(filename)
 
-        for section in self.sections:
-            if not self.config.has_section(section):
-                msg = "config file does not have section: %s" % section
-                raise ConfigError, msg
+        for section in StoqConfig.sections:
+            if not self._config.has_section(section):
+                raise ConfigError(
+                    "config file does not have section: %s" % section)
         return True
 
-    def _store_password(self, password, path):
-        datafile = os.path.join(path, "data")
-        if os.path.exists(datafile):
-            self.check_permissions(datafile, writable=True)
-            os.remove(datafile)
-        fd = open(datafile, "w")
+    def _store_password(self, password):
+        configdir = self.get_config_directory()
+        datafile = os.path.join(configdir, StoqConfig.datafile)
+        if not os.path.exists(datafile):
+            if not os.path.exists(configdir):
+                try:
+                    os.makedirs(configdir)
+                    os.chmod(configdir, 0700)
+                except OSError, e:
+                    if e.errno == 13:
+                        raise FilePermissionError(
+                            "Could not " % configdir)
+                    raise
+
+        try:
+            fd = open(datafile, "w")
+        except OSError, e:
+            if e.errno == 13:
+                raise FilePermissionError("%s is not writable" % datafile)
+            raise
+
         # obfuscate password to avoid it being easily identified when
         # editing file on screen. this is *NOT* encryption!
-        text = binascii.b2a_base64(password)
-        fd.write(text)
+        fd.write(binascii.b2a_base64(password))
         fd.close()
 
-    def _get_password(self, datafile):
-        data = open(datafile).read()
-        password = binascii.a2b_base64(data)
-        return password
+    def _get_password(self, filename):
+        if not os.path.exists(filename):
+            return
 
-    def _check_installed_config_file(self):
-        try:
-            conf_file = environ.find_resource('config', self.filename)
-        except EnvironmentError:
-            return False
-        return conf_file
+        data = open(filename).read()
+        return binascii.a2b_base64(data)
 
     #
     # Public API
@@ -135,119 +163,88 @@ dbusername=%(DBUSERNAME)s"""
         if executable and not os.access(origin, os.X_OK):
             exception = "%s is not executable."
         if exception:
-            raise FilePermissionError, exception % origin
+            raise FilePermissionError(exception % origin)
 
     def remove_config_file(self):
         self.check_permissions(self.home_filename)
         os.remove(self.home_filename)
 
-    def get_homepath(self):
-        return os.path.join(os.getenv('HOME'), '.' + self.domain)
-
     def has_installed_config_data(self):
-        if (os.path.exists(self.home_filename) or
-            self._check_installed_config_file()):
-            return True
-        return False
-
-    def load_config(self):
-        # Try to load configuration  from:
-        # - $HOME/.$domain/$filename
-        # - $PREFIX/share/$domain/$filename
-
-        if self._open_config(self.home_filename):
-            return
-
-        installed_file = self._check_installed_config_file()
-        if not installed_file:
-            raise ConfigError("Could not find config file. You should "
-                              "first call 'install_default' and supply "
-                              "valid config information")
-
-        if not self._open_config(installed_file):
-            raise ConfigError("Could not open config file")
+        return self._filename != None
 
     @argcheck(DatabaseSettings)
     def install_default(self, config_data):
-        path = self.get_homepath()
-        if not os.path.exists(path):
-            os.makedirs(path)
-        else:
-            os.chmod(path, 0700)
-
         password = config_data.password
 
-        self._store_password(password, path)
-        fd = open(os.path.join(path, self.filename), 'w')
-        config_dict = dict(DOMAIN=self.domain,
-                           RDBMS=self.rdbms,
+        self._store_password(password)
+        configdir = self.get_config_directory()
+        filename = os.path.join(configdir, StoqConfig.domain + '.conf')
+        fd = open(filename, 'w')
+        config_dict = dict(DOMAIN=StoqConfig.domain,
+                           RDBMS=StoqConfig.rdbms,
                            PORT=config_data.port,
                            ADDRESS=config_data.address,
                            DBNAME=config_data.dbname,
                            TESTDB=config_data.dbname,
                            DBUSERNAME=config_data.username)
-        fd.write(self.config_template % config_dict)
+        fd.write(StoqConfig.config_template % config_dict)
         fd.close()
+        self._config.read(filename)
+        self._filename = filename
 
     def has_option(self, name, section='General'):
-        return self.config.has_option(section, name)
+        return self._config.has_option(section, name)
 
     def get_option(self, name, section='General'):
-        if not section in self.sections:
-            raise  ConfigError, 'Invalid section: %s' % section
+        if not section in StoqConfig.sections:
+            raise ConfigError('Invalid section: %s' % section)
 
-        if self.config.has_option(section, name):
-            return self.config.get(section, name)
+        if self._config.has_option(section, name):
+            return self._config.get(section, name)
 
-        raise NoConfigurationError, ('%s does not have option: %s' %
-                                     (self.filename, name))
+        raise NoConfigurationError('%s does not have option: %s' %
+                                   (self._filename, name))
 
     def set_option(self, name, section='General'):
-        if not section in self.sections:
-            raise ConfigError, 'Invalid section: %s' % section
+        if not section in StoqConfig.sections:
+            raise ConfigError('Invalid section: %s' % section)
 
-        self.config.set(section, name)
+        self._config.set(section, name)
 
     def set_database(self, database):
         """
         Overrides the default database configuration option.
         @param database: the database
         """
-        self.config.set('Database', 'dbname', database)
+        self._config.set('Database', 'dbname', database)
 
     def set_username(self, username):
         """
         Overrides the default username configuration option.
         @param username: the username
         """
-        self.config.set('Database', 'dbusername', username)
+        self._config.set('Database', 'dbusername', username)
 
     def set_hostname(self, hostname):
         """
         Overrides the default hostname configuration option.
         @param hostname: the hostname
         """
-        self.config.set('Database', 'address', hostname)
+        self._config.set('Database', 'address', hostname)
 
     def set_port(self, port):
         """
         Overrides the default hostname configuration option.
         param port: the port
         """
-        self.config.set('Database', 'port', port)
+        self._config.set('Database', 'port', port)
 
     def set_password(self, password):
         """
         Overrides the default hostname configuration option.
         @param password: the password
         """
-        homepath = self.get_homepath()
-        filename = os.path.join(homepath, self.filename)
-        if os.path.exists(filename):
-            path = homepath
-        else:
-            path = environ.get_resource_paths('config')[0]
-        self._store_password(password, path)
+        self._store_password(password)
 
     def use_test_database(self):
         self.set_database(self.get_option('testdb', section='Database'))
@@ -259,6 +256,7 @@ dbusername=%(DBUSERNAME)s"""
         try:
             conn_uri = self.get_connection_uri()
         except:
+            raise
             type, value, trace = sys.exc_info()
             raise ConfigError(value)
 
@@ -285,16 +283,12 @@ dbusername=%(DBUSERNAME)s"""
         return self.get_option('dbusername', section='Database')
 
     def get_password(self):
-        if self._check_installed_config_file():
-            try:
-                data_file = environ.find_resource('config', self.datafile)
-            except EnvironmentError:
-                raise ConfigError('No config data set at this point')
-        else:
-            homepath = self.get_homepath()
-            data_file = os.path.join(homepath, "data")
-            if not os.path.exists(data_file):
-                raise ConfigError('No config data set at this point')
+        """
+        @returns: password or None if it is not set
+        """
+
+        configdir = self.get_config_directory()
+        data_file = os.path.join(configdir, StoqConfig.datafile)
         return self._get_password(data_file)
 
     def get_connection_uri(self):

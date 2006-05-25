@@ -42,7 +42,6 @@ from stoq.lib.startup import setup, get_option_parser
 
 parser = get_option_parser()
 config = StoqConfig()
-config.load_config()
 
 options, args = parser.parse_args(sys.argv)
 options.clean = False

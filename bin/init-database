@@ -42,7 +42,6 @@ def main(args):
     options.clean = True
 
     config = StoqConfig()
-    config.load_config()
     config.check_connection()
     setup(config, options)
 
