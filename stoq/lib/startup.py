@@ -96,7 +96,7 @@ def get_option_parser():
                       action="store",
                       type="string",
                       dest="filename",
-                      default="stoq.conf",
+                      default=None,
                       help='Use this file name for config file')
     group.add_option('-v', '--verbose',
                      action="store_true",
@@ -142,7 +142,6 @@ def simple_setup(args, **kwargs):
     """
     parser = get_option_parser()
     config = StoqConfig()
-    config.load_config()
 
     options, args = parser.parse_args(args)
     if not 'clean' in kwargs:

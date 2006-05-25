@@ -114,8 +114,8 @@ class AppConfig:
         self.splash = splash
 
         # Ensure user's application directory is created
-        homepath = self.config.get_homepath()
-        self.check_dir_and_create(homepath)
+        configdir = self.config.get_config_directory()
+        self.check_dir_and_create(configdir)
 
         # Clean this up after #2450 is solved, disable this since it hides
         # bugs inside the application log
@@ -254,7 +254,7 @@ class AppConfig:
     #
 
     def get_cookiefile(self):
-        cookiefile = os.path.join(self.config.get_homepath(), "cookie")
+        cookiefile = os.path.join(self.config.get_config_directory(), "cookie")
         if os.path.exists(cookiefile):
             self.config.check_permissions(cookiefile, writable=True)
         return cookiefile

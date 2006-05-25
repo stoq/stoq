@@ -52,10 +52,8 @@ def _initialize(options):
         options.clean = True
 
     try:
-        config.load_config()
         config.check_connection()
     except:
-        raise
         type, value, trace = sys.exc_info()
         error(_('Could not open database config file'),
               long=_("Invalid config file settings, got error '%s', "
@@ -67,7 +65,6 @@ def _initialize(options):
     try:
         setup(config, options)
     except Exception, e:
-        raise
         error(_('Could not connect to database'), long=str(e))
         raise SystemExit("Error: bad connection settings provided")
 

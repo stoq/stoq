@@ -121,12 +121,13 @@ def main(args):
     # If a filename is specified on the commandline,
     # send it to all the tests, so we won't end up
     # using different configuration files
+    filename = None
     if options.filename:
-        os.environ['STOQ_CONFIG'] = options.filename
+        filename = options.filename
+        if not os.path.exists(filename):
+            raise SystemExit("No such a file or directory: %s" % filename)
 
-    config = StoqConfig()
-    config.load_config()
-
+    config = StoqConfig(filename=filename)
     if not options.dbname:
         config.use_test_database()
 
