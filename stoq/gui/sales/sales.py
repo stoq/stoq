@@ -93,10 +93,6 @@ class SalesApp(SearchableAppWindow):
                             self._update_toolbar)
         self._update_toolbar()
 
-    def on_searchbar_activate(self, slave, objs):
-        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
-        self._update_widgets()
-
     def _update_widgets(self):
         self._update_total_label()
 
@@ -114,13 +110,6 @@ class SalesApp(SearchableAppWindow):
 
     def _update_total_label(self):
         self.summary_label.update_total()
-
-    def get_filter_slave_items(self):
-        items = [(value, key) for key, value in Sale.statuses.items()
-                    # No reason to show orders in sales app
-                    if key != Sale.STATUS_ORDER]
-        items.append((_('Any'), ALL_ITEMS_INDEX))
-        return items
 
     def _preview_invoice_as_pdf(self, fiscal_note, sale, *args, **kwargs):
         raise NotImplementedError("not implemented yet :)")
@@ -158,8 +147,15 @@ class SalesApp(SearchableAppWindow):
         self.set_searchbar_columns(cols)
 
     #
-    # Hooks
+    # SearchableAppWindow Hooks
     #
+
+    def get_filter_slave_items(self):
+        items = [(value, key) for key, value in Sale.statuses.items()
+                    # No reason to show orders in sales app
+                    if key != Sale.STATUS_ORDER]
+        items.append((_('Any'), ALL_ITEMS_INDEX))
+        return items
 
     def get_filterslave_default_selected_item(self):
         return Sale.STATUS_CONFIRMED
@@ -183,6 +179,14 @@ class SalesApp(SearchableAppWindow):
         if status == ALL_ITEMS_INDEX:
             return
         return SaleView.q.status == status
+
+    #
+    # Callbacks
+    #
+
+    def on_searchbar_activate(self, slave, objs):
+        SearchableAppWindow.on_searchbar_activate(self, slave, objs)
+        self._update_widgets()
 
     #
     # Kiwi callbacks
