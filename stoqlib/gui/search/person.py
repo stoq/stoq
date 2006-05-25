@@ -39,7 +39,9 @@ from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
                                         CardProviderEditor,
                                         FinanceProviderEditor)
 from stoqlib.gui.base.search import SearchEditor
+from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
+from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
                                        IClient, ICreditProvider,
@@ -253,6 +255,15 @@ class ClientSearch(BasePersonSearch):
         status = self.filter_slave.get_selected_status()
         if status != ALL_ITEMS_INDEX:
             return self.table.q.status == status
+
+    def on_details_button_clicked(self, *args):
+        items = self.klist.get_selected()
+        client = PersonAdaptToClient.get(items.client_id, connection=self.conn)
+        run_dialog(ClientDetailsDialog, self, self.conn, client)
+
+    def update_widgets(self, *args):
+        items = self.klist.get_selected()
+        self.set_details_button_sensitive(items is not None)
 
 
 class TransporterSearch(BasePersonSearch):
