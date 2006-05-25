@@ -28,6 +28,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="ClientSearch">
+                        <property name="name">ClientSearch</property>
+                        <property name="label" translatable="yes">Clients...</property>
+                        <signal handler="_on_client_search_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;t</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="Copy">
                         <property name="name">Copy</property>
                         <property name="tooltip" translatable="yes">Copy selected object into the clipboard</property>
@@ -87,6 +95,14 @@
                         <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="SaleSearch">
+                        <property name="name">SaleSearch</property>
+                        <property name="label" translatable="yes">Sales...</property>
+                        <signal handler="_on_sale_search_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;l</property>
                     </widget>
                 </child>
                 <child>
@@ -172,10 +188,12 @@
                 </child>
             </widget>
         </child>
-        <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
+        <ui id="initial-state"><![CDATA[<ui>
+<menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar></ui>]]></ui>
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator/><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="till">
         <property name="height_request">570</property>
