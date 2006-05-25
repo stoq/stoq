@@ -189,10 +189,10 @@ class BaseEditor(BaseEditorSlave):
 
     def _get_title_format(self):
         if self.visual_mode:
-            return _("Details of %s")
+            return _(u"Details of %s")
         if self.edit_mode:
-            return _('Edit "%s" Details')
-        return _("Add %s")
+            return _(u'Edit Details of "%s"')
+        return _(u"Add %s")
 
     def get_title(self, model):
         if self.title:
