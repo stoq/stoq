@@ -629,6 +629,8 @@ class TableColumn:
             'What do you want for %s? Use paragraph or truncate?' % self
 
     def truncate_string(self, data):
+        if not isinstance(data, basestring):
+            data = str(data)
         if not self.truncate or not len(data):
             return data
         if self.truncate and not self.width:
