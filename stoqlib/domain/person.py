@@ -42,7 +42,7 @@ from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
                                  BaseSQLView)
-from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -637,6 +637,7 @@ class PersonAdaptToBranch(ModelAdapter):
     statuses = {STATUS_ACTIVE:      _(u'Active'),
                 STATUS_INACTIVE:    _(u'Inactive')}
 
+    identifier = AutoIncCol('stoqlib_branch_identifier_seq')
     manager = ForeignKey('Person', default=None)
     is_active= BoolCol(default=True)
 
