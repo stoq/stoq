@@ -1773,7 +1773,7 @@ msgstr "Órdens de Recebimento contendo:"
 
 #: ../stoqlib/gui/search/receiving.py:48
 msgid "receiving order"
-msgstr "órdem de recebimento"
+msgstr "ordem de recebimento"
 
 #: ../stoqlib/gui/search/receiving.py:48
 msgid "receiving orders"
@@ -1785,7 +1785,7 @@ msgstr "Recebido em"
 
 #: ../stoqlib/gui/search/receiving.py:57
 msgid "Purchase Order #"
-msgstr "Órdem de Compra #"
+msgstr "Ordem de Compra #"
 
 #: ../stoqlib/gui/search/category.py:46
 msgid "Base Sellable Category Search"
