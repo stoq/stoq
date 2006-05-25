@@ -23,8 +23,32 @@
                                 <child>
                                     <widget class="GtkButton" id="details_button">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Details</property>
                                         <property name="visible">True</property>
+                                        <child>
+                                            <widget class="GtkAlignment" id="alignment2">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                    <widget class="GtkHBox" id="hbox2">
+                                                        <property name="visible">True</property>
+                                                        <child>
+                                                            <widget class="GtkImage" id="image1">
+                                                                <property name="file">/home/lincoln/devel/stoq_packages/stoqlib/data/pixmaps/kfind16px.png</property>
+                                                                <property name="visible">True</property>
+                                                            </widget>
+                                                        </child>
+                                                        <child>
+                                                            <widget class="GtkLabel" id="label2">
+                                                                <property name="label" context="yes" translatable="yes">Details</property>
+                                                                <property name="visible">True</property>
+                                                            </widget>
+                                                            <packing>
+                                                                <property name="position">1</property>
+                                                            </packing>
+                                                        </child>
+                                                    </widget>
+                                                </child>
+                                            </widget>
+                                        </child>
                                     </widget>
                                 </child>
                                 <child>
