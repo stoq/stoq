@@ -50,7 +50,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="open_date">
+                            <widget class="ProxyLabel" id="open_date">
                                 <property name="data_type">date</property>
                                 <property name="model_attribute">open_date</property>
                                 <property name="visible">True</property>
@@ -63,7 +63,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="supplier">
+                            <widget class="ProxyLabel" id="supplier">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">supplier_name</property>
                                 <property name="visible">True</property>
@@ -128,7 +128,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="order_number">
+                            <widget class="ProxyLabel" id="order_number">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">order_number_str</property>
                                 <property name="visible">True</property>
@@ -142,7 +142,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="branch">
+                            <widget class="ProxyLabel" id="branch">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">branch_name</property>
                                 <property name="visible">True</property>
@@ -158,7 +158,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="status">
+                            <widget class="ProxyLabel" id="status">
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">status_str</property>
                                 <property name="visible">True</property>
@@ -220,7 +220,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="discount">
+                                            <widget class="ProxyLabel" id="discount">
                                                 <property name="label" context="yes" translatable="yes">Discount:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
@@ -241,7 +241,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="discount_lbl">
+                                            <widget class="ProxyLabel" id="discount_lbl">
                                                 <property name="data_type">currency</property>
                                                 <property name="model_attribute">discount_value</property>
                                                 <property name="visible">True</property>
@@ -266,7 +266,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="surcharge">
+                                            <widget class="ProxyLabel" id="surcharge">
                                                 <property name="label" context="yes" translatable="yes">Surcharge:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -288,9 +288,9 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="charge_value">
+                                            <widget class="ProxyLabel" id="surcharge_value">
                                                 <property name="data_type">currency</property>
-                                                <property name="model_attribute">charge_value</property>
+                                                <property name="model_attribute">surcharge_value</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0.0</property>
                                             </widget>
@@ -303,7 +303,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="subtotal">
+                                            <widget class="ProxyLabel" id="subtotal">
                                                 <property name="data_type">bool</property>
                                                 <property name="label" context="yes" translatable="yes">Subtotal:</property>
                                                 <property name="visible">True</property>
@@ -317,7 +317,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="total">
+                                            <widget class="ProxyLabel" id="total">
                                                 <property name="data_type">bool</property>
                                                 <property name="label" context="yes" translatable="yes">Total:</property>
                                                 <property name="visible">True</property>
@@ -333,7 +333,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="purchase_subtotal">
+                                            <widget class="ProxyLabel" id="purchase_subtotal">
                                                 <property name="data_type">currency</property>
                                                 <property name="model_attribute">purchase_subtotal</property>
                                                 <property name="visible">True</property>
@@ -347,7 +347,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="purchase_total">
+                                            <widget class="ProxyLabel" id="purchase_total">
                                                 <property name="data_type">currency</property>
                                                 <property name="model_attribute">purchase_total</property>
                                                 <property name="visible">True</property>
@@ -409,14 +409,14 @@
                                         <property name="row_spacing">6</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                            <widget class="ProxyLabel" id="kiwilabel1">
                                                 <property name="label" context="yes" translatable="yes">Payment Method:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
                                             </widget>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
+                                            <widget class="ProxyLabel" id="kiwilabel10">
                                                 <property name="label" context="yes" translatable="yes">Salesperson:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -437,7 +437,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                                            <widget class="ProxyLabel" id="kiwilabel5">
                                                 <property name="label" context="yes" translatable="yes">Transporter:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -448,7 +448,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel9">
+                                            <widget class="ProxyLabel" id="kiwilabel9">
                                                 <property name="label" context="yes" translatable="yes">Freight Type:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -469,7 +469,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel14">
+                                            <widget class="ProxyLabel" id="kiwilabel14">
                                                 <property name="label" context="yes" translatable="yes">Notes:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -486,7 +486,7 @@
                                                 <property name="visible">True</property>
                                                 <property name="vscrollbar_policy">automatic</property>
                                                 <child>
-                                                    <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
+                                                    <widget class="ProxyTextView" id="notes">
                                                         <property name="cursor_visible">False</property>
                                                         <property name="data_type">unicode</property>
                                                         <property name="editable">False</property>
@@ -502,7 +502,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="payment_method">
+                                            <widget class="ProxyLabel" id="payment_method">
                                                 <property name="data_type">unicode</property>
                                                 <property name="model_attribute">default_payment_method_name</property>
                                                 <property name="visible">True</property>
@@ -514,7 +514,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="salesperson">
+                                            <widget class="ProxyLabel" id="salesperson">
                                                 <property name="data_type">unicode</property>
                                                 <property name="model_attribute">salesperson_name</property>
                                                 <property name="visible">True</property>
@@ -528,7 +528,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="transporter">
+                                            <widget class="ProxyLabel" id="transporter">
                                                 <property name="data_type">unicode</property>
                                                 <property name="model_attribute">transporter_name</property>
                                                 <property name="visible">True</property>
@@ -542,7 +542,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="freight_type">
+                                            <widget class="ProxyLabel" id="freight_type">
                                                 <property name="data_type">unicode</property>
                                                 <property name="model_attribute">freight_type_name</property>
                                                 <property name="visible">True</property>
@@ -565,7 +565,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                            <widget class="ProxyLabel" id="kiwilabel3">
                                                 <property name="label" context="yes" translatable="yes">Number of Installments:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -585,7 +585,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel7">
+                                            <widget class="ProxyLabel" id="kiwilabel7">
                                                 <property name="label" context="yes" translatable="yes">Expected Receival Date:</property>
                                                 <property name="visible">True</property>
                                                 <property name="xalign">1.0</property>
@@ -598,7 +598,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel11">
+                                            <widget class="ProxyLabel" id="kiwilabel11">
                                                 <property name="label" context="yes" translatable="yes">Freight:</property>
                                                 <property name="visible">True</property>
                                             </widget>
@@ -619,7 +619,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="installments_number">
+                                            <widget class="ProxyLabel" id="installments_number">
                                                 <property name="data_type">int</property>
                                                 <property name="model_attribute">installments_number</property>
                                                 <property name="visible">True</property>
@@ -640,7 +640,7 @@
                                             </packing>
                                         </child>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+label+Label" id="receival_date">
+                                            <widget class="ProxyLabel" id="receival_date">
                                                 <property name="data_type">date</property>
                                                 <property name="model_attribute">expected_receival_date</property>
                                                 <property name="visible">True</property>
@@ -657,7 +657,7 @@
                                             <widget class="GtkHBox" id="hbox1">
                                                 <property name="visible">True</property>
                                                 <child>
-                                                    <widget class="kiwi+ui+widgets+label+Label" id="freight">
+                                                    <widget class="ProxyLabel" id="freight">
                                                         <property name="data_type">Decimal</property>
                                                         <property name="model_attribute">freight</property>
                                                         <property name="visible">True</property>
@@ -665,7 +665,7 @@
                                                     </widget>
                                                 </child>
                                                 <child>
-                                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel13">
+                                                    <widget class="ProxyLabel" id="kiwilabel13">
                                                         <property name="label" context="yes" translatable="yes">%</property>
                                                         <property name="visible">True</property>
                                                         <property name="xalign">0.0</property>

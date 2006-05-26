@@ -63,6 +63,15 @@ class ReceivingOrderItem(Domain):
     def get_total(self):
         return currency(self.quantity_received * self.cost)
 
+    def get_quantity_unit_string(self):
+        unit = self.sellable.unit
+        return "%s %s" % (self.quantity_received,
+                          unit and unit.description or "")
+
+    def get_unit_description(self):
+        unit = self.sellable.unit
+        return "%s" % (unit and unit.description or "")
+
 
 class ReceivingOrder(Domain):
     """Receiving order definition."""
@@ -76,7 +85,7 @@ class ReceivingOrder(Domain):
     confirm_date = DateTimeCol(default=None)
     notes = UnicodeCol(default='')
     freight_total = PriceCol(default=0)
-    charge_value = PriceCol(default=0)
+    surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
 
     # This is Brazil-specific information
@@ -161,7 +170,7 @@ class ReceivingOrder(Domain):
         if not self.transporter:
             return u""
         return self.transporter.get_adapted().name
-    
+
     def get_receiving_number_str(self):
         return u"%04d" % self.receiving_number
 
@@ -193,8 +202,8 @@ class ReceivingOrder(Domain):
     # General methods
     #
 
-    def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = currency(0)
+    def reset_discount_and_surcharge(self):
+        self.discount_value = self.surcharge_value = currency(0)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
@@ -206,7 +215,7 @@ class ReceivingOrder(Domain):
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
         Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of charge
+        factor like 1.05 = 5 % of surcharge
         The correct form is 'percentage = 3' for a discount of 3 %
         """
         self.discount_value = self._get_percentage_value(value)
@@ -225,27 +234,27 @@ class ReceivingOrder(Domain):
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
 
-    def _set_charge_by_percentage(self, value):
-        """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a
+    def _set_surcharge_by_percentage(self, value):
+        """Sets a surcharge by percentage.
+        Note that surcharge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a charge of 3 %
+        The correct form is 'percentage = 3' for a surcharge of 3 %
         """
-        self.charge_value = self._get_percentage_value(value)
+        self.surcharge_value = self._get_percentage_value(value)
 
-    def _get_charge_by_percentage(self):
-        charge_value = self.charge_value
-        if not charge_value:
+    def _get_surcharge_by_percentage(self):
+        surcharge_value = self.surcharge_value
+        if not surcharge_value:
             return currency(0)
         subtotal = self.get_products_total()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
-        total = subtotal + charge_value
+        total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
         return percentage
 
-    charge_percentage = property(_get_charge_by_percentage,
-                                 _set_charge_by_percentage)
+    surcharge_percentage = property(_get_surcharge_by_percentage,
+                                 _set_surcharge_by_percentage)
 
 
 class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):

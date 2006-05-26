@@ -27,7 +27,7 @@
 
 from stoqlib.gui.base.editors import BaseEditorSlave, NoteEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
@@ -121,16 +121,16 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                 self.proxy.update('freight_total')
 
     def setup_slaves(self):
-        slave_holder = 'discount_charge_holder'
+        slave_holder = 'discount_surcharge_holder'
         if self.get_slave(slave_holder):
             return
         if not self.edit_mode:
-            self.model.reset_discount_and_charge()
-        klass = DiscountChargeSlave
-        self.discount_charge_slave = klass(self.conn, self.model,
-                                           ReceivingOrder,
-                                           visual_mode=self.visual_mode)
-        self.attach_slave(slave_holder, self.discount_charge_slave)
+            self.model.reset_discount_and_surcharge()
+        klass = DiscountSurchargeSlave
+        self.discount_surcharge_slave = klass(self.conn, self.model,
+                                              ReceivingOrder,
+                                              visual_mode=self.visual_mode)
+        self.attach_slave(slave_holder, self.discount_surcharge_slave)
 
     #
     # Callbacks

@@ -100,6 +100,11 @@ class PurchaseItem(Domain):
         return "%s %s" % (format_quantity(self.quantity),
                           unit and unit.description or "")
 
+    def get_quantity_received_as_string(self):
+        unit = self.sellable.unit
+        return "%s %s" % (format_quantity(self.quantity_received),
+                          unit and unit.description or "")
+
 class PurchaseOrder(Domain):
     """Purchase and order definition."""
 
@@ -133,7 +138,7 @@ class PurchaseOrder(Domain):
     salesperson_name = UnicodeCol(default='')
     freight_type = IntCol(default=FREIGHT_FOB)
     freight = DecimalCol(default=0)
-    charge_value = PriceCol(default=0)
+    surcharge_value = PriceCol(default=0)
     discount_value = PriceCol(default=0)
     supplier = ForeignKey('PersonAdaptToSupplier')
     branch = ForeignKey('PersonAdaptToBranch')
@@ -177,7 +182,7 @@ class PurchaseOrder(Domain):
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
         Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of charge
+        factor like 1.05 = 5 % of surcharge
         The correct form is 'percentage = 3' for a discount of 3 %"""
         self.discount_value = self._get_percentage_value(value)
 
@@ -195,28 +200,28 @@ class PurchaseOrder(Domain):
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
 
-    def _set_charge_by_percentage(self, value):
-        """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a
+    def _set_surcharge_by_percentage(self, value):
+        """Sets a surcharge by percentage.
+        Note that surcharge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a charge of 3 %"""
-        self.charge_value = self._get_percentage_value(value)
+        The correct form is 'percentage = 3' for a surcharge of 3 %"""
+        self.surcharge_value = self._get_percentage_value(value)
 
-    def _get_charge_by_percentage(self):
-        charge_value = self.charge_value
-        if not charge_value:
+    def _get_surcharge_by_percentage(self):
+        surcharge_value = self.surcharge_value
+        if not surcharge_value:
             return currency(0)
         subtotal = self.get_purchase_subtotal()
         assert subtotal > 0, ('the subtotal should not be zero '
                               'at this point')
-        total = subtotal + charge_value
+        total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
         return percentage
 
-    charge_percentage = property(_get_charge_by_percentage,
-                                 _set_charge_by_percentage)
-    def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = currency(0)
+    surcharge_percentage = property(_get_surcharge_by_percentage,
+                                 _set_surcharge_by_percentage)
+    def reset_discount_and_surcharge(self):
+        self.discount_value = self.surcharge_value = currency(0)
 
     def can_close(self):
         for item in self.get_items():
@@ -289,7 +294,7 @@ class PurchaseOrder(Domain):
 
     def get_purchase_total(self):
         subtotal = self.get_purchase_subtotal()
-        total = subtotal - self.discount_value + self.charge_value
+        total = subtotal - self.discount_value + self.surcharge_value
         if total < 0:
             raise ValueError('Purchase total can not be lesser than zero')
         return currency(total)
@@ -388,7 +393,7 @@ class PurchaseOrderView(SQLObject, BaseSQLView):
     confirm_date = DateTimeCol()
     salesperson_name = UnicodeCol()
     freight = DecimalCol()
-    charge_value = PriceCol()
+    surcharge_value = PriceCol()
     discount_value = PriceCol()
     supplier_name = UnicodeCol()
     transporter_name = UnicodeCol()

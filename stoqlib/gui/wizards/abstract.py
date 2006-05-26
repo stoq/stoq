@@ -48,7 +48,7 @@ from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
                                               SelectPaymentMethodSlave)
-from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
@@ -131,7 +131,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
     def __init__(self, wizard, conn, model, payment_group):
         self.payment_group = payment_group
         WizardEditorStep.__init__(self, conn, wizard, model)
-        self.update_discount_and_charge()
+        self.update_discount_and_surcharge()
         self.setup_invoice_number_widgets()
 
     def _update_totals(self):
@@ -180,8 +180,8 @@ class AbstractSalesPersonStep(WizardEditorStep):
     # Hooks
     #
 
-    def update_discount_and_charge(self):
-        """Update discount and charge values when it's needed"""
+    def update_discount_and_surcharge(self):
+        """Update discount and surcharge values when it's needed"""
 
     def setup_invoice_number_widgets(self):
         """Perform some operations for invoice number widgets when it's
@@ -220,14 +220,14 @@ class AbstractSalesPersonStep(WizardEditorStep):
     #
 
     def setup_slaves(self):
-        self.disccharge_slave = DiscountChargeSlave(self.conn, self.model,
+        self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
                                                     self.model_type)
-        self.disccharge_slave.connect('discount-changed',
-                                      self.on_disccharge_slave_changed)
-        slave_holder = 'discount_charge_slave'
+        self.discsurcharge_slave.connect('discount-changed',
+                                      self.on_discsurcharge_slave_changed)
+        slave_holder = 'discount_surcharge_slave'
         if self.get_slave(slave_holder):
             self.detach_slave(slave_holder)
-        self.attach_slave('discount_charge_slave', self.disccharge_slave)
+        self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
         pm_ifaces = get_active_pm_ifaces()
         if len(pm_ifaces) == 1:
             self.pm_slave = SelectCashMethodSlave()
@@ -247,7 +247,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
     # Callbacks
     #
 
-    def on_disccharge_slave_changed(self, slave):
+    def on_discsurcharge_slave_changed(self, slave):
         self._update_totals()
 
     def on_notes_button__clicked(self, *args):

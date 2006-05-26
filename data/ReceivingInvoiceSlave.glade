@@ -832,11 +832,11 @@
                     <widget class="GtkHBox" id="hbox3">
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkExpander" id="discount_charge_expander">
+                            <widget class="GtkExpander" id="discount_surcharge_expander">
                                 <property name="label" context="yes" translatable="yes">Further Details</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkEventBox" id="discount_charge_holder">
+                                    <widget class="GtkEventBox" id="discount_surcharge_holder">
                                         <property name="visible">True</property>
                                         <child>
                                             <placeholder/>

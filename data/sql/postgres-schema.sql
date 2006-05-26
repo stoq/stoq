@@ -207,11 +207,11 @@ CREATE VIEW abstract_sales_product_view AS
   SELECT
   sum(quantity) as total_quantity,
   sum(subtotal) as subtotal,
-  sum(subtotal) - sale.discount_value + sale.charge_value as total,
+  sum(subtotal) - sale.discount_value + sale.surcharge_value as total,
   sale_id
     FROM abstract_product_item_view, sale
       GROUP BY
-        sale_id, sale.discount_value, sale.charge_value, sale.id
+        sale_id, sale.discount_value, sale.surcharge_value, sale.id
           HAVING
             sale_id = sale.id;
 
@@ -233,11 +233,11 @@ CREATE VIEW abstract_purchase_product_view AS
   sum(quantity) as ordered_quantity,
   sum(quantity_received) as received_quantity,
   sum(cost) as subtotal,
-  sum(cost) - purchase_order.discount_value + purchase_order.charge_value as total,
+  sum(cost) - purchase_order.discount_value + purchase_order.surcharge_value as total,
   order_id
     FROM purchase_item, purchase_order
       GROUP BY
-        order_id, purchase_order.discount_value, purchase_order.charge_value,
+        order_id, purchase_order.discount_value, purchase_order.surcharge_value,
         purchase_order.id
           HAVING
             order_id = purchase_order.id;
@@ -478,7 +478,7 @@ CREATE VIEW sale_view AS
   --     client_name        - the sale client name
   --     client_id          - the if of the client table
   --     subtotal           - the sum of all items in the sale
-  --     charge_value       - the sale charge value
+  --     surcharge_value    - the sale surcharge value
   --     discount_value     - the sale discount value
   --     total              - the subtotal - discount + charge
   --     total_quantity     - the items total quantity for the sale
@@ -486,7 +486,7 @@ CREATE VIEW sale_view AS
   SELECT DISTINCT
   sale.id, sale.coupon_id, sale.order_number, sale.open_date,
   sale.close_date, sale.status, person.name as salesperson_name,
-  sale.charge_value, sale.discount_value, sale.confirm_date,
+  sale.surcharge_value, sale.discount_value, sale.confirm_date,
   sale.cancel_date, sale.notes,
   abstract_sales_client_view.client_name,
   abstract_sales_client_view.client_id,
@@ -553,7 +553,7 @@ CREATE VIEW purchase_order_view AS
   --    confirm_date            - the date when the order was confirmed
   --    salesperson_name        - the name of supplier's salesperson
   --    freight                 - the freight value
-  --    charge_value            - the charge value for the order total
+  --    surcharge_value         - the surcharge value for the order total
   --    discount_value          - the discount_value for the order total
   --    supplier_name           - the supplier name
   --    transporter_name        - the transporter name
@@ -561,7 +561,7 @@ CREATE VIEW purchase_order_view AS
   --    ordered_quantity        - the total quantity ordered
   --    received_quantity       - the total quantity received
   --    subtotal                - the order subtotal (sum of product values)
-  --    total                   - subtotal - discount_value + charge_value
+  --    total                   - subtotal - discount_value + surcharge_value
   --
   SELECT DISTINCT
   purchase_order.id, purchase_order.status, purchase_order.order_number,
@@ -569,7 +569,7 @@ CREATE VIEW purchase_order_view AS
   purchase_order.expected_receival_date,
   purchase_order.expected_pay_date, purchase_order.receival_date,
   purchase_order.confirm_date, purchase_order.salesperson_name,
-  purchase_order.freight, purchase_order.charge_value,
+  purchase_order.freight, purchase_order.surcharge_value,
   purchase_order.discount_value, person.name as supplier_name,
   abstract_purchase_transporter_view.transporter_name,
   abstract_purchase_branch_view.branch_name,

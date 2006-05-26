@@ -15,16 +15,16 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel9">
+                            <widget class="ProxyLabel" id="kiwilabel9">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Discount:</property>
                                 <property name="visible">True</property>
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel10">
+                            <widget class="ProxyLabel" id="kiwilabel10">
                                 <property name="data_type">unicode</property>
-                                <property name="label" context="yes" translatable="yes">Charge:</property>
+                                <property name="label" context="yes" translatable="yes">Surcharge:</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -44,7 +44,7 @@
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_perc_ck">
+                            <widget class="ProxyRadioButton" id="discount_perc_ck">
                                 <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
                                 <property name="label" context="yes" translatable="yes"></property>
@@ -55,7 +55,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="discount_value_ck">
+                            <widget class="ProxyRadioButton" id="discount_value_ck">
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
                                 <property name="group">discount_perc_ck</property>
@@ -73,19 +73,20 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="discount_perc">
+                                    <widget class="ProxyEntry" id="discount_perc">
                                         <property name="data_type">Decimal</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">discount_percentage</property>
                                         <property name="visible">True</property>
                                         <property name="width_request">80</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                    <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">%</property>
                                         <property name="visible">True</property>
@@ -106,12 +107,13 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="discount_value">
+                                    <widget class="ProxyEntry" id="discount_value">
                                         <property name="data_type">currency</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">discount_value</property>
                                         <property name="visible">True</property>
                                         <property name="width_request">80</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -154,7 +156,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_perc_ck">
+                            <widget class="ProxyRadioButton" id="surcharge_perc_ck">
                                 <property name="data_type">bool</property>
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
@@ -166,10 +168,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="charge_value_ck">
+                            <widget class="ProxyRadioButton" id="surcharge_value_ck">
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
-                                <property name="group">charge_perc_ck</property>
+                                <property name="group">surcharge_perc_ck</property>
                                 <property name="is_focus">True</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -186,18 +188,19 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="charge_perc">
+                                    <widget class="ProxyEntry" id="surcharge_perc">
                                         <property name="data_type">Decimal</property>
-                                        <property name="model_attribute">charge_percentage</property>
+                                        <property name="model_attribute">surcharge_percentage</property>
                                         <property name="visible">True</property>
                                         <property name="width_request">80</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel6">
+                                    <widget class="ProxyLabel" id="kiwilabel6">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">%</property>
                                         <property name="visible">True</property>
@@ -218,12 +221,13 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="charge_value">
+                                    <widget class="ProxyEntry" id="surcharge_value">
                                         <property name="data_type">currency</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">charge_value</property>
+                                        <property name="model_attribute">surcharge_value</property>
                                         <property name="visible">True</property>
                                         <property name="width_request">80</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
