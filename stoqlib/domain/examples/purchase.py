@@ -39,7 +39,7 @@ MAX_PURCHASES_NUMBER = 4
 SELLABLES_PER_PURCHASE = 2
 
 def create_purchases():
-    print_msg('Creating purchases...', break_line=False)
+    print_msg('Creating purchase orders...', break_line=False)
     conn = new_transaction()
 
     supplier_table = Person.getAdapterClass(ISupplier)
