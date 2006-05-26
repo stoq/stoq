@@ -70,6 +70,8 @@ def test_gui(options, tests=None):
     from stoqlib.domain.examples.createall import create
     create()
 
+    os.environ['STOQ_TEST_MODE'] = '1'
+
     for filename in tests:
         test_name = os.path.basename(filename)
         if options.verbose:
@@ -117,6 +119,7 @@ def main(args):
     parser = get_option_parser()
     options, args = parser.parse_args(args)
     options.clean = True
+
 
     # If a filename is specified on the commandline,
     # send it to all the tests, so we won't end up
