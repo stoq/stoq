@@ -138,7 +138,7 @@ class PasswordEditor(BaseEditor):
 
     def __init__(self, conn, user, visual_mode=False):
         self.user = user
-        BaseEditor.__init__(self, conn, vsual_mode=visual_mode)
+        BaseEditor.__init__(self, conn, visual_mode=visual_mode)
         self._setup_widgets()
 
     def _setup_size_group(self, size_group, widgets, obj):
