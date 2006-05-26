@@ -31,11 +31,11 @@ from datetime import date
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.ui.widgets.list import Column
-from kiwi.ui.dialogs import messagedialog
 from stoqlib.exceptions import TillError, StoqlibError
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.lib.message import yesno
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
@@ -262,29 +262,30 @@ class TillApp(SearchableAppWindow):
 
     def _on_close_till_action__clicked(self, *args):
         if not emit_reduce_Z(self.conn):
-            short = _("It's not possible to emit a reduce Z")
-            long = _("It's not possible to emit a reduce Z for the "
-                     "configured printer.\nWould you like to ignore "
-                     "this error and continue?")
-            buttons = ((_("Cancel Operation"), gtk.RESPONSE_CANCEL),
-                       (_("Ignore this error"), gtk.RESPONSE_YES))
+            text = _(u"It's not possible to emit a reduce Z for the "
+                      "configured printer.\nWould you like to ignore "
+                      "this error and continue?")
+            buttons = ((_("Cancel"), gtk.RESPONSE_CANCEL),
+                       (_("Ignore"), gtk.RESPONSE_YES))
             parent = self.get_toplevel()
-            if messagedialog(gtk.MESSAGE_QUESTION, short, long,
-                             parent, buttons) != gtk.RESPONSE_YES:
+            if (yesno(text, default=gtk.RESPONSE_YES,
+                      buttons=buttons) != gtk.RESPONSE_YES):
                 return
         self.close_till()
 
     def _on_open_till_action__clicked(self, *args):
         if not emit_read_X(self.conn):
-            short = _("It's not possible to emit a read X")
-            long = _("It's not possible to emit a read X for the "
-                     "configured printer.\nWould you like to ignore "
-                     "this error and continue?")
-            buttons = ((_("Cancel Operation"), gtk.RESPONSE_CANCEL),
-                       (_("Ignore this error"), gtk.RESPONSE_YES))
+            text = _(u"It's not possible to emit a read X for the "
+                      "configured printer.\nWould you like to ignore "
+                      "this error and continue?")
+            buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                       (_(u"Ignore"), gtk.RESPONSE_YES))
             parent = self.get_toplevel()
-            if messagedialog(gtk.MESSAGE_QUESTION, short, long,
-                             parent, buttons) != gtk.RESPONSE_YES:
+            y = yesno(text, default=gtk.RESPONSE_YES,
+                      buttons=buttons)
+            print y, gtk.RESPONSE_YES, gtk.RESPONSE_CANCEL
+            if (yesno(text, default=gtk.RESPONSE_YES,
+                      buttons=buttons) != gtk.RESPONSE_YES):
                 return
         self.open_till()
 

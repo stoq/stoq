@@ -29,6 +29,10 @@
 import sys
 import gettext
 
+from stoqlib.lib.message import error
+from stoqlib.lib.message import ISystemNotifier
+from kiwi.component import provide_utility
+
 from stoq.lib.applist import get_application_names
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
@@ -44,8 +48,9 @@ def _run_first_time_wizard(config):
     return model.db_settings
 
 def _initialize(options):
-    from kiwi.ui.dialogs import error
-    config = StoqConfig()
+    from stoqlib.gui.base.dialogs import DialogSystemNotifier
+    provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
+    config = StoqConfig(filename=options.filename)
 
     if not config.has_installed_config_data():
         config.install_default(_run_first_time_wizard(config))
@@ -60,12 +65,13 @@ def _initialize(options):
                      "of type '%s'" % (value, type)))
         raise SystemExit("Error: bad config file")
 
+
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
         setup(config, options)
     except Exception, e:
-        error(_('Could not connect to database'), long=str(e))
+        error(_('Could not connect to database'), str(e))
         raise SystemExit("Error: bad connection settings provided")
 
 def _run_app(options, appname):

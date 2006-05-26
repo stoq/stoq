@@ -32,8 +32,8 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database import rollback_and_begin
+from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.gui.base.dialogs import confirm_dialog, notify_dialog
 from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchase import PurchaseWizard
 from stoqlib.gui.search.category import (BaseSellableCatSearch,
@@ -130,8 +130,8 @@ class PurchaseApp(SearchableAppWindow):
                             if i.status == PurchaseOrder.ORDER_PENDING]
         valid_orders_len = len(valid_orders)
         if not valid_orders_len:
-            return notify_dialog(_("There are no orders with status "
-                                   "pending in the selection"))
+            return warning(_("There are no orders with status "
+                             "pending in the selection"))
         elif valid_orders_len > 1:
             msg = (_("The %d selected orders will be market as sent.")
                    % valid_orders_len)
@@ -139,11 +139,13 @@ class PurchaseApp(SearchableAppWindow):
             msg = _('The selected order will be market as sent.')
         invalid_qty = len(orders) - valid_orders_len
         if valid_orders_len != len(orders):
-            msg += "\n%s" % (_("Warning: there are %d order(s) with "
+            msg += "\n%s" % (_(u"Warning: there are %d order(s) with "
                                "status different than pending that "
                                "will not be included" % invalid_qty))
-        title = _('Send order to supplier')
-        if not confirm_dialog(msg, title, ok_label="C_onfirm"):
+        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                   (_(u"Confirm"), gtk.RESPONSE_YES))
+        if (not yesno(msg, default=gtk.RESPONSE_YES, buttons=buttons) ==
+            gtk.RESPONSE_YES):
             return
         for item in valid_orders:
             order = PurchaseOrder.get(item.id, connection=self.conn)

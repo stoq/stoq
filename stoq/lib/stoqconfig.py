@@ -34,7 +34,6 @@ import gtk
 import gobject
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
-from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
@@ -297,7 +296,7 @@ class AppConfig:
 
     def abort_mission(self, msg=None, title=None):
         if msg:
-            notify_dialog(msg, title)
+            warnings(msg, title)
         raise SystemExit
 
 #

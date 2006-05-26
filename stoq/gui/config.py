@@ -27,10 +27,10 @@
 import gettext
 
 from kiwi.python import Settable
-from kiwi.ui.dialogs import error
 
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.database import DatabaseSettings
+from stoqlib.lib.message import warning
 
 
 _ = gettext.gettext
@@ -93,15 +93,13 @@ class DatabaseSettingsStep(WizardEditorStep):
             msg = _("The database address '%s' is invalid. Please fix the "
                     "address you have set and try again"
                     % self.model.address)
-            error(_('Invalid database address'), long=msg,
-                  parent=self.wizard.get_toplevel())
+            warning(_(u'Invalid database address'), long=msg)
             self.address.set_invalid(_("Invalid database address"))
             self.force_validation()
             return False
         conn_ok, error_msg = self.model.check_database_connection()
         if not conn_ok:
-            error(_('Invalid database settings'), long=error_msg,
-                  parent=self.wizard.get_toplevel())
+            warning(_('Invalid database settings'), long=error_msg)
             return False
         return True
 
