@@ -75,6 +75,7 @@ class AbstractModel(object):
         if not isinstance(self, Adapter):
             return self.id == other.id
         return self.get_adapted_id() == other.get_adapted_id()
+
     #
     # Overwriting some SQLObject methods
     #
@@ -170,7 +171,7 @@ class AbstractModel(object):
         return self._is_valid_model
 
     #
-    # Auxiliar methods
+    # General methods
     #
 
     def clone(self):
@@ -444,6 +445,7 @@ class Domain(BaseDomain, Adaptable):
         adapter = cls.getAdapterClass(iface)
         return adapter.get(object_id, **kwargs)
 
+
 class InheritableModel(AbstractModel, InheritableSQLObject, Adaptable):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
@@ -452,12 +454,15 @@ class InheritableModel(AbstractModel, InheritableSQLObject, Adaptable):
         InheritableSQLObject.__init__(self, *args, **kwargs)
         Adaptable.__init__(self)
 
+
 class BaseSQLView:
     """A base marker class for SQL Views"""
+
 
 #
 # Adapters
 #
+
 
 class ModelAdapter(BaseDomain, Adapter):
 
