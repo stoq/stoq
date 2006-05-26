@@ -24,13 +24,13 @@
 ##
 """ Purchase details dialogs """
 
+import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import print_report
-from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.reporting.purchase import PurchaseOrderReport
@@ -50,7 +50,7 @@ class PurchaseDetailsDialog(BaseEditor):
                      'status',
                      'purchase_total',
                      'purchase_subtotal',
-                     'charge_value',
+                     'surcharge_value',
                      'transporter',
                      'salesperson',
                      'receival_date',
@@ -81,11 +81,9 @@ class PurchaseDetailsDialog(BaseEditor):
         return [Column('sellable.base_sellable_info.description',
                        title=_('Description'),
                        data_type=str, expand=True, searchable=True),
-                Column('quantity', title=_('Quantity'), data_type=float,
-                       width=90, format_func=format_quantity,
-                       editable=True),
-                Column('sellable.unit_description', title=_('Unit'),
-                        data_type=str, width=40),
+                Column('quantity_as_string', title=_('Quantity'),
+                       data_type=str, width=90, editable=True,
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
                        editable=True, width=90),
                 Column('total', title=_('Total'), data_type=currency,
@@ -95,11 +93,10 @@ class PurchaseDetailsDialog(BaseEditor):
         return [Column('sellable.base_sellable_info.description',
                        title=_('Description'),
                        data_type=str, expand=True, searchable=True),
-                Column('quantity_received', title=_('Quantity Received'),
-                       data_type=float, width=130,
-                       format_func=format_quantity, editable=True),
-                Column('sellable.unit_description', title=_('Unit'),
-                        data_type=str, width=40),
+                Column('quantity_received_as_string',
+                       title=_('Quantity Received'),
+                       data_type=float, width=130, editable=True,
+                       justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
                        editable=True, width=90),
                 Column('received_total', title=_('Total'),

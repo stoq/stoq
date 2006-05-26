@@ -124,7 +124,7 @@ class Sale(Domain):
     cancel_date = DateTimeCol(default=None)
     status = IntCol(default=STATUS_OPENED)
     discount_value = PriceCol(default=0)
-    charge_value = PriceCol(default=0)
+    surcharge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
     client_role = IntCol(default=None)
 
@@ -146,7 +146,7 @@ class Sale(Domain):
     def _set_discount_by_percentage(self, value):
         """Sets a discount by percentage.
         Note that percentage must be added as an absolute value not as a
-        factor like 1.05 = 5 % of charge
+        factor like 1.05 = 5 % of surcharge
         The correct form is 'percentage = 3' for a discount of 3 %"""
         self.discount_value = self._get_percentage_value(value)
 
@@ -164,26 +164,26 @@ class Sale(Domain):
     discount_percentage = property(_get_discount_by_percentage,
                                    _set_discount_by_percentage)
 
-    def _set_charge_by_percentage(self, value):
-        """Sets a charge by percentage.
-        Note that charge must be added as an absolute value not as a
+    def _set_surcharge_by_percentage(self, value):
+        """Sets a surcharge by percentage.
+        Note that surcharge must be added as an absolute value not as a
         factor like 0.97 = 3 % of discount.
-        The correct form is 'percentage = 3' for a charge of 3 %"""
-        self.charge_value = self._get_percentage_value(value)
+        The correct form is 'percentage = 3' for a surcharge of 3 %"""
+        self.surcharge_value = self._get_percentage_value(value)
 
-    def _get_charge_by_percentage(self):
-        charge_value = self.charge_value
-        if not charge_value:
+    def _get_surcharge_by_percentage(self):
+        surcharge_value = self.surcharge_value
+        if not surcharge_value:
             return Decimal('0.0')
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
-        total = subtotal + charge_value
+        total = subtotal + surcharge_value
         percentage = ((total / subtotal) - 1) * 100
         return percentage
 
-    charge_percentage = property(_get_charge_by_percentage,
-                                 _set_charge_by_percentage)
+    surcharge_percentage = property(_get_surcharge_by_percentage,
+                                 _set_surcharge_by_percentage)
 
     #
     # SQLObject hooks
@@ -289,8 +289,8 @@ class Sale(Domain):
             raise TypeError("%s cannot be adapted to IClient." % person)
         self.client = client
 
-    def reset_discount_and_charge(self):
-        self.discount_value = self.charge_value = currency(0)
+    def reset_discount_and_surcharge(self):
+        self.discount_value = self.surcharge_value = currency(0)
 
     def sell_items(self):
         """Update the stock of all products tied with the current
@@ -436,12 +436,12 @@ class Sale(Domain):
     def get_total_sale_amount(self):
         """Return the total value paid by the client. This can be
         calculated by:.
-        Sale total = Sum(product and service prices) + charge +
+        Sale total = Sum(product and service prices) + surcharge +
                      interest - discount"""
-        charge_value = self.charge_value or Decimal('0.0')
+        surcharge_value = self.surcharge_value or Decimal('0.0')
         discount_value = self.discount_value or Decimal('0.0')
         subtotal = self.get_sale_subtotal()
-        total_amount = subtotal + charge_value - discount_value
+        total_amount = subtotal + surcharge_value - discount_value
         return currency(total_amount)
 
     def get_total_amount_as_string(self):
@@ -690,7 +690,7 @@ class SaleView(SQLObject, BaseSQLView):
     salesperson_name = UnicodeCol()
     client_name = UnicodeCol()
     client_id = IntCol()
-    charge_value = PriceCol()
+    surcharge_value = PriceCol()
     discount_value = PriceCol()
     subtotal = PriceCol()
     total = PriceCol()

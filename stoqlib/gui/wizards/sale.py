@@ -506,8 +506,8 @@ class SalesPersonStep(AbstractSalesPersonStep):
     # AbstractSalesPersonStep hooks
     #
 
-    def update_discount_and_charge(self):
-        self.model.reset_discount_and_charge()
+    def update_discount_and_surcharge(self):
+        self.model.reset_discount_and_surcharge()
 
     def setup_invoice_number_widgets(self):
         if not check_virtual_printer_for_current_host(self.conn):

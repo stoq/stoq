@@ -39,7 +39,7 @@ from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.product import ProductEditor
 from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
-from stoqlib.gui.slaves.sale import DiscountChargeSlave
+from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
@@ -125,7 +125,7 @@ class PurchasePaymentStep(WizardEditorStep):
                                    interval_type=interval_type,
                                    connection=conn)
         self.slave = None
-        self.discount_charge_slave = None
+        self.discount_surcharge_slave = None
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
@@ -176,15 +176,15 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def setup_slaves(self):
         self._update_payment_method_slave()
-        slave_holder = 'discount_charge_slave'
+        slave_holder = 'discount_surcharge_slave'
         if self.get_slave(slave_holder):
             return
         if not self.wizard.edit_mode:
-            self.order.reset_discount_and_charge()
-        self.discount_charge_slave = DiscountChargeSlave(self.conn, self.order,
+            self.order.reset_discount_and_surcharge()
+        self.discount_surcharge_slave = DiscountSurchargeSlave(self.conn, self.order,
                                                          PurchaseOrder)
-        self.attach_slave(slave_holder, self.discount_charge_slave)
-        self.discount_charge_slave.connect('discount-changed',
+        self.attach_slave(slave_holder, self.discount_surcharge_slave)
+        self.discount_surcharge_slave.connect('discount-changed',
                                            self._update_totals)
         self._update_totals()
 

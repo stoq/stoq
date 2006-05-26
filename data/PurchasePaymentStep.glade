@@ -25,7 +25,7 @@
                                         <property name="visible">True</property>
                                         <property name="width_request">25</property>
                                         <child>
-                                            <widget class="GtkEventBox" id="discount_charge_slave">
+                                            <widget class="GtkEventBox" id="discount_surcharge_slave">
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <placeholder/>
@@ -35,7 +35,7 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                    <widget class="ProxyLabel" id="kiwilabel3">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Subtotal:</property>
                                         <property name="visible">True</property>
@@ -47,7 +47,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="subtotal_lbl">
+                                    <widget class="ProxyLabel" id="subtotal_lbl">
                                         <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_subtotal</property>
@@ -67,7 +67,7 @@
                                 <property name="spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel5">
+                                    <widget class="ProxyLabel" id="kiwilabel5">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Total:</property>
                                         <property name="visible">True</property>
@@ -75,7 +75,7 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="total_lbl">
+                                    <widget class="ProxyLabel" id="total_lbl">
                                         <property name="data_type">currency</property>
                                         <property name="label" context="yes" translatable="yes">0.00</property>
                                         <property name="model_attribute">purchase_total</property>
@@ -103,7 +103,7 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Payment Method:</property>
                                 <property name="visible">True</property>
@@ -121,7 +121,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>

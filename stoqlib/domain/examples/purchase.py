@@ -85,12 +85,12 @@ def create_purchases():
                           open_date=open_dates[2],
                           expected_receival_date=dates[1],
                           confirm_date=dates[2],
-                          charge_value=currency('13.70')),
+                          surcharge_value=currency('13.70')),
                      dict(status=PurchaseOrder.ORDER_CLOSED,
                           salesperson_name='Johan Lebowski',
                           open_date=open_dates[3],
                           receival_date=dates[3],
-                          charge_value=currency('34.32'))]
+                          surcharge_value=currency('34.32'))]
 
     sellable_index = 0
     for index in range(MAX_PURCHASES_NUMBER):
