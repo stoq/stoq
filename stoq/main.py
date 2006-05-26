@@ -28,6 +28,7 @@
 
 import sys
 import gettext
+import os
 
 from stoqlib.lib.message import error
 from stoqlib.lib.message import ISystemNotifier
@@ -47,9 +48,15 @@ def _run_first_time_wizard(config):
         raise SystemExit("No configuration data provided")
     return model.db_settings
 
-def _initialize(options):
+def _setup_dialogs():
+    # This needs to be here otherwise we can't install the dialog
+    if 'STOQ_TEST_MODE' in os.environ:
+        return
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
+
+def _initialize(options):
+    _setup_dialogs()
     config = StoqConfig(filename=options.filename)
 
     if not config.has_installed_config_data():
