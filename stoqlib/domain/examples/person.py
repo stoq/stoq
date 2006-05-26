@@ -45,7 +45,7 @@ _ = gettext.gettext
 
 
 def create_persons():
-    print_msg('Creating persons...', break_line=False)
+    print_msg('Creating person data...', break_line=False)
     conn = new_transaction()
 
     person_data = [dict(name='John Wayne',
