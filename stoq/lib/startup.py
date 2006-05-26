@@ -75,8 +75,7 @@ def setup(config, options):
                           verbose=options.verbose)
     else:
         schema_migration.update_schema()
-
-    ensure_system_parameters()
+        ensure_system_parameters()
 
     sqlhub.threadConnection = get_connection()
 
