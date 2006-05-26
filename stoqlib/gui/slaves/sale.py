@@ -64,12 +64,6 @@ class DiscountChargeSlave(BaseEditorSlave):
         self.model_type = model_type
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
-    def setup_widgets(self):
-        format_str = get_price_format_str()
-        for widget in (self.discount_perc, self.charge_perc):
-            widget.set_data_format(format_str)
-        self.update_widget_status()
-
     def update_widget_status(self):
         charge_by_value = not self.charge_perc_ck.get_active()
         self.charge_value.set_sensitive(charge_by_value)
@@ -101,7 +95,7 @@ class DiscountChargeSlave(BaseEditorSlave):
     #
 
     def setup_proxies(self):
-        self.setup_widgets()
+        self.update_widget_status()
         self.proxy = self.add_proxy(self.model,
                                     DiscountChargeSlave.proxy_widgets)
 
