@@ -32,6 +32,7 @@ import stoqlib
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.admin import create_base_schema
+from stoqlib.lib.parameters import ensure_system_parameters
 from stoqlib.database import (finish_transaction,
                               get_registered_db_settings, run_sql_file)
 from stoqlib.domain.profile import update_profile_applications
@@ -111,6 +112,8 @@ class SchemaMigration:
         # checks if there is new applications and update all the user
         # profiles on the system
         update_profile_applications(conn)
+        # Updating the parameter list
+        ensure_system_parameters()
         finish_transaction(conn, 1)
         # Update the base schema
         create_base_schema()
