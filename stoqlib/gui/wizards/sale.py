@@ -502,10 +502,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 class SalesPersonStep(AbstractSalesPersonStep):
     """A wizard step used when confirming a sale order """
 
-    def setup_widgets(self):
-        self.invoice_number.set_property('mandatory', True)
-        AbstractSalesPersonStep.setup_widgets(self)
-
     #
     # AbstractSalesPersonStep hooks
     #
@@ -515,7 +511,10 @@ class SalesPersonStep(AbstractSalesPersonStep):
 
     def setup_invoice_number_widgets(self):
         if not check_virtual_printer_for_current_host(self.conn):
+            self.invoice_number.set_property('mandatory', True)
             self.hide_invoice_number_widgets()
+        else:
+            self.invoice_number.set_property('mandatory', False)
 
     def on_payment_method_changed(self, slave, method_iface):
         if method_iface is IMoneyPM:
