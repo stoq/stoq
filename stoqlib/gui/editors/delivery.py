@@ -112,13 +112,13 @@ class DeliveryEditor(BaseEditor):
         self.force_validation()
 
     def on_change_address_button__clicked(self, button):
-        cols = [Column('address_string', title=_('Address'), data_type=str, 
+        cols = [Column('address_string', title=_('Address'), data_type=str,
                        expand=True),
                 Column('city', title=_('City'), width=100, data_type=str),
                 Column('state', title=_('State'), data_type=str)]
 
         addresses = self.model.sale.client.get_adapted().addresses
-        result = run_dialog(SimpleListDialog, self, cols, 
+        result = run_dialog(SimpleListDialog, self, cols,
                             addresses, title=_('Client Addresses'),
                             selection_mode=gtk.SELECTION_BROWSE)
         if result:
@@ -132,7 +132,7 @@ class DeliveryEditor(BaseEditor):
                       title=_('Delivery Instructions')):
             self.update_widgets()
 
-    # 
+    #
     # BaseEditor hooks
     #
 
@@ -151,9 +151,9 @@ class DeliveryEditor(BaseEditor):
         self._create_delivery_items()
 
         main_address = sale.client.get_adapted().get_main_address()
-        address_string = ("%s - %s/%s" 
+        address_string = ("%s - %s/%s"
                           % (main_address.get_address_string(),
-                             main_address.get_city(), 
+                             main_address.get_city(),
                              main_address.get_state()))
         self.delivery.delivery_address = address_string
         return model
@@ -164,14 +164,14 @@ class DeliveryEditor(BaseEditor):
         self.add_proxy(self.model, DeliveryEditor.sellableitem_widgets)
 
     def setup_slaves(self):
-        columns = [ForeignKeyColumn(AbstractSellable, 'code', title=_('Code'), 
+        columns = [ForeignKeyColumn(AbstractSellable, 'code_str', title=_('Code'),
                                     data_type=str, sorted=True,
                                     obj_field='sellable'),
-                   ForeignKeyColumn(AbstractSellable, 
+                   ForeignKeyColumn(AbstractSellable,
                                     'base_sellable_info.description',
-                                    title=_('Description'), data_type=str, 
+                                    title=_('Description'), data_type=str,
                                     expand=True, obj_field='sellable'),
-                   Column('quantity', title=_('Quantity'), data_type=float, 
+                   Column('quantity', title=_('Quantity'), data_type=float,
                           format_func=format_quantity)]
 
         delivery = IDelivery(self.model, connection=self.conn)
