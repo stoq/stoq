@@ -29,7 +29,6 @@ import gettext
 from decimal import Decimal
 
 import gtk
-from kiwi.ui.dialogs import warning, messagedialog
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
@@ -38,13 +37,13 @@ from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import UNIT_WEIGHT
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database import rollback_and_begin, finish_transaction
+from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                               get_current_scale_settings)
 from stoqlib.reporting.sale import SaleOrderReport
-from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
@@ -83,8 +82,8 @@ class POSApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         if not get_current_till_operation(self.conn):
-            notify_dialog(_("You need to open the till before start doing "
-                            "sales."), _("Error"))
+            error(_(u"You need to open the till before start doing "
+                     "sales."))
             self.app.shutdown()
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
@@ -299,8 +298,7 @@ class POSApp(AppWindow):
             if not storable.has_stock_by_branch(self.sale.get_till_branch()):
                 msg = _("There is no stock of this product in this branch, "
                         "please, select another item.")
-                warning(_("Can not sell this product"), long=msg,
-                        parent=self.get_toplevel())
+                warning(_("Can not sell this product"), msg)
                 return
 
         self._update_list(sellable, notify_on_entry=True)
@@ -353,22 +351,21 @@ class POSApp(AppWindow):
         if self.sale.client:
             self.coupon.identify_customer(self.sale.client.get_adapted())
         while not self.coupon.open():
-            if warning(
-                _("It is not possible open a fiscal coupon"),
-                _("It is not possible to start a new sale if the "
-                  "fiscal coupon cannot be opened."),
-                buttons=((_("Cancel"), gtk.RESPONSE_CANCEL),
-                         (_("Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+            if yesno(
+                _(u"It is not possible to start a new sale if the "
+                   "fiscal coupon cannot be opened."),
+                default=gtk.RESPONSE_OK,
+                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                         (_(u"Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                 self.app.shutdown()
 
     def _cancel_order(self):
         if self.sale is not None:
-            msg = _('The current order will be canceled, Confirm?')
-            default=gtk.RESPONSE_YES
-            if not messagedialog(gtk.MESSAGE_QUESTION, msg,
-                                 parent=self.get_toplevel(),
-                                 buttons=gtk.BUTTONS_YES_NO,
-                                 default=default) == default:
+            text = _(u'The current order will be canceled, Confirm?')
+            buttons=((_(u"Go Back"), gtk.RESPONSE_CANCEL),
+                     (_(u"Cancel Order"), gtk.RESPONSE_OK))
+            if not yesno(text, default=gtk.RESPONSE_OK,
+                         buttons=buttons) == gtk.RESPONSE_OK:
                 return
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
@@ -376,15 +373,14 @@ class POSApp(AppWindow):
 
     def _add_delivery(self):
         if not self.sellables:
-            notify_dialog(_("You don't have products to delivery."),
-                          _("Error"))
+            warning(_("You don't have products to delivery."))
             return
         products = [obj for obj in self.sellables
                         if isinstance(obj, ProductSellableItem)
                            and not obj.has_been_totally_delivered()]
         if not products:
-            notify_dialog(_("All the products already have delivery "
-                            "instructions"), _("Error"))
+            warning(_("All the products already have delivery "
+                      "instructions"))
             return
 
         # We must commit now since we would like to have some of the
