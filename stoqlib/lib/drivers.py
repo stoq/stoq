@@ -29,7 +29,6 @@ import socket
 import gtk
 from zope.interface import implements
 from sqlobject.sqlbuilder import OR, AND
-from kiwi.ui.dialogs import warning, error, info
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
@@ -39,6 +38,7 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
                                     OutofPaperError, PrinterOfflineError)
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
 from stoqlib.lib.runtime import new_transaction
@@ -73,10 +73,10 @@ def _get_fiscalprinter(conn):
                                  device=setting.get_port_name(),
                                  consts=setting.constants)
     else:
-        error(_("There is no fiscal printer"),
-                _("There is no fiscal printer configured for this "
-                  "station (\"%s\") or the printer is not enabled "
-                  "currently." % socket.gethostname()))
+        warning(_(u"There is no fiscal printer"),
+               _(u"There is no fiscal printer configured for this "
+                "station (\"%s\") or the printer is not enabled "
+                "currently." % socket.gethostname()))
     return _printer
 
 def _get_scale(conn):
@@ -91,8 +91,8 @@ def _get_scale(conn):
         _scale = Scale(brand=setting.brand, model=setting.model,
                        device=setting.get_port_name())
     else:
-        error(_("There is no scale configured"),
-              _("There is no scale configured for this station "
+        warning(_(u"There is no scale configured"),
+               _(u"There is no scale configured for this station "
                 "(\"%s\") or the scale is not enabled currently"
                 % socket.gethostname()))
     return _scale
@@ -250,9 +250,7 @@ def print_cheques_for_payment_group(conn, group):
         except KeyError:
             continue
         thirdparty = group.get_thirdparty()
-        info(_("Insert Cheque %d") % (idx+1),
-                buttons=((gtk.STOCK_OK, gtk.RESPONSE_OK),),
-                default=gtk.RESPONSE_OK)
+        info(_(u"Insert Cheque %d") % (idx+1))
         max_len = get_capability(printer, "cheque_thirdparty")
         thirdparty = thirdparty and thirdparty.name[:max_len] or ""
         printer.print_cheque(bank, payment.value, thirdparty, city)
@@ -348,25 +346,26 @@ class FiscalCoupon:
                 if not self.cancel():
                     return False
             except OutofPaperError:
-                if warning(
-                    _("The printer has run out of paper"),
-                    _("The printer %s has run out of paper.\nAdd more paper "
+                if yesno(
+                    _(u"The printer %s has run out of paper.\nAdd more paper "
                       "before continuing." % self.printer.get_printer_name()),
-                    buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
-                             (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+                    default=gtk.RESPONSE_OK,
+                    buttons=((_(u"Confirm later"), gtk.RESPONSE_CANCEL),
+                             (_(u"Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                     return False
                 return self.open()
             except PrinterOfflineError:
-                if warning(
-                    _("The printer is offline"),
-                    _("The printer %s is offline, turn it on and try again"
+                if yesno(
+                    _(u"The printer %s is offline, turn it on and try again"
                       % self.printer.get_printer_name()),
-                    buttons=((_("Confirm later"), gtk.RESPONSE_CANCEL),
-                             (_("Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
+                    default=gtk.RESPONSE_OK,
+                    buttons=((_(u"Confirm later"), gtk.RESPONSE_CANCEL),
+                             (_(u"Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
                     return False
                 return self.open()
             except DriverError, details:
-                warning(_("It's not possible to emit the coupon"), str(details))
+                warning(_(u"It's not possible to emit the coupon"),
+                        str(details))
                 return False
         return True
 

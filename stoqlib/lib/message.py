@@ -1,0 +1,85 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2006 Async Open Source
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU Lesser General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+##
+## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
+##
+""" Notifications and messages for stoqlib applications"""
+
+
+from zope.interface import Interface, implements
+from kiwi.component import get_utility, provide_utility
+
+class ISystemNotifier(Interface):
+
+    def info(short, description):
+        pass
+
+    def warning(short, description):
+        pass
+
+    def error(short, description):
+        pass
+
+    def yesno(text, default, buttons):
+        pass
+
+
+class DefaultSystemNotifier:
+    implements(ISystemNotifier)
+
+    def _msg(self, name, short, description):
+        if description:
+            print '%s: %s %s' % (name, short, description)
+        else:
+            print '%s: %s' % (name, short)
+
+    def info(self, short, description):
+        self._msg('INFO', short, description)
+
+    def yesno(self, text, default=-1, buttons=None):
+        self._msg('YESNO', text, '')
+
+    def warning(self, short, description):
+        self._msg('WARNING', short, description)
+
+    def error(self, short, description):
+        self._msg('ERROR', short, description)
+
+provide_utility(ISystemNotifier, DefaultSystemNotifier())
+
+
+def info(short, description=None):
+    sn = get_utility(ISystemNotifier)
+    sn.info(short, description)
+
+def warning(short, description=None):
+    sn = get_utility(ISystemNotifier)
+    sn.warning(short, description)
+
+def error(short, description=None):
+    sn = get_utility(ISystemNotifier)
+    sn.error(short, description)
+    raise SystemExit
+
+def yesno(text, default=-1, buttons=None):
+    sn = get_utility(ISystemNotifier)
+    return sn.yesno(text, default=default, buttons=buttons)

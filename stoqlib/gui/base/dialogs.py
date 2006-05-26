@@ -24,23 +24,27 @@
 ##
 """ Basic dialogs definition """
 
-import traceback
 import warnings
 import shutil
-import sys
 import os
 
 import gtk
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
-from kiwi.ui.dialogs import error, ask_overwrite
+from kiwi.ui.dialogs import (ask_overwrite, error, warning, info,
+                             messagedialog)
+from kiwi.argcheck import argcheck
+from zope.interface import implements
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.reporting.base.utils import print_file
 
 _ = stoqlib_gettext
+_toplevel_stack = []
+
 
 #
 # Helper classes
@@ -371,8 +375,26 @@ class PrintDialog(BasicDialog):
         BasicDialog.confirm(self)
 
 #
-# Auxiliar methods
+# General methods
 #
+
+def get_current_toplevel():
+    global _toplevel_stack
+    if _toplevel_stack:
+        return _toplevel_stack[-1]
+
+
+@argcheck(gtk.Window)
+def add_current_toplevel(toplevel):
+    global _toplevel_stack
+    _toplevel_stack.append(toplevel)
+
+
+def _pop_current_toplevel():
+    global _toplevel_stack
+    if _toplevel_stack:
+        _toplevel_stack.pop()
+
 
 def get_dialog(parent, dialog, *args, **kwargs):
     """ Returns a dialog.
@@ -396,39 +418,49 @@ def run_dialog(dialog, parent, *args, **kwargs):
     """Run a gtk DialogBox. If  dialog is a class, the dialog will be
     instantiated before runing the dialog.
     """
+    parent = parent or get_current_toplevel()
     dialog = get_dialog(parent, dialog, *args, **kwargs)
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
 
-    dialog.get_toplevel().run()
+    toplevel = dialog.get_toplevel()
+    add_current_toplevel(toplevel)
+
+    toplevel.run()
     retval = dialog.retval
     dialog.destroy()
-    return retval
 
-def _conflict_dialog(e):
-    traceback.print_stack()
-    sys.stderr.write("XXX ConflictError: %s" % str(e))
-    msg = ("A conflict was generated at the end of the transaction. \n "
-           "Please cancel and do the transaction again.\n\n"
-           "(This problem was registered and will be evaluated.)")
-    notify_dialog(msg)
+    _pop_current_toplevel()
+    return retval
 
 def notify_if_raises(win, check_func, exceptions=ModelDataError,
                      text="An error ocurred: %s"):
     try:
         check_func()
     except exceptions, e:
-        notify_dialog(text % e)
+        warning(text % e)
         return True
     return False
 
-def notify_dialog(msg, title=None, size=None, ok_label=None):
-    run_dialog(NotifyDialog, None, text=msg, title=title, size=size,
-               ok_label=ok_label)
 
-def confirm_dialog(msg, title=None, size=None, ok_label=None):
-    return run_dialog(ConfirmDialog, None, text=msg, title=title,
-                      size=size, ok_label=ok_label)
+class DialogSystemNotifier:
+    implements(ISystemNotifier)
+
+    def info(self, short, description):
+        info(short, description, get_current_toplevel())
+
+    def warning(self, short, description):
+        warning(short, description, get_current_toplevel())
+
+    def error(self, short, description):
+        error(short, description, get_current_toplevel())
+
+    def yesno(self, text, default=gtk.RESPONSE_YES,
+              buttons=gtk.BUTTONS_YES_NO):
+        return messagedialog(gtk.MESSAGE_QUESTION, text, long=None,
+                             parent=get_current_toplevel(), buttons=buttons,
+                             default=default)
+
 
 def print_report(report_class, *args, **kwargs):
     run_dialog(PrintDialog, None, report_class, *args, **kwargs)
