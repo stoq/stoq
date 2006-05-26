@@ -32,7 +32,6 @@ from sqlobject import sqlhub
 
 from stoqlib.lib.admin import initialize_system
 from stoqlib.lib.migration import schema_migration
-from stoqlib.lib.parameters import ensure_system_parameters
 from stoqlib.lib.runtime import get_connection, set_verbose
 
 from stoq.lib.configparser import StoqConfig, register_config
