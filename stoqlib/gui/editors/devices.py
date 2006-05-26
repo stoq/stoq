@@ -27,11 +27,9 @@
 import re
 import string
 
-import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.python import Settable
 from kiwi.decorators import signal_block
-from kiwi.ui.dialogs import messagedialog
 from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
@@ -41,6 +39,7 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
 from stoqdrivers.constants import describe_constant
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   METHOD_MULTIPLE, UNKNOWN_CHARACTER)
@@ -295,10 +294,9 @@ class DeviceSettingsEditor(BaseEditor):
         conn = get_connection()
         if not self.edit_mode and (not self.model.constants
                                    or not self.model.pm_constants):
-            messagedialog(gtk.MESSAGE_WARNING,
-                          _(u"The printer will be disabled"),
-                          _(u"The printer will be disabled automatically "
-                            "because there are no constants defined yet."))
+            warning( _(u"The printer will be disabled"),
+                     _(u"The printer will be disabled automatically "
+                        "because there are no constants defined yet."))
             self.model.inactivate()
         basequery = self._get_existing_printer_basequery()
         q2 = DeviceSettings.q.brand == 'virtual'

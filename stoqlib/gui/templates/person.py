@@ -27,9 +27,8 @@
 """ Templates implementation for person editors.  """
 
 
-from kiwi.ui.dialogs import warning
-
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.message import warning
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import IIndividual, ICompany
 from stoqlib.domain.person import Person
@@ -113,7 +112,7 @@ class PersonEditorTemplate(BaseEditorSlave):
     def on_address_button__clicked(self, *args):
         main_address = self.model.get_main_address()
         if not main_address.is_valid_model():
-            msg = _("You must define a valid main address before\n"
+            msg = _(u"You must define a valid main address before\n"
                     "adding additional addresses")
             warning(msg)
             return

@@ -29,8 +29,9 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.utils import gsignal
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.dialogs import (run_dialog, confirm_dialog,
-                                      BasicPluggableDialog, BasicDialog)
+from stoqlib.lib.message import yesno
+from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
+                                      BasicDialog)
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.wizards import BaseWizard
 from stoqlib.exceptions import SelectionError
@@ -141,11 +142,14 @@ class AdditionListSlave(SlaveDelegate):
             raise SelectionError('There are no objects selected')
 
         if qty > 1:
-            msg = _('Delete these %d items?') % qty
+            msg = _(u'Delete these %d items?') % qty
         else:
-            msg = _('Delete this item?')
+            msg = _(u'Delete this item?')
 
-        if not confirm_dialog(msg):
+        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                   (_(u"Delete Items"), gtk.RESPONSE_YES))
+        if not (yesno(msg, default=gtk.RESPONSE_YES, buttons=buttons)
+                == gtk.RESPONSE_YES):
             return
 
         self.emit('before-delete-items', objs)

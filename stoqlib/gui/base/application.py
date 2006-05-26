@@ -27,7 +27,8 @@ import gtk
 from kiwi.ui.delegates import Delegate
 from kiwi.argcheck import argcheck
 
-from stoqlib.gui.base.dialogs import get_dialog, run_dialog
+from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
+                                      add_current_toplevel)
 
 
 #
@@ -68,9 +69,11 @@ class BaseAppWindow(Delegate):
                           keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)
+        toplevel = self.get_toplevel()
+        add_current_toplevel(toplevel)
         if self.size:
-            self.get_toplevel().set_size_request(*self.size)
-        self.get_toplevel().set_title(self.get_title())
+            toplevel.set_size_request(*self.size)
+        toplevel.set_title(self.get_title())
 
     def get_title(self):
         """This method must be overwritten on child when it's needed"""

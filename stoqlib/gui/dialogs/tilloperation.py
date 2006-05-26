@@ -39,14 +39,14 @@ from stoqlib.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
+from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.gui.base.search import SearchBar
-from stoqlib.gui.base.dialogs import (BasicWrappingDialog, run_dialog,
-                                      confirm_dialog, notify_dialog)
+from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor,
                                       CashOutEditor)
 
@@ -161,31 +161,31 @@ class TillOperationDialog(SlaveDelegate):
                               width=120)]
 
     def _reverse_selection(self):
-        title = _('Reverse Selection')
-        size = (360, 150)
         if self.selected > 1:
-            transaction_string = _('transactions')
+            transaction_string = _(u'transactions')
         else:
-            transaction_string = _('transaction')
+            transaction_string = _(u'transaction')
             self.selected = ''
-        text = _('Are you sure you want to reverse the \n%s selected '
+        text = _(u'Are you sure you want to reverse the \n%s selected '
                  '%s?') % (self.selected, transaction_string)
         if self.canceled_items > 1:
             item_string = _('items')
         else:
             item_string = _('item')
         if self.canceled_items > 0:
-            text += _('\nWarning: It has %d cancelled %s in your '
+            text += _(u'\nWarning: It has %d cancelled %s in your '
                       'selection.') % (self.canceled_items, item_string)
         is_initial_cash = self._check_initial_cash_amount()
         if is_initial_cash:
-            text = _("Your selection contains the initial cash amount "
+            text = _(u"Your selection contains the initial cash amount "
                      "payment."
                      "\nIt's not possible to cancel this payment.")
-            size = (430, 150)
-            notify_dialog(text, size=size)
+            warning(text)
             return
-        if confirm_dialog(text, title=title, size=size):
+        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                   (_(u"Reverse Items"), gtk.RESPONSE_YES))
+        if (yesno(text, default=gtk.RESPONSE_YES, buttons=buttons) ==
+            gtk.RESPONSE_YES):
             for item in self.selected_item:
                 item.cancel_till_entry()
             self.conn.commit()

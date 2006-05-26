@@ -34,6 +34,7 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 
 from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.message import warning
 from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
@@ -41,7 +42,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (print_cheques_for_payment_group,
                                  check_virtual_printer_for_current_host)
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
-from stoqlib.gui.base.dialogs import notify_dialog
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.wizards.abstract import (AbstractSaleWizard,
@@ -553,7 +553,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
             if not table.get_sold_sellables(self.conn).count():
                 msg = _('There is no sold gift certificates at this moment.'
                         '\nPlease select another payment method.')
-                notify_dialog(msg, title=_('Gift Certificate Error'))
+                warning(msg)
                 return self
             step_class = GiftCertificateSelectionStep
         else:
