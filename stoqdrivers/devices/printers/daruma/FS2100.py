@@ -40,11 +40,11 @@ class FS2100(FS345):
     model_name = "Daruma FS 2100"
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, charge, unit_desc=''):
+                        taxcode, discount, surcharge, unit_desc=''):
         taxcode = self._consts.get_value(taxcode)
-        if charge:
+        if surcharge:
             d = 2
-            E = charge
+            E = surcharge
         else:
             d = 0
             E = discount
@@ -62,9 +62,9 @@ class FS2100(FS345):
         data = ('%2s'  # Tributary situation
                 '%07d' # Quantity
                 '%08d' # Unitary price
-                '%d'   # 0=Discount(%) 1=Discount($) 2=Charge(%) 3=Charge($)
-                '%03d' # Discount/Charge value
-                '%07d' # *Padding* (since we have discount/charge only in %)
+                '%d'   # 0=Discount(%) 1=Discount($) 2=Surcharge(%) 3=Surcharge($)
+                '%03d' # Discount/Surcharge value
+                '%07d' # *Padding* (since we have discount/surcharge only in %)
                 '%02d' # Description size
                 '%14s' # Code
                 '%3s'  # Unit of measure

@@ -337,11 +337,11 @@ class FS345(SerialBase):
         self.send_command(CMD_OPEN_COUPON)
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, charge, unit_desc=''):
+                        taxcode, discount, surcharge, unit_desc=''):
         taxcode = self._consts.get_value(taxcode)
-        if charge:
+        if surcharge:
             d = 1
-            E = charge
+            E = surcharge
         else:
             d = 0
             E = discount

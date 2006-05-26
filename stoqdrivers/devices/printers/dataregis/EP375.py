@@ -201,14 +201,14 @@ class EP375Status:
 
 class CouponItem:
     def __init__(self, code, description, taxcode, quantity, price, discount,
-                 charge, unit):
+                 surcharge, unit):
         self.code = code
         self.description = description
         self.taxcode = taxcode
         self.quantity = quantity
         self.price = price
         self.discount = discount
-        self.charge = charge
+        self.surcharge = surcharge
         self.unit = unit
 
     def get_packaged(self):
@@ -220,7 +220,7 @@ class CouponItem:
         if self.discount:
             D = self.discount
         else:
-            D = self.charge
+            D = self.surcharge
 
         taxcode = self.taxcode
         quantity = int(float(self.quantity) * 1e3)
@@ -272,7 +272,7 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_GET_STATUS = 'R'
     CMD_CANCEL_COUPON = 'F'
     CMD_ADD_PAYMENT = 'D'
-    CMD_ADD_PAYMENT_WITH_CHARGE = 'c'
+    CMD_ADD_PAYMENT_WITH_SURCHARGE = 'c'
     CMD_CANCEL_ITEM = 'b'
     CMD_GET_REMAINING_VALUE = 'C'
     CMD_GET_FISCAL_COUNTERS = 'o'
@@ -287,7 +287,7 @@ class EP375(SerialBase, BaseChequePrinter):
         BaseChequePrinter.__init__(self)
         self._consts = consts
         self.coupon_discount = Decimal("0.0")
-        self.coupon_charge = Decimal("0.0")
+        self.coupon_surcharge = Decimal("0.0")
         self._command_id = self._item_counter = -1
         self.items_dict = {}
 
@@ -518,18 +518,18 @@ class EP375(SerialBase, BaseChequePrinter):
         except CommandError, e:
             raise CouponNotOpenError(e)
 
-    def coupon_totalize(self, discount, charge, taxcode):
-        # The callsite must check if discount and charge are used together,
+    def coupon_totalize(self, discount, surcharge, taxcode):
+        # The callsite must check if discount and surcharge are used together,
         # if so must raise an exception -- here we have a second check for
         # this.
-        assert not (discount and charge)
+        assert not (discount and surcharge)
 
         # Dataregis doesn't contains any functions to totalize the coupon,
-        # so we need just save the discount/charge (if any) to use in the
+        # so we need just save the discount/surcharge (if any) to use in the
         # add_payment calls
-        self.coupon_discount, self.coupon_charge = discount, charge
+        self.coupon_discount, self.coupon_surcharge = discount, surcharge
 
-        coupon_total_value = (self._get_coupon_remaining_value() + charge
+        coupon_total_value = (self._get_coupon_remaining_value() + surcharge
                               - discount)
         return coupon_total_value
 
@@ -542,16 +542,16 @@ class EP375(SerialBase, BaseChequePrinter):
         value = "%014d" % int(float(value) * 1e2)
 
         if ((not self._get_status().has_been_totalized())
-            and self.coupon_discount or self.coupon_charge):
+            and self.coupon_discount or self.coupon_surcharge):
             if self.coupon_discount:
                 type = "D"
                 D = self.coupon_discount
             else:
                 type = "A"
-                D = self.coupon_charge
+                D = self.coupon_surcharge
             D = "%014d" % int(float(D) * 1e2)
-            self._send_command(self.CMD_ADD_PAYMENT_WITH_CHARGE, pm, value, D,
-                               type)
+            self._send_command(self.CMD_ADD_PAYMENT_WITH_SURCHARGE, pm, value,
+                               D, type)
         else:
             self._send_command(self.CMD_ADD_PAYMENT, pm, value)
         return self._get_coupon_remaining_value()

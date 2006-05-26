@@ -103,12 +103,12 @@ class FiscalPrinter(BasePrinter):
     @capcheck(basestring, Decimal, Decimal, unit, basestring, taxcode, percent,
               percent, basestring)
     def add_item(self, item_code, items_quantity, item_price, unit,
-                 item_description, taxcode, discount, charge, unit_desc=''):
+                 item_description, taxcode, discount, surcharge, unit_desc=''):
         if self._has_been_totalized:
             raise AlreadyTotalized("the coupon is already totalized, you "
                                    "can't add more items")
-        if discount and charge:
-            raise TypeError("discount and charge can not be used together")
+        if discount and surcharge:
+            raise TypeError("discount and surcharge can not be used together")
         elif unit != UNIT_CUSTOM and unit_desc:
             raise ValueError("You can't specify the unit description if "
                              "you aren't using UNIT_CUSTOM constant.")
@@ -120,16 +120,16 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_add_item')
         return self._driver.coupon_add_item(
             self._format_text(item_code), items_quantity, item_price, unit,
-            self._format_text(item_description), taxcode, discount, charge,
+            self._format_text(item_description), taxcode, discount, surcharge,
             unit_desc=self._format_text(unit_desc))
 
     @capcheck(percent, percent, taxcode)
-    def totalize(self, discount, charge, taxcode):
-        if discount and charge:
-            raise TypeError("discount and charge can not be used together")
+    def totalize(self, discount, surcharge, taxcode):
+        if discount and surcharge:
+            raise TypeError("discount and surcharge can not be used together")
 
         self.info('coupon_totalize')
-        result = self._driver.coupon_totalize(discount, charge, taxcode)
+        result = self._driver.coupon_totalize(discount, surcharge, taxcode)
         self._has_been_totalized = True
         self.totalized_value = result
         return result

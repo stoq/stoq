@@ -91,7 +91,7 @@ class IFS9000I(SerialBase):
     CMD_ITEM_ADD_DISCOUNT = '02'
     CMD_ITEM_CANCEL = '04'
     CMD_COUPON_ADD_DISCOUNT = '03'
-    CMD_COUPON_ADD_CHARGE = '11'
+    CMD_COUPON_ADD_SURCHARGE = '11'
     CMD_COUPON_CANCEL = '05'
     CMD_COUPON_TOTALIZE = '10'
     CMD_COUPON_CLOSE = '12'
@@ -129,9 +129,9 @@ class IFS9000I(SerialBase):
     ITEM_NUMBER_CHAR_LEN = 3
     PAYMENTMETHOD_CHAR_LEN = 2
 
-    CHARGE_CHAR_LEN = 11
-    CHARGE_DEC_SEPARATOR = 2
-    CHARGE_ZERO_DIGITS = 0
+    SURCHARGE_CHAR_LEN = 11
+    SURCHARGE_DEC_SEPARATOR = 2
+    SURCHARGE_ZERO_DIGITS = 0
 
     PRICE_CHAR_LEN = 8
     PRICE_DEC_SEPARATOR = 2
@@ -145,9 +145,9 @@ class IFS9000I(SerialBase):
     QTY_DEC_SEPARATOR= 3
     QTY_ZERO_DIGITS = 0
 
-    # This code must be added in command CMD_COUPON_ADD_CHARGE and
+    # This code must be added in command CMD_COUPON_ADD_SURCHARGE and
     # represents a label 'ACRESCIMO' in the printed coupon
-    STANDARD_CHARGE_CODE ='51'
+    STANDARD_SURCHARGE_CODE ='51'
 
 
     errors_dict = {'DIA ENCERRADO': (PendingReadX, _("A Read X is pending")),
@@ -456,7 +456,7 @@ class IFS9000I(SerialBase):
             raise PendingReadX(_("A read X is pending."))
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, dicount, charge, unit_desc=''):
+                        taxcode, dicount, surcharge, unit_desc=''):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
         unit_code = self._consts.get_value(unit)
@@ -498,30 +498,30 @@ class IFS9000I(SerialBase):
 
         self.send_command(self.CMD_ITEM_CANCEL, item_id)
 
-    def coupon_add_charge(self, item_id, value, description):
-        """ Valid charge types are: "51": "charge"
-                                   "52": "charge IOF"
+    def coupon_add_surcharge(self, item_id, value, description):
+        """ Valid surcharge types are: "51": "surcharge"
+                                   "52": "surcharge IOF"
         The arguments item_id and descriptions only exit for API
         compatibility
         """
-        self.charge_total += value
+        self.surcharge_total += value
         if not self.has_been_totalized:
             return
-        elif self.charge_total == 0:
+        elif self.surcharge_total == 0:
             return
 
-        charge_type = self.STANDARD_CHARGE_CODE
-        command = self.CMD_COUPON_ADD_CHARGE
+        surcharge_type = self.STANDARD_SURCHARGE_CODE
+        command = self.CMD_COUPON_ADD_SURCHARGE
         # We are always using a discount by value for API compatibility
         percentage = '0' * self.PERCENTAGE_CHAR_LEN
-        charge_total = self._format_float(self.charge_total, 'value',
-                                          self.CHARGE_CHAR_LEN,
-                                          self.CHARGE_DEC_SEPARATOR,
-                                          self.CHARGE_ZERO_DIGITS)
-        # It means always print a total after adding the charge
+        surcharge_total = self._format_float(self.surcharge_total, 'value',
+                                             self.SURCHARGE_CHAR_LEN,
+                                             self.SURCHARGE_DEC_SEPARATOR,
+                                             self.SURCHARGE_ZERO_DIGITS)
+        # It means always print a total after adding the surcharge
         print_total = 'S'
-        self.send_command(self.CMD_COUPON_ADD_CHARGE, charge_type, percentage,
-                          charge_total, print_total)
+        self.send_command(self.CMD_COUPON_ADD_SURCHARGE, surcharge_type,
+                          percentage, surcharge_total, print_total)
 
     def coupon_cancel(self):
         self.send_command(self.CMD_COUPON_CANCEL)
@@ -538,15 +538,15 @@ class IFS9000I(SerialBase):
                           '%012d' % int(float(value) * 1e2), description)
         return self.get_remainder_value()
 
-    def coupon_totalize(self, discount, charge, taxcode, message=''):
+    def coupon_totalize(self, discount, surcharge, taxcode, message=''):
         """ Print the total value of the coupon.
         The taxcode argument is useless here and exists only for API
         compatibility
         """
         if discount:
             self.discount_coupon(discount)
-        elif charge:
-            self.coupon_add_charge(None, charge, None)
+        elif surcharge:
+            self.coupon_add_surcharge(None, surcharge, None)
 
         if message:
             message = '{' + message

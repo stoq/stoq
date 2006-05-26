@@ -91,7 +91,7 @@ class ICouponPrinter(IPrinter):
         """
 
     def coupon_add_item(code, quantity, price, unit, description, taxcode,
-                        discount, charge, unit_desc=''):
+                        discount, surcharge, unit_desc=''):
         """ Adds an item to the coupon.
 
         @param code:      item code identifier
@@ -117,8 +117,8 @@ class ICouponPrinter(IPrinter):
         @param discount:  discount in %
         @type  discount   Decimal between 0-100
 
-        @param charge:    charge in %
-        @type  charge     Decimal between 0-100
+        @param surcharge: surcharge in %
+        @type  surcharge  Decimal between 0-100
 
         @param unit_desc: A 2-byte string representing the unit that applies to
                           the product.
@@ -140,16 +140,16 @@ class ICouponPrinter(IPrinter):
         possible to open new coupons after this is called.
         """
 
-    def coupon_totalize(discount, charge, taxcode):
-        """ Closes the coupon applies addition a discount or charge and tax.
+    def coupon_totalize(discount, surcharge, taxcode):
+        """ Closes the coupon applies addition a discount or surcharge and tax.
         This can only be called when the coupon is open, has items added and
         payments added.
 
         @param discount:  discount in %
         @type discount:   Decimal between 0-100
 
-        @param charge:    charge in %
-        @type  charge     Decimal between 0-100
+        @param surcharge: surcharge in %
+        @type  surcharge  Decimal between 0-100
 
         @param tax_code:  currently unused
 

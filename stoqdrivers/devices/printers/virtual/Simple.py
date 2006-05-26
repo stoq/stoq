@@ -98,7 +98,7 @@ class Simple:
         self.is_coupon_opened = True
 
     def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, charge, unit_desc=''):
+                        taxcode, discount, surcharge, unit_desc=''):
         self._check_coupon_is_opened()
         if self.is_coupon_totalized:
             raise ItemAdditionError(_("The coupon is already totalized, "
@@ -122,7 +122,7 @@ class Simple:
         self._check_coupon_is_opened()
         self._reset_flags()
 
-    def coupon_totalize(self, discount, charge, taxcode):
+    def coupon_totalize(self, discount, surcharge, taxcode):
         self._check_coupon_is_opened()
         if not self.items_quantity:
             raise CouponTotalizeError(_("The coupon can't be totalized, since "
@@ -133,9 +133,9 @@ class Simple:
         for item_id, item in self._items.items():
             self.totalized_value += item.get_total_value()
 
-        charge_value = self.totalized_value * charge / 100
+        surcharge_value = self.totalized_value * surcharge / 100
         discount_value = self.totalized_value * discount / 100
-        self.totalized_value += -discount_value + charge_value
+        self.totalized_value += -discount_value + surcharge_value
 
         if not self.totalized_value > 0:
             raise CouponTotalizeError(_("Coupon totalized must be greater "
