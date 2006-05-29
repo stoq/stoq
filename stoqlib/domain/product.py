@@ -276,15 +276,14 @@ class ProductAdaptToSellable(AbstractSellable):
         if not 'tax_type' in kw:
             kw['tax_type'] = TAX_ICMS
         if not 'tax_value' in kw:
+            param = sysparam(self.get_connection())
             if kw['tax_type'] == TAX_ICMS:
-                kw['tax_value'] = sysparam(self.get_connection()).ICMS_TAX
+                kw['tax_value'] = param.ICMS_TAX
             else:
-                kw['tax_value'] = \
-                          sysparam(self.get_connection()).SUBSTITUTION_TAX
+                kw['tax_value'] = param.SUBSTITUTION_TAX
         AbstractSellable._create(self, id, **kw)
 
 Product.registerFacet(ProductAdaptToSellable, ISellable)
-
 
 class ProductAdaptToStorable(ModelAdapter):
     """A product implementation as a storable facet."""
