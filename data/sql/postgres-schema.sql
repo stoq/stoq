@@ -92,6 +92,7 @@ select create_stoqlib_sequence('stoqlib_sellable_code_seq');
 select create_stoqlib_sequence('stoqlib_purchasereceiving_number_seq');
 select create_stoqlib_sequence('stoqlib_abstract_bookentry_seq');
 select create_stoqlib_sequence('stoqlib_branch_identifier_seq');
+select create_stoqlib_sequence('stoqlib_branch_station_seq');
 
 
 --
