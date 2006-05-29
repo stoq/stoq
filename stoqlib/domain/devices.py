@@ -111,10 +111,11 @@ class DeviceSettings(Domain):
                     CHEQUE_PRINTER_DEVICE: _('Cheque Printer')}
 
     def _create(self, id, **kw):
-        if 'pm_constants' in kw:
-            raise DatabaseInconsistency("You should not specify a value "
-                                        "for pm_constants, since it will "
-                                        "be created internally")
+        # XXX: Bug #2630 will be responsible for this part.
+#         if 'pm_constants' in kw:
+#             raise DatabaseInconsistency("You should not specify a value "
+#                                         "for pm_constants, since it will "
+#                                         "be created internally")
         data = {}
         for payment_method, iface in get_all_methods_dict().items():
             # We don't store these constants to reach compatibility with
