@@ -26,6 +26,7 @@
 
 import re
 import string
+from socket import gethostname
 
 from kiwi.ui.objectlist import Column
 from kiwi.python import Settable
@@ -259,8 +260,12 @@ class DeviceSettingsEditor(BaseEditor):
                                     DeviceSettingsEditor.proxy_widgets)
 
     def create_model(self, conn):
-        return DeviceSettings(host='', device=None, brand=None, model=None,
-                              type=None, connection=conn)
+        return DeviceSettings(host=gethostname(),
+                              device=DeviceSettings.DEVICE_SERIAL1,
+                              brand=None,
+                              model=None,
+                              type=None,
+                              connection=conn)
 
     def get_title(self, *args):
         if self.edit_mode:
