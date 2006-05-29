@@ -51,9 +51,39 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
 
 _ = stoqlib_gettext
 
+
 #
 # Base Domain Classes
 #
+
+class BranchStation(Domain):
+    """Defines a computer which access Stoqlib database and lives in a
+    certain branch company
+    """
+    implements(IActive)
+
+    identifier = AutoIncCol('stoqlib_branch_station_seq')
+    name = UnicodeCol(alternateID=True)
+    is_active = BoolCol(default=True)
+    branch = ForeignKey("PersonAdaptToBranch")
+
+    #
+    # IActive implementation
+    #
+
+    def inactivate(self):
+        assert self.is_active, ('This station is already inactive')
+        self.is_active = False
+
+    def activate(self):
+        assert not self.is_active, ('This station is already active')
+        self.is_active = True
+
+    def get_status_str(self):
+        if self.is_active:
+            return _(u'Active')
+        return _(u'Inactive')
+
 
 class EmployeeRole(Domain):
     """Base class to store the employee roles."""
@@ -666,8 +696,15 @@ class PersonAdaptToBranch(ModelAdapter):
         return self.get_adapted().name
 
     #
-    # Auxiliar methods
+    # Branch Company methods
     #
+
+    def get_active_stations(self):
+        conn = self.get_connection()
+        q1 = BranchStation.q.is_active == True
+        q2 = BranchStation.q.branchID == self.id
+        query = AND(q1, q2)
+        return PersonAdaptToBranch.select(query, connection=conn)
 
     @classmethod
     def get_active_branches(cls, conn):

@@ -59,6 +59,7 @@ _tables = [
                  "PersonAdaptToSupplier",
                  "PersonAdaptToEmployee",
                  "PersonAdaptToBranch",
+                 "BranchStation",
                  "PersonAdaptToSalesPerson",
                  "PersonAdaptToBankBranch",
                  "PersonAdaptToCreditProvider",
