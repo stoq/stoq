@@ -35,7 +35,6 @@ from stoqlib.domain.person import Address, Person, get_city_location_template
 
 _ = stoqlib_gettext
 
-
 class AddressAdditionDialog(AdditionListDialog):
     title = _('Additional Addresses')
 
@@ -46,9 +45,6 @@ class AddressAdditionDialog(AdditionListDialog):
                                     visual_mode=visual_mode)
         self.register_editor_kwargs(**editor_kwargs)
         self.set_before_delete_items(self.before_delete_items)
-        self.set_on_add_item(self.on_add_item)
-        self.set_on_edit_item(self.on_edit_item)
-        self.main_address = None
 
     def get_columns(self):
         return [Column('address_string', title=_('Address'),
@@ -56,11 +52,6 @@ class AddressAdditionDialog(AdditionListDialog):
                 Column('city', title=_('City'), width=100,
                        data_type=str),
                 Column('state', title=_('State'), data_type=str)]
-
-    def set_main_address(self, main_address):
-        if self.main_address:
-            self.main_address.is_main_address = False
-        self.main_address = main_address
 
     #
     # Callbacks
@@ -70,14 +61,6 @@ class AddressAdditionDialog(AdditionListDialog):
         assert len(items) >= 1
         for item in items:
             Address.delete(item.id, connection=self.conn)
-
-    def on_add_item(self, slave, model):
-        if model.is_main_address:
-            self.set_main_address(model)
-
-    def on_edit_item(self, slave, model):
-        if model.is_main_address:
-            self.set_main_address(model)
 
 
 class AddressEditor(BaseEditor):
@@ -93,6 +76,7 @@ class AddressEditor(BaseEditor):
                             "be of type Person, got %s instead"
                             % type(person))
         self.person = person
+        self.current_main_address = self.person.get_main_address()
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
 
     #
@@ -103,7 +87,6 @@ class AddressEditor(BaseEditor):
         ct_location = get_city_location_template(conn)
         return Address(connection=self.conn, person=self.person,
                        city_location=ct_location)
-
 
     def get_title_model_attribute(self, model):
         return self.model_name
@@ -119,4 +102,7 @@ class AddressEditor(BaseEditor):
         self.proxy = self.add_proxy(widgets=self.proxy_widgets)
 
     def on_confirm(self):
+        if (self.model.is_main_address
+            and self.model is not self.current_main_address):
+            self.current_main_address.is_main_address = False
         return self.address_slave.on_confirm()

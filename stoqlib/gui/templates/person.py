@@ -116,8 +116,8 @@ class PersonEditorTemplate(BaseEditorSlave):
                     "adding additional addresses")
             warning(msg)
             return
-
         addresses = self.model.addresses
+
         if addresses and main_address:
             addresses.remove(main_address)
 
@@ -127,14 +127,8 @@ class PersonEditorTemplate(BaseEditorSlave):
         if not result:
             return
 
-        new_main_address = None
-        for address in result:
-            if address.is_main_address:
-                new_main_address = address
-                if main_address:
-                    main_address.is_main_address = False
-                break
-        if new_main_address:
+        new_main_address = self.model.get_main_address()
+        if new_main_address is not main_address:
             self.address_slave.set_model(new_main_address)
 
     def on_contacts_button__clicked(self, *args):
