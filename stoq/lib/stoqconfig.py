@@ -38,6 +38,8 @@ from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
+from kiwi.ui.dialogs import warning
+
 from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
 
@@ -296,7 +298,7 @@ class AppConfig:
 
     def abort_mission(self, msg=None, title=None):
         if msg:
-            warnings(msg, title)
+            warning(msg)
         raise SystemExit
 
 #
