@@ -34,7 +34,7 @@ from stoqlib.gui.base.dialogs import (run_dialog, BasicPluggableDialog,
                                       BasicDialog)
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.wizards import BaseWizard
-from stoqlib.exceptions import SelectionError
+from stoqlib.exceptions import SelectionError, StoqlibError
 
 _ = stoqlib_gettext
 
@@ -55,8 +55,8 @@ class AdditionListSlave(SlaveDelegate):
     gsignal('before-delete-items', object)
     gsignal('after-delete-items')
 
-    def __init__(self, conn, columns, editor_class=None, klist_objects=[],
-                 visual_mode=False):
+    def __init__(self, conn, columns=None, editor_class=None,
+                 klist_objects=None, visual_mode=False):
         """
         @param conn:          a connection
         @param columns:       column definitions
@@ -66,23 +66,27 @@ class AdditionListSlave(SlaveDelegate):
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
-        if editor_class and not issubclass(editor_class, (BaseEditor,
-                                                          BaseWizard)):
+        if not editor_class:
+            raise ValueError("editor_class must be specified")
+        if editor_class and not issubclass(editor_class,
+                                           (BaseEditor, BaseWizard)):
             raise TypeError("editor_class must be a BaseEditor subclass")
-
         SlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
+        self._columns = columns or self.get_columns()
+        if not self._columns:
+            raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
         self.conn = conn
         self._editor_class = editor_class
         self._editor_kwargs = dict()
-        self._columns = columns
         self._can_edit = True
         if self.visual_mode:
             self.hide_add_button()
             self.hide_edit_button()
             self.hide_del_button()
-        self._setup_klist(klist_objects)
+        items = klist_objects or self.get_items()
+        self._setup_klist(items)
         self._update_sensitivity()
 
     def _setup_klist(self, klist_objects):
@@ -181,6 +185,18 @@ class AdditionListSlave(SlaveDelegate):
         self.emit('after-delete-items')
 
     #
+    # Hooks
+    #
+
+    def get_items(self):
+        raise NotImplementedError("get_items must be implemented in "
+                                  "subclasses")
+
+    def get_columns(self):
+        raise NotImplementedError("get_columns must be implemented in "
+                                  "subclasses")
+
+    #
     # Public API
     #
 
@@ -230,18 +246,22 @@ class AdditionListSlave(SlaveDelegate):
 class AdditionListDialog(BasicPluggableDialog):
     size = (500, 500)
 
-    def __init__(self, conn, editor_class, columns, klist_objects,
-                 title='', visual_mode=False):
+    def __init__(self, conn, editor_class=None, columns=None,
+                 klist_objects=None, title='', visual_mode=False):
         self.title = title
         BasicPluggableDialog.__init__(self)
+        self.addition_list = None
         self.conn = conn
         self.visual_mode = visual_mode
         self._initialize(editor_class, columns, klist_objects)
 
+    def get_slave(self, editor_class, columns, klist_objects):
+        return AdditionListSlave(self.conn, columns,
+                                 editor_class, klist_objects,
+                                 visual_mode=self.visual_mode)
+
     def _initialize(self, editor_class, columns, klist_objects):
-        self.addition_list = AdditionListSlave(self.conn, columns,
-                                               editor_class, klist_objects,
-                                               visual_mode=self.visual_mode)
+        self.addition_list = self.get_slave(editor_class, columns, klist_objects)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm

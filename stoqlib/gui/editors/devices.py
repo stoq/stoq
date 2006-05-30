@@ -46,7 +46,6 @@ from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   METHOD_MULTIPLE, UNKNOWN_CHARACTER)
 from stoqlib.domain.devices import DeviceSettings, DeviceConstants
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext
@@ -336,38 +335,3 @@ class DeviceSettingsEditor(BaseEditor):
 
     def on_constants_button__clicked(self, *args):
         self._edit_driver_constants()
-
-class DeviceSettingsDialog(AdditionListDialog):
-    size = (600, 500)
-    def __init__(self, conn):
-        AdditionListDialog.__init__(self, conn, DeviceSettingsEditor,
-                                    self.get_columns(), self.get_items(conn),
-                                    title=_("Devices"))
-        self.set_before_delete_items(self.before_delete_items)
-
-    #
-    # Helper methods
-    #
-
-    def get_columns(self):
-        return [Column('device_type_name', _('Device Type'), data_type=str,
-                       sorted=True, width=120),
-                Column('printer_description', _('Description'), data_type=str,
-                       expand=True),
-                Column('host', _('Host'), data_type=str, width=150,
-                       searchable=True),
-                Column('is_active', _("Active"), data_type=bool, width=100)]
-
-    def get_items(self, conn):
-        query = DeviceSettings.q.brand != 'virtual'
-        return DeviceSettings.select(query, connection=conn)
-
-    #
-    # Callbacks
-    #
-
-    def before_delete_items(self, list_slave, items):
-        table = DeviceSettings
-        for item in items:
-            table.delete(item.id, connection=self.conn)
-        self.conn.commit()
