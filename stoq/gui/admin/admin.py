@@ -31,11 +31,9 @@ from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.interfaces import IUser
 from stoqlib.gui.editors.person import UserEditor
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog

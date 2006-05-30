@@ -36,8 +36,7 @@ from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.lib.message import yesno
-from stoqlib.lib.runtime import new_transaction
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
@@ -154,7 +153,7 @@ class TillApp(SearchableAppWindow):
                              connection=self.conn)
         if result.count() == 0:
             till = Till(connection=self.conn,
-                        branch=self.param.CURRENT_BRANCH)
+                        branch=self.branch)
         elif result.count() == 1:
             till = result[0]
         else:
@@ -189,7 +188,7 @@ class TillApp(SearchableAppWindow):
         # opened yet, but it will be considered when opening a
         # new operation
         new_till = Till(connection=self.conn,
-                        branch=self.param.CURRENT_BRANCH)
+                        branch=self.branch)
         for sale in opened_sales:
             sale.till = new_till
         self.conn.commit()
@@ -231,11 +230,10 @@ class TillApp(SearchableAppWindow):
         return Sale.STATUS_OPENED
 
     def get_title(self):
-        self.param = sysparam(self.conn)
+        self.branch = get_current_branch(self.conn)
         # XXX The current approch to get the current branch is going to
         # be improved after bug 2621
-        branch = self.param.CURRENT_BRANCH
-        return _('Stoq - Till for Branch %03d') % branch.identifier
+        return _('Stoq - Till for Branch %03d') % self.branch.identifier
 
     def get_columns(self):
         return [Column('order_number', title=_('Number'), width=80,

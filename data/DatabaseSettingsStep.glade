@@ -10,10 +10,25 @@
                 <property name="spacing">10</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="title_label">
-                        <property name="label" context="yes" translatable="yes">Welcome to Stoq</property>
+                    <widget class="GtkHBox" id="hbox2">
                         <property name="visible">True</property>
-                        <property name="xalign">0.0</property>
+                        <child>
+                            <widget class="ProxyLabel" id="title_label">
+                                <property name="label" context="yes" translatable="yes">Welcome to Stoq</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkImage" id="image1">
+                                <property name="file">stoq_logo.png</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
                     </widget>
                 </child>
                 <child>
@@ -21,24 +36,22 @@
                         <property name="visible">True</property>
                     </widget>
                     <packing>
-                        <property name="expand">False</property>
                         <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="header_label">
-                        <property name="label" context="yes" translatable="yes">Please, fill some important informations before start using Stoq</property>
+                    <widget class="ProxyLabel" id="header_label">
+                        <property name="label" context="yes" translatable="yes">Please, fill some important informations before start using the applications</property>
                         <property name="visible">True</property>
                         <property name="xalign">0.0</property>
                     </widget>
                     <packing>
-                        <property name="expand">False</property>
                         <property name="position">2</property>
                     </packing>
                 </child>
                 <child>
                     <widget class="GtkFrame" id="frame1">
-                        <property name="label" context="yes" translatable="yes">Postgres Database Settings</property>
+                        <property name="label" context="yes" translatable="yes">PostgreSQL Database Settings</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkTable" id="table1">
@@ -74,9 +87,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="address">
+                                    <widget class="ProxyEntry" id="address">
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">address</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">14</property>
@@ -91,9 +105,10 @@
                                     <widget class="GtkHBox" id="port_hbox">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+entry+Entry" id="port">
+                                            <widget class="ProxyEntry" id="port">
                                                 <property name="data_type">int</property>
                                                 <property name="is_focus">True</property>
+                                                <property name="mandatory">True</property>
                                                 <property name="model_attribute">port</property>
                                                 <property name="visible">True</property>
                                                 <property name="width_chars">5</property>
@@ -145,7 +160,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                    <widget class="ProxyLabel" id="kiwilabel3">
                                         <property name="label" context="yes" translatable="yes">Authentication Type:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">0.0</property>
@@ -158,9 +173,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="dbname">
+                                    <widget class="ProxyEntry" id="dbname">
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">dbname</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">13</property>
@@ -172,9 +188,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="username">
+                                    <widget class="ProxyEntry" id="username">
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">username</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">14</property>
@@ -216,7 +233,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="passwd_label">
+                                    <widget class="ProxyLabel" id="passwd_label">
                                         <property name="label" context="yes" translatable="yes">Password:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
@@ -245,7 +262,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="password">
+                                    <widget class="ProxyEntry" id="password">
                                         <property name="data_type">str</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">password</property>
@@ -264,6 +281,7 @@
                         </child>
                     </widget>
                     <packing>
+                        <property name="expand">False</property>
                         <property name="position">3</property>
                     </packing>
                 </child>
@@ -275,19 +293,21 @@
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                                    <widget class="ProxyLabel" id="kiwilabel1">
                                         <property name="label" context="yes" translatable="yes">Stoq user 'administrator' password:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="stoq_user_passwd">
+                                    <widget class="ProxyEntry" id="stoq_user_passwd">
                                         <property name="data_type">str</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="mandatory">True</property>
                                         <property name="model_attribute">password</property>
                                         <property name="visibility">False</property>
                                         <property name="visible">True</property>
-                                        <property name="width_chars">10</property>
+                                        <property name="width_chars">12</property>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
@@ -297,7 +317,7 @@
                             </widget>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="hint_label">
+                            <widget class="ProxyLabel" id="hint_label">
                                 <property name="label" context="yes" translatable="yes">Hint: this is the first user to start Stoq applications</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -308,6 +328,7 @@
                         </child>
                     </widget>
                     <packing>
+                        <property name="expand">False</property>
                         <property name="position">4</property>
                     </packing>
                 </child>

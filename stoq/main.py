@@ -43,10 +43,10 @@ _ = gettext.gettext
 def _run_first_time_wizard(config):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
-    model = run_dialog(FirstTimeConfigWizard, None)
+    model = run_dialog(FirstTimeConfigWizard, None, config)
     if not model:
         raise SystemExit("No configuration data provided")
-    return model.db_settings
+
 
 def _setup_dialogs():
     # This needs to be here otherwise we can't install the dialog
@@ -55,23 +55,22 @@ def _setup_dialogs():
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
+
 def _initialize(options):
     _setup_dialogs()
     config = StoqConfig(filename=options.filename)
 
     if not config.has_installed_config_data():
-        config.install_default(_run_first_time_wizard(config))
-        options.clean = True
+        _run_first_time_wizard(config)
+        return
 
     try:
         config.check_connection()
     except:
         type, value, trace = sys.exc_info()
         error(_('Could not open database config file'),
-              long=_("Invalid config file settings, got error '%s', "
-                     "of type '%s'" % (value, type)))
-        raise SystemExit("Error: bad config file")
-
+              _("Invalid config file settings, got error '%s', "
+                "of type '%s'" % (value, type)))
 
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
@@ -80,6 +79,7 @@ def _initialize(options):
     except Exception, e:
         error(_('Could not connect to database'), str(e))
         raise SystemExit("Error: bad connection settings provided")
+
 
 def _run_app(options, appname):
     from stoq.lib.stoqconfig import AppConfig
@@ -96,12 +96,9 @@ def _run_app(options, appname):
     gtk.main()
     appconf.log("Shutting down application")
 
+
 def main(args):
     parser = get_option_parser()
-    parser.add_option('', '--clean',
-                      action="store_true",
-                      dest="clean",
-                      help='Clean database before running')
     options, args = parser.parse_args(args)
 
     apps = get_application_names()

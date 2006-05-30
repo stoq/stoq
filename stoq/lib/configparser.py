@@ -46,10 +46,22 @@ _config = None
 class StoqConfig:
     config_template = \
 """
+# This file is generated automatically by Stoq and should not be changed
+# manually unless you know exactly what are you doing.
+
+
 [General]
 # Default file where status and errors are appended to. Comment this out
 # to allow output to be sent to stderr/stdout
 logfile=~/.%(DOMAIN)s/application.log
+
+# Set here the Branch Station identifier for the current station. Note that
+# this field is not used when running an example database
+#
+# Warning: you should never change this option unless you know exactly what are
+# you doing
+#
+station_id=%(STATION_ID)s
 
 [Database]
 # Choose here the relational database management system you would like to
@@ -166,14 +178,14 @@ dbusername=%(DBUSERNAME)s"""
             raise FilePermissionError(exception % origin)
 
     def remove_config_file(self):
-        self.check_permissions(self.home_filename)
-        os.remove(self.home_filename)
+        self.check_permissions(self._filename)
+        os.remove(self._filename)
 
     def has_installed_config_data(self):
         return self._filename != None
 
-    @argcheck(DatabaseSettings)
-    def install_default(self, config_data):
+    @argcheck(DatabaseSettings, int)
+    def install_default(self, config_data, station_id=0):
         password = config_data.password
 
         self._store_password(password)
@@ -185,6 +197,7 @@ dbusername=%(DBUSERNAME)s"""
                            PORT=config_data.port,
                            ADDRESS=config_data.address,
                            DBNAME=config_data.dbname,
+                           STATION_ID=station_id,
                            TESTDB=config_data.dbname,
                            DBUSERNAME=config_data.username)
         fd.write(StoqConfig.config_template % config_dict)
@@ -210,6 +223,13 @@ dbusername=%(DBUSERNAME)s"""
             raise ConfigError('Invalid section: %s' % section)
 
         self._config.set(section, name)
+
+    def set_station(self, station_id):
+        """
+        Overrides the station_id option
+        @param station_id: the identifier of branch station
+        """
+        self._config.set('General', 'station_id', station_id)
 
     def set_database(self, database):
         """
@@ -264,8 +284,11 @@ dbusername=%(DBUSERNAME)s"""
 
 
     #
-    # Database config accessors
+    # Accessors
     #
+
+    def get_station_id(self):
+        return self.get_option('station_id', section='General')
 
     def get_rdbms_name(self):
         return self.get_option('rdbms', section='Database')
@@ -314,7 +337,6 @@ dbusername=%(DBUSERNAME)s"""
 #
 # General routines
 #
-
 
 
 def _setup_stoqlib(config):
