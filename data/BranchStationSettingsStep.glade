@@ -1,0 +1,164 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="BranchStationSettingsStep">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="border_width">6</property>
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="ProxyLabel" id="title_label">
+                        <property name="label" context="yes" translatable="yes">Identify your Computer</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkHSeparator" id="hseparator1">
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table1">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">3</property>
+                        <property name="n_rows">5</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="label" context="yes" translatable="yes">Computer Identifier:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label3">
+                                <property name="label" context="yes" translatable="yes">Name:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label5">
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">3</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="branch_company_title">
+                                <property name="label" context="yes" translatable="yes">Select the Computer Location:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">4</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label6">
+                                <property name="label" context="yes" translatable="yes">Branch Company:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">5</property>
+                                <property name="top_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="identifier">
+                                <property name="data_type">unicode</property>
+                                <property name="model_attribute">identifier_str</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="name">
+                                <property name="data_type">unicode</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">name</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">5</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyComboEntry" id="branch">
+                                <property name="data_type">object</property>
+                                <property name="mandatory">True</property>
+                                <property name="model_attribute">branch</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">5</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">4</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                                <property name="xalign">0.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="top_attach">1</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                        <property name="position">2</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                    </widget>
+                    <packing>
+                        <property name="position">3</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

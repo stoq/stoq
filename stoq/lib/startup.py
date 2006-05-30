@@ -29,12 +29,19 @@
 import optparse
 
 from sqlobject import sqlhub
+from sqlobject.sqlbuilder import AND
 
+from stoqlib.exceptions import StoqlibError
+from stoqlib.database import check_installed_database
+from stoqlib.lib.message import error
 from stoqlib.lib.admin import initialize_system
 from stoqlib.lib.migration import schema_migration
-from stoqlib.lib.runtime import get_connection, set_verbose
+from stoqlib.lib.runtime import (get_connection, set_verbose,
+                                 register_current_branch_identifier,
+                                 register_current_station_identifier)
 
-from stoq.lib.configparser import StoqConfig, register_config
+from stoq.lib.configparser import register_config
+
 
 def _update_config(config, options):
     if options.address:
@@ -50,7 +57,34 @@ def _update_config(config, options):
     if options.verbose:
         set_verbose(options.verbose)
 
-def setup(config, options):
+
+def set_branch_by_stationid(identifier, conn=None):
+    from stoqlib.domain.person import BranchStation
+    conn = conn or get_connection()
+
+    try:
+        identifier = int(identifier)
+    except ValueError, e:
+        error("Invalid configuration settings for identifier, got %s"
+              % identifier)
+
+    if not identifier:
+        # We are configuring a new computer -> skip
+        return
+    table = BranchStation
+    q1 = table.q.is_active == True
+    q2 = table.q.identifier == identifier
+    query = AND(q1, q2)
+    stations = table.select(query, connection=conn)
+    if stations.count() != 1:
+        raise StoqlibError("You should have only one station for the "
+                           "identifier %s" % identifier)
+    identifier = stations[0].branch.identifier
+    register_current_branch_identifier(identifier)
+    register_current_station_identifier(identifier)
+
+
+def setup(config, options=None, stoq_user_password=''):
     """
     Loads the configuration from arguments and configuration file.
 
@@ -65,17 +99,25 @@ def setup(config, options):
     #       bin/init-database
     #       python stoq/tests/runtest.py
 
-    _update_config(config, options)
+    if options:
+        _update_config(config, options)
 
     register_config(config)
 
-    if options.clean:
-        initialize_system(options.password,
-                          verbose=options.verbose)
+    if (options and options.clean) or not check_installed_database():
+        if not options:
+            password = stoq_user_password
+            verbose = False
+        else:
+            password = options.password or config.get_password()
+            verbose = options.verbose
+        initialize_system(password, verbose=verbose)
     else:
+        set_branch_by_stationid(config.get_station_id())
         schema_migration.update_schema()
 
     sqlhub.threadConnection = get_connection()
+
 
 def get_option_parser():
     """
@@ -89,6 +131,11 @@ def get_option_parser():
     parser = optparse.OptionParser()
 
     group = optparse.OptionGroup(parser, 'General')
+    group.add_option('-c', '--clean',
+                      action="store_true",
+                      dest="clean",
+                      default=False,
+                      help='Clean up database')
     group.add_option('-f', '--filename',
                       action="store",
                       type="string",
@@ -125,25 +172,4 @@ def get_option_parser():
                      help='user password',
                      default='')
     parser.add_option_group(group)
-
     return parser
-
-def simple_setup(args, **kwargs):
-    """
-    Simplified setup:
-      - Parses arguments
-      - Loads configuration
-      - Doing the rest of the initialization
-    @param args: command line parameters, normally sys.argv
-    @param kwargs: override arguments
-    """
-    parser = get_option_parser()
-    config = StoqConfig()
-
-    options, args = parser.parse_args(args)
-    if not 'clean' in kwargs:
-        kwargs['clean'] = False
-    for key, value in kwargs.items():
-        setattr(options, key, value)
-    setup(config, options)
-

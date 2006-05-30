@@ -24,13 +24,25 @@
 ##
 """ Stoq Configuration dialogs"""
 
+import sys
 import gettext
+from decimal import Decimal
 
 from kiwi.python import Settable
+from kiwi.argcheck import argcheck
 
-from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.database import DatabaseSettings
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
+from stoqlib.lib.runtime import new_transaction, get_connection
+from stoqlib.lib.validators import validate_password
+from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
+from stoqlib.database import (DatabaseSettings, finish_transaction,
+                              check_installed_database, rollback_and_begin)
+
+from stoq.lib.configparser import StoqConfig, register_config
+from stoq.lib.startup import setup, set_branch_by_stationid
 
 
 _ = gettext.gettext
@@ -39,6 +51,182 @@ _ = gettext.gettext
 #
 # Wizard Steps
 #
+
+
+class DeviceSettingsStep(BaseWizardStep):
+    gladefile = 'DeviceSettingsStep'
+
+    def __init__(self, conn, wizard, station, previous):
+        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        self._setup_widgets()
+        self._setup_slaves(station)
+
+    def _setup_widgets(self):
+        self.title_label.set_size('large')
+        self.title_label.set_bold(True)
+
+    def _setup_slaves(self, station):
+        # TODO send station to the slave
+        slave = DeviceSettingsDialogSlave(self.conn)
+        self.attach_slave("devices_holder", slave)
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def has_next_step(self):
+        return False
+
+
+
+class BranchStationSettingsStep(WizardEditorStep):
+    gladefile = 'BranchStationSettingsStep'
+
+    def __init__(self, conn, wizard, branch_company, previous):
+        # This line avoid some problems when importing domain data before
+        # setting up the database. That's why we are not using model_type as
+        # a class attribute
+        from stoqlib.domain.person import BranchStation
+        model = BranchStation(connection=conn, name=None,
+                              branch=branch_company)
+        self.model_type = BranchStation
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+
+    def _setup_widgets(self):
+        from stoqlib.domain.person import PersonAdaptToBranch
+        table = PersonAdaptToBranch
+        items = [(branch.get_description(), branch)
+                    for branch in table.get_active_branches(self.conn)]
+        self.branch.prefill(items)
+        self.title_label.set_size('large')
+        self.title_label.set_bold(True)
+        self.branch_company_title.set_size('medium')
+        self.branch_company_title.set_bold(True)
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.name.grab_focus()
+
+    def validate_step(self):
+        conn = get_connection()
+        name = self.station_proxy.model.name
+        if self.model_type.selectBy(name=name, connection=conn).count():
+            self.name.set_invalid(_(u"This station name already exists"))
+            self.force_validation()
+            return False
+        return True
+
+    def next_step(self):
+        self.model.name = self.station_proxy.model.name
+        # Avoid having unused active stations on database if user go back
+        # to this step
+        self.model.activate()
+        self.wizard.install_default(self.model.identifier)
+
+        set_branch_by_stationid(self.wizard.config.get_station_id(),
+                                self.conn)
+        return DeviceSettingsStep(self.conn, self.wizard, self.model, self)
+
+    def setup_proxies(self):
+        self._setup_widgets()
+        from stoqlib.lib.parameters import sysparam
+        self.id_proxy = self.add_proxy(self.model, ['identifier'])
+
+        model = Settable(name=u"", branch=sysparam(self.conn).MAIN_COMPANY)
+        self.station_proxy = self.add_proxy(model, ['name', 'branch'])
+
+
+class BranchSettingsStep(WizardEditorStep):
+    gladefile = 'BranchSettingsStep'
+    person_widgets = ('name',
+                      'phone_number',
+                      'fax_number')
+    tax_widgets = ('icms',
+                   'iss',
+                   'substitution_icms')
+    proxy_widgets = person_widgets + tax_widgets
+
+
+    def __init__(self, conn, wizard, model, previous):
+        # This line avoid some problems when importing domain data before
+        # setting up the database
+        from stoqlib.domain.person import Person
+        from stoqlib.lib.parameters import sysparam
+        self.param = sysparam(conn)
+        self.model_type = Person
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.title_label.set_size('large')
+        self.title_label.set_bold(True)
+
+    def _update_system_parameters(self, company):
+        icms = self.tax_proxy.model.icms
+        self.param.update_parameter('ICMS_TAX', unicode(icms))
+
+        iss = self.tax_proxy.model.iss
+        self.param.update_parameter('ISS_TAX', unicode(iss))
+
+        substitution = self.tax_proxy.model.substitution_icms
+        self.param.update_parameter('SUBSTITUTION_TAX',
+                                    unicode(substitution))
+
+        address = company.get_adapted().get_main_address()
+        if not address:
+            raise StoqlibError("You should have an address defined at "
+                               "this point")
+
+        city = address.city_location.city
+        self.param.update_parameter('CITY_SUGGESTED', city)
+
+        country = address.city_location.country
+        self.param.update_parameter('COUNTRY_SUGGESTED', country)
+
+        state = address.city_location.state
+        self.param.update_parameter('STATE_SUGGESTED', state)
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.name.grab_focus()
+
+    def next_step(self):
+        model = self.param.MAIN_COMPANY
+        self._update_system_parameters(model)
+        conn = self.wizard.get_connection()
+        return BranchStationSettingsStep(conn, self.wizard, model, self)
+
+    def setup_proxies(self):
+        widgets = BranchSettingsStep.person_widgets
+        self.person_proxy = self.add_proxy(self.model, widgets)
+
+        widgets = BranchSettingsStep.tax_widgets
+        iss = Decimal(self.param.ISS_TAX)
+        icms = Decimal(self.param.ICMS_TAX)
+        substitution = Decimal(self.param.SUBSTITUTION_TAX)
+        model = Settable(iss=iss, icms=icms,
+                         substitution_icms=substitution)
+        self.tax_proxy = self.add_proxy(model, widgets)
+
+    def setup_slaves(self):
+        from stoqlib.gui.slaves.address import AddressSlave
+        address = self.model.get_main_address()
+        slave = AddressSlave(self.conn, self.model, address)
+        self.attach_slave("address_holder", slave)
 
 
 class DatabaseSettingsStep(WizardEditorStep):
@@ -93,19 +281,60 @@ class DatabaseSettingsStep(WizardEditorStep):
             msg = _("The database address '%s' is invalid. Please fix the "
                     "address you have set and try again"
                     % self.model.address)
-            warning(_(u'Invalid database address'), long=msg)
+            warning(_(u'Invalid database address'), msg)
             self.address.set_invalid(_("Invalid database address"))
             self.force_validation()
             return False
+
+        password = self.wizard_model.stoq_user_data.password
+        callback = lambda msg: self.stoq_user_passwd.set_invalid(msg)
+        if not validate_password(password, callback):
+            self.force_validation()
+            return False
+
         conn_ok, error_msg = self.model.check_database_connection()
         if not conn_ok:
-            warning(_('Invalid database settings'), long=error_msg)
+            warning(_('Invalid database settings'), error_msg)
+            return False
+
+        self.wizard.install_default()
+        try:
+            self.wizard.config.check_connection()
+        except:
+            type, value, trace = sys.exc_info()
+            warning(_('Could not open database config file'),
+                    _("Invalid config file settings, got error '%s', "
+                      "of type '%s'" % (value, type)))
             return False
         return True
 
     def next_step(self):
-        # TODO The next step will be implemented on bug 2088
-        pass
+        from stoqlib.lib.parameters import sysparam
+        password = self.wizard_model.stoq_user_data.password
+
+        register_config(self.wizard.config)
+        has_installed_db = check_installed_database()
+
+        # Initialize database connections and create system data if the
+        # database is empty
+        setup(self.wizard.config, stoq_user_password=password)
+
+        existing_conn = self.wizard.get_connection()
+        if existing_conn:
+            rollback_and_begin(existing_conn)
+            conn = existing_conn
+        else:
+            conn = new_transaction()
+
+        self.wizard.set_connection(conn)
+        model = sysparam(conn).MAIN_COMPANY
+
+        if not has_installed_db:
+            step_class = BranchSettingsStep
+            model = model.get_adapted()
+        else:
+            step_class = BranchStationSettingsStep
+        return step_class(conn, self.wizard, model, self)
 
     def setup_proxies(self):
         items = [(value, key)
@@ -132,20 +361,38 @@ class DatabaseSettingsStep(WizardEditorStep):
 
 class FirstTimeConfigWizard(BaseWizard):
     title = _("Setting up Stoq")
-    size = (350, 200)
+    size = (550, 450)
 
-    def __init__(self):
+    @argcheck(StoqConfig)
+    def __init__(self, config):
+        self.config = config
+        self._conn = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
                             title=self.title)
-        # TODO Implement other wizard steps on bug 2088
-        self.enable_finish()
+
+    def set_connection(self, conn):
+        self._conn = conn
+
+    def get_connection(self):
+        return self._conn
+
+    def install_default(self, station_id=0):
+        self.config.install_default(self.model.db_settings, station_id)
 
     #
     # WizardStep hooks
     #
 
     def finish(self):
+        finish_transaction(self._conn, 1)
         self.retval = self.model
         self.close()
+
+    def cancel(self):
+        if self._conn:
+            finish_transaction(self._conn)
+        if self.config.has_installed_config_data():
+            self.config.remove_config_file()
+        BaseWizard.cancel(self)

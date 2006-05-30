@@ -30,18 +30,17 @@ import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import finish_transaction
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
-from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
 from stoqlib.gui.search.receiving import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
+from stoqlib.reporting.product import ProductReport
 from stoqlib.domain.person import Person
-from stoqlib.domain.product import (Product, ProductFullStockView,
-                                    ProductAdaptToSellable)
 from stoqlib.domain.sellable import SellableView
 from stoqlib.domain.interfaces import ISellable, IBranch
-from stoqlib.reporting.product import ProductReport
+from stoqlib.domain.product import (Product, ProductFullStockView,
+                                    ProductAdaptToSellable)
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -121,7 +120,7 @@ class WarehouseApp(SearchableAppWindow):
     #
 
     def get_filterslave_default_selected_item(self):
-        return sysparam(self.conn).CURRENT_BRANCH
+        return get_current_branch(self.conn)
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
