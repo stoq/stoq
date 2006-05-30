@@ -118,7 +118,8 @@ class SaleDetailsDialog(BaseEditor):
                 Column('sellable.base_sellable_info.description',
                        _("Description"), data_type=str, expand=True,
                        width=200),
-                Column('quantity', _("Quantity"), data_type=int, width=100),
+                Column('quantity_unit_string', _("Quantity"), data_type=str,
+                       width=100, justify=gtk.JUSTIFY_RIGHT),
                 Column('price', _("Price"), data_type=currency, width=100),
                 Column('total', _("Total"), data_type=currency, width=100)]
 

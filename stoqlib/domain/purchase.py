@@ -98,12 +98,12 @@ class PurchaseItem(Domain):
     def get_quantity_as_string(self):
         unit = self.sellable.unit
         return "%s %s" % (format_quantity(self.quantity),
-                          unit and unit.description or "")
+                          unit and unit.description or u"")
 
     def get_quantity_received_as_string(self):
         unit = self.sellable.unit
         return "%s %s" % (format_quantity(self.quantity_received),
-                          unit and unit.description or "")
+                          unit and unit.description or u"")
 
 class PurchaseOrder(Domain):
     """Purchase and order definition."""

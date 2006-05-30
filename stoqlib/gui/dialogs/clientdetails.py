@@ -27,7 +27,6 @@
 """ Classes for client details """
 
 from datetime import date
-from decimal import Decimal
 
 import gtk
 from kiwi.python import Settable
@@ -79,15 +78,22 @@ class ClientDetailsDialog(BaseEditor):
             for product in sale.get_products():
                 qty = product.quantity
                 price = product.price
+                total_value = price * qty
+                unit = product.sellable.get_unit_description()
+                qty_str = '%s %s' %(qty, unit)
                 product_codes = [item.code for item in product_dict.values()]
                 sellable = product.sellable
                 if not sellable.code in product_codes:
                     desc = sellable.base_sellable_info.description
                     obj = Settable(code=sellable.code, description=desc,
-                                   total_qty=qty, total_value=price)
+                                   _total_qty=qty, total_value=total_value,
+                                   qty_str=qty_str, unit=unit, price=price)
                     product_dict[sellable] = obj
                 else:
-                    product_dict[sellable].total_qty += qty
+                    product_dict[sellable]._total_qty += qty
+                    table = product_dict[sellable]
+                    table.qty_str = '%s %s'  %(table._total_qty, table.unit)
+                    table.total_value  = table._total_qty * table.price
         self.products = product_dict.values()
 
     def _setup_widgets(self):
@@ -133,10 +139,10 @@ class ClientDetailsDialog(BaseEditor):
                        width=90, sorted=True),
                 Column("description", title=_("Description"), data_type=str,
                        expand=True, searchable=True),
-                Column("total_qty", title=_("Total Quantity"),
-                       data_type=Decimal, width=120),
+                Column("qty_str", title=_("Total Quantity"),
+                       data_type=str, width=120, justify=gtk.JUSTIFY_RIGHT),
                 Column("total_value", title=_("Total Value"), width=80,
-                       data_type=currency)]
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
        return [Column("sellable.code", title=_("Code"), data_type=int,
