@@ -222,6 +222,8 @@ class PersonRoleWizard(BaseWizard):
     #
 
     def finish(self):
+        if not self.editor.validate_confirm():
+            return
         self.editor.on_confirm()
         self.retval = self.editor.model
         self.close()

@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.validators import validate_password
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
@@ -80,26 +81,22 @@ class PasswordEditorSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     PasswordEditorSlave.proxy_widgets)
 
-    #
-    # Kiwi handlers
-    #
+    def validate_confirm(self):
+        callback = lambda msg: self.password.set_invalid(msg)
+        new_passwd = self.model.new_password
+        if not validate_password(new_passwd, callback):
+            return False
 
-    def on_password__validate(self, widget, value):
-        password_len = self.model.PASSWORD_LEN
-        if len(self.password.get_text()) < password_len:
-            return ValidationError('Password must have at least '
-                                   '%d characters' % password_len)
-        if not self.model.confirm_password:
-            return
-        if value != self.model.confirm_password:
-            self.confirm_password.set_invalid(_("Passwords doesn't match"))
-        else:
-            self.confirm_password.set_valid()
+        callback = lambda msg: self.confirm_password.set_invalid(msg)
+        confirm_passwd = self.model.confirm_password
+        if not validate_password(confirm_passwd, callback):
+            return False
 
-    def on_confirm_password__validate(self, widget, value):
-        if value != self.model.new_password:
-            return ValidationError(_("Passwords doesn't match"))
-        self.confirm_password.set_valid()
+        if confirm_passwd != new_passwd:
+            msg = _(u"New password and confirm password don't match")
+            self.password.set_invalid(msg)
+            return False
+        return True
 
 
 class UserDetailsSlave(BaseEditorSlave):
@@ -155,6 +152,11 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     UserDetailsSlave.proxy_widgets)
+
+    def validate_confirm(self):
+        if self.show_password_fields:
+            return self.password_slave.validate_confirm()
+        return True
 
     def on_confirm(self):
         if self.show_password_fields:
