@@ -68,7 +68,7 @@ class SaleOrderReport(BaseStoqReport):
                 OTC(_("Item"),
                     lambda obj: obj.sellable.base_sellable_info.description,
                     truncate=True, width=130),
-                OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+                OTC(_("Quantity"), lambda obj: obj.get_quantity_unit_string(),
                     width=70, align=RIGHT),
                 OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
                     width=90, align=RIGHT),
