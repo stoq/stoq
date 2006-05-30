@@ -104,7 +104,10 @@ class ProductStockHistoryDialog(BaseEditor):
                  Column("receiving_order.invoice_number", title=_("Invoice"),
                         width=80, data_type=str),
                  Column("quantity_received", title=_("Quantity"),
-                 data_type=Decimal, width=90)]
+                        data_type=Decimal, width=90,
+                        justify=gtk.JUSTIFY_RIGHT),
+                 Column("unit_description", title=_("Unit"), data_type=str,
+                        width=60)]
 
      def _get_sale_columns(self):
          return [Column("sale.order_number", title=_("#"),
@@ -116,7 +119,9 @@ class ProductStockHistoryDialog(BaseEditor):
                  Column("sale.client_name",
                         title=_("Client"), expand=True, data_type=str),
                  Column("quantity", title=_("Quantity"),
-                        width=90, data_type=int)]
+                        width=90, data_type=int),
+                 Column("sellable.unit_description",
+                        title=_("Unit"), width=60, data_type=str)]
 
      #
      # BaseEditor Hooks

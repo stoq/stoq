@@ -27,7 +27,6 @@
 """ Classes for Receiving Order Details Dialog """
 
 
-from decimal import Decimal
 
 import gtk
 from kiwi.ui.objectlist import Column
@@ -85,8 +84,8 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                         format="%04d", width=80),
                  Column("sellable.description", title=_("Description"),
                         data_type=str, width=80, expand=True),
-                 Column("quantity_received", title=_("Quantity"),
-                        data_type=Decimal, width=80,
+                 Column("quantity_unit_string", title=_("Quantity"),
+                        data_type=str, width=80,
                         justify=gtk.JUSTIFY_RIGHT),
                  Column("cost", title=_("Cost"), width=80,
                         data_type=currency, justify=gtk.JUSTIFY_RIGHT),
