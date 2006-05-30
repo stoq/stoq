@@ -35,6 +35,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
+MINIMUM_PASSWORD_CHAR_LEN = 6
+
 #
 # Unicode related
 #
