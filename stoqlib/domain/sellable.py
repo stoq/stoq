@@ -147,6 +147,9 @@ class AbstractSellableItem(InheritableModel):
     def get_price_string(self):
         return get_formatted_price(self.price)
 
+    def get_quantity_unit_string(self):
+        return "%s %s" % (self.quantity, self.sellable.get_unit_description())
+
 
 class OnSaleInfo(Domain):
     on_sale_price = PriceCol(default=0)
