@@ -26,6 +26,7 @@
 
 from kiwi.python import namedAny, ClassInittableObject
 from kiwi.datatypes import currency
+from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
@@ -51,9 +52,10 @@ class ParameterDetails:
         self.long_desc = long_desc
 
 _parameter_info = {
-    'CURRENT_BRANCH': ParameterDetails(_(u'General'), _(u'Current Branch'),
-                                       _(u'The current branch associated with '
-                                         'the current system installation.')),
+    'MAIN_COMPANY': ParameterDetails(_(u'General'), _(u'Main Company'),
+                                       _(u'The main company which is the '
+                                          'owner of all other branch '
+                                          'companies')),
     'CURRENT_WAREHOUSE': ParameterDetails(_(u'General'), _(u'Current Warehouse'),
                                           _(u'The company\'s warehouse')),
     'DEFAULT_SALESPERSON_ROLE': ParameterDetails(_(u'Sales'),
@@ -338,7 +340,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('DEFAULT_RECEIVING_CFOP', u'fiscal.CfopData'),
         ParameterAttr('SUGGESTED_SUPPLIER',
                       u'person.PersonAdaptToSupplier'),
-        ParameterAttr('CURRENT_BRANCH',
+        ParameterAttr('MAIN_COMPANY',
                       u'person.PersonAdaptToBranch'),
         ParameterAttr('DEFAULT_BASE_CATEGORY',
                       u'sellable.BaseSellableCategory'),
@@ -383,16 +385,7 @@ class ParameterAccess(ClassInittableObject):
                             self.get_parameter_by_field(n, v))
             setattr(cls, obj.key, prop)
 
-    #
-    # Public API
-    #
-
-    def rebuild_cache_for(self, param_name):
-        from stoqlib.domain.base import AbstractModel
-        try:
-            value = self._cache[param_name]
-        except KeyError:
-            return
+    def _get_parameter_by_name(self, param_name):
         res = ParameterData.select(ParameterData.q.field_name == param_name,
                                    connection=self.conn)
         if not res.count():
@@ -403,16 +396,36 @@ class ParameterAccess(ClassInittableObject):
             raise DatabaseInconsistency("It is not possible have more than "
                                         "one ParameterData for the same "
                                         "key (%s)" % param_name)
+        return res[0]
+
+    #
+    # Public API
+    #
+
+    @argcheck(str, unicode)
+    def update_parameter(self, parameter_name, value):
+        param = self._get_parameter_by_name(parameter_name)
+        param.field_value = unicode(value)
+        self.rebuild_cache_for(parameter_name)
+
+    def rebuild_cache_for(self, param_name):
+        from stoqlib.domain.base import AbstractModel
+        try:
+            value = self._cache[param_name]
+        except KeyError:
+            return
+
+        param = self._get_parameter_by_name(param_name)
         value_type = type(value)
         if not issubclass(value_type, AbstractModel):
             # XXX: workaround to works with boolean types:
-            data = res[0].field_value
+            data = param.field_value
             if value_type is bool:
                 data = int(data)
             self._cache[param_name] = value_type(data)
             return
         table = value_type
-        obj_id = res[0].field_value
+        obj_id = param.field_value
         self._cache[param_name] = table.get(obj_id, connection=self.conn)
 
     def rebuild_cache(self):
@@ -473,7 +486,7 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_suggested_supplier()
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
-        self.ensure_current_branch()
+        self.ensure_main_company()
         self.ensure_current_warehouse()
         self.ensure_payment_destination()
         self.ensure_payment_methods()
@@ -517,25 +530,19 @@ class ParameterAccess(ClassInittableObject):
                             connection=self.conn)
         self._set_schema(key, role.id, is_editable=False)
 
-    def ensure_current_branch(self):
+    def ensure_main_company(self):
         from stoqlib.domain.person import Person, Address, CityLocation
-        key = "CURRENT_BRANCH"
+        key = "MAIN_COMPANY"
         table = Person.getAdapterClass(IBranch)
         if self.get_parameter_by_field(key, table):
             return
 
-        person_obj = Person(name=u"Async Open Source",
-                            phone_number=u"33760125", fax_number=u"35015394",
-                            connection=self.conn)
-        city_location = CityLocation(city=u"São Carlos", state=u"SP",
-                                     country=u"Brasil", connection=self.conn)
-        main_address = Address(street=u"Orlando Damiano", number=2212,
-                               district=u"Jd Macarengo",
-                               postal_code=u"13560-450", is_main_address=True,
+        person_obj = Person(name=None, connection=self.conn)
+        city_location = CityLocation(country=u"Brasil", connection=self.conn)
+        main_address = Address(is_main_address=True,
                                person=person_obj, city_location=city_location,
                                connection=self.conn)
-        person_obj.addFacet(ICompany, cnpj='03.852.995/0001-07',
-                            fancy_name=u"Async Open Source",
+        person_obj.addFacet(ICompany, cnpj=None, fancy_name=None,
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         branch.manager = Person(connection=self.conn, name=u"Manager")
@@ -548,7 +555,7 @@ class ParameterAccess(ClassInittableObject):
         if self.get_parameter_by_field(key, table):
             return
         person_obj = Person(name=key, connection=self.conn)
-        # XXX See ensure_current_branch comment: we have the same problem with
+        # XXX See ensure_main_company comment: we have the same problem with
         # cnpj here.
         company = person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
                                       connection=self.conn)
@@ -556,12 +563,12 @@ class ParameterAccess(ClassInittableObject):
 
     def ensure_payment_destination(self):
         # Note that this method must always be called after
-        # ensure_current_branch
+        # ensure_main_company
         from stoqlib.domain.payment.destination import StoreDestination
         key = "DEFAULT_PAYMENT_DESTINATION"
         if self.get_parameter_by_field(key, StoreDestination):
             return
-        branch = self.CURRENT_BRANCH
+        branch = self.MAIN_COMPANY
         pm = StoreDestination(description=_(u'Default Store Destination'),
                               branch=branch,
                               connection=self.conn)

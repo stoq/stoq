@@ -39,9 +39,8 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, info, yesno
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.database import finish_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
@@ -231,7 +230,7 @@ def print_cheques_for_payment_group(conn, group):
     if not printer:
         return
     printer_banks = printer.get_banks()
-    current_branch = sysparam(conn).CURRENT_BRANCH
+    current_branch = get_current_branch(conn)
     main_address = current_branch.get_adapted().get_main_address()
     if not main_address:
         raise ValueError("The cheque can not be printed since there is no "

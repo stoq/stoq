@@ -31,10 +31,14 @@ import decimal
 
 from kiwi.datatypes import currency
 
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import (new_transaction, print_msg,
+                                 register_current_station_identifier,
+                                 register_current_branch_identifier)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
-                                   CityLocation, EmployeeRoleHistory)
+                                   CityLocation, EmployeeRoleHistory,
+                                   BranchStation)
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
@@ -210,6 +214,35 @@ def create_people():
         transporter_args = transporter_data[index]
         person_obj.addFacet(ITransporter, connection=conn,
                             **transporter_args)
+
+    # Setting up the current branch
+    branch = sysparam(conn).MAIN_COMPANY
+    register_current_branch_identifier(branch.identifier)
+
+    person = branch.get_adapted()
+    person.name = u"Async Open Source"
+    person.phone_number= u"33760125"
+    person.fax_number = u"35015394"
+
+    address = person.get_main_address()
+    city_loc = address.city_location
+    city_loc.city = u"São Carlos"
+    city_loc.state = u"SP"
+    city_loc.country = u"Brasil"
+
+    address.street = u"Orlando Damiano"
+    address.number = 2212
+    address.district = u"Jd Macarengo"
+    address.postal_code = u"13560-450"
+
+    company = ICompany(person, connection=conn)
+    company.cnpj = '03.852.995/0001-07'
+    company.fancy_name = u"Async Open Source"
+
+    # Creating the current station
+    station = BranchStation(name=u"Stoqlib station", branch=branch,
+                            connection=conn, is_active=True)
+    register_current_station_identifier(station.identifier)
 
     conn.commit()
     print_msg('done.')

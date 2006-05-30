@@ -25,7 +25,7 @@
 ##
 """ Test for lib/parameters module.  """
 
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.parameters import ParameterAccess, sysparam
 from stoqlib.database import finish_transaction
 from stoqlib.domain.interfaces import ICompany, ISupplier, IBranch, IMoneyPM
@@ -49,7 +49,7 @@ class TestParameter:
     # System instances based on stoq.lib.parameters
 
     def test_CurrentBranch(self):
-        branch = self.sparam.CURRENT_BRANCH
+        branch = get_current_branch(self.conn)
         branchTable = Person.getAdapterClass(IBranch)
         assert isinstance(branch, branchTable)
         person = branch.get_adapted()

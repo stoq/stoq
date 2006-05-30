@@ -34,7 +34,8 @@ from sqlobject import connectionForURI
 
 from stoqlib.exceptions import ConfigError, SQLError
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, print_msg, set_verbose
+from stoqlib.lib.runtime import (new_transaction, print_msg, set_verbose,
+                                 get_connection)
 from stoqlib.domain.tables import get_table_types
 
 _ = stoqlib_gettext
@@ -47,6 +48,7 @@ DEFAULT_RDBMS = 'postgres'
 # This class will be moved to it's proper place after bug 2253
 class Adapter:
     pass
+
 
 class DatabaseSettings:
     def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,
@@ -117,6 +119,15 @@ def check_database_connection(conn_uri):
     return True, None
 
 
+def check_installed_database():
+    """Checks if Stoqlib database is properly installed"""
+    from stoqlib.domain.system import SystemTable
+    conn = get_connection()
+    if not conn.tableExists(SystemTable.get_db_table_name()):
+        return False
+    return SystemTable.select(connection=conn).count() > 0
+
+
 #
 # General routines
 #
@@ -125,6 +136,7 @@ def check_database_connection(conn_uri):
 def rollback_and_begin(conn):
     conn.rollback()
     conn.begin()
+
 
 def finish_transaction(conn, model=None, keep_transaction=False):
     if model:
@@ -136,6 +148,7 @@ def finish_transaction(conn, model=None, keep_transaction=False):
         # simple method do this in a simple way.
         conn.close()
     return model
+
 
 def run_sql_file(sql_file, conn):
     """This method takes a full sql_file name and run it in a given
@@ -180,11 +193,6 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
     conn.commit()
     if delete_only:
         return
-
-    # Import here since we must create properly the domain schema before
-    # importing them in the migration module
-    from stoqlib.lib.migration import add_system_table_reference
-    add_system_table_reference(conn, check_new_db=True)
     finish_transaction(conn, 1)
     print_msg('done')
 
@@ -198,4 +206,3 @@ def register_db_settings(db_settings):
 def get_registered_db_settings():
     global _db_settings
     return _db_settings
-

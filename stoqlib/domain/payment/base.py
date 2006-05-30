@@ -34,6 +34,7 @@ from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
@@ -321,7 +322,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def _create_fiscal_entry(self, table, cfop, invoice_number, **kwargs):
         conn = self.get_connection()
         drawee = self.get_thirdparty()
-        branch = sysparam(conn).CURRENT_BRANCH
+        branch = get_current_branch(conn)
         return table(connection=conn, invoice_number=invoice_number,
                      cfop=cfop, drawee=drawee, branch=branch,
                      date=datetime.now(), payment_group=self, **kwargs)

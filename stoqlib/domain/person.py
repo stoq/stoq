@@ -56,6 +56,7 @@ _ = stoqlib_gettext
 # Base Domain Classes
 #
 
+
 class BranchStation(Domain):
     """Defines a computer which access Stoqlib database and lives in a
     certain branch company
@@ -63,9 +64,14 @@ class BranchStation(Domain):
     implements(IActive)
 
     identifier = AutoIncCol('stoqlib_branch_station_seq')
-    name = UnicodeCol(alternateID=True)
-    is_active = BoolCol(default=True)
+    name = UnicodeCol()
+    is_active = BoolCol(default=False)
     branch = ForeignKey("PersonAdaptToBranch")
+
+    @classmethod
+    def get_active_stations(cls, conn):
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
 
     #
     # IActive implementation
@@ -83,6 +89,13 @@ class BranchStation(Domain):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
+
+    #
+    # Accessors
+    #
+
+    def get_identifier_str(self):
+        return u"%05d" % self.identifier
 
 
 class EmployeeRole(Domain):
@@ -697,7 +710,7 @@ class PersonAdaptToBranch(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return u"%04d %s" % (self.identifier, self.get_adapted().name)
 
     #
     # Branch Company methods
@@ -909,8 +922,6 @@ class LoginInfo:
     """ This class is used by password editor only for validation of the
         fields.
     """
-    PASSWORD_LEN = 6
-
     current_password = None
     new_password = None
     confirm_password = None

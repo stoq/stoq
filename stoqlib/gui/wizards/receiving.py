@@ -40,7 +40,7 @@ from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_current_user
+from stoqlib.lib.runtime import get_current_user, get_current_branch
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
@@ -250,7 +250,7 @@ class ReceivingOrderWizard(BaseWizard):
 
     def _create_model(self, conn):
         current_user = get_current_user(conn)
-        branch = sysparam(conn).CURRENT_BRANCH
+        branch = get_current_branch(conn)
         cfop = sysparam(conn).DEFAULT_RECEIVING_CFOP
         return ReceivingOrder(responsible=current_user, supplier=None,
                               invoice_number=None, branch=branch, cfop=cfop,
