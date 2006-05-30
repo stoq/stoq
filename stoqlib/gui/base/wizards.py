@@ -72,6 +72,7 @@ class BaseWizard(PluggableWizard, AbstractDialog):
         self.close()
 
     def quit_if_last(self, *args):
+        """A delete handler method for wizards"""
         self.cancel()
 
     def refresh_next(self, validation_value):
