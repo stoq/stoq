@@ -37,7 +37,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.interfaces import IUser
 from stoqlib.gui.editors.person import UserEditor
-from stoqlib.gui.editors.devices import DeviceSettingsDialog
+from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.search.profile import UserProfileSearch
