@@ -124,6 +124,9 @@ class UserEditor(BasePersonRoleEditor):
         notebook.reorder_child(tab_child, position=self.USER_TAB_POSITION)
         notebook.set_current_page(self.USER_TAB_POSITION)
 
+    def validate_confirm(self):
+        return self.user_details.validate_confirm()
+
     def on_confirm(self):
         self.main_slave.on_confirm()
         self.user_details.on_confirm()
@@ -138,6 +141,7 @@ class PasswordEditor(BaseEditor):
 
     def __init__(self, conn, user, visual_mode=False):
         self.user = user
+        self.old_password = self.user.password
         BaseEditor.__init__(self, conn, visual_mode=visual_mode)
         self._setup_widgets()
 
@@ -177,13 +181,19 @@ class PasswordEditor(BaseEditor):
         self.proxy = self.add_proxy(self.model,
                                     PasswordEditor.proxy_widgets)
 
+    def validate_confirm(self):
+        if self.model.current_password != self.old_password:
+            msg = _(u"Password doesn't match with the stored one")
+            self.current_password.set_invalid(msg)
+            return False
+        if not self.password_slave.validate_confirm():
+            return False
+        return True
+
     def on_confirm(self):
+        self.password_slave.on_confirm()
         self.user.password = self.model.new_password
         return self.user
-
-    def on_current_password__validate(self, widget, value):
-        if value != self.user.password:
-            return ValidationError(_('Wrong password'))
 
 
 class CreditProviderEditor(BasePersonRoleEditor):

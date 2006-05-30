@@ -51,7 +51,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="username">
+                    <widget class="ProxyEntry" id="username">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
@@ -72,13 +72,14 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
                     <widget class="ProxyComboEntry" id="profile">
                         <property name="data_type">object</property>
+                        <property name="mandatory">True</property>
                         <property name="model_attribute">profile</property>
                         <property name="visible">True</property>
                     </widget>
@@ -96,8 +97,8 @@
                     <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
@@ -107,8 +108,8 @@
                         <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                        <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
