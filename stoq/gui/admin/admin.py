@@ -33,7 +33,7 @@ from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.interfaces import IUser
 from stoqlib.gui.editors.person import UserEditor
@@ -57,7 +57,7 @@ class AdminApp(SearchableAppWindow):
     app_name = _('Administrative')
     app_icon_name = 'stoq-admin-app'
     gladefile = "admin"
-    table = searchbar_table = Person.getAdapterClass(IUser)
+    table = searchbar_table = PersonAdaptToUser
     searchbar_result_strings = (_('user'), _('users'))
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show users with status')
@@ -124,9 +124,8 @@ class AdminApp(SearchableAppWindow):
                              % status)
 
     def _add_user(self):
-        conn = new_transaction()
-        model = run_person_role_dialog(UserEditor, self, conn)
-        if finish_transaction(conn, model):
+        model = run_person_role_dialog(UserEditor, self, self.conn)
+        if finish_transaction(self.conn, model, keep_transaction=True):
             self.searchbar.search_items()
             model = self.table.get(model.id, connection=self.conn)
             self.users.select(model)
