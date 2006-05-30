@@ -510,11 +510,14 @@ class SalesPersonStep(AbstractSalesPersonStep):
         self.model.reset_discount_and_surcharge()
 
     def setup_invoice_number_widgets(self):
-        if not check_virtual_printer_for_current_host(self.conn):
+        # XXX Kiwi can't handle this change on the widget. It seems to be
+        # a new bug
+        if check_virtual_printer_for_current_host(self.conn):
             self.invoice_number.set_property('mandatory', True)
-            self.hide_invoice_number_widgets()
         else:
             self.invoice_number.set_property('mandatory', False)
+            self.hide_invoice_number_widgets()
+        self.force_validation()
 
     def on_payment_method_changed(self, slave, method_iface):
         if method_iface is IMoneyPM:
