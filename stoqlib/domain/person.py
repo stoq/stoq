@@ -39,7 +39,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_connection, StoqlibTransaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import raw_phone_number
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, CityLocationError
 from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
                                  BaseSQLView)
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
@@ -140,7 +140,7 @@ class CityLocation(Domain):
     state = UnicodeCol(default=None)
 
     def is_valid_model(self):
-        return self.country and self.city and self.state
+        return bool(self.country and self.city and self.state)
 
     def check_existing_citylocation(self, conn):
         q1 = func.UPPER(CityLocation.q.city) == self.city.upper()
@@ -156,20 +156,22 @@ class CityLocation(Domain):
         the given cityloc argument, returns False.
         """
         if not self.is_valid_model():
-            raise ValueError("You should have a valid city location "
-                             "defined at this point")
+            raise CityLocationError("You should have a valid city "
+                                    "location defined at this point")
 
         obj_conn = self.get_connection()
         conn = get_connection()
         result = self.check_existing_citylocation(conn)
         if result.count() > 1:
-            raise ValueError("You should have only one city_location "
-                             "instance with the same attribute values "
-                             "at this point")
+            raise CityLocationError("You should have only one "
+                                    "city_location instance with "
+                                    "the same attribute values "
+                                    "at this point")
         elif result.count() == 1:
             if result[0].id == self.id:
                 return False
             return CityLocation.get(result[0].id, connection=obj_conn)
+        return False
 
 
 class Address(Domain):
@@ -256,8 +258,14 @@ class Person(Domain):
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
 
+    def _check_individual_or_company_facets(self):
+        if not self.has_individual_or_company_facets():
+            msg = ('The person you want to adapt must have at '
+                   'least an individual or a company facet')
+            raise CannotAdapt(msg)
+
     #
-    # SQLObject accessors
+    # SQLObject setters
     #
 
     def _set_phone_number(self, value):
@@ -304,38 +312,35 @@ class Person(Domain):
         return address.get_address_string()
 
     #
-    # Auxiliary methods
+    # Public API
     #
 
-    def check_individual_or_company_facets(self):
+    def has_individual_or_company_facets(self):
         conn = self.get_connection()
-        if not (IIndividual(self, connection=conn) or
-                ICompany(self, connection=conn)):
-                msg = ('The person you want to adapt must have at '
-                       'least an individual or a company facet')
-                raise CannotAdapt(msg)
+        return (IIndividual(self, connection=conn) or
+                ICompany(self, connection=conn))
 
     #
     # Facet hooks
     #
 
     def facet_IClient_add(self, **kwargs):
-        self.check_individual_or_company_facets()
+        self._check_individual_or_company_facets()
         adapter_klass = self.getAdapterClass(IClient)
         return adapter_klass(self, **kwargs)
 
     def facet_ITransporter_add(self, **kwargs):
-        self.check_individual_or_company_facets()
+        self._check_individual_or_company_facets()
         adapter_klass = self.getAdapterClass(ITransporter)
         return adapter_klass(self, **kwargs)
 
     def facet_ISupplier_add(self, **kwargs):
-        self.check_individual_or_company_facets()
+        self._check_individual_or_company_facets()
         adapter_klass = self.getAdapterClass(ISupplier)
         return adapter_klass(self, **kwargs)
 
     def facet_ICreditProvider_add(self, **kwargs):
-        self.check_individual_or_company_facets()
+        self._check_individual_or_company_facets()
         adapter_klass = self.getAdapterClass(ICreditProvider)
         return adapter_klass(self, **kwargs)
 
@@ -349,7 +354,7 @@ class Person(Domain):
         return adapter_klass(self, **kwargs)
 
     def facet_IUser_add(self, **kwargs):
-        self.check_individual_or_company_facets()
+        self._check_individual_or_company_facets()
         adapter_klass = self.getAdapterClass(IUser)
         return adapter_klass(self, **kwargs)
 
@@ -482,16 +487,15 @@ class PersonAdaptToClient(ModelAdapter):
     # IActive implementation
     #
 
-    @property
     def is_active(self):
         return self.status == self.STATUS_SOLVENT
 
     def inactivate(self):
-        assert self.is_active, ('This client is already inactive')
+        assert self.is_active(), ('This client is already inactive')
         self.status = self.STATUS_INACTIVE
 
     def activate(self):
-        assert not self.is_active, ('This client is already active')
+        assert not self.is_active(), ('This client is already active')
         self.status = self.STATUS_SOLVENT
 
     #
@@ -522,7 +526,7 @@ class PersonAdaptToClient(ModelAdapter):
         current client
         """
         from stoqlib.domain.sale import SaleView
-        conn = get_connection()
+        conn = self.get_connection()
         query = SaleView.q.client_id == self.id
         return SaleView.select(query, connection=conn,
                                orderBy=SaleView.q.open_date)
@@ -635,7 +639,7 @@ class PersonAdaptToUser(ModelAdapter):
 
     username = UnicodeCol(alternateID=True)
     password = UnicodeCol()
-    is_active= BoolCol(default=True)
+    is_active = BoolCol(default=True)
     profile  = ForeignKey('UserProfile')
 
     #
@@ -669,7 +673,7 @@ class PersonAdaptToBranch(ModelAdapter):
 
     identifier = AutoIncCol('stoqlib_branch_identifier_seq')
     manager = ForeignKey('Person', default=None)
-    is_active= BoolCol(default=True)
+    is_active = BoolCol(default=True)
 
     #
     # IActive implementation
@@ -717,7 +721,7 @@ class PersonAdaptToBankBranch(ModelAdapter):
     """A bank branch facet of a person."""
     implements(IBankBranch, IActive)
 
-    is_active= BoolCol(default=True)
+    is_active = BoolCol(default=True)
     bank = ForeignKey('Bank')
 
     #
