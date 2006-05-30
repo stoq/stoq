@@ -66,8 +66,6 @@ class AdditionListSlave(SlaveDelegate):
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
-        if not editor_class:
-            raise ValueError("editor_class must be specified")
         if editor_class and not issubclass(editor_class,
                                            (BaseEditor, BaseWizard)):
             raise TypeError("editor_class must be a BaseEditor subclass")
@@ -189,8 +187,7 @@ class AdditionListSlave(SlaveDelegate):
     #
 
     def get_items(self):
-        raise NotImplementedError("get_items must be implemented in "
-                                  "subclasses")
+        return []
 
     def get_columns(self):
         raise NotImplementedError("get_columns must be implemented in "
