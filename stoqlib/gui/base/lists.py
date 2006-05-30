@@ -105,22 +105,40 @@ class AdditionListSlave(SlaveDelegate):
         self.delete_button.set_sensitive(can_delete)
 
     def _run(self, model=None):
+        # Here we need manage objects persistence by our own
+        # hands using clone.
         edit_mode = model
-        model = run_dialog(self._editor_class, None, conn=self.conn,
-                           model=model, **self._editor_kwargs)
-        if not model:
-            return
-        if edit_mode or model in self.klist:
-            self.klist.update(model)
-            self.emit('on-edit-item', model)
+        if model:
+            # XXX: get_clone() doesn't works with objects that inherits
+            # from InheritableModelAdapter or InheritableModel.
+            # Bug #2633 will fix that.
+            clone = model.clone()
         else:
-            self.klist.append(model)
-            self.emit('on-add-item', model)
+            clone = None
+        result = run_dialog(self._editor_class, None, conn=self.conn,
+                            model=clone, **self._editor_kwargs)
+        if not result and not edit_mode:
+            return
+        elif not result and edit_mode:
+            clone.__class__.delete(clone.id, connection=self.conn)
+            return
+        elif result and edit_mode:
+            # XXX self.klist.replace()?
+            item_idx = self.klist.index(model)
+            self.klist[item_idx] = clone
+            model.__class__.delete(model.id, connection=self.conn)
+            return
+        if edit_mode and model in self.klist:
+            self.emit('on-edit-item', result)
+            self.klist.update(result)
+        else:
+            self.emit('on-add-item', result)
+            self.klist.append(result)
 
         # As we have a selection extended mode for kiwi list, we
         # need to unselect everything before select the new instance.
         self.klist.unselect_all()
-        self.klist.select(model)
+        self.klist.select(result)
         self._update_sensitivity()
 
     def _edit(self):
