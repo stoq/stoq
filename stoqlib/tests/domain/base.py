@@ -31,7 +31,8 @@ from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
-from stoqlib.database import finish_transaction
+from stoqlib.exceptions import StoqlibError
+from stoqlib.database import finish_transaction, Adapter
 from stoqlib.domain.columns import SOPriceCol
 from stoqlib.lib.runtime import new_transaction
 
@@ -101,6 +102,8 @@ class BaseDomainTest(object):
 
     @classmethod
     def setup_class(cls):
+        if not cls._table:
+            raise StoqlibError("You must provide a _table attribute")
         cls.conn = new_transaction()
         cls._table_count = cls._table.select(connection=cls.conn).count()
         cls._check_foreign_key_data()
@@ -207,6 +210,12 @@ class BaseDomainTest(object):
         """
         return {}
 
+    def get_adapter(self):
+        """This method must be overwritten by child when testing adapters.
+        It must always return an instance of _table type
+        """
+        raise NotImplementedError
+
     #
     # Tests
     #
@@ -215,7 +224,11 @@ class BaseDomainTest(object):
         """ Create a domain class instance using insert_dict attribute and
         assert a new row in the database was inserted.
         """
-        self._instance = self._table(connection=self.conn, **self.insert_dict)
+        if issubclass(self._table, Adapter):
+            self._instance = self.get_adapter()
+        else:
+            self._instance = self._table(connection=self.conn,
+                                         **self.insert_dict)
         assert self._instance is not None
         self._table_count = long(self._table_count + 1)
         assert (self._table_count ==
