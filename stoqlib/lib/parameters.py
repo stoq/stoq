@@ -170,11 +170,6 @@ _parameter_info = {
                                          'items? If the answer is negative, '
                                          'we will disable stock operations in '
                                          'the system.')),
-    'EDIT_SELLABLE_PRICE': ParameterDetails(_(u'Sales'),
-                                            _(u'Edit Sellable Price'),
-                                            _('Can we change the price '
-                                              'attribute of a SellableItem '
-                                              'object during a sale?')),
     'MAX_SEARCH_RESULTS': ParameterDetails(_(u'General'), _(u'Max Search Results'),
                                            _(u'The maximum number of results '
                                              'we must show after searching '
@@ -242,6 +237,11 @@ _parameter_info = {
                                                 _(u'The max number of days '
                                                   'that a sale order is '
                                                   'valid')),
+    'USE_SCALE_PRICE': ParameterDetails(_(u'Sales'),
+                                        _(u'Use Scale Price'),
+                                        _(u'Define if we are going to use the '
+                                          'price supplied by the scale for items '
+                                          'that require weighting')),
     # These parameters are Brazil-specific
     'DEFAULT_SALES_CFOP': ParameterDetails(_(u'Sales'),
                                  _(u'Default Sales CFOP'),
@@ -312,7 +312,6 @@ class ParameterAccess(ClassInittableObject):
                       initial=DEFAULT_DECIMAL_PRECISION),
         ParameterAttr('DECIMAL_SIZE', int,
                       initial=DEFAULT_DECIMAL_SIZE),
-        ParameterAttr('EDIT_SELLABLE_PRICE', bool, initial=False),
         ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
@@ -327,6 +326,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
+        ParameterAttr('USE_SCALE_PRICE', bool, initial=False),
         ParameterAttr('ICMS_TAX', int, initial=18),
         ParameterAttr('ISS_TAX', int, initial=18),
         ParameterAttr('SUBSTITUTION_TAX', int, initial=18),

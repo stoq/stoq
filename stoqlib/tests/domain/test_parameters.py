@@ -140,10 +140,6 @@ class TestParameter:
         param = self.sparam.HAS_STOCK_MODE
         assert isinstance(param, int)
 
-    def test_EditSellablePrice(self):
-        param = self.sparam.EDIT_SELLABLE_PRICE
-        assert isinstance(param, int)
-
     def test_MaxSearchResults(self):
         param = self.sparam.MAX_SEARCH_RESULTS
         assert isinstance(param, int)
@@ -159,3 +155,7 @@ class TestParameter:
     def test_PurchasePreviewPayment(self):
         param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
         assert isinstance (param, int)
+
+    def test_UseScalePrice(self):
+        param = self.sparam.USE_SCALE_PRICE
+        assert isinstance(param, int)
