@@ -65,7 +65,7 @@ class SchemaMigration:
             SystemTable.createTable(connection=conn)
             self.current_db_version = stoqlib.FIRST_DB_VERSION
             add_system_table_reference(conn, check_new_db=True,
-                                        version=self.current_db_version)
+                                       version=self.current_db_version)
             return True
         results = SystemTable.select(connection=conn)
         self.current_db_version = results.max('version')
@@ -114,9 +114,9 @@ class SchemaMigration:
         update_profile_applications(conn)
         # Updating the parameter list
         ensure_system_parameters()
-        finish_transaction(conn, 1)
         # Update the base schema
         create_base_schema()
+        finish_transaction(conn, 1)
 
 
 def add_system_table_reference(conn, check_new_db=False, version=None):
