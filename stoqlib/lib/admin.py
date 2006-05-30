@@ -27,7 +27,7 @@
 tables, removing tables and configuring administration user.
 """
 
-
+from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.environ import environ
 
@@ -50,6 +50,7 @@ USER_ADMIN_DEFAULT_NAME = _('administrator')
 def ensure_admin_user(administrator_password):
     from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
     from stoqlib.domain.profile import UserProfile
+    from stoqlib.domain.person import EmployeeRoleHistory
     print_msg("Creating administrator user...", break_line=False)
     conn = new_transaction()
 
@@ -64,6 +65,12 @@ def ensure_admin_user(administrator_password):
     user = person_obj.addFacet(IIndividual, connection=conn)
     user = person_obj.addFacet(IEmployee, role=role,
                                connection=conn)
+    role_history = EmployeeRoleHistory(connection=conn,
+                                       role=role,
+                                       employee=user,
+                                       is_active=True,
+                                       salary=currency(800))
+
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.
     person_obj.addFacet(ISalesPerson, connection=conn)

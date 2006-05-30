@@ -47,7 +47,8 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
                                        IClient, ICreditProvider,
                                        ITransporter, IBranch)
 from stoqlib.domain.person import (Person, EmployeeRole, ClientView,
-                                   PersonAdaptToClient)
+                                   PersonAdaptToClient,
+                                   PersonAdaptToEmployee)
 from stoqlib.gui.wizards.person import run_person_role_dialog
 
 _ = stoqlib_gettext
@@ -80,7 +81,7 @@ class BasePersonSearch(SearchEditor):
 class EmployeeSearch(BasePersonSearch):
     title = _('Employee Search')
     editor_class = EmployeeEditor
-    table = Person.getAdapterClass(IEmployee)
+    table = PersonAdaptToEmployee
     search_lbl_text = _('matching:')
     result_strings = _('employee'), _('employees')
     filter_label = _('Show employees with status')
@@ -122,6 +123,9 @@ class EmployeeSearch(BasePersonSearch):
         return dict(join=LEFTJOINOn(self.table, EmployeeRole,
                                     self.table.q.roleID ==
                                     EmployeeRole.q.id))
+
+    def get_searchlist_model(self, model):
+        return IEmployee(model, self.conn)
 
 
 class SupplierSearch(BasePersonSearch):
