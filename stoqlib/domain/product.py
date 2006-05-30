@@ -31,17 +31,18 @@ from zope.interface import implements
 from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.domain.columns import PriceCol, DecimalCol
+from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                      SellableView)
-from stoqlib.domain.person import PersonAdaptToBranch
-from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery)
-from stoqlib.lib.parameters import sysparam
 
 _ = stoqlib_gettext
 
@@ -172,7 +173,7 @@ class ProductSellableItem(AbstractSellableItem):
         conn = self.get_connection()
         sparam = sysparam(conn)
         if not (branch and
-                branch.id == sparam.CURRENT_BRANCH.id or
+                branch.id == get_current_branch(conn).id or
                 branch.id == sparam.CURRENT_WAREHOUSE.id):
             msg = ("Stock still doesn't support sales for "
                    "branch companies different than the "

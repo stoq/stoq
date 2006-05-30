@@ -29,11 +29,10 @@ from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
 from stoqlib.reporting.base.printing import ReportTemplate
-from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.domain.interfaces import ICompany
-from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -70,7 +69,7 @@ class BaseStoqReport(ReportTemplate):
 
     def draw_header(self, canvas):
         canvas.saveState()
-        person = sysparam(self.conn).CURRENT_BRANCH.get_adapted()
+        person = get_current_branch(self.conn).get_adapted()
         company = ICompany(person, connection=self.conn)
 
         logo_width, logo_height = self._logotype.getSize()

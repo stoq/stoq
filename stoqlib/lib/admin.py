@@ -57,7 +57,7 @@ def ensure_admin_user(administrator_password):
     # XXX Person for administrator user is the same of Current Branch. I'm not
     # sure if it's the best approach but for sure it's better than
     # create another one just for this user.
-    company = sysparam(conn).CURRENT_BRANCH
+    company = sysparam(conn).MAIN_COMPANY
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
@@ -88,11 +88,10 @@ def ensure_admin_user(administrator_password):
     assert ret[0].password == administrator_password
     finish_transaction(conn, 1)
     print_msg('done')
-    return user
 
 def set_current_user_admin():
     conn = get_connection()
-    branch = sysparam(conn).CURRENT_BRANCH
+    branch = sysparam(conn).MAIN_COMPANY
     user = IUser(branch.get_adapted(), connection=conn)
     if not user:
         raise DatabaseInconsistency("You should have a user admin set "
@@ -132,3 +131,10 @@ def initialize_system(password='', delete_only=False,
     ensure_system_parameters()
     ensure_admin_user(password)
     ensure_sellable_units()
+
+    conn = new_transaction()
+    # Import here since we must create properly the domain schema before
+    # importing them in the migration module
+    from stoqlib.lib.migration import add_system_table_reference
+    add_system_table_reference(conn, check_new_db=True)
+    finish_transaction(conn, 1)

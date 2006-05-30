@@ -32,12 +32,13 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND, OR
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.domain.sellable import (AbstractSellable, SellableView,
                                      SellableFullStockView)
 from stoqlib.domain.product import Product
@@ -134,7 +135,7 @@ class SellableSearch(SearchEditor):
             raise ValueError('You should have at least one branch at '
                              'this point')
         items.append(ALL_BRANCHES)
-        selected = sysparam(self.conn).CURRENT_BRANCH
+        selected = get_current_branch(self.conn)
         self.filter_slave = FilterSlave(items, selected=selected)
         self.filter_slave.set_filter_label(_('Show sale items at'))
         return self.filter_slave

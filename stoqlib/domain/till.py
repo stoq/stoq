@@ -32,6 +32,7 @@ from zope.interface import implements
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol
@@ -243,7 +244,7 @@ Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
 
 def get_current_till_operation(conn):
     query = AND(Till.q.status == Till.STATUS_OPEN,
-                Till.q.branchID == sysparam(conn).CURRENT_BRANCH.id)
+                Till.q.branchID == get_current_branch(conn).id)
     result = Till.select(query, connection=conn)
     if result.count() > 1:
         raise TillError("You should have only one Till opened. Got %d "
@@ -261,6 +262,6 @@ def get_last_till_operation(conn):
     """
 
     query = AND(Till.q.status == Till.STATUS_CLOSED,
-                Till.q.branchID == sysparam(conn).CURRENT_BRANCH.id)
+                Till.q.branchID == get_current_branch(conn).id)
     result = Till.select(query, connection=conn)
     return result.count() and result[-1] or None

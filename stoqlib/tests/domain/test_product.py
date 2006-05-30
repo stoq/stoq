@@ -25,18 +25,18 @@
 """ This module test all class in stoq/domain/product.py """
 
 
+from stoqlib.tests.domain.base import BaseDomainTest
+from stoqlib.lib.runtime import get_current_branch
+from stoqlib.domain.sellable import BaseSellableInfo
+from stoqlib.domain.person import Person, EmployeeRole
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockReference,
                                     ProductSellableItem)
-from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.interfaces import (ISupplier, ICompany, IStorable,
                                        IBranch, ISellable, ISalesPerson,
                                        IEmployee, IIndividual)
-from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation
-from stoqlib.tests.domain.base import BaseDomainTest
-from stoqlib.lib.parameters import sysparam
 
 
 def get_supplier(conn):
@@ -92,7 +92,7 @@ class TestProductStockReference(BaseDomainTest):
         assert sales.count() > 0
         sale = sales[0]
         product_item = sellable.add_sellable_item(sale)
-        branch = sysparam(cls.conn).CURRENT_BRANCH
+        branch = get_current_branch(cls.conn)
         return branch, product_item
 
 
@@ -124,7 +124,7 @@ class TestProductSellableItem(BaseDomainTest):
         self._instance.sellable = sellable
         storable = product.addFacet(IStorable, connection=self.conn)
 
-        branch = sysparam(self.conn).CURRENT_BRANCH
+        branch = get_current_branch(self.conn)
         stock_results = storable.get_stocks(branch)
         assert stock_results.count() == 1
         current_stock = stock_results[0].quantity
