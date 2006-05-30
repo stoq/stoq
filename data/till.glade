@@ -224,18 +224,12 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <placeholder/>
+                                    <packing/>
                                 </child>
                                 <child>
-                                    <widget class="GtkButton" id="stoq_logo">
-                                        <property name="can_focus">False</property>
-                                        <property name="relief">none</property>
+                                    <widget class="GtkImage" id="stoq_logo">
+                                        <property name="file">stoq_logo_small.png</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkImage" id="image10">
-                                                <property name="file">stoq_logo_small.png</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
