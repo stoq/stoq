@@ -437,7 +437,7 @@
                                                         <property name="digits">2</property>
                                                         <property name="is_focus">True</property>
                                                         <property name="model_attribute">quantity</property>
-                                                        <property name="text" context="yes" translatable="yes">0,00</property>
+                                                        <property name="text" context="yes" translatable="yes">0.00</property>
                                                         <property name="visible">True</property>
                                                         <property name="width_chars">6</property>
                                                     </widget>
@@ -529,16 +529,9 @@
                                     </widget>
                                 </child>
                                 <child>
-                                    <widget class="GtkButton" id="stoq_logo">
-                                        <property name="can_focus">False</property>
-                                        <property name="relief">none</property>
+                                    <widget class="GtkImage" id="stoq_logo">
+                                        <property name="file">stoq_logo.png</property>
                                         <property name="visible">True</property>
-                                        <child>
-                                            <widget class="GtkImage" id="image4">
-                                                <property name="file">stoq_logo.png</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                        </child>
                                     </widget>
                                     <packing>
                                         <property name="expand">False</property>
