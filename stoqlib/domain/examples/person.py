@@ -34,7 +34,7 @@ from kiwi.datatypes import currency
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
-                                CityLocation, EmployeeRoleHistory)
+                                   CityLocation, EmployeeRoleHistory)
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
@@ -44,7 +44,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
 _ = gettext.gettext
 
 
-def create_persons():
+def create_people():
     print_msg('Creating person data...', break_line=False)
     conn = new_transaction()
 
@@ -216,4 +216,4 @@ def create_persons():
 
 
 if __name__ == "__main__":
-    create_persons()
+    create_people()
