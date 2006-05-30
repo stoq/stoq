@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,19 +21,93 @@
 ##
 ## Author(s): Rudá Porto Filgueiras     <rudazz@gmail.com>
 ##            Evandro Vale Miquelito    <evandro@async.com.br>
-##
+##            Lincoln Molica            <lincoln@async.com.br>
 ##
 """ Test case for stoq/domain/person.py module.  """
 
+from datetime import datetime
+from kiwi.datatypes import currency
 
-from stoqlib.domain.person import Person, CityLocation, Address
+from stoqlib.domain.account import BankAccount, Bank
+from stoqlib.domain.base import CannotAdapt
+from stoqlib.domain.fiscal import CfopData
+from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
+                                       ITransporter, ISupplier,
+                                       ICreditProvider, IEmployee,
+                                       IUser, IBranch, ISalesPerson,
+                                       ISellable, IBankBranch)
+from stoqlib.domain.person import (Person, CityLocation, Address,
+                                   EmployeeRole, WorkPermitData,
+                                   MilitaryData, VoterData, Liaison, Calls,
+                                   PersonAdaptToClient,
+                                   PersonAdaptToCompany,
+                                   PersonAdaptToBranch,
+                                   PersonAdaptToIndividual,
+                                   PersonAdaptToSalesPerson,
+                                   PersonAdaptToSupplier,
+                                   PersonAdaptToEmployee,
+                                   PersonAdaptToUser,
+                                   EmployeeRoleHistory,
+                                   PersonAdaptToBankBranch,
+                                   PersonAdaptToCreditProvider,
+                                   PersonAdaptToTransporter,
+                                   get_city_location_template)
+from stoqlib.domain.product import Product
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.sale import Sale
+from stoqlib.domain.till import Till
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import CityLocationError
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.tests.domain.base import BaseDomainTest
+
+
+_ = stoqlib_gettext
 
 PHONE_DATA_VALUES = ('7133524563','1633767277')
 MOBILE_DATA_VALUES = ('7188152345', '1699786748')
 FAX_DATA_VALUES = ('1681359875', '1633760125')
 
-class TestCasePerson(BaseDomainTest):
+
+def get_existing_city_location(conn):
+    items = CityLocation.select(connection=conn)
+    assert items.count() > 0
+    return items[0]
+
+def get_empty_city_location(conn):
+    return CityLocation(connection=conn)
+
+def get_new_city_location(conn):
+    return CityLocation(city='Birigui', state='MT', country='Paraguai',
+                        connection=conn)
+def get_person(conn):
+    return Person(name='John', connection=conn)
+
+def get_client(conn):
+    person = Person(name='Laun', connection=conn)
+    person.addFacet(IIndividual, connection=conn)
+    return person.addFacet(IClient, connection=conn)
+
+def get_employee(conn, role_name):
+    person = Person(name='Denis', connection=conn)
+    person.addFacet(IIndividual, connection=conn)
+    role = EmployeeRole(connection=conn, name=role_name)
+    workpermit_data = WorkPermitData(connection=conn)
+    military_data = MilitaryData(connection=conn)
+    voter_data = VoterData(connection=conn)
+    bank_account = BankAccount(connection=conn)
+    return person.addFacet(IEmployee, connection=conn, role=role,
+                           workpermit_data=workpermit_data,
+                           voter_data=voter_data, bank_account=bank_account)
+
+def get_salesperson(conn, role_name):
+    person = get_employee(conn, role_name)
+    person = person.get_adapted()
+    return person.addFacet(ISalesPerson, connection=conn)
+
+
+class TestPerson(BaseDomainTest):
     """
     C{Person} TestCase
     """
@@ -54,5 +128,777 @@ class TestCasePerson(BaseDomainTest):
                           city_location=ctloc, is_main_address=True)
         assert self._instance.get_main_address() is not None
 
+    def test_get_address_string(self):
+        person = get_person(self.conn)
+        ctloc = CityLocation(connection=self.conn)
+        address = Address(connection=self.conn, person=person,
+                          city_location=ctloc, street ='bla', number=2,
+                          district='fed', is_main_address=True)
+        assert person.get_address_string() == _(u'%s %s, %s') % (address.street,
+                                                                 address.number,
+                                                                 address.district)
 
-    # TODO Add more tests here for the whole person module
+    #This method is used by test_check_individual_or_company_facets() method
+    def _check_has_individual_or_company_facets(self, person):
+        try:
+            person._check_individual_or_company_facets()
+        except CannotAdapt, e:
+            return False
+        else:
+            return True
+
+    def test_check_individual_or_company_facets(self):
+        #First Person testcase without facets
+        person = get_person(self.conn)
+        assert not self._check_has_individual_or_company_facets(person)
+
+        #Second Person testcase with an individual facet
+        person = get_person(self.conn)
+        assert not self._check_has_individual_or_company_facets(person)
+        person.addFacet(IIndividual, connection=self.conn)
+        assert self._check_has_individual_or_company_facets(person)
+
+        #Third Person testcase with 2 primordial facets
+        person.addFacet(ICompany, connection=self.conn)
+        assert self._check_has_individual_or_company_facets(person)
+
+        #Fourth Person testcase with company facet
+        company = get_person(self.conn)
+        assert not self._check_has_individual_or_company_facets(company)
+        company.addFacet(ICompany, connection=self.conn)
+        assert self._check_has_individual_or_company_facets(company)
+
+    def _check_create_facet_fails(self, person, iface, **kwargs):
+        try:
+            person.addFacet(iface, connection=self.conn, **kwargs)
+        except (CannotAdapt, ValueError), e:
+            # Ok, it should actually fail since we did not create an
+            # individual or company facets
+            return True
+        else:
+            return False
+
+    def test_facet_IClient_add(self):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, IClient)
+        assert not self._check_create_facet_fails(person, IIndividual)
+        assert not self._check_create_facet_fails(person, IClient)
+        assert not self._check_create_facet_fails(person, ICompany)
+
+    def test_facet_ITransporter_add(self):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, ITransporter)
+        assert not self._check_create_facet_fails(person, ICompany)
+        assert not self._check_create_facet_fails(person, ITransporter)
+        assert not self._check_create_facet_fails(person, IIndividual)
+
+    def test_facet_ISupplier_add(self):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, ISupplier)
+        assert not self._check_create_facet_fails(person, IIndividual)
+        assert not self._check_create_facet_fails(person, ISupplier)
+        assert not self._check_create_facet_fails(person, ICompany)
+
+    def test_facet_ICreditProvider_add(self):
+        person = get_person(self.conn)
+        short_name = 'Credicard'
+        date = datetime(2006,06,01)
+        assert self._check_create_facet_fails(person, ICreditProvider,
+                                              short_name=short_name,
+                                              open_contract_date=date)
+        assert not self._check_create_facet_fails(person, ICompany)
+        assert not self._check_create_facet_fails(person, ICreditProvider,
+                                                  short_name=short_name,
+                                                  open_contract_date=date)
+        assert not self._check_create_facet_fails(person, IIndividual)
+
+    def test_facet_IEmployee_add(self, **kwargs):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, IEmployee)
+        assert not self._check_create_facet_fails(person, IIndividual)
+        role = EmployeeRole(connection=self.conn, name='Escriba')
+        workpermit_data = WorkPermitData(connection=self.conn)
+        military_data = MilitaryData(connection=self.conn)
+        voter_data = VoterData(connection=self.conn)
+        bank_account = BankAccount(connection=self.conn)
+        assert not self._check_create_facet_fails(person, IEmployee,
+                                                  role=role,
+                                                  workpermit_data=workpermit_data,
+                                                  military_data=military_data,
+                                                  voter_data=voter_data,
+                                                  bank_account=bank_account)
+        assert not self._check_create_facet_fails(person, ICompany)
+
+    def test_facet_IUser_add(self, **kwargs):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, IUser)
+        assert not self._check_create_facet_fails(person, IIndividual)
+        profile = UserProfile(name='profile', connection=self.conn)
+        assert not self._check_create_facet_fails(person, IUser,
+                                                  username='User',
+                                                  password='pass',
+                                                  profile=profile)
+        assert not self._check_create_facet_fails(person, ICompany)
+
+    def test_facet_IBranch_add(self, **kwargs):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, IBranch)
+        assert not self._check_create_facet_fails(person, ICompany)
+        assert not self._check_create_facet_fails(person, IBranch)
+        assert not self._check_create_facet_fails(person, IIndividual)
+
+    def test_facet_ISalesPerson_add(self, **kwargs):
+        person = get_person(self.conn)
+        assert self._check_create_facet_fails(person, ISalesPerson)
+        assert not self._check_create_facet_fails(person, IIndividual)
+        assert self._check_create_facet_fails(person, ISalesPerson)
+        role = EmployeeRole(connection=self.conn, name='Escrivaum')
+        workpermit_data = WorkPermitData(connection=self.conn)
+        military_data = MilitaryData(connection=self.conn)
+        voter_data = VoterData(connection=self.conn)
+        bank_account = BankAccount(connection=self.conn)
+        assert not self._check_create_facet_fails(person, IEmployee,
+                                                  role=role,
+                                                  workpermit_data=workpermit_data,
+                                                  military_data=military_data,
+                                                  voter_data=voter_data,
+                                                  bank_account=bank_account)
+        assert not self._check_create_facet_fails(person, ICompany)
+
+class TestEmployeeRole(BaseDomainTest):
+    """
+    C{EmployeeRole} TestCase
+    """
+    _table = EmployeeRole
+
+    def test_get_description(self):
+        name = 'manager'
+        self._instance.name = name
+        desc = self._instance.get_description()
+        assert desc == name
+
+
+class TestWorkPermitData(BaseDomainTest):
+    """
+    C{WorkPermitData} TestCase
+    """
+    _table = WorkPermitData
+
+
+class TestMilitaryData(BaseDomainTest):
+    """
+    C{MilitaryData} TestCase
+    """
+    _table = MilitaryData
+
+
+class TestVoterData(BaseDomainTest):
+    """
+    C{VoterData} TestCase
+    """
+    _table = VoterData
+
+
+class TestCityLocation(BaseDomainTest):
+    """
+    C{CityLocation} TestCase
+    """
+    _table = CityLocation
+
+    def test_is_valid_model(self):
+        country = 'Groenlandia'
+        city = 'Acapulco'
+        state = 'Wisconsin'
+        self._instance.country = country
+        self._instance.city = city
+        self._instance.state = state
+        is_valid_model = self._instance.is_valid_model()
+        assert is_valid_model
+        invalid_location = CityLocation(connection=self.conn)
+        is_valid_model = invalid_location.is_valid_model()
+        assert not is_valid_model
+
+    def test_check_existing_citylocation(self):
+        location = CityLocation(country='BERMUDAS', city='BAHIN',
+                                state='BAHOUT', connection=self.conn)
+        chk_ext_lct = location.check_existing_citylocation(self.conn)
+        assert chk_ext_lct[0] is location
+
+    def test_get_validated(self):
+        #First test case, the instance will be reused
+        location = get_existing_city_location(self.conn)
+        clone = location.clone()
+        assert clone.get_validated() is location
+
+        #Second test case, the instance is invalid
+        empty_location = get_empty_city_location(self.conn)
+        city_loc_validated = False
+        try:
+            empty_location.get_validated()
+        except CityLocationError, e:
+            city_loc_validated = True
+        assert city_loc_validated
+
+        #Third test case, there is no existing city location matching all
+        #atribute values
+        new_location = get_new_city_location(self.conn)
+        assert new_location.get_validated() is False
+
+class TestAddress(BaseDomainTest):
+    """
+    C{Address} TestCase
+    """
+    _table = Address
+
+    @classmethod
+    def get_foreign_key_data(cls):
+        person = get_person(cls.conn)
+        city_location = CityLocation(city='A', state='B', country='C',
+                                     connection=cls.conn)
+        return person, city_location
+
+    def test_is_valid_model(self):
+        person = get_person(self.conn)
+        empty_location = CityLocation(connection=self.conn)
+        empty_address = Address(connection=self.conn,
+                                person=person,
+                                city_location=empty_location)
+        is_valid_model = empty_address.is_valid_model()
+        assert bool(is_valid_model) is False
+
+    def test_ensure_address(self):
+        addresses = Address.select(connection=self.conn)
+        assert addresses.count() > 0
+        address = addresses[0]
+        original_cityloc = address.city_location
+        cloned_cityloc = original_cityloc.clone()
+        address.city_location = cloned_cityloc
+        address.ensure_address()
+        assert  address.city_location is original_cityloc
+
+    def test_get_city_location_attributes(self):
+        city = 'Acapulco'
+        country = 'Brazil'
+        state = 'Cracovia'
+        person = get_person(self.conn)
+        location = CityLocation(city=city, state=state, country=country,
+                                connection=self.conn)
+        address = Address(person=person, city_location=location,
+                          connection=self.conn)
+        assert address.get_city() == 'Acapulco'
+        assert address.get_country() == 'Brazil'
+        assert address.get_state() == 'Cracovia'
+
+    def test_get_address_string(self):
+        street = 'Rua das Couves'
+        number = 283
+        district = 'Federal'
+        location = get_existing_city_location(self.conn)
+        person = get_person(self.conn)
+        address = Address(person=person, city_location=location,
+                          street=street, number=number, district=district,
+                          connection=self.conn)
+        string = address.get_address_string()
+        assert string == u'%s %s, %s' % (street, number, district)
+
+
+class TestLiaison(BaseDomainTest):
+    """
+    C{Liaison} TestCase
+    """
+    _table = Liaison
+
+
+class TestCalls(BaseDomainTest):
+    """
+    C{Calls} TestCase
+    """
+    _table = Calls
+
+
+class TestIndividual(BaseDomainTest):
+    """
+    C{PersonAdaptToIndividual} TestCase
+    """
+    _table = PersonAdaptToIndividual
+
+    def _get_foreign_key_data(cls):
+        return get_new_city_location(cls.conn)
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        return person.addFacet(IIndividual, connection=self.conn)
+
+
+class TestCompany(BaseDomainTest):
+    """
+    C{PersonAdaptToCompany} TestCase
+    """
+    _table = PersonAdaptToCompany
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        return person.addFacet(ICompany, connection=self.conn)
+
+    def test_get_description(self):
+        person = get_person(self.conn)
+        self._instance = person.addFacet(ICompany, connection=self.conn)
+        assert self._instance.get_description() == person.name
+
+
+class TestClient(BaseDomainTest):
+    """
+    C{PersonAdaptToClient} TestCase
+    """
+    _table = PersonAdaptToClient
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(IIndividual, connection=self.conn)
+        return person.addFacet(IClient, connection=self.conn)
+
+    def test_is_active(self):
+        client = get_client(self.conn)
+        client.status = PersonAdaptToClient.STATUS_INDEBTED
+        assert not client.is_active()
+
+    def test_inactivate(self):
+        client = get_client(self.conn)
+        client.status = PersonAdaptToClient.STATUS_SOLVENT
+        client.inactivate()
+        assert not client.is_active()
+
+    def test_activate(self):
+        client = get_client(self.conn)
+        client.status = PersonAdaptToClient.STATUS_INACTIVE
+        client.activate()
+        assert client.is_active()
+
+    def test_get_name(self):
+        client = get_client(self.conn)
+        assert client.get_name() == u'Laun'
+
+    def test_get_status_string(self):
+        client = get_client(self.conn)
+        status = client.status
+        status = client.statuses[status]
+        assert client.get_status_string() == status
+
+    def test_get_active_clients(self):
+        table = PersonAdaptToClient
+        active_clients = table.get_active_clients(self.conn).count()
+        client = get_client(self.conn)
+        client.status = table.STATUS_SOLVENT
+        one_more_active_client = table.get_active_clients(self.conn).count()
+        assert active_clients + 1 == one_more_active_client
+
+    def test_get_client_sales(self):
+        client = PersonAdaptToClient.select(connection=self.conn)
+        assert client.count() > 0
+        client = client[0]
+        cfop = CfopData(code='123', description='bla', connection=self.conn)
+        branches = PersonAdaptToBranch.select(connection=self.conn)
+        assert branches.count() > 0
+        branch = branches[0]
+        till = Till(branch=branch, connection=self.conn)
+        people = PersonAdaptToSalesPerson.select(connection=self.conn)
+        assert people.count() > 0
+        salesperson = people[0]
+        count_sales = client.get_client_sales().count()
+        date=datetime(2006,11,11)
+        new_sale = Sale(coupon_id=123, client=client, cfop=cfop,
+                        till=till, salesperson=salesperson,
+                        connection=self.conn,
+                        open_date=date)
+        new_sale.set_valid()
+        products = Product.select(connection=self.conn)
+        assert products.count() > 0
+        product = products[0]
+        sellable_product = ISellable(product, connection=self.conn)
+        sellable_product.add_sellable_item(sale=new_sale)
+        one_more_sale = client.get_client_sales().count()
+        assert count_sales + 1 == one_more_sale
+        last_purchase_date = client.get_last_purchase_date()
+
+        #Testing get_last_purchase_date method bellow
+        assert client.get_last_purchase_date() == date
+
+class TestSupplier(BaseDomainTest):
+    """
+    C{PersonAdaptToSupplier} TestCase
+    """
+    _table = PersonAdaptToSupplier
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(IIndividual, connection=self.conn)
+        return person.addFacet(ISupplier, connection=self.conn)
+
+    def test_get_active_suppliers(self):
+        table = PersonAdaptToSupplier
+        active_suppliers = table.get_active_suppliers(self.conn)
+        for supplier in active_suppliers:
+            assert supplier.status == table.STATUS_ACTIVE
+
+    def test_get_description(self):
+        person = get_person(self.conn)
+        person.addFacet(IIndividual, connection=self.conn)
+        supplier = person.addFacet(ISupplier, connection=self.conn)
+        assert supplier.get_description() == person.name
+
+
+class TestEmployee(BaseDomainTest):
+    """
+    C{PersonAdaptToEmployee} TestCase
+    """
+    _table = PersonAdaptToEmployee
+
+    def get_adapter(self):
+        role_name = 'idiot'
+        return get_employee(self.conn, role_name)
+
+    def test_role_history(self):
+        #this test depends bug 2457
+        role_name = 'crazypaper'
+        employee = get_employee(self.conn, role_name)
+        history = EmployeeRoleHistory(role=employee.role,
+                                      employee=employee,
+                                      connection=self.conn,
+                                      salary=currency(500),
+                                      is_active=False)
+        old_count = employee.get_role_history().count()
+        history = EmployeeRoleHistory(role=employee.role,
+                                      employee=employee,
+                                      connection=self.conn,
+                                      salary=currency(900))
+        new_count = employee.get_role_history().count()
+        assert old_count + 1 == new_count
+
+    def test_get_active_role_history(self):
+        role_name = 'boss'
+        employee = get_employee(self.conn, role_name)
+
+        #creating 2 active role history, asserting it fails
+        history = EmployeeRoleHistory(role=employee.role,
+                                      employee=employee,
+                                      connection=self.conn,
+                                      salary=currency(230))
+        history2 = EmployeeRoleHistory(role=employee.role,
+                                      employee=employee,
+                                      connection=self.conn,
+                                      salary=currency(320))
+        history_validated = False
+        try:
+            employee.get_active_role_history()
+        except DatabaseInconsistency, e:
+            history_validated = True
+        assert history_validated
+
+        #now with one employeerolehistory
+        history2.is_active = False
+        assert employee.get_role_history()
+
+    def test_get_status_string(self):
+        employee = PersonAdaptToEmployee.select(connection=self.conn)[0]
+        status = employee.status
+        status = employee.statuses[status]
+        assert employee.get_status_string() == status
+
+
+class TestUser(BaseDomainTest):
+    """
+    C{PersonAdaptToUser} TestCase
+    """
+    _table = PersonAdaptToUser
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(IIndividual, connection=self.conn)
+        profile = UserProfile(name='vai', connection=self.conn)
+        return person.addFacet(IUser, connection=self.conn, username='bla',
+                               password='ble', profile=profile)
+
+    def test_inactivate(self):
+        users = PersonAdaptToUser.select(connection=self.conn)
+        assert users.count() > 0
+        user = users[0]
+        user.is_active = True
+        user.inactivate()
+        assert user.is_active is False
+
+    def test_activate(self):
+        users = PersonAdaptToUser.select(connection=self.conn)
+        assert users.count() > 0
+        user = users[0]
+        user.is_active = False
+        user.activate()
+        assert user.is_active is True
+
+    def test_get_status_str(self):
+        users = PersonAdaptToUser.select(connection=self.conn)
+        assert users.count() > 0
+        user = users[0]
+        user.is_active = False
+        string = user.get_status_str()
+        assert string == _(u'Inactive')
+
+
+class TestBranch(BaseDomainTest):
+    """
+    C{PersonAdaptToBranch} TestCase
+    """
+    _table = PersonAdaptToBranch
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        return person.addFacet(IBranch, connection=self.conn,
+                                 manager=person)
+
+    def test_inactivate(self):
+        branches = PersonAdaptToBranch.select(connection=self.conn)
+        assert branches.count() > 0
+        branch = branches[0]
+        branch.is_active = True
+        branch.inactivate()
+        assert branch.is_active == False
+
+    def test_activate(self):
+        branches = PersonAdaptToBranch.select(connection=self.conn)
+        assert branches.count() > 0
+        branch = branches[0]
+        branch.is_active = False
+        branch.activate()
+        assert branch.is_active is True
+
+    def test_get_status_str(self):
+        branches = PersonAdaptToBranch.select(connection=self.conn)
+        assert branches.count() > 0
+        branch = branches[0]
+        branch.is_active = False
+        string = branch.get_status_str()
+        assert string == _(u'Inactive')
+
+    def test_get_description(self):
+        person = Person(name='Winston', connection=self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        branch = person.addFacet(IBranch, connection=self.conn,
+                                 manager = person)
+        assert  branch.get_description() == u'Winston'
+
+    def test_get_active_branches(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        count = PersonAdaptToBranch.get_active_branches(self.conn).count()
+        branch = person.addFacet(IBranch, connection=self.conn,
+                                 manager=person)
+        assert branch.get_active_branches(self.conn).count() == count + 1
+
+
+class TestBankBranch(BaseDomainTest):
+    """
+    C{PersonAdaptToBankBranch} TestCase
+    """
+    _table = PersonAdaptToBankBranch
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        bank = Bank(connection=self.conn, name='Boston', short_name='short',
+                    compensation_code='1234')
+        person.addFacet(ICompany, connection=self.conn)
+        return person.addFacet(IBankBranch, connection=self.conn,
+                               bank=bank)
+
+    def test_inactivate(self):
+        bankbranches = PersonAdaptToBankBranch.select(connection=self.conn)
+        assert bankbranches.count() > 0
+        bankbranch = bankbranches[0]
+        bankbranch.is_active = True
+        bankbranch.inactivate()
+        assert bankbranch.is_active == False
+
+    def test_activate(self):
+        bankbranches = PersonAdaptToBankBranch.select(connection=self.conn)
+        assert bankbranches.count() > 0
+        bankbranch = bankbranches[0]
+        bankbranch.is_active = False
+        bankbranch.activate()
+        assert bankbranch.is_active is True
+
+
+class TestCreditProvider(BaseDomainTest):
+    """
+    C{PersonAdaptToCreditProvider} TestCase
+    """
+    _table = PersonAdaptToCreditProvider
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        return  person.addFacet(ICreditProvider,
+                                connection=self.conn,
+                                short_name='Velec',
+                                open_contract_date=datetime(2006,01,01))
+
+
+    def test_get_card_providers(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        count = PersonAdaptToCreditProvider.get_card_providers(self.conn).count()
+        credit_provider = person.addFacet(ICreditProvider, connection=self.conn,
+                                          short_name='Plus',
+                                          open_contract_date=datetime(2006,02,02),
+                                          provider_type=0)
+        assert credit_provider.get_card_providers(self.conn).count() == count + 1
+
+    def test_get_card_providers(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        count = PersonAdaptToCreditProvider.get_finance_companies(self.conn).count()
+        credit_provider = person.addFacet(ICreditProvider, connection=self.conn,
+                                          short_name='Cards',
+                                          open_contract_date=datetime(2006,02,02),
+                                          provider_type=1)
+        assert credit_provider.get_finance_companies(self.conn).count() == count + 1
+
+    def test_inactivate(self):
+        cproviders = PersonAdaptToCreditProvider.select(connection=self.conn)
+        assert cproviders.count() > 0
+        cprovider = cproviders[0]
+        cprovider.is_active = True
+        cprovider.inactivate()
+        assert cprovider.is_active is False
+
+    def test_activate(self):
+        table = PersonAdaptToCreditProvider
+        credit_providers = table.select(connection=self.conn)
+        assert credit_providers.count() > 0
+        credit_provider = credit_providers[0]
+        credit_provider.is_active = False
+        credit_provider.activate()
+        assert credit_provider.is_active is True
+
+    def test_get_provider_type_str(self):
+        table = PersonAdaptToCreditProvider
+        card_providers = table.get_card_providers(self.conn)
+        assert card_providers > 0
+        card_providers = card_providers[0]
+        assert card_providers.get_provider_type_str() == _(u'Card Provider')
+
+    def test__get_providers(self):
+        table = PersonAdaptToCreditProvider
+        count = table._get_providers(self.conn).count()
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        cprovider = person.addFacet(ICreditProvider,
+                                    connection=self.conn,
+                                    short_name='maestro',
+                                    open_contract_date=datetime(2005,02,03))
+        assert cprovider._get_providers(self.conn).count() == count + 1
+        count = table.get_finance_companies(self.conn).count()
+        FProvider = table._get_providers(self.conn,
+                                         provider_type=table.PROVIDER_FINANCE)
+        count_fprovider = FProvider.count()
+        assert count == count_fprovider
+
+
+class TestSalesPerson(BaseDomainTest):
+    """
+    C{PersonAdaptToSalesPerson} TestCase
+    """
+    _table = PersonAdaptToSalesPerson
+
+    def get_adapter(self):
+        return get_salesperson(self.conn, 'vigia')
+
+    def test_inactivate(self):
+        people = PersonAdaptToSalesPerson.select(connection=self.conn)
+        assert people.count() > 0
+        salesperson = people[0]
+        salesperson.is_active = True
+        salesperson.inactivate()
+        assert salesperson.is_active is False
+
+    def test_activate(self):
+        people = PersonAdaptToSalesPerson.select(connection=self.conn)
+        assert people.count() > 0
+        salesperson = people[0]
+        salesperson.is_active = False
+        salesperson.activate()
+        assert salesperson.is_active is True
+
+    def test_get_active_salespersons(self):
+        table = PersonAdaptToSalesPerson
+        count = table.get_active_salespersons(self.conn).count()
+        salesperson = get_salesperson(self.conn, 'vendedor')
+        one_more = salesperson.get_active_salespersons(self.conn).count()
+        assert count + 1 == one_more
+
+    def test_get_status_string(self):
+        salesperson = get_salesperson(self.conn, 'entregador')
+        string = salesperson.get_status_string()
+        assert string == _(u'Active')
+
+
+class TestTransporter(BaseDomainTest):
+    """
+    C{PersonAdaptToTransporter} TestCase
+    """
+    _table = PersonAdaptToTransporter
+
+    def get_adapter(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        return person.addFacet(ITransporter, connection=self.conn)
+
+    def test_inactivate(self):
+        transporters = PersonAdaptToTransporter.select(connection=self.conn)
+        assert transporters.count() > 0
+        transporter = transporters[0]
+        transporter.is_active = True
+        transporter.inactivate()
+        assert not transporter.is_active
+
+    def test_activate(self):
+        transporters = PersonAdaptToTransporter.select(connection=self.conn)
+        assert transporters.count() > 0
+        transporter = transporters[0]
+        transporter.is_active = False
+        transporter.activate()
+        assert transporter.is_active
+
+    def test_get_status_string(self):
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        transporter = person.addFacet(ITransporter, connection=self.conn)
+        string = transporter.get_status_string()
+        assert string == _(u'Active')
+
+    def test_get_active_transporters(self):
+        table = PersonAdaptToTransporter
+        count = table.get_active_transporters(self.conn).count()
+        person = get_person(self.conn)
+        person.addFacet(ICompany, connection=self.conn)
+        transporter = person.addFacet(ITransporter, connection=self.conn)
+        one_more = transporter.get_active_transporters(self.conn).count()
+        assert count + 1 == one_more
+
+
+class TestEmployeeRoleHistory(BaseDomainTest):
+    """
+    C{EmployeeRoleHistory} TestCase
+    """
+    _table = EmployeeRoleHistory
+
+    @classmethod
+    def get_foreign_key_data(cls):
+        role = EmployeeRole(connection=cls.conn, name='ajudante')
+        employee = get_employee(cls.conn, 'escrivao')
+        return role, employee
+
+    def test_get_city_location_template(self):
+        location = get_city_location_template(self.conn)
+        assert isinstance(location, CityLocation)
+        assert location.city == sysparam(self.conn).CITY_SUGGESTED
+        assert location.state == sysparam(self.conn).STATE_SUGGESTED
+        assert location.country == sysparam(self.conn).COUNTRY_SUGGESTED
