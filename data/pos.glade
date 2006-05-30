@@ -401,155 +401,124 @@
                                         <property name="spacing">6</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkVBox" id="main_item_box">
+                                            <widget class="GtkHBox" id="item_hbox">
+                                                <property name="spacing">6</property>
                                                 <property name="visible">True</property>
                                                 <child>
-                                                    <widget class="GtkHBox" id="item_hbox">
-                                                        <property name="spacing">6</property>
+                                                    <widget class="GtkLabel" id="label2">
+                                                        <property name="label" context="yes" translatable="yes">Barcode:</property>
                                                         <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkLabel" id="label2">
-                                                                <property name="label" context="yes" translatable="yes">Barcode:</property>
-                                                                <property name="visible">True</property>
-                                                                <property name="xalign">0.0</property>
-                                                            </widget>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="GtkEntry" id="barcode">
-                                                                <property name="visible">True</property>
-                                                                <property name="width_chars">23</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">1</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="ProxyLabel" id="kiwilabel2">
-                                                                <property name="label" context="yes" translatable="yes">Quantity:</property>
-                                                                <property name="visible">True</property>
-                                                                <property name="xalign">1.0</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">2</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="ProxySpinButton" id="quantity">
-                                                                <property name="adjustment">0 0 100 1 10 0</property>
-                                                                <property name="data_type">Decimal</property>
-                                                                <property name="digits">2</property>
-                                                                <property name="is_focus">True</property>
-                                                                <property name="model_attribute">quantity</property>
-                                                                <property name="text" context="yes" translatable="yes">0.00</property>
-                                                                <property name="visible">True</property>
-                                                                <property name="width_chars">6</property>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">3</property>
-                                                            </packing>
-                                                        </child>
-                                                        <child>
-                                                            <widget class="GtkHButtonBox" id="item_button_box">
-                                                                <property name="spacing">6</property>
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkButton" id="add_button">
-                                                                        <property name="is_focus">True</property>
-                                                                        <property name="use_underline">True</property>
-                                                                        <property name="visible">True</property>
-                                                                        <child>
-                                                                            <widget class="GtkAlignment" id="alignment17">
-                                                                                <property name="visible">True</property>
-                                                                                <child>
-                                                                                    <widget class="GtkHBox" id="hbox4">
-                                                                                        <property name="visible">True</property>
-                                                                                        <child>
-                                                                                            <widget class="GtkImage" id="image3">
-                                                                                                <property name="file">add16px.png</property>
-                                                                                                <property name="visible">True</property>
-                                                                                            </widget>
-                                                                                        </child>
-                                                                                        <child>
-                                                                                            <widget class="GtkLabel" id="label17">
-                                                                                                <property name="label" context="yes" translatable="yes">Add</property>
-                                                                                                <property name="visible">True</property>
-                                                                                            </widget>
-                                                                                            <packing>
-                                                                                                <property name="position">1</property>
-                                                                                            </packing>
-                                                                                        </child>
-                                                                                    </widget>
-                                                                                </child>
-                                                                            </widget>
-                                                                        </child>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkButton" id="advanced_search">
-                                                                        <property name="is_focus">True</property>
-                                                                        <property name="visible">True</property>
-                                                                        <child>
-                                                                            <widget class="GtkAlignment" id="alignment15">
-                                                                                <property name="visible">True</property>
-                                                                                <child>
-                                                                                    <widget class="GtkHBox" id="hbox1">
-                                                                                        <property name="visible">True</property>
-                                                                                        <child>
-                                                                                            <widget class="GtkImage" id="image2">
-                                                                                                <property name="file">search16px.png</property>
-                                                                                                <property name="visible">True</property>
-                                                                                            </widget>
-                                                                                        </child>
-                                                                                        <child>
-                                                                                            <widget class="GtkLabel" id="label21">
-                                                                                                <property name="label" context="yes" translatable="yes">_Search</property>
-                                                                                                <property name="use_underline">True</property>
-                                                                                                <property name="visible">True</property>
-                                                                                            </widget>
-                                                                                            <packing>
-                                                                                                <property name="position">1</property>
-                                                                                            </packing>
-                                                                                        </child>
-                                                                                    </widget>
-                                                                                </child>
-                                                                            </widget>
-                                                                        </child>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                            <packing>
-                                                                <property name="position">4</property>
-                                                            </packing>
-                                                        </child>
+                                                        <property name="xalign">0.0</property>
                                                     </widget>
                                                 </child>
                                                 <child>
-                                                    <widget class="GtkHBox" id="warning_box">
+                                                    <widget class="GtkEntry" id="barcode">
+                                                        <property name="visible">True</property>
+                                                        <property name="width_chars">23</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">1</property>
+                                                    </packing>
+                                                </child>
+                                                <child>
+                                                    <widget class="ProxyLabel" id="kiwilabel2">
+                                                        <property name="label" context="yes" translatable="yes">Quantity:</property>
+                                                        <property name="visible">True</property>
+                                                        <property name="xalign">1.0</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">2</property>
+                                                    </packing>
+                                                </child>
+                                                <child>
+                                                    <widget class="ProxySpinButton" id="quantity">
+                                                        <property name="adjustment">0 0 100 1 10 0</property>
+                                                        <property name="data_type">Decimal</property>
+                                                        <property name="digits">2</property>
+                                                        <property name="is_focus">True</property>
+                                                        <property name="model_attribute">quantity</property>
+                                                        <property name="text" context="yes" translatable="yes">0,00</property>
+                                                        <property name="visible">True</property>
+                                                        <property name="width_chars">6</property>
+                                                    </widget>
+                                                    <packing>
+                                                        <property name="position">3</property>
+                                                    </packing>
+                                                </child>
+                                                <child>
+                                                    <widget class="GtkHButtonBox" id="item_button_box">
+                                                        <property name="spacing">6</property>
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <widget class="GtkImage" id="image1">
-                                                                <property name="stock">gtk-dialog-warning</property>
+                                                            <widget class="GtkButton" id="add_button">
+                                                                <property name="is_focus">True</property>
+                                                                <property name="use_underline">True</property>
                                                                 <property name="visible">True</property>
-                                                                <property name="xalign">1.0</property>
+                                                                <child>
+                                                                    <widget class="GtkAlignment" id="alignment17">
+                                                                        <property name="visible">True</property>
+                                                                        <child>
+                                                                            <widget class="GtkHBox" id="hbox4">
+                                                                                <property name="visible">True</property>
+                                                                                <child>
+                                                                                    <widget class="GtkImage" id="image3">
+                                                                                        <property name="file">add16px.png</property>
+                                                                                        <property name="visible">True</property>
+                                                                                    </widget>
+                                                                                </child>
+                                                                                <child>
+                                                                                    <widget class="GtkLabel" id="label17">
+                                                                                        <property name="label" context="yes" translatable="yes">Add</property>
+                                                                                        <property name="visible">True</property>
+                                                                                    </widget>
+                                                                                    <packing>
+                                                                                        <property name="position">1</property>
+                                                                                    </packing>
+                                                                                </child>
+                                                                            </widget>
+                                                                        </child>
+                                                                    </widget>
+                                                                </child>
                                                             </widget>
                                                         </child>
                                                         <child>
-                                                            <widget class="ProxyLabel" id="warning_label">
+                                                            <widget class="GtkButton" id="advanced_search">
+                                                                <property name="is_focus">True</property>
                                                                 <property name="visible">True</property>
-                                                                <property name="xalign">1.0</property>
-                                                                <property name="xpad">10</property>
+                                                                <child>
+                                                                    <widget class="GtkAlignment" id="alignment15">
+                                                                        <property name="visible">True</property>
+                                                                        <child>
+                                                                            <widget class="GtkHBox" id="hbox1">
+                                                                                <property name="visible">True</property>
+                                                                                <child>
+                                                                                    <widget class="GtkImage" id="image2">
+                                                                                        <property name="file">search16px.png</property>
+                                                                                        <property name="visible">True</property>
+                                                                                    </widget>
+                                                                                </child>
+                                                                                <child>
+                                                                                    <widget class="GtkLabel" id="label21">
+                                                                                        <property name="label" context="yes" translatable="yes">_Search</property>
+                                                                                        <property name="use_underline">True</property>
+                                                                                        <property name="visible">True</property>
+                                                                                    </widget>
+                                                                                    <packing>
+                                                                                        <property name="position">1</property>
+                                                                                    </packing>
+                                                                                </child>
+                                                                            </widget>
+                                                                        </child>
+                                                                    </widget>
+                                                                </child>
                                                             </widget>
                                                             <packing>
-                                                                <property name="expand">False</property>
                                                                 <property name="position">1</property>
                                                             </packing>
                                                         </child>
                                                     </widget>
                                                     <packing>
-                                                        <property name="position">1</property>
+                                                        <property name="position">4</property>
                                                     </packing>
                                                 </child>
                                             </widget>
