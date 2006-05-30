@@ -113,8 +113,6 @@ class POSApp(AppWindow):
             self.delivery_button.hide()
         if self.param.POS_FULL_SCREEN:
             self.get_toplevel().fullscreen()
-        self.warning_label.set_size("small")
-        self.warning_box.hide()
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
 
@@ -233,23 +231,11 @@ class POSApp(AppWindow):
         has_barcode = self._has_barcode_str()
         self.add_button.set_sensitive(has_barcode)
 
-    def _read_scale(self):
+    def _read_scale(self, sellable):
         data = read_scale_info(self.conn)
         self.quantity.set_value(data.weight)
-        sellable = self._get_sellable()
-        current_price = sellable.base_sellable_info.price
-        scale_price = data.price_per_kg
-        if scale_price != 0 and current_price != scale_price:
-            if not self.param.EDIT_SELLABLE_PRICE:
-                msg = _(u"The price supplied by the scale doesn't match the "
-                        "current one registered in the system and will be "
-                        "ignored")
-            else:
-                msg = _(u"The price supplied by the scale is different than "
-                        "the current one registered in the system")
-                self.sellableitem_proxy.model.price = scale_price
-                self.warning_label.set_text(msg)
-                self.warning_box.show()
+        if self.param.USE_SCALE_PRICE:
+            self.sellableitem_proxy.model.price = data.price_per_kg
 
     def _run_search_dialog(self, dialog_type, **kwargs):
         # Save the current state of order before calling a search dialog
@@ -300,9 +286,14 @@ class POSApp(AppWindow):
                         "please, select another item.")
                 warning(_("Can not sell this product"), msg)
                 return
+            # If the sellable has a weight unit specified and we have a scale
+            # configured for this station, go and check what the scale says.
+            if (sellable and sellable.unit
+                and sellable.unit.index == UNIT_WEIGHT
+                and get_current_scale_settings(self.conn)):
+                self._read_scale(sellable)
 
         self._update_list(sellable, notify_on_entry=True)
-        self.warning_box.hide()
         self.barcode.grab_focus()
 
     def _clear_order(self):
@@ -442,7 +433,6 @@ class POSApp(AppWindow):
         # Setting up the barcode area
         self.list_header_hbox.set_focus_chain([self.search_box,
                                                self.stoq_logo])
-        self.main_item_box.set_focus_chain([self.item_hbox])
         self.item_hbox.set_focus_chain([self.barcode, self.quantity,
                                         self.item_button_box])
         self.item_button_box.set_focus_chain([self.barcode, self.quantity,
