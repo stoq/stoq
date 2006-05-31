@@ -88,6 +88,7 @@ class WarehouseApp(SearchableAppWindow):
         self.retention_button.set_sensitive(has_stock)
         one_selected = len(self.products.get_selected_rows()) == 1
         self.history_button.set_sensitive(one_selected)
+        self.print_button.set_sensitive(has_stock)
         self._update_stock_total()
 
     def on_searchbar_activate(self, slave, objs):
@@ -150,7 +151,8 @@ class WarehouseApp(SearchableAppWindow):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
 
     def on_print_button__clicked(self, button):
-        self.searchbar.print_report(ProductReport, self.products)
+        products = self.products.get_selected_rows() or self.products
+        self.searchbar.print_report(ProductReport, products)
 
     def on_history_button__clicked(self, button):
         selected = self._klist.get_selected_rows()
