@@ -180,7 +180,7 @@ def _get_data_by_identifier(identifier, table, conn):
     if qty != 1:
         raise StoqlibError("You should have only one item for the "
                            "registered identifier %d, got %d"
-                           % (id, qty))
+                           % (identifier, qty))
     return items[0]
 
 
