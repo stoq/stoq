@@ -124,6 +124,7 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">4</property>
+                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -177,14 +178,15 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">2</property>
+                        <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="host">
-                        <property name="data_type">unicode</property>
+                    <widget class="ProxyComboEntry" id="station">
+                        <property name="data_type">object</property>
                         <property name="mandatory">True</property>
-                        <property name="model_attribute">host</property>
+                        <property name="model_attribute">station</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -192,6 +194,7 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">3</property>
+                        <property name="x_options">fill</property>
                         <property name="y_options">fill</property>
                     </packing>
                 </child>
@@ -206,6 +209,8 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">4</property>
+                        <property name="x_options">fill</property>
+                        <property name="y_options">fill</property>
                     </packing>
                 </child>
             </widget>

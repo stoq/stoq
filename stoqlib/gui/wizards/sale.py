@@ -40,7 +40,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (print_cheques_for_payment_group,
-                                 check_virtual_printer_for_current_host)
+                                 check_virtual_printer_for_current_station)
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -512,7 +512,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
     def setup_invoice_number_widgets(self):
         # XXX Kiwi can't handle this change on the widget. It seems to be
         # a new bug
-        if check_virtual_printer_for_current_host(self.conn):
+        if check_virtual_printer_for_current_station(self.conn):
             self.invoice_number.set_property('mandatory', True)
         else:
             self.invoice_number.set_property('mandatory', False)

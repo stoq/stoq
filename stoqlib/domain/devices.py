@@ -82,7 +82,7 @@ class DeviceSettings(Domain):
     brand = UnicodeCol()
     model = UnicodeCol()
     device = IntCol()
-    host = UnicodeCol()
+    station = ForeignKey("BranchStation")
     constants = ForeignKey("DeviceConstants", default=None)
     # Here we are going to store Stoq specific constants for payment
     # methods. It's interesting to have a unique field for that and

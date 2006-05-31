@@ -24,11 +24,9 @@
 ##
 """ Useful functions for StoqDrivers interaction """
 
-import socket
-
 import gtk
 from zope.interface import implements
-from sqlobject.sqlbuilder import OR, AND
+from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
@@ -40,7 +38,8 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
-from stoqlib.lib.runtime import new_transaction, get_current_branch
+from stoqlib.lib.runtime import (new_transaction, get_current_branch,
+                                 get_current_station)
 from stoqlib.database import finish_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
@@ -51,11 +50,9 @@ _ = stoqlib_gettext
 _printer = None
 _scale = None
 
-
 #
-# General routines
+# Private
 #
-
 
 def _get_fiscalprinter(conn):
     """ Returns a FiscalPrinter instance pre-configured to the current
@@ -64,18 +61,18 @@ def _get_fiscalprinter(conn):
     global _printer
     if _printer:
         return _printer
-
-    setting = get_fiscal_printer_settings_by_hostname(conn,
-                                                      socket.gethostname())
+    station = get_current_station(conn)
+    setting = get_fiscal_printer_settings_by_station(conn, station)
     if setting and setting.is_active:
-        _printer = FiscalPrinter(brand=setting.brand, model=setting.model,
+        _printer = FiscalPrinter(brand=setting.brand,
+                                 model=setting.model,
                                  device=setting.get_port_name(),
                                  consts=setting.constants)
     else:
         warning(_(u"There is no fiscal printer"),
                _(u"There is no fiscal printer configured for this "
                 "station (\"%s\") or the printer is not enabled "
-                "currently." % socket.gethostname()))
+                "currently." % station.name))
     return _printer
 
 def _get_scale(conn):
@@ -85,15 +82,17 @@ def _get_scale(conn):
     global _scale
     if _scale:
         return _scale
-    setting = get_scale_settings_by_hostname(conn, socket.gethostname())
+    station = get_current_station(conn)
+    setting = get_scale_settings_by_station(conn, station)
     if setting and setting.is_active:
-        _scale = Scale(brand=setting.brand, model=setting.model,
+        _scale = Scale(brand=setting.brand,
+                       model=setting.model,
                        device=setting.get_port_name())
     else:
         warning(_(u"There is no scale configured"),
                _(u"There is no scale configured for this station "
                 "(\"%s\") or the scale is not enabled currently"
-                % socket.gethostname()))
+                 % station.name))
     return _scale
 
 def _emit_reading(conn, cmd):
@@ -114,11 +113,9 @@ def _emit_reading(conn, cmd):
 #
 
 
-def get_device_settings_by_hostname(conn, hostname, device_type):
-    ipaddr = socket.gethostbyname(hostname)
-    query = OR(DeviceSettings.q.host == hostname,
-               DeviceSettings.q.host == ipaddr)
-    query = AND(query, DeviceSettings.q.type == device_type)
+def get_device_settings_by_station(conn, station, device_type):
+    query = AND(DeviceSettings.q.stationID == station.id,
+                DeviceSettings.q.type == device_type)
     result = DeviceSettings.select(query, connection=conn)
     result_quantity = result.count()
     if result_quantity > 1:
@@ -127,58 +124,64 @@ def get_device_settings_by_hostname(conn, hostname, device_type):
                                     " and the same machine")
     return result_quantity and result[0] or None
 
-def get_fiscal_printer_settings_by_hostname(conn, hostname):
+def get_fiscal_printer_settings_by_station(conn, station):
     """ Returns the DeviceSettings object representing the printer currently
-    associated with the given hostname or None if there is not settings for
+    associated with the given station or None if there is not settings for
     it.
     """
-    return get_device_settings_by_hostname(conn, hostname,
-                                           DeviceSettings.FISCAL_PRINTER_DEVICE)
+    return get_device_settings_by_station(conn, station,
+                                          DeviceSettings.FISCAL_PRINTER_DEVICE)
 
 def get_current_cheque_printer_settings(conn):
-    res = get_device_settings_by_hostname(conn, socket.gethostname(),
-                                          DeviceSettings.CHEQUE_PRINTER_DEVICE)
+    res = get_device_settings_by_station(conn, get_current_station(conn),
+                                         DeviceSettings.CHEQUE_PRINTER_DEVICE)
     if not res:
         return None
     elif not isinstance(res, DeviceSettings):
         raise TypeError("Invalid setting returned by "
                         "get_current_cheque_printer_settings")
-    return ChequePrinter(brand=res.brand, model=res.model,
+    return ChequePrinter(brand=res.brand,
+                         model=res.model,
                          device=res.get_port_name())
 
-def get_scale_settings_by_hostname(conn, hostname):
+def get_scale_settings_by_station(conn, station):
     """ Return the DeviceSettings object representing the scale currently
-    associated with the given hostname or None if there is no
-    settings for it.
+    associated with the given station or None if there is no settings for
+    it.
     """
-    return get_device_settings_by_hostname(conn, hostname,
-                                           DeviceSettings.SCALE_DEVICE)
+    return get_device_settings_by_station(conn, station,
+                                          DeviceSettings.SCALE_DEVICE)
 
 def get_current_scale_settings(conn):
-    return get_scale_settings_by_hostname(conn, socket.gethostname())
+    return get_scale_settings_by_station(conn, get_current_station(conn))
 
-def create_virtual_printer_for_current_host():
+def create_virtual_printer_for_current_station():
     conn = new_transaction()
-    if get_fiscal_printer_settings_by_hostname(conn, socket.gethostname()):
+    station = get_current_station(conn)
+    if get_fiscal_printer_settings_by_station(conn, station):
         finish_transaction(conn)
         return
-    DeviceSettings(host=socket.gethostname(),
+    DeviceSettings(station=station,
                    device=DeviceSettings.DEVICE_SERIAL1,
-                   brand='virtual', model='Simple',
+                   brand='virtual',
+                   model='Simple',
                    type=DeviceSettings.FISCAL_PRINTER_DEVICE,
                    connection=conn)
     finish_transaction(conn, 1)
 
-
-def check_virtual_printer_for_current_host(conn):
-    """Returns True if the fiscal printer for the current host is
-    a virtual one
+def check_virtual_printer_for_current_station(conn):
+    """Returns True if the fiscal printer for the current station is
+    a virtual one.
     """
     printer = _get_fiscalprinter(conn)
     if not printer:
         raise ValueError("There should be a fiscal printer defined "
                          "at this point")
     return printer.brand == 'virtual'
+
+#
+# Coupon & Cheque
+#
 
 def emit_read_X(conn):
     return _emit_reading(conn, 'summarize')
@@ -408,8 +411,8 @@ class FiscalCoupon:
                                      '')
             return True
 
-        settings = get_fiscal_printer_settings_by_hostname(self.conn,
-                                                           socket.gethostname())
+        station = get_current_station(self.conn)
+        settings = get_fiscal_printer_settings_by_station(self.conn, station)
         pm_constants = settings.pm_constants
         if not pm_constants:
             raise ValueError("It is not possible to setup the payments for sale "

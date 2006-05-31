@@ -24,16 +24,15 @@
 ##
 """Create a DeviceSettings object that use a VirtualPrinter by default"""
 
-import socket
-
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import (new_transaction, print_msg,
+                                 get_current_station)
 from stoqlib.domain.devices import DeviceSettings
 
 def create_device_settings():
     print_msg("Creating default device settings...", break_line=False)
     conn = new_transaction()
-    printer = DeviceSettings(host=socket.gethostname(),
-                             device=DeviceSettings.DEVICE_SERIAL1,
+    printer = DeviceSettings(device=DeviceSettings.DEVICE_SERIAL1,
+                             station=get_current_station(conn),
                              brand='virtual', model='Simple',
                              type=DeviceSettings.FISCAL_PRINTER_DEVICE,
                              connection=conn)
