@@ -124,7 +124,7 @@
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkLabel" id="label1">
+                                    <widget class="GtkLabel" id="cfop_label">
                                         <property name="label" context="yes" translatable="yes">CFOP:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">0.0</property>
