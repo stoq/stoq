@@ -349,8 +349,6 @@ class SellableItemEditor(BaseEditor):
     def setup_widgets(self):
         sellable = self.model.sellable
         self.sellable_name.set_text(sellable.base_sellable_info.description)
-        if not sysparam(self.conn).EDIT_SELLABLE_PRICE:
-            self.disable_price_fields()
 
     #
     # Callbacks
