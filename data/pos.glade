@@ -156,7 +156,6 @@
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
                         <property name="label" translatable="yes">Quit</property>
-                        <property name="short_label" translatable="yes"></property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
@@ -415,8 +414,9 @@
                                                 </child>
                                                 <child>
                                                     <widget class="GtkEntry" id="barcode">
+                                                        <property name="is_focus">True</property>
                                                         <property name="visible">True</property>
-                                                        <property name="width_chars">23</property>
+                                                        <property name="width_chars">16</property>
                                                     </widget>
                                                     <packing>
                                                         <property name="position">1</property>
@@ -439,9 +439,9 @@
                                                         <property name="digits">2</property>
                                                         <property name="is_focus">True</property>
                                                         <property name="model_attribute">quantity</property>
-                                                        <property name="text" context="yes" translatable="yes">0,00</property>
+                                                        <property name="text" context="yes" translatable="yes">0.00</property>
                                                         <property name="visible">True</property>
-                                                        <property name="width_chars">6</property>
+                                                        <property name="width_chars">5</property>
                                                     </widget>
                                                     <packing>
                                                         <property name="position">3</property>
