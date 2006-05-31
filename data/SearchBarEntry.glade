@@ -7,7 +7,7 @@
                 <property name="spacing">5</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                    <widget class="ProxyLabel" id="kiwilabel1">
                         <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
@@ -24,7 +24,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="search_label">
+                    <widget class="ProxyLabel" id="search_label">
                         <property name="data_type">unicode</property>
                         <property name="label" context="yes" translatable="yes">matching:</property>
                         <property name="visible">True</property>
@@ -100,7 +100,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                    <widget class="ProxyLabel" id="kiwilabel2">
                         <property name="data_type">unicode</property>
                         <property name="visible">True</property>
                     </widget>
