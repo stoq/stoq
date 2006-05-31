@@ -84,7 +84,7 @@ class AdminApp(SearchableAppWindow):
                        data_type=str, width=150, searchable=True),
                 ForeignKeyColumn(UserProfile, 'name', title=_('Profile'),
                                  obj_field='profile', data_type=str,
-                                 width=150),
+                                 width=150, expand=True),
                 ForeignKeyColumn(Person, 'name', title=_('Name'),
                                  data_type=str, adapted=True,
                                  width=300),

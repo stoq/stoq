@@ -95,6 +95,7 @@
                         <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
+                        <signal handler="_on_quit_action__clicked" name="activate"/>
                     </widget>
                 </child>
                 <child>
@@ -175,6 +176,7 @@
                 <child>
                     <widget class="GtkAction" id="quit_action">
                         <property name="name">quit_action</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>

@@ -138,6 +138,7 @@
                 <child>
                     <widget class="GtkAction" id="quit_action">
                         <property name="name">quit_action</property>
+                        <property name="label" translatable="yes">Quit</property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
@@ -151,7 +152,8 @@
                 </child>
             </widget>
         </child>
-        <ui id="initial-state"><![CDATA[<ui><menubar action="menubar" name="menubar">
+        <ui id="initial-state"><![CDATA[<ui>
+<menubar action="menubar" name="menubar">
   
   
 <menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
@@ -162,7 +164,8 @@
   
   
   
-<toolitem action="Conference" name="Conference"/><toolitem action="Bill" name="Bill"/></toolbar></ui>]]></ui>
+<toolitem action="Conference" name="Conference"/><toolitem action="Bill" name="Bill"/></toolbar>
+</ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="receivable">
         <property name="height_request">570</property>

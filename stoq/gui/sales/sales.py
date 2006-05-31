@@ -164,11 +164,11 @@ class SalesApp(SearchableAppWindow):
         return [Column('order_number', title=_('Number'), width=80,
                        format='%05d', data_type=int, sorted=True),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=140),
+                       data_type=str, width=140, expand=True),
                 Column('salesperson_name', title=_('Salesperson'),
                        data_type=str, width=130),
                 Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=120,
+                       data_type=decimal.Decimal, width=140,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=120)]

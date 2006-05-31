@@ -476,7 +476,7 @@ class POSApp(AppWindow):
                        width=110, format_func=format_quantity,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('sellable.unit_description', title=_('Unit'),
-                       data_type=str, width=60),
+                       data_type=str, width=70),
                 Column('total', title=_('Total'), data_type=currency,
                        justify=gtk.JUSTIFY_RIGHT, width=100)]
 

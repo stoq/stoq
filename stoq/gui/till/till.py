@@ -241,11 +241,11 @@ class TillApp(SearchableAppWindow):
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=160),
+                       data_type=str, width=160, expand=True),
                 Column('salesperson_name', title=_('Salesperson'),
                        data_type=str, width=160),
                 Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=120,
+                       data_type=decimal.Decimal, width=140,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency,
                        width=120)]
