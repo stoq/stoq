@@ -2300,7 +2300,7 @@ msgstr "Adicionando um novo %s"
 #: ../stoqlib/gui/wizards/person.py:142
 #, python-format
 msgid "What kind of %s are you adding?"
-msgstr "Que tipo de %s você está adicionado?"
+msgstr "Que tipo de %s você está adicionando?"
 
 #: ../stoqlib/gui/wizards/person.py:204
 #, python-format
