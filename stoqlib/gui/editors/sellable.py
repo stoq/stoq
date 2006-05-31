@@ -310,7 +310,8 @@ class SellableItemEditor(BaseEditor):
                    PurchaseItem: _('Gift Certificate')}
 
     def __init__(self, conn, model_type=ProductSellableItem, model=None,
-                 value_attr=None, restrict_increase_qty=False):
+                 value_attr=None, restrict_increase_qty=False,
+                 editable_price=True):
         self.model_name = self._get_model_name(model_type)
         self.model_type = model_type
         self.value_attr = value_attr
@@ -318,6 +319,8 @@ class SellableItemEditor(BaseEditor):
         if restrict_increase_qty:
             quantity = self.model.quantity
             self.quantity.set_range(1, self.model.quantity)
+        if not editable_price:
+            self.disable_price_fields()
 
     def _get_model_name(self, model_type):
         if not self.model_names.has_key(model_type):
