@@ -327,13 +327,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                      cfop=cfop, drawee=drawee, branch=branch,
                      date=datetime.now(), payment_group=self, **kwargs)
 
-    @argcheck(CfopData, int, Decimal, Decimal)
     def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
                                   ipi_value=Decimal("0.0")):
         self._create_fiscal_entry(IcmsIpiBookEntry, cfop, invoice_number,
                                   icms_value=icms_value, ipi_value=ipi_value)
 
-    @argcheck(CfopData, int, Decimal)
     def create_iss_book_entry(self, cfop, invoice_number, iss_value):
         self._create_fiscal_entry(IssBookEntry, cfop, invoice_number,
                                   iss_value=iss_value)
