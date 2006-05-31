@@ -35,7 +35,6 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.runtime import new_transaction, get_connection
 from stoqlib.lib.validators import validate_password
-from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.database import (DatabaseSettings, finish_transaction,
@@ -67,7 +66,8 @@ class DeviceSettingsStep(BaseWizardStep):
 
     def _setup_slaves(self, station):
         # TODO send station to the slave
-        slave = DeviceSettingsDialogSlave(self.conn)
+        from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
+        slave = DeviceSettingsDialogSlave(self.conn, station=station)
         self.attach_slave("devices_holder", slave)
 
     #
