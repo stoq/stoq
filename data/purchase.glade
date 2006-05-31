@@ -126,6 +126,8 @@
                 <child>
                     <widget class="GtkAction" id="Quit">
                         <property name="name">Quit</property>
+                        <property name="label" translatable="yes">Quit</property>
+                        <property name="short_label" translatable="yes"></property>
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
@@ -305,6 +307,7 @@
                                         <property name="visible">True</property>
                                         <child>
                                             <placeholder/>
+                                            <packing/>
                                         </child>
                                     </widget>
                                     <packing>

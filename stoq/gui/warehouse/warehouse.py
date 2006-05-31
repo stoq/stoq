@@ -113,9 +113,9 @@ class WarehouseApp(SearchableAppWindow):
                 Column('supplier_name', title=('Supplier'),
                        data_type=str, width=160),
                 Column('stock', title=_('Quantity'),
-                       data_type=decimal.Decimal, width=80),
+                       data_type=decimal.Decimal, width=90),
                 Column('unit', title=_("Unit"), data_type=str,
-                       width=50)]
+                       width=70)]
     #
     # Hooks
     #
