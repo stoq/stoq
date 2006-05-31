@@ -245,6 +245,11 @@ _parameter_info = {
                                           'price supplied by the scale for items '
                                           'that require weighting')),
     # These parameters are Brazil-specific
+    'ASK_SALES_CFOP': ParameterDetails(_(u'Sales'),
+                                      _(u'Ask for Sale Order CFOP'),
+                                      _(u'Once this parameter is set to '
+                                         'True we will ask for the CFOP '
+                                         'when creating new sale orders')),
     'DEFAULT_SALES_CFOP': ParameterDetails(_(u'Sales'),
                                  _(u'Default Sales CFOP'),
                                  _(u'Default CFOP (Fiscal Code of Operations) '
@@ -327,6 +332,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('RETURN_MONEY_ON_SALES', bool, initial=True),
         ParameterAttr('RECEIVE_PRODUCTS_WITHOUT_ORDER', bool,
                       initial=True),
+        ParameterAttr('ASK_SALES_CFOP', bool, initial=False),
         ParameterAttr('MAX_SALE_ORDER_VALIDITY', int, initial=30),
         ParameterAttr('USE_SCALE_PRICE', bool, initial=False),
         ParameterAttr('ICMS_TAX', int, initial=18),
