@@ -124,11 +124,6 @@ class POSApp(AppWindow):
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
-    def _coupon_add_item(self, sellable_item):
-        if self.param.CONFIRM_SALES_ON_TILL:
-            return
-        self.coupon.add_item(sellable_item)
-
     @argcheck(AbstractSellable)
     def _update_klist_item(self, sellable):
         """Checks if a certain sellable was already added to the order and
@@ -336,19 +331,6 @@ class POSApp(AppWindow):
         else:
             rollback_and_begin(self.conn)
             return
-        if self.param.CONFIRM_SALES_ON_TILL:
-            return
-        self.coupon = FiscalCoupon(self.conn, self.sale)
-        if self.sale.client:
-            self.coupon.identify_customer(self.sale.client.get_adapted())
-        while not self.coupon.open():
-            if yesno(
-                _(u"It is not possible to start a new sale if the "
-                   "fiscal coupon cannot be opened."),
-                default=gtk.RESPONSE_OK,
-                buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                         (_(u"Try Again"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
-                self.app.shutdown()
 
     def _cancel_order(self):
         if self.sale is not None:
@@ -405,11 +387,38 @@ class POSApp(AppWindow):
             rollback_and_begin(self.conn)
             self.new_order_button.grab_focus()
 
+    #
+    # Coupon related
+    #
+
     def _finish_coupon(self):
         totalize = self.coupon.totalize()
         has_payments = self.coupon.setup_payments()
         close = self.coupon.close()
         return totalize and has_payments and close
+
+    def _open_coupon(self):
+        self.coupon = FiscalCoupon(self.conn, self.sale)
+        if self.sale.client:
+            self.coupon.identify_customer(self.sale.client.get_adapted())
+        while not self.coupon.open():
+            if (yesno(_(u"It is not possible to start a new sale if the "
+                        "fiscal coupon cannot be opened."),
+                      default=gtk.RESPONSE_OK,
+                      buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                               (_(u"Try Again"), gtk.RESPONSE_OK)))
+                != gtk.RESPONSE_OK):
+                self.app.shutdown()
+
+    def _coupon_add_item(self, sellable_item):
+        if self.param.CONFIRM_SALES_ON_TILL:
+            return
+        # Services do not must be added to the coupon
+        if isinstance(sellable_item, ServiceSellableItem):
+            return
+        if self.coupon is None:
+            self._open_coupon()
+        self.coupon.add_item(sellable_item)
 
     #
     # AppWindow Hooks
