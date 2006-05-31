@@ -81,9 +81,10 @@ def set_branch_by_stationid(identifier, conn=None):
     if stations.count() != 1:
         raise StoqlibError("You should have only one station for the "
                            "identifier %s" % identifier)
-    identifier = stations[0].branch.identifier
+    station = stations[0]
+    identifier = station.branch.identifier
     register_current_branch_identifier(identifier)
-    register_current_station_identifier(identifier)
+    register_current_station_identifier(station.identifier)
 
 
 def setup(config, options=None, stoq_user_password=''):
