@@ -74,6 +74,9 @@ class NewOrderEditor(BaseEditor):
                                           Sale.CLIENT_COMPANY)]:
             radio_button.set_property("data-type", int)
             radio_button.set_property("data-value", data_value)
+        if not sysparam(self.conn).ASK_SALES_CFOP:
+            self.cfop_combo.hide()
+            self.cfop_label.hide()
 
     def _update_client_widgets(self):
         client_selected = self.client_check.get_active()
