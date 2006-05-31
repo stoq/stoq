@@ -101,6 +101,11 @@ dbusername=%(DBUSERNAME)s"""
 
         self._filename = filename
 
+    def _write_config_data(self):
+        fd = open(self._filename, 'w')
+        self._config.write(fd)
+        fd.close()
+
     def _get_config_file(self):
         filename = self.domain + '.conf'
         configdir = self.get_config_directory()
@@ -218,18 +223,20 @@ dbusername=%(DBUSERNAME)s"""
         raise NoConfigurationError('%s does not have option: %s' %
                                    (self._filename, name))
 
-    def set_option(self, name, section='General'):
+    def set_option(self, section, name, value, write_to_file=False):
         if not section in StoqConfig.sections:
             raise ConfigError('Invalid section: %s' % section)
 
-        self._config.set(section, name)
+        self._config.set(section, name, value)
+        if write_to_file:
+            self._write_config_data()
 
-    def set_station(self, station_id):
+    def set_station(self, station_id, write_to_file=False):
         """
         Overrides the station_id option
         @param station_id: the identifier of branch station
         """
-        self._config.set('General', 'station_id', station_id)
+        self.set_option("General", "station_id", station_id, write_to_file)
 
     def set_database(self, database):
         """
