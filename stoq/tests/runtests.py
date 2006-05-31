@@ -32,13 +32,13 @@ from kiwi import environ
 from kiwi.log import set_log_level
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, get_option_parser
+from stoq.lib.startup import setup, get_option_parser, create_examples
 from stoqlib.lib.runtime import print_immediately
 
 DEFAULT_SEPARATORS = 79
 
 
-def test_gui(options, tests=None):
+def test_gui(config, options, tests=None):
     from stoqlib.lib.runtime import new_transaction
 
     if options.verbose:
@@ -66,10 +66,7 @@ def test_gui(options, tests=None):
     if 'gtk' in sys.modules:
         raise AssertionError("Gtk cannot be loaded at this point")
 
-    # Create examples
-    from stoqlib.domain.examples.createall import create
-    create()
-
+    create_examples(config)
     os.environ['STOQ_TEST_MODE'] = '1'
 
     for filename in tests:
@@ -136,7 +133,7 @@ def main(args):
 
     setup(config, options)
 
-    return test_gui(options, args[1:])
+    return test_gui(config, options, args[1:])
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[:]))

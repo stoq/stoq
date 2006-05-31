@@ -30,6 +30,7 @@ import optparse
 
 from sqlobject import sqlhub
 from sqlobject.sqlbuilder import AND
+from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import check_installed_database
@@ -38,9 +39,10 @@ from stoqlib.lib.admin import initialize_system
 from stoqlib.lib.migration import schema_migration
 from stoqlib.lib.runtime import (get_connection, set_verbose,
                                  register_current_branch_identifier,
-                                 register_current_station_identifier)
+                                 register_current_station_identifier,
+                                 get_current_station)
 
-from stoq.lib.configparser import register_config
+from stoq.lib.configparser import register_config, StoqConfig
 
 
 def _update_config(config, options):
@@ -173,3 +175,16 @@ def get_option_parser():
                      default='')
     parser.add_option_group(group)
     return parser
+
+@argcheck(StoqConfig)
+def create_examples(config):
+    """Create example database for a given config file"""
+    from stoqlib.domain.examples.createall import create
+    create()
+    conn = get_connection()
+    station = get_current_station(conn)
+    if not station:
+        raise StoqlibError("You should have a valid station set at this"
+                           "point")
+    identifier = station.identifier
+    config.set_station(str(identifier), write_to_file=True)
