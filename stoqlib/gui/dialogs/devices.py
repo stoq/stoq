@@ -32,7 +32,8 @@ _ = stoqlib_gettext
 
 class DeviceSettingsDialog(AdditionListDialog):
     size = (600, 500)
-    def __init__(self, conn):
+    def __init__(self, conn, station=None):
+        self._station = station
         AdditionListDialog.__init__(self, conn, title=_("Devices"))
 
     #
@@ -40,4 +41,5 @@ class DeviceSettingsDialog(AdditionListDialog):
     #
 
     def get_slave(self, editor_class, columns, klist_objects):
-        return DeviceSettingsDialogSlave (self.conn)
+        return DeviceSettingsDialogSlave (self.conn,
+                                          station=self._station)

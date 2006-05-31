@@ -26,7 +26,6 @@
 
 import re
 import string
-from socket import gethostname
 
 from kiwi.ui.objectlist import Column
 from kiwi.python import Settable
@@ -41,10 +40,11 @@ from stoqdrivers.constants import describe_constant
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning
-from stoqlib.lib.runtime import get_connection
+from stoqlib.lib.runtime import get_connection, get_current_station
 from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   METHOD_MULTIPLE, UNKNOWN_CHARACTER)
 from stoqlib.domain.devices import DeviceSettings, DeviceConstants
+from stoqlib.domain.person import BranchStation
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 
@@ -158,14 +158,26 @@ class DeviceSettingsEditor(BaseEditor):
                      'brand_combo',
                      'device_combo',
                      'model_combo',
-                     'host',
+                     'station',
                      'is_active_button')
 
-    def __init__(self, conn, model=None):
+    def __init__(self, conn, model=None, station=None):
         self.printers_dict = get_supported_printers()
+        self._branch_station = station
         BaseEditor.__init__(self, conn, model)
         self._original_brand = self.model.brand
         self._original_model = self.model.model
+
+    def setup_station_combo(self):
+        if self._branch_station:
+            self.station.prefill([(self._branch_station.name,
+                                   self._branch_station)])
+            self.station.select_item_by_data(self._branch_station)
+            self.station.set_sensitive(False)
+            return
+        self.station.prefill(
+            [(station.name, station)
+                 for station in BranchStation.select(connection=self.conn)])
 
     def setup_device_port_combo(self):
         device_types = (DeviceSettings.DEVICE_SERIAL1,
@@ -187,6 +199,7 @@ class DeviceSettingsEditor(BaseEditor):
     def setup_widgets(self):
         self.setup_device_types_combo()
         self.setup_device_port_combo()
+        self.setup_station_combo()
 
     def _get_supported_types(self):
         if self.model.type == DeviceSettings.SCALE_DEVICE:
@@ -259,8 +272,8 @@ class DeviceSettingsEditor(BaseEditor):
                                     DeviceSettingsEditor.proxy_widgets)
 
     def create_model(self, conn):
-        return DeviceSettings(host=gethostname(),
-                              device=DeviceSettings.DEVICE_SERIAL1,
+        return DeviceSettings(device=DeviceSettings.DEVICE_SERIAL1,
+                              station=get_current_station(conn),
                               brand=None,
                               model=None,
                               type=None,
@@ -268,12 +281,12 @@ class DeviceSettingsEditor(BaseEditor):
 
     def get_title(self, *args):
         if self.edit_mode:
-            return _("Edit Device for %s" % self.model.host)
+            return _("Edit Device for %s" % self.model.station.name)
         else:
             return _("Add Device")
 
     def _get_existing_printer_basequery(self):
-        q1 = DeviceSettings.q.host == self.model.host
+        q1 = DeviceSettings.q.stationID == self.model.station.id
         q2 = DeviceSettings.q.type == self.model.type
         return AND(q1, q2)
 
@@ -286,10 +299,10 @@ class DeviceSettingsEditor(BaseEditor):
             query = AND(basequery, q2)
             settings = DeviceSettings.select(query, connection=conn)
             if settings.count():
-                self.host.set_invalid(_("A device of type %s already exists "
-                                        "for host %s")
-                                      % (self.model.get_device_type_name(),
-                                         self.model.host))
+                self.station.set_invalid(
+                    _(u"A %s already exists for station \"%s\""
+                      % (self.model.get_device_type_name(),
+                         self.model.station.name)))
                 return False
         return True
 
