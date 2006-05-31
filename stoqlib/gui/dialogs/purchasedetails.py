@@ -95,7 +95,7 @@ class PurchaseDetailsDialog(BaseEditor):
                        data_type=str, expand=True, searchable=True),
                 Column('quantity_received_as_string',
                        title=_('Quantity Received'),
-                       data_type=float, width=130, editable=True,
+                       data_type=float, width=150, editable=True,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('cost', title=_('Cost'), data_type=currency,
                        editable=True, width=90),

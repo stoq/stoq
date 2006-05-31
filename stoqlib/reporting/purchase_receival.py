@@ -44,13 +44,13 @@ class PurchaseReceivalReport(SearchResultsReport):
 
     def get_columns(self):
         return [OTC(_("Received Date"),
-                    lambda obj: obj.receival_date.strftime("%x"), width=80),
+                    lambda obj: obj.receival_date.strftime("%x"), width=120),
                 OTC(_("Purchase Order"), lambda obj:  obj.get_order_number(),
-                    width=90, truncate=True),
+                    width=110, truncate=True),
                 OTC(_("Supplier"), lambda obj: obj.get_supplier_name(),
-                    width=190, truncate=True, expand=True, expand_factor=1),
+                    width=180, truncate=True, expand=True, expand_factor=1),
                 OTC(_("Branch"), lambda obj: obj.get_branch_name(),
-                    width=190, truncate=True, expand=True, expand_factor=1),
+                    width=150, truncate=True, expand=True, expand_factor=1),
                 OTC(_("Invoice #"), lambda obj: obj.invoice_number, width=80),
                 OTC(_("Invoice Total"),
                     lambda obj: get_formatted_price(obj.invoice_total),

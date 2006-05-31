@@ -44,6 +44,7 @@ class ServiceSearch(SellableSearch):
     title = _('Service Search')
     table = Service
     search_table = ServiceView
+    size = (750, 450)
     editor_class = ServiceEditor
     model_list_lookup_attr = 'service_id'
     footer_ok_label = _('Add services')
@@ -102,7 +103,7 @@ class ServiceSearch(SellableSearch):
                                   data_type=currency, width=80))
 
         columns.append(Column('unit', title=_('Unit'),
-                              data_type=str, width=60))
+                              data_type=str, width=80))
         return columns
 
     def get_extra_query(self):

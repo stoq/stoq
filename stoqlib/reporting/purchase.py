@@ -69,10 +69,10 @@ class PurchaseReport(SearchResultsReport):
                        width=250, truncate=True),
                    OTC(_("Qty Ordered"),
                        lambda obj: format_quantity(obj.ordered_quantity),
-                       width=85, align=RIGHT),
+                       width=90, align=RIGHT),
                    OTC(_("Qty Received"),
                        lambda obj: format_quantity(obj.received_quantity),
-                       width=85, align=RIGHT),
+                       width=120, align=RIGHT),
                    OTC(_("Total"),
                        lambda obj: get_formatted_price(obj.total),
                        width=85, align=RIGHT)]

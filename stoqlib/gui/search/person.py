@@ -55,7 +55,7 @@ _ = stoqlib_gettext
 
 
 class BasePersonSearch(SearchEditor):
-    size = (800,500)
+    size = (750, 500)
     title = _('Person Search')
     editor_class = None
     table = None
@@ -104,7 +104,8 @@ class EmployeeSearch(BasePersonSearch):
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str,
-                                 width=250, adapted=True),
+                                 width=250, adapted=True,
+                                 expand=True),
                 ForeignKeyColumn(EmployeeRole, 'name', _('Role'),
                                  str, width=250, obj_field='role'),
                 Column('registry_number', _('Registry Number'), str,
@@ -131,6 +132,7 @@ class EmployeeSearch(BasePersonSearch):
 class SupplierSearch(BasePersonSearch):
     title = _('Supplier Search')
     editor_class = SupplierEditor
+    size = (750, 450)
     table = Person
     interface = ISupplier
     search_lbl_text = _('Suppliers Matching:')
@@ -142,7 +144,7 @@ class SupplierSearch(BasePersonSearch):
 
     def get_columns(self):
         return [Column('name', _('Name'), str,
-                       sorted=True, width=250),
+                       sorted=True, width=250, expand=True),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number),
                 FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
@@ -249,7 +251,7 @@ class ClientSearch(BasePersonSearch):
 
     def get_columns(self):
         return [Column('name', _('Name'), str,
-                       sorted=True, width=250),
+                       sorted=True, width=250, expand=True),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=180),
                 Column('cpf', _('CPF'), str, width=130),
@@ -292,7 +294,8 @@ class TransporterSearch(BasePersonSearch):
 
     def get_columns(self):
         return [Column('name', title=_('Name'),
-                       data_type=str, sorted=True, width=350),
+                       data_type=str, sorted=True, width=300,
+                       expand=True),
                 Column('phone_number', _('Phone Number'), str,
                        format_func=format_phone_number, width=180),
                 FacetColumn(ITransporter, 'freight_percentage',
@@ -344,7 +347,7 @@ class BranchSearch(BasePersonSearch):
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), data_type=str,
-                                 width=200, adapted=True),
+                                 width=200, adapted=True, expand=True),
                 ForeignKeyColumn(Person, 'phone_number',
                                  _('Phone Number'), data_type=str,
                                  width=150, adapted=True),

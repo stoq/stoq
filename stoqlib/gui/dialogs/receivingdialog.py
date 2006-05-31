@@ -85,7 +85,7 @@ class ReceivingOrderDetailsDialog(BaseEditor):
                  Column("sellable.description", title=_("Description"),
                         data_type=str, width=80, expand=True),
                  Column("quantity_unit_string", title=_("Quantity"),
-                        data_type=str, width=80,
+                        data_type=str, width=90,
                         justify=gtk.JUSTIFY_RIGHT),
                  Column("cost", title=_("Cost"), width=80,
                         data_type=currency, justify=gtk.JUSTIFY_RIGHT),

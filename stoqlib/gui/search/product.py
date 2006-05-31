@@ -47,6 +47,7 @@ _ = stoqlib_gettext
 class ProductSearch(SellableSearch):
     title = _('Product Search')
     table = Product
+    size = (750, 450)
     search_table = ProductFullStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
@@ -121,7 +122,7 @@ class ProductSearch(SellableSearch):
         return [Column('code', title=_('Code'), data_type=int, sorted=True,
                        format='%03d', width=80),
                 Column('barcode', title=_('Barcode'), data_type=str,
-                       width=80),
+                       width=120),
                 Column('description', title=_('Description'), data_type=str,
                        expand=True),
                 Column('supplier_name', title=_('Supplier'), data_type=str,
@@ -129,7 +130,7 @@ class ProductSearch(SellableSearch):
                 Column('cost', _('Cost'), data_type=currency,
                        width=80),
                 Column('price', title=_('Price'), data_type=currency,
-                       width=80),
+                       width=70),
                 Column('stock', title=_('Stock Total'),
                        format_func=format_quantity,
                        data_type=decimal.Decimal, width=100)]
