@@ -56,7 +56,7 @@ from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.till import get_current_till_operation
@@ -164,17 +164,16 @@ class POSApp(AppWindow):
 
     @argcheck(AbstractSellable, bool)
     def _update_list(self, sellable, notify_on_entry=False):
-        if self._update_klist_item(sellable):
-            return
+        if not isinstance(sellable.get_adapted(), Service):
+            if self._update_klist_item(sellable):
+                return
         quantity = self.sellableitem_proxy.model.quantity
 
         registered_price = self.sellableitem_proxy.model.price
         price = registered_price or sellable.get_price()
-
         sellable_item = sellable.add_sellable_item(self.sale,
                                                    quantity=quantity,
                                                    price=price)
-
         if isinstance(sellable_item, ServiceSellableItem):
             model = self.run_dialog(ServiceItemEditor, self.conn, sellable_item)
             if not model:
@@ -216,6 +215,8 @@ class POSApp(AppWindow):
         self.ClientDetails.set_sensitive(has_client)
         self.delivery_button.set_sensitive(has_client and has_sellables)
         model = self.sellables.get_selected()
+        self.edit_item_button.set_sensitive(
+            model is not None and isinstance(model, ServiceSellableItem))
         self._update_totals()
         self._update_add_button()
 
@@ -314,6 +315,19 @@ class POSApp(AppWindow):
         table = type(item)
         table.delete(item.id, connection=self.conn)
 
+    def _edit_sellable_item(self, item):
+        if not isinstance(item, ServiceSellableItem):
+            raise StoqlibError("You should have a Service selected "
+                               "at this point.")
+            return
+        if IDelivery(item, connection=self.conn):
+            editor = DeliveryEditor
+        else:
+            editor = ServiceItemEditor
+        model = self.run_dialog(editor, self.conn, item)
+        if model:
+            self.sellables.update(item)
+
     def _new_order(self):
         if self.coupon is not None:
             self._cancel_order()
@@ -360,8 +374,9 @@ class POSApp(AppWindow):
         # instances created in self.conn in a new transaction
         self.conn.commit()
         conn = new_transaction()
-        service = self.run_dialog(DeliveryEditor, conn, self.sale,
-                                  products)
+        service = self.run_dialog(DeliveryEditor, conn,
+                                  sale=self.sale,
+                                  products=products)
         if not finish_transaction(conn, service):
             return
         # Synchronize self.conn and bring the new delivery instances to it
@@ -558,3 +573,13 @@ class POSApp(AppWindow):
 
     def on_new_order_button__clicked(self, *args):
         self._new_order()
+
+    def on_edit_item_button__clicked(self, *args):
+        item = self.sellables.get_selected()
+        if item is None:
+            raise StoqlibError("You should have a item selected "
+                               "at this point")
+        self._edit_sellable_item(item)
+
+    def on_sellables__double_click(self, widget, item):
+        self._edit_sellable_item(item)
