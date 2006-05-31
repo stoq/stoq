@@ -65,7 +65,6 @@ class DeviceSettingsStep(BaseWizardStep):
         self.title_label.set_bold(True)
 
     def _setup_slaves(self, station):
-        # TODO send station to the slave
         from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
         slave = DeviceSettingsDialogSlave(self.conn, station=station)
         self.attach_slave("devices_holder", slave)
