@@ -191,13 +191,16 @@ def emit_coupon(sale, conn):
 
     @returns: True if the coupon has been emitted, False otherwise.
     """
+    products = sale.get_products()
+    if not products:
+        return
     coupon = FiscalCoupon(conn, sale)
-    person = sale.client.get_adapted()
-    if person:
+    if sale.client:
+        person = sale.client.get_adapted()
         coupon.identify_customer(person)
     if not coupon.open():
         return False
-    map(coupon.add_item, sale.get_items())
+    map(coupon.add_item, products)
     if not coupon.totalize():
         return False
     if not coupon.setup_payments():
