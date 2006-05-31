@@ -30,9 +30,12 @@ Note that this whole module is Brazil-specific.
 
 from datetime import datetime
 
-from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
+from sqlobject.sqlbuilder import AND
+from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
+                       SQLObject, BoolCol)
 from zope.interface import implements
 
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView, InheritableModel
 from stoqlib.domain.interfaces import IDescribable, IReversal
@@ -57,6 +60,7 @@ class AbstractFiscalBookEntry(InheritableModel):
 
     identifier = AutoIncCol("stoqlib_abstract_bookentry_seq")
     date = DateTimeCol(default=datetime.now)
+    is_reversal = BoolCol(default=False)
     invoice_number = IntCol()
     cfop = ForeignKey("CfopData")
     branch = ForeignKey("PersonAdaptToBranch")
@@ -72,7 +76,40 @@ class AbstractFiscalBookEntry(InheritableModel):
         cls = self.__class__
         return cls(connection=conn, cfop=cfop, branch=self.branch,
                    invoice_number=invoice_number, drawee=self.drawee,
-                   payment_group=self.payment_group, **kwargs)
+                   is_reversal=True, payment_group=self.payment_group,
+                   **kwargs)
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def _get_entries_by_payment_group(cls, conn, payment_group):
+        q1 = AbstractFiscalBookEntry.q.payment_groupID == payment_group.id
+        q2 = AbstractFiscalBookEntry.q.is_reversal == False
+        query = AND(q1, q2)
+        results = cls.select(query, connection=conn)
+        if results.count() > 1:
+            raise DatabaseInconsistency("You should have only one fiscal "
+                                        "entry for payment group %s"
+                                        % payment_group)
+        return results
+
+    @classmethod
+    def has_entry_by_payment_group(cls, conn, payment_group):
+        entries = cls._get_entries_by_payment_group(conn, payment_group)
+        if entries.count():
+            return True
+        return False
+
+    @classmethod
+    def get_entry_by_payment_group(cls, conn, payment_group):
+        entries = cls._get_entries_by_payment_group(conn, payment_group)
+        if not entries.count():
+            raise StoqlibError("You should have only one fiscal "
+                               "entry for payment group %s"
+                               % payment_group)
+        return entries[0]
 
 
 class IcmsIpiBookEntry(AbstractFiscalBookEntry):
