@@ -68,6 +68,10 @@ class ReceivingOrderItem(Domain):
         return "%s %s" % (self.quantity_received,
                           unit and unit.description or u"")
 
+    def get_unit_description(self):
+        unit = self.sellable.unit
+        return "%s" % (unit and unit.description or "")
+
 
 class ReceivingOrder(Domain):
     """Receiving order definition."""
