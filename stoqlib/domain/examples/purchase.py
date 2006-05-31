@@ -24,6 +24,7 @@
 ##
 """ Create purchase objects for an example database"""
 
+from decimal import Decimal
 import datetime
 
 from kiwi.datatypes import currency
@@ -79,18 +80,18 @@ def create_purchases():
                      dict(status=PurchaseOrder.ORDER_PENDING,
                           salesperson_name='Olivia Palito',
                           open_date=open_dates[1],
-                          discount_value=currency('15.50')),
+                          discount_value=currency(Decimal('15.50'))),
                      dict(status=PurchaseOrder.ORDER_CONFIRMED,
                           salesperson_name='Henrique Sabbath',
                           open_date=open_dates[2],
                           expected_receival_date=dates[1],
                           confirm_date=dates[2],
-                          surcharge_value=currency('13.70')),
+                          surcharge_value=currency(Decimal('13.70'))),
                      dict(status=PurchaseOrder.ORDER_CLOSED,
                           salesperson_name='Johan Lebowski',
                           open_date=open_dates[3],
                           receival_date=dates[3],
-                          surcharge_value=currency('34.32'))]
+                          surcharge_value=currency(Decimal('34.32')))]
 
     sellable_index = 0
     for index in range(MAX_PURCHASES_NUMBER):
