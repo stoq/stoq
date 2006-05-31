@@ -44,7 +44,6 @@ from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.service import DeliveryItem
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.lib.runtime import new_transaction
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext
