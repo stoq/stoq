@@ -45,6 +45,7 @@ from stoqlib.domain.renegotiation import (RenegotiationData,
                                           AbstractRenegotiationAdapter)
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellableItem
+from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.service import ServiceSellableItem
@@ -116,8 +117,9 @@ class Sale(Domain):
                 STATUS_CANCELLED:   _(u"Cancelled"),
                 STATUS_ORDER:       _(u"Order")}
 
-    coupon_id = IntCol()
     order_number = AutoIncCol('stoqlib_sale_ordernumber_seq')
+    coupon_id = IntCol()
+    service_invoice_number = IntCol(default=None)
     open_date = DateTimeCol(default=datetime.now)
     close_date = DateTimeCol(default=None)
     confirm_date = DateTimeCol(default=None)
@@ -450,6 +452,9 @@ class Sale(Domain):
     def get_total_interest(self):
         raise NotImplementedError
 
+    def has_items(self):
+        return self.get_items().count() > 0
+
     def has_products(self):
         return len(self.get_products()) > 0
 
@@ -580,6 +585,62 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             iss_total += iss_tax * (price * item.quantity)
         return iss_total
 
+    def _has_iss_entry(self):
+        return IssBookEntry.has_entry_by_payment_group(
+                                     self.get_connection(), self)
+
+    def _has_icms_entry(self):
+        return IcmsIpiBookEntry.has_entry_by_payment_group(
+                                            self.get_connection(), self)
+
+    def _get_average_difference(self):
+        sale = self.get_adapted()
+        if not sale.has_items():
+            raise DatabaseInconsistency("Sale orders must have items, which "
+                                        "means products or services or gift "
+                                        "certificates")
+        total_quantity = sale.get_items_total_quantity()
+        if not total_quantity:
+            raise DatabaseInconsistency("Sale total quantity should never "
+                                        "be zero")
+        # If there is a discount or a surcharge applied in the whole total
+        # sale amount, we must share it between all the item values
+        # otherwise the icms and iss won't be calculated properly
+        total = (sale.get_total_sale_amount() -
+                 self.get_pm_commission_total())
+        subtotal = sale.get_sale_subtotal()
+        return (total - subtotal) / total_quantity
+
+    def _get_iss_entry(self):
+        return IssBookEntry.get_entry_by_payment_group(
+                                        self.get_connection(), self)
+
+    def update_iss_entries(self):
+        """Update iss entries after printing a service invoice"""
+        av_difference = self._get_average_difference()
+        sale = self.get_adapted()
+        if not self._has_iss_entry():
+            iss_total = self._get_iss_total(av_difference)
+            self.create_iss_book_entry(sale.cfop,
+                                       sale.service_invoice_number,
+                                       iss_total)
+            return
+
+        conn = self.get_connection()
+        iss_entry = IssBookEntry.get_entry_by_payment_group(conn, self)
+        if iss_entry.invoice_number == sale.service_invoice_number:
+            return
+
+        # User just cancelled the old invoice and would like to print a
+        # new one -> reverse old entry and create a new one
+        iss_entry.reverse_entry(iss_entry.invoice_number)
+
+        # create the new iss entry
+        iss_total = self._get_iss_total(av_difference)
+        self.create_iss_book_entry(sale.cfop,
+                                   sale.service_invoice_number,
+                                   iss_total)
+
     def _create_fiscal_entries(self):
         """A Brazil-specific method
         Create new ICMS and ISS entries in the fiscal book
@@ -594,30 +655,18 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         certificates as payment methods.
         """
         sale = self.get_adapted()
-        total = (sale.get_total_sale_amount() -
-                 self.get_pm_commission_total())
-        total_quantity = sale.get_items_total_quantity()
-        if not total_quantity:
-            raise DatabaseInconsistency("Sale total quantity should never "
-                                        "be zero")
-        # If there is a discount or a surcharge applied in the whole total
-        # sale amount, we must share it between all the item values
-        # otherwise the icms and iss won't be calculated properly
-        subtotal = sale.get_sale_subtotal()
-        av_difference = (total - subtotal) / total_quantity
+        av_difference = self._get_average_difference()
 
         if sale.has_products():
             icms_total = self._get_icms_total(av_difference)
             self.create_icmsipi_book_entry(sale.cfop, sale.coupon_id,
                                            icms_total)
-        elif sale.has_services():
+
+        if sale.has_services() and sale.service_invoice_number:
             iss_total = self._get_iss_total(av_difference)
-            self.create_iss_book_entry(sale.cfop, sale.coupon_id,
+            self.create_iss_book_entry(sale.cfop,
+                                       sale.service_invoice_number,
                                        iss_total)
-        elif not sale.has_gift_certifificates():
-            raise DatabaseInconsistency("Sale orders must have items, which "
-                                        "means products or services or gift "
-                                        "certificates")
 
     @argcheck(GiftCertificateOverpaidSettings)
     def _setup_gift_certificate_overpaid_value(self,
