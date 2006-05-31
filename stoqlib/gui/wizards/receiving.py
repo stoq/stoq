@@ -136,6 +136,7 @@ class ReceivingOrderProductStep(AbstractProductStep):
 
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
+    size = (800, 450)
     model_type = ReceivingOrder
 
     def __init__(self, wizard, conn, model):
@@ -151,16 +152,17 @@ class PurchaseSelectionStep(WizardEditorStep):
 
     def _get_columns(self):
         return [Column('order_number', title=_('Number'), sorted=True,
-                       data_type=str, width=100),
+                       data_type=str, width=80),
                 Column('open_date', title=_('Date Started'),
                        data_type=datetime.date),
                 Column('supplier_name', title=_('Supplier'),
-                       data_type=str, searchable=True, width=160),
+                       data_type=str, searchable=True, width=130,
+                       expand=True),
                 Column('ordered_quantity', title=_('Qty Ordered'),
-                       data_type=Decimal, width=120,
+                       data_type=Decimal, width=110,
                        format_func=format_quantity),
                 Column('received_quantity', title=_('Qty Received'),
-                       data_type=Decimal, width=120,
+                       data_type=Decimal, width=145,
                        format_func=format_quantity),
                 Column('total', title=_('Order Total'),
                        data_type=currency, width=120)]

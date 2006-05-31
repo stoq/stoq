@@ -63,7 +63,7 @@ class CfopSearch(SearchEditor):
 
 class FiscalBookEntrySearch(SearchEditor):
     title = _("Search for fiscal entries")
-    size = (750, 450)
+    size = (775, 450)
     search_table = IcmsIpiView
     editor_class = FiscalBookEntryEditor
     searching_by_date = True
@@ -111,7 +111,7 @@ class FiscalBookEntrySearch(SearchEditor):
                 Column('date', title=_('Date'), width=80,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('invoice_number', title=_('Invoice'),
-                       data_type=int, width=90),
+                       data_type=int, width=110),
                 Column('cfop_code', title=_('CFOP'), data_type=str, width=90),
                 Column('drawee_name', title=_('Drawee'),
                        data_type=str, expand=True)]

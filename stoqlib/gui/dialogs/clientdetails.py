@@ -160,8 +160,9 @@ class ClientDetailsDialog(BaseEditor):
                 Column("method.description", title=_("Type"),
                        data_type=str, width=90),
                 Column("description", title=_("Description"),
-                       data_type=str, searchable=True, width=190),
-                Column("due_date", title=_("Due Date"), width=90,
+                       data_type=str, searchable=True, width=190,
+                       expand=True),
+                Column("due_date", title=_("Due Date"), width=110,
                        data_type=date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
@@ -169,7 +170,7 @@ class ClientDetailsDialog(BaseEditor):
                               justify=gtk.JUSTIFY_RIGHT, data_type=currency,
                               color='red', width=100,
                               data_func=payment_value_colorize),
-                Column("days_late", title=_("Days Late"), width=80,
+                Column("days_late", title=_("Days Late"), width=110,
                        format_func=(lambda days_late: days_late and
                                     str(days_late) or u""),
                        justify=gtk.JUSTIFY_RIGHT, data_type=str)]

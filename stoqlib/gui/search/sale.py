@@ -45,7 +45,7 @@ _ = stoqlib_gettext
 
 class SaleSearch(SearchDialog):
     title = _("Search for Sales")
-    size = (800, 600)
+    size = (750, 450)
     search_table = SaleView
     searching_by_date = True
 
@@ -76,11 +76,11 @@ class SaleSearch(SearchDialog):
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=140),
+                       data_type=str, width=120),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=210),
+                       data_type=str, width=190, expand=True),
                 Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=120,
+                       data_type=decimal.Decimal, width=140,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency)]
 

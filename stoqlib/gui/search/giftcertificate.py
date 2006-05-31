@@ -112,8 +112,8 @@ class GiftCertificateSearch(SearchEditor):
     """A search dialog for gift certificates. A gift certificate is a
     product that can be sold in POS application
     """
+    size = (750, 500)
     title = _('Gift Certificate Search')
-    size = (800, 450)
     table = GiftCertificateView
     editor_class = GiftCertificateEditor
 
@@ -156,13 +156,13 @@ class GiftCertificateSearch(SearchEditor):
         return [Column('code', _('Number'), data_type=int,
                        format='%03d', width=80),
                 Column('barcode', title=_('Barcode'), data_type=str,
-                       visible=True, width=80),
+                       visible=True, width=120),
                 Column('description', title=_('Type Name'),
-                       data_type=str, width=260),
+                       data_type=str, width=260, expand=True),
                 Column('price', title=_('Price'),
                        data_type=currency, width=120),
                 Column('on_sale_price', title=_('On Sale Price'),
-                       data_type=currency, width=120)]
+                       data_type=currency, width=140)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
