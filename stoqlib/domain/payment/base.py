@@ -39,7 +39,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
                                   METHOD_MONEY)
-from stoqlib.domain.fiscal import (CfopData, IssBookEntry, IcmsIpiBookEntry,
+from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
