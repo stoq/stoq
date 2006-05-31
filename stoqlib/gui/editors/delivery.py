@@ -55,10 +55,14 @@ class DeliveryEditor(BaseEditor):
     sellableitem_widgets = ('price',
                             'delivery_date')
 
-    def __init__(self, conn, sale=None, products=None):
+    def __init__(self, conn, model=None, sale=None, products=None):
         self.products = products
         self.sale = sale
-        BaseEditor.__init__(self, conn)
+        if model is not None:
+            self.delivery = IDelivery(model, connection=conn)
+        else:
+            self.delivery = None
+        BaseEditor.__init__(self, conn, model)
         self.additional_info_label.set_size('small')
         self.additional_info_label.set_color('Red')
         self.register_validate_function(self._validate_widgets)
@@ -155,7 +159,7 @@ class DeliveryEditor(BaseEditor):
                           % (main_address.get_address_string(),
                              main_address.get_city(),
                              main_address.get_state()))
-        self.delivery.delivery_address = address_string
+        self.delivery.address = address_string
         return model
 
     def setup_proxies(self):
@@ -176,19 +180,23 @@ class DeliveryEditor(BaseEditor):
 
         delivery = IDelivery(self.model, connection=self.conn)
         items = delivery.get_items()
-        self.slave = AdditionListSlave(self.conn, columns,
-                                       SellableItemEditor, items)
+        self.slave = AdditionListSlave(self.conn,
+                                       columns,
+                                       SellableItemEditor,
+                                       items)
         self.slave.register_editor_kwargs(model_type=DeliveryItem,
-                                          restrict_increase_qty=True)
+                                          restrict_increase_qty=True,
+                                          editable_price=False)
         self.slave.hide_add_button()
         self.slave.connect('before-delete-items', self.before_delete_items)
         self.attach_slave('addition_list_holder', self.slave)
 
     def on_cancel(self):
-        delivery = IDelivery(self.model, connection=self.conn)
-        delivery.remove_items(delivery.get_items())
-        table = type(delivery)
-        table.delete(delivery.id, connection=self.conn)
-        self.model_type.delete(self.model.id, connection=self.conn)
+        if not self.edit_mode:
+            delivery = IDelivery(self.model, connection=self.conn)
+            delivery.remove_items(delivery.get_items())
+            table = type(delivery)
+            table.delete(delivery.id, connection=self.conn)
+            self.model_type.delete(self.model.id, connection=self.conn)
         return BaseEditor.on_cancel(self)
 
