@@ -196,7 +196,7 @@ def emit_coupon(sale, conn):
     """
     products = sale.get_products()
     if not products:
-        return
+        return True
     coupon = FiscalCoupon(conn, sale)
     if sale.client:
         person = sale.client.get_adapted()
