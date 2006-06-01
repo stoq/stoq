@@ -114,4 +114,13 @@ def main(args):
                              "Valid applications are: %s" % (appname, apps))
 
     _initialize(options)
+
+    from stoqlib.lib.runtime import get_connection, get_current_station
+    from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
+                                 create_virtual_printer_for_current_station)
+    conn = get_connection()
+    if not get_fiscal_printer_settings_by_station(conn,
+                                              get_current_station(conn)):
+        create_virtual_printer_for_current_station()
+
     _run_app(options, appname)
