@@ -532,7 +532,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkImage" id="stoq_logo">
-                                        <property name="file">stoq_logo.png</property>
+                                        <property name="file">stoq_logo_pos.png</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
