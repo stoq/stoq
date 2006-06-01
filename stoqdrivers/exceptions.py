@@ -112,3 +112,6 @@ class InvalidReply(DriverError):
 
 class AlreadyTotalized(DriverError):
     "The coupon is already totalized"
+
+class InvalidValue(DriverError):
+    "The value specified is invalid or is not in the expected range"
