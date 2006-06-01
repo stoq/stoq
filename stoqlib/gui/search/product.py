@@ -47,7 +47,7 @@ _ = stoqlib_gettext
 class ProductSearch(SellableSearch):
     title = _('Product Search')
     table = Product
-    size = (750, 450)
+    size = (775, 450)
     search_table = ProductFullStockView
     editor_class = ProductEditor
     footer_ok_label = _('Add products')
