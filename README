@@ -17,14 +17,8 @@ Please select the product name Stoq2
 
 Requirements
 ============
-Stoq has the following dependencies:
 
-stoqlib 0.7.0
-
-If you are a developer, the following packages are for you:
-
-docutils(http://docutils.sourceforge.net)
-pylib (http://codespeak.net/py/current/doc/test.html)
+See stoq website.
 
 
 Running Stoq
