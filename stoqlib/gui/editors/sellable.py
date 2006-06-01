@@ -172,6 +172,9 @@ class SellableEditor(BaseEditor):
         self._sellable = None
         BaseEditor.__init__(self, conn, model)
         self._original_barcode = self._sellable.barcode
+        self._requires_weighing_text = ("<b>%s</b>"
+                                        % _("This unit type requires "
+                                            "weighing"))
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
 
@@ -179,8 +182,7 @@ class SellableEditor(BaseEditor):
         for widget in (self.cost, self.stock_total_lbl, self.price):
             widget.set_data_format('%.02f')
         self.requires_weighing_label.set_size("small")
-        text = "<b>%s</b>" % _("This unit type requires weighing")
-        self.requires_weighing_label.set_text(text)
+        self.requires_weighing_label.set_text("")
 
     def edit_sale_price(self):
         sellable = ISellable(self.model, connection=self.conn)
@@ -202,7 +204,7 @@ class SellableEditor(BaseEditor):
             else:
                 query = SellableUnit.q.index == unit.index
             conn = new_transaction()
-            result = SellableUnit.select(query, connection=conn)
+            result = SellableUnit.selecstock_lblt(query, connection=conn)
             count = result.count()
             if not count:
                 return
@@ -226,9 +228,9 @@ class SellableEditor(BaseEditor):
     def update_requires_weighing_label(self):
         if (self._sellable is not None
             and self._sellable.unit.index == UNIT_WEIGHT):
-            self.requires_weighing_label.show()
+            self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
-            self.requires_weighing_label.hide()
+            self.requires_weighing_label.set_text("")
 
     #
     # BaseEditor hooks

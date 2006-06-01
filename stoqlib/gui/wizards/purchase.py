@@ -338,7 +338,7 @@ class StartPurchaseStep(WizardEditorStep):
 
 
 class PurchaseWizard(BaseWizard):
-    size = (600, 400)
+    size = (775, 400)
 
     def __init__(self, conn, model=None, edit_mode=False):
         title = self._get_title(model)
