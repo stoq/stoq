@@ -171,13 +171,20 @@ class POSApp(AppWindow):
 
         registered_price = self.sellableitem_proxy.model.price
         price = registered_price or sellable.get_price()
+
+        if isinstance(sellable.get_adapted(), Service) and quantity > 1:
+            for i in range(quantity):
+                sellable_item = sellable.add_sellable_item(self.sale,
+                                                           price=price)
+                self._update_added_item(sellable_item)
+            return
         sellable_item = sellable.add_sellable_item(self.sale,
                                                    quantity=quantity,
                                                    price=price)
-        if isinstance(sellable_item, ServiceSellableItem):
-            model = self.run_dialog(ServiceItemEditor, self.conn, sellable_item)
-            if not model:
-                return
+        if (isinstance(sellable_item, ServiceSellableItem)
+            and not self.run_dialog(ServiceItemEditor, self.conn,
+                                    sellable_item)):
+            return
         self._update_added_item(sellable_item)
 
     def _get_sellable(self):
