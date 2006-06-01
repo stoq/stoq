@@ -45,9 +45,9 @@ from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
+from stoqlib.gui.search.till import TillFiscalOperationsSearch
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard
 from stoqlib.gui.wizards.salereturn import SaleReturnWizard
-
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -103,7 +103,7 @@ class TillApp(SearchableAppWindow):
         has_till = get_current_till_operation(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
-        self.TillOperations.set_sensitive(has_till)
+        self.Treasury.set_sensitive(has_till)
 
         till = get_current_till_operation(self.conn)
         if not till:
@@ -146,21 +146,7 @@ class TillApp(SearchableAppWindow):
             raise TillError("You already have a till operation opened. "
                             "Close the current Till and open another one.")
 
-        # Trying get the operation created by the last till
-        # operation closed.  This operation has all the sales
-        # not confirmed in the last operation.
-        result = Till.select(Till.q.status == Till.STATUS_PENDING,
-                             connection=self.conn)
-        if result.count() == 0:
-            till = Till(connection=self.conn,
-                        branch=self.branch)
-        elif result.count() == 1:
-            till = result[0]
-        else:
-            raise TillError("You have more than one till operation "
-                            "pending.")
-
-        if self.run_dialog(TillOpeningEditor, self.conn, till):
+        if self.run_dialog(TillOpeningEditor, self.conn):
             self.conn.commit()
             self._update_widgets()
             return
@@ -287,7 +273,16 @@ class TillApp(SearchableAppWindow):
                 return
         self.open_till()
 
-    def _on_operations_action__clicked(self, *args):
+    def _on_client_search_action__clicked(self, *args):
+        self._run_search_dialog(ClientSearch, hide_footer=True)
+
+    def _on_sale_search_action__clicked(self, *args):
+        self._run_search_dialog(SaleSearch)
+
+    def _on_fiscal_till_operations__action_clicked(self, *args):
+        self._run_search_dialog(TillFiscalOperationsSearch)
+
+    def _on_treasury_action__clicked(self, *args):
         dialog = TillOperationDialog(self.conn)
         dialog.connect('close-till', self.close_till)
         self.run_dialog(dialog, self.conn)
@@ -307,12 +302,6 @@ class TillApp(SearchableAppWindow):
 
     def on_confirm_order_button__clicked(self, *args):
         self._confirm_order()
-
-    def _on_client_search_action__clicked(self, *args):
-        self._run_search_dialog(ClientSearch, hide_footer=True)
-
-    def _on_sale_search_action__clicked(self, *args):
-        self._run_search_dialog(SaleSearch)
 
     def on_sales__double_click(self, *args):
         self._run_details_dialog()
