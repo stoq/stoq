@@ -14,12 +14,17 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="kiwilabel1">
+                                <property name="can_focus">True</property>
                                 <property name="data_type">unicode</property>
                                 <property name="label" context="yes" translatable="yes">Product:</property>
+                                <property name="selectable">True</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
                         </child>
                         <child>
                             <widget class="ProxyComboEntry" id="product">
@@ -28,11 +33,12 @@
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">1</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="label" context="yes" translatable="yes">Quantity:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -43,33 +49,44 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="quantity">
-                                <property name="adjustment">0 0 100 1 10 0</property>
+                            <widget class="ProxySpinButton" id="quantity">
+                                <property name="adjustment">1 0 100 1 10 0</property>
                                 <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">quantity</property>
-                                <property name="text" context="yes" translatable="yes">0.00</property>
+                                <property name="text" context="yes" translatable="yes">1,00</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">3</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="unit_label">
-                                <property name="data_type">unicode</property>
-                                <property name="model_attribute">product.unit_description</property>
+                            <widget class="GtkHBox" id="hbox1">
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <child>
+                                    <widget class="ProxyLabel" id="unit_label">
+                                        <property name="can_focus">True</property>
+                                        <property name="data_type">unicode</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">product.unit_description</property>
+                                        <property name="selectable">True</property>
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0.0</property>
+                                    </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
+                                </child>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
                                 <property name="position">4</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                            <widget class="ProxyLabel" id="kiwilabel4">
                                 <property name="label" context="yes" translatable="yes">Cost:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -80,7 +97,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="cost">
+                            <widget class="ProxyEntry" id="cost">
                                 <property name="data_type">Decimal</property>
                                 <property name="is_focus">True</property>
                                 <property name="model_attribute">cost</property>
@@ -112,6 +129,9 @@
                                                                 <property name="file">add16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
+                                                            <packing>
+                                                                <property name="expand">False</property>
+                                                            </packing>
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
@@ -119,6 +139,7 @@
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
+                                                                <property name="expand">False</property>
                                                                 <property name="position">1</property>
                                                             </packing>
                                                         </child>
@@ -127,6 +148,9 @@
                                             </widget>
                                         </child>
                                     </widget>
+                                    <packing>
+                                        <property name="expand">False</property>
+                                    </packing>
                                 </child>
                                 <child>
                                     <widget class="GtkButton" id="product_button">
@@ -143,6 +167,9 @@
                                                                 <property name="file">search16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
+                                                            <packing>
+                                                                <property name="expand">False</property>
+                                                            </packing>
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
@@ -151,6 +178,7 @@
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
+                                                                <property name="expand">False</property>
                                                                 <property name="position">1</property>
                                                             </packing>
                                                         </child>
@@ -160,6 +188,7 @@
                                         </child>
                                     </widget>
                                     <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">1</property>
                                     </packing>
                                 </child>
@@ -177,6 +206,9 @@
                                                                 <property name="file">search16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
+                                                            <packing>
+                                                                <property name="expand">False</property>
+                                                            </packing>
                                                         </child>
                                                         <child>
                                                             <widget class="GtkLabel" id="GtkLabel1">
@@ -184,6 +216,7 @@
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
+                                                                <property name="expand">False</property>
                                                                 <property name="position">1</property>
                                                             </packing>
                                                         </child>
@@ -193,6 +226,7 @@
                                         </child>
                                     </widget>
                                     <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">2</property>
                                     </packing>
                                 </child>
