@@ -473,9 +473,6 @@ class ParameterAccess(ClassInittableObject):
 
         # Creating constants
         for obj in constants:
-            if (self.get_parameter_by_field(obj.key, obj.type)
-                is not None):
-                continue
             if obj.type is bool:
                 # Convert Bool to int here
                 value = int(obj.initial)
