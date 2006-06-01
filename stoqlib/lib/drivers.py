@@ -305,17 +305,19 @@ class FiscalCoupon:
         item_id = self.printer.add_item(code, item.quantity, item.price,
                                         unit, description,  TAX_NONE, 0,
                                         0, unit_desc=unit_desc)
-        self._item_ids[item] = item_id
+        ids = self._item_ids.setdefault(item, [])
+        ids.append(item_id)
 
     def get_items(self):
-        return self._item_ids.values()
+        return self._item_ids.keys()
 
     def remove_item(self, sellable):
-        item_id = self._item_ids[sellable]
-        try:
-            self.printer.cancel_item(item_id)
-        except DriverError:
-            return False
+        ids = self._item_ids[sellable]
+        for item_id in ids:
+            try:
+                self.printer.cancel_item(item_id)
+            except DriverError:
+                return False
         del self._item_ids[sellable]
         return True
 
@@ -369,7 +371,7 @@ class FiscalCoupon:
                     return False
                 return self.open()
             except DriverError, details:
-                warning(_(u"It's not possible to emit the coupon"),
+                warning(_(u"It is not possible to emit the coupon"),
                         str(details))
                 return False
         return True
@@ -387,7 +389,12 @@ class FiscalCoupon:
             # If these values are greater than zero we will get problems in
             # stoqdrivers
             surcharge = discount = 0
-        self.printer.totalize(discount, surcharge, TAX_NONE)
+        try:
+            self.printer.totalize(discount, surcharge, TAX_NONE)
+        except DriverError, details:
+            warning(_(u"It is not possible to totalize the coupon"),
+                    str(details))
+            return False
         return True
 
     def cancel(self):
