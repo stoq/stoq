@@ -32,7 +32,7 @@ from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (CancelItemError, CloseCouponError,
                                     PaymentAdditionError, CouponNotOpenError,
-                                    AlreadyTotalized)
+                                    AlreadyTotalized, InvalidValue)
 
 class FlowTest(TestCase):
     """ Responsible for test the coupon workflow. Currently this test works
@@ -79,19 +79,25 @@ class FlowTest(TestCase):
     def test3_CloseCouponWithoutTotalize(self):
         self.failUnlessRaises(CloseCouponError, FlowTest._printer.close)
 
-    def test4_AddPaymentWithoutTotalize(self):
+    def test4_AddItemWithoutValue(self):
+        self.failUnlessRaises(InvalidValue, FlowTest._printer.add_item,
+                              "000004", Decimal("1"), Decimal("0.0"),
+                              UNIT_EMPTY, "Nothing", TAX_NONE, Decimal("0"),
+                              Decimal("0"))
+
+    def test5_AddPaymentWithoutTotalize(self):
         self.failUnlessRaises(PaymentAdditionError,
                               FlowTest._printer.add_payment, MONEY_PM,
                               Decimal("100.0"), "")
         FlowTest._printer.totalize(Decimal("0"), Decimal("0"), TAX_NONE)
 
-    def test5_AddItemWithCouponTotalized(self):
+    def test6_AddItemWithCouponTotalized(self):
         self.failUnlessRaises(AlreadyTotalized, FlowTest._printer.add_item,
                               "0005", Decimal("4"), Decimal("2.30"),
                               UNIT_EMPTY, "Cigarro", TAX_NONE, Decimal("0"),
                               Decimal("0"))
 
-    def test6_CloseCouponWithoutPayments(self):
+    def test7_CloseCouponWithoutPayments(self):
         if FlowTest._printer.brand != "dataregis":
             self.failUnlessRaises(CloseCouponError, FlowTest._printer.close)
         else:

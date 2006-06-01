@@ -32,7 +32,8 @@ from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
                                     PendingReadX, PendingReduceZ,
-                                    CouponOpenError, AlreadyTotalized)
+                                    CouponOpenError, AlreadyTotalized,
+                                    InvalidValue)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
@@ -117,6 +118,8 @@ class FiscalPrinter(BasePrinter):
                              "using UNIT_CUSTOM constant.")
         elif unit == UNIT_CUSTOM and len(unit_desc) != 2:
             raise ValueError("unit description must be 2-byte sized string")
+        if not item_price:
+            raise InvalidValue("The item value must be greater than zero")
         self.info('coupon_add_item')
         return self._driver.coupon_add_item(
             self._format_text(item_code), items_quantity, item_price, unit,
