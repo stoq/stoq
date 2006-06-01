@@ -407,6 +407,8 @@ class POSApp(AppWindow):
     #
 
     def _finish_coupon(self):
+        if not self.coupon:
+            return True
         totalize = self.coupon.totalize()
         has_payments = self.coupon.setup_payments()
         close = self.coupon.close()
