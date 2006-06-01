@@ -428,7 +428,7 @@ class Sale(Domain):
                                         "got %r" % (self, self.client_role))
 
     def get_till_branch(self):
-        return self.till.branch
+        return self.till.station.branch
 
     def get_sale_subtotal(self):
         subtotal = sum([item.get_total() for item in self.get_items()],
@@ -680,8 +680,8 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             order_number = order.order_number
             reason = _(u'1/1 Money returned for gift certificate '
                         'acquittance on sale %04d' % order_number)
-            payment = self.create_debit(overpaid_value, reason)
-            payment.pay()
+            self.create_debit(overpaid_value, reason,
+                              self.get_adapted().till)
 
         elif (regtype ==
               GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):

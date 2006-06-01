@@ -32,11 +32,15 @@ from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
 from zope.interface import implements, implementedBy
 
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
+from stoqlib.domain.sale import SaleAdaptToPaymentGroup
+from stoqlib.domain.till import (TillAdaptToPaymentGroup,
+                                 get_current_till_operation)
 from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
@@ -386,6 +390,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                           method_details=method_details,
                           due_date=due_date, value=value,
                           base_value=base_value,
+                          till=get_current_till_operation(conn),
                           description=description)
         return payment.addFacet(iface, connection=conn)
 
@@ -454,31 +459,29 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         # Money method supports only one payment
         return 1
 
-    def _get_new_payment(self, total, group, installments_number):
-        self._check_installments_number(installments_number)
-        due_date = datetime.today()
+    def _create_till_entry(self, total, group):
+        from stoqlib.domain.till import TillEntry
         group_desc = group.get_group_description()
         description = _(u'1/1 %s for %s') % (self.description,
                                              group_desc)
-        payment = group.add_payment(total, description, self,
-                                    self.destination, due_date)
-        return payment
-
-    def setup_outpayments(self, total, group, installments_number=None):
-        installments_number = (installments_number or
-                               self.get_max_installments_number())
-        total = - abs(total)
-        payment = self._get_new_payment(total, group, installments_number)
+        if isinstance(group, SaleAdaptToPaymentGroup):
+            till = group.get_adapted().till
+        elif isinstance(group, TillAdaptToPaymentGroup):
+            till = group.get_adapted()
+        else:
+            raise StoqlibError("Invalid Payment group, got %s"
+                               % group)
         conn = self.get_connection()
-        payment.addFacet(IOutPayment, connection=conn)
+        TillEntry(connection=conn,
+                  description=description, value=total, till=till,
+                  payment_group=group)
 
-    def setup_inpayments(self, total, group, installments_number=None):
-        installments_number = (installments_number or
-                               self.get_max_installments_number())
-        payment = self._get_new_payment(total, group, installments_number)
-        conn = self.get_connection()
-        payment.addFacet(IInPayment, connection=conn)
-        return payment
+    def setup_outpayments(self, total, group, **kwargs):
+        total = -abs(total)
+        self._create_till_entry(total, group)
+
+    def setup_inpayments(self, total, group, **kwargs):
+        self._create_till_entry(total, group)
 
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 

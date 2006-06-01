@@ -34,7 +34,7 @@ from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.runtime import get_current_branch
+from stoqlib.lib.runtime import get_current_branch 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
@@ -82,6 +82,7 @@ class Payment(Domain):
 
     identifier = AutoIncCol('stoqlib_payment_identifier_seq')
     status = IntCol(default=STATUS_PREVIEW)
+    open_date = DateTimeCol(default=datetime.now)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
@@ -96,6 +97,7 @@ class Payment(Domain):
     method = ForeignKey('AbstractPaymentMethodAdapter')
     method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
+    till = ForeignKey('Till')
     destination = ForeignKey('PaymentDestination')
 
     def _check_status(self, status, operation_name):
@@ -259,12 +261,12 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     interval_type = IntCol(default=None)
     intervals = IntCol(default=None)
 
-    def _get_money_payment(self, value, description):
+    def _create_till_entry(self, value, description, till):
+        from stoqlib.domain.till import TillEntry
         conn = self.get_connection()
-        method = sysparam(conn).METHOD_MONEY
-        status = Payment.STATUS_TO_PAY
-        return self.add_payment(value, description, method,
-                                status=status)
+        return TillEntry(connection=conn,
+                         description=description, value=value, till=till,
+                         payment_group=self)
 
     #
     # IPaymentGroup implementation
@@ -290,14 +292,15 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """Add a new payment sending correct arguments to Payment
         class
         """
+        from stoqlib.domain.till import get_current_till_operation
         conn = self.get_connection()
         destination= destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
         conn = self.get_connection()
-        payment = Payment(due_date=due_date, value=value,
-                          description=description, group=self,
-                          method=method, destination=destination,
-                          status=status, connection=conn)
-        return payment
+        till = get_current_till_operation(conn)
+        return Payment(due_date=due_date, value=value,
+                       till=till, description=description, group=self,
+                       method=method, destination=destination,
+                       status=status, connection=conn)
 
     #
     # IContainer implementation
@@ -360,19 +363,15 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         self.cancel_date = datetime.now()
         self.revert_fiscal_entry(invoice_number)
 
-    @argcheck(Decimal, unicode)
-    def create_debit(self, value, description):
+    @argcheck(Decimal, unicode, object)
+    def create_debit(self, value, description, till):
         value = - abs(value)
-        payment = self._get_money_payment(value, description)
-        conn = self.get_connection()
-        return payment.addFacet(IOutPayment, connection=conn)
+        return self._create_till_entry(value, description, till)
 
-    @argcheck(Decimal, unicode)
-    def create_credit(self, value, description):
+    @argcheck(Decimal, unicode, object)
+    def create_credit(self, value, description, till):
         value = abs(value)
-        payment = self._get_money_payment(value, description)
-        conn = self.get_connection()
-        return payment.addFacet(IInPayment, connection=conn)
+        return self._create_till_entry(value, description, till)
 
     def get_paid_payments(self):
         statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
@@ -397,12 +396,18 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                             % method_iface)
         self.default_method = method[0]
 
+    def get_till_entries(self):
+        from stoqlib.domain.till import TillEntry
+        return TillEntry.selectBy(payment_groupID=self.id,
+                                  connection=self.get_connection())
+
     def setup_inpayments(self):
-        payments = self.get_items()
-        if not payments.count():
+        payment_cout = self.get_items().count()
+        till_entries_count = self.get_till_entries().count()
+        if not (payment_cout or till_entries_count):
             raise ValueError('You must have at least one payment for each '
                              'payment group')
-        self.installments_number = payments.count()
+        self.installments_number = payment_cout
         self.set_payments_to_pay()
 
     def confirm_money_payments(self):

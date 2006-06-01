@@ -24,19 +24,21 @@
 ##
 """ Implementation of classes related to Payment management. """
 
-import datetime
+from datetime import datetime
 
-from sqlobject import IntCol, DateTimeCol, ForeignKey
+from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
+                       SQLObject)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_branch
-from stoqlib.exceptions import TillError, DatabaseInconsistency
+from stoqlib.lib.runtime import get_current_station, get_current_branch
+from stoqlib.exceptions import (TillError, DatabaseInconsistency,
+                                StoqlibError)
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol
-from stoqlib.domain.base import Domain
+from stoqlib.domain.columns import PriceCol, AutoIncCol
+from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
@@ -63,22 +65,61 @@ class Till(Domain):
         - I{initial_cash_amount}: The total amount we have in the moment we
                                   are opening the till. This value is useful
                                   when providing change during sales.
-        - I{branch}: a till operation is always associated with a branch
-                     which can means a store or a warehouse
+        - I{station}: a till operation is always associated with a branch
+                      station which means the computer in a branch company
+                      responsible to open the till
     """
 
     (STATUS_PENDING,
      STATUS_OPEN,
      STATUS_CLOSED) = range(3)
 
+    statuses = {STATUS_PENDING: _(u"Pending"),
+                STATUS_OPEN:    _("Opened"),
+                STATUS_CLOSED:  _("Closed")}
+
     status = IntCol(default=STATUS_PENDING)
     balance_sent = PriceCol(default=0)
-    initial_cash_amount = PriceCol(default=0)
     final_cash_amount = PriceCol(default=0)
-    opening_date = DateTimeCol(default=datetime.datetime.now)
+    opening_date = DateTimeCol(default=datetime.now)
     closing_date = DateTimeCol(default=None)
+    station = ForeignKey('BranchStation')
 
-    branch = ForeignKey('PersonAdaptToBranch')
+    def _get_payment_group(self):
+        conn = self.get_connection()
+        group = IPaymentGroup(self, connection=conn)
+        if not group:
+            group = self.addFacet(IPaymentGroup, connection=conn)
+        return group
+
+    #
+    # Till methods
+    #
+
+    def get_entries(self):
+        conn = self.get_connection()
+        return TillFiscalOperationsView.selectBy(till_id=self.id,
+                                                 connection=conn)
+    def get_cash_total(self):
+        conn = self.get_connection()
+        entries = TillEntry.selectBy(tillID=self.id, connection=conn)
+        total = sum([entry.value for entry in entries], currency(0))
+        return currency(total)
+
+    def get_initial_cash_amount(self):
+        q1 = TillFiscalOperationsView.q.till_id == self.id
+        q2 = TillFiscalOperationsView.q.is_initial_cash_amount == True
+        query = AND(q1, q2)
+        conn = self.get_connection()
+        entries = TillFiscalOperationsView.select(query, connection=conn)
+        count = entries.count()
+        if count > 1 or not count:
+            raise DatabaseInconsistency("You should have only one initial "
+                                        "cash amount entry at this point")
+        return entries[0].value
+
+    def get_float_remaining(self):
+        return currency(self.get_balance() - self.balance_sent)
 
     def get_balance(self):
         """ Return the total of all "extra" payments (like cash
@@ -87,42 +128,48 @@ class Till(Domain):
         money, of all the sales associated with this operation
         *plus* the initial cash amount.
         """
-
-        conn = self.get_connection()
-        query = AND(Sale.q.status == Sale.STATUS_CONFIRMED,
-                    Sale.q.tillID == self.id)
-        result = Sale.select(query, connection=conn)
-        payments = []
-        money_payment_method = sysparam(conn).METHOD_MONEY
-        for sale in result:
-            sale_pg_facet = IPaymentGroup(sale)
-            assert sale_pg_facet, ("The sale associated to this "
-                                   "till operation don't have a "
-                                   "PaymentGroup facet.")
-            payments.extend([p for p in sale_pg_facet.get_items()
-                                 if p.status == Payment.STATUS_PAID])
-        pg_facet = IPaymentGroup(self, connection=conn)
-        if pg_facet:
-            payments.extend(pg_facet.get_items())
-        total = sum([p.value for p in payments], currency(0))
+        entries = self.get_entries()
+        total = sum([entry.value for entry in entries], currency(0))
         return currency(total)
 
-    def open_till(self, opening_date=datetime.datetime.now(),
-                 initial_cash_amount=currency(0)):
-        if not initial_cash_amount:
-            last_till = get_last_till_operation(self.get_connection())
-            if last_till:
-                self.initial_cash_amount = last_till.final_cash_amount
-        self.opening_date = opening_date
-        self.status = self.STATUS_OPEN
+    def open_till(self):
         conn = self.get_connection()
+        last_till = get_last_till_operation_for_current_branch(conn)
+        if last_till:
+            final_cash = last_till.final_cash_amount
+            if final_cash > 0:
+                reason = _(u'Cash amount remaining of %s'
+                           % last_till.closing_date.strftime('%x'))
+                self.create_credit(final_cash, reason)
+
+            sales = last_till.get_unconfirmed_sales()
+            for sale in sales:
+                sale.till = self
+
         if not IPaymentGroup(self, connection=conn):
             # Add a IPaymentGroup facet for the new till and make it easily
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
 
-    def close_till(self, balance_to_send=currency(0),
-                   closing_date=datetime.datetime.now()):
+    def get_unconfirmed_sales(self):
+        conn = self.get_connection()
+        sales = Sale.get_available_sales(conn, self)
+        return [sale for sale in sales
+                    if sale.status != Sale.STATUS_CONFIRMED]
+
+    def get_credits_total(self):
+        entries = self.get_entries()
+        total = sum([entry.value for entry in entries
+                     if entry.value > 0], currency(0))
+        return currency(total)
+
+    def get_debits_total(self):
+        entries = self.get_entries()
+        total = sum([entry.value for entry in entries
+                     if entry.value < 0], currency(0))
+        return currency(total)
+
+    def close_till(self):
         """ This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
@@ -130,56 +177,52 @@ class Till(Domain):
         """
 
         if self.status != Till.STATUS_OPEN:
-            raise ValueError("This till is already closed. Open a new till "
-                             "before close it.")
+            raise StoqlibError("This till is already closed. Open a new till "
+                               "before close it.")
         conn = self.get_connection()
         sales = Sale.get_available_sales(conn, self)
-
-        opened_sales = []
-
         money_payment_method = sysparam(conn).METHOD_MONEY
 
         for sale in sales:
             if sale.status != Sale.STATUS_CONFIRMED:
-                opened_sales.append(sale)
                 continue
-
             group = IPaymentGroup(sale, connection=conn)
             if not group:
                 raise DatabaseInconsistency("Sale must have a"
                                             "IPaymentGroup facet")
             for payment in group.get_items():
-                if payment.method is money_payment_method:
-                    payment.status = Payment.STATUS_PAID
-                else:
-                    payment.status = Payment.STATUS_TO_PAY
+                payment.status = Payment.STATUS_TO_PAY
 
         current_balance = self.get_balance()
-        if balance_to_send and balance_to_send > current_balance:
+        if self.balance_sent and self.balance_sent > current_balance:
             raise ValueError("The cash amount that you want to send is "
                              "greater than the current balance.")
         self.status = self.STATUS_CLOSED
-        self.closing_date = closing_date
-        self.final_cash_amount = current_balance - balance_to_send
-        self.balance_sent = balance_to_send
-
-    def _get_payment_group(self):
-        conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
-        if not group:
-            ValueError('Till object must have a IPaymentGroup facet'
-                       'defined at this point')
-        return group
+        self.closing_date = datetime.now()
+        self.final_cash_amount = current_balance - self.balance_sent
 
     def create_debit(self, value, reason):
         conn = self.get_connection()
         group = self._get_payment_group()
-        return group.create_debit(value, reason)
+        return group.create_debit(value, reason, self)
 
     def create_credit(self, value, reason):
         conn = self.get_connection()
         group = self._get_payment_group()
-        return group.create_credit(value, reason)
+        return group.create_credit(value, reason, self)
+
+
+class TillEntry(Domain):
+    # It's usefull to use the same sequence of Payment table since we want
+    # sometimes do mix payments and till entries in the same database view,
+    # so we can search properly by identifier field
+    identifier = AutoIncCol("stoqlib_payment_identifier_seq")
+    date = DateTimeCol(default=datetime.now)
+    description = UnicodeCol()
+    value = PriceCol()
+    is_initial_cash_amount = BoolCol(default=False)
+    till = ForeignKey("Till")
+    payment_group = ForeignKey("AbstractPaymentGroup", default=None)
 
 
 #
@@ -238,13 +281,35 @@ Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
 
 
 #
+# Views
+#
+
+
+class TillFiscalOperationsView(SQLObject, BaseSQLView):
+    """Stores informations about till fiscal operations, which is a union between
+    till_entry and payment tables
+    """
+
+    identifier = IntCol()
+    date = DateTimeCol()
+    closing_date = DateTimeCol()
+    description = UnicodeCol()
+    value = PriceCol()
+    is_initial_cash_amount = IntCol()
+    till_id = IntCol()
+    station_name = UnicodeCol()
+    branch_id = IntCol()
+    status = IntCol()
+
+
+#
 # Functions
 #
 
 
 def get_current_till_operation(conn):
     query = AND(Till.q.status == Till.STATUS_OPEN,
-                Till.q.branchID == get_current_branch(conn).id)
+                Till.q.stationID == get_current_station(conn).id)
     result = Till.select(query, connection=conn)
     if result.count() > 1:
         raise TillError("You should have only one Till opened. Got %d "
@@ -255,13 +320,17 @@ def get_current_till_operation(conn):
     return result[0]
 
 
-def get_last_till_operation(conn):
+def get_last_till_operation_for_current_branch(conn):
     """  The last till operation is used to get a initial cash amount
     to a new till operation that will be created, this value is based
     on the final_cash_amount attribute of the last till operation
     """
 
-    query = AND(Till.q.status == Till.STATUS_CLOSED,
-                Till.q.branchID == get_current_branch(conn).id)
-    result = Till.select(query, connection=conn)
-    return result.count() and result[-1] or None
+    table = TillFiscalOperationsView
+    query = AND(table.q.status == Till.STATUS_CLOSED,
+                table.q.branch_id == get_current_branch(conn).id)
+    result = table.select(query, connection=conn).orderBy('closing_date')
+    if not result.count():
+        return
+    till_entry = result[-1]
+    return Till.get(till_entry.till_id, connection=conn)
