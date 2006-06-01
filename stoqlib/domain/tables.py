@@ -83,6 +83,7 @@ _tables = [
                        "PaymentAdaptToInPayment",
                        "PaymentAdaptToOutPayment",
                        "CashAdvanceInfo"]),
+     ('till', ["TillEntry"]),
      ('fiscal', ["CfopData", "AbstractFiscalBookEntry", "IcmsIpiBookEntry",
                  "IssBookEntry"]),
      ('payment.methods', ["BillCheckGroupData",

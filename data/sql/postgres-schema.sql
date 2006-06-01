@@ -685,3 +685,73 @@ CREATE VIEW iss_view AS
 
       LEFT JOIN person
       ON (abstract_fiscal_book_entry.drawee_id = person.id);
+
+
+select drop_existing_view('till_fiscal_operations_view');
+CREATE VIEW till_fiscal_operations_view AS
+  --
+  -- Stores information about till entries and payments
+  -- Available fields are:
+  --    id                      - the identifier of till entries and payments
+  --    Note: this field is used only to deal with SQLObject compatibility
+  --    identifier              - the identifier of till entries and payments
+  --    Note: this is a field used to query on with search dialogs
+  --    date                    - the date when the entry was created
+  --    description             - the entry description
+  --    value                   - the entry value
+  --    is_initial_cash_amount  - is this entry the initial cash amount?
+  --    till_id                 - the id of the till table
+  --    status                  - the status of the till table
+  --    closing_date            - the closing_date of the till table
+  --    station_name            - the value of name branch_station name column
+  --    branch_id               - the id of the person_adapt_to_branch table
+  --
+  SELECT DISTINCT
+  till_entry.identifier as id,
+  till_entry.identifier,
+  till_entry.date,
+  till_entry.description,
+  till_entry.value,
+  till_entry.is_initial_cash_amount,
+  till_entry.till_id,
+  till.status,
+  till.closing_date,
+  branch_station.name as station_name,
+  person_adapt_to_branch.id as branch_id
+
+  FROM till_entry
+
+    INNER JOIN till
+    ON (till_entry.till_id = till.id)
+
+    INNER JOIN branch_station
+    ON (till.station_id = branch_station.id)
+
+    INNER JOIN person_adapt_to_branch
+    ON (branch_station.branch_id = person_adapt_to_branch.id)
+
+  UNION ALL
+
+    SELECT DISTINCT
+      payment.identifier as id,
+      payment.identifier,
+      payment.open_date as date,
+      payment.description,
+      payment.value,
+      false as is_initial_cash_amount,
+      payment.till_id,
+      till.status,
+      till.closing_date,
+      branch_station.name as station_name,
+      person_adapt_to_branch.id as branch_id
+
+      FROM payment
+
+        INNER JOIN till
+        ON (payment.till_id = till.id)
+
+        INNER JOIN branch_station
+        ON (till.station_id = branch_station.id)
+
+        INNER JOIN person_adapt_to_branch
+        ON (branch_station.branch_id = person_adapt_to_branch.id);

@@ -126,7 +126,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
         group = clone.addFacet(IPaymentGroup, connection=conn)
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         adapter = IMoneyPM(base_method, connection=conn)
-        payment = adapter.setup_inpayments(overpaid_value, group)
+        adapter.setup_inpayments(overpaid_value, group)
         clone.confirm_sale()
 
         # The new payment for the new sale has it's value already paid
@@ -137,8 +137,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
             raise DatabaseInconsistency("You should have a IPaymentGroup "
                                         "facet for the current till at "
                                         "this point")
-        payment = till_group.create_debit(-overpaid_value, reason)
-        payment.pay()
+        till_group.create_debit(-overpaid_value, reason)
         return clone
 
     def confirm(self, sale_order, gift_certificate_settings=None):
@@ -161,8 +160,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
                   % sale_order.get_order_number_str())
 
         if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
-            payment = group.create_debit(-overpaid_value, reason)
-            payment.pay()
+            group.create_debit(-overpaid_value, reason, sale_order.till)
 
         elif (regtype ==
               GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):

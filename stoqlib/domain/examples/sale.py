@@ -29,7 +29,7 @@ import datetime
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.runtime import (new_transaction, print_msg,
-                                 get_current_branch)
+                                 get_current_station)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
@@ -60,7 +60,7 @@ def get_till(conn):
     till = get_current_till_operation(conn)
     if till is None:
         till = Till(connection=conn,
-                    branch=get_current_branch(conn))
+                    station=get_current_station(conn))
         till.open_till()
 
     return till

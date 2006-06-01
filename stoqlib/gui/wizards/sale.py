@@ -510,12 +510,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
         self.model.reset_discount_and_surcharge()
 
     def setup_invoice_number_widgets(self):
-        # XXX Kiwi can't handle this change on the widget. It seems to be
-        # a new bug
-        if check_virtual_printer_for_current_station(self.conn):
-            self.invoice_number.set_property('mandatory', True)
-        else:
-            self.invoice_number.set_property('mandatory', False)
+        if not check_virtual_printer_for_current_station(self.conn):
             self.hide_invoice_number_widgets()
         self.force_validation()
 

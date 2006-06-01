@@ -451,6 +451,10 @@ class FiscalCoupon:
                                  " the payment on the coupon" % method_iface)
             self.printer.add_payment(CUSTOM_PM, payment.base_value,
                                      custom_pm=pm_constants.get_value(method_id))
+
+        for entry in group.get_till_entries():
+            self.printer.add_payment(MONEY_PM, entry.value)
+
         return True
 
     def close(self):
