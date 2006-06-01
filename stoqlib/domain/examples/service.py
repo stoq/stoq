@@ -42,6 +42,8 @@ def create_services():
     descriptions = ['General Service', 'Cleanness', 'Computer Maintenance',
                     'Computer Components Switch']
 
+    barcodes = ['20058', '20059', '20060', '20061']
+
     # Creating services and facets
     for index in range(MAX_SERVICES_NUMBER):
         service_obj = Service(connection=conn)
@@ -53,9 +55,10 @@ def create_services():
                                          description=description,
                                          price=price)
         cost = round(random.uniform(*COST_RANGE))
+        barcode = barcodes[index]
         service_obj.addFacet(ISellable, connection=conn,
                              base_sellable_info=sellable_info,
-                             cost=cost)
+                             cost=cost, barcode=barcode)
 
     conn.commit()
     print_msg('done.')
