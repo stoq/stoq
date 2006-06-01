@@ -1,4 +1,50 @@
 
+Release 0.8.0,  02-June-2006
+    - Bug Fixes: 1879 2092 2189 2214 2281 2319 2334 2339 2347 2360 2427
+                 2433 2447 2448 2449 2452 2476 2494 2503 2508 2509 2510
+                 2513 2523 2524 2544 2557 2588 2589 2591 2592 2593 2595
+                 2598 2601 2603 2607 2609 2614 2616 2618 2621 2622 2628
+                 2634 2636 2637
+
+    - Stock history dialog implementation
+    - Ubuntu package
+    - ReturnSaleWizard implementation
+    - ClientHistory dialog implementation
+    - Improvements on AdditionListSlave
+    - Support for SQLViews
+    - Improvements on Notification dialogs
+    - Infrastructure for showing errors
+    - Support for calendars on date widgets
+    - Search on Sales application has been improved
+    - Fiscal Book Entries support
+    - Fiscal book entries search implementation
+    - Suport for printing Brazil-specific invoices
+    - Constants editor for fiscal printers
+    - Minor improvements in many interfaces
+    - Improvements in the way we deal with till operations and initial cash
+      amounts
+    - Configuration parser refactoring
+    - Improvements in the way how services were added in an order
+    - PurchaseReceivingDetails dialog implementation
+    - CFOP Brazil-specific data type implemented
+    - CFOP search dialog implementation
+    - Improvements quantity and unit fields when showing sale items
+      informations
+    - Support for multiple till instances for one single branch company
+    - Improvements in the way we were dealing with money payment method on
+      till operations
+    - GiftCertificate improvements during the sale order process
+    - Added support for searching clients and sales on till application
+    - Support for storing last_user_id and model_modified informations for
+      every changed data
+    - Improvements on POS application main interface
+    - Improvements on Till application main interface
+    - Added support for multiple branch companies with one single database
+    - Added translations for stoqdrivers error messages
+    - Bug fix when setting the first user password in the
+      FirstTimeConfigWizard
+
+
 Release 0.7.0,  08-March-2006
     - Bug Fixes: 2114 2136 2253 2262 2320 2335 2366 2391 2392 2404 2408
                  2413 2416 2417 2424 2425 2428 2431 2434 2437 2438 2441
