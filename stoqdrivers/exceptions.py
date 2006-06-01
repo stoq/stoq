@@ -25,7 +25,7 @@
 ##
 """
 stoqdrivers/exceptions.py:
-    
+
     StoqDrivers exceptions definition
 """
 
