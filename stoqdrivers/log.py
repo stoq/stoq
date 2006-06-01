@@ -39,7 +39,7 @@ log_level = logging.CRITICAL
 
 class Log(logging.Logger):
     def __init__(self, file=sys.stdout, level=log_level,
-                 category='fiscal_printer'):
+                 category='stoqdrivers'):
         """Initializes Log module, creating log handler and defining log
         level.
 
