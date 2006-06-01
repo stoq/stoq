@@ -69,6 +69,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="FiscalTillOperations">
+                        <property name="name">FiscalTillOperations</property>
+                        <property name="label" translatable="yes">Fiscal Till Operations...</property>
+                        <signal handler="_on_fiscal_till_operations__action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;f</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="New">
                         <property name="name">New</property>
                         <property name="tooltip" translatable="yes">Create a new file</property>
@@ -152,10 +160,11 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="TillOperations">
-                        <property name="name">TillOperations</property>
-                        <property name="label" translatable="yes">Till Operations...</property>
-                        <signal handler="_on_operations_action__clicked" name="activate"/>
+                    <widget class="GtkAction" id="Treasury">
+                        <property name="name">Treasury</property>
+                        <property name="label" translatable="yes">Treasury...</property>
+                        <property name="short_label" translatable="yes"></property>
+                        <signal handler="_on_treasury_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;o</property>
                     </widget>
                 </child>
@@ -192,7 +201,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator/><menuitem action="TillOperations" name="TillOperations"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator/><menuitem action="Treasury" name="Treasury"/><menuitem action="FiscalTillOperations" name="FiscalTillOperations"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="till">
