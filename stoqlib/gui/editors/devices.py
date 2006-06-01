@@ -243,9 +243,8 @@ class DeviceSettingsEditor(BaseEditor):
         self.model_combo.prefill(items)
 
     def _update_constants_button(self, *args):
-        self.constants_button.set_sensitive(bool(self.model.device
-                                                 and self.model.model
-                                                 and self.model.brand))
+        self.constants_button.set_sensitive(self.model.is_valid()
+                                            and self.model.is_a_printer())
 
     def _edit_driver_constants(self, *args):
         if ((self._original_brand != self.model.brand
@@ -308,20 +307,26 @@ class DeviceSettingsEditor(BaseEditor):
 
     # FIXME: this part will improved when bug #2334 is fixed.
     def on_confirm(self):
-        conn = get_connection()
+        if not self.model.is_a_printer():
+            return self.model
         if not self.edit_mode and (not self.model.constants
                                    or not self.model.pm_constants):
             warning( _(u"The printer will be disabled"),
                      _(u"The printer will be disabled automatically "
                         "because there are no constants defined yet."))
             self.model.inactivate()
-        basequery = self._get_existing_printer_basequery()
-        q2 = DeviceSettings.q.brand == 'virtual'
-        query = AND(basequery, q2)
-        settings = DeviceSettings.select(query, connection=conn)
-        if settings.count():
-            DeviceSettings.delete(settings[0].id, connection=self.conn)
-        self.conn.commit()
+
+        # Check if we have a virtual printer, if so we must remove it
+        query = AND(DeviceSettings.q.stationID == self.model.station.id,
+                    (DeviceSettings.q.type
+                     == DeviceSettings.FISCAL_PRINTER_DEVICE),
+                    DeviceSettings.q.brand == "virtual")
+        result = DeviceSettings.select(query, connection=self.conn)
+        if result.count():
+            if result[0].constants:
+                DeviceConstants.delete(result[0].constants.id,
+                                       connection=self.conn)
+            DeviceSettings.delete(result[0].id, connection=self.conn)
         return self.model
 
     #

@@ -157,6 +157,14 @@ class DeviceSettings(Domain):
                                     "record (%r) is invalid, given %r."
                                     % (self, self.type))
 
+    def is_a_printer(self):
+        return self.type in (DeviceSettings.FISCAL_PRINTER_DEVICE,
+                             DeviceSettings.CHEQUE_PRINTER_DEVICE)
+
+    def is_valid(self):
+        return (None not in (self.model, self.device, self.brand, self.station)
+                and self.type in DeviceSettings.device_types)
+
     #
     # IActive implementation
     #
