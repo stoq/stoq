@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-01 18:32-0300\n"
+"POT-Creation-Date: 2006-06-02 15:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,78 +16,78 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqdrivers/constants.py:68
+#: ../stoqdrivers/constants.py:69
 msgid "Weight unit"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:69
+#: ../stoqdrivers/constants.py:70
 msgid "Meters unit"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:70
+#: ../stoqdrivers/constants.py:71
 msgid "Liters unit"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:71
+#: ../stoqdrivers/constants.py:72
 msgid "Empty unit"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:72
+#: ../stoqdrivers/constants.py:73
 msgid "IOF tax"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:73
+#: ../stoqdrivers/constants.py:74
 msgid "ICMS tax"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:74
+#: ../stoqdrivers/constants.py:75
 msgid "Substitution tax"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:75
+#: ../stoqdrivers/constants.py:76
 msgid "Exemption tax"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:76
+#: ../stoqdrivers/constants.py:77
 msgid "No tax"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:77
+#: ../stoqdrivers/constants.py:78
 msgid "Money Payment Method"
 msgstr ""
 
-#: ../stoqdrivers/constants.py:78
+#: ../stoqdrivers/constants.py:79
 msgid "Cheque Payment Method"
 msgstr ""
 
 #. Without write permission to the given file object,
 #. write to stdout
-#: ../stoqdrivers/log.py:72
+#: ../stoqdrivers/log.py:73
 msgid ""
 ">>> Given file object in read-only mode! Using standard output to write logs!"
 msgstr ""
 
-#: ../stoqdrivers/log.py:79
+#: ../stoqdrivers/log.py:80
 msgid ""
 ">>> Couldn't access specified file! Using standard output to write logs!"
 msgstr ""
 
-#: ../stoqdrivers/configparser.py:80
+#: ../stoqdrivers/configparser.py:79
 #, python-format
 msgid "Config file not found in: `%s', `%s' and `%s'"
 msgstr ""
 
-#: ../stoqdrivers/configparser.py:91 ../stoqdrivers/configparser.py:99
+#: ../stoqdrivers/configparser.py:90 ../stoqdrivers/configparser.py:98
 #, python-format
 msgid "Invalid section: %s"
 msgstr ""
 
-#: ../stoqdrivers/configparser.py:93
+#: ../stoqdrivers/configparser.py:92
 #, python-format
 msgid "%s does not have option: %s"
 msgstr ""
 
-#: ../stoqdrivers/devices/base.py:69
+#: ../stoqdrivers/devices/base.py:68
 #, python-format
 msgid "There is no section named `%s'!"
 msgstr ""
@@ -334,53 +334,53 @@ msgstr ""
 msgid "Discount on subtotal already effected"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:81
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:80
 msgid "There is no coupon opened!"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:85
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:84
 msgid "There is a coupon already open"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:104
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:103
 msgid "The coupon is already totalized, you can't add items anymore."
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:114
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:113
 #, python-format
 msgid "There is no item with this ID (%d)"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:117
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:116
 msgid "The coupon is already totalized, you can't cancel items anymore."
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:128
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:127
 msgid "The coupon can't be totalized, since there is no items added"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:131
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:130
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:190
 msgid "The coupon is already totalized"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:141
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:140
 msgid "Coupon totalized must be greater than zero!"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:150
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:149
 msgid "Isn't possible add payments to the coupon since it isn't totalized"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:159
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:158
 msgid "Isn't possible close the coupon since it isn't totalized yet!"
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:162
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:161
 msgid "Isn't possible close the coupon since there is no payments added."
 msgstr ""
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:165
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:164
 msgid "The payments total value doesn't match the totalized value."
 msgstr ""
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Stoqdrivers 0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-01 18:32-0300\n"
+"POT-Creation-Date: 2006-06-02 15:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Lincol Molica <lincoln@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -16,80 +16,80 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqdrivers/constants.py:68
+#: ../stoqdrivers/constants.py:69
 msgid "Weight unit"
 msgstr "Unidade de Peso"
 
-#: ../stoqdrivers/constants.py:69
+#: ../stoqdrivers/constants.py:70
 msgid "Meters unit"
 msgstr "Unidade em metros"
 
-#: ../stoqdrivers/constants.py:70
+#: ../stoqdrivers/constants.py:71
 msgid "Liters unit"
 msgstr "Unidade em litros"
 
-#: ../stoqdrivers/constants.py:71
+#: ../stoqdrivers/constants.py:72
 msgid "Empty unit"
 msgstr "Sem Unidade"
 
-#: ../stoqdrivers/constants.py:72
+#: ../stoqdrivers/constants.py:73
 msgid "IOF tax"
 msgstr "Imposto de IOF"
 
-#: ../stoqdrivers/constants.py:73
+#: ../stoqdrivers/constants.py:74
 msgid "ICMS tax"
 msgstr "Imposto de ICMS"
 
-#: ../stoqdrivers/constants.py:74
+#: ../stoqdrivers/constants.py:75
 msgid "Substitution tax"
 msgstr "Imposto de Substituição"
 
-#: ../stoqdrivers/constants.py:75
+#: ../stoqdrivers/constants.py:76
 msgid "Exemption tax"
 msgstr "Isento de Imposto"
 
-#: ../stoqdrivers/constants.py:76
+#: ../stoqdrivers/constants.py:77
 msgid "No tax"
 msgstr "Sem Imposto"
 
-#: ../stoqdrivers/constants.py:77
-msgid "Money Payment Method"
-msgstr "Dinheiro como método de pagamento"
-
 #: ../stoqdrivers/constants.py:78
+msgid "Money Payment Method"
+msgstr "Forma de Pagamento Dinheiro"
+
+#: ../stoqdrivers/constants.py:79
 msgid "Cheque Payment Method"
-msgstr "Cheque como método de pagamento"
+msgstr "Forma de Pagamento Cheque"
 
 #. Without write permission to the given file object,
 #. write to stdout
-#: ../stoqdrivers/log.py:72
+#: ../stoqdrivers/log.py:73
 msgid ""
 ">>> Given file object in read-only mode! Using standard output to write logs!"
 msgstr ""
 
-#: ../stoqdrivers/log.py:79
+#: ../stoqdrivers/log.py:80
 msgid ""
 ">>> Couldn't access specified file! Using standard output to write logs!"
 msgstr ""
-">>> Não foi possível acessar o arquivo especificado! Usando a saída "
-"padrãopara gravar logs"
+">>> Não foi possível acessar o arquivo especificado! Usando a saída padrão "
+"para gravar logs"
 
-#: ../stoqdrivers/configparser.py:80
+#: ../stoqdrivers/configparser.py:79
 #, python-format
 msgid "Config file not found in: `%s', `%s' and `%s'"
 msgstr "Arquivo de configuração não encontrado em: `%s', `%s' e `%s'"
 
-#: ../stoqdrivers/configparser.py:91 ../stoqdrivers/configparser.py:99
+#: ../stoqdrivers/configparser.py:90 ../stoqdrivers/configparser.py:98
 #, python-format
 msgid "Invalid section: %s"
 msgstr "Seção Inválida: %s"
 
-#: ../stoqdrivers/configparser.py:93
+#: ../stoqdrivers/configparser.py:92
 #, python-format
 msgid "%s does not have option: %s"
 msgstr "%s não tem a opção: %s"
 
-#: ../stoqdrivers/devices/base.py:69
+#: ../stoqdrivers/devices/base.py:68
 #, python-format
 msgid "There is no section named `%s'!"
 msgstr "Não há seção com o nome `%s'!"
@@ -108,13 +108,13 @@ msgid ""
 "Isn't possible close the coupon since the payments total (%.2f) doesn't "
 "match the totalized value (%.2f)."
 msgstr ""
-"Não foi possível fechar o cupom porque o total de pagamentos (%.2f)não "
+"Não foi possível fechar o cupom porque o total de pagamentos (%.2f) não "
 "confere com o valor totalizado (%.2f)."
 
 #: ../stoqdrivers/devices/printers/fiscal.py:183
 msgid ""
 "It is not possible close the coupon since there are no payments defined."
-msgstr "Não é possível fechar o cupom caso não haja pagamentos definidos"
+msgstr "Não é possível fechar o cupom se não houver pagamentos definidos"
 
 #: ../stoqdrivers/devices/printers/perto/Pay2023.py:260
 msgid "Coupon already opened."
@@ -144,7 +144,7 @@ msgstr "Desconectado"
 
 #: ../stoqdrivers/devices/printers/daruma/FS345.py:194
 msgid "Peripheral is not connected to AUX"
-msgstr "Periférico não está conectado à AUX"
+msgstr "Periférico não está conectado à porta"
 
 #: ../stoqdrivers/devices/printers/daruma/FS345.py:206
 msgid "readX is not emitted yet"
@@ -161,7 +161,7 @@ msgstr "O Cupom não está aberto"
 
 #: ../stoqdrivers/devices/printers/daruma/FS345.py:243
 msgid "There is no such item incoupon"
-msgstr "Não há tal item no cumpom"
+msgstr "Não há tal item no cupom"
 
 #: ../stoqdrivers/devices/printers/daruma/FS345.py:336
 msgid "Coupon already open"
@@ -237,7 +237,7 @@ msgstr "O item não foi adicionado ao cupom ou não pode ser cancelado"
 
 #: ../stoqdrivers/devices/printers/bematech/MP25.py:128
 msgid "Owner data (CGC/IE) not programmed on the printer"
-msgstr "Dados da empresa (CGC/IE) não programada na impressora"
+msgstr "Dados da empresa (CGC/IE) não programados na impressora"
 
 #: ../stoqdrivers/devices/printers/bematech/MP25.py:129
 msgid "Command not executed"
@@ -272,7 +272,7 @@ msgid ""
 "Isn't possible add more payments since the coupon total value already was "
 "reached"
 msgstr ""
-"Não é possível adicionar mais pagamentos pois o valor total do cupom jáfoi "
+"Não é possível adicionar mais pagamentos pois o valor total do cupom já foi "
 "atingido"
 
 #: ../stoqdrivers/devices/printers/bematech/MP25.py:142
@@ -340,59 +340,60 @@ msgstr "Acréscimo ao sub-total já efetuado"
 msgid "Discount on subtotal already effected"
 msgstr "Desconto ao subtotal já efetuado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:81
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:80
 msgid "There is no coupon opened!"
 msgstr "Não há cupom aberto!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:85
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:84
 msgid "There is a coupon already open"
-msgstr "Já há um cupom aberto"
+msgstr "Já existe um cupom aberto"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:104
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:103
 msgid "The coupon is already totalized, you can't add items anymore."
 msgstr "O cupom já está totalizado, não é possível adicionar mais itens"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:114
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:113
 #, python-format
 msgid "There is no item with this ID (%d)"
 msgstr "Não há item com o ID (%d)"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:117
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:116
 msgid "The coupon is already totalized, you can't cancel items anymore."
 msgstr "O cupom já está totalizado, não é mais possível cancelar itens."
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:128
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:127
 msgid "The coupon can't be totalized, since there is no items added"
-msgstr "O cupom não pode ser totalizado, desde que não haja itensadicionados"
+msgstr ""
+"O cupom não pode ser totalizado, desde que não existem itens adicionados"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:131
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:130
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:190
 msgid "The coupon is already totalized"
 msgstr "O cupom já está totalizado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:141
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:140
 msgid "Coupon totalized must be greater than zero!"
 msgstr "Cupom totalizado deve ser maior que zero!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:150
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:149
 msgid "Isn't possible add payments to the coupon since it isn't totalized"
-msgstr "Não é possível adicionar pagamentos ao cupom se ele não foitotalizado"
+msgstr "Não é possível adicionar pagamentos ao cupom se ele não foi totalizado"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:159
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:158
 msgid "Isn't possible close the coupon since it isn't totalized yet!"
-msgstr "Não possível fechar o cupom se ele ainda não foi totalizado!"
+msgstr "Não é possível fechar o cupom se ele ainda não foi totalizado!"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:162
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:161
 msgid "Isn't possible close the coupon since there is no payments added."
 msgstr "Não é possível fechar o cupom se não houver pagamentos adicionados"
 
-#: ../stoqdrivers/devices/printers/virtual/Simple.py:165
+#: ../stoqdrivers/devices/printers/virtual/Simple.py:164
 msgid "The payments total value doesn't match the totalized value."
 msgstr "O valor total de pagamentos não confere com o valor totalizado"
 
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:153
 msgid "A Read X is pending"
-msgstr "A Leitura X está pendente"
+msgstr "Uma Leitura X está pendente"
 
 #: ../stoqdrivers/devices/printers/sweda/IFS9000I.py:154
 msgid "The command is invalid"
@@ -468,7 +469,7 @@ msgstr "Item(s) para cancelamento não encontrado"
 
 #: ../stoqdrivers/devices/printers/dataregis/EP375.py:112
 msgid "The requested command doesn't exist"
-msgstr "O comando solicatado não existe"
+msgstr "O comando solicitado não existe"
 
 #: ../stoqdrivers/devices/printers/dataregis/EP375.py:116
 msgid "Fiscal EPROM disconnected"
@@ -542,4 +543,4 @@ msgstr "Redução Z já está feita"
 
 #: ../stoqdrivers/devices/printers/dataregis/EP375.py:510
 msgid "You have specified an invalid item id to cancel!"
-msgstr "Foi especificado id para item inválido!"
+msgstr "Foi especificado um código de item inválido para cancelamento"
