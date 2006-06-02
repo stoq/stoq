@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-02 10:43-0300\n"
+"POT-Creation-Date: 2006-06-02 16:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1803,30 +1803,30 @@ msgstr ""
 msgid "Editing constants for %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:191 ../stoqlib/gui/editors/devices.py:226
-#: ../stoqlib/gui/editors/devices.py:240
+#: ../stoqlib/gui/editors/devices.py:197 ../stoqlib/gui/editors/devices.py:232
+#: ../stoqlib/gui/editors/devices.py:246
 msgid "Choose..."
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:283
+#: ../stoqlib/gui/editors/devices.py:290
 #, python-format
 msgid "Edit Device for %s"
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:285
+#: ../stoqlib/gui/editors/devices.py:292
 msgid "Add Device"
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:302
+#: ../stoqlib/gui/editors/devices.py:309
 #, python-format
 msgid "A %s already exists for station \"%s\""
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:314
+#: ../stoqlib/gui/editors/devices.py:321
 msgid "The printer will be disabled"
 msgstr ""
 
-#: ../stoqlib/gui/editors/devices.py:315
+#: ../stoqlib/gui/editors/devices.py:322
 msgid ""
 "The printer will be disabled automatically because there are no constants "
 "defined yet."
@@ -1836,7 +1836,7 @@ msgstr ""
 msgid "Price settings"
 msgstr ""
 
-#: ../stoqlib/gui/editors/sellable.py:176
+#: ../stoqlib/gui/editors/sellable.py:174
 msgid "This unit type requires weighing"
 msgstr ""
 

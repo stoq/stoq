@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-06-02 10:43-0300\n"
+"POT-Creation-Date: 2006-06-02 16:22-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -567,11 +567,11 @@ msgstr "Por Método de Pagamento:"
 
 #: ../stoqlib/domain/person.py:843
 msgid "By Base Sellable Category"
-msgstr "Por Pesquisa de Categoria de Vendaveis Base"
+msgstr "Por Pesquisa de Categoria de Base para Vendáveis"
 
 #: ../stoqlib/domain/person.py:846
 msgid "By Sellable Category"
-msgstr "Por Pesquisa de Categoria de Vendaveis"
+msgstr "Por Pesquisa de Categoria de Vendáveis"
 
 #: ../stoqlib/domain/person.py:848
 msgid "By Sale Total"
@@ -1891,30 +1891,30 @@ msgstr "Método de Pagamento %s"
 msgid "Editing constants for %s"
 msgstr "Editando constantes para %s"
 
-#: ../stoqlib/gui/editors/devices.py:191 ../stoqlib/gui/editors/devices.py:226
-#: ../stoqlib/gui/editors/devices.py:240
+#: ../stoqlib/gui/editors/devices.py:197 ../stoqlib/gui/editors/devices.py:232
+#: ../stoqlib/gui/editors/devices.py:246
 msgid "Choose..."
 msgstr "Escolha..."
 
-#: ../stoqlib/gui/editors/devices.py:283
+#: ../stoqlib/gui/editors/devices.py:290
 #, python-format
 msgid "Edit Device for %s"
 msgstr "Editar Dispositivo para %s"
 
-#: ../stoqlib/gui/editors/devices.py:285
+#: ../stoqlib/gui/editors/devices.py:292
 msgid "Add Device"
 msgstr "Adicionar Dispositivo"
 
-#: ../stoqlib/gui/editors/devices.py:302
+#: ../stoqlib/gui/editors/devices.py:309
 #, python-format
 msgid "A %s already exists for station \"%s\""
 msgstr "Já existe um %s para a estação %s"
 
-#: ../stoqlib/gui/editors/devices.py:314
+#: ../stoqlib/gui/editors/devices.py:321
 msgid "The printer will be disabled"
 msgstr "A impressora será desligada"
 
-#: ../stoqlib/gui/editors/devices.py:315
+#: ../stoqlib/gui/editors/devices.py:322
 msgid ""
 "The printer will be disabled automatically because there are no constants "
 "defined yet."
@@ -1926,7 +1926,7 @@ msgstr ""
 msgid "Price settings"
 msgstr "Ajustes de preço"
 
-#: ../stoqlib/gui/editors/sellable.py:176
+#: ../stoqlib/gui/editors/sellable.py:174
 msgid "This unit type requires weighing"
 msgstr "Este tipo de unidade requer pesagem"
 
@@ -2010,7 +2010,7 @@ msgstr "Ordem de Compra #"
 
 #: ../stoqlib/gui/search/category.py:46
 msgid "Base Sellable Category Search"
-msgstr "Pesquisa de Categoria de Vendaveis Base"
+msgstr "Pesquisa de Categoria de Base para vendáveis"
 
 #: ../stoqlib/gui/search/category.py:52
 msgid "Base Categories Matching:"
