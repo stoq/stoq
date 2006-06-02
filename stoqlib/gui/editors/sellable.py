@@ -170,11 +170,11 @@ class SellableEditor(BaseEditor):
 
     def __init__(self, conn, model=None):
         self._sellable = None
+        self._requires_weighing_text = ("<b>%s</b>"
+                                        % _(u"This unit type requires "
+                                            "weighing"))
         BaseEditor.__init__(self, conn, model)
         self._original_barcode = self._sellable.barcode
-        self._requires_weighing_text = ("<b>%s</b>"
-                                        % _("This unit type requires "
-                                            "weighing"))
         self.notes.set_accepts_tab(False)
         self.setup_widgets()
 
@@ -204,7 +204,7 @@ class SellableEditor(BaseEditor):
             else:
                 query = SellableUnit.q.index == unit.index
             conn = new_transaction()
-            result = SellableUnit.selecstock_lblt(query, connection=conn)
+            result = SellableUnit.select(query, connection=conn)
             count = result.count()
             if not count:
                 return
