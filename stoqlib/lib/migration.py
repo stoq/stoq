@@ -113,7 +113,7 @@ class SchemaMigration:
         # profiles on the system
         update_profile_applications(conn)
         # Updating the parameter list
-        ensure_system_parameters()
+        ensure_system_parameters(update=True)
         # Update the base schema
         create_base_schema()
         finish_transaction(conn, 1)
