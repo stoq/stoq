@@ -31,7 +31,6 @@ stoqdrivers/devices/printers/sweda/IFS9000I.py:
 
 import string
 import datetime
-import gettext
 
 from zope.interface import implements
 
@@ -52,8 +51,9 @@ from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.constants import MONEY_PM, CHEQUE_PM
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class IFS9000IConstants(BaseDriverConstants):
     # TODO Fixup these values

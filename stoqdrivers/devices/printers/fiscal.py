@@ -25,7 +25,6 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 
-import gettext
 from decimal import Decimal
 
 from kiwi.argcheck import number, percent
@@ -41,8 +40,9 @@ from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.devices.printers.capabilities import capcheck
 from stoqdrivers.utils import encode_text
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 #
 # Extra data types to argcheck

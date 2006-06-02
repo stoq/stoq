@@ -29,16 +29,15 @@ stoqdrivers/devices/base.py:
     Generic base class implementation for all devices.
 """
 
-import gettext
-
 import gobject
 
 from stoqdrivers.log import Logger
 from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.constants import PRINTER_DEVICE, SCALE_DEVICE
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class BaseDevice(Logger):
     log_domain = "stoqdrivers"

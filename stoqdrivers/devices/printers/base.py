@@ -29,7 +29,6 @@ stoqdrivers/devices/printers/base.py:
     Generic base class implementation for all printers
 """
 import os
-import gettext
 
 from zope.interface import providedBy, implements
 from kiwi.python import namedAny
@@ -41,8 +40,9 @@ from stoqdrivers.devices.printers.interface import (ICouponPrinter,
 from stoqdrivers.devices.base import BaseDevice
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.constants import PRINTER_DEVICE
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class BaseDriverConstants:
     implements(IDriverConstants)

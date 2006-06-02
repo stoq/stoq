@@ -30,10 +30,11 @@ stoqdrivers/log.py
 """
 
 import sys
-import gettext
 import logging
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+from stoqdrivers.translation import stoqdrivers_gettext
+
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 log_level = logging.CRITICAL
 

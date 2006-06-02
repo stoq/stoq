@@ -30,7 +30,6 @@ stoqdrivers/devices/printers/dataregis/EP375.py:
 """
 
 import time
-import gettext
 from decimal import Decimal
 from datetime import datetime
 
@@ -53,6 +52,7 @@ from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.translation import stoqdrivers_gettext
 
 EOT = 0x04
 BS = 0x08
@@ -60,7 +60,7 @@ ACK = 0x06
 CR = 0x0D
 SUB = 0x1A
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 #
 # Helper functions

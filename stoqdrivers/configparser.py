@@ -29,14 +29,13 @@ stoqdrivers/configparser.py:
 
     Useful routines when parsing the configuration file
 """
-    
-import gettext
 import os
 from ConfigParser import ConfigParser
 
 from stoqdrivers.exceptions import ConfigError
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class StoqdriversConfig:
 

@@ -27,7 +27,6 @@
 
 from ConfigParser import ConfigParser
 from datetime import datetime
-import gettext
 
 from zope.interface.exceptions import DoesNotImplement
 from zope.interface import providedBy
@@ -38,8 +37,9 @@ from stoqdrivers.devices.printers.interface import IChequePrinter
 from stoqdrivers.exceptions import ConfigError
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.utils import encode_text
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class BankConfiguration:
     """ This class store and manage the Cheque elements positions for a bank.

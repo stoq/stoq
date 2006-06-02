@@ -29,7 +29,6 @@ stoqdrivers/devices/printers/daruma/FS345.py:
 
     Daruma printer drivers implementation
 """
-import gettext
 import time
 
 from zope.interface import implements
@@ -48,8 +47,9 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, HardwareFailure
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 CMD_STATUS = '\x1d\xff'
 

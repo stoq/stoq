@@ -29,8 +29,6 @@ stoqdrivers/devices/printers/virtual/Simple.py:
 
     A simple implementation of a virtual printer.
 """
-
-import gettext
 from decimal import Decimal
 
 from zope.interface import implements
@@ -41,8 +39,9 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ItemAdditionError)
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class CouponItem:
     def __init__(self, id, quantity, value):

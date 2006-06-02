@@ -29,7 +29,6 @@ stoqdrivers/devices/printers/perto/Pay2023.py:
     PertoPay 2023 driver implementation.
 """
 
-import gettext
 from datetime import datetime
 
 from serial import EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
@@ -52,8 +51,9 @@ from stoqdrivers.exceptions import (
     CancelItemError, CouponOpenError, InvalidState, PendingReadX,
     CloseCouponError)
 from stoqdrivers.devices.printers.capabilities import Capability
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 class Pay2023Constants(BaseDriverConstants):
     _constants = {

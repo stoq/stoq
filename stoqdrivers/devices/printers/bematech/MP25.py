@@ -29,7 +29,6 @@ stoqdrivers/drivers/bematech/MP25.py:
 
     Drivers implementation for Bematech printers.
 """
-import gettext
 from decimal import Decimal
 
 from zope.interface import implements
@@ -48,8 +47,9 @@ from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_NONE, TAX_EXEMPTION,
 from stoqdrivers.devices.printers.interface import ICouponPrinter
 from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.devices.printers.base import BaseDriverConstants
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 CASH_IN_TYPE = "SU"
 CASH_OUT_TYPE = "SA"

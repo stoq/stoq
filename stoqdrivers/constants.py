@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
 ## USA.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
 ##
 """
 stoqdrivers/constants.py:
@@ -29,9 +30,9 @@ stoqdrivers/constants.py:
     StoqDrivers constants
 """
 
-import gettext
+from stoqdrivers.translation import stoqdrivers_gettext
 
-_ = lambda msg: gettext.dgettext("stoqdrivers", msg)
+_ = lambda msg: stoqdrivers_gettext(msg)
 
 #
 # Special note regarding the constant values: it is *VERY IMPORTANT* each
