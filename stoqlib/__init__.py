@@ -32,7 +32,7 @@ program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br'
 version         = "0.8.0"
 db_version      = 7
-release_date    = (2006, 6, 1)
+release_date    = (2006, 6, 2)
 
 
 __all__ = ['library']
