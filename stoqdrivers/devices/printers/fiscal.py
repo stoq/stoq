@@ -101,10 +101,12 @@ class FiscalPrinter(BasePrinter):
         self.info('coupon_open')
         return self._driver.coupon_open()
 
-    @capcheck(basestring, Decimal, Decimal, unit, basestring, taxcode, percent,
-              percent, basestring)
-    def add_item(self, item_code, items_quantity, item_price, unit,
-                 item_description, taxcode, discount, surcharge, unit_desc=''):
+    @capcheck(basestring, basestring, Decimal, taxcode, Decimal, unit,
+              Decimal, Decimal, basestring)
+    def add_item(self, item_code, item_description, item_price, taxcode,
+                 items_quantity=Decimal("0.0"), unit=UNIT_EMPTY,
+                 discount=Decimal("0.0"), surcharge=Decimal("0.0"),
+                 unit_desc=""):
         if self._has_been_totalized:
             raise AlreadyTotalized("the coupon is already totalized, you "
                                    "can't add more items")
@@ -122,15 +124,15 @@ class FiscalPrinter(BasePrinter):
             raise InvalidValue("The item value must be greater than zero")
         self.info('coupon_add_item')
         return self._driver.coupon_add_item(
-            self._format_text(item_code), items_quantity, item_price, unit,
-            self._format_text(item_description), taxcode, discount, surcharge,
+            self._format_text(item_code), self._format_text(item_description),
+            item_price, taxcode, items_quantity, unit, discount, surcharge,
             unit_desc=self._format_text(unit_desc))
 
     @capcheck(percent, percent, taxcode)
-    def totalize(self, discount, surcharge, taxcode):
+    def totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
+                 taxcode=TAX_NONE):
         if discount and surcharge:
             raise TypeError("discount and surcharge can not be used together")
-
         self.info('coupon_totalize')
         result = self._driver.coupon_totalize(discount, surcharge, taxcode)
         self._has_been_totalized = True
@@ -211,7 +213,6 @@ class FiscalPrinter(BasePrinter):
 
 def test():
     p = FiscalPrinter()
-
     p.identify_customer('Henrique Romano', 'Async', '1234567890')
     while True:
         try:
@@ -225,13 +226,13 @@ def test():
         except PendingReduceZ:
             p.close_till()
             return
-    i1 = p.add_item("123456", Decimal("2"), Decimal("10.00"), UNIT_CUSTOM,
-                    u"Hollywóód", TAX_NONE, Decimal("0"), Decimal("0"),
+    i1 = p.add_item("123456", u"Hollywóód", Decimal("2.00"), TAX_SUBSTITUTION,
+                    items_quantity=Decimal("10.00"), unit=UNIT_CUSTOM,
                     unit_desc=u"mç")
-    i2 = p.add_item("654321", Decimal("5"), Decimal("1.53"), UNIT_LITERS,
-                    u"Heineken", TAX_NONE, Decimal("0"), Decimal("0"))
+    i2 = p.add_item("654321", u"Heineken", Decimal("1.53"), TAX_NONE,
+                    items_quantity=Decimal("5"), unit=UNIT_LITERS)
     p.cancel_item(i1)
-    coupon_total = p.totalize(Decimal('1.0'), Decimal('0.0'), TAX_NONE)
+    coupon_total = p.totalize(discount=Decimal('1.0'))
     p.add_payment(MONEY_PM, Decimal('2.00'))
     p.add_payment(MONEY_PM, Decimal('11.00'))
     coupon_id = p.close()

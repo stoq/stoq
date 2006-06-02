@@ -359,8 +359,10 @@ class MP25(SerialBase):
         self._send_command(chr(CMD_COUPON_CLOSE))
         return self._get_coupon_number()
 
-    def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
-                        discount, markup, unit_desc=''):
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"), markup=Decimal("0.0"),
+                        unit_desc=""):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
@@ -394,7 +396,7 @@ class MP25(SerialBase):
             item_id = self.get_last_item_id()
         self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
-    def coupon_add_payment(self, payment_method, value, description='',
+    def coupon_add_payment(self, payment_method, value, description=u"",
                            custom_pm=''):
         if not custom_pm:
             pm = self._consts.get_value(payment_method)
@@ -409,7 +411,8 @@ class MP25(SerialBase):
             self.remainder_value = Decimal("0.0")
         return self.remainder_value
 
-    def coupon_totalize(self, discount, markup, taxcode):
+    def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
+                        taxcode=TAX_NONE):
         if discount:
             type = 'D'
             val = '%04d' % int(float(discount) * 1e2)

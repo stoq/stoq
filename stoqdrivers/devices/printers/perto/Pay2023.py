@@ -30,6 +30,7 @@ stoqdrivers/devices/printers/perto/Pay2023.py:
 """
 
 from datetime import datetime
+from decimal import Decimal
 
 from serial import EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
 from zope.interface import implements
@@ -259,8 +260,10 @@ class Pay2023(SerialBase, BaseChequePrinter):
         except InvalidState:
             raise CouponOpenError(_("Coupon already opened."))
 
-    def coupon_add_item(self, code, quantity, price, unit, description, taxcode,
-                        discount, surcharge, unit_desc=""):
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"), surcharge=Decimal("0.0"),
+                        unit_desc=""):
         if unit == UNIT_CUSTOM:
             unit = unit_desc
         else:
@@ -280,7 +283,8 @@ class Pay2023(SerialBase, BaseChequePrinter):
     def coupon_cancel(self):
         self.send_command(Pay2023.CMD_COUPON_CANCEL)
 
-    def coupon_totalize(self, discount, surcharge, taxcode):
+    def coupon_totalize(self, discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
         # The FISCnet protocol (the protocol used in this printer model)
         # doesn't have a command to totalize the coupon, so we just get
         # the discount/surcharge values and applied to the coupon.
@@ -290,7 +294,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
                               ValorPercentual="%.02f" % value)
         return self.get_coupon_total_value()
 
-    def coupon_add_payment(self, payment_method, value, description='',
+    def coupon_add_payment(self, payment_method, value, description=u"",
                            custom_pm=''):
         if not custom_pm:
             pm = self._consts.get_value(payment_method)

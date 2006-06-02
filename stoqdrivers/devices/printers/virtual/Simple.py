@@ -39,6 +39,7 @@ from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CancelItemError, ItemAdditionError)
 from stoqdrivers.devices.printers.interface import (ICouponPrinter,
                                                     IChequePrinter)
+from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
@@ -96,8 +97,10 @@ class Simple:
         self._check_coupon_is_closed()
         self.is_coupon_opened = True
 
-    def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, surcharge, unit_desc=''):
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         self._check_coupon_is_opened()
         if self.is_coupon_totalized:
             raise ItemAdditionError(_("The coupon is already totalized, "
@@ -121,7 +124,8 @@ class Simple:
         self._check_coupon_is_opened()
         self._reset_flags()
 
-    def coupon_totalize(self, discount, surcharge, taxcode):
+    def coupon_totalize(self, discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
         self._check_coupon_is_opened()
         if not self.items_quantity:
             raise CouponTotalizeError(_("The coupon can't be totalized, since "
@@ -143,8 +147,8 @@ class Simple:
         self.is_coupon_totalized = True
         return self.totalized_value
 
-    def coupon_add_payment(self, payment_method, value, description='',
-                           custom_pm=''):
+    def coupon_add_payment(self, payment_method, value, description=u"",
+                           custom_pm=""):
         if not self.is_coupon_totalized:
             raise PaymentAdditionError(_("Isn't possible add payments to the "
                                          "coupon since it isn't totalized"))

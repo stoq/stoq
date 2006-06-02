@@ -28,7 +28,8 @@
 from decimal import Decimal
 from unittest import TestCase, makeSuite, TextTestRunner
 
-from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE, MONEY_PM
+from stoqdrivers.constants import (TAX_NONE, MONEY_PM, TAX_SUBSTITUTION,
+                                   UNIT_CUSTOM, UNIT_LITERS, TAX_ICMS)
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.exceptions import (CancelItemError, CloseCouponError,
                                     PaymentAdditionError, CouponNotOpenError,
@@ -57,21 +58,21 @@ class FlowTest(TestCase):
                    % FlowTest._printer.brand)
             return
         self.failUnlessRaises(CouponNotOpenError, FlowTest._printer.add_item,
-                              "000001", Decimal("2"), Decimal("1.30"),
-                              UNIT_EMPTY, "Cigarro", TAX_NONE, Decimal("0"),
-                              Decimal("0"))
+                              u"000001", u"Cigarro", Decimal("1.30"),
+                              TAX_SUBSTITUTION, Decimal("2.0"),
+                              unit=UNIT_CUSTOM, unit_desc="mc")
         FlowTest._printer.open()
 
     def test2_CancelItemTwice(self):
-        i1 = FlowTest._printer.add_item("000001", Decimal("2"), Decimal("1.30"),
-                                        UNIT_EMPTY, "Cigarro", TAX_NONE,
-                                        Decimal("0"), Decimal("0"))
-        i2 = FlowTest._printer.add_item("000002", Decimal("3"), Decimal("5.20"),
-                                        UNIT_EMPTY, "Cerveja", TAX_NONE,
-                                        Decimal("0"), Decimal("0"))
-        i3 = FlowTest._printer.add_item("000003", Decimal("1"), Decimal("2.30"),
-                                        UNIT_EMPTY,"Isqueiro", TAX_NONE,
-                                        Decimal("0"), Decimal("0"))
+        i1 = FlowTest._printer.add_item(u"000001", u"Cigarro", Decimal("1.30"),
+                                        TAX_SUBSTITUTION, Decimal("2.0"),
+                                        unit=UNIT_CUSTOM, unit_desc=u"mc")
+        i2 = FlowTest._printer.add_item(u"000002", u"Cerveja", Decimal("5.20"),
+                                        TAX_SUBSTITUTION, Decimal("3.0"),
+                                        unit=UNIT_LITERS)
+        i3 = FlowTest._printer.add_item(u"000003", u"Isqueiro", Decimal("2.30"),
+                                        TAX_ICMS, Decimal("1.0"),
+                                        unit=UNIT_CUSTOM, unit_desc="pc")
         FlowTest._printer.cancel_item(i3)
         self.failUnlessRaises(CancelItemError,
                               FlowTest._printer.cancel_item, i3)
@@ -93,9 +94,9 @@ class FlowTest(TestCase):
 
     def test6_AddItemWithCouponTotalized(self):
         self.failUnlessRaises(AlreadyTotalized, FlowTest._printer.add_item,
-                              "0005", Decimal("4"), Decimal("2.30"),
-                              UNIT_EMPTY, "Cigarro", TAX_NONE, Decimal("0"),
-                              Decimal("0"))
+                              u"000001", u"Cigarro", Decimal("2.30"),
+                              TAX_SUBSTITUTION, Decimal("4.0"),
+                              unit=UNIT_CUSTOM, unit_desc="mc")
 
     def test7_CloseCouponWithoutPayments(self):
         if FlowTest._printer.brand != "dataregis":
@@ -103,7 +104,7 @@ class FlowTest(TestCase):
         else:
             print ("skipping test (it isn't supported on `%s')"
                    % FlowTest._printer.brand)
-        FlowTest._printer.add_payment(MONEY_PM, Decimal("100.0"), "")
+        FlowTest._printer.add_payment(MONEY_PM, Decimal("100.0"))
         FlowTest._printer.close()
 
 def test():

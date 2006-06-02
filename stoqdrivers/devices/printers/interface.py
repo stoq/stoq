@@ -32,7 +32,11 @@ stoqdrivers/devices/printers/interface.py:
     Printer Driver API
 """
 
+from decimal import Decimal
+
 from zope.interface import Interface, Attribute
+
+from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
 
 class IDriverConstants(Interface):
     """ This interface determines the methods to be implemented by all objects
@@ -90,29 +94,31 @@ class ICouponPrinter(IPrinter):
         identify_customer())
         """
 
-    def coupon_add_item(code, quantity, price, unit, description, taxcode,
-                        discount, surcharge, unit_desc=''):
+    def coupon_add_item(code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         """ Adds an item to the coupon.
 
         @param code:      item code identifier
         @type  code:      str
 
-        @param quantity:  quantity
-        @type  quantity:  Decimal
+        @param description:  description of product
+        @type  desription: str
 
         @param price:     price
         @type  price:     Decimal
 
-        @param unit:      constant to describe the unit
-        @type unit:       integer constant one of: UNIT_LITERS, UNIT_EMPTY,
-                          UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
-
-        @param description:  description of product
-        @type  desription: str
-
         @param taxcode:   constant to descrive the tax
         @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
                           TAX_EXEMPTION
+
+        @param quantity:  quantity
+        @type  quantity:  Decimal
+
+        @param unit:      constant to describe the unit
+        @type unit:       integer constant one of: UNIT_LITERS, UNIT_EMPTY,
+                          UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
 
         @param discount:  discount in %
         @type  discount   Decimal between 0-100
@@ -140,7 +146,8 @@ class ICouponPrinter(IPrinter):
         possible to open new coupons after this is called.
         """
 
-    def coupon_totalize(discount, surcharge, taxcode):
+    def coupon_totalize(discount=Decimal("0.0"), surcharge=Decimal("0.0"),
+                        taxcode=TAX_NONE):
         """ Closes the coupon applies addition a discount or surcharge and tax.
         This can only be called when the coupon is open, has items added and
         payments added.
@@ -151,13 +158,15 @@ class ICouponPrinter(IPrinter):
         @param surcharge: surcharge in %
         @type  surcharge  Decimal between 0-100
 
-        @param tax_code:  currently unused
+        @param taxcode:   constant to descrive the tax
+        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
+                          TAX_EXEMPTION
 
         @rtype:           Decimal
         @returns          the coupon total value
         """
 
-    def coupon_add_payment(payment_method, value, description='', custom_pm=''):
+    def coupon_add_payment(payment_method, value, description=u"", custom_pm=''):
         """
         @param payment_method: The payment method.
         @type payment_method:  A constant (defined in the constants.py module)
@@ -168,7 +177,7 @@ class ICouponPrinter(IPrinter):
 
         @param description: A simple description of the payment method to be
                             appended to the coupon.
-        @type value:      str
+        @type value:      unicode
 
         @param custom_pm: When using CUSTOM_PM as argument for 'payment_method',
                           you must specify its value with this parameter.

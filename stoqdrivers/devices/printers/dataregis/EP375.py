@@ -469,8 +469,11 @@ class EP375(SerialBase, BaseChequePrinter):
         if status.needs_read_X():
             raise PendingReadX(_("Pending Read X"))
 
-    def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, surcharge, unit_desc=''):
+
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
         if surcharge:
@@ -519,8 +522,9 @@ class EP375(SerialBase, BaseChequePrinter):
         except CommandError, e:
             raise CouponNotOpenError(e)
 
-    def coupon_totalize(self, discount, surcharge, taxcode):
-        # The callsite must check if discount and surcharge are used together,
+    def coupon_totalize(self, discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
+        # The callsite must check if discount and charge are used together,
         # if so must raise an exception -- here we have a second check for
         # this.
         assert not (discount and surcharge)
@@ -529,9 +533,8 @@ class EP375(SerialBase, BaseChequePrinter):
         # so we need just save the discount/surcharge (if any) to use in the
         # add_payment calls
         self.coupon_discount, self.coupon_surcharge = discount, surcharge
-
-        coupon_total_value = (self._get_coupon_remaining_value() + surcharge
-                              - discount)
+        coupon_total_value = (self._get_coupon_remaining_value()
+                              + surcharge - discount)
         return coupon_total_value
 
     def coupon_add_payment(self, payment_method, value, description='',

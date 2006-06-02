@@ -30,17 +30,20 @@ stoqdrivers/devices/printers/daruma/FS2100.py:
 """
 
 import operator
+from decimal import Decimal
 
 from stoqdrivers.devices.printers.daruma.FS345 import FS345
-from stoqdrivers.constants import UNIT_CUSTOM
+from stoqdrivers.constants import UNIT_CUSTOM, UNIT_EMPTY
 
 CMD_ADD_ITEM = 201
 
 class FS2100(FS345):
     model_name = "Daruma FS 2100"
 
-    def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, surcharge, unit_desc=''):
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         taxcode = self._consts.get_value(taxcode)
         if surcharge:
             d = 2

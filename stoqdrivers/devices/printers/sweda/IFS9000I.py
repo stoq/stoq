@@ -31,6 +31,7 @@ stoqdrivers/devices/printers/sweda/IFS9000I.py:
 
 import string
 import datetime
+from decimal import Decimal
 
 from zope.interface import implements
 
@@ -455,8 +456,11 @@ class IFS9000I(SerialBase):
             # a read X pending, so..
             raise PendingReadX(_("A read X is pending."))
 
-    def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, dicount, surcharge, unit_desc=''):
+
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
         unit_code = self._consts.get_value(unit)
@@ -538,7 +542,8 @@ class IFS9000I(SerialBase):
                           '%012d' % int(float(value) * 1e2), description)
         return self.get_remainder_value()
 
-    def coupon_totalize(self, discount, surcharge, taxcode, message=''):
+    def coupon_totalize(self, discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), taxcode=TAX_NONE):
         """ Print the total value of the coupon.
         The taxcode argument is useless here and exists only for API
         compatibility
@@ -547,11 +552,7 @@ class IFS9000I(SerialBase):
             self.discount_coupon(discount)
         elif surcharge:
             self.coupon_add_surcharge(None, surcharge, None)
-
-        if message:
-            message = '{' + message
-
-        self.send_command(self.CMD_COUPON_TOTALIZE, message)
+        self.send_command(self.CMD_COUPON_TOTALIZE)
         return self.get_totalized_value()
 
     def coupon_close(self, message=''):

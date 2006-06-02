@@ -30,6 +30,7 @@ stoqdrivers/devices/printers/daruma/FS345.py:
     Daruma printer drivers implementation
 """
 import time
+from decimal import Decimal
 
 from zope.interface import implements
 
@@ -240,8 +241,8 @@ class FS345(SerialBase):
         elif error == 11:
             raise CouponNotOpenError(_("Coupon is not open"))
         elif error == 15:
-            raise CancelItemError(_("There is no such item in"
-                                    "coupon"))
+            raise CancelItemError(_("There is no such item in "
+                                    "the coupon"))
         else:
             raise DriverError("Unhandled error: %d" % error)
 
@@ -336,8 +337,10 @@ class FS345(SerialBase):
             raise CouponOpenError(_("Coupon already open"))
         self.send_command(CMD_OPEN_COUPON)
 
-    def coupon_add_item(self, code, quantity, price, unit, description,
-                        taxcode, discount, surcharge, unit_desc=''):
+    def coupon_add_item(self, code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
         taxcode = self._consts.get_value(taxcode)
         if surcharge:
             d = 1
@@ -373,26 +376,29 @@ class FS345(SerialBase):
         self._verify_coupon_open()
         self.send_command(CMD_CANCEL_COUPON)
 
-    def coupon_totalize(self, discount, markup, taxcode):
+    def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
+                        taxcode=TAX_NONE):
+        if markup and taxcode == TAX_NONE:
+            raise ValueError("to specify a markup you need specify "
+                             "its tax code")
         self._check_status()
         self._verify_coupon_open()
 
         if markup:
             value = markup
-            name = 'markup'
+            if taxcode == TAX_ICMS:
+                mode = 2
+            elif taxcode == TAX_IOF:
+                mode = 4
+            else:
+                raise ValueError("Invalid tax code specified. Allowed "
+                                 "constants are: TAX_ICMS and TAX_IOF")
         elif discount:
             value = discount
-            name = 'discount'
+            mode = 0
         else:
+            mode = 0
             value = 0
-            name = ''
-
-        if taxcode == TAX_ICMS:
-            mode = 3
-        elif taxcode == TAX_IOF:
-            mode = 5
-        else: #taxcode == TAX_NONE:
-            mode = 1
 
         data = '%d%012d' % (mode, int(float(value) * 1e2))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
@@ -417,7 +423,6 @@ class FS345(SerialBase):
             for i in range(0, msg_len, LINE_LEN):
                 l.append(message[i:i+LINE_LEN])
             message = '\n'.join(l)
-
         try:
             self.send_command(CMD_CLOSE_COUPON, message + '\xff')
         except DriverError:
