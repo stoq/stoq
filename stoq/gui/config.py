@@ -39,6 +39,7 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
+from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
 
 from stoq.lib.configparser import StoqConfig, register_config
 from stoq.lib.startup import setup, set_branch_by_stationid
@@ -262,6 +263,17 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.password.set_sensitive(need_password)
         self.passwd_label.set_sensitive(need_password)
 
+    def _check_admin_password(self):
+        from stoqlib.domain.person import PersonAdaptToUser
+        if not PersonAdaptToUser.check_password_for(
+            USER_ADMIN_DEFAULT_NAME, self.wizard_model.stoq_user_data.password,
+            get_connection()):
+            self.stoq_user_passwd.set_invalid(
+                _("There is already a user registered as administrator and the "
+                  "password supplied doesn't match it"))
+            return False
+        return True
+
     #
     # WizardStep hooks
     #
@@ -305,15 +317,16 @@ class DatabaseSettingsStep(WizardEditorStep):
                     _("Invalid config file settings, got error '%s', "
                       "of type '%s'" % (value, type)))
             return False
+        register_config(self.wizard.config)
+        if check_installed_database():
+            return self._check_admin_password()
         return True
 
     def next_step(self):
         from stoqlib.lib.parameters import sysparam
         password = self.wizard_model.stoq_user_data.password
 
-        register_config(self.wizard.config)
         has_installed_db = check_installed_database()
-
         # Initialize database connections and create system data if the
         # database is empty
         setup(self.wizard.config, stoq_user_password=password)
