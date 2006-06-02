@@ -1,3 +1,11 @@
+Release 0.3.1 - 02/07/2006:
+
+	* Bug fixes: 2246, 2531, 2628
+
+	* Include support for driver constants
+	* Fiscal printer API improved
+	* pt_BR translation
+
 Release 0.3.0 - 08/03/2006:
 
 	* Bug fixes: 700, 2153, 2274, 2362, 2369, 2383,
@@ -30,4 +38,3 @@ Release 0.1.0 - 26/09/2005
 	* Support for multiple printer models of the same manufacter.
 	* Installation script implementation.
 	* Support for items cancellation on Daruma FS345.
-
