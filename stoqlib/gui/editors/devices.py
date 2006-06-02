@@ -249,8 +249,11 @@ class DeviceSettingsEditor(BaseEditor):
         self.model_combo.prefill(items)
 
     def _update_constants_button(self, *args):
-        self.constants_button.set_sensitive(self.model.is_valid()
-                                            and self.model.is_a_printer())
+        is_enabled = self.model.is_valid() and self.model.is_a_printer()
+        # FIXME: this part will be improved after changes in bug #2641
+        is_enabled = (is_enabled and self.model.brand != "bematech"
+                      and self.model.model != "DP20C")
+        self.constants_button.set_sensitive(is_enabled)
 
     def _edit_driver_constants(self, *args):
         if ((self._original_brand != self.model.brand
@@ -316,8 +319,12 @@ class DeviceSettingsEditor(BaseEditor):
     def on_confirm(self):
         if not self.model.is_a_printer():
             return self.model
-        if not self.edit_mode and (not self.model.constants
-                                   or not self.model.pm_constants):
+        is_enabled = self.edit_mode or (self.model.constants
+                                        or self.model.pm_constants)
+        # FIXME: this part will be improved when bug #2641 is fixed
+        is_enabled = is_enabled or (self.model.brand != "bematech"
+                                    and self.model.model != "DP20C")
+        if not is_enabled:
             warning( _(u"The printer will be disabled"),
                      _(u"The printer will be disabled automatically "
                         "because there are no constants defined yet."))
