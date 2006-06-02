@@ -672,6 +672,16 @@ class PersonAdaptToUser(ModelAdapter):
             return _('Active')
         return _('Inactive')
 
+    @classmethod
+    def check_password_for(cls, username, password, conn):
+        result = cls.select(cls.q.username == username, connection=conn)
+        if result.count() > 1:
+            raise DatabaseInconsistency("It is not possible have more than "
+                                        "one user with the same username.")
+        if result.count():
+            return result[0].password == password
+        return True
+
 Person.registerFacet(PersonAdaptToUser, IUser)
 
 class PersonAdaptToBranch(ModelAdapter):
