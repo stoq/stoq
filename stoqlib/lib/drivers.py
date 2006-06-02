@@ -302,9 +302,9 @@ class FiscalCoupon:
         code = sellable.get_code_str()[:max_len]
 
         # FIXME: TAX_NONE is a HACK, waiting for bug #2269
-        item_id = self.printer.add_item(code, item.quantity, item.price,
-                                        unit, description,  TAX_NONE, 0,
-                                        0, unit_desc=unit_desc)
+        item_id = self.printer.add_item(code, description, item.price,
+                                        TAX_NONE, item.quantity, unit,
+                                        unit_desc=unit_desc)
         ids = self._item_ids.setdefault(item, [])
         ids.append(item_id)
 
@@ -414,8 +414,7 @@ class FiscalCoupon:
             raise ValueError("The sale object must have a PaymentGroup facet at "
                              "this point.")
         if group.default_method == METHOD_GIFT_CERTIFICATE:
-            self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount(),
-                                     '')
+            self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
 
         station = get_current_station(self.conn)
