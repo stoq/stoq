@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-31 18:38-0300\n"
+"POT-Creation-Date: 2006-06-02 10:47-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -155,8 +155,8 @@ msgid ""
 "not be included"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:145 ../stoq/gui/till/till.py:266
-#: ../stoq/gui/till/till.py:279 ../stoq/gui/pos/pos.py:423
+#: ../stoq/gui/purchase/purchase.py:145 ../stoq/gui/till/till.py:252
+#: ../stoq/gui/till/till.py:265 ../stoq/gui/pos/pos.py:432
 msgid "Cancel"
 msgstr ""
 
@@ -170,12 +170,12 @@ msgid "Any"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:184 ../stoq/gui/sales/sales.py:164
-#: ../stoq/gui/till/till.py:239 ../stoq/gui/receivable/receivable.py:95
+#: ../stoq/gui/till/till.py:225 ../stoq/gui/receivable/receivable.py:95
 msgid "Number"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:186 ../stoq/gui/sales/sales.py:64
-#: ../stoq/gui/till/till.py:241
+#: ../stoq/gui/till/till.py:227
 msgid "Date Started"
 msgstr ""
 
@@ -263,20 +263,20 @@ msgstr ""
 msgid "Preview Model"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:166 ../stoq/gui/till/till.py:243
+#: ../stoq/gui/sales/sales.py:166 ../stoq/gui/till/till.py:229
 msgid "Client"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:168 ../stoq/gui/till/till.py:245
+#: ../stoq/gui/sales/sales.py:168 ../stoq/gui/till/till.py:231
 msgid "Salesperson"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:170 ../stoq/gui/till/till.py:247
+#: ../stoq/gui/sales/sales.py:170 ../stoq/gui/till/till.py:233
 msgid "Items Quantity"
 msgstr ""
 
-#: ../stoq/gui/sales/sales.py:173 ../stoq/gui/till/till.py:250
-#: ../stoq/gui/pos/pos.py:480
+#: ../stoq/gui/sales/sales.py:173 ../stoq/gui/till/till.py:236
+#: ../stoq/gui/pos/pos.py:489
 msgid "Total"
 msgstr ""
 
@@ -298,28 +298,28 @@ msgstr ""
 msgid "Till Opened on %s"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:200
+#: ../stoq/gui/till/till.py:186
 msgid "Confirm Sale"
 msgstr ""
 
 #. XXX The current approch to get the current branch is going to
 #. be improved after bug 2621
-#: ../stoq/gui/till/till.py:236
+#: ../stoq/gui/till/till.py:222
 #, python-format
 msgid "Stoq - Till for Branch %03d"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:263
+#: ../stoq/gui/till/till.py:249
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:267 ../stoq/gui/till/till.py:280
+#: ../stoq/gui/till/till.py:253 ../stoq/gui/till/till.py:266
 msgid "Ignore"
 msgstr ""
 
-#: ../stoq/gui/till/till.py:276
+#: ../stoq/gui/till/till.py:262
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
@@ -354,15 +354,15 @@ msgid "Code"
 msgstr ""
 
 #: ../stoq/gui/warehouse/warehouse.py:111
-#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:471
+#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:480
 msgid "Description"
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:115 ../stoq/gui/pos/pos.py:475
+#: ../stoq/gui/warehouse/warehouse.py:115 ../stoq/gui/pos/pos.py:484
 msgid "Quantity"
 msgstr ""
 
-#: ../stoq/gui/warehouse/warehouse.py:117 ../stoq/gui/pos/pos.py:478
+#: ../stoq/gui/warehouse/warehouse.py:117 ../stoq/gui/pos/pos.py:487
 msgid "Unit"
 msgstr ""
 
@@ -402,50 +402,50 @@ msgstr ""
 msgid "You need to open the till before start doing sales."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:281
+#: ../stoq/gui/pos/pos.py:288
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:283
+#: ../stoq/gui/pos/pos.py:290
 msgid "Can not sell this product"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:351
+#: ../stoq/gui/pos/pos.py:358
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:352
+#: ../stoq/gui/pos/pos.py:359
 msgid "Go Back"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:353 ../data/pos.glade.h:7
+#: ../stoq/gui/pos/pos.py:360 ../data/pos.glade.h:7
 msgid "Cancel Order"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:363
+#: ../stoq/gui/pos/pos.py:370
 msgid "You don't have products to delivery."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:369
+#: ../stoq/gui/pos/pos.py:376
 msgid "All the products already have delivery instructions"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:420
+#: ../stoq/gui/pos/pos.py:429
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:424
+#: ../stoq/gui/pos/pos.py:433
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:467
+#: ../stoq/gui/pos/pos.py:476
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:473
+#: ../stoq/gui/pos/pos.py:482
 msgid "Price"
 msgstr ""
 
@@ -500,13 +500,13 @@ msgstr ""
 msgid "Gift Certificates..."
 msgstr ""
 
-#: ../data/sales_app.glade.h:10 ../data/till.glade.h:13
+#: ../data/sales_app.glade.h:10 ../data/till.glade.h:14
 #: ../data/purchase.glade.h:13 ../data/admin.glade.h:19 ../data/pos.glade.h:23
 #: ../data/receivable.glade.h:9 ../data/warehouse.glade.h:9
 msgid "Open a file"
 msgstr ""
 
-#: ../data/sales_app.glade.h:11 ../data/till.glade.h:14
+#: ../data/sales_app.glade.h:11 ../data/till.glade.h:15
 #: ../data/purchase.glade.h:14 ../data/admin.glade.h:20 ../data/pos.glade.h:26
 #: ../data/receivable.glade.h:10 ../data/warehouse.glade.h:10
 msgid "Paste object from the Clipboard"
@@ -521,13 +521,13 @@ msgstr ""
 msgid "Products..."
 msgstr ""
 
-#: ../data/sales_app.glade.h:14 ../data/till.glade.h:15
+#: ../data/sales_app.glade.h:14 ../data/till.glade.h:16
 #: ../data/purchase.glade.h:17 ../data/admin.glade.h:22 ../data/pos.glade.h:31
 #: ../data/receivable.glade.h:11 ../data/warehouse.glade.h:12
 msgid "Quit"
 msgstr ""
 
-#: ../data/sales_app.glade.h:15 ../data/till.glade.h:16
+#: ../data/sales_app.glade.h:15 ../data/till.glade.h:17
 #: ../data/purchase.glade.h:18 ../data/admin.glade.h:23 ../data/pos.glade.h:32
 #: ../data/receivable.glade.h:12 ../data/warehouse.glade.h:13
 msgid "Quit the program"
@@ -537,13 +537,13 @@ msgstr ""
 msgid "S_ales"
 msgstr ""
 
-#: ../data/sales_app.glade.h:17 ../data/till.glade.h:21
+#: ../data/sales_app.glade.h:17 ../data/till.glade.h:22
 #: ../data/purchase.glade.h:20 ../data/admin.glade.h:26 ../data/pos.glade.h:41
 #: ../data/receivable.glade.h:13 ../data/warehouse.glade.h:19
 msgid "Save a file"
 msgstr ""
 
-#: ../data/sales_app.glade.h:18 ../data/till.glade.h:22
+#: ../data/sales_app.glade.h:18 ../data/till.glade.h:23
 #: ../data/receivable.glade.h:14
 msgid "Save with a different name"
 msgstr ""
@@ -561,24 +561,24 @@ msgstr ""
 msgid "Services..."
 msgstr ""
 
-#: ../data/sales_app.glade.h:22 ../data/till.glade.h:23 ../data/pos.glade.h:45
+#: ../data/sales_app.glade.h:22 ../data/till.glade.h:24 ../data/pos.glade.h:45
 #: ../data/receivable.glade.h:15
 msgid "Store Cookie"
 msgstr ""
 
-#: ../data/sales_app.glade.h:23 ../data/till.glade.h:26
+#: ../data/sales_app.glade.h:23 ../data/till.glade.h:27
 #: ../data/purchase.glade.h:28 ../data/admin.glade.h:34 ../data/pos.glade.h:47
 #: ../data/receivable.glade.h:19 ../data/warehouse.glade.h:23
 msgid "_Edit"
 msgstr ""
 
-#: ../data/sales_app.glade.h:24 ../data/till.glade.h:27
+#: ../data/sales_app.glade.h:24 ../data/till.glade.h:28
 #: ../data/purchase.glade.h:30 ../data/pos.glade.h:48
 #: ../data/receivable.glade.h:21 ../data/warehouse.glade.h:24
 msgid "_File"
 msgstr ""
 
-#: ../data/sales_app.glade.h:25 ../data/till.glade.h:28
+#: ../data/sales_app.glade.h:25 ../data/till.glade.h:29
 #: ../data/purchase.glade.h:31 ../data/pos.glade.h:49
 #: ../data/receivable.glade.h:22 ../data/warehouse.glade.h:25
 msgid "_Help"
@@ -588,7 +588,7 @@ msgstr ""
 msgid "_Print Invoice"
 msgstr ""
 
-#: ../data/sales_app.glade.h:27 ../data/till.glade.h:30
+#: ../data/sales_app.glade.h:27 ../data/till.glade.h:31
 #: ../data/purchase.glade.h:35 ../data/admin.glade.h:38 ../data/pos.glade.h:52
 #: ../data/receivable.glade.h:24 ../data/warehouse.glade.h:28
 msgid "_User"
@@ -612,34 +612,38 @@ msgid "Details"
 msgstr ""
 
 #: ../data/till.glade.h:12
+msgid "Fiscal Till Operations..."
+msgstr ""
+
+#: ../data/till.glade.h:13
 msgid "Open Till..."
 msgstr ""
 
-#: ../data/till.glade.h:17
+#: ../data/till.glade.h:18
 msgid "Return..."
 msgstr ""
 
-#: ../data/till.glade.h:18
+#: ../data/till.glade.h:19
 msgid "STOQ - Till Application"
 msgstr ""
 
-#: ../data/till.glade.h:19 ../data/warehouse.glade.h:17
+#: ../data/till.glade.h:20 ../data/warehouse.glade.h:17
 msgid "S_earch"
 msgstr ""
 
-#: ../data/till.glade.h:20 ../data/pos.glade.h:38
+#: ../data/till.glade.h:21 ../data/pos.glade.h:38
 msgid "Sales..."
 msgstr ""
 
-#: ../data/till.glade.h:24
+#: ../data/till.glade.h:25
 msgid "Till Opened Since 01/01/2006"
 msgstr ""
 
-#: ../data/till.glade.h:25
-msgid "Till Operations..."
+#: ../data/till.glade.h:26
+msgid "Treasury..."
 msgstr ""
 
-#: ../data/till.glade.h:29
+#: ../data/till.glade.h:30
 msgid "_Till"
 msgstr ""
 
@@ -883,7 +887,7 @@ msgid "Select:"
 msgstr ""
 
 #: ../data/pos.glade.h:1
-msgid "0,00"
+msgid "0.00"
 msgstr ""
 
 #: ../data/pos.glade.h:3
