@@ -41,13 +41,13 @@ if majmin < REQUIRED_VERSION:
                      "install a new version."
                      % ('.'.join(map(str, REQUIRED_VERSION)), version_string))
 
-DEFAULT_STOQ_VERSION = '0.7.0'
+DEFAULT_STOQ_VERSION = '0.8.0'
 DEFAULT_URL = ("http://www.async.com.br/projects/stoq/dist/%s" %
                DEFAULT_STOQ_VERSION)
 
 stoq_required_packages = [('kiwi', '1.9.7'),
                           ('gazpacho', '0.6.5'),
-                          ('stoqdrivers', '0.3'),
+                          ('stoqdrivers', '0.3.1'),
                           ('stoqlib', DEFAULT_STOQ_VERSION),
                           ('stoq', DEFAULT_STOQ_VERSION)]
 

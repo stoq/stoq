@@ -4,8 +4,8 @@ import sys
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
-version         = "0.7.0"
-release_date    = (2006, 3, 15)
+version         = "0.8.0"
+release_date    = (2006, 6, 2)
 
 # Required version of Python
 REQUIRED_VERSION = (2, 4)
