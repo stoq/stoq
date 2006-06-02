@@ -26,3 +26,5 @@
 --
 -- This file will be implemented on bug 2640
 --
+
+select 1;

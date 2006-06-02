@@ -421,7 +421,7 @@ CREATE VIEW service_view AS
         WHERE service.is_valid_model = 't';
 
 
-select drop_existing_view('giftcertificate_view');
+select drop_existing_view('gift_certificate_view');
 CREATE VIEW gift_certificate_view AS
   --
   -- Stores information about gift certificates

@@ -466,13 +466,17 @@ class ParameterAccess(ClassInittableObject):
         self._cache[field_name] = param
         return param
 
-    def set_defaults(self):
+    def set_defaults(self, update=False):
         self._remove_unused_parameters()
         self._cash = {}
         constants = [c for c in self.constants if c.initial is not None]
 
         # Creating constants
         for obj in constants:
+            if (update and self.get_parameter_by_field(obj.key, obj.type)
+                is not None):
+                continue
+
             if obj.type is bool:
                 # Convert Bool to int here
                 value = int(obj.initial)
@@ -699,10 +703,10 @@ def get_parameter_details(field_name):
 #
 
 
-def ensure_system_parameters():
+def ensure_system_parameters(update=False):
     print_msg("Creating default system parameters...", break_line=False)
     conn = new_transaction()
     param = sysparam(conn)
-    param.set_defaults()
+    param.set_defaults(update)
     finish_transaction(conn, 1)
     print_msg('done')
