@@ -10,7 +10,7 @@ release_date    = (2006, 6, 2)
 # Required version of Python
 REQUIRED_VERSION = (2, 4)
 
-KIWI_REQUIRED = '1.9.7'
+KIWI_REQUIRED = '1.9.8'
 
 # Directory name, defaults to name of binary, it is relative to ..
 # a, __init__.py and main.py is expected to be found there.
