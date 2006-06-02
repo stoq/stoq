@@ -490,7 +490,8 @@ class EP375(SerialBase, BaseChequePrinter):
         # but my XXX remains *HERE*
         #
         try:
-            code_num = int(code[:6])
+            code_num = int(code[:7])
+            code = ("%06d" % code_num) + code[7:]
         except ValueError:
             code = "0" * 6 +  code
         taxcode = self._consts.get_value(taxcode)
@@ -629,7 +630,7 @@ class EP375(SerialBase, BaseChequePrinter):
                             "instance")
         if date is None:
             date = datetime.now()
-        value = '%014d' % int(value * 1e2)
+        value = '%014d' % int(value * int(1e2))
         thirdparty = '%-50s' % thirdparty[:50]
         city = "%-20s" % city[:20]
         date = date.strftime("%d%m%y")
