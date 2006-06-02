@@ -561,8 +561,8 @@ class CheckMethodSlave(BasePaymentMethodSlave):
         """ If there is any selected item in the banks combo, return this
         as extra parameter to the slave (CheckDataSlave). """
         if (self.bank_combo.get_property("visible")
-            and self.bank_combo.get_model_items()):
-            bank_id = self.bank_combo.get_selected_data()
+            and len(self.bank_combo.get_model())):
+            bank_id = self.bank_combo.get_selected()
             if bank_id:
                 return [bank_id]
         return []
