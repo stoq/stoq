@@ -164,9 +164,15 @@ class DeviceSettingsEditor(BaseEditor):
     def __init__(self, conn, model=None, station=None):
         self.printers_dict = get_supported_printers()
         self._branch_station = station
+        # This attribute is set to True when setup_proxies is finished
+        self._is_initialized = False
         BaseEditor.__init__(self, conn, model)
         self._original_brand = self.model.brand
         self._original_model = self.model.model
+
+    def refresh_ok(self, *args):
+        if self._is_initialized:
+            BaseEditor.refresh_ok(self, self.model.is_valid())
 
     def setup_station_combo(self):
         if self._branch_station:
@@ -269,6 +275,7 @@ class DeviceSettingsEditor(BaseEditor):
         self.setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     DeviceSettingsEditor.proxy_widgets)
+        self._is_initialized = True
 
     def create_model(self, conn):
         return DeviceSettings(device=DeviceSettings.DEVICE_SERIAL1,
@@ -336,20 +343,25 @@ class DeviceSettingsEditor(BaseEditor):
     def on_brand_combo__changed(self, *args):
         self.update_model_combo()
         self._update_constants_button()
+        self.refresh_ok()
 
     def on_type_combo__changed(self, *args):
         self.update_brand_combo()
         self._update_constants_button()
+        self.refresh_ok()
 
     def on_brand_combo__state_changed(self, *args):
         self.update_model_combo()
         self._update_constants_button()
+        self.refresh_ok()
 
     def on_model_combo__changed(self, *args):
         self._update_constants_button()
+        self.refresh_ok()
 
     def on_device_combo__changed(self, *args):
         self._update_constants_button()
+        self.refresh_ok()
 
     def on_constants_button__clicked(self, *args):
         self._edit_driver_constants()
