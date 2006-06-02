@@ -271,20 +271,20 @@
                                         <property name="is_focus">True</property>
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="GtkAlignment" id="alignment2">
+                                            <widget class="GtkAlignment" id="alignment4">
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkHBox" id="hbox1">
                                                         <property name="visible">True</property>
                                                         <child>
-                                                            <widget class="GtkImage" id="image2">
+                                                            <widget class="GtkImage" id="image1">
                                                                 <property name="file">receive_order16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                         </child>
                                                         <child>
-                                                            <widget class="GtkLabel" id="label4">
-                                                                <property name="label" context="yes" translatable="yes">New Order...</property>
+                                                            <widget class="GtkLabel" id="label3">
+                                                                <property name="label" context="yes" translatable="yes">New...</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                             <packing>
@@ -439,7 +439,7 @@
                                                         <property name="digits">2</property>
                                                         <property name="is_focus">True</property>
                                                         <property name="model_attribute">quantity</property>
-                                                        <property name="text" context="yes" translatable="yes">0.00</property>
+                                                        <property name="text" context="yes" translatable="yes">0,00</property>
                                                         <property name="visible">True</property>
                                                         <property name="width_chars">5</property>
                                                     </widget>
