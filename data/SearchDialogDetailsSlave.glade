@@ -32,7 +32,7 @@
                                                         <property name="visible">True</property>
                                                         <child>
                                                             <widget class="GtkImage" id="image1">
-                                                                <property name="file">/home/lincoln/devel/stoq_packages/stoqlib/data/pixmaps/kfind16px.png</property>
+                                                                <property name="file">kfind16px.png</property>
                                                                 <property name="visible">True</property>
                                                             </widget>
                                                         </child>
