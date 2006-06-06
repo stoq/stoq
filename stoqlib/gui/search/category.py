@@ -78,10 +78,7 @@ class SellableCatSearch(SearchEditor):
 
     def __init__(self, conn):
         editor = SellableCategoryEditor
-        table = SellableCategory
-        search_table = AbstractSellableCategory
-        SearchEditor.__init__(self, conn, table, editor,
-                              search_table=search_table)
+        SearchEditor.__init__(self, conn, AbstractSellableCategory, editor)
         self.set_result_strings(_('category'), _('categories'))
         self.set_searchbar_labels(_('Categories Matching:'))
 
@@ -112,12 +109,20 @@ class SellableCatSearch(SearchEditor):
         base_ids = sets.Set([s.base_category.id for s in sellable_objs])
 
         base_objs = BaseSellableCategory.select(connection=self.conn)
-        reject = sets.Set([b.category_data.id for b in base_objs])
+        reject = sets.Set([b.id for b in base_objs])
         reject = reject - (reject & base_ids)
 
         abstract_ids = sets.Set([a.id for a in abstract_objects])
         abstract_ids = abstract_ids - (abstract_ids & reject)
 
         return [s for s in sellable_objs
-                    if s.category_data.id in abstract_ids
-                        or s.base_category.category_data.id in abstract_ids]
+                    if (s.category_data.id in abstract_ids
+                        or s.base_category.category_data.id in abstract_ids)]
+
+    # XXX: I need to overwrite SearchEditor's get_searchlist_model because
+    # its search_table differs from the objects in the Kiwi list -- but we
+    # need this, since we want to search in AbstractSellableCategory and
+    # prefill the list with SellableCategory objects (which have a foreign
+    # key to AbstractSellableCategory).
+    def get_searchlist_model(self, model):
+        return model
