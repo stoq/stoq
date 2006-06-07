@@ -31,7 +31,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import (CardInstallmentSettings,
-                                            DebitCardDetails, 
+                                            DebitCardDetails,
                                             CreditCardDetails,
                                             CardInstallmentsStoreDetails,
                                             CardInstallmentsProviderDetails,
@@ -104,7 +104,7 @@ def create_payments():
     for iface in [ICheckPM, IBillPM]:
         method = iface(pm, connection=conn)
         method.max_installments_number = MAX_INSTALLMENTS_NUMBER
-        
+
     conn.commit()
     print_msg("done.")
 

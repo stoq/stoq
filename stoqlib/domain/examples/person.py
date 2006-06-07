@@ -52,43 +52,43 @@ def create_people():
     print_msg('Creating person data...', break_line=False)
     conn = new_transaction()
 
-    person_data = [dict(name='John Wayne',
+    person_data = [dict(name='Reginaldo Vasconcellos',
                         phone_number='5143-2587',
                         mobile_number='9112-5487',
-                        email='someone@stoq.com'),
-                   dict(name='Mickey Mouse',
+                        email='regi@stoq.com'),
+                   dict(name='Ronaldo Nazário de Lima',
                         phone_number='8722-9822',
                         mobile_number='0987-5432',
-                        email='mouse@stoq.com'),
-                   dict(name='The dude',
+                        email='r9@stoq.com'),
+                   dict(name='Elias Rodrigues de Freitas',
                         phone_number='444-2222',
                         mobile_number='9999-9999',
-                        email='dude@stoq.com'),
-                   dict(name='Mad dog',
+                        email='eli@stoq.com'),
+                   dict(name='Giovana Bertolucci',
                         phone_number='1111-1111',
                         mobile_number='2222-2222',
-                        email='crazy@stoq.com')]
+                        email='gigi@stoq.com')]
 
-    individual_data = [dict(cpf='012XX',
-                            rg_number='48Y'),
-                       dict(cpf='98VV',
-                            rg_number='AR5T'),
-                       dict(cpf='WWT',
-                            rg_number='M8923'),
-                       dict(cpf='9999',
-                            rg_number='4444')]
+    individual_data = [dict(cpf='234675098',
+                            rg_number='222653658'),
+                       dict(cpf='23487593826',
+                            rg_number='447896754'),
+                       dict(cpf='634423111',
+                            rg_number='234568976'),
+                       dict(cpf='234576849',
+                            rg_number='323458382')]
 
-    company_data = [dict(cnpj='2222',
-                         fancy_name='Wayne Company',
+    company_data = [dict(cnpj='66782278129',
+                         fancy_name='RJA Imóveis',
                          state_registry='0098'),
                     dict(cnpj='4444',
-                         fancy_name='Mouse Ltd',
+                         fancy_name='PlugLine Soluções em Informática',
                          state_registry='1111'),
                     dict(cnpj='777',
-                         fancy_name='Dude Corporation',
+                         fancy_name='Buffet Itália',
                          state_registry='555'),
                     dict(cnpj='1110',
-                         fancy_name='Dog Ltd',
+                         fancy_name='Pizzaria Donnatello',
                          state_registry='3421')]
 
     role_data = [dict(name=_('Clerk')),
@@ -111,14 +111,14 @@ def create_people():
                         dict(open_contract_date=now + datetime.timedelta(15),
                              freight_percentage=decimal.Decimal('12.3'))]
 
-    user_data = [dict(username='john',
-                      password='john243'),
-                 dict(username='michey',
-                      password='mouse88'),
-                 dict(username='dude',
-                      password='dude43'),
-                 dict(username='maddog',
-                      password='dog54')]
+    user_data = [dict(username='regi',
+                      password='regi243'),
+                 dict(username='r9madrid',
+                      password='r9brasil'),
+                 dict(username='elias',
+                      password='eli666'),
+                 dict(username='gigi',
+                      password='gigipink')]
 
     cityloc_data = [dict(city='Belo Horizonte', country='Brasil',
                          state='MG'),
