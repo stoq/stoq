@@ -26,6 +26,10 @@
 
 import datetime
 import decimal
+import unittest
+import os
+import pwd
+import sys
 
 from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
@@ -33,8 +37,10 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import finish_transaction, Adapter
+from stoqlib.database import register_db_settings, DatabaseSettings
 from stoqlib.domain.columns import SOPriceCol
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.admin import initialize_system
+from stoqlib.lib.runtime import set_verbose, new_transaction
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')
@@ -81,7 +87,7 @@ def column_type_data(column):
                          % type(column))
 
 
-class BaseDomainTest(object):
+class BaseDomainTest(unittest.TestCase):
     """Base class to be used by all domain test classes.
     This class has some basic infrastructure:
 
@@ -100,46 +106,40 @@ class BaseDomainTest(object):
     skip_attrs = ['model_modified','_is_valid_model','model_created',
                   'childName']
 
-    @classmethod
-    def setup_class(cls):
-        if not cls._table:
+    def setUp(self):
+        if not self._table:
             raise StoqlibError("You must provide a _table attribute")
-        cls.conn = new_transaction()
-        cls._table_count = cls._table.select(connection=cls.conn).count()
-        cls._check_foreign_key_data()
-        cls.insert_dict, cls.edit_dict = cls._generate_test_data()
-        cls._generate_foreign_key_attrs()
+        self.conn = new_transaction()
+        self._table_count = self._table.select(connection=self.conn).count()
+        self._check_foreign_key_data()
+        self.insert_dict, self.edit_dict = self._generate_test_data()
+        self._generate_foreign_key_attrs()
 
-    @classmethod
-    def teardown_class(cls):
-        finish_transaction(cls.conn)
+    def tearDown(self):
+        finish_transaction(self.conn)
 
     #
     # Class methods
     #
 
-    @classmethod
-    def _check_foreign_key_data(cls):
-        cls._foreign_key_data = cls.get_foreign_key_data()
-        for fkey_data in cls._foreign_key_data:
-            assert fkey_data.get_connection() is cls.conn
+    def _check_foreign_key_data(self):
+        self._foreign_key_data = self.get_foreign_key_data()
+        for fkey_data in self._foreign_key_data:
+            assert fkey_data.get_connection() is self.conn
 
-    @classmethod
-    def _check_foreign_key(cls, table, fkey_name):
+    def _check_foreign_key(self, table, fkey_name):
         return fkey_name == table.sqlmeta.soClass.__name__
 
-    @classmethod
-    def _get_fkey_data_by_fkey_name(cls, fkey_name):
-        for data in cls._foreign_key_data:
+    def _get_fkey_data_by_fkey_name(self, fkey_name):
+        for data in self._foreign_key_data:
             table = type(data)
-            if cls._check_foreign_key(table, fkey_name):
+            if self._check_foreign_key(table, fkey_name):
                 return data
             table = table.sqlmeta.parentClass
-            if table and cls._check_foreign_key(table, fkey_name):
+            if table and self._check_foreign_key(table, fkey_name):
                 return data
 
-    @classmethod
-    def _generate_test_data(cls):
+    def _generate_test_data(self):
         """This method uses column_type_data function and return two dicts:
         insert_args: 'column_name': value #used to instance creation.
         edit_args: 'column_name': value   #used to set_and_get test.
@@ -148,17 +148,17 @@ class BaseDomainTest(object):
         edit = dict()
         cols = column_type_data
 
-        columns = cls._table.sqlmeta.columns.values()
-        table = cls._table.sqlmeta.parentClass
+        columns = self._table.sqlmeta.columns.values()
+        table = self._table.sqlmeta.parentClass
         if table:
             columns += table.sqlmeta.columns.values()
 
-        extra_values = cls.get_extra_field_values()
+        extra_values = self.get_extra_field_values()
         for column in columns:
             colname = column.origName
-            if colname in cls.skip_attrs:
+            if colname in self.skip_attrs:
                 continue
-            data = cls._get_fkey_data_by_fkey_name(column.foreignKey)
+            data = self._get_fkey_data_by_fkey_name(column.foreignKey)
             if data:
                 insert[colname] = edit[colname] = data
             elif colname in extra_values.keys():
@@ -167,19 +167,18 @@ class BaseDomainTest(object):
                 insert[colname], edit[colname] = cols(column)
         return insert, edit
 
-    @classmethod
-    def _generate_foreign_key_attrs(cls):
+    def _generate_foreign_key_attrs(self):
         """Create all foreign key objects using foreign_key_attrs dict and
         apeend to insert_dict attribute.
         """
-        if cls.foreign_key_attrs and isinstance(cls.foreign_key_attrs, dict):
-            for key, klass in cls.foreign_key_attrs.items():
-                fk_test_instance = klass(connection=cls.conn)
+        if self.foreign_key_attrs and isinstance(self.foreign_key_attrs, dict):
+            for key, klass in self.foreign_key_attrs.items():
+                fk_test_instance = klass(connection=self.conn)
                 insert_dict, edit_dict = fk_test_instance._generate_test_data()
                 fk_table = fk_test_instance._table
-                fk_instance = fk_table(connection=cls.conn,
+                fk_instance = fk_table(connection=self.conn,
                                        **insert_dict)
-                cls.insert_dict[key] = fk_instance
+                self.insert_dict[key] = fk_instance
 
     #
     # General methods
@@ -197,16 +196,14 @@ class BaseDomainTest(object):
     # Hooks
     #
 
-    @classmethod
-    def get_foreign_key_data(cls):
+    def get_foreign_key_data(self):
         return []
 
-    @classmethod
-    def get_extra_field_values(cls):
+    def get_extra_field_values(self):
         """This hook returns a dictionary of tuples. Each tuple has two values:
         an 'insert' and an 'edit' values. This list will be used when
-        setting attributes in cls._table. The dict keys are attribute names
-        of cls._table
+        setting attributes in self._table. The dict keys are attribute names
+        of self._table
         """
         return {}
 
@@ -220,7 +217,7 @@ class BaseDomainTest(object):
     # Tests
     #
 
-    def test_1_create_instance(self):
+    def create_instance(self):
         """ Create a domain class instance using insert_dict attribute and
         assert a new row in the database was inserted.
         """
@@ -234,7 +231,7 @@ class BaseDomainTest(object):
         assert (self._table_count ==
                 self._table.select(connection=self.conn).count())
 
-    def test_2_set_and_get(self):
+    def set_and_get(self):
         """Update each common attribute of a domain class using edit_dict
         and verify if the value was updated.
         """
@@ -243,3 +240,34 @@ class BaseDomainTest(object):
             setattr(self._instance, key, value)
             db_value = getattr(self._instance, key)
             self._check_set_and_get(value, db_value, key)
+
+def bootstrap_testsuite():
+    print sys.argv
+
+    verbose = False
+    if verbose:
+        print 'Bootstrapping testsuite'
+    username = os.environ.get('STOQLIB_TEST_USERNAME',
+                              pwd.getpwuid(os.getuid())[0])
+    hostname = os.environ.get('STOQLIB_TEST_HOSTNAME', 'localhost')
+    port = int(os.environ.get('STOQLIB_TEST_PORT', '5432'))
+    dbname =  os.environ.get('STOQLIB_TEST_DBNAME',
+                             '%s_test' % username)
+    password = ''
+
+    if verbose:
+        print 'Connecting to %s@%s:%s, database %s' % (username, hostname,
+                                                       port, dbname)
+    db_settings = DatabaseSettings(address=hostname,
+                                   port=port,
+                                   dbname=dbname,
+                                   username=username,
+                                   password=password)
+
+    set_verbose(verbose)
+    register_db_settings(db_settings)
+
+    initialize_system("", verbose=verbose, drop=True)
+
+    from stoqlib.domain.examples.createall import create
+    create()

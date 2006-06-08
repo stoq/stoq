@@ -38,7 +38,7 @@ _current_branch_identifier = None
 _current_station_identifier = None
 _verbose = False
 _test_mode = False
-_app_names = None
+_app_names = []
 _database_settings = None
 
 

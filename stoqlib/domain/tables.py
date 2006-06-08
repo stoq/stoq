@@ -140,6 +140,18 @@ _tables = [
                   "DeviceSettings"]),
 ]
 
+# Format stoqlib_%s_seq, see get_sequences()
+_sequences = [
+    'abstract_bookentry',
+    'branch_identifier',
+    'branch_station',
+    'payment_identifier',
+    'purchase_ordernumber',
+    'purchasereceiving_number',
+    'sale_ordernumber',
+    'sellable_code',
+    ]
+
 # fullname (eg "stoqlib.domain.person.Person") -> class
 _table_cache = {}
 # list of klasses, used by get_table_types where order is important
@@ -173,3 +185,10 @@ def get_table_types():
         _import()
 
     return _table_list
+
+def get_sequence_names():
+    """
+    @returns: a list of sequence names
+    """
+    global _sequences
+    return ['stoqlib_%s_seq' % seq for seq in _sequences]

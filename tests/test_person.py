@@ -56,11 +56,12 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.exceptions import CityLocationError
+from stoqlib.exceptions import CityLocationError, DatabaseInconsistency
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.tests.domain.base import BaseDomainTest
+from stoqlib.lib.runtime import get_current_station
+
+from tests.base import BaseDomainTest
 
 
 _ = stoqlib_gettext
@@ -113,13 +114,13 @@ class TestPerson(BaseDomainTest):
     """
     _table = Person
 
-    @classmethod
-    def get_extra_field_values(cls):
+    def get_extra_field_values(self):
         return dict(phone_number=PHONE_DATA_VALUES,
                     mobile_number=MOBILE_DATA_VALUES,
                     fax_number=FAX_DATA_VALUES)
 
     def test_get_main_address(self):
+        self.create_instance()
         assert not self._instance.get_main_address()
         ctlocs = CityLocation.select(connection=self.conn)
         assert ctlocs.count() > 0
@@ -134,9 +135,8 @@ class TestPerson(BaseDomainTest):
         address = Address(connection=self.conn, person=person,
                           city_location=ctloc, street ='bla', number=2,
                           district='fed', is_main_address=True)
-        assert person.get_address_string() == _(u'%s %s, %s') % (address.street,
-                                                                 address.number,
-                                                                 address.district)
+        self.assertEquals(person.get_address_string(), _(u'%s %s, %s') % (
+            address.street, address.number, address.district))
 
     #This method is used by test_check_individual_or_company_facets() method
     def _check_has_individual_or_company_facets(self, person):
@@ -272,10 +272,11 @@ class TestEmployeeRole(BaseDomainTest):
     _table = EmployeeRole
 
     def test_get_description(self):
+        self.create_instance()
         name = 'manager'
         self._instance.name = name
         desc = self._instance.get_description()
-        assert desc == name
+        self.assertEquals(desc, name)
 
 
 class TestWorkPermitData(BaseDomainTest):
@@ -309,6 +310,7 @@ class TestCityLocation(BaseDomainTest):
         country = 'Groenlandia'
         city = 'Acapulco'
         state = 'Wisconsin'
+        self.create_instance()
         self._instance.country = country
         self._instance.city = city
         self._instance.state = state
@@ -350,11 +352,10 @@ class TestAddress(BaseDomainTest):
     """
     _table = Address
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        person = get_person(cls.conn)
+    def get_foreign_key_data(self):
+        person = get_person(self.conn)
         city_location = CityLocation(city='A', state='B', country='C',
-                                     connection=cls.conn)
+                                     connection=self.conn)
         return person, city_location
 
     def test_is_valid_model(self):
@@ -385,9 +386,9 @@ class TestAddress(BaseDomainTest):
                                 connection=self.conn)
         address = Address(person=person, city_location=location,
                           connection=self.conn)
-        assert address.get_city() == 'Acapulco'
-        assert address.get_country() == 'Brazil'
-        assert address.get_state() == 'Cracovia'
+        self.assertEquals(address.get_city(), 'Acapulco')
+        self.assertEquals(address.get_country(), 'Brazil')
+        self.assertEquals(address.get_state(), 'Cracovia')
 
     def test_get_address_string(self):
         street = 'Rua das Couves'
@@ -399,8 +400,7 @@ class TestAddress(BaseDomainTest):
                           street=street, number=number, district=district,
                           connection=self.conn)
         string = address.get_address_string()
-        assert string == u'%s %s, %s' % (street, number, district)
-
+        self.assertEquals(string, u'%s %s, %s' % (street, number, district))
 
 class TestLiaison(BaseDomainTest):
     """
@@ -422,8 +422,8 @@ class TestIndividual(BaseDomainTest):
     """
     _table = PersonAdaptToIndividual
 
-    def _get_foreign_key_data(cls):
-        return get_new_city_location(cls.conn)
+    def _get_foreign_key_data(self):
+        return get_new_city_location(self.conn)
 
     def get_adapter(self):
         person = get_person(self.conn)
@@ -443,7 +443,7 @@ class TestCompany(BaseDomainTest):
     def test_get_description(self):
         person = get_person(self.conn)
         self._instance = person.addFacet(ICompany, connection=self.conn)
-        assert self._instance.get_description() == person.name
+        self.assertEquals(self._instance.get_description(), person.name)
 
 
 class TestClient(BaseDomainTest):
@@ -476,21 +476,21 @@ class TestClient(BaseDomainTest):
 
     def test_get_name(self):
         client = get_client(self.conn)
-        assert client.get_name() == u'Laun'
+        self.assertEquals(client.get_name(), u'Laun')
 
     def test_get_status_string(self):
         client = get_client(self.conn)
         status = client.status
         status = client.statuses[status]
-        assert client.get_status_string() == status
+        self.assertEquals(client.get_status_string(), status)
 
     def test_get_active_clients(self):
-        table = PersonAdaptToClient
-        active_clients = table.get_active_clients(self.conn).count()
-        client = get_client(self.conn)
-        client.status = table.STATUS_SOLVENT
-        one_more_active_client = table.get_active_clients(self.conn).count()
-        assert active_clients + 1 == one_more_active_client
+         table = PersonAdaptToClient
+         active_clients = table.get_active_clients(self.conn).count()
+         client = get_client(self.conn)
+         client.status = table.STATUS_SOLVENT
+         one_more_active_client = table.get_active_clients(self.conn).count()
+         self.assertEquals(active_clients + 1, one_more_active_client)
 
     def test_get_client_sales(self):
         client = PersonAdaptToClient.select(connection=self.conn)
@@ -500,7 +500,8 @@ class TestClient(BaseDomainTest):
         branches = PersonAdaptToBranch.select(connection=self.conn)
         assert branches.count() > 0
         branch = branches[0]
-        till = Till(branch=branch, connection=self.conn)
+        till = Till(connection=self.conn,
+                    station=get_current_station(self.conn))
         people = PersonAdaptToSalesPerson.select(connection=self.conn)
         assert people.count() > 0
         salesperson = people[0]
@@ -517,11 +518,11 @@ class TestClient(BaseDomainTest):
         sellable_product = ISellable(product, connection=self.conn)
         sellable_product.add_sellable_item(sale=new_sale)
         one_more_sale = client.get_client_sales().count()
-        assert count_sales + 1 == one_more_sale
+        self.assertEquals(count_sales + 1, one_more_sale)
         last_purchase_date = client.get_last_purchase_date()
 
         #Testing get_last_purchase_date method bellow
-        assert client.get_last_purchase_date() == date
+        self.assertEquals(client.get_last_purchase_date(), date)
 
 class TestSupplier(BaseDomainTest):
     """
@@ -538,13 +539,13 @@ class TestSupplier(BaseDomainTest):
         table = PersonAdaptToSupplier
         active_suppliers = table.get_active_suppliers(self.conn)
         for supplier in active_suppliers:
-            assert supplier.status == table.STATUS_ACTIVE
+            self.assertEquals(supplier.status, table.STATUS_ACTIVE)
 
     def test_get_description(self):
         person = get_person(self.conn)
         person.addFacet(IIndividual, connection=self.conn)
         supplier = person.addFacet(ISupplier, connection=self.conn)
-        assert supplier.get_description() == person.name
+        self.assertEquals(supplier.get_description(), person.name)
 
 
 class TestEmployee(BaseDomainTest):
@@ -572,7 +573,7 @@ class TestEmployee(BaseDomainTest):
                                       connection=self.conn,
                                       salary=currency(900))
         new_count = employee.get_role_history().count()
-        assert old_count + 1 == new_count
+        self.assertEquals(old_count + 1, new_count)
 
     def test_get_active_role_history(self):
         role_name = 'boss'
@@ -602,7 +603,7 @@ class TestEmployee(BaseDomainTest):
         employee = PersonAdaptToEmployee.select(connection=self.conn)[0]
         status = employee.status
         status = employee.statuses[status]
-        assert employee.get_status_string() == status
+        self.assertEquals(employee.get_status_string(), status)
 
 
 class TestUser(BaseDomainTest):
@@ -640,7 +641,7 @@ class TestUser(BaseDomainTest):
         user = users[0]
         user.is_active = False
         string = user.get_status_str()
-        assert string == _(u'Inactive')
+        self.assertEquals(string, _(u'Inactive'))
 
 
 class TestBranch(BaseDomainTest):
@@ -661,7 +662,7 @@ class TestBranch(BaseDomainTest):
         branch = branches[0]
         branch.is_active = True
         branch.inactivate()
-        assert branch.is_active == False
+        self.assertEquals(branch.is_active, False)
 
     def test_activate(self):
         branches = PersonAdaptToBranch.select(connection=self.conn)
@@ -677,14 +678,15 @@ class TestBranch(BaseDomainTest):
         branch = branches[0]
         branch.is_active = False
         string = branch.get_status_str()
-        assert string == _(u'Inactive')
+        self.assertEquals(string, _(u'Inactive'))
 
     def test_get_description(self):
         person = Person(name='Winston', connection=self.conn)
         person.addFacet(ICompany, connection=self.conn)
         branch = person.addFacet(IBranch, connection=self.conn,
                                  manager = person)
-        assert  branch.get_description() == u'Winston'
+        self.assertEquals(branch.identifier, 7)
+        self.assertEquals(branch.get_description(), '0007 Winston')
 
     def test_get_active_branches(self):
         person = get_person(self.conn)
@@ -701,13 +703,16 @@ class TestBankBranch(BaseDomainTest):
     """
     _table = PersonAdaptToBankBranch
 
-    def get_adapter(self):
+    def setUp(self):
+        BaseDomainTest.setUp(self)
         person = get_person(self.conn)
         bank = Bank(connection=self.conn, name='Boston', short_name='short',
                     compensation_code='1234')
         person.addFacet(ICompany, connection=self.conn)
-        return person.addFacet(IBankBranch, connection=self.conn,
-                               bank=bank)
+        self._adapter = person.addFacet(IBankBranch, connection=self.conn,
+                                        bank=bank)
+    def get_adapter(self):
+        return self._adapter
 
     def test_inactivate(self):
         bankbranches = PersonAdaptToBankBranch.select(connection=self.conn)
@@ -783,7 +788,8 @@ class TestCreditProvider(BaseDomainTest):
         card_providers = table.get_card_providers(self.conn)
         assert card_providers > 0
         card_providers = card_providers[0]
-        assert card_providers.get_provider_type_str() == _(u'Card Provider')
+        self.assertEquals(card_providers.get_provider_type_str(),
+                          _(u'Card Provider'))
 
     def test__get_providers(self):
         table = PersonAdaptToCreditProvider
@@ -799,7 +805,7 @@ class TestCreditProvider(BaseDomainTest):
         FProvider = table._get_providers(self.conn,
                                          provider_type=table.PROVIDER_FINANCE)
         count_fprovider = FProvider.count()
-        assert count == count_fprovider
+        self.assertEquals(count, count_fprovider)
 
 
 class TestSalesPerson(BaseDomainTest):
@@ -837,7 +843,7 @@ class TestSalesPerson(BaseDomainTest):
     def test_get_status_string(self):
         salesperson = get_salesperson(self.conn, 'entregador')
         string = salesperson.get_status_string()
-        assert string == _(u'Active')
+        self.assertEquals(string, _(u'Active'))
 
 
 class TestTransporter(BaseDomainTest):
@@ -872,7 +878,7 @@ class TestTransporter(BaseDomainTest):
         person.addFacet(ICompany, connection=self.conn)
         transporter = person.addFacet(ITransporter, connection=self.conn)
         string = transporter.get_status_string()
-        assert string == _(u'Active')
+        self.assertEquals(string, _(u'Active'))
 
     def test_get_active_transporters(self):
         table = PersonAdaptToTransporter
@@ -890,15 +896,17 @@ class TestEmployeeRoleHistory(BaseDomainTest):
     """
     _table = EmployeeRoleHistory
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        role = EmployeeRole(connection=cls.conn, name='ajudante')
-        employee = get_employee(cls.conn, 'escrivao')
+    def get_foreign_key_data(self):
+        role = EmployeeRole(connection=self.conn, name='ajudante')
+        employee = get_employee(self.conn, 'escrivao')
         return role, employee
 
     def test_get_city_location_template(self):
         location = get_city_location_template(self.conn)
-        assert isinstance(location, CityLocation)
-        assert location.city == sysparam(self.conn).CITY_SUGGESTED
-        assert location.state == sysparam(self.conn).STATE_SUGGESTED
-        assert location.country == sysparam(self.conn).COUNTRY_SUGGESTED
+        self.failUnless(isinstance(location, CityLocation))
+        self.assertEquals(location.city,
+                          sysparam(self.conn).CITY_SUGGESTED)
+        self.assertEquals(location.state,
+                          sysparam(self.conn).STATE_SUGGESTED)
+        self.assertEquals(location.country,
+                          sysparam(self.conn).COUNTRY_SUGGESTED)

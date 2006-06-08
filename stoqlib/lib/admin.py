@@ -119,14 +119,14 @@ def create_base_schema():
     run_sql_file(sql_file, conn)
     finish_transaction(conn, 1)
 
-@argcheck(str, bool, bool, bool)
+@argcheck(str, bool, bool, bool, bool)
 def initialize_system(password='', delete_only=False,
-                      list_tables=False, verbose=False):
+                      list_tables=False, verbose=False, drop=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
     setup_tables(delete_only=delete_only, list_tables=list_tables,
-                 verbose=verbose)
+                 verbose=verbose, drop=drop)
     create_base_schema()
     ensure_system_parameters()
     ensure_admin_user(password)
