@@ -242,9 +242,11 @@ class BaseDomainTest(unittest.TestCase):
             self._check_set_and_get(value, db_value, key)
 
 def bootstrap_testsuite():
-    print sys.argv
-
     verbose = False
+    # Get from trial, hack warning
+    if '--reporter=verbose' in sys.argv:
+        verbose = True
+
     if verbose:
         print 'Bootstrapping testsuite'
     username = os.environ.get('STOQLIB_TEST_USERNAME',
