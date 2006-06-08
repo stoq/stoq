@@ -87,7 +87,8 @@ def _initialize(options):
     try:
         setup(config, options)
     except Exception, e:
-        error(_('Could not connect to database'), str(e))
+        error(_('Could not connect to database'),
+              'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
 
 
