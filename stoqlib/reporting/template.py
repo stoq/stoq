@@ -70,7 +70,6 @@ class BaseStoqReport(ReportTemplate):
     def draw_header(self, canvas):
         canvas.saveState()
         person = get_current_branch(self.conn).get_adapted()
-        company = ICompany(person, connection=self.conn)
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border
@@ -81,7 +80,10 @@ class BaseStoqReport(ReportTemplate):
         canvas.setFont(*FANCYNAME_FONT)
         text_x = header_x + logo_width + BaseStoqReport.logo_border
         text_y = header_y + logo_height - BaseStoqReport.logo_border
-        canvas.drawString(text_x, text_y, company.fancy_name)
+        if not person.name:
+            raise DatabaseInconsistency("The person by ID %d should have a "
+                                        "name at this point" % person.id)
+        canvas.drawString(text_x, text_y, person.name)
 
         canvas.setFont(*SMALL_FONT)
 
