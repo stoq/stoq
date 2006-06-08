@@ -40,6 +40,16 @@ from stoq.lib.startup import setup, get_option_parser
 
 _ = gettext.gettext
 
+def _check_dependencies():
+    try:
+        import reportlab
+    except ImportError:
+        raise SystemExit("Reportlab 1.20 is required but could not be found.")
+
+    if map(int, reportlab.Version.split('.')) < [1, 20]:
+        raise SystemExit("Reportlab 1.20 is required but %s found" %
+                         reportlab.Version)
+
 def _run_first_time_wizard(config):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
@@ -113,6 +123,7 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
+    _check_dependencies()
     _initialize(options)
 
     from stoqlib.lib.runtime import get_connection, get_current_station
