@@ -114,7 +114,7 @@ def setup(config, options=None, stoq_user_password=''):
         else:
             password = options.password or config.get_password()
             verbose = options.verbose
-        initialize_system(password, verbose=verbose)
+        initialize_system(password or '', verbose=verbose)
     else:
         set_branch_by_stationid(config.get_station_id())
         schema_migration.update_schema()
