@@ -625,7 +625,7 @@ class TestUser(BaseDomainTest):
         user = users[0]
         user.is_active = True
         user.inactivate()
-        assert user.is_active is True
+        assert user.is_active is False
 
     def test_activate(self):
         users = PersonAdaptToUser.select(connection=self.conn)
