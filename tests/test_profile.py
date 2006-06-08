@@ -26,8 +26,8 @@
 from stoqlib.domain.profile import UserProfile, ProfileSettings
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.lib.runtime import get_application_names
-from stoqlib.tests.domain.base import BaseDomainTest
 
+from tests.base import BaseDomainTest
 
 class TestUserProfile(BaseDomainTest):
     """
@@ -36,6 +36,7 @@ class TestUserProfile(BaseDomainTest):
     _table = UserProfile
 
     def test_add_application_reference(self):
+        self.create_instance()
         assert not self._instance.profile_settings
         self._instance.add_application_reference('my_app',
                                                   has_permission=True)
@@ -49,9 +50,8 @@ class TestProfileSettings(BaseDomainTest):
     """
     _table = ProfileSettings
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        return [UserProfile(connection=cls.conn, name='Manager')]
+    def get_foreign_key_data(self):
+        return [UserProfile(connection=self.conn, name='Manager')]
 
     def test_update_profile_applications(self):
         profile = UserProfile(connection=self.conn, name='assistant')

@@ -36,7 +36,7 @@ from stoqlib.exceptions import ConfigError, SQLError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import (new_transaction, print_msg, set_verbose,
                                  get_connection)
-from stoqlib.domain.tables import get_table_types
+from stoqlib.domain.tables import get_table_types, get_sequence_names
 
 _ = stoqlib_gettext
 
@@ -163,14 +163,10 @@ def run_sql_file(sql_file, conn):
                        % (value, type))
 
 
-def setup_tables(delete_only=False, list_tables=False, verbose=False):
+def setup_tables(delete_only=False, list_tables=False, verbose=False,
+                 drop=False):
     from stoqlib.domain.parameter import ParameterData
     set_verbose(verbose)
-    if not list_tables and verbose:
-        print_msg('Setting up tables... ', break_line=False)
-    else:
-        print_msg('Setting up tables... ')
-
     conn = new_transaction()
     # We need that since DecimalCol attributes fetch some data from this
     # table. If we are trying to initialize an existent database this table
@@ -178,24 +174,35 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False):
     if conn.tableExists(ParameterData.get_db_table_name()):
         ParameterData.clearTable(connection=conn)
     conn.commit()
+
+    if verbose:
+        print_msg('Dropping tables')
     table_types = get_table_types()
     for table in table_types:
-        if conn.tableExists(table.get_db_table_name()):
-            table.dropTable(ifExists=True, cascade=True, connection=conn)
-            if list_tables:
-                print_msg('<removed>:  %s' % table)
-            conn.commit()
+        table_name = table.get_db_table_name()
+        if conn.tableExists(table_name):
+            conn.dropTable(table_name, cascade=True)
+    if verbose:
+        print_msg('Dropping sequences')
+    for seq_name in get_sequence_names():
+        if conn.tableExists(seq_name):
+            conn.query('DROP SEQUENCE %s' % seq_name)
+    if verbose:
+        print_msg('Creating tables')
+    if delete_only:
+        conn.commit()
+        return
+
+    for table in table_types:
+        table_name = table.get_db_table_name()
         if delete_only:
             continue
         table.createTable(connection=conn)
         if list_tables:
             print_msg('<created>:  %s' % table)
-    conn.commit()
-    if delete_only:
-        return
-    finish_transaction(conn, 1)
-    print_msg('done')
 
+    conn.commit()
+    finish_transaction(conn, 1)
 
 @argcheck(DatabaseSettings)
 def register_db_settings(db_settings):

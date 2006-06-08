@@ -25,7 +25,6 @@
 """ This module test all class in stoq/domain/product.py """
 
 
-from stoqlib.tests.domain.base import BaseDomainTest
 from stoqlib.lib.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.person import Person, EmployeeRole
@@ -38,6 +37,7 @@ from stoqlib.domain.interfaces import (ISupplier, ICompany, IStorable,
                                        IBranch, ISellable, ISalesPerson,
                                        IEmployee, IIndividual)
 
+from tests.base import BaseDomainTest
 
 def get_supplier(conn):
     person = Person(name='Gilberto', connection=conn)
@@ -56,11 +56,11 @@ def get_sellable(conn):
 class TestProductSupplierInfo(BaseDomainTest):
     _table = ProductSupplierInfo
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        return (Product(connection=cls.conn), get_supplier(cls.conn))
+    def get_foreign_key_data(self):
+        return (Product(connection=self.conn), get_supplier(self.conn))
 
     def test_get_name(self):
+        self.create_instance()
         assert (self._instance.get_name()
                 == self._instance.supplier.get_adapted().name)
 
@@ -68,6 +68,7 @@ class TestProduct(BaseDomainTest):
     _table = Product
 
     def test_facet_IStorable_add (self):
+        self.create_instance()
         assert not IStorable(self._instance, connection=self.conn)
         storable = self._instance.addFacet(IStorable, connection=self.conn)
         table = Person.getAdapterClass(IBranch)
@@ -75,6 +76,7 @@ class TestProduct(BaseDomainTest):
         assert storable.get_stocks().count() == branches_count
 
     def test_get_main_supplier_info (self):
+        self.create_instance()
         assert not self._instance.get_main_supplier_info()
         supplier = get_supplier(self.conn)
         ProductSupplierInfo(connection=self.conn, supplier=supplier,
@@ -99,21 +101,21 @@ class TestProductStockReference(BaseDomainTest):
 class TestProductSellableItem(BaseDomainTest):
     _table = ProductSellableItem
 
-    @classmethod
-    def get_foreign_key_data(cls):
-        till = get_current_till_operation(cls.conn)
-        person = Person(name='mr been', connection=cls.conn)
-        person.addFacet(IIndividual, connection=cls.conn)
-        role = EmployeeRole(connection=cls.conn, name="god")
-        person.addFacet(IEmployee, connection=cls.conn, role=role)
-        salesperson = person.addFacet(ISalesPerson, connection=cls.conn)
-        sales = Sale.select(connection=cls.conn)
+    def get_foreign_key_data(self):
+        till = get_current_till_operation(self.conn)
+        person = Person(name='mr been', connection=self.conn)
+        person.addFacet(IIndividual, connection=self.conn)
+        role = EmployeeRole(connection=self.conn, name="god")
+        person.addFacet(IEmployee, connection=self.conn, role=role)
+        salesperson = person.addFacet(ISalesPerson, connection=self.conn)
+        sales = Sale.select(connection=self.conn)
         assert sales.count() > 0
         sale = sales[0]
-        sellable = get_sellable(cls.conn)
+        sellable = get_sellable(self.conn)
         return sale, sellable
 
     def test_sell(self):
+        self.create_instance()
         # Makes the whole process a bit more consistent and creating a new
         # sellable from the beginning
         product = Product(connection=self.conn)

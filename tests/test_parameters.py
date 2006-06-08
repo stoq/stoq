@@ -25,6 +25,8 @@
 ##
 """ Test for lib/parameters module.  """
 
+import unittest
+
 from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.parameters import ParameterAccess, sysparam
 from stoqlib.database import finish_transaction
@@ -35,16 +37,15 @@ from stoqlib.domain.payment.methods import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.service import ServiceAdaptToSellable
 
-class TestParameter:
+class TestParameter(unittest.TestCase):
 
-    @classmethod
-    def setup_class(cls):
-        cls.conn = new_transaction()
-        cls.sparam = sysparam(cls.conn)
-        assert isinstance(cls.sparam, ParameterAccess)
+    def setUp(self):
+        self.conn = new_transaction()
+        self.sparam = sysparam(self.conn)
+        assert isinstance(self.sparam, ParameterAccess)
 
-    def teardown_class(cls):
-        finish_transaction(cls.conn)
+    def tearDown(self):
+        finish_transaction(self.conn)
 
     # System instances based on stoq.lib.parameters
 
