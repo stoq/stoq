@@ -41,6 +41,6 @@ library = Library('stoqlib', root='..')
 if library.uninstalled:
     library.add_global_resources(pixmaps='data/pixmaps',
                                  sql='data/sql',
-                                 glade='data',
+                                 glade='data/glade',
                                  fonts='data/fonts')
 library.enable_translation()

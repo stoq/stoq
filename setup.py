@@ -94,9 +94,9 @@ from kiwi.dist import setup, listfiles, listpackages
 from stoqlib import version, website
 
 data_files = [
-    ('$datadir/pixmaps', listfiles('data/pixmaps', '*.png')),
-    ('$datadir/sql', listfiles('data/sql', '*.sql')),
-    ('$datadir/glade', listfiles('data', '*.glade')),
+    ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
+    ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
+    ('$datadir/glade', listfiles('data', 'glade', '*.glade')),
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('share/doc/stoqlib',
      ('AUTHORS', 'CONTRIBUTORS', 'README'))]
