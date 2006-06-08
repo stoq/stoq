@@ -42,7 +42,7 @@ except ImportError:
 lib = Library('stoq')
 if lib.uninstalled:
     lib.add_global_resource('pixmaps', 'data/pixmaps')
-    lib.add_global_resource('glade', 'data')
+    lib.add_global_resource('glade', 'data/glade')
     lib.add_global_resource('config', 'data/config')
     lib.add_global_resource('docs', '.')
 lib.enable_translation()

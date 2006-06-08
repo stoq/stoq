@@ -70,7 +70,7 @@ data_files = [
     ('$datadir/pixmaps',
      listfiles('data/pixmaps', '*.png')),
     ('$datadir/glade',
-     listfiles('data', '*.glade')),
+     listfiles('data', 'glade', '*.glade')),
     ('$sysconfdir/stoq',  ''),
     ('share/doc/stoq',
      ['AUTHORS', 'CONTRIBUTORS', 'COPYING', 'README', 'NEWS'])]
