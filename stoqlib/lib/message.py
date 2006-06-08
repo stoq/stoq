@@ -48,7 +48,7 @@ class DefaultSystemNotifier:
 
     def _msg(self, name, short, description):
         if description:
-            print '%s: %s %s' % (name, short, description)
+            print '%s: [%s] %s' % (name, short, description)
         else:
             print '%s: %s' % (name, short)
 
