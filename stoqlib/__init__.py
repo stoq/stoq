@@ -40,7 +40,6 @@ __all__ = ['library']
 library = Library('stoqlib', root='..')
 if library.uninstalled:
     library.add_global_resources(pixmaps='data/pixmaps',
-                                 domain_tests='stoqlib/tests/domain',
                                  sql='data/sql',
                                  glade='data',
                                  fonts='data/fonts')
