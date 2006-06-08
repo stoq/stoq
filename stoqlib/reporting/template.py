@@ -32,7 +32,7 @@ from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.validators import format_phone_number
-from stoqlib.domain.interfaces import ICompany
+from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
 
