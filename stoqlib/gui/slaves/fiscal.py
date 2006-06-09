@@ -51,6 +51,8 @@ class FiscalBookEntryFilterSlave(SlaveDelegate):
         SlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_slaves()
 
+    # the code below is duplicated and will be fixed on bug 2651
+    # the duplicated code is in slaves/product.py
     def _setup_slaves(self):
         items = [(value, key)
                     for key, value in fiscal_book_entries.items()]

@@ -29,16 +29,16 @@ import decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
+from sqlobject.sqlbuilder import AND
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.columns import Column
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.product import Product, ProductFullStockView
 from stoqlib.gui.editors.product import ProductEditor
-from stoqlib.gui.slaves.filter import FilterSlave
-from stoqlib.gui.search.sellable import SellableSearch
+from stoqlib.gui.slaves.product import ProductFilterSlave
+from stoqlib.gui.search.sellable import SellableSearch, SellableView
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.reporting.product import ProductReport
 
@@ -92,17 +92,7 @@ class ProductSearch(SellableSearch):
     #
 
     def get_filter_slave(self):
-        statuses = [(value, key)
-                        for key, value in AbstractSellable.statuses.items()]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
-        if self.use_product_statuses:
-            statuses = [(value, key) for value, key in statuses
-                            if key in self.use_product_statuses]
-            selected = self.use_product_statuses[0]
-        else:
-            selected = AbstractSellable.STATUS_AVAILABLE
-        self.filter_slave = FilterSlave(statuses, selected=selected)
-        self.filter_slave.set_filter_label(_('Show products with status'))
+        self.filter_slave = ProductFilterSlave(self.conn)
         return self.filter_slave
 
     def get_branch(self):
@@ -136,6 +126,16 @@ class ProductSearch(SellableSearch):
                        data_type=decimal.Decimal, width=100)]
 
     def get_extra_query(self):
+        branch = self.filter_slave.get_selected_branch()
         status = self.filter_slave.get_selected_status()
-        if status != ALL_ITEMS_INDEX:
-            return self.search_table.q.status == status
+        if branch != ALL_ITEMS_INDEX:
+            self.set_searchtable(SellableView)
+            q1 = self.search_table.q.branch_id == branch.id
+            if status == ALL_ITEMS_INDEX:
+                return q1
+            else:
+                return AND(q1, self.search_table.q.status == status)
+        else:
+            self.set_searchtable(ProductFullStockView)
+            if status != ALL_ITEMS_INDEX:
+                return self.search_table.q.status == status

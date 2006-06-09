@@ -106,7 +106,7 @@ class AbstractFiscalBookEntry(InheritableModel):
     def get_entry_by_payment_group(cls, conn, payment_group):
         entries = cls._get_entries_by_payment_group(conn, payment_group)
         if not entries.count():
-            raise StoqlibError("You should have only one fiscal "
+            raise StoqlibError("You should have at least one fiscal "
                                "entry for payment group %s"
                                % payment_group)
         return entries[0]

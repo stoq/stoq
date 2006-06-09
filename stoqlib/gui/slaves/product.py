@@ -20,12 +20,24 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Henrique Romano      <henrique@async.com.br>
+##              Lincoln Molica       <lincoln@async.com.br>
 ##
 """ Slaves for products """
 
+from kiwi.ui.delegates import SlaveDelegate
+from kiwi.utils import gsignal
+
 from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.domain.product import ProductAdaptToSellable
 from stoqdrivers.constants import TAX_NONE
+from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.person import PersonAdaptToBranch
+
+_ = stoqlib_gettext
+
 
 class TributarySituationSlave(BaseEditorSlave):
     gladefile = "TributarySituationSlave"
@@ -57,3 +69,57 @@ class TributarySituationSlave(BaseEditorSlave):
 
     def on_tax_type__changed(self, combo):
         self._update_tax_box()
+
+
+class ProductFilterSlave(SlaveDelegate):
+    """A slave which filter a colection of products by branch companies and
+    product status.
+    """
+
+    gladefile = 'ProductFilterSlave'
+    gsignal('status-changed')
+
+    def __init__(self, conn):
+        self.conn = conn
+        SlaveDelegate.__init__(self)
+        self._setup_slaves()
+
+    # the code bellow is duplicated and will be fixed on bug 2651
+    # the duplicated code is in slaves/fiscal.py
+    def _setup_slaves(self):
+        items = AbstractSellable.statuses.items()
+        statuses = [(description, identifier)
+                       for identifier, description in items]
+        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        self._status_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
+        self._status_slave.set_filter_label(_('with status:'))
+        self._status_slave.connect("status-changed",
+                                   self._on_entry_status_changed)
+
+        table = PersonAdaptToBranch
+        items = [(item.get_description(), item)
+                    for item in table.get_active_branches(self.conn)]
+        items.append(ALL_BRANCHES)
+        self.branch_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
+        self.branch_slave.set_filter_label(_('Branch:'))
+        self.branch_slave.connect("status-changed", self._on_branch_changed)
+
+        self.attach_slave("status_holder", self._status_slave)
+        self.attach_slave("branch_holder", self.branch_slave)
+
+    def get_selected_branch(self):
+        # this method name will be fixed on bug 2651
+        return self.branch_slave.get_selected_status()
+
+    def get_selected_status(self):
+        return self._status_slave.get_selected_status()
+
+    #
+    # Callbacks
+    #
+
+    def _on_entry_status_changed(self, *args):
+        self.emit("status-changed")
+
+    def _on_branch_changed(self, *args):
+        self.emit("status-changed")
