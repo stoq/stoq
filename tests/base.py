@@ -269,7 +269,7 @@ def bootstrap_testsuite():
     set_verbose(verbose)
     register_db_settings(db_settings)
 
-    initialize_system("", verbose=verbose, drop=True)
+    initialize_system("", verbose=verbose)
 
     from stoqlib.domain.examples.createall import create
     create()

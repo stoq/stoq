@@ -162,9 +162,17 @@ def run_sql_file(sql_file, conn):
         raise SQLError("Bad sql script, got error %s, of type %s"
                        % (value, type))
 
+# FIXME: Move into SQLObject itself
+def createSequence(conn, sequence):
+    conn.query('CREATE SEQUENCE "%s"' % sequence)
 
-def setup_tables(delete_only=False, list_tables=False, verbose=False,
-                 drop=False):
+def dropSequence(conn, sequence):
+    conn.query('DROP SEQUENCE "%s"' % sequence)
+
+def sequenceExists(conn, sequence):
+    return conn.tableExists(sequence)
+
+def setup_tables(delete_only=False, verbose=False):
     from stoqlib.domain.parameter import ParameterData
     set_verbose(verbose)
     conn = new_transaction()
@@ -182,24 +190,26 @@ def setup_tables(delete_only=False, list_tables=False, verbose=False,
         table_name = table.get_db_table_name()
         if conn.tableExists(table_name):
             conn.dropTable(table_name, cascade=True)
+
     if verbose:
         print_msg('Dropping sequences')
     for seq_name in get_sequence_names():
-        if conn.tableExists(seq_name):
-            conn.query('DROP SEQUENCE %s' % seq_name)
-    if verbose:
-        print_msg('Creating tables')
-    if delete_only:
-        conn.commit()
-        return
+        if sequenceExists(conn, seq_name):
+            dropSequence(conn, seq_name)
 
-    for table in table_types:
-        table_name = table.get_db_table_name()
-        if delete_only:
-            continue
-        table.createTable(connection=conn)
-        if list_tables:
-            print_msg('<created>:  %s' % table)
+    if not delete_only:
+        if verbose:
+            print_msg('Creating tables')
+        for table in table_types:
+            table_name = table.get_db_table_name()
+            if delete_only:
+                continue
+            table.createTable(connection=conn)
+
+        if verbose:
+            print_msg('Creating sequences')
+        for seq_name in get_sequence_names():
+            createSequence(conn, seq_name)
 
     conn.commit()
     finish_transaction(conn, 1)
