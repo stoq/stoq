@@ -209,10 +209,10 @@ class SellableEditor(BaseEditor):
             if not count:
                 return
             elif count > 1:
-                raise DatabaseInconsistency("It is not possible to have "
-                                            "more than one SellableUnit "
-                                            "object representing the same "
-                                            "unit.")
+                raise DatabaseInconsistency(
+                    "It is not possible to have more than one SellableUnit "
+                    "object representing the same unit."
+                    "found %d: %r" % (count, list(result)))
             self._sellable.unit = SellableUnit.get(result[0].id,
                                                    connection=self.conn)
         SellableUnit.delete(unit.id, connection=self.conn)
