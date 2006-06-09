@@ -201,8 +201,8 @@ class Sale(Domain):
     #
 
     def add_item(self, item):
-        raise NotImplementedError("You should call add_selabble_item "
-                                  "SellableItem method instead.")
+        raise NotImplementedError(
+            "You should call add_selabble_item SellableItem method instead.")
 
     def get_items(self):
         conn = self.get_connection()
@@ -410,18 +410,17 @@ class Sale(Domain):
         elif self.client_role == Sale.CLIENT_INDIVIDUAL:
             individual = IIndividual(person, connection=conn)
             if not individual:
-                raise DatabaseInconsistency("The client_role for sale %r says "
-                                            "that the client is an individual,"
-                                            " but it doesn't have an Individual"
-                                            " facet" % self)
+                raise DatabaseInconsistency(
+                    "The client_role for sale %r says that the client "
+                    "is an individual, but it doesn't have an Individual"
+                    " facet" % self)
             return individual
         elif self.client_role == Sale.CLIENT_COMPANY:
             company = ICompany(person, connection=conn)
             if not company:
-                raise DatabaseInconsistency("The client_role for sale %r says "
-                                            "that the client is a company but "
-                                            "it doesn't have a Company facet"
-                                            % self)
+                raise DatabaseInconsistency(
+                    "The client_role for sale %r says that the client is "
+                    "a company but it doesn't have a Company facet" % self)
             return company
         else:
             raise DatabaseInconsistency("Invalid client_role for sale %r, "
