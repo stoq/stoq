@@ -343,20 +343,19 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         "method iface (= %r)" % (self, res))
         return res[0]
 
-    def _check_installments_number(self, installments_number, max=None):
-        max = max or self.get_max_installments_number()
+    def _check_installments_number(self, installments_number):
+        max = self.get_max_installments_number()
         if installments_number > max:
-            raise ValueError('The number of installments argument can not '
-                             'be greater than %d for method %s' %
-                             (max, self.description))
+            raise ValueError(
+                'The number of installments can not be greater than %d '
+                'for payment method %r' % (max, self))
 
     def get_payment_number_by_group(self, payment_group):
         q1 = Payment.q.groupID == payment_group.id
         q2 = Payment.q.methodID == self.id
         query = AND(q1, q2)
         conn = self.get_connection()
-        count = Payment.select(query, connection=conn).count()
-        return count
+        return Payment.select(query, connection=conn).count()
 
     @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
               PaymentMethodDetails, basestring, ConnMetaInterface,
@@ -534,7 +533,7 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
         raise NotImplementedError("Not supported by gift certificates")
 
     def get_max_installments_number(self):
-        # Gift Certificates only support one installment
+        # Gift Certificates support exactly one installment
         return 1
 
 PaymentMethod.registerFacet(PMAdaptToGiftCertificatePM, IGiftCertificatePM)
