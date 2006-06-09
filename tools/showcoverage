@@ -76,7 +76,7 @@ def generate():
     if not files:
         os.chdir(base)
         print 'Generating coverage data, please wait.'
-        os.system('trial --coverage coverage --text tests')
+        os.system('trial --coverage tests')
         files = glob.glob(pattern)
 
     return [filename for filename in files
