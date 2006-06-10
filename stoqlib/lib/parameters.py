@@ -51,244 +51,243 @@ class ParameterDetails:
         self.short_desc = short_desc
         self.long_desc = long_desc
 
-_parameter_info = {
-    'MAIN_COMPANY': ParameterDetails(_(u'General'), _(u'Main Company'),
-                                       _(u'The main company which is the '
-                                          'owner of all other branch '
-                                          'companies')),
-    'CURRENT_WAREHOUSE': ParameterDetails(_(u'General'), _(u'Current Warehouse'),
-                                          _(u'The company\'s warehouse')),
-    'DEFAULT_SALESPERSON_ROLE': ParameterDetails(_(u'Sales'),
-                                                 _(u'Default Salesperson Role'),
-                                                 _(u'Defines which of the '
-                                                   'employee roles existent '
-                                                   'in the system is the '
-                                                   'salesperson role')),
-    'SUGGESTED_SUPPLIER': ParameterDetails(_(u'Purchase'),
-                                           _(u'Suggested Supplier'),
-                                           _(u'The supplier suggested when we '
-                                             'are adding a new product\'s '
-                                             'supplier in the system')),
-    'DEFAULT_BASE_CATEGORY': ParameterDetails(_(u'Purchase'),
-                                              _(u'Default Base Sellable '
-                                                'Category'),
-                                              _(u'A default base sellable '
-                                                'category which we always '
-                                                'get as a suggestion when '
-                                                'adding a new Sellable on '
-                                                'the system')),
-    'DEFAULT_PAYMENT_DESTINATION': ParameterDetails(_(u'Financial'),
-                                                    _(u'Default Payment '
-                                                      'Destination'),
-                                                    _(u'A default payment '
-                                                      'destination which will '
-                                                      'be used for all the '
-                                                      'created payments until '
-                                                      'the user change the '
-                                                      'destination of each '
-                                                      'payment method.')),
-    'BASE_PAYMENT_METHOD': ParameterDetails(_(u'Financial'),
-                                            _(u'Base Payment Method'),
-                                            _(u'The base payment method which '
-                                              'can easily be converted to '
-                                              'other methods like check and '
-                                              'bill.')),
-    'METHOD_MONEY': ParameterDetails(_(u'Financial'), _(u'Money Payment Method'),
-                                     _(u'Definition of the money payment '
-                                       'method. This parameter is not '
-                                       'editable')),
-    'DELIVERY_SERVICE': ParameterDetails(_(u'Sales'), _(u'Delivery Service'),
-                                         _(u'The default delivery service '
-                                           'in the system.')),
-    'DEFAULT_GIFT_CERTIFICATE_TYPE': ParameterDetails(_(u'Sales'),
-                                                      _(u'Default Gift '
-                                                        'Certificate Type'),
-                                                      _(u'The default gift '
-                                                        'certificate type '
-                                                        'used when canceling '
-                                                        'sales and during '
-                                                        'renegotiations.')),
-    'USE_LOGIC_QUANTITY': ParameterDetails(_(u'Stock'), _(u'Use Logic Quantity'),
-                                           _(u'An integer that defines if the '
-                                             'company can work or not with '
-                                             'logic quantities during stock '
-                                             'operations. See StockItem '
-                                             'documentation.')),
-    'MAX_LATE_DAYS': ParameterDetails(_(u'Sales'),
-                                      _(u'Client Maximum Late Days'),
-                                      _(u'An integer that represents a maximum '
-                                        'number of days which a certain '
-                                        'client can have unpaid payments  '
-                                        'with normal status.')),
+_parameter_info = dict(
+    MAIN_COMPANY=ParameterDetails(
+    _(u'General'),
+    _(u'Main Company'),
+    _(u'The main company which is the owner of all other branch companies')),
+
+    CURRENT_WAREHOUSE=ParameterDetails(
+    _(u'General'),
+    _(u'Current Warehouse'),
+    _(u'The company\'s warehouse')),
+
+    DEFAULT_SALESPERSON_ROLE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default Salesperson Role'),
+    _(u'Defines which of the employee roles existent in the system is the '
+      'salesperson role')),
+
+    SUGGESTED_SUPPLIER=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Suggested Supplier'),
+    _(u'The supplier suggested when we are adding a new product\'s '
+      'supplier in the system')),
+
+    DEFAULT_BASE_CATEGORY=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Default Base Sellable Category'),
+    _(u'A default base sellable category which we always get as a '
+      'suggestion when adding a new Sellable on the system')),
+
+    DEFAULT_PAYMENT_DESTINATION=ParameterDetails(
+    _(u'Financial'),
+    _(u'Default Payment Destination'),
+    _(u'A default payment destination which will be used for all the '
+      'created payments until the user change the destination of each '
+      'payment method.')),
+
+    BASE_PAYMENT_METHOD=ParameterDetails(
+    _(u'Financial'),
+    _(u'Base Payment Method'),
+    _(u'The base payment method which can easily be converted to '
+      'other methods like check and bill.')),
+
+    METHOD_MONEY=ParameterDetails(
+    _(u'Financial'),
+    _(u'Money Payment Method'),
+    _(u'Definition of the money payment method. This parameter is not '
+      'editable')),
+
+    DELIVERY_SERVICE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Delivery Service'),
+    _(u'The default delivery service in the system.')),
+
+    DEFAULT_GIFT_CERTIFICATE_TYPE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default Gift Certificate Type'),
+    _(u'The default gift certificate type used when canceling '
+       'sales and during renegotiations.')),
+
+    USE_LOGIC_QUANTITY=ParameterDetails(
+    _(u'Stock'),
+    _(u'Use Logic Quantity'),
+    _(u'An integer that defines if the company can work or not with '
+      'logic quantities during stock operations. See StockItem '
+      'documentation.')),
+
+    MAX_LATE_DAYS=ParameterDetails(
+    _(u'Sales'),
+    _(u'Client Maximum Late Days'),
+    _(u'An integer that represents a maximum number of days which a certain '
+      'client can have unpaid payments with normal status.')),
 
     # XXX This parameter is Stoq-specific. How to deal with that
     # in a better way?
-    'POS_FULL_SCREEN': ParameterDetails(_(u'Sales'),
-                                        _(u'Show POS Application Full Screen'),
-                                        _(u'Once this parameter is set '
-                                          'the Point of Sale application '
-                                          'will be showed as full screen'
-                                          )),
+    POS_FULL_SCREEN=ParameterDetails(
+    _(u'Sales'),
+    _(u'Show POS Application Full Screen'),
+    _(u'Once this parameter is set the Point of Sale application '
+      'will be showed as full screen')),
 
-    'ACCEPT_ORDER_PRODUCTS': ParameterDetails(_(u'Sales'),
-                                              _(u'Accept Order Products'),
-                                              _(u'Can this company make sales '
-                                                'for products that doesn\'t '
-                                                'actually exist in the '
-                                                'stock ? If this parameter '
-                                                'is True we can order '
-                                                'products.')),
-    'DECIMAL_SIZE': ParameterDetails(_(u'General'), _(u'Decimal Size'),
-                                     _(u'The total size of digits used '
-                                       'by decimal numbers in Stoq '
-                                       'applications. Decimal numbers '
-                                       'can be quantities, prices and '
-                                       'payment values.')),
-    'DECIMAL_PRECISION': ParameterDetails(_(u'General'), _(u'Decimal Precision'),
-                                          _(u'The precision size used '
-                                            'by decimal numbers in Stoq '
-                                            'applications. Decimal numbers '
-                                            'can be quantities, prices and '
-                                            'payment values.')),
-    'CITY_SUGGESTED': ParameterDetails(_(u'General'), _(u'City Suggested'),
-                                       _(u'When adding a new address for a '
-                                         'certain person we will always '
-                                         'suggest this city.')),
-    'STATE_SUGGESTED': ParameterDetails(_(u'General'), _(u'State Suggested'),
-                                        _(u'When adding a new address for a '
-                                          'certain person we will always '
-                                          'suggest this state.')),
-    'COUNTRY_SUGGESTED': ParameterDetails(_(u'General'), _(u'Country Suggested'),
-                                          _(u'When adding a new address for a '
-                                            'certain person we will always '
-                                            'suggest this country.')),
-    'HAS_DELIVERY_MODE': ParameterDetails(_(u'Sales'), _(u'Has Delivery Mode'),
-                                          _(u'Does this branch work with '
-                                            'delivery service? If not, the '
-                                            'delivery option will be disable '
-                                            'on Point of Sales Application.')),
-    'HAS_STOCK_MODE': ParameterDetails(_(u'Stock'), _(u'Has Stock Mode'),
-                                       _(u'Does this branch work with storable '
-                                         'items? If the answer is negative, '
-                                         'we will disable stock operations in '
-                                         'the system.')),
-    'MAX_SEARCH_RESULTS': ParameterDetails(_(u'General'), _(u'Max Search Results'),
-                                           _(u'The maximum number of results '
-                                             'we must show after searching '
-                                             'in any dialog.')),
-    'MANDATORY_INTEREST_CHARGE': ParameterDetails(_(u'Sales'),
-                                                  _(u'Mandatory Interest Charge'),
-                                                  _(u'Once this paramter is set,'
-                                                    ' the charge of monthly '
-                                                    'interest will be mandatory '
-                                                    'for every payment')),
-    'CONFIRM_SALES_ON_TILL': ParameterDetails(_(u'Sales'),
-                                              _(u'Confirm Sales on Till'),
-                                              _(u'Once this parameter is set, '
-                                                'the sales confirmation are '
-                                                'only made on till '
-                                                'application and the fiscal '
-                                                'coupon will be printed on '
-                                                'that application instead of '
-                                                'Point of Sales')),
-    'ACCEPT_CHANGE_SALESPERSON': ParameterDetails(_(u'Sales'),
-                                              _(u'Accept Change Salesperson'),
-                                              _(u'Once this parameter is set '
-                                                'to true, the user will be '
-                                                'able to change the '
-                                                'salesperson of an opened '
-                                                'order on sale checkout '
-                                                'dialog')),
-    'USE_PURCHASE_PREVIEW_PAYMENTS': ParameterDetails(_(u'Purchase'),
-                                                      _(u'Use Purchase Preview '
-                                                        'Payments'),
-                                                      _(u'Generate preview '
-                                                        'payments for new '
-                                                        'purchases which are '
-                                                        'not received yet. '
-                                                        'Once the order is '
-                                                        'received the preview '
-                                                        'payments will be '
-                                                        'also confirmed as '
-                                                        'valid payments with '
-                                                        'STATUS_TO_PAY')),
-    'RETURN_MONEY_ON_SALES': ParameterDetails(_(u'Sales'),
-                                              _(u'Return Money On Sales'),
-                                              _(u'Once this parameter is set '
-                                                'the salesperson can return '
-                                                'money to clients when there '
-                                                'is overpaid values in sales '
-                                                'with gift certificates as '
-                                                'payment method.')),
-    'RECEIVE_PRODUCTS_WITHOUT_ORDER': ParameterDetails(_(u'Purchase'),
-                                                       _(u'Receive Products '
-                                                         'Without Order'),
-                                                       _(u'Can we receive '
-                                                         'products without '
-                                                         'having a purchase '
-                                                         'order created for '
-                                                         'them ? If yes, the '
-                                                         'first step of '
-                                                         'ReceivalWizard '
-                                                         'will accept going '
-                                                         'to the second step '
-                                                         'with no order '
-                                                         'selected.')),
-    'MAX_SALE_ORDER_VALIDITY': ParameterDetails(_(u'Sales'),
-                                                _(u'Max sale order validity'),
-                                                _(u'The max number of days '
-                                                  'that a sale order is '
-                                                  'valid')),
-    'USE_SCALE_PRICE': ParameterDetails(_(u'Sales'),
-                                        _(u'Use Scale Price'),
-                                        _(u'Define if we are going to use the '
-                                          'price supplied by the scale for items '
-                                          'that require weighting')),
-    # These parameters are Brazil-specific
-    'ASK_SALES_CFOP': ParameterDetails(_(u'Sales'),
-                                      _(u'Ask for Sale Order CFOP'),
-                                      _(u'Once this parameter is set to '
-                                         'True we will ask for the CFOP '
-                                         'when creating new sale orders')),
-    'DEFAULT_SALES_CFOP': ParameterDetails(_(u'Sales'),
-                                 _(u'Default Sales CFOP'),
-                                 _(u'Default CFOP (Fiscal Code of Operations) '
-                                    'used when generating fiscal book '
-                                    'entries.')),
-    'DEFAULT_RETURN_SALES_CFOP': ParameterDetails(_(u'Sales'),
-                                 _(u'Default Return Sales CFOP'),
-                                 _(u'Default CFOP (Fiscal Code of Operations) '
-                                    'used when returning sale orders ')),
-    'DEFAULT_RECEIVING_CFOP': ParameterDetails(_(u'Purchase'),
-                                 _(u'Default Receiving CFOP'),
-                                 _(u'Default CFOP (Fiscal Code of Operations) '
-                                    'used when receiving products in the'
-                                    'warehouse application.')),
-    'ICMS_TAX': ParameterDetails(_(u'Sales'),
-                                 _(u'Default ICMS tax'),
-                                 _(u'Default ICMS to be applied on all the '
-                                    'products of a sale. Note that this a '
-                                    'percentage value and must be set as the '
-                                    'format: 0 < value < 100. E.g: 18, which '
-                                    'means 18% of tax.')),
-    'ISS_TAX': ParameterDetails(_(u'Sales'),
-                                 _(u'Default ISS tax'),
-                                 _(u'Default ISS to be applied on all the '
-                                    'services of a sale. Note that this a '
-                                    'percentage value and must be set as the '
-                                    'format: 0 < value < 100. E.g: 12, which '
-                                    'means 12% of tax.')),
-    'SUBSTITUTION_TAX': ParameterDetails(_(u'Sales'),
-                                         _(u'Default Substitution tax'),
-                                         _(u'The tax applied on all sale '
-                                            'products with substitution '
-                                            'tax type. Note that this a '
-                                            'percentage value and must be '
-                                            'set as the format: '
-                                            '0 < value < 100. E.g: 16, '
-                                            'which means 16% of tax.')),
-}
+    ACCEPT_ORDER_PRODUCTS=ParameterDetails(
+    _(u'Sales'),
+    _(u'Accept Order Products'),
+    _(u'Can this company make sales for products that doesn\'t '
+      'actually exist in the stock ? If this parameter is True we can order '
+      'products.')),
 
+    DECIMAL_SIZE=ParameterDetails(
+    _(u'General'),
+    _(u'Decimal Size'),
+    _(u'The total size of digits used by decimal numbers in Stoq '
+      'applications. Decimal numbers can be quantities, prices and '
+      'payment values.')),
+
+    DECIMAL_PRECISION=ParameterDetails(
+    _(u'General'),
+    _(u'Decimal Precision'),
+    _(u'The precision size used by decimal numbers in Stoq '
+      'applications. Decimal numbers can be quantities, prices and '
+      'payment values.')),
+
+    CITY_SUGGESTED=ParameterDetails(
+    _(u'General'),
+    _(u'City Suggested'),
+    _(u'When adding a new address for a certain person we will always '
+      'suggest this city.')),
+
+    STATE_SUGGESTED=ParameterDetails(
+    _(u'General'),
+    _(u'State Suggested'),
+    _(u'When adding a new address for a certain person we will always '
+      'suggest this state.')),
+
+    COUNTRY_SUGGESTED=ParameterDetails(
+    _(u'General'),
+    _(u'Country Suggested'),
+    _(u'When adding a new address for a certain person we will always '
+      'suggest this country.')),
+
+    HAS_DELIVERY_MODE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Has Delivery Mode'),
+    _(u'Does this branch work with delivery service? If not, the '
+      'delivery option will be disable on Point of Sales Application.')),
+
+    HAS_STOCK_MODE=ParameterDetails(
+    _(u'Stock'),
+    _(u'Has Stock Mode'),
+    _(u'Does this branch work with storable items? If the answer is negative, '
+      'we will disable stock operations in the system.')),
+
+    MAX_SEARCH_RESULTS=ParameterDetails(
+    _(u'General'),
+    _(u'Max Search Results'),
+    _(u'The maximum number of results we must show after searching '
+      'in any dialog.')),
+
+    MANDATORY_INTEREST_CHARGE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Mandatory Interest Charge'),
+    _(u'Once this paramter is set, the charge of monthly '
+      'interest will be mandatory for every payment')),
+
+    CONFIRM_SALES_ON_TILL=ParameterDetails(
+    _(u'Sales'),
+    _(u'Confirm Sales on Till'),
+    _(u'Once this parameter is set, the sales confirmation are only made '
+      'on till application and the fiscal coupon will be printed on '
+      'that application instead of Point of Sales')),
+
+    ACCEPT_CHANGE_SALESPERSON=ParameterDetails(
+    _(u'Sales'),
+    _(u'Accept Change Salesperson'),
+    _(u'Once this parameter is set to true, the user will be '
+      'able to change the salesperson of an opened '
+      'order on sale checkout dialog')),
+
+    USE_PURCHASE_PREVIEW_PAYMENTS=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Use Purchase Preview '
+      'Payments'),
+    _(u'Generate preview payments for new purchases which are not received '
+      'yet. Once the order is received the preview payments will be '
+      'also confirmed as valid payments with STATUS_TO_PAY')),
+
+    RETURN_MONEY_ON_SALES=ParameterDetails(
+    _(u'Sales'),
+    _(u'Return Money On Sales'),
+    _(u'Once this parameter is set the salesperson can return '
+      'money to clients when there is overpaid values in sales '
+      'with gift certificates as payment method.')),
+
+    RECEIVE_PRODUCTS_WITHOUT_ORDER=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Receive Products Without Order'),
+    _(u'Can we receive products without having a purchase order created '
+      'for them ? If yes, the first step of ReceivalWizard will accept going '
+      'to the second step with no order selected.')),
+
+    MAX_SALE_ORDER_VALIDITY=ParameterDetails(
+    _(u'Sales'),
+    _(u'Max sale order validity'),
+    _(u'The max number of days that a sale order is valid')),
+
+    # XXX: USE_SCALES_PRICE
+    USE_SCALE_PRICE=ParameterDetails(
+    _(u'Sales'),
+    _(u'Use Scale Price'),
+    _(u'Define if we are going to use the price supplied by the scales '
+      'for items that require weighting')),
+
+    # XXX: These parameters are Brazil-specific
+    ASK_SALES_CFOP=ParameterDetails(
+    _(u'Sales'),
+    _(u'Ask for Sale Order CFOP'),
+    _(u'Once this parameter is set to True we will ask for the CFOP '
+      'when creating new sale orders')),
+
+    DEFAULT_SALES_CFOP=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default Sales CFOP'),
+    _(u'Default CFOP (Fiscal Code of Operations) used when generating '
+      'fiscal book entries.')),
+
+    DEFAULT_RETURN_SALES_CFOP=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default Return Sales CFOP'),
+    _(u'Default CFOP (Fiscal Code of Operations) used when returning '
+      'sale orders ')),
+
+    DEFAULT_RECEIVING_CFOP=ParameterDetails(
+    _(u'Purchase'),
+    _(u'Default Receiving CFOP'),
+    _(u'Default CFOP (Fiscal Code of Operations) used when receiving '
+      'products in the warehouse application.')),
+
+    ICMS_TAX=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default ICMS tax'),
+    _(u'Default ICMS to be applied on all the products of a sale. '
+      'Note that this a percentage value and must be set as the '
+      'format: 0 < value < 100. E.g: 18, which means 18% of tax.')),
+
+    ISS_TAX=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default ISS tax'),
+    _(u'Default ISS to be applied on all the services of a sale. '
+      'Note that this a percentage value and must be set as the '
+      'format: 0 < value < 100. E.g: 12, which means 12% of tax.')),
+
+    SUBSTITUTION_TAX=ParameterDetails(
+    _(u'Sales'),
+    _(u'Default Substitution tax'),
+    _(u'The tax applied on all sale products with substitution tax type. '
+      'Note that this a percentage value and must be set as the format: '
+      '0 < value < 100. E.g: 16, which means 16% of tax.')),
+    )
 
 class ParameterAttr:
     def __init__(self, key, type, initial=None):
