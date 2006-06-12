@@ -44,7 +44,8 @@ _ = stoqlib_gettext
 #
 
 class GiftCertificateType(Domain):
-    """A gift certificate item represent a sale item with a special
+    """
+    A gift certificate item represents a sale item with a special
     property: it can be used as a payment method for another sale.
     """
     implements(IDescribable)
@@ -74,8 +75,7 @@ class GiftCertificateType(Domain):
 
     @classmethod
     def get_active_gift_certificates(cls, conn):
-        query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
+        return cls.select(cls.q.is_active == True, connection=conn)
 
 
 class GiftCertificateItem(AbstractSellableItem):
