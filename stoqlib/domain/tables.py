@@ -154,7 +154,7 @@ _sequences = [
 
 # fullname (eg "stoqlib.domain.person.Person") -> class
 _table_cache = {}
-# list of klasses, used by get_table_types where order is important
+# list of classes, used by get_table_types where order is important
 _table_list = []
 
 def _import():
