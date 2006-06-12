@@ -29,8 +29,8 @@ its interfaces. """
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter)
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IChequePrinter)
 from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
 
 # TODO: Check for other devices types? (Scales?)
