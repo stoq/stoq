@@ -42,6 +42,8 @@ __all__ = ["IBytesRecorder",
            "IPrinter",
            "ICouponPrinter",
            "IChequePrinter",
+           "IScaleInfo",
+           "IScale",
            ]
 
 class IBytesRecorder(Interface):
@@ -311,3 +313,25 @@ class IChequePrinter(IPrinter):
         * cheque_value        (Decimal)
         * cheque_city         (str)
         """
+
+class IScaleInfo(Interface):
+    """ This interface list the data that read by the scale
+    """
+    weight = Attribute("The weight read")
+    price_per_kg = Attribute("The KG read")
+    total_price = Attribute("The total price. It is equivalent to "
+                            "price_per_kg * weight")
+    code = Attribute("The product code")
+
+class IScale(Interface):
+    """ This interface describes how to interacts with scales.
+    """
+
+    model_name = Attribute("The name of the scale that the driver "
+                           "implements")
+
+    def read_data():
+        """ Read informations of the scale, returning an object
+        that implements IScaleInfo interface.
+        """
+
