@@ -44,12 +44,7 @@ class FlowTest(TestCase):
     * Dataregis 375EP
     * PertoPay 2023
     """
-    _printer = None
-
-    def __init__(self, *args, **kwargs):
-        TestCase.__init__(self, *args, **kwargs)
-        if FlowTest._printer is None:
-            FlowTest._printer = FiscalPrinter()
+    _printer = FiscalPrinter()
 
     def test1_AddItemWithoutCoupon(self):
         if (FlowTest._printer.brand == "dataregis"
