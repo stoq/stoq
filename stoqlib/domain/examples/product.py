@@ -60,10 +60,10 @@ def create_products():
     print_msg('Creating products...', break_line=False)
     conn = new_transaction()
 
-    base_category_data= ['Keyboard',
-                         'Mouse',
-                         'Monitor',
-                         'Processor']
+    base_category_data = ['Keyboard',
+                          'Mouse',
+                          'Monitor',
+                          'Processor']
 
     barcodes = ['015432', '32587', '65742', '12478']
 
