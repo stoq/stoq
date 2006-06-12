@@ -70,8 +70,11 @@ class BranchStation(Domain):
 
     @classmethod
     def get_active_stations(cls, conn):
-        query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
+        """
+        Returns the currently active branch.
+        @param conn: a database connection
+        """
+        return cls.select(cls.q.is_active == True, connection=conn)
 
     #
     # IActive implementation
