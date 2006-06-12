@@ -52,7 +52,9 @@ _ = stoqlib_gettext
 
 
 class ProductSupplierInfo(Domain):
-    """This class store information of the suppliers of a product.
+    """
+    Supplier information for a Product
+
     Each product can has more than one supplier.
 
     B{Important attributes}:
@@ -113,12 +115,28 @@ class Product(Domain):
         return supplier_info.get_name()
 
     def get_main_supplier_info(self):
+        """
+        Gets a list of main suppliers for a Product, the main supplier
+        is the most recently selected supplier.
+
+        @returns: main supplier info
+        @rtype: ProductSupplierInfo or None if a product lacks
+           a main suppliers
+        """
+
         if not self.suppliers:
             return
-        supplier_data = [supplier_info for supplier_info in self.suppliers
-                                        if supplier_info.is_main_supplier]
-        assert not len(supplier_data) > 1
-        return supplier_data[0]
+
+        main_suppliers = [supplier for supplier in self.suppliers
+                                       if supplier.is_main_supplier]
+        # A Product can only have on main supplier.
+        # FIXME: Investigate why we can have 0
+        if len(main_suppliers) > 1:
+            raise DatabaseInconsistency(
+                "A Product should have one main supplier, "
+                "but %d suppliers were found: %r" % (len(main_suppliers),
+                                                     main_suppliers))
+        return main_suppliers[0]
 
 
 class ProductStockReference(Domain):
