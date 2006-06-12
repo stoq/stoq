@@ -33,7 +33,7 @@ from zope.interface import providedBy
 from kiwi.argcheck import argcheck, number
 from kiwi.environ import environ
 
-from stoqdrivers.devices.printers.interface import IChequePrinter
+from stoqdrivers.devices.interfaces import IChequePrinter
 from stoqdrivers.exceptions import ConfigError
 from stoqdrivers.devices.printers.base import BasePrinter
 from stoqdrivers.utils import encode_text

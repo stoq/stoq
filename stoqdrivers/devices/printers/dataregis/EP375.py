@@ -37,8 +37,8 @@ from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
-from stoqdrivers.devices.printers.interface import (IChequePrinter,
-                                                    ICouponPrinter)
+from stoqdrivers.devices.interfaces import (IChequePrinter,
+                                            ICouponPrinter)
 from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     PrinterError, CommError, CommandError,
                                     CommandParametersError, ReduceZError,

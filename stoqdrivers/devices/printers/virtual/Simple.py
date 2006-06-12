@@ -37,8 +37,8 @@ from stoqdrivers.devices.printers.capabilities import Capability
 from stoqdrivers.exceptions import (CouponTotalizeError, PaymentAdditionError,
                                     CloseCouponError, CouponOpenError,
                                     CancelItemError, ItemAdditionError)
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter)
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IChequePrinter)
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
 from stoqdrivers.translation import stoqdrivers_gettext
 

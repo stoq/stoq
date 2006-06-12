@@ -29,11 +29,22 @@ stoqdrivers/devices/interfaces.py:
     Stoqdrivers interfaces specification
 """
 
-from zope.interface import Interface
+from decimal import Decimal
+
+from zope.interface import Interface, Attribute
+
+from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
+
+__all__ = ["IBytesRecorder",
+           "IDriverConstants",
+           "IPrinter",
+           "ICouponPrinter",
+           "IChequePrinter",
+           ]
 
 class IBytesRecorder(Interface):
-    """ Interface for objects used to log bytes read/written of the
-    device port. Its mainly use is in the package tests suite.
+    """ Interface for objects used to log bytes read/written of the device port.
+    Its mainly use is in the package tests suite.
     """
     def bytes_written(bytes):
         """ Record bytes written """
@@ -41,3 +52,260 @@ class IBytesRecorder(Interface):
     def bytes_read(bytes):
         """ Record bytes read """
 
+class IDriverConstants(Interface):
+    """ This interface determines the methods to be implemented by all objects
+    that wants didacte constant values for stoqdrivers devices drivers.
+    """
+
+    def get_items(self):
+        """ Returns all the constant identifiers which this object has
+        values assigned to.
+        """
+
+    def get_value(constant):
+        """ Given one of the constants defined on stoqdrivers.constants,
+        returns its value.
+        """
+
+class IPrinter(Interface):
+    model_name = Attribute("The name of the printer that the driver "
+                           "implements")
+
+class ICouponPrinter(IPrinter):
+    """ Describes coupon related tasks for a printer.
+
+    Workflow
+
+                                    --<--                     --<--
+                                   |     |                   |     |
+    [identify_customer] -> open -> add_item -> totalize -> add_payment -> close
+    """
+
+    coupon_printer_charset = Attribute("The charset name which the "
+                                       "coupon printer uses.")
+
+    #
+    # Common API
+    #
+
+    def coupon_identify_customer(customer, address, document):
+        """ Identify the customer.  This method doesn't have mandatory
+        execution (you can identify the customer only if you like), but when
+        executed it must be called before calling any method.
+
+        @param customer:
+        @type customer:   str
+
+        @param address:
+        @type address:    str
+
+        @param document:
+        @type document:   str
+        """
+
+    def coupon_open():
+        """ This needs to be called before anything else (except
+        identify_customer())
+        """
+
+    def coupon_add_item(code, description, price, taxcode,
+                        quantity=Decimal("1.0"), unit=UNIT_EMPTY,
+                        discount=Decimal("0.0"),
+                        surcharge=Decimal("0.0"), unit_desc=""):
+        """ Adds an item to the coupon.
+
+        @param code:      item code identifier
+        @type  code:      str
+
+        @param description:  description of product
+        @type  desription: str
+
+        @param price:     price
+        @type  price:     Decimal
+
+        @param taxcode:   constant to descrive the tax
+        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
+                          TAX_EXEMPTION
+
+        @param quantity:  quantity
+        @type  quantity:  Decimal
+
+        @param unit:      constant to describe the unit
+        @type unit:       integer constant one of: UNIT_LITERS, UNIT_EMPTY,
+                          UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
+
+        @param discount:  discount in %
+        @type  discount   Decimal between 0-100
+
+        @param surcharge: surcharge in %
+        @type  surcharge  Decimal between 0-100
+
+        @param unit_desc: A 2-byte string representing the unit that applies to
+                          the product.
+        @type unit_desc:  str
+
+        @rtype:           Decimal
+        @returns          identifier of added item
+        """
+
+    def coupon_cancel_item(item_id):
+        """ Cancels an item, item_id must be a value returned by
+        coupon_add_item
+
+        @param item_id:   the item id
+        """
+
+    def coupon_cancel():
+        """ Can only be called when a coupon is opened. It needs to be
+        possible to open new coupons after this is called.
+        """
+
+    def coupon_totalize(discount=Decimal("0.0"), surcharge=Decimal("0.0"),
+                        taxcode=TAX_NONE):
+        """ Closes the coupon applies addition a discount or surcharge and tax.
+        This can only be called when the coupon is open, has items added and
+        payments added.
+
+        @param discount:  discount in %
+        @type discount:   Decimal between 0-100
+
+        @param surcharge: surcharge in %
+        @type  surcharge  Decimal between 0-100
+
+        @param taxcode:   constant to descrive the tax
+        @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
+                          TAX_EXEMPTION
+
+        @rtype:           Decimal
+        @returns          the coupon total value
+        """
+
+    def coupon_add_payment(payment_method, value, description=u"", custom_pm=''):
+        """
+        @param payment_method: The payment method.
+        @type payment_method:  A constant (defined in the constants.py module)
+                               representing the payment method.
+
+        @param value:     The payment value
+        @type value:      Decimal
+
+        @param description: A simple description of the payment method to be
+                            appended to the coupon.
+        @type value:      unicode
+
+        @param custom_pm: When using CUSTOM_PM as argument for 'payment_method',
+                          you must specify its value with this parameter.
+        @type custom_pm:  str
+
+        @rtype:           Decimal
+        @returns          the total remaining amount
+        """
+
+    def coupon_close(message=''):
+        """ It needs to be possible to open new coupons after this is called.
+        You must call coupon_totalize before calling this method.
+
+        @param message:   promotional message
+        @type message:    str
+
+        @rtype:           int
+        @returns:         identifier of the coupon.
+        """
+
+    #
+    # Base admin operations
+    #
+
+    def summarize():
+        """ Prints a summary of all sales of the day. In Brazil this is
+        'read X' operation.
+        """
+
+    def close_till():
+        """ Close the till for the day, no other actions can be done after
+        this is called. In Brazil this is 'reduce Z' operation
+        """
+
+    def till_add_cash(value):
+        """ Add an till complement. This is called 'suprimento de caixa' on
+        Brazil
+
+        @param value:     The value added
+        @type value:      Decimal
+        """
+
+    def till_remove_cash(value):
+        """ Retire payments from the till. This is called 'sangria' on Brazil
+
+        @param value:     The value to remove
+        @type value:      Decimal
+        """
+
+    #
+    # Getting printer status
+    #
+
+    def get_capabilities():
+        """ Returns a capabilities dictionary, where the keys are the strings
+        below and its values are Capability instances
+
+        * item_code           (str)
+        * item_id             (int)
+        * items_quantity      (float)
+        * item_price          (float)
+        * item_description    (str)
+        * payment_value       (float)
+        * payment_description (str)
+        * promotional_message (str)
+        * customer_name       (str)
+        * customer_id         (str)
+        * customer_address    (str)
+        * add_cash_value      (float)
+        * remove_cash_value   (float)
+        """
+
+    def get_constants():
+        """ Returns the object that implements IDriverConstants where the printer
+        is going to get constant values from.
+        """
+
+class IChequePrinter(IPrinter):
+    """ Interface specification for cheque printers. """
+
+    cheque_printer_charset = Attribute("The charset name which the cheque "
+                                       "printer uses.")
+
+    def get_banks():
+        """ Returns a dictionary of all banks supported by the printer. The
+        dictionary's key is the bank name and its value are BankConfiguration
+        instances (this classe [BankConfiguration] is used to store and manage
+        the values of each section in the configuration file).
+        """
+
+    def print_cheque(bank, value, thirdparty, city, date=None):
+        """ Prints a cheque
+
+        @param bank:      the code of bank
+        @type bank:       one of codes returned by get_banks method.
+
+        @param value:     the value of the cheque
+        @type value:      Decimal
+
+        @param thirdparty: receiver of the cheque
+        @type thirdparty: str
+
+        @param city:
+        @type city:       str
+
+        @param date:      when the cheque was payed, optional
+        @type date:       datetime
+        """
+
+    def get_capabilities():
+        """ Returns a capabilities dictionary, where the keys are the strings
+        below and its values are Capability instances
+
+        * cheque_thirdparty   (str)
+        * cheque_value        (Decimal)
+        * cheque_city         (str)
+        """

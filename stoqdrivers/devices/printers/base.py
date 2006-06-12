@@ -34,9 +34,9 @@ from zope.interface import providedBy, implements
 from kiwi.python import namedAny
 
 from stoqdrivers.devices import printers
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IDriverConstants,
-                                                    IChequePrinter)
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IDriverConstants,
+                                            IChequePrinter)
 from stoqdrivers.devices.base import BaseDevice
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.constants import PRINTER_DEVICE

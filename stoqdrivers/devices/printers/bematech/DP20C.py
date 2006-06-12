@@ -33,7 +33,7 @@ from datetime import datetime
 
 from zope.interface import implements
 
-from stoqdrivers.devices.printers.interface import IChequePrinter
+from stoqdrivers.devices.interfaces import IChequePrinter
 from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.devices.printers.cheque import BaseChequePrinter
 from stoqdrivers.devices.printers.capabilities import Capability

@@ -36,8 +36,8 @@ from serial import EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
 from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter)
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IChequePrinter)
 from stoqdrivers.devices.printers.cheque import (BaseChequePrinter,
                                                  BankConfiguration)
 from stoqdrivers.devices.printers.base import BaseDriverConstants
