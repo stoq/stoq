@@ -21,7 +21,9 @@
 ## Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 ## USA.
 ##
-## Author(s):   Henrique Romano             <henrique@async.com.br>
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """
 stoqdrivers/devices/interfaces.py:
