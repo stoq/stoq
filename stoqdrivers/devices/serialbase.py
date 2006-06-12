@@ -25,8 +25,11 @@
 ##
 
 from serial import Serial, EIGHTBITS, PARITY_NONE, STOPBITS_ONE
+from zope.interface import providedBy
+from zope.interface.exceptions import DoesNotImplement
 
 from stoqdrivers.log import Logger
+from stoqdrivers.devices.interfaces import IBytesRecorder
 
 class SerialBase(Serial, Logger):
     log_domain = 'serial'
@@ -43,8 +46,8 @@ class SerialBase(Serial, Logger):
 
     def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                  parity=PARITY_NONE, stopbits=STOPBITS_ONE):
+        self._recorder = None
         Logger.__init__(self)
-
         self.info('opening device %s' % device)
         Serial.__init__(self, device, baudrate=baudrate,
                         bytesize=bytesize, parity=parity,
@@ -69,6 +72,8 @@ class SerialBase(Serial, Logger):
                 number_of_tries -= 1
             else:
                 break
+        if self._recorder is not None:
+            self._recorder.bytes_read(data)
         return data
 
     def readline(self):
@@ -80,11 +85,15 @@ class SerialBase(Serial, Logger):
             c = self.read(1)
             if c == self.EOL_DELIMIT:
                 self.debug('<<< %r' % out)
+                if self._recorder is not None:
+                    self._recorder.bytes_read(out)
                 return out
             out +=  c
 
     def write(self, data):
         self.debug(">>> %r (%dbytes)" % (data, len(data)))
+        if self._recorder is not None:
+            self._recorder.bytes_written(data)
         Serial.write(self, data)
 
     def writeline(self, data):
@@ -92,3 +101,12 @@ class SerialBase(Serial, Logger):
             return
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
+
+    def set_recorder(self, recorder):
+        """ Define a recorder to log all the bytes read and written. The
+        recorder must implements the IBytesRecorder interface.
+        """
+        if not IBytesRecorder in providedBy(recorder):
+            raise DoesNotImplement("The recorder %r must implement the "
+                                   "IBytesRecorder interface"% recorder)
+        self._recorder = recorder
