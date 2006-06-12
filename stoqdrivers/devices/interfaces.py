@@ -39,7 +39,7 @@ from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
 
 __all__ = ["IBytesRecorder",
            "IDriverConstants",
-           "IPrinter",
+           "IDevice",
            "ICouponPrinter",
            "IChequePrinter",
            "IScaleInfo",
@@ -71,11 +71,10 @@ class IDriverConstants(Interface):
         returns its value.
         """
 
-class IPrinter(Interface):
-    model_name = Attribute("The name of the printer that the driver "
-                           "implements")
+class IDevice(Interface):
+    model_name = Attribute("A string describing briefly the device implemented")
 
-class ICouponPrinter(IPrinter):
+class ICouponPrinter(IDevice):
     """ Describes coupon related tasks for a printer.
 
     Workflow
@@ -273,7 +272,7 @@ class ICouponPrinter(IPrinter):
         is going to get constant values from.
         """
 
-class IChequePrinter(IPrinter):
+class IChequePrinter(IDevice):
     """ Interface specification for cheque printers. """
 
     cheque_printer_charset = Attribute("The charset name which the cheque "
@@ -323,12 +322,9 @@ class IScaleInfo(Interface):
                             "price_per_kg * weight")
     code = Attribute("The product code")
 
-class IScale(Interface):
+class IScale(IDevice):
     """ This interface describes how to interacts with scales.
     """
-
-    model_name = Attribute("The name of the scale that the driver "
-                           "implements")
 
     def read_data():
         """ Read informations of the scale, returning an object
