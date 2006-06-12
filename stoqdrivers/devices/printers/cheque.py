@@ -71,8 +71,8 @@ class BankConfiguration:
     def get_y_coordinate(self, name):
         return self.get_coordinate(name)[0]
 
-class BaseChequePrinter(BasePrinter):
-    """ A base class for all printer that implements IChequePrinter interface.
+class BaseChequePrinter:
+    """ A base class for all printers that implements IChequePrinter interface.
     This class knows how to deal with the configuration file, that contains
     all the configuration of all supported cheques by the printer.
 
