@@ -48,6 +48,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ISalesPerson, IBankBranch, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable)
+from stoqlib.domain.station import BranchStation
 
 _ = stoqlib_gettext
 
@@ -55,51 +56,6 @@ _ = stoqlib_gettext
 #
 # Base Domain Classes
 #
-
-
-class BranchStation(Domain):
-    """Defines a computer which access Stoqlib database and lives in a
-    certain branch company
-    """
-    implements(IActive)
-
-    identifier = AutoIncCol('stoqlib_branch_station_seq')
-    name = UnicodeCol()
-    is_active = BoolCol(default=False)
-    branch = ForeignKey("PersonAdaptToBranch")
-
-    @classmethod
-    def get_active_stations(cls, conn):
-        """
-        Returns the currently active branch stations.
-        @param conn: a database connection
-        """
-        return cls.select(cls.q.is_active == True, connection=conn)
-
-    #
-    # IActive implementation
-    #
-
-    def inactivate(self):
-        assert self.is_active, ('This station is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This station is already active')
-        self.is_active = True
-
-    def get_status_str(self):
-        if self.is_active:
-            return _(u'Active')
-        return _(u'Inactive')
-
-    #
-    # Accessors
-    #
-
-    def get_identifier_str(self):
-        return u"%05d" % self.identifier
-
 
 class EmployeeRole(Domain):
     """Base class to store the employee roles."""
