@@ -36,7 +36,7 @@ from zope.interface import providedBy
 
 from stoqdrivers.utils import get_module_list
 from stoqdrivers.devices import scales
-from stoqdrivers.devices.scales.interface import IScale
+from stoqdrivers.devices.interfaces import IScale
 from stoqdrivers.devices.base import BaseDevice
 from stoqdrivers.constants import SCALE_DEVICE
 

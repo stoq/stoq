@@ -33,7 +33,7 @@ from serial import EIGHTBITS, STOPBITS_ONE, PARITY_EVEN
 from zope.interface import implements
 
 from stoqdrivers.exceptions import InvalidReply
-from stoqdrivers.devices.scales.interface import IScale, IScaleInfo
+from stoqdrivers.devices.interfaces import IScale, IScaleInfo
 from stoqdrivers.devices.serialbase import SerialBase
 
 STX = 0x02
