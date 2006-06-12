@@ -460,26 +460,28 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
 
     def _create_till_entry(self, total, group):
         from stoqlib.domain.till import TillEntry
-        group_desc = group.get_group_description()
-        description = _(u'1/1 %s for %s') % (self.description,
-                                             group_desc)
         if isinstance(group, SaleAdaptToPaymentGroup):
             till = group.get_adapted().till
         elif isinstance(group, TillAdaptToPaymentGroup):
             till = group.get_adapted()
         else:
-            raise StoqlibError("Invalid Payment group, got %s"
-                               % group)
-        conn = self.get_connection()
-        TillEntry(connection=conn,
-                  description=description, value=total, till=till,
-                  payment_group=group)
+            raise StoqlibError(
+                "Invalid Payment group, got %s" % group)
 
-    def setup_outpayments(self, total, group, **kwargs):
-        total = -abs(total)
-        self._create_till_entry(total, group)
+        description = _(u'1/1 %s for %s') % (
+            self.description, group.get_group_description())
+        TillEntry(description=description,
+                  value=total,
+                  till=till,
+                  payment_group=group,
+                  connection=self.get_connection())
 
-    def setup_inpayments(self, total, group, **kwargs):
+    # FIXME: This is absolutely horrible
+
+    def setup_outpayments(self, total, group, *args, **kwargs):
+        self._create_till_entry(-abs(total), group)
+
+    def setup_inpayments(self, total, group, *args, **kwargs):
         self._create_till_entry(total, group)
 
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
