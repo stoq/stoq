@@ -226,8 +226,8 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def add_item(self, item):
-        raise NotImplementedError("You should call add_selabble_item "
-                                  "instead.")
+        raise NotImplementedError(
+            "You should call add_sellable_item instead")
 
     def get_items(self):
         if not self.sellableitem_table:
