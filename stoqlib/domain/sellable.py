@@ -218,7 +218,7 @@ class AbstractSellable(InheritableModelAdapter):
 
     def _set_barcode(self, barcode):
         if AbstractSellable.check_barcode_exists(barcode):
-            raise SellableError("The barcode %s alread exists" % barcode)
+            raise SellableError("The barcode %s already exists" % barcode)
         self._SO_set_barcode(barcode)
 
     #
