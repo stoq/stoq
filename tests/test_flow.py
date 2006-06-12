@@ -82,9 +82,8 @@ class FlowTest(TestCase):
 
     def test4_AddItemWithoutValue(self):
         self.failUnlessRaises(InvalidValue, FlowTest._printer.add_item,
-                              "000004", Decimal("1"), Decimal("0.0"),
-                              UNIT_EMPTY, "Nothing", TAX_NONE, Decimal("0"),
-                              Decimal("0"))
+                              "000004", "Nothing", Decimal("0.0"),
+                              TAX_NONE, items_quantity=Decimal("1.0"))
 
     def test5_AddPaymentWithoutTotalize(self):
         self.failUnlessRaises(PaymentAdditionError,
