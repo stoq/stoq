@@ -30,12 +30,12 @@ from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
 from stoqdrivers.devices.interfaces import (ICouponPrinter,
-                                            IChequePrinter)
+                                            IChequePrinter,
+                                            IScale)
 from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
+from stoqdrivers.devices.scales.base import get_supported_scales
 
-# TODO: Check for other devices types? (Scales?)
-
-def check():
+def check_printers():
     for iface in (ICouponPrinter, IChequePrinter):
         printers = get_supported_printers_by_iface(iface)
         print "\n\nChecking drivers that implements %s..." % iface.__name__
@@ -50,6 +50,21 @@ def check():
                 else:
                     print "OK"
 
+def check_scales():
+    print "\n\nChecking Scales..."
+    scales = get_supported_scales()
+    for brand, drivers in get_supported_scales().items():
+        print "\n\tChecking %s scales: " % brand
+        for driver in drivers:
+            print "\t\t%s" % driver.model_name,
+            try:
+                verifyClass(IScale, driver)
+            except Invalid, e:
+                print "ERROR:", e
+            else:
+                print "OK"
+
 if __name__ == "__main__":
-    check()
+    check_printers()
+    check_scales()
 
