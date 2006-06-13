@@ -178,15 +178,15 @@ class FiscalPrinter(BasePrinter):
         if not self._has_been_totalized:
             raise CloseCouponError(_("You must totalize the coupon before "
                                      "closing it"))
+        elif not self.payments_total_value:
+            raise CloseCouponError(_("It is not possible close the coupon "
+                                     "since there are no payments defined."))
         elif self.totalized_value > self.payments_total_value:
             raise CloseCouponError(_("Isn't possible close the coupon since "
                                      "the payments total (%.2f) doesn't "
                                      "match the totalized value (%.2f).")
                                    % (self.payments_total_value,
                                       self.totalized_value))
-        elif not self.payments_total_value:
-            raise CloseCouponError(_("It is not possible close the coupon "
-                                     "since there are no payments defined."))
         res = self._driver.coupon_close(
             self._format_text(promotional_message))
         self._has_been_totalized = False
