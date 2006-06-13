@@ -86,7 +86,7 @@ class POSApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.param = sysparam(self.conn)
-        if not self.param.POS_SEPARATE_CASHIER:
+        if self.param.POS_SEPARATE_CASHIER:
             if not get_current_till_operation(self.conn):
                 error(_(u"You need to open the till before start doing "
                          "sales."))
@@ -118,7 +118,7 @@ class POSApp(AppWindow):
             self.delivery_button.hide()
         if self.param.POS_FULL_SCREEN:
             self.get_toplevel().fullscreen()
-        if not self.param.POS_SEPARATE_CASHIER:
+        if self.param.POS_SEPARATE_CASHIER:
             for proxy in self.TillMenu.get_proxies():
                 proxy.hide()
         self.order_total_label.set_size('xx-large')
