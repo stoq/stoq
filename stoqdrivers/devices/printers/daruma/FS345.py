@@ -378,9 +378,6 @@ class FS345(SerialBase):
 
     def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
                         taxcode=TAX_NONE):
-        if markup and taxcode == TAX_NONE:
-            raise ValueError("to specify a markup you need specify "
-                             "its tax code")
         self._check_status()
         self._verify_coupon_open()
 

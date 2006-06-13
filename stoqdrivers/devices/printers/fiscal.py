@@ -133,6 +133,9 @@ class FiscalPrinter(BasePrinter):
                  taxcode=TAX_NONE):
         if discount and surcharge:
             raise TypeError("discount and surcharge can not be used together")
+        if surcharge and taxcode == TAX_NONE:
+            raise ValueError("to specify a surcharge you need specify its "
+                             "tax code")
         self.info('coupon_totalize')
         result = self._driver.coupon_totalize(discount, surcharge, taxcode)
         self._has_been_totalized = True
