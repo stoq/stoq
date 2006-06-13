@@ -373,6 +373,13 @@ class ParameterAccess(ClassInittableObject):
 
     _cache = {}
 
+    @classmethod
+    def __class_init__(cls, namespace):
+        for obj in cls.constants:
+            prop = property(lambda self, n=obj.key, v=obj.type:
+                            self.get_parameter_by_field(n, v))
+            setattr(cls, obj.key, prop)
+
     def __init__(self, conn):
         self.conn = conn
 
@@ -388,13 +395,6 @@ class ParameterAccess(ClassInittableObject):
     def _set_schema(self, field_name, field_value, is_editable=True):
         ParameterData(connection=self.conn, field_name=field_name,
                       field_value=unicode(field_value), is_editable=is_editable)
-
-    @classmethod
-    def __class_init__(cls, namespace):
-        for obj in cls.constants:
-            prop = property(lambda self, n=obj.key, v=obj.type:
-                            self.get_parameter_by_field(n, v))
-            setattr(cls, obj.key, prop)
 
     def _get_parameter_by_name(self, param_name):
         res = ParameterData.select(ParameterData.q.field_name == param_name,
@@ -707,6 +707,26 @@ def get_parameter_details(field_name):
 # Ensuring everything
 #
 
+def check_parameter_presence():
+    """
+    This is called on stoq startup to make sure that all a parameters
+    are present in the right table.
+    If they are not they will be installed.
+    """
+
+    global _parameter_info
+    conn = new_transaction()
+    param = sysparam(conn)
+    results = ParameterData.select(connection=conn)
+
+    # Check so the number of installed parameters are equal to
+    # the number of available ones, if they're not we'll add/remove
+    # It's important that this function is is fast since the function
+    # is called during startup for each application.
+    if results.count() != len(_parameter_info):
+        param.set_defaults(update=True)
+
+    finish_transaction(conn, 1)
 
 def ensure_system_parameters(update=False):
     print_msg("Creating default system parameters...", break_line=False)
