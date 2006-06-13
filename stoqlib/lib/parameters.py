@@ -132,8 +132,8 @@ _parameter_info = dict(
       'will be showed as full screen')),
 
     POS_SEPARATE_CASHIER=ParameterDetails(
-    _(u'POS'),
-    _(u'Allow POS to open/close Till'),
+    _(u'Sales'),
+    _(u'Include cashier operations in Point of Sale'),
     _(u'If this parameter is set to True a Till menu will not be added in '
       'the POS application. If you have only one fiscal printer and more than '
       'one computer, set this to True, otherwise False')),
