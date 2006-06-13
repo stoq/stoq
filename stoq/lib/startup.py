@@ -34,9 +34,10 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import check_installed_database
-from stoqlib.lib.message import error
 from stoqlib.lib.admin import initialize_system
+from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
+from stoqlib.lib.parameters import check_parameter_presence
 from stoqlib.lib.runtime import (get_connection, set_verbose,
                                  register_current_branch_identifier,
                                  register_current_station_identifier,
@@ -118,6 +119,7 @@ def setup(config, options=None, stoq_user_password=''):
     else:
         set_branch_by_stationid(config.get_station_id())
         schema_migration.update_schema()
+        check_parameter_presence()
 
     sqlhub.threadConnection = get_connection()
 
