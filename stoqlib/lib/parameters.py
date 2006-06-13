@@ -133,10 +133,10 @@ _parameter_info = dict(
 
     POS_SEPARATE_CASHIER=ParameterDetails(
     _(u'Sales'),
-    _(u'Include cashier operations in Point of Sale'),
-    _(u'If this parameter is set to True a Till menu will not be added in '
+    _(u'Exclude cashier operations in Point of Sale'),
+    _(u'If this parameter is set to False a Till menu will not be added in '
       'the POS application. If you have only one fiscal printer and more than '
-      'one computer, set this to True, otherwise False')),
+      'one computer, set this to False, otherwise True.')),
 
     ACCEPT_ORDER_PRODUCTS=ParameterDetails(
     _(u'Sales'),
