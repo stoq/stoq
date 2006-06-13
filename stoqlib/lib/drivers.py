@@ -186,8 +186,37 @@ def check_virtual_printer_for_current_station(conn):
 def emit_read_X(conn):
     return _emit_reading(conn, 'summarize')
 
+def check_emit_read_X(conn, parent=None):
+    while not emit_read_X(conn):
+        text = _(u"It's not possible to emit a read X for the "
+                  "configured printer.\nWould you like to ignore "
+                  "this error and continue?")
+        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                   (_(u"Ignore"), gtk.RESPONSE_YES))
+        parent = parent
+        y = yesno(text, default=gtk.RESPONSE_YES,
+                  buttons=buttons)
+        print y, gtk.RESPONSE_YES, gtk.RESPONSE_CANCEL
+        if (yesno(text, default=gtk.RESPONSE_YES,
+                  buttons=buttons) != gtk.RESPONSE_YES):
+            return False
+    return True
+
 def emit_reduce_Z(conn):
     return _emit_reading(conn, 'close_till')
+
+def check_emit_reduce_Z(conn, parent=None):
+    while not emit_reduce_Z(conn):
+        text = _(u"It's not possible to emit a reduce Z for the "
+                  "configured printer.\nWould you like to ignore "
+                  "this error and continue?")
+        buttons = ((_("Cancel"), gtk.RESPONSE_CANCEL),
+                   (_("Ignore"), gtk.RESPONSE_YES))
+        parent = parent
+        if (yesno(text, default=gtk.RESPONSE_YES,
+                  buttons=buttons) != gtk.RESPONSE_YES):
+            return False
+    return True
 
 def emit_coupon(sale, conn):
     """ Emit a coupon for a Sale instance.

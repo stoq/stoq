@@ -131,6 +131,12 @@ _parameter_info = dict(
     _(u'Once this parameter is set the Point of Sale application '
       'will be showed as full screen')),
 
+    POS_SEPARATE_CASHIER=ParameterDetails(
+    _(u'POS'),
+    _(u'Allow POS to open/close Till'),
+    _(u'Once this parameter is set, the Point of Sale Application can open '
+      'and close Till')),
+
     ACCEPT_ORDER_PRODUCTS=ParameterDetails(
     _(u'Sales'),
     _(u'Accept Order Products'),
@@ -337,7 +343,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ICMS_TAX', int, initial=18),
         ParameterAttr('ISS_TAX', int, initial=18),
         ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
-
+        ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),

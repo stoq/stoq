@@ -36,23 +36,60 @@ from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
 
 from stoqlib.database import finish_transaction, rollback_and_begin
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import get_current_till_operation, Till
 from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor,
                                       CashOutEditor)
-
+from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
 
 _ = stoqlib_gettext
 
+
+def verify_and_open_till(self, conn):
+    if get_current_till_operation(conn) is not None:
+        raise TillError("You already have a till operation opened. "
+                        "Close the current Till and open another one.")
+
+    if self.run_dialog(TillOpeningEditor, conn):
+        self.conn.commit()
+        self._update_widgets()
+        return True
+
+def verify_and_close_till(self, conn, *args):
+    till = get_current_till_operation(conn)
+    if till is None:
+        raise ValueError("You should have a till operation opened at "
+                         "this point")
+
+    if not self.run_dialog(TillClosingEditor, conn, till):
+        rollback_and_begin(self.conn)
+        return False
+    self.conn.commit()
+
+    self._update_widgets()
+    opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
+                               connection=self.conn)
+    if opened_sales.count() == 0:
+        return False
+
+    # A new till object to "store" the sales that weren't
+    # confirmed. Note that this new till operation isn't
+    # opened yet, but it will be considered when opening a
+    # new operation
+    branch_station = opened_sales[0].till.station
+    new_till = Till(connection=self.conn,
+                    station=branch_station)
+    for sale in opened_sales:
+        sale.till = new_till
 
 class TillOperationDialog(SlaveDelegate):
     app_name = _('Till Operations')
