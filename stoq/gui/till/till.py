@@ -31,17 +31,18 @@ from datetime import date
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.ui.widgets.list import Column
-from stoqlib.exceptions import TillError, StoqlibError
+from stoqlib.exceptions import StoqlibError
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.domain.till import get_current_till_operation, Till
-from stoqlib.lib.message import yesno
+from stoqlib.domain.till import get_current_till_operation
 from stoqlib.lib.runtime import new_transaction, get_current_branch
-from stoqlib.lib.drivers import emit_read_X, emit_reduce_Z, emit_coupon
+from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
+                                 check_emit_read_X)
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
-from stoqlib.gui.dialogs.tilloperation import TillOperationDialog
+from stoqlib.gui.dialogs.tilloperation import (TillOperationDialog,
+                                               verify_and_open_till,
+                                               verify_and_close_till)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.person import ClientSearch
 from stoqlib.gui.search.sale import SaleSearch
@@ -142,41 +143,13 @@ class TillApp(SearchableAppWindow):
 
     def open_till(self):
         rollback_and_begin(self.conn)
-        if get_current_till_operation(self.conn) is not None:
-            raise TillError("You already have a till operation opened. "
-                            "Close the current Till and open another one.")
-
-        if self.run_dialog(TillOpeningEditor, self.conn):
-            self.conn.commit()
-            self._update_widgets()
+        if verify_and_open_till(self, self.conn):
             return
         rollback_and_begin(self.conn)
 
     def close_till(self, *args):
-        till = get_current_till_operation(self.conn)
-        if till is None:
-            raise ValueError("You should have a till operation opened at "
-                             "this point")
-
-        if not self.run_dialog(TillClosingEditor, self.conn, till):
-            rollback_and_begin(self.conn)
+        if not verify_and_close_till(self, self.conn):
             return
-        self.conn.commit()
-
-        self._update_widgets()
-        opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
-                                   connection=self.conn)
-        if opened_sales.count() == 0:
-            return
-
-        # A new till object to "store" the sales that weren't
-        # confirmed. Note that this new till operation isn't
-        # opened yet, but it will be considered when opening a
-        # new operation
-        new_till = Till(connection=self.conn,
-                        branch=self.branch)
-        for sale in opened_sales:
-            sale.till = new_till
         self.conn.commit()
 
     def _confirm_order(self):
@@ -245,33 +218,14 @@ class TillApp(SearchableAppWindow):
     #
 
     def _on_close_till_action__clicked(self, *args):
-        if not emit_reduce_Z(self.conn):
-            text = _(u"It's not possible to emit a reduce Z for the "
-                      "configured printer.\nWould you like to ignore "
-                      "this error and continue?")
-            buttons = ((_("Cancel"), gtk.RESPONSE_CANCEL),
-                       (_("Ignore"), gtk.RESPONSE_YES))
-            parent = self.get_toplevel()
-            if (yesno(text, default=gtk.RESPONSE_YES,
-                      buttons=buttons) != gtk.RESPONSE_YES):
-                return
-        self.close_till()
+        parent = self.get_toplevel()
+        if check_emit_reduce_Z(self.conn, parent):
+            self.close_till()
 
     def _on_open_till_action__clicked(self, *args):
-        if not emit_read_X(self.conn):
-            text = _(u"It's not possible to emit a read X for the "
-                      "configured printer.\nWould you like to ignore "
-                      "this error and continue?")
-            buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                       (_(u"Ignore"), gtk.RESPONSE_YES))
-            parent = self.get_toplevel()
-            y = yesno(text, default=gtk.RESPONSE_YES,
-                      buttons=buttons)
-            print y, gtk.RESPONSE_YES, gtk.RESPONSE_CANCEL
-            if (yesno(text, default=gtk.RESPONSE_YES,
-                      buttons=buttons) != gtk.RESPONSE_YES):
-                return
-        self.open_till()
+        parent = self.get_toplevel()
+        if check_emit_read_X(self.conn, parent):
+            self.open_till()
 
     def _on_client_search_action__clicked(self, *args):
         self._run_search_dialog(ClientSearch, hide_footer=True)
