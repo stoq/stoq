@@ -35,14 +35,16 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import UNIT_WEIGHT
-from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.exceptions import (StoqlibError, DatabaseInconsistency)
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.lib.message import error, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
-                              get_current_scale_settings)
+                                 get_current_scale_settings,
+                                 check_emit_reduce_Z,
+                                 check_emit_read_X)
 from stoqlib.reporting.sale import SaleOrderReport
 from stoqlib.gui.editors.person import ClientEditor
 from stoqlib.gui.editors.delivery import DeliveryEditor
@@ -56,6 +58,8 @@ from stoqlib.gui.search.product import ProductSearch
 from stoqlib.gui.search.service import ServiceSearch
 from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
+from stoqlib.gui.dialogs.tilloperation import (verify_and_open_till,
+                                               verify_and_close_till)
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
@@ -81,11 +85,12 @@ class POSApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
-        if not get_current_till_operation(self.conn):
-            error(_(u"You need to open the till before start doing "
-                     "sales."))
-            self.app.shutdown()
         self.param = sysparam(self.conn)
+        if not self.param.POS_SEPARATE_CASHIER:
+            if not get_current_till_operation(self.conn):
+                error(_(u"You need to open the till before start doing "
+                         "sales."))
+                self.app.shutdown()
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
@@ -113,6 +118,9 @@ class POSApp(AppWindow):
             self.delivery_button.hide()
         if self.param.POS_FULL_SCREEN:
             self.get_toplevel().fullscreen()
+        if not self.param.POS_SEPARATE_CASHIER:
+            for proxy in self.TillMenu.get_proxies():
+                proxy.hide()
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
 
@@ -212,6 +220,9 @@ class POSApp(AppWindow):
             self.sellables.select(self.sellables[0])
 
     def _update_widgets(self):
+        has_till = get_current_till_operation(self.conn) is not None
+        self.TillOpen.set_sensitive(not has_till and self.sale is None)
+        self.TillClose.set_sensitive(has_till and self.sale is None)
         has_sellables = len(self.sellables) >= 1
         widgets = [self.checkout_button, self.remove_item_button,
                    self.PrintOrder, self.NewDelivery, self.OrderCheckout]
@@ -336,6 +347,9 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
+        if not get_current_till_operation(self.conn):
+            warning(_(u"You need open the till before start doing sales."))
+            return
         if self.coupon is not None:
             self._cancel_order()
         rollback_and_begin(self.conn)
@@ -408,6 +422,21 @@ class POSApp(AppWindow):
         else:
             rollback_and_begin(self.conn)
             self.new_order_button.grab_focus()
+
+    #
+    # Till methods
+    #
+
+    def open_till(self):
+        rollback_and_begin(self.conn)
+        if verify_and_open_till(self, self.conn):
+            return
+        rollback_and_begin(self.conn)
+
+    def close_till(self, *args):
+        if verify_and_close_till(self, self.conn):
+            return
+        self.conn.commit()
 
     #
     # Coupon related
@@ -538,6 +567,15 @@ class POSApp(AppWindow):
     def _on_new_delivery_action__clicked(self, *args):
         self._add_delivery()
 
+    def _on_close_till_action__clicked(self, *args):
+        parent = self.get_toplevel()
+        if check_emit_reduce_Z(self.conn, parent):
+            self.close_till()
+
+    def _on_open_till_action__clicked(self, *args):
+        parent = self.get_toplevel()
+        if check_emit_read_X(self.conn, parent):
+            self.open_till()
 
     #
     # Kiwi callbacks
