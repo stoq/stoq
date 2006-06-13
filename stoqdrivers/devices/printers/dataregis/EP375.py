@@ -268,7 +268,7 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_READ_X = 'G'
     CMD_REDUCE_Z = 'H'
     CMD_ADD_ITEM_WITH_DISCOUNT = 'A'
-    CMD_ADD_ITEM_WITH_SURCHARGE = 'w'
+    CMD_ADD_ITEM_WITH_SURCHARGE = 'v'
     CMD_GET_STATUS = 'R'
     CMD_CANCEL_COUPON = 'F'
     CMD_ADD_PAYMENT = 'D'
@@ -492,11 +492,11 @@ class EP375(SerialBase, BaseChequePrinter):
         # numbers, i'll prefix with 0s to avoid more problems to the callsite,
         # but my XXX remains *HERE*
         #
+        code_num = 0
         try:
             code_num = int(code[:7])
-            code = ("%06d" % code_num) + code[7:]
         except ValueError:
-            code = "0" * 6 +  code
+            code = "%06d%s" % (code_num, code[7:])
         taxcode = self._consts.get_value(taxcode)
         unit = self._consts.get_value(unit)
         item = CouponItem(code, description, taxcode, quantity, price,
@@ -511,8 +511,8 @@ class EP375(SerialBase, BaseChequePrinter):
         try:
             item = self.items_dict[item_id]
         except KeyError:
-            raise CommandParametersError(_("You have specified an invalid "
-                                           "item id to cancel!"))
+            raise CancelItemError(_("You have specified an invalid item id "
+                                    "to cancel!"))
         self._send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
 
     def coupon_cancel(self):
