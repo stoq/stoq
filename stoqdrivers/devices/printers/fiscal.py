@@ -104,7 +104,7 @@ class FiscalPrinter(BasePrinter):
     @capcheck(basestring, basestring, Decimal, taxcode, Decimal, unit,
               Decimal, Decimal, basestring)
     def add_item(self, item_code, item_description, item_price, taxcode,
-                 items_quantity=Decimal("0.0"), unit=UNIT_EMPTY,
+                 items_quantity=Decimal("1.0"), unit=UNIT_EMPTY,
                  discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                  unit_desc=""):
         if self._has_been_totalized:
