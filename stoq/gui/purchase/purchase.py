@@ -126,8 +126,10 @@ class PurchaseApp(SearchableAppWindow):
         rollback_and_begin(self.conn)
 
         orders = self.orders.get_selected_rows()
-        valid_orders = [i for i in orders
-                            if i.status == PurchaseOrder.ORDER_PENDING]
+        valid_orders = [order for order in orders
+                                  if order.status ==
+                                     PurchaseOrder.ORDER_PENDING]
+
         valid_orders_len = len(valid_orders)
         if not valid_orders_len:
             return warning(_("There are no orders with status "
@@ -139,13 +141,16 @@ class PurchaseApp(SearchableAppWindow):
             msg = _('The selected order will be market as sent.')
         invalid_qty = len(orders) - valid_orders_len
         if valid_orders_len != len(orders):
-            msg += "\n%s" % (_(u"Warning: there are %d order(s) with "
-                               "status different than pending that "
-                               "will not be included" % invalid_qty))
+            msg += "\n"
+            msg += _(u"Warning: there are %d order(s) with "
+                     "status different than pending that "
+                     "will not be included") % invalid_qty
+
         buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
                    (_(u"Confirm"), gtk.RESPONSE_YES))
-        if (not yesno(msg, default=gtk.RESPONSE_YES, buttons=buttons) ==
-            gtk.RESPONSE_YES):
+        if not yesno(msg,
+                     default=gtk.RESPONSE_YES,
+                     buttons=buttons) == gtk.RESPONSE_YES:
             return
         for item in valid_orders:
             order = PurchaseOrder.get(item.id, connection=self.conn)
@@ -208,42 +213,45 @@ class PurchaseApp(SearchableAppWindow):
     def on_details_button__clicked(self, *args):
         self._run_details_dialog()
 
-    def on_orders__selection_changed(self, *args):
+    def _on_orders__selection_changed(self, orders, selection):
         self._update_view()
 
-    def on_orders__double_click(self, *args):
+    def _on_orders__double_click(self, orders, order):
         self._run_details_dialog()
+
+    def _on_orders__has_rows(self, orders, has_items):
+        self._update_list_aware_widgets(has_items)
+
+    def on_edit_button__clicked(self, button):
+        self._edit_order()
 
     def on_print_button__clicked(self, button):
         self._print_selected_items()
 
-    def _on_suppliers_action_clicked(self, *args):
+    # FIXME: Kiwi autoconnection OR rename
+
+    def _on_suppliers_action_clicked(self, action):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
 
-    def _on_products_action_clicked(self, *args):
+    def _on_products_action_clicked(self, action):
         self.run_dialog(ProductSearch, self.conn, hide_price_column=True)
 
-    def _on_order_action_clicked(self, *args):
+    def _on_order_action_clicked(self, action):
         self._open_order()
         self.searchbar.search_items()
 
-    def on_edit_button__clicked(self, *args):
-        self._edit_order()
-
-    def _on_send_to_supplier_action_clicked(self, *args):
+    def _on_send_to_supplier_action_clicked(self, action):
         self._send_selected_items_to_supplier()
 
-    def _on_base_categories_action_clicked(self, *args):
+    def _on_base_categories_action_clicked(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
 
-    def _on_categories_action_clicked(self, *args):
+    def _on_categories_action_clicked(self, action):
         self.run_dialog(SellableCatSearch, self.conn)
 
-    def _on_services_action_clicked(self, *args):
+    def _on_services_action_clicked(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)
 
-    def _on_transporters_action_clicked(self, *args):
+    def _on_transporters_action_clicked(self, action):
         self.run_dialog(TransporterSearch, self.conn, hide_footer=True)
 
-    def on_orders__has_rows(self, klist, has_items):
-        self._update_list_aware_widgets(has_items)
