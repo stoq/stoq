@@ -30,9 +30,7 @@ from decimal import Decimal
 from kiwi.argcheck import number, percent
 
 from stoqdrivers.exceptions import (CloseCouponError, PaymentAdditionError,
-                                    PendingReadX, PendingReduceZ,
-                                    CouponOpenError, AlreadyTotalized,
-                                    InvalidValue)
+                                    AlreadyTotalized, InvalidValue)
 from stoqdrivers.constants import (TAX_NONE,TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
                                    TAX_EXEMPTION, UNIT_EMPTY, UNIT_LITERS,
                                    UNIT_WEIGHT, UNIT_METERS, MONEY_PM, CHEQUE_PM,
@@ -209,33 +207,3 @@ class FiscalPrinter(BasePrinter):
     def till_remove_cash(self, remove_cash_value):
         self.info('till_remove_cash')
         return self._driver.till_remove_cash(remove_cash_value)
-
-def test():
-    p = FiscalPrinter()
-    p.identify_customer('Henrique Romano', 'Async', '1234567890')
-    while True:
-        try:
-            p.open()
-            break
-        except CouponOpenError:
-            p.cancel()
-        except PendingReadX:
-            p.summarize()
-            return
-        except PendingReduceZ:
-            p.close_till()
-            return
-    i1 = p.add_item("123456", u"Hollywóód", Decimal("2.00"), TAX_SUBSTITUTION,
-                    items_quantity=Decimal("10.00"), unit=UNIT_CUSTOM,
-                    unit_desc=u"mç")
-    i2 = p.add_item("654321", u"Heineken", Decimal("1.53"), TAX_NONE,
-                    items_quantity=Decimal("5"), unit=UNIT_LITERS)
-    p.cancel_item(i1)
-    coupon_total = p.totalize(discount=Decimal('1.0'))
-    p.add_payment(MONEY_PM, Decimal('2.00'))
-    p.add_payment(MONEY_PM, Decimal('11.00'))
-    coupon_id = p.close()
-    print "+++ coupon %d created." % coupon_id
-
-if __name__ == '__main__':
-    test()
