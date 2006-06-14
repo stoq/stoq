@@ -399,7 +399,7 @@ class FS345(SerialBase):
 
         data = '%d%012d' % (mode, int(float(value) * 1e2))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
-        return float(rv) / 1e2
+        return Decimal(rv) / Decimal("1e2")
 
     def coupon_close(self, message=''):
         self._check_status()
