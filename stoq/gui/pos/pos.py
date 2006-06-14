@@ -377,7 +377,8 @@ class POSApp(AppWindow):
                 return
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
-            self.coupon.cancel()
+            if self.coupon:
+                self.coupon.cancel()
 
     def _add_delivery(self):
         if not self.sellables:
@@ -451,6 +452,7 @@ class POSApp(AppWindow):
         return totalize and has_payments and close
 
     def _open_coupon(self):
+       # import debug
         self.coupon = FiscalCoupon(self.conn, self.sale)
         if self.sale.client:
             self.coupon.identify_customer(self.sale.client.get_adapted())
