@@ -178,10 +178,10 @@ class FiscalPrinter(BasePrinter):
         if not self._has_been_totalized:
             raise CloseCouponError(_("You must totalize the coupon before "
                                      "closing it"))
-        elif not self.payments_total_value:
+        if not self.payments_total_value:
             raise CloseCouponError(_("It is not possible close the coupon "
                                      "since there are no payments defined."))
-        elif self.totalized_value > self.payments_total_value:
+        if self.totalized_value > self.payments_total_value:
             raise CloseCouponError(_("Isn't possible close the coupon since "
                                      "the payments total (%.2f) doesn't "
                                      "match the totalized value (%.2f).")
@@ -209,10 +209,6 @@ class FiscalPrinter(BasePrinter):
     def till_remove_cash(self, remove_cash_value):
         self.info('till_remove_cash')
         return self._driver.till_remove_cash(remove_cash_value)
-
-    def get_status(self):
-        self.info('get_status')
-        return self._driver.get_status()
 
 def test():
     p = FiscalPrinter()
