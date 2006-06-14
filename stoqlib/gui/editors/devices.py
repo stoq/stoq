@@ -34,8 +34,8 @@ from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
-from stoqdrivers.devices.printers.interface import (ICouponPrinter,
-                                                    IChequePrinter)
+from stoqdrivers.devices.interfaces import (ICouponPrinter,
+                                            IChequePrinter)
 from stoqdrivers.constants import describe_constant
 
 from stoqlib.lib.translation import stoqlib_gettext

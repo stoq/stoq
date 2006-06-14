@@ -29,7 +29,7 @@ stoq/domain/devices.py
 
 from sqlobject import UnicodeCol, IntCol, PickleCol, ForeignKey, BoolCol
 from zope.interface import implements
-from stoqdrivers.devices.printers.interface import IDriverConstants
+from stoqdrivers.devices.interfaces import IDriverConstants
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
