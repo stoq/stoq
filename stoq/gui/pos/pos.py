@@ -452,7 +452,6 @@ class POSApp(AppWindow):
         return totalize and has_payments and close
 
     def _open_coupon(self):
-       # import debug
         self.coupon = FiscalCoupon(self.conn, self.sale)
         if self.sale.client:
             self.coupon.identify_customer(self.sale.client.get_adapted())
