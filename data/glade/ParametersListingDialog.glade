@@ -31,7 +31,7 @@
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <widget class="GtkImage" id="GtkImage1">
-                                                        <property name="file">/home/henrique/bin/stoq_packages/stoqlib/gui/pixmaps/edit16px.png</property>
+                                                        <property name="file">edit16px.png</property>
                                                         <property name="visible">True</property>
                                                     </widget>
                                                 </child>
