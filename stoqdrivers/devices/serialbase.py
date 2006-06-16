@@ -41,9 +41,6 @@ class SerialBase(Serial, Logger):
     # used by readline()
     EOL_DELIMIT = '\r'
 
-    # Set this attribute to avoid sending data to printer
-    DEBUG_MODE = 0
-
     def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
                  parity=PARITY_NONE, stopbits=STOPBITS_ONE):
         self._recorder = None
@@ -77,8 +74,6 @@ class SerialBase(Serial, Logger):
         return data
 
     def readline(self):
-        if self.DEBUG_MODE:
-            return
         c = ''
         out = ''
         while True:
@@ -97,8 +92,6 @@ class SerialBase(Serial, Logger):
         Serial.write(self, data)
 
     def writeline(self, data):
-        if self.DEBUG_MODE:
-            return
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
 

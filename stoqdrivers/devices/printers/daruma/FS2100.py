@@ -88,9 +88,6 @@ class FS2100(FS345):
         data = chr(command) + extra
 
         self.debug('N>>> %r %d' % (data, len(data)))
-        if self.DEBUG_MODE:
-            return
-
         data = '\x1cF' + data
 
         checksum = reduce(operator.xor, [ord(d) for d in data], 0)
