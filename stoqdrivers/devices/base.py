@@ -40,6 +40,10 @@ from stoqdrivers.translation import stoqdrivers_gettext
 _ = lambda msg: stoqdrivers_gettext(msg)
 
 class BaseDevice(Logger):
+    """ Base class for all device interfaces, responsible for instantiate
+    the device driver itself based on the brand and model specified or in
+    the configuration file.
+    """
     log_domain = "stoqdrivers"
     typename_translate_dict = {PRINTER_DEVICE: "Printer",
                                SCALE_DEVICE: "Scale"}
