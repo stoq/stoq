@@ -54,25 +54,6 @@ class SerialBase(Serial, Logger):
         self.flushOutput()
         self.setTimeout(3)
 
-    def read_insist(self, n_bytes):
-        """
-        This is a more insistent read, that will try to read that many
-        bytes a determined number of times.
-        """
-        number_of_tries = 12
-        data = ""
-        while True:
-            data_left = n_bytes - len(data)
-            if (data_left > 0) and (number_of_tries > 0):
-                data += Serial.read(self, data_left)
-                data_left = n_bytes - len(data)
-                number_of_tries -= 1
-            else:
-                break
-        if self._recorder is not None:
-            self._recorder.bytes_read(data)
-        return data
-
     def readline(self):
         c = ''
         out = ''

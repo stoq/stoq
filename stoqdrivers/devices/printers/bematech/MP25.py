@@ -276,6 +276,22 @@ class MP25(SerialBase):
     # Helper methods
     #
 
+    def read_insist(self, n_bytes):
+        """ This is a more insistent read, that will try to read that many
+        bytes a determined number of times.
+        """
+        number_of_tries = 12
+        data = ""
+        while True:
+            data_left = n_bytes - len(data)
+            if (data_left > 0) and (number_of_tries > 0):
+                data += self.read(data_left)
+                data_left = n_bytes - len(data)
+                number_of_tries -= 1
+            else:
+                break
+        return data
+
     def get_coupon_subtotal(self):
         # Return value:
         # ACK/NAK + 7 Bytes (Subtotal in BCD format) + 3/2 Bytes (Status)
