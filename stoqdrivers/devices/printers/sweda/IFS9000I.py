@@ -81,7 +81,6 @@ class IFS9000I(SerialBase):
 
     CMD_PREFIX = "."
     CMD_SUFFIX = EOL_DELIMIT = '}'
-    DEBUG_MODE = 0
 
     #
     # Printer command set
