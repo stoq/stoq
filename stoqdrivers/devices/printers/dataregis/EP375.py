@@ -380,9 +380,8 @@ class EP375(SerialBase, BaseChequePrinter):
         result = self._send_command(self.CMD_GET_REMAINING_VALUE)
         has_remaining_value = result[4] == 'S'
         if has_remaining_value:
-            return Decimal(str(float(result[5:19]) / 1e2))
-        else:
-            return Decimal("0.0")
+            return Decimal(result[5:19]) / Decimal("1e2")
+        return Decimal("0.0")
 
     def _get_fiscal_counters(self):
         return self._send_command(self.CMD_GET_FISCAL_COUNTERS)
