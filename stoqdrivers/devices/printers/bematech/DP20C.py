@@ -48,8 +48,8 @@ class DP20C(SerialBase, BaseChequePrinter):
     model_name = "Bematech DP20C"
     cheque_printer_charset = "cp850"
 
-    def __init__(self, *args, **kwargs):
-        SerialBase.__init__(self, *args, **kwargs)
+    def __init__(self, port, consts=None):
+        SerialBase.__init__(self, port)
         BaseChequePrinter.__init__(self)
 
     def _setup_positions(self, bank):

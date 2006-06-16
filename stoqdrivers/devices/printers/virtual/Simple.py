@@ -58,8 +58,7 @@ class Simple:
     cheque_printer_charset = "latin-1"
     coupon_printer_charset = "latin-1"
 
-    def __init__(self, brand=None, model=None, device=None,
-                 config_file=None, consts=None):
+    def __init__(self, port, consts):
         self._consts = consts
         self._reset_flags()
 

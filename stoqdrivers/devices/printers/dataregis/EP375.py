@@ -33,7 +33,6 @@ import time
 from decimal import Decimal
 from datetime import datetime
 
-from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
@@ -279,13 +278,10 @@ class EP375(SerialBase, BaseChequePrinter):
     CMD_GERENCIAL_REPORT = 'j'
     CMD_CLOSE_GERENCIAL_REPORT = 'k'
 
-    def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
-                 parity=PARITY_NONE, stopbits=STOPBITS_ONE,
-                 consts=EP375Constants):
-        SerialBase.__init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
-                            parity=PARITY_NONE, stopbits=STOPBITS_ONE)
+    def __init__(self, port, consts):
+        SerialBase.__init__(self, port)
         BaseChequePrinter.__init__(self)
-        self._consts = consts
+        self._consts = consts or EP375Constants
         self.coupon_discount = Decimal("0.0")
         self.coupon_surcharge = Decimal("0.0")
         self._command_id = self._item_counter = -1
@@ -395,12 +391,12 @@ class EP375(SerialBase, BaseChequePrinter):
     #
 
     def writeline(self, data):
-        while not self.getDSR():
+        while not self._port.getDSR():
             pass
         return SerialBase.writeline(self, data)
 
     def readline(self):
-        self.setDTR()
+        self._port.setDTR()
         return SerialBase.readline(self)
 
     #

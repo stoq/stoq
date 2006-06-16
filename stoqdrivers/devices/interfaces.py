@@ -34,10 +34,11 @@ stoqdrivers/devices/interfaces.py:
 from decimal import Decimal
 
 from zope.interface import Interface, Attribute
+from serial import EIGHTBITS, PARITY_NONE, STOPBITS_ONE
 
 from stoqdrivers.constants import UNIT_EMPTY, TAX_NONE
 
-__all__ = ["IBytesRecorder",
+__all__ = ["ISerialPort",
            "IDriverConstants",
            "IDevice",
            "ICouponPrinter",
@@ -46,15 +47,29 @@ __all__ = ["IBytesRecorder",
            "IScale",
            ]
 
-class IBytesRecorder(Interface):
-    """ Interface for objects used to log bytes read/written of the device port.
-    Its mainly use is in the package tests suite.
+class ISerialPort(Interface):
+    """ Interface used by drivers to write commands and get reply from devices
     """
-    def bytes_written(bytes):
-        """ Record bytes written """
 
-    def bytes_read(bytes):
-        """ Record bytes read """
+    def getDSR():
+        """ Returns True if the device is done to send data. Some drivers
+        block in a loop waiting for this function returns True before call
+        read.
+        """
+
+    def setDTR(value):
+        """ Set to True when the driver is going to send data to the device
+        """
+
+    def set_options(baudrate=9600, bytesize=EIGHTBITS, parity=PARITY_NONE,
+                    stopbits=STOPBITS_ONE, read_timeout=3, write_timeout=0):
+        """ Set general device options """
+
+    def read(n_bytes=1):
+        """ Read data """
+
+    def write(data):
+        """ Write data """
 
 class IDriverConstants(Interface):
     """ This interface determines the methods to be implemented by all objects

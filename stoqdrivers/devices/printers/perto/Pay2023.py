@@ -32,7 +32,7 @@ stoqdrivers/devices/printers/perto/Pay2023.py:
 from datetime import datetime
 from decimal import Decimal
 
-from serial import EIGHTBITS, PARITY_EVEN, STOPBITS_ONE
+from serial import PARITY_EVEN
 from zope.interface import implements
 
 from stoqdrivers.devices.serialbase import SerialBase
@@ -126,13 +126,11 @@ class Pay2023(SerialBase, BaseChequePrinter):
     # Cheque elements position
     #
 
-    def __init__(self, device, baudrate=115200, bytesize=EIGHTBITS,
-                 parity=PARITY_EVEN, stopbits=STOPBITS_ONE,
-                 consts=Pay2023Constants):
-        SerialBase.__init__(self, device, baudrate=baudrate, bytesize=bytesize,
-                            parity=parity, stopbits=stopbits)
+    def __init__(self, port, consts=None):
+        port.set_options(baudrate=115200, parity=PARITY_EVEN)
+        SerialBase.__init__(self, port)
         BaseChequePrinter.__init__(self)
-        self._consts = consts
+        self._consts = consts or Pay2023Constants
         self._customer_name = ''
         self._customer_document = ''
         self._customer_address = ''

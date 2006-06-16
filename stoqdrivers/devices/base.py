@@ -36,6 +36,7 @@ from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.exceptions import CriticalError, ConfigError
 from stoqdrivers.constants import PRINTER_DEVICE, SCALE_DEVICE
 from stoqdrivers.translation import stoqdrivers_gettext
+from stoqdrivers.devices.serialbase import SerialPort
 
 _ = lambda msg: stoqdrivers_gettext(msg)
 
@@ -53,20 +54,23 @@ class BaseDevice(Logger):
     device_type = None
 
     def __init__(self, brand=None, model=None, device=None, config_file=None,
-                 consts=None):
+                 port=None, consts=None):
         Logger.__init__(self)
         if not self.device_dirname:
             raise ValueError("Subclasses must define the "
                              "`device_dirname' attribute")
         elif self.device_type is None:
             raise ValueError("device_type must be defined")
-        self.brand, self.device, self.model = brand, device, model
+        self.brand = brand
+        self.device = device
+        self.model = model
+        self._port = port
         self._driver_constants = consts
         self._load_configuration(config_file)
 
     def _load_configuration(self, config_file):
         section_name = BaseDevice.typename_translate_dict[self.device_type]
-        if not self.model or not self.brand or not self.device:
+        if not self.model or not self.brand or (not self.device and not self._port):
             self.config = StoqdriversConfig(config_file)
             if not self.config.has_section(section_name):
                 raise ConfigError(_("There is no section named `%s'!")
@@ -88,10 +92,9 @@ class BaseDevice(Logger):
         if not driver_class:
             raise CriticalError("Device driver at %s needs a class called %s"
                                 % (name, class_name))
-        driver_args = {'device': self.device}
-        if self._driver_constants:
-            driver_args['consts'] = self._driver_constants
-        self._driver = driver_class(**driver_args)
+        if not self._port:
+            self._port = SerialPort(self.device)
+        self._driver = driver_class(self._port, consts=self._driver_constants)
         self.debug(("Config data: brand=%s,device=%s,model=%s\n"
                     % (self.brand, self.device, self.model)))
         self.check_interfaces()

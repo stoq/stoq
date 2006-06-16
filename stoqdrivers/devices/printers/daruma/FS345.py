@@ -147,9 +147,9 @@ class FS345(SerialBase):
     model_name = "Daruma FS 345"
     coupon_printer_charset = "cp850"
 
-    def __init__(self, *args, **kwargs):
-        self._consts = kwargs.pop("consts", FS345Constants)
-        SerialBase.__init__(self, *args, **kwargs)
+    def __init__(self, port, consts=None):
+        self._consts = consts or FS345Constants
+        SerialBase.__init__(self, port)
         self._customer_name = u""
         self._customer_document = u""
         self._customer_address = u""

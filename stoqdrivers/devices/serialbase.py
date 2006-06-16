@@ -3,7 +3,7 @@
 
 ##
 ## Stoqdrivers
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,16 +22,35 @@
 ## USA.
 ##
 ## Author(s):   Johan Dahlin     <jdahlin@async.com.br>
+##              Henrique Romano  <henrique@async.com.br>
 ##
 
 from serial import Serial, EIGHTBITS, PARITY_NONE, STOPBITS_ONE
-from zope.interface import providedBy
-from zope.interface.exceptions import DoesNotImplement
+from zope.interface import implements
 
 from stoqdrivers.log import Logger
-from stoqdrivers.devices.interfaces import IBytesRecorder
+from stoqdrivers.devices.interfaces import ISerialPort
 
-class SerialBase(Serial, Logger):
+class SerialPort(Serial):
+    implements(ISerialPort)
+
+    def __init__(self, device):
+        Serial.__init__(self, device)
+        self.setDTR(True)
+        self.flushInput()
+        self.flushOutput()
+        self.set_options()
+
+    def set_options(self, baudrate=9600, bytesize=EIGHTBITS, parity=PARITY_NONE,
+                    stopbits=STOPBITS_ONE, read_timeout=3, write_timeout=0):
+        self.setBaudrate(baudrate)
+        self.setByteSize(bytesize)
+        self.setParity(parity)
+        self.setStopbits(stopbits)
+        self.setTimeout(read_timeout)
+        self.setWriteTimeout(write_timeout)
+
+class SerialBase(Logger):
     log_domain = 'serial'
 
     # All commands will have this prefixed
@@ -41,46 +60,29 @@ class SerialBase(Serial, Logger):
     # used by readline()
     EOL_DELIMIT = '\r'
 
-    def __init__(self, device, baudrate=9600, bytesize=EIGHTBITS,
-                 parity=PARITY_NONE, stopbits=STOPBITS_ONE):
-        self._recorder = None
+    def __init__(self, port):
         Logger.__init__(self)
-        self.info('opening device %s' % device)
-        Serial.__init__(self, device, baudrate=baudrate,
-                        bytesize=bytesize, parity=parity,
-                        stopbits=stopbits)
-        self.setDTR(True)
-        self.flushInput()
-        self.flushOutput()
-        self.setTimeout(3)
+        self._port = port
 
-    def readline(self):
-        c = ''
-        out = ''
-        while True:
-            c = self.read(1)
-            if c == self.EOL_DELIMIT:
-                self.debug('<<< %r' % out)
-                if self._recorder is not None:
-                    self._recorder.bytes_read(out)
-                return out
-            out +=  c
-
-    def write(self, data):
-        self.debug(">>> %r (%dbytes)" % (data, len(data)))
-        if self._recorder is not None:
-            self._recorder.bytes_written(data)
-        Serial.write(self, data)
+    def set_port(self, port):
+        self._port = port
 
     def writeline(self, data):
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
 
-    def set_recorder(self, recorder):
-        """ Define a recorder to log all the bytes read and written. The
-        recorder must implements the IBytesRecorder interface.
-        """
-        if not IBytesRecorder in providedBy(recorder):
-            raise DoesNotImplement("The recorder %r must implement the "
-                                   "IBytesRecorder interface"% recorder)
-        self._recorder = recorder
+    def write(self, data):
+        self.debug(">>> %r (%d bytes)" % (data, len(data)))
+        self._port.write(data)
+
+    def read(self, n_bytes):
+        return self._port.read(n_bytes)
+
+    def readline(self):
+        out = ''
+        while True:
+            c = self._port.read(1)
+            if c == self.EOL_DELIMIT:
+                self.debug('<<< %r' % out)
+                return out
+            out += c

@@ -190,9 +190,10 @@ class IFS9000I(SerialBase):
                                              _("The coupon is already "
                                                "totalized")),
                    }
-    def __init__(self, *args, **kwargs):
-        self._consts = kwargs.pop("consts", IFS9000IConstants)
-        SerialBase.__init__(self, *args, **kwargs)
+
+    def __init__(self, port, consts=None):
+        self._consts = consts or IFS9000IConstants
+        SerialBase.__init__(self, port)
         self._customer_document = None
 
     #
