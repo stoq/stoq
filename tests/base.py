@@ -47,8 +47,7 @@ class LogSerialPort:
 
     def __init__(self, port):
         self._port = port
-        self._bytes_read = []
-        self._bytes_written = []
+        self._bytes = []
 
     def setDTR(self):
         return self._port.setDTR()
@@ -59,21 +58,20 @@ class LogSerialPort:
     def set_options(self, *args, **kwargs):
         self._port.set_options(*args, **kwargs)
 
-    def read(self, n_bytes):
+    def read(self, n_bytes=1):
         data = self._port.read(n_bytes)
-        self._bytes_read.append(data)
+        self._bytes.append(('R', data))
         return data
 
     def write(self, bytes):
-        self._bytes_written.append(bytes)
+        self._bytes.append(('W', bytes))
         self._port.write(bytes)
 
     def save(self, filename):
         fd = open(filename, "w")
-        for d in self._bytes_written:
-            fd.write("< %r\n" % d)
-        for d in self._bytes_read:
-            fd.write("> %r\n" % d)
+        for type, line in self._bytes:
+            fd.write("%s %s\n"
+                     % (type, "".join(["%02x" % ord(d) for d in line])))
         fd.close()
 
 class BaseTest(unittest.TestCase):
