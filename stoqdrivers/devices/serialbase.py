@@ -67,6 +67,9 @@ class SerialBase(Logger):
     def set_port(self, port):
         self._port = port
 
+    def get_port(self):
+        return self._port
+
     def writeline(self, data):
         self.write(self.CMD_PREFIX + data + self.CMD_SUFFIX)
         return self.readline()
