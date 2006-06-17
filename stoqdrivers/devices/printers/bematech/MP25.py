@@ -302,7 +302,7 @@ class MP25(SerialBase):
         self._handle_error(reply[0] + reply[8:])
         subtotal = reply[1:8]
         if subtotal:
-            return Decimal(str(float(bcd2dec(subtotal)) / 1e2))
+            return Decimal(bcd2dec(subtotal)) / Decimal("1e2")
         return Decimal("0.0") # XXX: "**** BUSTED SUBTOTAL ****"
 
     def get_last_item_id(self):
