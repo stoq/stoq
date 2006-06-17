@@ -35,12 +35,9 @@ from zope.interface import implements
 
 import stoqdrivers
 from stoqdrivers.devices.interfaces import ISerialPort
-from stoqdrivers.devices.serialbase import SerialPort
 
 # The directory where tests data will be stored
 RECORDER_DATA_DIR = "data"
-# The port where the device to test is connected
-DEVICE_PORT = "/dev/ttyS0"
 
 class LogSerialPort:
     """ A decorator for the SerialPort object expected by the driver to test,
@@ -48,8 +45,8 @@ class LogSerialPort:
     """
     implements(ISerialPort)
 
-    def __init__(self, device):
-        self._port = SerialPort(device)
+    def __init__(self, port):
+        self._port = port
         self._bytes_read = []
         self._bytes_written = []
 
@@ -84,8 +81,10 @@ class BaseTest(unittest.TestCase):
             self._port.save(filename)
 
     def setUp(self):
-        self._port = LogSerialPort(DEVICE_PORT)
-        self._device = self.device_class(port=self._port)
+        self._device = self.device_class()
+        # Decorate the port used by device
+        self._port = LogSerialPort(self._device.get_port())
+        self._device.set_port(self._port)
 
     def _get_recorder_filename(self):
         device_name = self._device.get_model_name().replace(" ", "_")
