@@ -116,6 +116,12 @@ class BaseDevice(Logger):
         gobject.io_add_watch(self._driver.fd, gobject.IO_IN,
                              lambda fd, cond: func(self, cond))
 
+    def set_port(self, port):
+        self._driver.set_port(port)
+
+    def get_port(self):
+        return self._driver.get_port()
+
     def get_driver(self):
         """ Get the internal driver, this is normally not needed to be able
         to print or use the driver.
