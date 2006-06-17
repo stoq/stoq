@@ -50,6 +50,12 @@ class LogSerialPort:
         self._bytes_read = []
         self._bytes_written = []
 
+    def setDTR(self):
+        return self._port.setDTR()
+
+    def getDSR(self):
+        return self._port.getDSR()
+
     def set_options(self, *args, **kwargs):
         self._port.set_options(*args, **kwargs)
 
