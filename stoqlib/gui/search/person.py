@@ -126,7 +126,7 @@ class EmployeeSearch(BasePersonSearch):
                                     EmployeeRole.q.id))
 
     def get_searchlist_model(self, model):
-        return IEmployee(model, self.conn)
+        return IEmployee(model, connection=self.conn)
 
 
 class SupplierSearch(BasePersonSearch):
