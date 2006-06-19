@@ -309,6 +309,7 @@ class MP25(SerialBase):
         self._send_packed("%c%c" % (CMD_GET_VARIABLES, VAR_LAST_ITEM_ID))
         reply = self._get_reply(extrabytes_num=2)
         self._handle_error(reply[0] + reply[3:])
+        # two bytes, 4 digits BCD
         return bcd2dec(reply[1:3])
 
     def _get_coupon_number(self):
@@ -403,12 +404,12 @@ class MP25(SerialBase):
     def coupon_cancel_item(self, item_id=None):
         """ Cancel an item added to coupon; if no item id is specified,
         cancel the last item added. """
-        # We would can use an apropriate command to cancel the last
-        # item added (command #13, man page 34),  but as we already
-        # have an internal counter, I don't think that this is
-        # necessary.
-        if not item_id:
-            item_id = self.get_last_item_id()
+        last_item = self.get_last_item_id()
+        if item_id is None:
+            item_id = last_item
+        elif item_id not in xrange(1, last_item+2):
+            raise CancelItemError("There is no such item with ID %r"
+                                  % item_id)
         self._send_command("%c%04d" % (CMD_CANCEL_ITEM, item_id))
 
     def coupon_add_payment(self, payment_method, value, description=u"",
