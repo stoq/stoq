@@ -280,7 +280,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
     def validate_step(self):
         number = self.model.number
         if AbstractSellable.check_barcode_exists(number):
-            msg = _(u"The barcode %s already exists" % number)
+            msg = _(u"The barcode %s already exists") % number
             self.certificate_number.set_invalid(msg)
             return False
 
@@ -446,7 +446,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         qty = certificate.count()
         if not qty:
             msg = _("The gift certificate with code '%s' doesn't "
-                    "exists" % code)
+                    "exists") % code
             self.certificate_number.set_invalid(msg)
             return
         if qty != 1:
@@ -468,8 +468,8 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             if not certificate:
                 return
         if certificate in self.slave.klist[:]:
-            msg = _("The gift certificate '%s' was already added to the list"
-                    % certificate.get_short_description())
+            msg = (_("The gift certificate '%s' was already added to the"
+                     "list") % certificate.get_short_description())
             self.certificate_number.set_invalid(msg)
             return
         item = certificate or self.model.number

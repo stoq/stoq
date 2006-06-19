@@ -41,7 +41,7 @@ POSTAL_CODE_CHAR_LEN = 8
 def validate_password(password, notify_callback=None):
     if len(password) < MINIMUM_PASSWORD_CHAR_LEN:
         if notify_callback:
-            msg = _(u"Passwords must have at least %d characters"
+            msg = (_(u"Passwords must have at least %d characters")
                     % MINIMUM_PASSWORD_CHAR_LEN)
             notify_callback(msg)
         return False

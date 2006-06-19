@@ -66,8 +66,8 @@ class TillOpeningEditor(BaseEditor):
     def on_confirm(self):
         initial_cash = self.settable_proxy.model.initial_cash_amount
         if initial_cash > 0:
-            reason = _(u'Initial Cash amount of %s'
-                       % self.model.opening_date.strftime('%x'))
+            reason = (_(u'Initial Cash amount of %s')
+                        % self.model.opening_date.strftime('%x'))
             self.model.create_credit(initial_cash, reason)
         return self.model
 
@@ -256,7 +256,7 @@ class CashInEditor(BaseEditor):
         branch = Person.iget(IBranch, current_till.branch.id,
                              connection=conn)
         branch_name = branch.get_adapted().name
-        payment_description = (_(u'Cash in for branch: %s') % branch_name)
+        payment_description = _(u'Cash in for branch: %s') % branch_name
         self.cash_slave = BaseCashSlave(payment_description=payment_description,
                                         conn=conn)
         return self.cash_slave.model

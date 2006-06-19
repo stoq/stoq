@@ -384,7 +384,7 @@ class FiscalCoupon:
             except OutofPaperError:
                 if yesno(
                     _(u"The printer %s has run out of paper.\nAdd more paper "
-                      "before continuing." % self.printer.get_printer_name()),
+                      "before continuing.") % self.printer.get_printer_name(),
                     default=gtk.RESPONSE_OK,
                     buttons=((_(u"Confirm later"), gtk.RESPONSE_CANCEL),
                              (_(u"Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
@@ -392,8 +392,8 @@ class FiscalCoupon:
                 return self.open()
             except PrinterOfflineError:
                 if yesno(
-                    _(u"The printer %s is offline, turn it on and try again"
-                      % self.printer.get_model_name()),
+                    (_(u"The printer %s is offline, turn it on and try"
+                    "again") % self.printer.get_model_name()),
                     default=gtk.RESPONSE_OK,
                     buttons=((_(u"Confirm later"), gtk.RESPONSE_CANCEL),
                              (_(u"Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:
