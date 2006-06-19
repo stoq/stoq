@@ -1,5 +1,19 @@
 2006-06-19  Henrique Romano  <henrique@async.com.br>
 
+	* tests/data/Bematech_MP25_FI-test_add_item.txt:
+	* tests/data/Bematech_MP25_FI-test_add_payment.txt:
+	* tests/data/Bematech_MP25_FI-test_cancel_coupon.txt:
+	* tests/data/Bematech_MP25_FI-test_cancel_item.txt:
+	* tests/data/Bematech_MP25_FI-test_close_coupon.txt:
+	* tests/data/Bematech_MP25_FI-test_coupon_open.txt:
+	* tests/data/Bematech_MP25_FI-test_till_add_cash.txt:
+	* tests/data/Bematech_MP25_FI-test_till_remove_cash.txt:
+	* tests/data/Bematech_MP25_FI-test_totalize.txt:
+
+	Add tests data for Bematech MP25
+
+2006-06-19  Henrique Romano  <henrique@async.com.br>
+
 	* tests/base.py:
 
 	Initial implementation of PlaybackPort
