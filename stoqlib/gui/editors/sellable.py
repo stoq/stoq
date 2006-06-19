@@ -293,7 +293,7 @@ class SellableEditor(BaseEditor):
         barcode = self.barcode_proxy.model.barcode
         if barcode != self._original_barcode:
             if AbstractSellable.check_barcode_exists(barcode):
-                msg = _('The barcode %s already exists' % barcode)
+                msg = _('The barcode %s already exists') % barcode
                 self.barcode.set_invalid(msg)
                 return False
             self._sellable.barcode = barcode
