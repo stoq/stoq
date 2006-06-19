@@ -64,55 +64,55 @@ class TestCoupon(BaseTest):
     def test_add_item(self):
         self._open_coupon()
         # 1. Specify discount and surcharge at the same time
-        self.failUnlessRaises(TypeError, self._device.add_item, "123456",
+        self.failUnlessRaises(TypeError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
                               TAX_NONE, discount=Decimal("1"),
                               surcharge=Decimal("1"))
 
         # 2. Specify unit_desc with unit different from UNIT_CUSTOM
-        self.failUnlessRaises(ValueError, self._device.add_item, "123456",
+        self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
                               TAX_NONE, unit=UNIT_LITERS, unit_desc="XX")
 
         # 3. Specify unit as UNIT_CUSTOM and not supply a unit_desc
-        self.failUnlessRaises(ValueError, self._device.add_item, "123456",
+        self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
                               TAX_NONE, unit=UNIT_CUSTOM)
 
         # 4. Specify unit as UNIT_CUSTOM and unit_desc greater than 2 chars
-        self.failUnlessRaises(ValueError, self._device.add_item, "123456",
+        self.failUnlessRaises(ValueError, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("500"),
                               TAX_NONE, unit=UNIT_CUSTOM, unit_desc="XXXX")
 
         # 5. Add item without price
-        self.failUnlessRaises(InvalidValue, self._device.add_item, "123456",
+        self.failUnlessRaises(InvalidValue, self._device.add_item, u"123456",
                               u"Monitor LG Flatron T910B", Decimal("0"),
                               TAX_NONE)
 
         #
         # 6. Dataregis specific: the first 6 chars of the product code must
         # be digits.
-        self._device.add_item("ABCDEF", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE, items_quantity=Decimal("2"))
+        self._device.add_item(u"ABCDEF", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE, items_quantity=Decimal("2"))
 
         # A "normal" item...
-        self._device.add_item("987654", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE, items_quantity=Decimal("1"))
+        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE, items_quantity=Decimal("1"))
 
         # A item with customized unit
-        self._device.add_item("123456", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE, items_quantity=Decimal("1"),
-                               unit=UNIT_CUSTOM, unit_desc="Tx")
+        self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE, items_quantity=Decimal("1"),
+                              unit=UNIT_CUSTOM, unit_desc="Tx")
 
         # A item with surcharge
-        self._device.add_item("123456", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE, items_quantity=Decimal("1"),
-                               surcharge=Decimal("1"))
+        self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE, items_quantity=Decimal("1"),
+                              surcharge=Decimal("1"))
 
         # 7. Add item with coupon totalized
         self._device.totalize()
         self.failUnlessRaises(AlreadyTotalized,
-            self._device.add_item, "123456", u"Monitor LG Flatron T910B",
+            self._device.add_item, u"123456", u"Monitor LG Flatron T910B",
             Decimal("10"), TAX_NONE)
 
         self._device.add_payment(MONEY_PM, Decimal("100"))
@@ -125,9 +125,9 @@ class TestCoupon(BaseTest):
 
     def test_cancel_item(self):
         self._open_coupon()
-        item_id = self._device.add_item("987654", u"Monitor LG 775N",
-                                         Decimal("10"), TAX_NONE,
-                                         items_quantity=Decimal("1"))
+        item_id = self._device.add_item(u"987654", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("1"))
         # 1. Cancel invalid item
         self.failUnlessRaises(CancelItemError,
                               self._device.cancel_item, item_id + 9)
@@ -135,17 +135,17 @@ class TestCoupon(BaseTest):
         # 2. Cancel item twice
         self.failUnlessRaises(CancelItemError,
                               self._device.cancel_item, item_id)
-        item_id = self._device.add_item("987654", u"Monitor LG 775N",
-                                         Decimal("10"), TAX_NONE,
-                                         items_quantity=Decimal("1"))
+        item_id = self._device.add_item(u"987654", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("1"))
         self._device.totalize()
         self._device.add_payment(MONEY_PM, Decimal("100"))
         self._device.close()
 
     def test_totalize(self):
         self._open_coupon()
-        self._device.add_item("987654", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE, items_quantity=Decimal("1"))
+        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE, items_quantity=Decimal("1"))
         # 1. discount and surcharge together
         self.failUnlessRaises(TypeError, self._device.totalize,
                               Decimal("1"), Decimal("1"))
@@ -170,8 +170,8 @@ class TestCoupon(BaseTest):
 
     def test_add_payment(self):
         self._open_coupon()
-        self._device.add_item("987654", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE)
+        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE)
         # 1. Add payment without totalize the coupon
         self.failUnlessRaises(PaymentAdditionError,
                               self._device.add_payment, MONEY_PM,
@@ -199,8 +199,8 @@ class TestCoupon(BaseTest):
 
     def test_close_coupon(self):
         self._open_coupon()
-        self._device.add_item("987654", u"Monitor LG 775N", Decimal("10"),
-                               TAX_NONE)
+        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
+                              TAX_NONE)
         # 1. Close without totalize
         self.failUnlessRaises(CloseCouponError, self._device.close)
 
@@ -214,11 +214,11 @@ class TestCoupon(BaseTest):
 
         self._device.add_payment(MONEY_PM, Decimal("100"))
         # 4. Close the coupon with a BIG message
-        self._device.close("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                            "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        self._device.close(u"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
     def test_cancel_coupon(self):
         self._open_coupon()
