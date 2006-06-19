@@ -1,3 +1,9 @@
+2006-06-19  Henrique Romano  <henrique@async.com.br>
+
+	* tests/base.py:
+
+	Initial implementation of PlaybackPort
+
 2006-01-16  Henrique Romano  <henrique@async.com.br>
 
 	reviewed by: Evandro Vale Miquelito <evandro@async.com.br>

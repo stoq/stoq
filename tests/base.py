@@ -74,6 +74,44 @@ class LogSerialPort:
                      % (type, "".join(["%02x" % ord(d) for d in line])))
         fd.close()
 
+class PlaybackPort:
+    implements(ISerialPort)
+
+    def __init__(self, datafile):
+        self._input = []
+        self._output = []
+        self._load_data(datafile)
+
+    def setDTR(self):
+        pass
+
+    def getDSR(self):
+        return True
+
+    def write(self, bytes):
+        n_bytes = len(bytes)
+        data = "".join([self._input.pop(0) for i in xrange(n_bytes)])
+        if not bytes == data:
+            msg = ("Writed data differs from the expected:\n"
+                   "WRITED : %r\nEXPECT.: %r\n" % (data, bytes))
+            raise ValueError(msg)
+
+    def read(self, n_bytes=1):
+        return "".join([self._output.pop(0) for i in xrange(n_bytes)])
+
+    def _load_data(self, datafile):
+        fd = open(datafile, "r")
+        for n, line in enumerate(fd.readlines()):
+            data = line[2:-1].decode("hex")
+            if line.startswith("W"):
+                self._input.extend(data)
+            elif line.startswith("R"):
+                self._output.extend(data)
+            else:
+                raise TypeError("Unrecognized entry type at %s:%d: %r"
+                                % (datafile, n + 1, line[0]))
+        fd.close()
+
 class BaseTest(unittest.TestCase):
     def __init__(self, test_name):
         self._test_name = test_name
@@ -86,8 +124,12 @@ class BaseTest(unittest.TestCase):
 
     def setUp(self):
         self._device = self.device_class()
-        # Decorate the port used by device
-        self._port = LogSerialPort(self._device.get_port())
+        filename = self._get_recorder_filename()
+        if not os.path.exists(filename):
+            # Decorate the port used by device
+            self._port = LogSerialPort(self._device.get_port())
+        else:
+            self._port = PlaybackPort(filename)
         self._device.set_port(self._port)
 
     def _get_recorder_filename(self):
