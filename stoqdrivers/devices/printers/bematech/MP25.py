@@ -394,10 +394,10 @@ class MP25(SerialBase):
                 "%-48s\0"  # code
                 "%-200s\0" # description
                 % (CMD_ADD_ITEM, self._consts.get_value(taxcode),
-                   int(float(price) * 1e3), int(float(quantity) * 1e3),
-                   (discount and int(float(discount) * 1e2) or 0),
-                   (markup and int(float(markup) * 1e2) or 0), 0, unit,
-                   code, description))
+                   price * Decimal("1e3"), quantity * Decimal("1e3"),
+                   (discount and (discount * Decimal("1e2")) or 0),
+                   (markup and (markup * Decimal("1e2")) or 0), 0,
+                   unit, code, description))
         self._send_command(data)
         return self.get_last_item_id()
 
