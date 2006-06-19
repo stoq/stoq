@@ -32,7 +32,8 @@ from stoqdrivers.constants import (TAX_NONE, UNIT_LITERS, UNIT_CUSTOM,
 from stoqdrivers.exceptions import (CouponOpenError, PendingReduceZ,
                                     PendingReadX, PaymentAdditionError,
                                     AlreadyTotalized, CancelItemError,
-                                    InvalidValue, CloseCouponError,)
+                                    InvalidValue, CloseCouponError,
+                                    CouponNotOpenError)
 from tests.base import BaseTest
 
 class TestCoupon(BaseTest):
@@ -117,14 +118,23 @@ class TestCoupon(BaseTest):
         self._device.add_payment(MONEY_PM, Decimal("100"))
         self._device.close()
 
+        # 8. Add item without coupon
+        self.failUnlessRaises(CouponNotOpenError, self._device.add_item,
+                              u"123456", u"Monitor LG Flatron T910B",
+                              Decimal("500"), TAX_NONE, discount=Decimal("1"))
+
     def test_cancel_item(self):
         self._open_coupon()
         item_id = self._device.add_item("987654", u"Monitor LG 775N",
                                          Decimal("10"), TAX_NONE,
                                          items_quantity=Decimal("1"))
+        # 1. Cancel invalid item
         self.failUnlessRaises(CancelItemError,
                               self._device.cancel_item, item_id + 9)
         self._device.cancel_item(item_id)
+        # 2. Cancel item twice
+        self.failUnlessRaises(CancelItemError,
+                              self._device.cancel_item, item_id)
         item_id = self._device.add_item("987654", u"Monitor LG 775N",
                                          Decimal("10"), TAX_NONE,
                                          items_quantity=Decimal("1"))
