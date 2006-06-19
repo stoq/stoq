@@ -92,22 +92,30 @@ class TestCoupon(BaseTest):
         #
         # 6. Dataregis specific: the first 6 chars of the product code must
         # be digits.
-        self._device.add_item(u"ABCDEF", u"Monitor LG 775N", Decimal("10"),
-                              TAX_NONE, items_quantity=Decimal("2"))
+        item_id = self._device.add_item(u"ABCDEF", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("2"))
+        self.failUnless(item_id == 1, "Item id should be 1")
 
         # A "normal" item...
-        self._device.add_item(u"987654", u"Monitor LG 775N", Decimal("10"),
-                              TAX_NONE, items_quantity=Decimal("1"))
+        item_id = self._device.add_item(u"987654", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("1"))
+        self.failUnless(item_id == 2, "Item id should be 2")
 
         # A item with customized unit
-        self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
-                              TAX_NONE, items_quantity=Decimal("1"),
-                              unit=UNIT_CUSTOM, unit_desc="Tx")
+        item_id = self._device.add_item(u"123456", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("1"),
+                                        unit=UNIT_CUSTOM, unit_desc="Tx")
+        self.failUnless(item_id == 3, "Item id should be 3")
 
         # A item with surcharge
-        self._device.add_item(u"123456", u"Monitor LG 775N", Decimal("10"),
-                              TAX_NONE, items_quantity=Decimal("1"),
-                              surcharge=Decimal("1"))
+        item_id = self._device.add_item(u"123456", u"Monitor LG 775N",
+                                        Decimal("10"), TAX_NONE,
+                                        items_quantity=Decimal("1"),
+                                        surcharge=Decimal("1"))
+        self.failUnless(item_id == 4, "Item id should be 4")
 
         # 7. Add item with coupon totalized
         self._device.totalize()
