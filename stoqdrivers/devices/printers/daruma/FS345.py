@@ -156,7 +156,7 @@ class FS345(SerialBase):
 
     def send_command(self, command, extra=''):
         raw = chr(command) + extra
-        retval = super(FS345, self).writeline(raw)
+        retval = self.writeline(raw)
         if retval.startswith(':E'):
             self.handle_error(retval, raw)
         return retval[1:]
