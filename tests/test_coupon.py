@@ -257,7 +257,7 @@ class DataregisEP375(TestCoupon, BaseTest):
     brand = "dataregis"
     model = "EP375"
 
-# class SwedaIFS9000I(TestCoupon, BaseTest):
-#     brand = "sweda"
-#     model = "IFS9000I"
+class SwedaIFS9000I(TestCoupon, BaseTest):
+    brand = "sweda"
+    model = "IFS9000I"
 
