@@ -386,7 +386,7 @@ class MP25(SerialBase):
         data = ("%c"       # command
                 "%02s"     # taxcode
                 "%09d"     # value
-                "%07d"     # quantity
+                "%08d"     # quantity
                 "%010d"    # discount
                 "%010d"    # markup
                 "%022d"    # padding
