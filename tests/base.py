@@ -123,7 +123,9 @@ class BaseTest(unittest.TestCase):
             self._port.save(filename)
 
     def setUp(self):
-        self._device = self.device_class()
+        self._device = self.device_class(brand=self.brand,
+                                         model=self.model,
+                                         device='/dev/ttyS0')
         filename = self._get_recorder_filename()
         if not os.path.exists(filename):
             # Decorate the port used by device
