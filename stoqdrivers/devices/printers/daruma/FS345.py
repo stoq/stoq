@@ -395,9 +395,9 @@ class FS345(SerialBase):
             mode = 0
         else:
             mode = 0
-            value = 0
+            value = Decimal("0")
 
-        data = '%d%012d' % (mode, int(float(value) * 1e2))
+        data = '%d%012d' % (mode, int(value * Decimal("1e2")))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
         return Decimal(rv) / Decimal("1e2")
 
