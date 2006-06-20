@@ -189,6 +189,9 @@ class IFS9000I(SerialBase):
                    'ERRO-CUPOM TOTALIZADO': (AlreadyTotalized,
                                              _("The coupon is already "
                                                "totalized")),
+                   'ERRO-ITEM INEXISTE': (CancelItemError,
+                                          _("There is no such item to cancel "
+                                            "in the coupon")),
                    }
 
     def __init__(self, port, consts=None):
