@@ -26,6 +26,8 @@
 
 from decimal import Decimal
 
+from stoqdrivers.devices.interfaces import ICouponPrinter
+from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.constants import (TAX_NONE, UNIT_LITERS, UNIT_CUSTOM,
                                    MONEY_PM, TAX_ICMS, CUSTOM_PM,)
@@ -36,7 +38,7 @@ from stoqdrivers.exceptions import (CouponOpenError, PendingReduceZ,
                                     CouponNotOpenError)
 from tests.base import BaseTest
 
-class TestCoupon(BaseTest):
+class TestCoupon(object):
     """ Test a coupon creation """
     device_class = FiscalPrinter
 
@@ -240,3 +242,13 @@ class TestCoupon(BaseTest):
         self._open_coupon()
         self.failUnlessRaises(CouponOpenError, self._device.open)
         self._device.cancel()
+
+ns = locals()
+for brand, drivers in get_supported_printers_by_iface(ICouponPrinter).items():
+    if brand in ('daruma', 'sweda', 'perto'):
+        continue
+    for driver in drivers:
+        model_name = driver.model_name.replace(' ', '')
+        ns[model_name] = type(model_name, (TestCoupon, BaseTest),
+                              dict(brand=brand,
+                                   model=driver.__name__))
