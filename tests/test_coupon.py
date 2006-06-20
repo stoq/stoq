@@ -26,8 +26,6 @@
 
 from decimal import Decimal
 
-from stoqdrivers.devices.interfaces import ICouponPrinter
-from stoqdrivers.devices.printers.base import get_supported_printers_by_iface
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.constants import (TAX_NONE, UNIT_LITERS, UNIT_CUSTOM,
                                    MONEY_PM, TAX_ICMS, CUSTOM_PM,)
@@ -243,12 +241,23 @@ class TestCoupon(object):
         self.failUnlessRaises(CouponOpenError, self._device.open)
         self._device.cancel()
 
-ns = locals()
-for brand, drivers in get_supported_printers_by_iface(ICouponPrinter).items():
-    if brand in ('daruma', 'sweda', 'perto'):
-        continue
-    for driver in drivers:
-        model_name = driver.model_name.replace(' ', '')
-        ns[model_name] = type(model_name, (TestCoupon, BaseTest),
-                              dict(brand=brand,
-                                   model=driver.__name__))
+class DarumaFS345(TestCoupon, BaseTest):
+    brand = 'daruma'
+    model = 'FS345'
+
+class DarumaFS600MFD(TestCoupon, BaseTest):
+    brand = 'daruma'
+    model = 'FS600MFD'
+
+class BematechMP25FI(TestCoupon, BaseTest):
+    brand = 'bematech'
+    model = 'MP25'
+
+class DataregisEP375(TestCoupon, BaseTest):
+    brand = "dataregis"
+    model = "EP375"
+
+# class SwedaIFS9000I(TestCoupon, BaseTest):
+#     brand = "sweda"
+#     model = "IFS9000I"
+
