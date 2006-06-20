@@ -537,6 +537,10 @@ class EP375(SerialBase, BaseChequePrinter):
             self.coupon_add_payment(MONEY_PM, self._get_coupon_remaining_value())
         elif status.has_opened_report():
             self._send_command('K')
+        # We can have the "coupon state flag" set to True, but no coupon really
+        # opened; and we *must* to manage this case too...
+        elif self._is_coupon_open:
+            return
         else:
             raise CouponNotOpenError("There is no coupon opened")
         self._send_command(self.CMD_CANCEL_COUPON)
