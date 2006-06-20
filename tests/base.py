@@ -35,6 +35,7 @@ from zope.interface import implements
 
 import stoqdrivers
 from stoqdrivers.devices.interfaces import ISerialPort
+from stoqdrivers.devices.serialbase import SerialPort
 
 # The directory where tests data will be stored
 RECORDER_DATA_DIR = "data"
@@ -82,6 +83,9 @@ class PlaybackPort:
         self._output = []
         self._load_data(datafile)
 
+    def set_options(self, *args, **kwargs):
+        pass
+
     def setDTR(self):
         pass
 
@@ -123,20 +127,24 @@ class BaseTest(unittest.TestCase):
             self._port.save(filename)
 
     def setUp(self):
-        self._device = self.device_class(brand=self.brand,
-                                         model=self.model,
-                                         device='/dev/ttyS0')
         filename = self._get_recorder_filename()
         if not os.path.exists(filename):
             # Decorate the port used by device
-            self._port = LogSerialPort(self._device.get_port())
+            port = LogSerialPort(SerialPort('/dev/ttyS0'))
         else:
-            self._port = PlaybackPort(filename)
-        self._device.set_port(self._port)
+            port = PlaybackPort(filename)
+
+            self._device = self.device_class(brand=self.brand,
+                                         model=self.model,
+                                         port=port)
 
     def _get_recorder_filename(self):
-        device_name = self._device.get_model_name().replace(" ", "_")
-        return os.path.join(os.path.dirname(stoqdrivers.__file__), "..", "tests",
-                            RECORDER_DATA_DIR,
-                            "%s-%s.txt" % (device_name,
-                                           self._test_name.replace(" ", "_")))
+        testdir = os.path.join(os.path.dirname(stoqdrivers.__file__),
+                               "..", "tests")
+        test_name = self._test_name
+        if test_name.startswith('test_'):
+            test_name = test_name[5:]
+        test_name = test_name.replace('_', '-')
+
+        filename = "%s-%s-%s.txt" % (self.brand, self.model, test_name)
+        return os.path.join(testdir, RECORDER_DATA_DIR, filename)
