@@ -2,6 +2,15 @@
 
 	* stoqdrivers/devices/printers/dataregis/EP375.py:
 
+	Implementing has_opened_sale and has_opened_report on EP375Status.
+	Adding an internal attribute for EP375 driver to manage the coupon
+	status.	Fixing a bug on coupon_cancel, now the driver should works
+	without more "invalid state" problems.
+
+2006-06-20  Henrique Romano  <henrique@async.com.br>
+
+	* stoqdrivers/devices/printers/dataregis/EP375.py:
+
 	On totalize, the surcharge and discount values are given in percent.
 	Also fixing a bug in get_remaining_value(), the coupon subtotal was 
 	being calculated erroneously.

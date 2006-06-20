@@ -42,7 +42,8 @@ from stoqdrivers.exceptions import (DriverError, PendingReduceZ, PendingReadX,
                                     PrinterError, CommError, CommandError,
                                     CommandParametersError, ReduceZError,
                                     HardwareFailure, OutofPaperError,
-                                    CouponNotOpenError, CancelItemError)
+                                    CouponNotOpenError, CancelItemError,
+                                    CouponOpenError)
 from stoqdrivers.constants import (MONEY_PM, CHEQUE_PM, TAX_ICMS, TAX_NONE,
                                    TAX_IOF, TAX_SUBSTITUTION, TAX_EXEMPTION,
                                    UNIT_LITERS, UNIT_METERS, UNIT_WEIGHT,
@@ -102,6 +103,9 @@ class EP375Status:
     NEEDS_READ_X = 0x41
     HAS_BEEN_TOTALIZED = 0x46
     PRINTER_IS_OK = 0x4B
+    HAS_OPENED_REPORT = 0x52
+    HAS_NO_FISCAL_SALE = 0x49
+    HAS_FISCAL_SALE = 0x56
 
     errors_dict = {
         0x41: (PrinterError, _("Fiscal memory has changed")),
@@ -176,6 +180,15 @@ class EP375Status:
     def has_been_totalized(self):
         return ord(self.internal_state) == EP375Status.HAS_BEEN_TOTALIZED
 
+
+    def has_opened_sale(self):
+        return (self.has_been_totalized()
+                or ord(self.internal_state) in (EP375Status.HAS_NO_FISCAL_SALE,
+                                                EP375Status.HAS_FISCAL_SALE))
+
+    def has_opened_report(self):
+        return ord(self.internal_state) == EP375Status.HAS_OPENED_REPORT
+
     def parse(self, status):
         """ This method parse the result of the 'GET_STATUS' command (see
         chart below).
@@ -197,6 +210,11 @@ class EP375Status:
          self.opened_drawer,
          self.has_cmc7,
          self.statuses) = status
+
+    def __repr__(self):
+        return ("<%s internal_state=%s is_ready=%r>" % (self.__class__.__name__,
+                                                        self.internal_state,
+                                                        self.is_ready))
 
 class CouponItem:
     def __init__(self, code, description, taxcode, quantity, price, discount,
@@ -286,6 +304,7 @@ class EP375(SerialBase, BaseChequePrinter):
         self.coupon_surcharge = Decimal("0.0")
         self._command_id = self._item_counter = -1
         self.items_dict = {}
+        self._is_coupon_open = False
 
         # The printer needs a little delay to shutdown/startup. Add this
         # number as a guard to make sure that the printer doesn't freeze
@@ -456,12 +475,16 @@ class EP375(SerialBase, BaseChequePrinter):
         # coupon is opened when the first item is added, so simple checks
         # is done at this part.
         #
+
         status = self._get_status()
 
         if status.needs_reduce_Z():
             raise PendingReduceZ(_("Pending Reduce Z"))
         if status.needs_read_X():
             raise PendingReadX(_("Pending Read X"))
+        if status.has_been_totalized() or self._is_coupon_open:
+            raise CouponOpenError("There is a coupon opened")
+        self._is_coupon_open = True
 
     def coupon_add_item(self, code, description, price, taxcode,
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
@@ -509,11 +532,15 @@ class EP375(SerialBase, BaseChequePrinter):
         self._send_command(self.CMD_CANCEL_ITEM, item.get_packaged())
 
     def coupon_cancel(self):
-        # XXX: If a command error is raised here, we have no coupon open.
-        try:
-            self._send_command(self.CMD_CANCEL_COUPON)
-        except CommandError, e:
-            raise CouponNotOpenError(e)
+        status = self._get_status()
+        if status.has_opened_sale():
+            self.coupon_add_payment(MONEY_PM, self._get_coupon_remaining_value())
+        elif status.has_opened_report():
+            self._send_command('K')
+        else:
+            raise CouponNotOpenError("There is no coupon opened")
+        self._send_command(self.CMD_CANCEL_COUPON)
+        self._is_coupon_open = False
 
     def coupon_totalize(self, discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), taxcode=TAX_NONE):
@@ -559,6 +586,7 @@ class EP375(SerialBase, BaseChequePrinter):
         # adding an extra function "set_coupon_footer_message" to the API.
         # With this function this driver and all the another ones will allow
         # the "promotional_message" in the coupon.
+        self._is_coupon_open = False
         return self._get_coupon_number()
 
     def close_till(self):
