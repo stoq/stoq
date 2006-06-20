@@ -245,10 +245,6 @@ class DarumaFS345(TestCoupon, BaseTest):
     brand = 'daruma'
     model = 'FS345'
 
-class DarumaFS600MFD(TestCoupon, BaseTest):
-    brand = 'daruma'
-    model = 'FS600MFD'
-
 class BematechMP25FI(TestCoupon, BaseTest):
     brand = 'bematech'
     model = 'MP25'
