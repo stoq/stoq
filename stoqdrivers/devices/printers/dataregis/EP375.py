@@ -490,6 +490,8 @@ class EP375(SerialBase, BaseChequePrinter):
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
                         discount=Decimal("0.0"),
                         surcharge=Decimal("0.0"), unit_desc=""):
+        if not self._is_coupon_open:
+            raise CouponNotOpenError("There is no coupon opened")
         if unit == UNIT_CUSTOM:
             unit = UNIT_EMPTY
         if surcharge:
