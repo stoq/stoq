@@ -380,7 +380,6 @@ class FS345(SerialBase):
                         taxcode=TAX_NONE):
         self._check_status()
         self._verify_coupon_open()
-
         if surcharge:
             value = surcharge
             if taxcode == TAX_ICMS:
@@ -396,10 +395,11 @@ class FS345(SerialBase):
         else:
             mode = 0
             value = Decimal("0")
-
         data = '%d%012d' % (mode, int(value * Decimal("1e2")))
         rv = self.send_command(CMD_TOTALIZE_COUPON, data)
-        return Decimal(rv) / Decimal("1e2")
+        coupon_subtotal = Decimal(rv) / Decimal("1e2")
+        return (coupon_subtotal + (coupon_subtotal * surcharge / Decimal("1e2"))
+                - (coupon_subtotal * discount / Decimal("1e2")))
 
     def coupon_close(self, message=''):
         self._check_status()
