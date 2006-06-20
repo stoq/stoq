@@ -134,7 +134,7 @@ class BaseTest(unittest.TestCase):
         else:
             port = PlaybackPort(filename)
 
-            self._device = self.device_class(brand=self.brand,
+        self._device = self.device_class(brand=self.brand,
                                          model=self.model,
                                          port=port)
 
