@@ -1,3 +1,11 @@
+2006-06-20  Henrique Romano  <henrique@async.com.br>
+
+	* stoqdrivers/devices/printers/dataregis/EP375.py:
+
+	On totalize, the surcharge and discount values are given in percent.
+	Also fixing a bug in get_remaining_value(), the coupon subtotal was 
+	being calculated erroneously.
+
 2006-06-19  Henrique Romano  <henrique@async.com.br>
 
 	* tests/data/Bematech_MP25_FI-test_add_item.txt:

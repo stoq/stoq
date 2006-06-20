@@ -372,11 +372,11 @@ class EP375(SerialBase, BaseChequePrinter):
         #     X == 'S' if the coupon is not completely paid
         #     Y == 14 bytes representing the remaining value
         #     Z == the number of items in the coupon.
-        #
+
+        # We get the result already unpacked by send_command
         result = self._send_command(self.CMD_GET_REMAINING_VALUE)
-        has_remaining_value = result[4] == 'S'
-        if has_remaining_value:
-            return Decimal(result[5:19]) / Decimal("1e2")
+        if result[0] == 'S':
+            return Decimal(result[1:-3]) / Decimal("1e2")
         return Decimal("0.0")
 
     def _get_fiscal_counters(self):
@@ -460,10 +460,8 @@ class EP375(SerialBase, BaseChequePrinter):
 
         if status.needs_reduce_Z():
             raise PendingReduceZ(_("Pending Reduce Z"))
-
         if status.needs_read_X():
             raise PendingReadX(_("Pending Read X"))
-
 
     def coupon_add_item(self, code, description, price, taxcode,
                         quantity=Decimal("1.0"), unit=UNIT_EMPTY,
@@ -527,10 +525,10 @@ class EP375(SerialBase, BaseChequePrinter):
         # Dataregis doesn't contains any functions to totalize the coupon,
         # so we need just save the discount/surcharge (if any) to use in the
         # add_payment calls
-        self.coupon_discount, self.coupon_surcharge = discount, surcharge
-        coupon_total_value = (self._get_coupon_remaining_value()
-                              + surcharge - discount)
-        return coupon_total_value
+        coupon_subtotal = self._get_coupon_remaining_value()
+        self.coupon_surcharge = coupon_subtotal * (surcharge / Decimal("100"))
+        self.coupon_discount = coupon_subtotal * (discount / Decimal("100"))
+        return coupon_subtotal + self.coupon_surcharge - self.coupon_discount
 
     def coupon_add_payment(self, payment_method, value, description='',
                            custom_pm=''):
