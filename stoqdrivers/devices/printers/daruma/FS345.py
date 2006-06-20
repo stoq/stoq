@@ -376,13 +376,13 @@ class FS345(SerialBase):
         self._verify_coupon_open()
         self.send_command(CMD_CANCEL_COUPON)
 
-    def coupon_totalize(self, discount=Decimal("0.0"), markup=Decimal("0.0"),
+    def coupon_totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
                         taxcode=TAX_NONE):
         self._check_status()
         self._verify_coupon_open()
 
-        if markup:
-            value = markup
+        if surcharge:
+            value = surcharge
             if taxcode == TAX_ICMS:
                 mode = 2
             elif taxcode == TAX_IOF:
