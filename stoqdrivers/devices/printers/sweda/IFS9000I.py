@@ -414,8 +414,7 @@ class IFS9000I(SerialBase):
         # Man page 4-63
         rv = self.get_transaction_status()
         if rv is not None:
-            return float(rv[19:31]) / 1e2
-        return rv
+            return Decimal(rv[19:31]) / Decimal("1e2")
 
     def get_remainder_value(self):
         # Man page 4-63
@@ -511,24 +510,17 @@ class IFS9000I(SerialBase):
         The arguments item_id and descriptions only exit for API
         compatibility
         """
-        self.surcharge_total += value
-        if not self.has_been_totalized:
-            return
-        elif self.surcharge_total == 0:
-            return
-
-        surcharge_type = self.STANDARD_SURCHARGE_CODE
-        command = self.CMD_COUPON_ADD_SURCHARGE
-        # We are always using a discount by value for API compatibility
-        percentage = '0' * self.PERCENTAGE_CHAR_LEN
-        surcharge_total = self._format_float(self.surcharge_total, 'value',
+        percentage = "%0*d" % (self.PERCENTAGE_CHAR_LEN,
+                               int(value * Decimal("1e2")))
+        coupon_total = self.get_totalized_value()
+        surcharge_value = coupon_total * (value / Decimal("1e2"))
+        surcharge_total = self._format_float(surcharge_value, 'value',
                                              self.SURCHARGE_CHAR_LEN,
                                              self.SURCHARGE_DEC_SEPARATOR,
                                              self.SURCHARGE_ZERO_DIGITS)
-        # It means always print a total after adding the surcharge
-        print_total = 'S'
+        surcharge_type = self.STANDARD_SURCHARGE_CODE
         self.send_command(self.CMD_COUPON_ADD_SURCHARGE, surcharge_type,
-                          percentage, surcharge_total, print_total)
+                          percentage, surcharge_total, 'S')
 
     def coupon_cancel(self):
         self.send_command(self.CMD_COUPON_CANCEL)
