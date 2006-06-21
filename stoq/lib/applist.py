@@ -27,11 +27,14 @@
 import glob
 import os
 
+from kiwi.component import provide_utility, implements
+from stoqlib.gui.interfaces import IApplicationDescriptions
+
 import stoq
 
 def get_application_names():
     """Get a list of application names, useful for launcher programs
-    
+
     @returns: application names
     """
     applications = []
@@ -41,38 +44,37 @@ def get_application_names():
         # sub_dir is stoq/gui/foobar/app.py
         # dirname is stoq/gui/foobar
         # appname is foobar
-        
+
         dirname = os.path.split(sub_dir)[0]
         appname = os.path.split(dirname)[1]
         applications.append(appname)
     return applications
 
+class ApplicationDescriptions:
 
-def get_app_descriptions():
-    """@returns: a list of tuples with some important Stoq application
-    informations. Each tuple has the following data: 
-        * Application name
-        * Application full name
-        * Application icon name
-    """
-    # Import these modules here to reduce the startup time
-    import inspect
-    from stoq.gui.application import AppWindow
+    implements(IApplicationDescriptions)
 
-    applications = get_application_names()
-    app_desc = []
-    for appname in applications:
-        module = __import__("stoq.gui.%s.%s" % (appname, appname),
-                            globals(), locals(), appname)
-        for name, member in inspect.getmembers(module, inspect.isclass):
-            if member.__module__ != module.__name__:
-                continue
-            if not issubclass(member, AppWindow):
-                continue
-            app_full_name = getattr(member, 'app_name', None)
-            app_icon_name = getattr(member, 'app_icon_name', None)
-            if not app_full_name:
-                raise ValueError('App %s must have an app_name attribute'
-                                 % member)
-            app_desc.append((appname, app_full_name, app_icon_name))
-    return app_desc
+    def get_descriptions(self):
+        # Import these modules here to reduce the startup time
+        import inspect
+        from stoq.gui.application import AppWindow
+
+        applications = get_application_names()
+        app_desc = []
+        for appname in applications:
+            module = __import__("stoq.gui.%s.%s" % (appname, appname),
+                                globals(), locals(), appname)
+            for name, member in inspect.getmembers(module, inspect.isclass):
+                if member.__module__ != module.__name__:
+                    continue
+                if not issubclass(member, AppWindow):
+                    continue
+                app_full_name = getattr(member, 'app_name', None)
+                app_icon_name = getattr(member, 'app_icon_name', None)
+                if not app_full_name:
+                    raise ValueError('App %s must have an app_name attribute'
+                                     % member)
+                app_desc.append((appname, app_full_name, app_icon_name))
+        return app_desc
+
+provide_utility(IApplicationDescriptions, ApplicationDescriptions())

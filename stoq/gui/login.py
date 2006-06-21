@@ -29,7 +29,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqlib.gui.login import LoginDialog
 
-from stoq.lib.applist import get_app_descriptions
+from stoq.lib.applist import ApplicationDescriptions
 
 _ = gettext.gettext
 
@@ -63,7 +63,7 @@ class SelectApplicationsSlave(SlaveDelegate):
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.set_columns(self._get_columns())
 
-        apps = get_app_descriptions()
+        apps = ApplicationDescriptions.get_descriptions()
         # sorting by app_full_name
         apps = [(app_full_name, app_name, app_icon_name)
                     for app_name, app_full_name, app_icon_name in apps]
