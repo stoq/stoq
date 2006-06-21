@@ -159,7 +159,7 @@ class TestCoupon(object):
         coupon_total = self._device.totalize(surcharge=Decimal("1"),
                                              taxcode=TAX_ICMS)
         self.failUnless(coupon_total == Decimal("10.10"),
-                        "The coupon total value should be 11.00, not %r"
+                        "The coupon total value should be 10.10, not %r"
                         % coupon_total)
         self._device.add_payment(MONEY_PM, Decimal("12"))
         self._device.close()
