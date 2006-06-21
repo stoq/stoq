@@ -91,8 +91,7 @@ class UserEditor(BasePersonRoleEditor):
     USER_TAB_POSITION = 0
 
     def __init__(self, conn, model=None, role_type=None, person=None,
-                 app_list=None, visual_mode=False):
-        self.app_list = app_list
+                 visual_mode=False):
         BasePersonRoleEditor.__init__(self, conn, model, role_type, person,
                                       visual_mode=visual_mode)
 
@@ -112,10 +111,9 @@ class UserEditor(BasePersonRoleEditor):
         user_status = UserStatusSlave(self.conn, self.model)
         self.main_slave.attach_person_slave(user_status)
         passwd_fields = not self.edit_mode
-        klass = UserDetailsSlave
-        self.user_details = klass(self.conn, self.model, self.app_list,
-                                  show_password_fields=passwd_fields,
-                                  visual_mode=self.visual_mode)
+        self.user_details = UserDetailsSlave(self.conn, self.model,
+            show_password_fields=passwd_fields,
+            visual_mode=self.visual_mode)
         tab_text = _('User Details')
         self.main_slave._person_slave.attach_custom_slave(self.user_details,
                                                           tab_text)

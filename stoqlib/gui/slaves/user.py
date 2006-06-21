@@ -108,10 +108,9 @@ class UserDetailsSlave(BaseEditorSlave):
     size_group_widgets = ('username_lbl',
                           'profile_lbl') + proxy_widgets
 
-    def __init__(self, conn, model, app_list, show_password_fields=True,
+    def __init__(self, conn, model, show_password_fields=True,
                  visual_mode=False):
         self.show_password_fields = show_password_fields
-        self.app_list = app_list
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
@@ -192,7 +191,6 @@ class UserDetailsSlave(BaseEditorSlave):
         if not self.profile.get_text():
             self.model.profile = None
         user_profile = self.model.profile
-        if run_dialog(UserProfileEditor, self, self.conn, self.app_list,
-                      user_profile):
+        if run_dialog(UserProfileEditor, self, self.conn, user_profile):
             self._setup_entry_completion()
             self.proxy.update('profile')

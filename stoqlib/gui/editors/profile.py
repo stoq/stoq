@@ -24,10 +24,12 @@
 """ User profile editor implementation.  """
 
 from kiwi.datatypes import ValidationError
+from kiwi.component import get_utility
 from sqlobject.sqlbuilder import func, AND
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.profile import UserProfile
+from stoqlib.gui.interfaces import IApplicationDescriptions
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.slaves.profile import UserProfileSettingsSlave
 from stoqlib.lib.runtime import get_connection
@@ -41,17 +43,6 @@ class UserProfileEditor(BaseEditor):
     model_type = UserProfile
     gladefile = 'UserProfileEditor'
     proxy_widgets = ('profile_name', )
-
-    def __init__(self, conn, app_descriptions, model=None):
-        """
-        @param conn: an sqlobject Transaction instance
-        @param model: a UserProfile instance
-        @param app_descriptions: A list of tuples with (app_name, 
-                                                        app_full_name,
-                                                        app_icon_name)
-        """
-        self.app_descriptions = app_descriptions
-        BaseEditor.__init__(self, conn, model)
 
     #
     # BaseEditor Hooks
@@ -68,19 +59,19 @@ class UserProfileEditor(BaseEditor):
                                     UserProfileEditor.proxy_widgets)
 
     def setup_slaves(self):
-        apps = self.app_descriptions
-        for app_name, app_full_name, app_icon_name in apps:
+        apps = get_utility(IApplicationDescriptions)
+        for name, full_name, icon_name in apps.get_descriptions():
             model = None
             if self.edit_mode:
                 settings = self.model.profile_settings
-                model = [s for s in settings if s.app_dir_name == app_name]
+                model = [s for s in settings if s.app_dir_name == name]
                 if len(model) > 1:
                     raise ValueError('You should have only one instance '
-                                     'for application %s' % app_name)
+                                     'for application %s' % name)
                 if model:
                     model = model[0]
             slave = UserProfileSettingsSlave(self.conn, self.model,
-                                             app_name, app_full_name,
+                                             name, full_name,
                                              model=model)
             widget = slave.get_toplevel()
             self.applications_vbox.pack_start(widget, False)
