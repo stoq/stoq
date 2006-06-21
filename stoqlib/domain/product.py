@@ -180,7 +180,7 @@ class ProductSellableItem(AbstractSellableItem):
         conn = self.get_connection()
         if not isinstance(item, ProductStockReference):
             raise TypeError("Item should be of type ProductStockReference,"
-                            " got " % type(item))
+                            " got %r" % type(item))
         ProductStockReference.delete(item.id, connection=conn)
 
     #
