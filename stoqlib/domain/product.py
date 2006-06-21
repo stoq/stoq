@@ -309,9 +309,6 @@ class ProductAdaptToStorable(ModelAdapter):
 
     implements(IStorable, IContainer)
 
-    def __init__(self, _original=None, *args, **kwargs):
-        ModelAdapter.__init__(self, _original, *args, **kwargs)
-
     #
     # IContainer implementation
     #
