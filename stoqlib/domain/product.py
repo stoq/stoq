@@ -491,7 +491,7 @@ class ProductAdaptToStorable(ModelAdapter):
         else:
             q3 = parent.q.branchID == branch.id
             query = AND(q1, q2, q3)
-        return ProductStockItem.select(query, connection=conn)
+        return table.select(query, connection=conn)
 
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
