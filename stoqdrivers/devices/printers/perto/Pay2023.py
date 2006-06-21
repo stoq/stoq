@@ -111,6 +111,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
         8013: CouponTotalizeError,
         8014: PaymentAdditionError,
         8017: CloseCouponError,
+        8044: CancelItemError,
         8045: CancelItemError,
         8068: PaymentAdditionError,
         8086: CancelItemError,
@@ -235,7 +236,7 @@ class Pay2023(SerialBase, BaseChequePrinter):
             value = value.replace(".", '')
         if ',' in value:
             value = value.replace(',', '.')
-        return float(value)
+        return Decimal(value)
 
     #
     # ICouponPrinter implementation
