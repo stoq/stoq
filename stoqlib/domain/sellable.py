@@ -197,7 +197,9 @@ class AbstractSellable(InheritableModelAdapter):
 
     code = AutoIncCol('stoqlib_sellable_code_seq')
     barcode = UnicodeCol(default="")
-    status = IntCol(default=STATUS_AVAILABLE)
+    # This default status is used when a new sellable is created,
+    # so it must be *always* SOLD (that means no stock for it).
+    status = IntCol(default=STATUS_SOLD)
     markup = DecimalCol(default=0)
     cost = PriceCol(default=0)
     unit = ForeignKey("SellableUnit", default=None)
