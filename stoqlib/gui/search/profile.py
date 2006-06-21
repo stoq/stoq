@@ -42,10 +42,9 @@ class UserProfileSearch(SearchEditor):
     editor_class = UserProfileEditor
     size = (465, 390)
 
-    def __init__(self, conn, app_list):
+    def __init__(self, conn):
         SearchEditor.__init__(self, conn, self.table, self.editor_class,
                               title=self.title)
-        self.app_descriptions = app_list
         self._setup_widgets()
 
     def _setup_widgets(self):
@@ -60,5 +59,4 @@ class UserProfileSearch(SearchEditor):
         return [Column('name', _('Profile'), data_type=str, sorted=True)]
 
     def run_editor(self, obj):
-        return run_dialog(self.editor_class, self, self.conn,
-                          self.app_descriptions, obj)
+        return run_dialog(self.editor_class, self, self.conn, obj)
