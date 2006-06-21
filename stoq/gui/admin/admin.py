@@ -45,7 +45,6 @@ from stoqlib.gui.search.person import (EmployeeRoleSearch, EmployeeSearch,
                                        BranchSearch)
 
 from stoq.gui.application import SearchableAppWindow
-from stoq.lib.applist import get_app_descriptions
 
 _ = gettext.gettext
 
@@ -92,9 +91,7 @@ class AdminApp(SearchableAppWindow):
 
     def _edit_user(self):
         user = self.users.get_selected()
-        app_list = get_app_descriptions()
-        model =  run_person_role_dialog(UserEditor, self, self.conn,
-                                        user, app_list=app_list)
+        model =  run_person_role_dialog(UserEditor, self, self.conn, user)
         if finish_transaction(self.conn, model, keep_transaction=True):
             self.users.update(model)
 
@@ -151,8 +148,7 @@ class AdminApp(SearchableAppWindow):
         self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
 
     def _on_user_profiles_action_clicked(self, *args):
-        app_list = get_app_descriptions()
-        self.run_dialog(UserProfileSearch, self.conn, app_list)
+        self.run_dialog(UserProfileSearch, self.conn)
 
     def _on_employee_role__action_clicked(self, *args):
         self.run_dialog(EmployeeRoleSearch, self.conn)
