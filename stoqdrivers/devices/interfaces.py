@@ -345,4 +345,14 @@ class IScale(IDevice):
         """ Read informations of the scale, returning an object
         that implements IScaleInfo interface.
         """
+class IBarcodeReader(IDevice):
+    """ Interface specification describing how to interacts with barcode
+    readers.
+    """
 
+    def get_code():
+        """ Returns the code read. Note that this function should be
+        called only when there are data received (you can use
+        notify_read() to be notified when data was received), or it
+        will block in loop waiting the data.
+        """
