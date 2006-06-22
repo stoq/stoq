@@ -107,6 +107,16 @@ class ReceivingOrderProductStep(AbstractProductStep):
             return []
         return get_receiving_items_by_purchase_order(self.model.purchase,
                                                      self.model)
+
+    #
+    # AbstractProductStep overrides
+    #
+
+    def setup_product_entry(self):
+        items = self.model.purchase.get_pending_items()
+        self.product.prefill([(item.sellable.get_description(), item.sellable)
+                                  for item in items])
+
     #
     # WizardStep hooks
     #

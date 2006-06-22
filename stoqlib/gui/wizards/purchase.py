@@ -248,7 +248,7 @@ class PurchaseProductStep(AbstractProductStep):
         self.conn.commit()
         if run_dialog(ProductEditor, self, self.conn, product):
             self.conn.commit()
-            self._setup_product_entry()
+            self.setup_product_entry()
         else:
             rollback_and_begin(self.conn)
 
