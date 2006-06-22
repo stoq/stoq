@@ -28,7 +28,7 @@ or a service, implemented in your own modules.
 import datetime
 
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
-from sqlobject.sqlbuilder import AND, IN
+from sqlobject.sqlbuilder import AND, IN, OR
 from zope.interface import implements
 from kiwi.datatypes import currency
 
@@ -368,6 +368,12 @@ class AbstractSellable(InheritableModelAdapter):
         return cls.select(query, connection=conn)
 
     @classmethod
+    def get_unblocked_sellables(cls, conn):
+        return cls.select(OR(cls.get_available_sellables_query(conn),
+                             cls.q.status == cls.STATUS_SOLD),
+                          connection=conn)
+
+    @classmethod
     def get_sold_sellables(cls, conn):
         """Returns sellable objects which can be added in a sale. By
         default a delivery sellable can not be added manually by users
@@ -375,7 +381,6 @@ class AbstractSellable(InheritableModelAdapter):
         """
         query = cls.q.status == cls.STATUS_SOLD
         return cls.select(query, connection=conn)
-
 
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
