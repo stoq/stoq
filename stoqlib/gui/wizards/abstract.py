@@ -58,6 +58,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
                                        IMultiplePM, IMoneyPM,
                                        IGiftCertificatePM)
+from stoqlib.domain.sellable import AbstractSellable
 
 _ = stoqlib_gettext
 
@@ -283,9 +284,9 @@ class AbstractProductStep(WizardEditorStep):
         self.wizard.refresh_next(validation_value)
 
     def _setup_product_entry(self):
-        products = self.table.get_available_sellables(self.conn)
-        items = [(p.get_description(), p) for p in products]
-        self.product.prefill(items)
+        items = AbstractSellable.get_unblocked_sellables(self.conn)
+        self.product.prefill([(item.get_description(), item)
+                                  for item in items])
 
     def get_columns(self):
         raise NotImplementedError('This method must be defined on child')
