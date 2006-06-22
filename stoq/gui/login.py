@@ -27,9 +27,9 @@ import gtk
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
+from kiwi.component import get_utility
 from stoqlib.gui.login import LoginDialog
-
-from stoq.lib.applist import ApplicationDescriptions
+from stoqlib.gui.interfaces import IApplicationDescriptions
 
 _ = gettext.gettext
 
@@ -63,10 +63,10 @@ class SelectApplicationsSlave(SlaveDelegate):
         self.klist.get_treeview().set_headers_visible(False)
         self.klist.set_columns(self._get_columns())
 
-        apps = ApplicationDescriptions.get_descriptions()
+        descriptions = get_utility(IApplicationDescriptions).get_descriptions()
         # sorting by app_full_name
-        apps = [(app_full_name, app_name, app_icon_name)
-                    for app_name, app_full_name, app_icon_name in apps]
+        apps = [(full_name, name, icon_name)
+                    for name, full_name, icon_name in descriptions]
         apps.sort()
         for app_full_name, app_name, app_icon_name in apps:
             model = Settable(app_name=app_name, app_full_name=app_full_name,
