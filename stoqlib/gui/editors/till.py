@@ -36,8 +36,7 @@ from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.domain.till import Till, get_current_till_operation, TillEntry
 from stoqlib.domain.payment.base import CashAdvanceInfo
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (IInPayment, IEmployee, IBranch,
-                                       IOutPayment)
+from stoqlib.domain.interfaces import IInPayment, IEmployee, IOutPayment
 
 _ = stoqlib_gettext
 
@@ -253,11 +252,10 @@ class CashInEditor(BaseEditor):
 
     def create_model(self, conn):
         current_till = get_current_till_operation(conn)
-        branch = Person.iget(IBranch, current_till.branch.id,
-                             connection=conn)
-        branch_name = branch.get_adapted().name
-        payment_description = _(u'Cash in for branch: %s') % branch_name
-        self.cash_slave = BaseCashSlave(payment_description=payment_description,
+        description = (_(u'Cash in for station "%s" of branch "%s"')
+                       % (current_till.station.name,
+                          current_till.station.branch.get_adapted().name))
+        self.cash_slave = BaseCashSlave(payment_description=description,
                                         conn=conn)
         return self.cash_slave.model
 
