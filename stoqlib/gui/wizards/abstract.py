@@ -283,7 +283,7 @@ class AbstractProductStep(WizardEditorStep):
             validation_value = False
         self.wizard.refresh_next(validation_value)
 
-    def _setup_product_entry(self):
+    def setup_product_entry(self):
         items = AbstractSellable.get_unblocked_sellables(self.conn)
         self.product.prefill([(item.get_description(), item)
                                   for item in items])
@@ -379,7 +379,7 @@ class AbstractProductStep(WizardEditorStep):
         self.force_validation()
 
     def setup_proxies(self):
-        self._setup_product_entry()
+        self.setup_product_entry()
         self.proxy = self.add_proxy(None,
                                     AbstractProductStep.proxy_widgets)
         widgets = AbstractProductStep.product_widgets
