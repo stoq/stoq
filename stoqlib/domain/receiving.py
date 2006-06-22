@@ -38,7 +38,7 @@ from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
-
+from stoqlib.domain.service import Service
 
 _ = stoqlib_gettext
 
@@ -136,9 +136,13 @@ class ReceivingOrder(Domain):
 
     def confirm(self):
         conn = self.get_connection()
+        # Stock management
         for item in self.get_items():
-            sellable = item.sellable
             adapted = item.sellable.get_adapted()
+            # We don't need manage stock for services
+            if isinstance(adapted, Service):
+                continue
+            sellable = item.sellable
             storable = IStorable(adapted, connection=conn)
             if not storable:
                 raise DatabaseInconsistency('Sellable %r must have a '
