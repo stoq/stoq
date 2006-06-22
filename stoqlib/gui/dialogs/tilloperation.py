@@ -168,8 +168,8 @@ class TillOperationDialog(SlaveDelegate):
             self._select_last_item()
 
     def _select_last_item(self):
-        inserted_item_position = len(self.payments) - 1
-        self.payments.select(self.payments[inserted_item_position])
+        if len(self.payments):
+            self.payments.select(self.payments[-1])
 
     def _update_list(self, slave, objs):
         self.payments.add_list(objs)
