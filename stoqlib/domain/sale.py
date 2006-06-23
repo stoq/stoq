@@ -80,8 +80,6 @@ class GiftCertificateOverpaidSettings:
 
 class Sale(Domain):
     """Sale object implementation.
-    Nested imports are needed here because domain/sallable.py imports the
-    current one.
 
     B{Important attributes}:
         - I{order_number}: an optional identifier for this sale defined by
