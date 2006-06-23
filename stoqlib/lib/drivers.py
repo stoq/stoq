@@ -192,13 +192,12 @@ def check_emit_read_X(conn, parent=None):
                   "configured printer.\nWould you like to ignore "
                   "this error and continue?")
         buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                   (_(u"Ignore"), gtk.RESPONSE_YES))
-        parent = parent
-        y = yesno(text, default=gtk.RESPONSE_YES,
-                  buttons=buttons)
-        print y, gtk.RESPONSE_YES, gtk.RESPONSE_CANCEL
-        if (yesno(text, default=gtk.RESPONSE_YES,
-                  buttons=buttons) != gtk.RESPONSE_YES):
+                   (_(u"Ignore"), gtk.RESPONSE_YES),
+                   (_(u"Try Again"), gtk.RESPONSE_NONE))
+        response = warning(text, buttons=buttons)
+        if response == gtk.RESPONSE_YES:
+            return True
+        elif response == gtk.RESPONSE_CANCEL:
             return False
     return True
 
@@ -210,11 +209,13 @@ def check_emit_reduce_Z(conn, parent=None):
         text = _(u"It's not possible to emit a reduce Z for the "
                   "configured printer.\nWould you like to ignore "
                   "this error and continue?")
-        buttons = ((_("Cancel"), gtk.RESPONSE_CANCEL),
-                   (_("Ignore"), gtk.RESPONSE_YES))
-        parent = parent
-        if (yesno(text, default=gtk.RESPONSE_YES,
-                  buttons=buttons) != gtk.RESPONSE_YES):
+        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
+                   (_(u"Ignore"), gtk.RESPONSE_YES),
+                   (_(u"Try Again"), gtk.RESPONSE_NONE))
+        response = warning(short=text, buttons=buttons)
+        if response  == gtk.RESPONSE_YES:
+            return True
+        elif response == gtk.RESPONSE_CANCEL:
             return False
     return True
 
@@ -393,7 +394,7 @@ class FiscalCoupon:
             except PrinterOfflineError:
                 if yesno(
                     (_(u"The printer %s is offline, turn it on and try"
-                    "again") % self.printer.get_model_name()),
+                       "again") % self.printer.get_model_name()),
                     default=gtk.RESPONSE_OK,
                     buttons=((_(u"Confirm later"), gtk.RESPONSE_CANCEL),
                              (_(u"Resume"), gtk.RESPONSE_OK))) != gtk.RESPONSE_OK:

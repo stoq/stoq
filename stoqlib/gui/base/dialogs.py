@@ -449,8 +449,9 @@ class DialogSystemNotifier:
     def info(self, short, description):
         info(short, description, get_current_toplevel())
 
-    def warning(self, short, description):
-        warning(short, description, get_current_toplevel())
+    def warning(self, short, description, *args, **kwargs):
+        return warning(short, description, get_current_toplevel(), *args,
+                       **kwargs)
 
     def error(self, short, description):
         error(short, description, get_current_toplevel())
