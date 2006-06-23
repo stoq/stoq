@@ -61,8 +61,8 @@ _ = lambda msg: stoqdrivers_gettext(msg)
     SCALE_DEVICE,
     # Custom payment method
     CUSTOM_PM,
-) = range(15)
-
+    BARCODE_READER_DEVICE,
+) = range(16)
 
 # TODO: Improve these descriptions
 _constant_descriptions = {
