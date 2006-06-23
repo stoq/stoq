@@ -34,7 +34,8 @@ import gobject
 from stoqdrivers.log import Logger
 from stoqdrivers.configparser import StoqdriversConfig
 from stoqdrivers.exceptions import CriticalError, ConfigError
-from stoqdrivers.constants import PRINTER_DEVICE, SCALE_DEVICE
+from stoqdrivers.constants import (PRINTER_DEVICE, SCALE_DEVICE,
+                                   BARCODE_READER_DEVICE)
 from stoqdrivers.translation import stoqdrivers_gettext
 from stoqdrivers.devices.serialbase import SerialPort
 
@@ -46,8 +47,11 @@ class BaseDevice(Logger):
     the configuration file.
     """
     log_domain = "stoqdrivers"
-    typename_translate_dict = {PRINTER_DEVICE: "Printer",
-                               SCALE_DEVICE: "Scale"}
+    typename_translate_dict = {
+        PRINTER_DEVICE: "Printer",
+        SCALE_DEVICE: "Scale",
+        BARCODE_READER_DEVICE: "Barcode Reader",
+        }
     # Subclasses must define these attributes
     device_dirname = None
     required_interfaces = None
