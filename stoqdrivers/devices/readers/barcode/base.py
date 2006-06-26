@@ -27,10 +27,23 @@
 import os
 
 from kiwi.python import namedAny
+from zope.interface import implements
 
 from stoqdrivers.devices.readers import barcode
 from stoqdrivers.devices.interfaces import IBarcodeReader
+from stoqdrivers.devices.serialbase import SerialBase
 from stoqdrivers.utils import get_module_list
+
+class BaseBarcodeReader(SerialBase):
+    implements(IBarcodeReader)
+    # Should be defined in subclasses
+    model_name = None
+
+    def __init__(self, port, consts=None):
+        SerialBase.__init__(self, port)
+
+    def get_code(self):
+        return self.readline()
 
 def get_supported_barcode_readers():
     barcode_dir = os.path.dirname(barcode.__file__)
