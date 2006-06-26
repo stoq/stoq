@@ -1,3 +1,9 @@
+2006-06-26  Henrique Romano  <henrique@async.com.br>
+
+	* stoqdrivers/devices/readers/barcode/metrologic/MC630.py:
+
+	Initial implementation for Metrologic MC630 barcode reader.
+
 2006-06-20  Henrique Romano  <henrique@async.com.br>
 
 	* stoqdrivers/devices/printers/dataregis/EP375.py:
