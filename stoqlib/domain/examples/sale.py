@@ -40,9 +40,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
                                        ISalesPerson, ICheckPM)
 
-
 _ = stoqlib_gettext
-
 
 # Number of installments for the sale
 DEFAULT_PAYMENTS_NUMBER = 4
@@ -56,14 +54,16 @@ DEFAULT_SALE_NUMBER = 4
 DEFAULT_PAYMENT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 DEFAULT_PAYMENT_INTERVALS = 1
 
-def get_till(conn):
-    till = get_current_till_operation(conn)
-    if till is None:
-        till = Till(connection=conn,
-                    station=get_current_station(conn))
-        till.open_till()
+_till_operation = None
 
-    return till
+def get_till(conn):
+    global _till_operation
+    _till_operation = _till_operation or get_current_till_operation(conn)
+    if _till_operation is None:
+        _till_operation = Till(connection=conn,
+                               station=get_current_station(conn))
+        _till_operation.open_till()
+    return _till_operation
 
 def get_clients(conn):
     client_table = Person.getAdapterClass(IClient)
@@ -79,6 +79,30 @@ def get_all_products(conn):
         sys.exit()
     return list(result)
 
+def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
+                 product, installments_number):
+    sale = Sale(till=get_till(conn), client=client, status=status,
+                open_date=open_date, coupon_id=coupon_id,
+                salesperson=salesperson, cfop=sysparam(conn).DEFAULT_SALES_CFOP,
+                connection=conn)
+    sellable_facet = ISellable(product, connection=conn)
+    sellable_facet.add_sellable_item(sale=sale)
+    sale_total = sellable_facet.base_sellable_info.price
+    # Sale's payments
+    pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
+                             installments_number=DEFAULT_PAYMENTS_NUMBER)
+    if installments_number > MAX_INSTALLMENTS_NUMBER:
+        raise ValueError("Number of installments for this payment method can "
+                         "not be greater than %d, got %d"
+                         % (MAX_INSTALLMENTS_NUMBER, installments_number))
+    check_method = ICheckPM(sysparam(conn).BASE_PAYMENT_METHOD,
+                            connection=conn)
+    check_method.setup_inpayments(pg_facet, installments_number,
+                                  open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
+                                  DEFAULT_PAYMENTS_INTERVAL, sale_total)
+    sale.set_valid()
+    return sale
+
 #
 # Main
 #
@@ -87,72 +111,33 @@ def create_sales():
     conn = new_transaction()
     print_msg("Creating sales... ", break_line=False)
 
-    till = get_till(conn)
-
+    sale_statuses = Sale.statuses.keys()
     clients = get_clients(conn)
     if not len(clients) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have clients to create all the sales.")
-
     product_list = get_all_products(conn)
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
-
-    destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-    salesperson_table = Person.getAdapterClass(ISalesPerson)
-    salespersons = salesperson_table.select(connection=conn)
-    qty = salespersons.count()
-    if qty < DEFAULT_SALE_NUMBER:
+    salespersons = Person.getAdapterClass(ISalesPerson).select(connection=conn)
+    if salespersons.count() < DEFAULT_SALE_NUMBER:
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %
-                         (DEFAULT_SALE_NUMBER, qty))
-
+                         (DEFAULT_SALE_NUMBER, salespersons.count()))
     open_dates = [datetime.datetime.today(),
                   datetime.datetime.today() + datetime.timedelta(10),
                   datetime.datetime.today() + datetime.timedelta(15),
                   datetime.datetime.today() + datetime.timedelta(23)]
-
     installments_numbers = [i * 2 for i in range(1,
                                                  DEFAULT_SALE_NUMBER + 1)]
-
-    statuses = Sale.statuses.keys()
-    method = sysparam(conn).BASE_PAYMENT_METHOD
-    check_method = ICheckPM(method, connection=conn)
-
-    for index in range(DEFAULT_SALE_NUMBER):
-
-        #
-        # Setting up the sale
-        #
-
-        open_date = open_dates[index]
-        status = statuses[index]
-        salesperson = salespersons[index]
-        # Order number field will be filled automatically after bug 2214
-        cfop = sysparam(conn).DEFAULT_SALES_CFOP
-        sale = Sale(connection=conn, till=till, client=clients[index],
-                    status=status, open_date=open_date, coupon_id=index,
-                    salesperson=salesperson, cfop=cfop)
-        sellable_facet = ISellable(product_list[index], connection=conn)
-        sellable_facet.add_sellable_item(sale=sale)
-        sale_total = sellable_facet.base_sellable_info.price
-
-        #
-        # Setting up the payments
-        #
-
-        pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
-                                 installments_number=DEFAULT_PAYMENTS_NUMBER)
-        installments = installments_numbers[index]
-        if installments > MAX_INSTALLMENTS_NUMBER:
-            raise ValueError('Number of installments for this payment '
-                             'method can not be greater than %d, got %d'
-                             % (installments, MAX_INSTALLMENTS_NUMBER))
-        check_method.setup_inpayments(pg_facet, installments, open_date,
-                                      DEFAULT_PAYMENT_INTERVAL_TYPE,
-                                      DEFAULT_PAYMENTS_INTERVAL,
-                                      sale_total)
-        sale.set_valid()
-
+    for index, (open_date, status, salesperson, client, product,
+                installments_number) in enumerate(zip(open_dates,
+                                                      sale_statuses,
+                                                      salespersons,
+                                                      clients,
+                                                      product_list,
+                                                      installments_numbers)):
+        _create_sale(conn, open_date, status, salesperson, client, index,
+                     product, installments_number)
     conn.commit()
     print_msg("done.")
 
