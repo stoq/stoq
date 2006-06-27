@@ -75,16 +75,6 @@ class SellableSearch(SearchEditor):
             self.perform_search()
 
     #
-    # Accessors
-    #
-
-    def get_branch(self):
-        branch = self.filter_slave.get_selected_status()
-        if branch == ALL_ITEMS_INDEX:
-            branch = None
-        return branch
-
-    #
     # Hooks
     #
 
@@ -111,18 +101,21 @@ class SellableSearch(SearchEditor):
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
-        service = sysparam(self.conn).DELIVERY_SERVICE
-        branch = self.filter_slave.get_selected_status()
-        if branch != ALL_ITEMS_INDEX:
-            self.set_searchtable(SellableView)
-            q3 = OR(SellableView.q.branch_id == branch.id,
-                    SellableView.q.branch_id == None)
-        else:
+        branch_query = None
+        if (not self.has_stock_mode
+            or self.filter_slave.get_selected_status() == ALL_ITEMS_INDEX):
             self.set_searchtable(SellableFullStockView)
-            q3 = 1 == 1
-        q1 = self.search_table.q.id != service.id
-        q2 = self.search_table.q.status == AbstractSellable.STATUS_AVAILABLE
-        return AND(q1, q2, q3)
+            branch_query = 1 == 1
+        else:
+            self.set_searchtable(SellableView)
+            branch = self.filter_slave.get_selected_status()
+            branch_query = OR(SellableView.q.branch_id == branch.id,
+                              SellableView.q.branch_id == None)
+        service = sysparam(self.conn).DELIVERY_SERVICE
+        return AND(self.search_table.q.id != service.id,
+                   (self.search_table.q.status
+                    == AbstractSellable.STATUS_AVAILABLE),
+                   branch_query)
 
     def get_filter_slave(self):
         if not self.has_stock_mode:
@@ -141,5 +134,6 @@ class SellableSearch(SearchEditor):
         return self.filter_slave
 
     def after_search_bar_created(self):
-        self.filter_slave.connect('status-changed',
-                                  self.search_bar.search_items)
+        if self.has_stock_mode:
+            self.filter_slave.connect('status-changed',
+                                      self.search_bar.search_items)
