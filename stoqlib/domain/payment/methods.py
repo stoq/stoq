@@ -476,7 +476,7 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
                   payment_group=group,
                   connection=self.get_connection())
 
-    # FIXME: This is absolutely horrible
+    # FIXME: This is absolutely horrible (**kwargs issues)
 
     def setup_outpayments(self, total, group, *args, **kwargs):
         self._create_till_entry(-abs(total), group)
