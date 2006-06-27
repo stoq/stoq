@@ -192,8 +192,8 @@ CREATE VIEW abstract_purchase_product_view AS
   SELECT
   sum(quantity) as ordered_quantity,
   sum(quantity_received) as received_quantity,
-  sum(cost) as subtotal,
-  sum(cost) - purchase_order.discount_value + purchase_order.surcharge_value as total,
+  sum(cost*quantity) as subtotal,
+  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value as total,
   order_id
     FROM purchase_item, purchase_order
       GROUP BY
