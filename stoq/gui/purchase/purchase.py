@@ -213,7 +213,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_details_button__clicked(self, *args):
         self._run_details_dialog()
 
-    def _on_orders__selection_changed(self, orders, selection):
+    def on_orders__selection_changed(self, orders, selection):
         self._update_view()
 
     def _on_orders__double_click(self, orders, order):
