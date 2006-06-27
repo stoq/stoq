@@ -112,6 +112,7 @@ def create_sales():
     print_msg("Creating sales... ", break_line=False)
 
     sale_statuses = Sale.statuses.keys()
+    sale_statuses.remove(Sale.STATUS_CANCELLED)
     clients = get_clients(conn)
     if not len(clients) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have clients to create all the sales.")
