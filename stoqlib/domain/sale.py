@@ -327,8 +327,11 @@ class Sale(Domain):
 
     def create_sale_return_adapter(self):
         conn = self.get_connection()
-        user = get_current_user(conn)
-        responsible = user.get_adapted()
+        current_user = get_current_user(conn)
+        if current_user is None:
+            raise StoqlibError("You should have a user for a sale "
+                               "renegotiation")
+        responsible = current_user.get_adapted()
         group = self.check_payment_group()
         paid_total = group.get_total_paid()
         reg_data = RenegotiationData(connection=conn,
