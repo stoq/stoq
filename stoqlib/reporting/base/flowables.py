@@ -92,7 +92,7 @@ class ReportLine(Flowable):
         self.avail_width = avail_width
         x = avail_width, 2 * self.v_margins + self.thickness
         return avail_width, 2 * self.v_margins + self.thickness
-    
+
     def drawOn(self, canvas, x, y, *args, **kwargs):
         """ Start drawing the flowable. This method is called internally by
         Reportlab
@@ -181,7 +181,6 @@ class Signature(Flowable):
             for fragment in label.split('\n'):
                 drawStringFunc(horiz_v, current_line, fragment)
                 current_line -= default_font_size
-            
             canvas.line(x1, line_height, x2, line_height)
 
             x1 = x2 + x
@@ -212,7 +211,7 @@ class Signature(Flowable):
         # "Avail_width" is the width of page footer. "Left" is the amount of
         # space we need to move the first signature from left to right. The
         # "x" variable defines the space before the start and after the
-        # end of page footer. "x1" and "x2' is the first and last position of 
+        # end of page footer. "x1" and "x2' is the first and last position of
         # canvas line, respectively.
         between_lines = (len(self.labels) - 1) * x
         left = len(self.labels) * self.line_width + between_lines
