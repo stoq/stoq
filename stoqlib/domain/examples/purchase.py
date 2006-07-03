@@ -34,7 +34,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier, IBranch, IPaymentGroup
 from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.lib.runtime import new_transaction, print_msg
-from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL)
+from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 
 MAX_PURCHASES_NUMBER = 4
