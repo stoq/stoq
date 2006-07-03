@@ -31,9 +31,10 @@ from kiwi.datatypes import currency
 
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import ISupplier, IBranch
+from stoqlib.domain.interfaces import ISupplier, IBranch, IPaymentGroup
 from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL)
 
 
 MAX_PURCHASES_NUMBER = 4
@@ -115,6 +116,21 @@ def create_purchases():
             PurchaseItem(connection=conn, cost=sellable.cost,
                          order=order, sellable=sellable,
                          **item_args)
+    new_order = PurchaseOrder(connection=conn,
+                              status=PurchaseOrder.ORDER_PENDING,
+                              supplier=suppliers[1],
+                              branch=branches[1])
+    new_order.set_valid()
+    new_order.addFacet(IPaymentGroup,
+                       default_method=METHOD_BILL,
+                       intervals=1,
+                       interval_type=INTERVALTYPE_MONTH,
+                       connection=conn)
+    new_order.confirm_order()
+    item = new_order.add_item(sellables[1], purchaseitem_data[0]['quantity'])
+    new_order.receive_item(item,
+                           purchaseitem_data[0]['quantity'])
+    new_order.close()
 
     conn.commit()
     print_msg('done.')
