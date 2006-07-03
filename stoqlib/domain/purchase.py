@@ -28,11 +28,12 @@ from datetime import datetime
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
+from zope.interface import implements
 
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
 
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
                                   METHOD_MONEY)
 from stoqlib.lib.parameters import sysparam
@@ -41,7 +42,7 @@ from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
-                                       IPaymentGroup)
+                                       IPaymentGroup, IContainer)
 from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
@@ -71,6 +72,9 @@ class PurchaseItem(Domain):
             raise TypeError('You must provide a order argument')
 
         kw['base_cost'] = kw['sellable'].cost
+
+        if not 'cost' in kw:
+            kw['cost'] = kw['sellable'].cost
 
         if kw['sellable'].id in [item.sellable.id
                                    for item in kw['order'].get_items()]:
@@ -107,6 +111,8 @@ class PurchaseItem(Domain):
 
 class PurchaseOrder(Domain):
     """Purchase and order definition."""
+
+    implements(IContainer)
 
     (ORDER_CANCELLED,
      ORDER_QUOTING,
@@ -145,6 +151,27 @@ class PurchaseOrder(Domain):
     transporter = ForeignKey('PersonAdaptToTransporter', default=None)
 
     #
+    # IContainer Implementation
+    #
+
+    def get_items(self):
+        return PurchaseItem.selectBy(order=self,
+                                     connection=self.get_connection())
+
+    @argcheck(PurchaseItem)
+    def remove_item(self, item):
+        conn = self.get_connection()
+        if item.order is not self:
+            raise ValueError('Argument item must have an order attribute '
+                             'associated with the current purchase instance')
+        PurchaseItem.delete(item.id, connection=conn)
+
+    def add_item(self, sellable, quantity=decimal.Decimal("1")):
+        conn = self.get_connection()
+        return PurchaseItem(connection=conn, order=self,
+                            sellable=sellable, quantity=quantity)
+
+    #
     # SQLObject hooks
     #
 
@@ -156,6 +183,18 @@ class PurchaseOrder(Domain):
     #
     # General methods
     #
+
+    def receive_item(self, item, quantity_to_receive):
+        if not item in self.get_pending_items():
+            raise ValueError('This item is not pending, hence '
+                             'cannot be received')
+        quantity = item.quantity - item.quantity_received
+        if quantity < quantity_to_receive:
+            raise StoqlibError('The quantity that you want to receive '
+                               'is greater than the total quantity of '
+                               'this item %r' % item)
+        self.increase_quantity_received(item.sellable,
+                                        quantity_to_receive)
 
     def confirm_order(self, confirm_date=datetime.now()):
         if self.status != self.ORDER_PENDING:
@@ -314,17 +353,6 @@ class PurchaseOrder(Domain):
     def get_received_items(self):
         return [item for item in self.get_items() if item.has_been_received()]
 
-    def get_items(self):
-        return PurchaseItem.selectBy(order=self,
-                                     connection=self.get_connection())
-
-    @argcheck(PurchaseItem)
-    def remove_item(self, item):
-        conn = self.get_connection()
-        if item.order is not self:
-            raise ValueError('Argument item must have an order attribute '
-                             'associated with the current purchase instance')
-        PurchaseItem.delete(item.id, connection=conn)
 
     def get_open_date_as_string(self):
         return self.open_date and self.open_date.strftime("%x") or ""
