@@ -186,8 +186,8 @@ class PurchaseOrder(Domain):
 
     def receive_item(self, item, quantity_to_receive):
         if not item in self.get_pending_items():
-            raise ValueError('This item is not pending, hence '
-                             'cannot be received')
+            raise StoqlibError('This item is not pending, hence '
+                               'cannot be received')
         quantity = item.quantity - item.quantity_received
         if quantity < quantity_to_receive:
             raise StoqlibError('The quantity that you want to receive '
