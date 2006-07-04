@@ -119,9 +119,6 @@ dbusername=%(DBUSERNAME)s"""
             return
         return conf_file
 
-    def get_config_directory(self):
-        return os.path.join(os.getenv('HOME'), '.' + self.domain)
-
     def _open_config(self, filename):
         if not os.path.exists(filename):
             return False
@@ -169,6 +166,9 @@ dbusername=%(DBUSERNAME)s"""
     #
     # Public API
     #
+
+    def get_config_directory(self):
+        return os.path.join(os.getenv('HOME'), '.' + self.domain)
 
     def check_permissions(self, origin, writable=False, executable=False):
         # Make sure permissions are correct on relevant files/directories
