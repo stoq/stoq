@@ -125,14 +125,6 @@ class TestParameter(unittest.TestCase):
         param = self.sparam.COUNTRY_SUGGESTED
         assert isinstance(param, basestring)
 
-    def test_DecimalSize(self):
-        param = self.sparam.DECIMAL_SIZE
-        assert isinstance(param, int)
-
-    def test_DecimalPrecision(self):
-        param = self.sparam.DECIMAL_PRECISION
-        assert isinstance(param, int)
-
     def test_HasDeliveryMode(self):
         param = self.sparam.HAS_DELIVERY_MODE
         assert isinstance(param, int)
