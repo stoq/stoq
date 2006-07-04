@@ -295,7 +295,18 @@ dbusername=%(DBUSERNAME)s"""
     #
 
     def get_station_id(self):
-        return self.get_option('station_id', section='General')
+        """
+        Retrevies the station id for the current installation.
+
+        @returns: station id
+        @rtype: id
+        """
+
+        station_id = self.get_option('station_id', section='General')
+        try:
+            return int(station_id)
+        except ValueError:
+            raise AssertionError("Invalid station id: %s\n", station_id)
 
     def get_rdbms_name(self):
         return self.get_option('rdbms', section='Database')
