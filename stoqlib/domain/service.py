@@ -155,6 +155,11 @@ class ServiceAdaptToSellable(AbstractSellable):
 
     sellableitem_table = ServiceSellableItem
 
+    def _create(self, id, **kw):
+        if 'status' not in kw:
+            kw['status'] = AbstractSellable.STATUS_AVAILABLE
+        AbstractSellable._create(self, id, **kw)
+
 Service.registerFacet(ServiceAdaptToSellable, ISellable)
 
 
