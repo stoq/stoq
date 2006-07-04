@@ -27,9 +27,8 @@ import re
 from kiwi.datatypes import format_price
 from kiwi.argcheck import argcheck
 
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
 
 _ = stoqlib_gettext
@@ -62,21 +61,15 @@ def is_date_in_interval(date, start_date, end_date):
     return q1 and q2
 
 def format_quantity(quantity):
-    conn = get_connection()
     if (quantity * 100 % 100) == 0:
         return '%.0f' % quantity
-    precision = sysparam(conn).DECIMAL_PRECISION
-    return '%.*f' % (precision, quantity)
+    return '%.*f' % (DECIMAL_PRECISION, quantity)
 
 def get_price_format_str():
-    conn = get_connection()
-    precision = sysparam(conn).DECIMAL_PRECISION
-    return '%%.%sf' % precision
+    return '%%.%sf' % DECIMAL_PRECISION
 
 def get_formatted_price(float_value):
-    conn = get_connection()
-    precision = sysparam(conn).DECIMAL_PRECISION
-    return format_price(float_value, precision=precision)
+    return format_price(float_value, precision=DECIMAL_PRECISION)
 
 #
 # Phone number validators
