@@ -41,8 +41,8 @@ from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
 _ = stoqlib_gettext
 
 
-DEFAULT_DECIMAL_PRECISION = 2
-DEFAULT_DECIMAL_SIZE = 10
+DECIMAL_PRECISION = 2
+DECIMAL_SIZE = 10
 
 
 class ParameterDetails:
@@ -144,20 +144,6 @@ _parameter_info = dict(
     _(u'Can this company make sales for products that doesn\'t '
       'actually exist in the stock ? If this parameter is True we can order '
       'products.')),
-
-    DECIMAL_SIZE=ParameterDetails(
-    _(u'General'),
-    _(u'Decimal Size'),
-    _(u'The total size of digits used by decimal numbers in Stoq '
-      'applications. Decimal numbers can be quantities, prices and '
-      'payment values.')),
-
-    DECIMAL_PRECISION=ParameterDetails(
-    _(u'General'),
-    _(u'Decimal Precision'),
-    _(u'The precision size used by decimal numbers in Stoq '
-      'applications. Decimal numbers can be quantities, prices and '
-      'payment values.')),
 
     CITY_SUGGESTED=ParameterDetails(
     _(u'General'),
@@ -321,10 +307,6 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_LATE_DAYS', int, initial=30),
         ParameterAttr('HAS_STOCK_MODE', bool, initial=True),
         ParameterAttr('HAS_DELIVERY_MODE', bool, initial=True),
-        ParameterAttr('DECIMAL_PRECISION', int,
-                      initial=DEFAULT_DECIMAL_PRECISION),
-        ParameterAttr('DECIMAL_SIZE', int,
-                      initial=DEFAULT_DECIMAL_SIZE),
         ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),

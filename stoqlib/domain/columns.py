@@ -33,11 +33,7 @@ from sqlobject.col import SODecimalCol, Col, SOIntCol
 from sqlobject.sqlbuilder import func
 from sqlobject.converters import registerConverter
 
-from stoqlib.domain.parameter import ParameterData
-from stoqlib.lib.runtime import get_connection
-from stoqlib.lib.parameters import (sysparam,
-                                    DEFAULT_DECIMAL_PRECISION,
-                                    DEFAULT_DECIMAL_SIZE)
+from stoqlib.lib.parameters import DECIMAL_PRECISION, DECIMAL_SIZE
 
 
 def _CurrencyConverter(value, db):
@@ -82,15 +78,8 @@ class _DecimalValidator(Validator):
 
 class AbstractDecimalCol(SODecimalCol):
     def __init__(self, **kw):
-        conn = get_connection()
-        if conn.tableExists(ParameterData.get_db_table_name()):
-            param = sysparam(conn)
-            kw['size'] = param.DECIMAL_SIZE or DEFAULT_DECIMAL_SIZE
-            kw['precision'] = (param.DECIMAL_PRECISION or
-                               DEFAULT_DECIMAL_PRECISION)
-        else:
-            kw['size'] = DEFAULT_DECIMAL_SIZE
-            kw['precision'] = DEFAULT_DECIMAL_PRECISION
+        kw['size'] = DECIMAL_SIZE
+        kw['precision'] = DECIMAL_PRECISION
         SODecimalCol.__init__(self, **kw)
 
     def createValidators(self):

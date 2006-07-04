@@ -35,7 +35,7 @@ from sqlobject.sqlbuilder import AND
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH
-from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.parameters import sysparam, DECIMAL_PRECISION
 from stoqlib.lib.drivers import get_current_cheque_printer_settings
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
@@ -115,7 +115,7 @@ class PaymentListSlave(BaseEditorSlave):
 
     def update_total_label(self):
         difference = self.get_total_difference()
-        if not round(difference, sysparam(self.conn).DECIMAL_PRECISION):
+        if not round(difference, DECIMAL_PRECISION):
             label_name = difference = ''
         elif difference < 0:
             difference *= -1
