@@ -139,8 +139,12 @@ class ReceivingOrder(Domain):
         # Stock management
         for item in self.get_items():
             adapted = item.sellable.get_adapted()
-            # We don't need manage stock for services
+            # We don't need manage stock for services, however
+            # we need increase the quantity received for the item
             if isinstance(adapted, Service):
+                quantity = item.quantity_received
+                self.purchase.increase_quantity_received(item.sellable,
+                                                         quantity)
                 continue
             sellable = item.sellable
             storable = IStorable(adapted, connection=conn)
