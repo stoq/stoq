@@ -581,8 +581,7 @@ class TableColumnGroup:
 class TableColumn:
     def __init__(self, name=None, width=None, format_string=None,
                  format_func=None, truncate=False, use_paragraph=False,
-                 expand=False, align=LEFT, virtual=False, *args,
-                 **kwargs):
+                 expand=False, align=LEFT, virtual=False):
         """ Column class for ColumnTable
 
         @param name:   The column name
@@ -622,8 +621,6 @@ class TableColumn:
         self.truncate = truncate
         self.use_paragraph = use_paragraph
         self.align = align
-        self.args = args
-        self.kwargs = kwargs
         self.expand = expand
         self.virtual = virtual
         assert not (truncate and use_paragraph), \
@@ -674,10 +671,10 @@ class TableColumn:
                       *table_line)
 
 class ObjectTableColumn(TableColumn):
-    """ ObjectTableColumn implementation """
-
     def __init__(self, name, data_source, expand_factor=0, align=LEFT,
-                 truncate=0, *args, **kwargs):
+                 truncate=False, width=None, format_string=None,
+                 format_func=None, expand=False, virtual=False, *args,
+                 **kwargs):
         """
         @param name:   The column name
         @type:         str
@@ -699,8 +696,13 @@ class ObjectTableColumn(TableColumn):
         """
         self.data_source = data_source
         self.expand_factor = expand_factor
-        TableColumn.__init__(self, name, truncate=truncate, align=align,
-                             *args, **kwargs)
+        # FIXME: Fix it, args/kwargs are horrible here
+        self._callable_kwargs = kwargs
+        self._callable_args = args
+        TableColumn.__init__(self, name, width=width, truncate=truncate,
+                             format_string=format_string, expand=expand,
+                             format_func=format_func, virtual=virtual,
+                             align=align)
 
     def get_string_data(self, value):
         """  Returns the column value. The value can be returned through
@@ -708,11 +710,10 @@ class ObjectTableColumn(TableColumn):
         if self.data_source is None:
             return ''
         if isinstance(self.data_source, str):
-            locals().update(self.kwargs)
             # XXX Dangerous function = eval.
             data = eval(self.data_source)
             if callable(data):
-                data = data(*self.args, **self.kwargs)
+                data = data(*self._callable_args, **self._callable_kwargs)
         elif callable(self.data_source):
             data = self.data_source(value)
         return TableColumn.get_string_data(self, data)
@@ -725,13 +726,14 @@ class GroupingTableColumn(ObjectTableColumn):
     the expand attribute, nor virtual columns. This class must be used with
     objects that needs more than one line to represents its data.
     """
-    def __init__(self, data_source, colspan=1, align=LEFT, truncate=0,
-                 *args, **kwargs):
+    def __init__(self, data_source, colspan=1, format_string=None, align=LEFT,
+                 truncate=False, width=None, virtual=False, format_func=None):
         self.colspan = colspan
-        # We don't have a name atribute for this class. So, we just use None
-        # for that.
+        # We don't have a name atribute for this class. So, we just use as None
         ObjectTableColumn.__init__(self, None, data_source, truncate=truncate,
-                                   align=align, *args, **kwargs)
+                                   align=align, width=width,
+                                   format_string=format_string,
+                                   format_func=format_func, virtual=virtual)
 
     def update_style(self, style, idx):
         """ Apply the column style. """
