@@ -25,9 +25,10 @@
 """ Stoqlib Reporting tables implementation.  """
 
 from reportlab.pdfbase.pdfmetrics import stringWidth
-from reportlab.platypus import TableStyle, Paragraph, Table as RTable
+from reportlab.platypus import TableStyle, Table as RTable
 
-from stoqlib.reporting.base.flowables import LEFT, CENTER, RIGHT
+from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
+                                              Paragraph)
 from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   TABLE_HEADER_FONT_SIZE,
                                                   TABLE_HEADER_TEXT_COLOR,
