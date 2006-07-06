@@ -76,7 +76,7 @@ class Table(RTable):
         # If Reportlab doesn't try to calculate the table width before drawning
         # it out of the sheet, we do it for Reportlab.
         total_width = sum([w or 0 for w in self._colWidths])
-        if  total_width > avail_width:
+        if total_width > avail_width:
             # We don't use %r on the error message because reportlab dumps all
             # table data instead of the representation. %s the same.
             msg = 'Width of table with columns %s exceeded canvas available ' \
