@@ -28,8 +28,7 @@
 
 from reportlab.lib.units import mm
 from reportlab.platypus import Flowable, ActionFlowable
-from reportlab.platypus.paragraph import (Paragraph as RParagraph,
-                                          _getFragWords)
+from reportlab.platypus.paragraph import Paragraph as RParagraph
 from reportlab.pdfbase.pdfmetrics import stringWidth
 
 from stoqlib.reporting.base.default_style import (SIGNATURE_FONT, SPACING,
@@ -277,8 +276,8 @@ class Paragraph(RParagraph):
     #
 
     def breakLines(self, widths):
-        avail_width = widths[0]
         if self._ellipsize and self._first_line_frags:
+            avail_width = widths[0]
             total_width, frags = self._first_line_frags
             for frag in frags[::-1]:
                 ellipsis_width = stringWidth(ELLIPSIS_STRING, frag.fontName,
@@ -317,21 +316,15 @@ class Paragraph(RParagraph):
         if self.frags:
             total_width = 0.0
             first_line_frags = []
-            for entry in _getFragWords(self.frags):
-                frag_words = entry[1:]
-                for frag, word in frag_words:
-                    total_width += stringWidth(word, frag.fontName,
-                                               frag.fontSize)
-                    first_line_frags.append(frag.clone(text=word))
-                    if total_width > width:
-                        self._first_line_frags = [total_width, first_line_frags]
-                        width = min(total_width, width)
-                        break
-                else:
-                    total_width += stringWidth(" ", frag.fontName,
-                                               frag.fontSize)
-                    continue
-                break
+            space_width = 0.0
+            for frag in self.frags:
+                total_width += stringWidth(frag.text, frag.fontName,
+                                           frag.fontSize)
+                first_line_frags.append(frag)
+                if total_width > width:
+                    self._first_line_frags = [total_width, first_line_frags]
+                    width = min(total_width, width)
+                    break
             else:
                 # No need to ellipsize if the frags width is lesser than
                 # the available width
