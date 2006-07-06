@@ -262,8 +262,6 @@ class Paragraph(RParagraph):
         if not style:
             style = STYLE_SHEET["Raw"]
         if isinstance(style, basestring):
-            if not style in STYLE_SHEET:
-                raise ValueError("The style requested does not exists.")
             style = STYLE_SHEET[style]
         self._ellipsize = ellipsize
         # [total_width, [frag0, frag1, ...fragN]]
