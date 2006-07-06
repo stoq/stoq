@@ -304,27 +304,19 @@ class Paragraph(RParagraph):
                 break
         return RParagraph.breakLines(self, widths)
 
-    # XXX: We need to overwrite RParagraph's wrap since there the requested
-    # width is the maximum possible (that is the "avail_width" parameter).
-    # Here we need request just what we need, so it can be properly aligned
-    # when needed (in a table, for instance).
     def wrap(self, width, height):
-        if not self._ellipsize:
-            return RParagraph.wrap(self, self.minWidth(), height)
-        if self.frags:
+        if self._ellipsize and self.frags:
             total_width = 0.0
             first_line_frags = []
             space_width = 0.0
+            style = self.style
+            max_width = (width - (style.leftIndent + style.firstLineIndent)
+                         - style.rightIndent)
             for frag in self.frags:
                 total_width += stringWidth(frag.text, frag.fontName,
                                            frag.fontSize)
                 first_line_frags.append(frag)
-                if total_width > width:
+                if total_width > max_width:
                     self._first_line_frags = [total_width, first_line_frags]
-                    width = min(total_width, width)
                     break
-            else:
-                # No need to ellipsize if the frags width is lesser than
-                # the available width
-                self._ellipsize = False
         return RParagraph.wrap(self, width, height)
