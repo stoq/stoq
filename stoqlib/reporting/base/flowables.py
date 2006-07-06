@@ -28,8 +28,12 @@
 
 from reportlab.lib.units import mm
 from reportlab.platypus import Flowable, ActionFlowable
+from reportlab.platypus.paragraph import (Paragraph as RParagraph,
+                                          _getFragWords)
+from reportlab.pdfbase.pdfmetrics import stringWidth
 
-from stoqlib.reporting.base.default_style import SIGNATURE_FONT, SPACING
+from stoqlib.reporting.base.default_style import (SIGNATURE_FONT, SPACING,
+                                                  STYLE_SHEET)
 
 # We use enums here only to help to find typos. Reportlab uses strings for
 # alignment settings. Reportlab also defines other numeric enums for text
@@ -37,6 +41,8 @@ from stoqlib.reporting.base.default_style import SIGNATURE_FONT, SPACING
 LEFT = 'LEFT'
 CENTER = 'CENTER'
 RIGHT = 'RIGHT'
+
+ELLIPSIS_STRING = "..."
 
 #
 # Flowables
@@ -232,3 +238,102 @@ class Signature(Flowable):
                             % self.align)
         self.build_signatures(canvas, x, x1, x2, y, default_x2)
         canvas.restoreState()
+
+class Paragraph(RParagraph):
+    def __init__(self, text, style=None, ellipsize=True, bulletText=None,
+                 frags=None, caseSensitive=1):
+        """
+        @param text:   The paragraph text. You can use the same features
+                       available on reportlab's Paragraph.
+        @type text:    basestring
+
+        @param style:  a string or ParagraphStyle instance representing
+                       the paragraph style. If you do use a string, it'll
+                       be searched in the styles provided by
+                       default_style module.
+        @type style:   object
+
+        @param ellipsis: Define if the paragraph must use ellipsis when
+                       the text doesn't fits in the available width. If
+                       not set, reportlab will try break the text into
+                       multiple lines (which can be fail if the
+                       text haven't the required amount of space chars)
+        @type ellipsis: bool
+        """
+        if not style:
+            style = STYLE_SHEET["Raw"]
+        if isinstance(style, basestring):
+            if not style in STYLE_SHEET:
+                raise ValueError("The style requested does not exists.")
+            style = STYLE_SHEET[style]
+        self._ellipsize = ellipsize
+        # [total_width, [frag0, frag1, ...fragN]]
+        self._first_line_frags = []
+        RParagraph.__init__(self, text, style, bulletText, frags,
+                            caseSensitive)
+
+    #
+    # Reportlab's Paragraph overwrites
+    #
+
+    def breakLines(self, widths):
+        avail_width = widths[0]
+        if self._ellipsize and self._first_line_frags:
+            total_width, frags = self._first_line_frags
+            for frag in frags[::-1]:
+                ellipsis_width = stringWidth(ELLIPSIS_STRING, frag.fontName,
+                                             frag.fontSize)
+                frag_width = stringWidth(frag.text, frag.fontName,
+                                         frag.fontSize)
+                if total_width + ellipsis_width >= avail_width:
+                    if (frag_width - (total_width - avail_width)
+                        > ellipsis_width):
+                        for letter in frag.text[::-1]:
+                            frag.text = frag.text[:-1]
+                            total_width -= stringWidth(letter, frag.fontName,
+                                                       frag.fontSize)
+                            if total_width + ellipsis_width < avail_width:
+                                break
+                        else:
+                            total_width -= frag_width
+                            frags.pop()
+                            continue
+                    else:
+                        total_width -= frag_width
+                        frags.pop()
+                        continue
+                frag.text += ELLIPSIS_STRING
+                self.frags = frags
+                break
+        return RParagraph.breakLines(self, widths)
+
+    # XXX: We need to overwrite RParagraph's wrap since there the requested
+    # width is the maximum possible (that is the "avail_width" parameter).
+    # Here we need request just what we need, so it can be properly aligned
+    # when needed (in a table, for instance).
+    def wrap(self, width, height):
+        if not self._ellipsize:
+            return RParagraph.wrap(self, self.minWidth(), height)
+        if self.frags:
+            total_width = 0.0
+            first_line_frags = []
+            for entry in _getFragWords(self.frags):
+                frag_words = entry[1:]
+                for frag, word in frag_words:
+                    total_width += stringWidth(word, frag.fontName,
+                                               frag.fontSize)
+                    first_line_frags.append(frag.clone(text=word))
+                    if total_width > width:
+                        self._first_line_frags = [total_width, first_line_frags]
+                        width = min(total_width, width)
+                        break
+                else:
+                    total_width += stringWidth(" ", frag.fontName,
+                                               frag.fontSize)
+                    continue
+                break
+            else:
+                # No need to ellipsize if the frags width is lesser than
+                # the available width
+                self._ellipsize = False
+        return RParagraph.wrap(self, width, height)
