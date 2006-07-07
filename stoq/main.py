@@ -93,8 +93,8 @@ def _initialize(options):
 
 
 def _run_app(options, appname):
-    from stoq.lib.stoqconfig import AppConfig
-
+    from stoq.lib.stoqconfig import AppConfig, show_splash
+    show_splash('data/pixmaps')
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
