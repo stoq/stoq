@@ -107,7 +107,8 @@ class AbstractTableBuilder:
 
     def add_row(self, row_data):
         """ Just add an extra row to the table """
-        self.extra_rows.append(row_data)
+        self.extra_rows.append([Paragraph(str(d), STYLE_SHEET["Normal"])
+                                    for d in row_data])
 
     #
     # Hooks
