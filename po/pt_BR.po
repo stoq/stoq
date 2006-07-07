@@ -218,7 +218,7 @@ msgstr "Fornecedor"
 
 #: ../stoq/gui/purchase/purchase.py:196
 msgid "Qty Ordered"
-msgstr "Quantidade solicitada"
+msgstr "Qtde solicitada"
 
 #: ../stoq/gui/purchase/purchase.py:199
 msgid "Qty Received"
