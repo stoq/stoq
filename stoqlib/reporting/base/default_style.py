@@ -28,7 +28,7 @@ import os
 from reportlab.lib import colors
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import mm
-from reportlab.lib.enums import TA_RIGHT, TA_CENTER
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.platypus import TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -95,6 +95,11 @@ STYLE_SHEET.add(ParagraphStyle(
     'Title-AlignRight',
     parent=STYLE_SHEET['Title'],
     alignment=TA_RIGHT))
+
+STYLE_SHEET.add(ParagraphStyle(
+    "TableCell",
+    parent=STYLE_SHEET["Normal"],
+    alignment=TA_LEFT))
 
 # This is a total padding preview used to calculate the expanded width for the
 # columns:
