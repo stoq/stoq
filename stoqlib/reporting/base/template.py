@@ -30,12 +30,12 @@ from reportlab.lib import pagesizes
 from reportlab.platypus import (BaseDocTemplate, Frame, PageTemplate,
                                 KeepTogether, PageBreak, Spacer)
 from reportlab.platypus.flowables import Preformatted
-from reportlab.platypus import Paragraph
 
 from stoqlib.reporting.base import tables, flowables
 from stoqlib.reporting.base.default_style import (DOC_DEFAULTS, SPACING,
                                                  STYLE_SHEET, TABLE_STYLE,
                                                  DEFAULT_MARGIN, TABLE_LINE)
+from stoqlib.reporting.base.flowables import Paragraph
 
 class BaseReportTemplate(BaseDocTemplate):
     """ Base class representing the document itself. Here is implemented all the
@@ -251,7 +251,7 @@ class BaseReportTemplate(BaseDocTemplate):
         style = STYLE_SHEET[style]
         self.add(Preformatted(text, style, *args, **kwargs))
 
-    def add_paragraph(self, text, style='Normal', **kwargs):
+    def add_paragraph(self, text, style="Normal", **kwargs):
         """
         @param text:   The paragraph text.
         @type:         str
@@ -260,7 +260,6 @@ class BaseReportTemplate(BaseDocTemplate):
                        default_style module
         @type:         str
         """
-        style = STYLE_SHEET[style]
         self.add(Paragraph(text, style, **kwargs))
 
     def add_line(self, *args, **kwargs):
