@@ -580,8 +580,8 @@ class TableColumnGroup:
 
 class TableColumn:
     def __init__(self, name=None, width=None, format_string=None,
-                 format_func=None, truncate=False, use_paragraph=False,
-                 expand=False, align=LEFT, virtual=False):
+                 format_func=None, truncate=False, expand=False, align=LEFT,
+                 virtual=False):
         """ Column class for ColumnTable
 
         @param name:   The column name
@@ -609,22 +609,15 @@ class TableColumn:
                        last column and its header will be expanded with the one
                        of last column.
         @type:         bool
-
-        @param use_paragraph: The the column content must be placed inside a
-                       Reportlab paragraph.
-        @type:         bool
         """
         self.name = name
         self.width = width
         self.format_string = format_string
         self.format_func = format_func
         self.truncate = truncate
-        self.use_paragraph = use_paragraph
         self.align = align
         self.expand = expand
         self.virtual = virtual
-        assert not (truncate and use_paragraph), \
-            'What do you want for %s? Use paragraph or truncate?' % self
 
     def truncate_string(self, data):
         if not isinstance(data, basestring):
@@ -650,10 +643,10 @@ class TableColumn:
             value = self.format_func(value)
         if self.format_string:
             value = self.format_string % value
-        value = self.truncate_string(value)
-        if self.use_paragraph:
-            value = Paragraph(value, style=STYLE_SHEET["Normal"])
-        return value
+        if not isinstance(value, basestring):
+            value = str(value)
+        return Paragraph(value, style=STYLE_SHEET["Normal"],
+                         ellipsize=True)
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
