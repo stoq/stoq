@@ -99,7 +99,9 @@ STYLE_SHEET.add(ParagraphStyle(
 STYLE_SHEET.add(ParagraphStyle(
     "TableCell",
     parent=STYLE_SHEET["Normal"],
-    alignment=TA_LEFT))
+    alignment=TA_LEFT,
+    leftIndent=2,
+    rightIndent=2,))
 
 # This is a total padding preview used to calculate the expanded width for the
 # columns:
