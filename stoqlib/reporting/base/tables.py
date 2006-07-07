@@ -48,25 +48,17 @@ HIGHLIGHT_NEVER = 4
 
 class Table(RTable):
     """ Extension of Reportlab Table """
-    def __init__(self, data, *args, **kwargs):
+    def __init__(self, data, colWidths=None, rowHeights=None, style=None,
+                 repeatRows=0, repeatCols=0, splitByRow=True, ident=None,
+                 emptyTableAction=None, hAlign=None, vAlign=None,
+                 align=CENTER):
         """ This class extend Reportlab table supplying extra checks on its
         methods, what is an extra utility to the developer.
         """
-        # Reportlab's Table class doesn't provide a better API to set
-        # alignment, so we need to handle this specially. We need to be
-        # specially careful here because Tables are instantiated by
-        # reportlab behind our backs (when splitting tables into pages):
-        # we are required to keep the exact same interface as table.
-        # This has impact on *Template's create_table, where they stuff
-        # align into kwargs -- it used to be a third argument to Table's
-        # constructor, and it didn't work!
-        if kwargs.has_key("align"):
-            align = kwargs["align"]
-            del kwargs["align"]
-        else:
-            align = CENTER
-        RTable.__init__(self, data, *args, **kwargs)
-        self.hAlign = align
+        hAlign = hAlign or align
+        RTable.__init__(self, data, colWidths, rowHeights, style,
+                        repeatRows, repeatCols, splitByRow,
+                        emptyTableAction, ident, vAlign, hAlign)
 
     def wrap(self, avail_width, avail_height):
         """ Calculate the space required by the table. Internal use by
