@@ -272,8 +272,9 @@ class Paragraph(RParagraph):
     #
     # Reportlab's Paragraph overwrites
     #
-
     def breakLines(self, widths):
+        if hasattr(self, "blPara"):
+            return self.blPara
         if self._ellipsize and self._first_line_frags:
             avail_width = widths[0]
             total_width, frags = self._first_line_frags
@@ -305,7 +306,7 @@ class Paragraph(RParagraph):
         return RParagraph.breakLines(self, widths)
 
     def wrap(self, width, height):
-        if self._ellipsize and self.frags:
+        if self._ellipsize and self.frags and not self._first_line_frags:
             total_width = 0.0
             first_line_frags = []
             space_width = 0.0
