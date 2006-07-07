@@ -25,6 +25,8 @@
 """ Stoqlib Reporting tables implementation.  """
 
 from reportlab.platypus import TableStyle, Table as RTable
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 
 from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
                                               Paragraph)
@@ -35,7 +37,8 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   HIGHLIGHT_COLOR,
                                                   TABLE_LINE,
                                                   COL_PADDING,
-                                                  SOFT_LINE_COLOR)
+                                                  SOFT_LINE_COLOR,
+                                                  STYLE_SHEET)
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -612,9 +615,21 @@ class TableColumn:
         self.format_string = format_string
         self.format_func = format_func
         self.truncate = truncate
-        self.align = align
+        self._style = ParagraphStyle("Col", parent=STYLE_SHEET["TableCell"],
+                                     alignment=self._translate_alignment(align))
         self.expand = expand
         self.virtual = virtual
+
+    def _translate_alignment(self, align):
+        if align == LEFT:
+            return TA_LEFT
+        elif align == RIGHT:
+            return TA_RIGHT
+        elif align == CENTER:
+            return TA_CENTER
+        else:
+            raise ValueError("Invalid alignment specifed for "
+                             "column %r: %r" % (self, align))
 
     def get_string_data(self, value):
         """  Returns the column value. The value can be returned through
@@ -625,7 +640,7 @@ class TableColumn:
             value = self.format_string % value
         if not isinstance(value, basestring):
             value = str(value)
-        return Paragraph(value, style="TableCell", ellipsize=self.truncate)
+        return Paragraph(value, style=self._style, ellipsize=self.truncate)
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
@@ -633,8 +648,6 @@ class TableColumn:
     def update_style(self, style, idx, has_summary_row=False,
                      table_line=TABLE_LINE):
         """ Apply the column style. """
-        if self.align:
-            style.add('ALIGN', (idx,0), (idx,-1), self.align)
         if self.virtual:
             style.add('SPAN', (idx-1, 0), (idx, 0))
         else:
@@ -706,9 +719,4 @@ class GroupingTableColumn(ObjectTableColumn):
                                    align=align, width=width,
                                    format_string=format_string,
                                    format_func=format_func, virtual=virtual)
-
-    def update_style(self, style, idx):
-        """ Apply the column style. """
-        if self.align:
-            style.add('ALIGN', (idx,0), (idx,-1), self.align)
 
