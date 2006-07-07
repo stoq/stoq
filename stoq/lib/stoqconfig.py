@@ -31,7 +31,6 @@ import warnings
 import time
 
 import gtk
-import gobject
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.base.gtkadds import register_iconsets
@@ -44,7 +43,6 @@ from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
 
 _ = gettext.gettext
-SPLASH_TIMEOUT = 4000
 
 
 class AppConfig:
@@ -202,6 +200,7 @@ class AppConfig:
                 username, password, appname = ret
 
             if not dialog:
+                hide_splash()
                 dialog = StoqLoginDialog(_("Access Control"),
                                          choose_applications)
             if not ret or choose_applications:
@@ -301,9 +300,9 @@ class AppConfig:
             warning(msg)
         raise SystemExit
 
-#
-# Splash screen code
-#
+    #
+    # Splash screen code
+    #
 
 def show_splash(splash_path):
     msg = "The stoq directory %s doesn't exists." % splash_path
@@ -311,22 +310,18 @@ def show_splash(splash_path):
 
     # Interestingly enough, loading an XPM is slower than a JPG here
     f = os.path.join(splash_path, "splash.jpg")
-
     gtkimage = gtk.Image()
     gtkimage.set_from_file(f)
-
+    gtkimage.show()
     w = gtk.Window()
-    w.set_title('Stoq')
+    w.set_decorated(False)
     w.add(gtkimage)
     w.set_position(gtk.WIN_POS_CENTER)
-    w.show_all()
-
+    w.show_now()
     time.sleep(0.01)
     while gtk.events_pending():
         time.sleep(0.01)
         gtk.main_iteration()
-    gobject.timeout_add(SPLASH_TIMEOUT, hide_splash)
-
     global splash_win
     splash_win = w
 
@@ -334,7 +329,8 @@ def show_splash(splash_path):
 def hide_splash(*args):
     global splash_win
     if splash_win:
-        splash_win.hide()
+        splash_win.destroy()
+        splash_win = None
 
 splash_win = None
 
