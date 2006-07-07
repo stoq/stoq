@@ -24,7 +24,6 @@
 ##
 """ Stoqlib Reporting tables implementation.  """
 
-from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.platypus import TableStyle, Table as RTable
 
 from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
@@ -37,8 +36,6 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   TABLE_LINE,
                                                   COL_PADDING,
                                                   SOFT_LINE_COLOR,
-                                                  DEFAULT_FONTNAME,
-                                                  DEFAULT_FONTSIZE,
                                                   STYLE_SHEET)
 
 # Highlight rules:
@@ -618,23 +615,6 @@ class TableColumn:
         self.align = align
         self.expand = expand
         self.virtual = virtual
-
-    def truncate_string(self, data):
-        if not isinstance(data, basestring):
-            data = str(data)
-        if not self.truncate or not len(data):
-            return data
-        if self.truncate and not self.width:
-            msg = '%s can\'t truncate without a fixed width.' % self
-            raise AssertionError, msg
-        # XXX This piece of code is *ugly*, but works pretty well with
-        # default font and padding.
-        string_width = stringWidth(data, DEFAULT_FONTNAME,
-                                   DEFAULT_FONTSIZE) or self.width
-        # We remove four extra chars to keep the cell padding
-        max = int(len(data) / (string_width / self.width)) - 4
-        data = '\n'.join([l[:max] for l in data.split('\n')])
-        return data
 
     def get_string_data(self, value):
         """  Returns the column value. The value can be returned through
