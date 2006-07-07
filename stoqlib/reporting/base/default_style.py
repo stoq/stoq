@@ -119,13 +119,7 @@ DEFAULT_MARGIN = 5
 
 SIGNATURE_FONT = ('Vera', 8)
 
-DEFAULT_FONTNAME = 'Vera'
-DEFAULT_FONTSIZE = 10
-
 default_table_cmds = (
-    ('FONTNAME', (0,0), (-1,-1), DEFAULT_FONTNAME),
-    ('FONTSIZE', (0,0), (-1,-1), DEFAULT_FONTSIZE),
-    ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
     ('LEADING', (0,0), (-1,-1), 10),
     ('LEFTPADDING', (0,0), (-1,-1), 6),
     ('RIGHTPADDING', (0,0), (-1,-1), 6),
