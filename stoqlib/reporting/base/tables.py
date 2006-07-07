@@ -88,6 +88,13 @@ class Table(RTable):
 class AbstractTableBuilder:
     """ Abstract class for table creation """
     def __init__(self, data, style=None, extra_row=None):
+        """
+        @param data:   The table rows.
+        @type:         list
+
+        @param style:  The table style.
+        @type:         TableStyle
+        """
         self.style = TableStyle(parent=style)
         self.data = data
         self.extra_rows = []
@@ -119,16 +126,6 @@ class AbstractTableBuilder:
 
 class DataTableBuilder(AbstractTableBuilder):
     """ Data table builder """
-
-    def __init__(self, data, style=None):
-        """
-        @param data:   The table rows.
-        @type:         list
-
-        @param style:  The table style.
-        @type:         TableStyle
-        """
-        AbstractTableBuilder.__init__(self, data, style)
 
     #
     # AbstractTableBuilder Hooks
