@@ -35,8 +35,7 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   HIGHLIGHT_COLOR,
                                                   TABLE_LINE,
                                                   COL_PADDING,
-                                                  SOFT_LINE_COLOR,
-                                                  STYLE_SHEET)
+                                                  SOFT_LINE_COLOR)
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -107,7 +106,7 @@ class AbstractTableBuilder:
 
     def add_row(self, row_data):
         """ Just add an extra row to the table """
-        self.extra_rows.append([Paragraph(str(d), STYLE_SHEET["Normal"])
+        self.extra_rows.append([Paragraph(str(d), style="TableCell")
                                     for d in row_data])
 
     #
@@ -626,8 +625,7 @@ class TableColumn:
             value = self.format_string % value
         if not isinstance(value, basestring):
             value = str(value)
-        return Paragraph(value, style=STYLE_SHEET["Normal"],
-                         ellipsize=True)
+        return Paragraph(value, style="TableCell", ellipsize=self.truncate)
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
