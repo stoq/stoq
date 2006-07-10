@@ -265,7 +265,7 @@ class Paragraph(RParagraph):
             style = STYLE_SHEET["Raw"]
         if isinstance(style, basestring):
             style = STYLE_SHEET[style]
-        style = ParagraphStyle("ParStyle", parent=style, alignment=align)
+        style = ParagraphStyle("", parent=style, alignment=align)
         self._ellipsize = ellipsize
         # [total_width, [frag0, frag1, ...fragN]]
         self._first_line_frags = []
