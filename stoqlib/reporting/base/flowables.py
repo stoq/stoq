@@ -27,6 +27,8 @@
 """
 
 from reportlab.lib.units import mm
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT
 from reportlab.platypus import Flowable, ActionFlowable
 from reportlab.platypus.paragraph import Paragraph as RParagraph
 from reportlab.pdfbase.pdfmetrics import stringWidth
@@ -240,7 +242,7 @@ class Signature(Flowable):
 
 class Paragraph(RParagraph):
     def __init__(self, text, style=None, ellipsize=True, bulletText=None,
-                 frags=None, caseSensitive=1):
+                 frags=None, caseSensitive=1, align=TA_LEFT):
         """
         @param text:   The paragraph text. You can use the same features
                        available on reportlab's Paragraph.
@@ -263,6 +265,7 @@ class Paragraph(RParagraph):
             style = STYLE_SHEET["Raw"]
         if isinstance(style, basestring):
             style = STYLE_SHEET[style]
+        style = ParagraphStyle("ParStyle", parent=style, alignment=align)
         self._ellipsize = ellipsize
         # [total_width, [frag0, frag1, ...fragN]]
         self._first_line_frags = []
