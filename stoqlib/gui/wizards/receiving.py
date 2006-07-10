@@ -46,6 +46,7 @@ from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.product import Product
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
+from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.interfaces import ISellable
 
 _ = stoqlib_gettext
@@ -113,9 +114,13 @@ class ReceivingOrderProductStep(AbstractProductStep):
     #
 
     def setup_product_entry(self):
-        items = self.model.purchase.get_pending_items()
-        self.product.prefill([(item.sellable.get_description(), item.sellable)
-                                  for item in items])
+        purchase = self.model.purchase
+        if purchase:
+            sellables = [i.sellable for i in purchase.get_pending_items()]
+        else:
+            sellables = AbstractSellable.get_unblocked_sellables(self.conn)
+        self.product.prefill([(sellable.get_description(), sellable)
+                                 for sellable in sellables])
 
     #
     # WizardStep hooks
@@ -151,7 +156,6 @@ class PurchaseSelectionStep(WizardEditorStep):
 
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
-        self._update_view()
 
     def _refresh_next(self, validation_value):
         if sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
@@ -190,12 +194,15 @@ class PurchaseSelectionStep(WizardEditorStep):
     def _update_view(self):
         has_selection = self.orders.get_selected() is not None
         self.details_button.set_sensitive(has_selection)
+        if not sysparam(self.conn).RECEIVE_PRODUCTS_WITHOUT_ORDER:
+            self.wizard.refresh_next(has_selection)
 
     #
     # WizardStep hooks
     #
 
     def post_init(self):
+        self._update_view()
         self.register_validate_function(self._refresh_next)
         self.force_validation()
 
