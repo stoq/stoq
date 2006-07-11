@@ -307,8 +307,7 @@ class BaseReportTemplate(BaseDocTemplate):
     def add_report_table(self, data, header=None, style=TABLE_STYLE,
                          margins=DEFAULT_MARGIN, align=flowables.CENTER,
                          extra_row=None, table_line=TABLE_LINE,
-                         highlight=tables.HIGHLIGHT_ODD, use_paragraph=True,
-                         *args, **kwargs):
+                         highlight=tables.HIGHLIGHT_ODD, *args, **kwargs):
         """ Inserts a report table.
 
         @param data:   A list of lists, where each nested list represents a
@@ -341,19 +340,8 @@ class BaseReportTemplate(BaseDocTemplate):
         @param highlight: Sets the table highlight type.
         @type:         One of HIGHLIGHT_ODD, HIGHLIGHT_NEVER or HIGHLIGHT_ODD
                        constants defined on stoqlib reporting tables module.
-
-        @param use_paragraph: Define if the columns must be put inside
-                       paragraphs (use this option if you want lines being
-                       splited when its length is greater than the column
-                       width).
-        @type:         bool
         """
         self.add_blank_space(margins)
-
-        if use_paragraph:
-            par_style = STYLE_SHEET['Normal']
-            data = [[Paragraph(col, par_style) for col in line]
-                        for line in data]
         table_builder = tables.ReportTableBuilder(data, style, header,
                                                   table_line,
                                                   extra_row=extra_row)
@@ -361,7 +349,7 @@ class BaseReportTemplate(BaseDocTemplate):
         table_builder.set_highlight(highlight)
         self.add(table_builder.create_table(*args, **kwargs))
         self.add_blank_space(margins)
-    
+
     def add_column_table(self, data, columns, style=TABLE_STYLE,
                          margins=DEFAULT_MARGIN, align=flowables.CENTER,
                          extra_row=None, table_line=TABLE_LINE, do_header=True,
