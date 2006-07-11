@@ -256,32 +256,8 @@ class ColumnTableBuilder(ReportTableBuilder):
         elif summary_row:
             extra_row = summary_row
         self.has_summary_row = summary_row is not None
-        if width:
-            self._expand_cols(columns, width)
         ReportTableBuilder.__init__(self, self.build_data(data), style,
                                     header, table_line, extra_row)
-
-    def _expand_cols(self, cols, table_width):
-        """ Based on the table width, expand the columns marked off with the
-        expand property.
-        """
-        cols_to_expand = [col for col in cols if col.expand]
-        if not cols_to_expand:
-            return
-        cols_width = [float(col.width) for col in cols]
-        if None in cols_width:
-            col = cols[cols_width.index(None)]
-            raise ValueError("You can't use auto-sized (%r) and expandable "
-                             "columns on the same table (%r)" % (col, self))
-        cols_total_width = sum(cols_width, 0.0)
-        if cols_total_width > table_width:
-            raise ValueError("Columns width sum (%.2f) can't exced table "
-                             "width (%.2f)" % (cols_total_width,
-                                               table_width))
-        extra_width = table_width - cols_total_width - COL_PADDING
-        expand_val = float(extra_width) / len(cols_to_expand)
-        for col in cols_to_expand:
-            col.width += expand_val
 
     def create_table(self, *args, **kwargs):
         """ Override ReportTableBuilder create_table method to allow specify
