@@ -26,7 +26,6 @@
 
 import gtk
 from reportlab.platypus import TableStyle, LongTable as RTable
-from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.lib import colors
 
@@ -39,8 +38,7 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   HIGHLIGHT_COLOR,
                                                   TABLE_LINE,
                                                   COL_PADDING,
-                                                  SOFT_LINE_COLOR,
-                                                  STYLE_SHEET)
+                                                  SOFT_LINE_COLOR)
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -324,7 +322,8 @@ class ColumnTableBuilder(ReportTableBuilder):
             if col.name is None:
                 raise ValueError("Column name can not be None for "
                                  "ColumnTableBuilder instance")
-            headers.append(col.name)
+            headers.append(Paragraph(col.name, style="TableHeader",
+                                     align=col.get_translated_alignment()))
         return headers
 
     #
@@ -667,21 +666,20 @@ class TableColumn:
         self.format_string = format_string
         self.format_func = format_func
         self.truncate = truncate
-        self._style = ParagraphStyle("Col", parent=STYLE_SHEET["TableCell"],
-                                     alignment=self._translate_alignment(align))
+        self._align = align
         self.expand = expand
         self.virtual = virtual
 
-    def _translate_alignment(self, align):
-        if align == LEFT:
+    def get_translated_alignment(self):
+        if self._align == LEFT:
             return TA_LEFT
-        elif align == RIGHT:
+        elif self._align == RIGHT:
             return TA_RIGHT
-        elif align == CENTER:
+        elif self._align == CENTER:
             return TA_CENTER
         else:
-            raise ValueError("Invalid alignment specifed for "
-                             "column %r: %r" % (self, align))
+            raise ValueError("Invalid alignment specifed for column %r: %r"
+                             % (self, self._align))
 
     def get_string_data(self, value):
         """  Returns the column value. The value can be returned through
@@ -692,7 +690,8 @@ class TableColumn:
             value = self.format_string % value
         if not isinstance(value, basestring):
             value = str(value)
-        return Paragraph(value, style=self._style, ellipsize=self.truncate)
+        return Paragraph(value, style="TableCell", ellipsize=self.truncate,
+                         align=self.get_translated_alignment())
 
     def __repr__(self):
         return '<%s at 0x%x>' % (self.__class__.__name__, id(self))
