@@ -215,7 +215,7 @@ class ColumnTableBuilder(ReportTableBuilder):
     # Note that extra_row needs to be formatted according to the column
     # specification provided.
     def __init__(self, data, columns, style=None, progress_handler=None,
-                 table_line=TABLE_LINE, do_header=1, extra_row=None,
+                 table_line=TABLE_LINE, do_header=True, extra_row=None,
                  summary_row=None, width=None):
         """
         @param data:   A list of lists, where each nested list represents a
