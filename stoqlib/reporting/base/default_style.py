@@ -103,6 +103,11 @@ STYLE_SHEET.add(ParagraphStyle(
     leftIndent=2,
     rightIndent=2,))
 
+STYLE_SHEET.add(ParagraphStyle(
+    "TableHeader",
+    fontName="Vera-B",
+    parent=STYLE_SHEET["TableCell"],))
+
 # This is a total padding preview used to calculate the expanded width for the
 # columns:
 COL_PADDING = 4

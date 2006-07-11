@@ -24,9 +24,11 @@
 ##
 """ Stoqlib Reporting tables implementation.  """
 
-from reportlab.platypus import TableStyle, Table as RTable
+import gtk
+from reportlab.platypus import TableStyle, LongTable as RTable
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
+from reportlab.lib import colors
 
 from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
                                               Paragraph)
@@ -51,11 +53,12 @@ class Table(RTable):
     def __init__(self, data, colWidths=None, rowHeights=None, style=None,
                  repeatRows=0, repeatCols=0, splitByRow=True, ident=None,
                  emptyTableAction=None, hAlign=None, vAlign=None,
-                 align=CENTER):
+                 width=None, align=CENTER):
         """ This class extend Reportlab table supplying extra checks on its
         methods, what is an extra utility to the developer.
         """
         hAlign = hAlign or align
+        self._width = width
         RTable.__init__(self, data, colWidths, rowHeights, style,
                         repeatRows, repeatCols, splitByRow,
                         emptyTableAction, ident, vAlign, hAlign)
@@ -66,14 +69,14 @@ class Table(RTable):
         """
         # If Reportlab doesn't try to calculate the table width before drawning
         # it out of the sheet, we do it for Reportlab.
-        total_width = sum([w or 0 for w in self._colWidths])
+        total_width = sum([w or 0 for w in self._colWidths if w != "*"])
         if total_width > avail_width:
             # We don't use %r on the error message because reportlab dumps all
             # table data instead of the representation. %s the same.
             msg = 'Width of table with columns %s exceeded canvas available ' \
                   'width in %.2f points.'
             raise RuntimeError, msg % (self._colWidths, total_width - avail_width)
-        return RTable.wrap(self, avail_width, avail_height)
+        return RTable.wrap(self, self._width or avail_width, avail_height)
 
     def identity(self):
         return self.__repr__()
@@ -430,6 +433,66 @@ class ObjectTableBuilder(ColumnTableBuilder):
             for col in cols:
                 expand_width = extra_width * col.expand_factor / total_expand
                 col.width += expand_width
+
+class NewObjectTableBuilder(AbstractTableBuilder):
+    """ A new implementation of ObjectTableBuilder, which accepts Kiwi's
+    ObjectList columns. """
+
+    alignment_translate_dict = {gtk.JUSTIFY_CENTER: TA_CENTER,
+                                gtk.JUSTIFY_LEFT: TA_LEFT,
+                                gtk.JUSTIFY_RIGHT: TA_RIGHT,}
+
+    def __init__(self, objs, cols, width=None, highlight=HIGHLIGHT_ALWAYS):
+        self._columns, self._col_widths = \
+                       zip(*[(col, col.width or "*")
+                                 for col in cols if col.visible])
+        self._header = self._get_header()
+        self._highlight = highlight
+        self._width = width
+        AbstractTableBuilder.__init__(self, objs)
+
+    def _translate_alignment(self, col):
+        if not col.justify in NewObjectTableBuilder.alignment_translate_dict:
+            raise TypeError("Invalid alignment for column %r, got %r" %
+                            (col, col.justify))
+        return NewObjectTableBuilder.alignment_translate_dict[col.justify]
+
+    def _get_header(self):
+        titles = [col.title for col in self._columns]
+        if None not in titles:
+            return [Paragraph(title, style="TableHeader",
+                              align=self._translate_alignment(col))
+                      for title, col in zip(titles, self._columns)]
+        return None
+
+    def update_style(self):
+        self.style.add("GRID", (0, 0), (-1, -1), 1, colors.black)
+        if self._highlight != HIGHLIGHT_NEVER:
+            if self._header:
+                start_idx = 1
+            else:
+                start_idx = 0
+            for i in range(start_idx, len(self.data), 2):
+                self.style.add("BACKGROUND", (0, i), (-1, i), HIGHLIGHT_COLOR)
+
+    def create_table(self, width=None):
+        if self._header:
+            repeat_rows = 1
+        else:
+            repeat_rows = 0
+        return AbstractTableBuilder.create_table(self, width=width,
+                                                 colWidths=self._col_widths,
+                                                 repeatRows=repeat_rows)
+
+    def get_data(self):
+        style = "TableCell"
+        data = [[Paragraph(col.as_string(col.get_attribute(row, col.attribute)),
+                           style=style, align=self._translate_alignment(col))
+                     for col in self._columns]
+                for row in self.data]
+        if self._header:
+            data.insert(0, self._header)
+        return data
 
 class GroupingTableBuilder(AbstractTableBuilder):
     def __init__(self, objs, column_groups, column_widths, style=None,
