@@ -13,3 +13,17 @@ install Stoq in another directory, type the following:
   python setup.py install --prefix DIRECTORY
 
 Where DIRECTORY is the directory you want to install it to.
+
+Building from SVN
+=================
+
+This requires PyGTK, PySerial and pyPgSQL installed and a working
+postgresql database.
+
+Download http://www.stoq.com.br/stoq-setup-environ.sh
+chmod +x stoq-setup-environ.sh
+./stoq-setup-environ.sh
+Copy the environment variables
+cd stoq/stoq
+bin/stoq
+
