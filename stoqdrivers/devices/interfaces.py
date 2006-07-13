@@ -329,8 +329,7 @@ class IChequePrinter(IDevice):
         """
 
 class IScaleInfo(Interface):
-    """ This interface list the data that read by the scale
-    """
+    """ This interface list the data read by the scale """
     weight = Attribute("The weight read")
     price_per_kg = Attribute("The KG read")
     total_price = Attribute("The total price. It is equivalent to "
