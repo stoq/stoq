@@ -125,11 +125,3 @@ class BaseDevice(Logger):
 
     def get_port(self):
         return self._driver.get_port()
-
-    def get_driver(self):
-        """ Get the internal driver, this is normally not needed to be able
-        to print or use the driver.
-
-        @returns: the driver
-        """
-        return self._driver
