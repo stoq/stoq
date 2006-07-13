@@ -89,7 +89,6 @@ class GiftCertificate(Domain):
     certificate is a paper which will be used in the future as a payment
     method in a certain sale.
     """
-    notes = UnicodeCol(default=None)
 
 #
 # Adapters

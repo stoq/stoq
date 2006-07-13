@@ -50,8 +50,6 @@ _ = stoqlib_gettext
 class Service(Domain):
     """Class responsible to store basic service informations."""
 
-    notes = UnicodeCol(default='')
-
 
 class ServiceSellableItem(AbstractSellableItem):
     """A service implementation as a sellable item."""
