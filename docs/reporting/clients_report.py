@@ -22,11 +22,11 @@ class ClientsReport(ReportTemplate):
 
     def get_cols(self):
         cols = [TC("Id", width=35),
-                TC("Name", width=170, truncate=1),
-                TC("District", width=80, truncate=1),
-                TC("City", width=80, truncate=1),
-                TC("State", width=40),
-                TC("Birth Date", width=70)]
+                TC("Name", expand=True),
+                TC("District", width=80),
+                TC("City", width=80),
+                TC("State", width=50),
+                TC("Birth Date", width=85)]
         return cols
 
     def get_rows(self):
@@ -46,5 +46,6 @@ class ClientsReport(ReportTemplate):
         clients.sort()
         return clients
 
-report_filename = build_report(ClientsReport)
-print_preview(report_filename)
+if __name__ == "__main__":
+    report_filename = build_report(ClientsReport)
+    print_preview(report_filename)
