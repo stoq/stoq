@@ -70,6 +70,10 @@ class TillOpeningEditor(BaseEditor):
             self.model.create_credit(initial_cash, reason)
         return self.model
 
+    def on_initial_cash_amount__validate(self, entry, data):
+        if data < currency(0):
+            return ValidationError(
+                _("You cannot open the till with a negative amount."))
 
 class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
