@@ -154,7 +154,6 @@ class SellableEditor(BaseEditor):
     model_type = None
 
     gladefile = 'SellableEditor'
-    product_widgets = ('notes',)
     sellable_unit_widgets = ("unit_combo",
                              "unit_entry")
     barcode_widgets = 'barcode',
@@ -162,8 +161,9 @@ class SellableEditor(BaseEditor):
                         'description',
                         'category_combo',
                         'cost',
-                        'price')
-    proxy_widgets = (product_widgets + sellable_unit_widgets +
+                        'price',
+                        'notes')
+    proxy_widgets = (sellable_unit_widgets +
                      sellable_widgets + barcode_widgets)
 
     storable_widgets = ('stock_total_lbl',)
@@ -175,7 +175,6 @@ class SellableEditor(BaseEditor):
                                             "weighing"))
         BaseEditor.__init__(self, conn, model)
         self._original_barcode = self._sellable.barcode
-        self.notes.set_accepts_tab(False)
         self.setup_widgets()
 
     def set_widget_formats(self):
@@ -255,8 +254,6 @@ class SellableEditor(BaseEditor):
     def setup_proxies(self):
         self.set_widget_formats()
         self.setup_combos()
-        self.main_proxy = self.add_proxy(self.model,
-                                         SellableEditor.product_widgets)
         self._sellable = ISellable(self.model, connection=self.conn)
 
         barcode = self._sellable.barcode

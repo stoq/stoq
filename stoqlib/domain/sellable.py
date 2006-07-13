@@ -196,12 +196,13 @@ class AbstractSellable(InheritableModelAdapter):
                 STATUS_BLOCKED:     _(u"Blocked")}
 
     code = AutoIncCol('stoqlib_sellable_code_seq')
-    barcode = UnicodeCol(default="")
+    barcode = UnicodeCol(default='')
     # This default status is used when a new sellable is created,
     # so it must be *always* SOLD (that means no stock for it).
     status = IntCol(default=STATUS_SOLD)
     markup = DecimalCol(default=0)
     cost = PriceCol(default=0)
+    notes = UnicodeCol(default='')
     unit = ForeignKey("SellableUnit", default=None)
     base_sellable_info = ForeignKey('BaseSellableInfo')
     on_sale_info = ForeignKey('OnSaleInfo')

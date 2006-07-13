@@ -94,7 +94,6 @@ class ProductSupplierInfo(Domain):
 class Product(Domain):
     """Class responsible to store basic products informations."""
 
-    notes = UnicodeCol(default='')
     suppliers = MultipleJoin('ProductSupplierInfo')
 
     #
