@@ -5,9 +5,9 @@
         <property name="default_height">250</property>
         <property name="default_width">440</property>
         <child>
-            <widget class="GtkTable" id="table2">
+            <widget class="GtkTable" id="table1">
                 <property name="column_spacing">6</property>
-                <property name="n_columns">4</property>
+                <property name="n_columns">5</property>
                 <property name="n_rows">9</property>
                 <property name="row_spacing">6</property>
                 <property name="visible">True</property>
@@ -17,9 +17,6 @@
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
-                    <packing>
-                        <property name="y_options">fill</property>
-                    </packing>
                 </child>
                 <child>
                     <widget class="GtkLabel" id="label6">
@@ -30,7 +27,6 @@
                     <packing>
                         <property name="bottom_attach">2</property>
                         <property name="top_attach">1</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -42,7 +38,6 @@
                     <packing>
                         <property name="bottom_attach">3</property>
                         <property name="top_attach">2</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -56,8 +51,6 @@
                         <property name="bottom_attach">4</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">3</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -69,7 +62,6 @@
                     <packing>
                         <property name="bottom_attach">5</property>
                         <property name="top_attach">4</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -81,16 +73,6 @@
                     <packing>
                         <property name="bottom_attach">6</property>
                         <property name="top_attach">5</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
                     </packing>
                 </child>
                 <child>
@@ -98,7 +80,6 @@
                     <packing>
                         <property name="top_attach">6</property>
                         <property name="bottom_attach">7</property>
-                        <property name="y_options">&amp;lt;flags GTK_FILL of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
@@ -118,7 +99,6 @@
                     <packing>
                         <property name="bottom_attach">9</property>
                         <property name="top_attach">8</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -131,8 +111,6 @@
                     <packing>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -148,8 +126,6 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -163,10 +139,8 @@
                     <packing>
                         <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
-                        <property name="right_attach">4</property>
+                        <property name="right_attach">5</property>
                         <property name="top_attach">2</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -206,8 +180,6 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">4</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -252,8 +224,15 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">5</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
                     </packing>
                 </child>
                 <child>
@@ -267,7 +246,7 @@
                 </child>
                 <child>
                     <widget class="GtkScrolledWindow" id="scrolledwindow1">
-                        <property name="hscrollbar_policy">never</property>
+                        <property name="hscrollbar_policy">automatic</property>
                         <property name="is_focus">True</property>
                         <property name="shadow_type">in</property>
                         <property name="visible">True</property>
@@ -275,6 +254,7 @@
                         <child>
                             <widget class="ProxyTextView" id="notes">
                                 <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
                                 <property name="model_attribute">notes</property>
                                 <property name="visible">True</property>
                             </widget>
@@ -285,7 +265,6 @@
                         <property name="left_attach">1</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">8</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -293,7 +272,6 @@
                     <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
@@ -307,8 +285,6 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
-                        <property name="x_options">fill</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -323,7 +299,6 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">4</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -333,8 +308,8 @@
                         <child>
                             <widget class="GtkAlignment" id="alignment1">
                                 <property name="visible">True</property>
-                                <property name="xalign">0.00999999977648</property>
-                                <property name="xscale">0.00999999977648</property>
+                                <property name="xalign">0.0099999998</property>
+                                <property name="xscale">0.0099999998</property>
                                 <property name="yalign">0.0</property>
                                 <property name="yscale">0.0</property>
                                 <child>
@@ -394,7 +369,21 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">5</property>
-                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyLabel" id="requires_weighing_label">
+                        <property name="is_focus">True</property>
+                        <property name="no_show_all">True</property>
+                        <property name="single_line_mode">True</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">7</property>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">4</property>
+                        <property name="top_attach">6</property>
                     </packing>
                 </child>
                 <child>
@@ -416,9 +405,8 @@
                     <packing>
                         <property name="bottom_attach">8</property>
                         <property name="left_attach">2</property>
-                        <property name="right_attach">4</property>
+                        <property name="right_attach">5</property>
                         <property name="top_attach">7</property>
-                        <property name="y_options">fill</property>
                     </packing>
                 </child>
                 <child>
@@ -426,7 +414,6 @@
                     <packing>
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
-                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
                     </packing>
                 </child>
                 <child>
@@ -440,22 +427,6 @@
                         <property name="left_attach">3</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">1</property>
-                        <property name="y_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="ProxyLabel" id="requires_weighing_label">
-                        <property name="is_focus">True</property>
-                        <property name="no_show_all">True</property>
-                        <property name="single_line_mode">True</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="bottom_attach">7</property>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
-                        <property name="top_attach">6</property>
                     </packing>
                 </child>
             </widget>
