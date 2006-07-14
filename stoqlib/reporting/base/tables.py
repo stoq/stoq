@@ -117,9 +117,11 @@ class AbstractTableBuilder:
     #
 
     def get_data(self):
-        """ Returns all the table lines plus the extra row, if any.
-        """
-        return self.data + self.extra_rows
+        """ Returns all the table lines plus the extra row, if any. """
+        data = self.data + self.extra_rows
+        return [[Paragraph(cell, style="TableCell")
+                     for cell in row]
+                for row in data]
 
     def update_style(self):
         """ Implement this method on subclass to define your own table styles.
@@ -147,10 +149,6 @@ class DataTableBuilder(AbstractTableBuilder):
                     style.add('LINEBEFORE', (i,0), (i,-1), 0.5, SOFT_LINE_COLOR)
                     style.add('LEFTPADDING', (i,0), (i,-1), 10)
                     style.add('RIGHTPADDING', (i-1,0), (i-1,-1), 10)
-
-    def get_data(self):
-        """ Returns all the table rows. """
-        return self.data
 
 class ReportTableBuilder(AbstractTableBuilder):
     """ Report table builder """
