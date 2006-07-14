@@ -110,7 +110,7 @@ class POSApp(AppWindow):
 
     def _setup_proxies(self):
         self.order_proxy = self.add_proxy(widgets=POSApp.order_widgets)
-        model = Settable(quantity=Decimal('1.0'), price=currency(0))
+        model = Settable(quantity=Decimal(1), price=currency(0))
         self.sellableitem_proxy = self.add_proxy(model, ('quantity',))
 
     def _setup_widgets(self):
@@ -272,7 +272,7 @@ class POSApp(AppWindow):
         self.barcode.grab_focus()
 
     def _reset_quantity_proxy(self):
-        self.sellableitem_proxy.model.quantity = Decimal('1.0')
+        self.sellableitem_proxy.model.quantity = Decimal(1)
         self.sellableitem_proxy.update('quantity')
         self.sellableitem_proxy.model.price = None
 
@@ -523,111 +523,110 @@ class POSApp(AppWindow):
     # Actions
     #
 
-    def on_edit_current_client_action_clicked(self, *args):
+    def on_EditClient__activate(self, action):
         if not (self.sale and self.sale.client):
             raise ValueError('You must have a client defined at this point')
         if run_person_role_dialog(ClientEditor, self, self.conn,
                                   self.sale.client):
             self.conn.commit()
 
-    def on_client_details_action_clicked(self, *args):
+    def on_ClientDetails__activate(self, action):
         if not (self.sale and self.sale.client):
             raise ValueError("You should have a client defined at this point")
         self.run_dialog(ClientDetailsDialog, self.conn, self.sale.client)
 
-    def _on_cancel_order_action_clicked(self, *args):
+    def on_CancelOrder__activate(self, action):
         self._cancel_order()
 
-    def _on_resetorder_action__clicked(self, *args):
+    def on_ResetOrder__activate(self, action):
         self._new_order()
 
-    def _on_clients_action__clicked(self, *args):
+    def on_Clients__activate(self, action):
         self._run_search_dialog(ClientSearch, hide_footer=True)
 
-    def _on_sales_action__clicked(self, *args):
+    def on_Sales__activate(self, action):
         self._run_search_dialog(SaleSearch)
 
-    def _on_products_action__clicked(self, *args):
+    def on_ProductSearch__activate(self, action):
         self._run_search_dialog(ProductSearch, hide_footer=True,
                                 hide_toolbar=True, hide_cost_column=True)
 
-    def _on_services_action__clicked(self, *args):
+    def on_ServiceSearch__activate(self, action):
         self._run_search_dialog(ServiceSearch, hide_toolbar=True,
                                 hide_cost_column=True)
 
-    def _on_giftcertificates_action__clicked(self, *args):
+    def on_GiftCertificateSearch__activate(self, action):
         self._run_search_dialog(GiftCertificateSearch, hide_footer=True,
                                 hide_toolbar=True)
 
-    def _on_print_order_action__clicked(self, *args):
+    def on_PrintOrder__activate(self, action):
         self.print_report(SaleOrderReport, self.sale)
 
-    def _on_order_checkout_action__clicked(self, *args):
+    def on_OrderCheckout__activate(self, action):
         self._checkout()
 
-    def _on_new_delivery_action__clicked(self, *args):
+    def on_NewDelivery__activate(self, action):
         self._add_delivery()
 
-    def _on_close_till_action__clicked(self, *args):
+    def on_TillClose__activate(self, action):
         parent = self.get_toplevel()
         if check_emit_reduce_Z(self.conn, parent):
             self.close_till()
 
-    def _on_open_till_action__clicked(self, *args):
+    def on_TillOpen__activate(self, action):
         parent = self.get_toplevel()
         if check_emit_read_X(self.conn, parent):
             self.open_till()
 
     #
-    # Kiwi callbacks
+    # Other callbacks
     #
 
-
-    def on_advanced_search__clicked(self, *args):
+    def on_advanced_search__clicked(self, button):
         self._run_advanced_search()
 
-    def on_add_button__clicked(self, *args):
+    def on_add_button__clicked(self, button):
         self._add_sellable_item()
 
-    def on_barcode__activate(self, *args):
+    def on_barcode__activate(self, entry):
         if not self._has_barcode_str():
             return
         search_str = self.barcode.get_text()
         self._add_sellable_item(search_str)
 
-    def after_barcode__changed(self, *args):
+    def after_barcode__changed(self, editable):
         self._update_add_button()
 
-    def on_quantity__activate(self, *args):
+    def on_quantity__activate(self, entry):
         self._add_sellable_item()
 
-    def on_sellables__selection_changed(self, *args):
+    def on_sellables__selection_changed(self, sellables, selected):
         self._update_widgets()
 
-    def on_remove_item_button__clicked(self, *args):
-        item = self.sellables.get_selected()
+    def on_remove_item_button__clicked(self, button):
+        sellable = self.sellables.get_selected()
         if (not self.param.CONFIRM_SALES_ON_TILL
-            and not self.coupon.remove_item(item)):
+            and not self.coupon.remove_item(sellable)):
             return
-        self._delete_sellable_item(item)
+        self._delete_sellable_item(sellable)
         self._select_first_item()
         self._update_widgets()
 
-    def on_delivery_button__clicked(self, *args):
+    def on_delivery_button__clicked(self, button):
         self._add_delivery()
 
-    def on_checkout_button__clicked(self, *args):
+    def on_checkout_button__clicked(self, button):
         self._checkout()
 
-    def on_new_order_button__clicked(self, *args):
+    def on_new_order_button__clicked(self, button):
         self._new_order()
 
-    def on_edit_item_button__clicked(self, *args):
+    def on_edit_item_button__clicked(self, button):
         item = self.sellables.get_selected()
         if item is None:
             raise StoqlibError("You should have a item selected "
                                "at this point")
         self._edit_sellable_item(item)
 
-    def on_sellables__double_click(self, widget, item):
-        self._edit_sellable_item(item)
+    def on_sellables__double_click(self, sellables, sellable):
+        self._edit_sellable_item(sellable)

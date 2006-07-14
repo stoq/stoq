@@ -16,7 +16,6 @@
                     <widget class="GtkAction" id="CancelOrder">
                         <property name="name">CancelOrder</property>
                         <property name="label" translatable="yes">Cancel Order</property>
-                        <signal handler="_on_cancel_order_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;o</property>
                     </widget>
                 </child>
@@ -41,7 +40,6 @@
                     <widget class="GtkAction" id="ClientDetails">
                         <property name="name">ClientDetails</property>
                         <property name="label" translatable="yes">Current Client Details...</property>
-                        <signal handler="on_client_details_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
                 </child>
@@ -49,7 +47,6 @@
                     <widget class="GtkAction" id="Clients">
                         <property name="name">Clients</property>
                         <property name="label" translatable="yes">Clients...</property>
-                        <signal handler="_on_clients_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
                 </child>
@@ -80,7 +77,6 @@
                     <widget class="GtkAction" id="EditClient">
                         <property name="name">EditClient</property>
                         <property name="label" translatable="yes">Edit Current Client...</property>
-                        <signal handler="on_edit_current_client_action_clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;t</property>
                     </widget>
                 </child>
@@ -101,7 +97,6 @@
                     <widget class="GtkAction" id="GiftCertificateSearch">
                         <property name="name">GiftCertificateSearch</property>
                         <property name="label" translatable="yes">Gift Certificates...</property>
-                        <signal handler="_on_giftcertificates_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;g</property>
                     </widget>
                 </child>
@@ -109,7 +104,6 @@
                     <widget class="GtkAction" id="NewDelivery">
                         <property name="name">NewDelivery</property>
                         <property name="label" translatable="yes">New Delivery...</property>
-                        <signal handler="_on_new_delivery_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;F3</property>
                     </widget>
                 </child>
@@ -124,7 +118,6 @@
                     <widget class="GtkAction" id="OrderCheckout">
                         <property name="name">OrderCheckout</property>
                         <property name="label" translatable="yes">Order Checkout...</property>
-                        <signal handler="_on_order_checkout_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;F4</property>
                     </widget>
                 </child>
@@ -141,14 +134,12 @@
                         <property name="label" translatable="yes">Print Order...</property>
                         <property name="tooltip" translatable="yes">Print the current sale order</property>
                         <property name="stock_id">gtk-print</property>
-                        <signal handler="_on_print_order_action__clicked" name="activate"/>
                     </widget>
                 </child>
                 <child>
                     <widget class="GtkAction" id="ProductSearch">
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
-                        <signal handler="_on_products_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;j</property>
                     </widget>
                 </child>
@@ -166,7 +157,6 @@
                         <property name="name">ResetOrder</property>
                         <property name="label" translatable="yes">_New Order...</property>
                         <property name="tooltip" translatable="yes">Reset the order</property>
-                        <signal handler="_on_resetorder_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;F5</property>
                     </widget>
                 </child>
@@ -174,7 +164,6 @@
                     <widget class="GtkAction" id="Sales">
                         <property name="name">Sales</property>
                         <property name="label" translatable="yes">Sales...</property>
-                        <signal handler="_on_sales_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;l</property>
                     </widget>
                 </child>
@@ -209,7 +198,6 @@
                     <widget class="GtkAction" id="ServiceSearch">
                         <property name="name">ServiceSearch</property>
                         <property name="label" translatable="yes">Services...</property>
-                        <signal handler="_on_services_action__clicked" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;i</property>
                     </widget>
                 </child>
@@ -225,7 +213,6 @@
                     <widget class="GtkAction" id="TillClose">
                         <property name="name">TillClose</property>
                         <property name="label" translatable="yes">Close Till...</property>
-                        <signal handler="_on_close_till_action__clicked" name="activate"/>
                     </widget>
                 </child>
                 <child>
@@ -238,7 +225,6 @@
                     <widget class="GtkAction" id="TillOpen">
                         <property name="name">TillOpen</property>
                         <property name="label" translatable="yes">Open Till...</property>
-                        <signal handler="_on_open_till_action__clicked" name="activate"/>
                     </widget>
                 </child>
                 <child>
