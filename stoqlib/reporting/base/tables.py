@@ -134,21 +134,28 @@ class DataTableBuilder(AbstractTableBuilder):
     # AbstractTableBuilder Hooks
     #
 
+    def get_data(self):
+        result = []
+        for row in self.data:
+            result.append([])
+            for cell_idx, cell in enumerate(row):
+                if not cell_idx % 2:
+                    data = Paragraph(cell, style="TableHeader", align=TA_RIGHT)
+                else:
+                    data = Paragraph(cell, style="TableCell")
+                result[-1].append(data)
+        return result
+
     def update_style(self):
         """ Apply the data table style. """
         style = self.style
         columns = max(map(len, self.data))
         for i in range(columns):
             # Formatting header columns. Last column can not be a header
-            if not i % 2 and i < columns - 1:
-                style.add('FONTNAME', (i,0), (i,-1), TABLE_HEADER_FONT)
-                style.add('FONTSIZE', (i,0), (i,-1), TABLE_HEADER_FONT_SIZE)
-                style.add('ALIGN', (i,0), (i,-1), RIGHT)
-                # First column don't need the separator
-                if i:
-                    style.add('LINEBEFORE', (i,0), (i,-1), 0.5, SOFT_LINE_COLOR)
-                    style.add('LEFTPADDING', (i,0), (i,-1), 10)
-                    style.add('RIGHTPADDING', (i-1,0), (i-1,-1), 10)
+            if i and not i % 2 and i < columns - 1:
+                style.add('LINEBEFORE', (i,0), (i,-1), 0.5, SOFT_LINE_COLOR)
+                style.add('LEFTPADDING', (i,0), (i,-1), 10)
+                style.add('RIGHTPADDING', (i-1,0), (i-1,-1), 10)
 
 class ReportTableBuilder(AbstractTableBuilder):
     """ Report table builder """
