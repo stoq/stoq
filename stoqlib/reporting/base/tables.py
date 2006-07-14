@@ -148,7 +148,6 @@ class DataTableBuilder(AbstractTableBuilder):
 
     def update_style(self):
         """ Apply the data table style. """
-        style = self.style
         columns = max(map(len, self.data))
         for col_idx in range(2, columns - 1, 2):
             self.style.add('LEFTPADDING',
