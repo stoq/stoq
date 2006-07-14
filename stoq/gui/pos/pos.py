@@ -124,7 +124,7 @@ class POSApp(AppWindow):
         self.order_total_label.set_size('xx-large')
         self.order_total_label.set_bold(True)
 
-    def _update_totals(self, *args):
+    def _update_totals(self):
         if self.sale:
             subtotal = self.sale.get_sale_subtotal()
         else:
@@ -434,7 +434,7 @@ class POSApp(AppWindow):
             return
         rollback_and_begin(self.conn)
 
-    def close_till(self, *args):
+    def close_till(self):
         if verify_and_close_till(self, self.conn):
             return
         self.conn.commit()
