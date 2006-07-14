@@ -150,12 +150,20 @@ class DataTableBuilder(AbstractTableBuilder):
         """ Apply the data table style. """
         style = self.style
         columns = max(map(len, self.data))
-        for i in range(columns):
-            # Formatting header columns. Last column can not be a header
-            if i and not i % 2 and i < columns - 1:
-                style.add('LINEBEFORE', (i,0), (i,-1), 0.5, SOFT_LINE_COLOR)
-                style.add('LEFTPADDING', (i,0), (i,-1), 10)
-                style.add('RIGHTPADDING', (i-1,0), (i-1,-1), 10)
+        for col_idx in range(2, columns - 1, 2):
+            self.style.add('LEFTPADDING',
+                           (col_idx,   0),
+                           (col_idx, - 1),
+                           10)
+            self.style.add('RIGHTPADDING',
+                           (col_idx-1,  0),
+                           (col_idx-1, -1),
+                           10)
+            self.style.add('LINEBEFORE',
+                           (col_idx,  0),
+                           (col_idx, -1),
+                           0.5,
+                           SOFT_LINE_COLOR)
 
 class ReportTableBuilder(AbstractTableBuilder):
     """ Report table builder """
