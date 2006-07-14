@@ -1,0 +1,83 @@
+==================
+Listas de Pesquisa
+==================
+
+.. contents:: Conteúdo deste documento
+.. section-numbering::
+
+----------
+Introdução
+----------
+
+A suíte Stoq é desenvolvida buscando alto grau de funcionalidade e
+facilidade de uso. Os aplicativos são desenhados visando agregar
+característcas que tornem o trabalho rápido e eficiente.
+
+Esta seção do manual visa explanar sobre as funcionalidades gerais de
+**Listas de Pesquisa**. Estas estruturas são corriqueiras em todos os
+aplicativos do Stoq, por isso estar familiarizado com seu funcionamento é
+fundamental.
+
+A caratecterítica principal de Listas de Pesquisa é a rapidez com que o
+operador pode efetuar diversas operações, desde que conheça todas as
+funcionalidades existentes. Como exemplo para este documento, iremos
+utilizar a tela inicial do aplicativo Administrativo, exatamente a  Lista de
+Pesquisa que regula os usuários cadastrados no Stoq.
+
+.. image:: ../../images/general/research_list.png
+   :align: center
+
+------------------
+Critérios de Busca
+------------------
+
+Critérios de Busca são as opções disponíveis ao operador para a realização
+de buscas no sistema. Neste exemplo, os critérios de busca são: *Ativo*,
+*Inativo* e *Qualquer*. Como facilidade de uso, assim que uma opção é
+escolhida automaticamente a busca é realizada e os resultados, caso exsitam,
+são retornados para o operador.
+
+Para buscas ainda mais refinadas, é recomendado utilizar os critérios de
+busca associados aos Campos de Pesquisa.
+
+-----------------
+Campo de Pesquisa
+-----------------
+
+Os Campos de Pesquisa permitem ao operador do sistema passar trechos de
+palavras que ele deseja pesquisar. Dessa forma, o trecho informado pode ser
+pesquisado, dentro dos resultados retornados pelos *Critérios de Busca*.
+
+Por exemplo, na tela abaixo além de selecionarmos os usuários do sistema que
+estão na situação *Ativos*, desejamos escolher quais dentre eles possuem o
+trecho *adm*, em seus cadastros.
+
+.. image:: ../../images/general/research_list_details.png
+   :align: center
+
+Observe a diferença entre a imagem inicial deste documento e esta última
+imagem. Esta última busca foi mais específica e pôde retratar melhor o que o
+operador desejava.
+
+---------------
+Botão Pesquisar
+---------------
+
+A pesquisa pode ser feita acionando o botão *Pesquisar* ou através da tecla
+*Enter*. Os resultados serão exibidos abaixo. Caso nenhum texto seja
+informado, a única opção para busca será o *Critério de Busca*.
+
+-------------
+Outros botões
+-------------
+
+Os botões existentes abaixo dos resultados da busca são Assistentes para
+tarefas importantes ligados a funcionalidade do item selecionado ou do
+aplicativo. No exemplo apresentado, existem as opções de: *Adicionar*,
+*Editar* e *Alterar Senha*. Cada uma dessas opções chamará um Assistente
+para ajudar o operador a realizar a ação desejada.
+
+Este é um padrão utilizado pela suíte Stoq, visando facilitar a usabilidade
+do sistema.
+
+

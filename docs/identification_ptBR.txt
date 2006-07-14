@@ -1,0 +1,9 @@
+Identificação
+-------------
+
+Nesta aba, serão informados informações pessoais do novo usuário. Campos
+como *Nome*, *Telefone* e *E-mail* compõem esta tela.
+
+.. image:: ../../images/admin/new_user_identification.png
+   :align: center
+
