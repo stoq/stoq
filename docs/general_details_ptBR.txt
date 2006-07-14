@@ -1,0 +1,10 @@
+Detalhes Gerais
+---------------
+
+São registradas nesta aba informações que caracterizam o empregado na
+empresa, bem como dados pessoais. A *Situação* do empregado na empresa, sua
+*Ocupação* e o campo *Notas* pertencem a esta aba.
+
+.. image:: ../../images/admin/new_user_general_details.png
+   :align: center
+

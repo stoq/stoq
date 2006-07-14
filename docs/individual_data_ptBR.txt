@@ -1,0 +1,9 @@
+Dados de Pessoa Física
+----------------------
+
+Informe os campos de identificação pedidos, para completar o cadastro do
+novo usuário. Os campos mais importantes são *CPF* e *Número do RG*.
+
+.. image:: ../../images/admin/new_user_individual.png
+   :align: center
+

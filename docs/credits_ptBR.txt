@@ -1,0 +1,25 @@
+========
+Créditos
+========
+
+Estas são as pessoas responsáveis pelo desenvolvimento do projeto Stoq.
+
+Autores:
+
+- Evandro Vale Miquelito  <evandro@async.com.br>
+- Christian Reis  <kiko@async.com.br>
+- Henrique Romano  <henrique@async.com.br>
+
+Contribuidores:
+
+- Johan Dahlin  <jdahlin@async.com.br>
+- Daniel Saran R. Da Cunha  <daniel@async.com.br>
+- Gustavo Rahal  <gustavo@async.com.br>
+- Bruno Garcia  <brg@async.com.br>
+- Ariqueli Tejada Fonseca  <aritf@async.com.br>
+- Matthew Thomas  <mpt@myrealbox.com>
+- Grazieno Pellegrino  <grazieno1@yahoo.com.br>
+- Ruda Porto Filgueiras  <rudazz@gmail.com>
+- Ronaldo Maia  <romaia@async.com.br>
+- Lincoln Molica  <lincoln@async.com.br>
+
