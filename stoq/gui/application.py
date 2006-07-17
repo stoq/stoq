@@ -50,9 +50,6 @@ class App(BaseApp):
         self.window_class = window_class
         BaseApp.__init__(self, window_class)
 
-    def shutdown(self, *args):
-        BaseApp.shutdown(self, *args)
-
     def revalidate_user(self, *args):
         self.shutdown()
         self.config.clear_cookie()

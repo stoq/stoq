@@ -31,19 +31,20 @@ import warnings
 import time
 
 import gtk
+from kiwi.log import Logger
+from kiwi.ui.dialogs import warning
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
-from kiwi.ui.dialogs import warning
 
 from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
 
 _ = gettext.gettext
-
+log = Logger('stoq.config')
 
 class AppConfig:
     """AppConfig provides features for:
@@ -56,12 +57,6 @@ class AppConfig:
     _applications = None
     RETRY_NUMBER = 3
     config = get_config()
-
-    def init_log(self):
-        sys.stderr.write("-"*76 + "\n")
-
-    def log(self, s):
-        sys.stderr.write("%s: %s\n" % (log_header(), s))
 
     #
     # Application list accessors
@@ -234,13 +229,10 @@ class AppConfig:
                     dialog.destroy()
                 self.abort_mission(str(e))
             else:
-                self.init_log()
-                # Log startup time
-                self.log("Stoq: initializing application %s" % self.appname)
                 if has_cookie_file:
-                    self.log("Logging in using cookie credentials")
+                    log.info("Logging in using cookie credentials")
                 else:
-                    self.log("Authenticated user %s" % username)
+                    log.info("Authenticated user %s" % username)
                 if dialog:
                     dialog.destroy()
                 return True
