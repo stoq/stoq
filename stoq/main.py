@@ -33,12 +33,14 @@ import os
 from stoqlib.lib.message import error
 from stoqlib.lib.message import ISystemNotifier
 from kiwi.component import provide_utility
+from kiwi.log import Logger
 
 from stoq.lib.applist import get_application_names
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
 
 _ = gettext.gettext
+log = Logger('stoq.main')
 
 def _check_dependencies():
     try:
@@ -68,6 +70,7 @@ def _setup_dialogs():
 
 def _initialize(options):
     _setup_dialogs()
+    log.info('reading configuration')
     config = StoqConfig(filename=options.filename)
 
     if not config.has_installed_config_data():
@@ -82,6 +85,7 @@ def _initialize(options):
               _("Invalid config file settings, got error '%s', "
                 "of type '%s'" % (value, type)))
 
+    log.info('calling setup()')
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
@@ -94,7 +98,9 @@ def _initialize(options):
 
 def _run_app(options, appname):
     from stoq.lib.stoqconfig import AppConfig, show_splash
+    log.info('displaying splash screen')
     show_splash('data/pixmaps')
+    log.info('loading application')
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
@@ -102,13 +108,15 @@ def _run_app(options, appname):
         raise RuntimeError(
             "Application %s must have a app.main() function")
 
+    log.info('running application')
     module.main(appconf)
     import gtk
     gtk.main()
-    appconf.log("Shutting down application")
+    log.info("Shutting down application")
 
 
 def main(args):
+    log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
     options, args = parser.parse_args(args)
 
@@ -124,6 +132,7 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
+    log.info('initializing')
     _check_dependencies()
     _initialize(options)
 
@@ -131,6 +140,8 @@ def main(args):
     from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
                                  create_virtual_printer_for_current_station)
     conn = get_connection()
+
+    log.info('setting up printers')
     if not get_fiscal_printer_settings_by_station(conn,
                                               get_current_station(conn)):
         create_virtual_printer_for_current_station()
