@@ -223,10 +223,9 @@ class POSApp(AppWindow):
         self.TillOpen.set_sensitive(not has_till and self.sale is None)
         self.TillClose.set_sensitive(has_till and self.sale is None)
         has_sellables = len(self.sellables) >= 1
-        widgets = [self.checkout_button, self.remove_item_button,
-                   self.PrintOrder, self.NewDelivery, self.OrderCheckout]
-        for widget in widgets:
-            widget.set_sensitive(has_sellables)
+        self.set_sensitive((self.checkout_button, self.remove_item_button,
+                            self.PrintOrder, self.NewDelivery,
+                            self.OrderCheckout), has_sellables)
         has_client = self.sale is not None and self.sale.client is not None
         self.EditClient.set_sensitive(has_client)
         self.ClientDetails.set_sensitive(has_client)
@@ -358,9 +357,9 @@ class POSApp(AppWindow):
             self.order_proxy.set_model(self.sale)
             self._update_widgets()
             self._update_totals()
-            for widget in (self.search_box, self.list_vbox,
-                           self.footer_hbox, self.CancelOrder):
-                widget.set_sensitive(True)
+            self.set_sensitive((self.search_box, self.footer_hbox,
+                                self.list_vbox, self.CancelOrder),
+                               True)
             self.barcode.grab_focus()
         else:
             rollback_and_begin(self.conn)
