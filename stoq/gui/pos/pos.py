@@ -86,11 +86,10 @@ class POSApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.param = sysparam(self.conn)
-        if self.param.POS_SEPARATE_CASHIER:
-            if not get_current_till_operation(self.conn):
-                error(_(u"You need to open the till before start doing "
-                         "sales."))
-                self.app.shutdown()
+        if (self.param.POS_SEPARATE_CASHIER
+            and not get_current_till_operation(self.conn)):
+            error(_(u"You need to open the till before start doing sales."))
+            self.app.shutdown()
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
