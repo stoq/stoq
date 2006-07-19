@@ -99,8 +99,8 @@ class SellableCategory(Domain):
     implements(IDescribable)
 
     def get_markup(self):
-        return self.category_data.suggested_markup or \
-               self.base_category.category_data.suggested_markup
+        return (self.category_data.suggested_markup or
+                self.base_category.category_data.suggested_markup)
 
     def get_commission(self):
         return self.category_data.get_commission()
