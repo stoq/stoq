@@ -64,20 +64,6 @@ class SellableUnit(Domain):
     description = UnicodeCol()
     index = IntCol()
 
-
-class FancySellable:
-    """A fancy class used by some kiwi entries."""
-    # XXX Probably we could avoid this class with some kiwi improvements
-    # waiting for bug 2365.
-
-    def __init__(self, price=currency(0), quantity=1, unit=None):
-        self.price = price
-        self.quantity = quantity
-        self.unit = unit
-
-    def get_unit_description(self):
-        return self.unit and self.unit.description or u""
-
 class AbstractSellableCategory(Domain):
     description = UnicodeCol()
     suggested_markup = DecimalCol(default=0)
