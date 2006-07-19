@@ -428,7 +428,7 @@ class AbstractSellable(InheritableModelAdapter):
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
         extra_query = IN(cls.q.status, statuses)
         return cls._get_sellables_by_barcode(conn, barcode, extra_query,
-                                          notify_callback)
+                                             notify_callback)
 
     #
     # General methods
