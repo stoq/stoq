@@ -167,7 +167,7 @@ class BaseSellableInfo(Domain):
 
     def get_commission(self):
         if self.commission is None:
-            return 0
+            return currency(0)
         return self.commission
 
     #
