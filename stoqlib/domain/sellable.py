@@ -96,6 +96,8 @@ class SellableCategory(Domain):
     category_data = ForeignKey('AbstractSellableCategory')
     base_category = ForeignKey('BaseSellableCategory')
 
+    implements(IDescribable)
+
     def get_markup(self):
         return self.category_data.suggested_markup or \
                self.base_category.category_data.suggested_markup
