@@ -49,9 +49,17 @@ _ = stoqlib_gettext
 #
 
 class SellableUnit(Domain):
-    """ A class used to represent the sellable unit.  The 'index' column
-    defines if this object is one of our 'primitive units' (unit registered
-    in database initialization time) or a user specified unit.
+    """ A class used to represent the sellable unit.
+
+    - I{description}: The unit description
+    - I{index}:       This column defines if this object represents a custom
+                      product unit (created by the user through the product
+                      editor) or a 'native unit', like 'Km', 'Lt' and 'pc'.
+                      This data is used mainly to interact with stoqdrivers,
+                      since when adding an item in a coupon we need to know
+                      if its unit must be specified as a description (using
+                      CUSTOM_PM constant) or as an index (using UNIT_*). Also,
+                      this is directly related to the DeviceSettings editor.
     """
     description = UnicodeCol()
     index = IntCol()
