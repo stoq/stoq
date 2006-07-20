@@ -36,8 +36,8 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
 from stoqlib.domain.sellable import (BaseSellableCategory,
                                      SellableCategory,
-                                     AbstractSellableCategory,
-                                     BaseSellableInfo, SellableUnit)
+                                     SellableUnit,
+                                     BaseSellableInfo)
 from stoqlib.lib.runtime import new_transaction, print_msg
 
 
@@ -99,24 +99,18 @@ def create_products():
 
         base_cat_desc = base_category_data[index]
         commission, markup = get_commission_and_markup()
-        table = AbstractSellableCategory
-        abstract_data = table(connection=conn, suggested_markup=markup,
-                              salesperson_commission=commission,
-                              description=base_cat_desc)
-
-        base_cat = BaseSellableCategory(connection=conn,
-                                        category_data=abstract_data)
+        base_cat = BaseSellableCategory(suggested_markup=markup,
+                                        salesperson_commission=commission,
+                                        description=base_cat_desc,
+                                        connection=conn)
 
         cat_desc = category_data[index]
         commission, markup = get_commission_and_markup()
-        table = AbstractSellableCategory
-        abstract_data = table(connection=conn, description=cat_desc,
-                              salesperson_commission=commission,
-                              suggested_markup=markup)
-
-        cat = SellableCategory(connection=conn,
+        cat = SellableCategory(description=cat_desc,
+                               salesperson_commission=commission,
+                               suggested_markup=markup,
                                base_category=base_cat,
-                               category_data=abstract_data)
+                               connection=conn)
 
         description = descriptions[index]
         price = random.randrange(*PRICE_RANGE)

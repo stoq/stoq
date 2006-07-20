@@ -62,11 +62,11 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+entry+Entry" id="description">
+                    <widget class="ProxyEntry" id="description">
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
-                        <property name="model_attribute">category_data.description</property>
+                        <property name="model_attribute">description</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -76,7 +76,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="base_category">
+                    <widget class="ProxyComboBoxEntry" id="base_category">
                         <property name="data_type">object</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">base_category</property>
@@ -95,16 +95,15 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="commission">
+                            <widget class="ProxySpinButton" id="commission">
                                 <property name="adjustment">0 0 100 1 10 0</property>
                                 <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">category_data.salesperson_commission</property>
-                                <property name="text" context="yes" translatable="yes">0.00</property>
+                                <property name="model_attribute">salesperson_commission</property>
+                                <property name="text" context="yes" translatable="yes">0,00</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">6</property>
-                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -134,16 +133,15 @@
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="suggested_markup">
+                            <widget class="ProxySpinButton" id="suggested_markup">
                                 <property name="adjustment">0 0 100 1 10 0</property>
                                 <property name="data_type">Decimal</property>
                                 <property name="digits">2</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">category_data.suggested_markup</property>
-                                <property name="text" context="yes" translatable="yes">0.00</property>
+                                <property name="model_attribute">suggested_markup</property>
+                                <property name="text" context="yes" translatable="yes">0,00</property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">6</property>
-                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>

@@ -27,12 +27,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.sellable import (AbstractSellableCategory,
-                                     BaseSellableCategory,
-                                     SellableCategory)
+from stoqlib.domain.sellable import BaseSellableCategory, SellableCategory
 
 _ = stoqlib_gettext
-
 
 class BaseSellableCategoryEditor(BaseEditor):
     gladefile = 'BaseSellableCategoryDataSlave'
@@ -44,10 +41,7 @@ class BaseSellableCategoryEditor(BaseEditor):
     size = (400, 175)
 
     def create_model(self, conn):
-        category_data = AbstractSellableCategory(description='',
-                                                 connection=conn)
-        return BaseSellableCategory(category_data=category_data,
-                                    connection=conn)
+        return BaseSellableCategory(description=u"", connection=conn)
 
     def get_title_model_attribute(self, model):
         return model.get_description()
@@ -55,7 +49,6 @@ class BaseSellableCategoryEditor(BaseEditor):
     def setup_proxies(self):
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
-
 
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
@@ -67,21 +60,17 @@ class SellableCategoryEditor(BaseEditor):
                      'commission')
 
     def create_model(self, conn):
-        category_data = AbstractSellableCategory(description='',
-                                                 connection=conn)
-
-        suggested_base_cat = sysparam(conn).DEFAULT_BASE_CATEGORY
-        return SellableCategory(base_category=suggested_base_cat,
-                                category_data=category_data,
-                                connection=conn)
+        return SellableCategory(
+            description=u"", base_category=sysparam(conn).DEFAULT_BASE_CATEGORY,
+            connection=conn)
 
     def get_title_model_attribute(self, model):
         return model.get_description()
 
     def setup_combo(self):
         base_category_list = BaseSellableCategory.select(connection=self.conn)
-        items = [(base_cat.category_data.description, base_cat)
-                 for base_cat in base_category_list]
+        items = [(base_cat.description, base_cat)
+                     for base_cat in base_category_list]
         self.base_category.prefill(items)
 
     def setup_proxies(self):
