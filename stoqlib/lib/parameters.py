@@ -505,16 +505,13 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, supplier.id)
 
     def ensure_default_base_category(self):
-        from stoqlib.domain.sellable import (BaseSellableCategory,
-                                          AbstractSellableCategory)
+        from stoqlib.domain.sellable import BaseSellableCategory
         key = "DEFAULT_BASE_CATEGORY"
         if self.get_parameter_by_field(key, BaseSellableCategory):
             return
-        abstract_cat = AbstractSellableCategory(connection=self.conn,
-                                                description=key)
-        base_cat = BaseSellableCategory(connection=self.conn,
-                                        category_data=abstract_cat)
-        self._set_schema(key, base_cat.id)
+        base_category = BaseSellableCategory(description=key,
+                                             connection=self.conn)
+        self._set_schema(key, base_category.id)
 
     def ensure_default_salesperson_role(self):
         from stoqlib.domain.person import EmployeeRole

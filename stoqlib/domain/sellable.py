@@ -64,51 +64,35 @@ class SellableUnit(Domain):
     description = UnicodeCol()
     index = IntCol()
 
-class AbstractSellableCategory(Domain):
+class AbstractSellableCategory(InheritableModel):
     description = UnicodeCol()
     suggested_markup = DecimalCol(default=0)
-
     # A percentage commission suggested for all the sales which products
     # belongs to this category or base category
     salesperson_commission = DecimalCol(default=0)
 
-    def get_commission(self):
-        return self.salesperson_commission
-
-
-class BaseSellableCategory(Domain):
-    category_data = ForeignKey('AbstractSellableCategory')
-
     implements(IDescribable)
 
     def get_commission(self):
-        return self.category_data.get_commission()
-
-    #
-    # IDescribable implementation
-    #
+        return self.salesperson_commission
 
     def get_description(self):
-        return self.category_data.description
+        return self.description
 
+class BaseSellableCategory(AbstractSellableCategory):
+    pass
 
-class SellableCategory(Domain):
-    category_data = ForeignKey('AbstractSellableCategory')
+class SellableCategory(AbstractSellableCategory):
     base_category = ForeignKey('BaseSellableCategory')
 
     implements(IDescribable)
 
     def get_markup(self):
-        return (self.category_data.suggested_markup or
-                self.base_category.category_data.suggested_markup)
+        return self.suggested_markup or self.base_category.suggested_markup
 
-    def get_commission(self):
-        return self.category_data.get_commission()
-
-    def get_description(self):
-        return "%s %s" % (self.base_category.get_description(),
-                          self.category_data.description)
-
+    def get_full_description(self):
+        return ("%s %s"
+                % (self.base_category.get_description(), self.description))
 
 class AbstractSellableItem(InheritableModel):
     """Abstract representation of a concrete sellable."""

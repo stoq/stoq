@@ -241,7 +241,7 @@ class SellableEditor(BaseEditor):
 
     def setup_combos(self):
         category_list = SellableCategory.select(connection=self.conn)
-        items = [(cat.get_description(), cat) for cat in category_list]
+        items = [(cat.get_full_description(), cat) for cat in category_list]
         self.category_combo.prefill(items)
         query = SellableUnit.q.index != UNIT_CUSTOM
         primitive_units = SellableUnit.select(query, connection=self.conn)
