@@ -177,7 +177,7 @@ class POSApp(AppWindow):
         quantity = self.sellableitem_proxy.model.quantity
 
         registered_price = self.sellableitem_proxy.model.price
-        price = registered_price or sellable.get_price()
+        price = registered_price or sellable.price
 
         if isinstance(sellable.get_adapted(), Service) and quantity > 1:
             for i in range(quantity):
