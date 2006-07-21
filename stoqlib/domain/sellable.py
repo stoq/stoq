@@ -65,10 +65,17 @@ class SellableUnit(Domain):
     index = IntCol()
 
 class AbstractSellableCategory(InheritableModel):
+    """ Abstract class for sellable's category. This class can represents a
+    sellable's category as well its base category.
+
+    - I{description}: The category description
+    - I{suggested_markup}: Define the suggested markup when calculating the
+                           sellable's price.
+    - I{salesperson_comission}: A percentage comission suggested for all the
+                                sales which products belongs to this category.
+    """
     description = UnicodeCol()
     suggested_markup = DecimalCol(default=0)
-    # A percentage commission suggested for all the sales which products
-    # belongs to this category or base category
     salesperson_commission = DecimalCol(default=0)
 
     implements(IDescribable)
@@ -86,6 +93,9 @@ class SellableCategory(AbstractSellableCategory):
     base_category = ForeignKey('BaseSellableCategory')
 
     implements(IDescribable)
+
+    def get_commission(self):
+        return self.salesperson_commission or self.base_category.get_commission()
 
     def get_markup(self):
         return self.suggested_markup or self.base_category.suggested_markup
@@ -180,7 +190,6 @@ class AbstractSellable(InheritableModelAdapter):
     # This default status is used when a new sellable is created,
     # so it must be *always* SOLD (that means no stock for it).
     status = IntCol(default=STATUS_SOLD)
-    markup = DecimalCol(default=0)
     cost = PriceCol(default=0)
     notes = UnicodeCol(default='')
     unit = ForeignKey("SellableUnit", default=None)
@@ -193,7 +202,17 @@ class AbstractSellable(InheritableModelAdapter):
             conn = self.get_connection()
             if not 'on_sale_info' in kw:
                 kw['on_sale_info'] = OnSaleInfo(connection=conn)
+            # markup specification must to reflect in the sellable price, since
+            # there is no such column -- but we can only change the price right
+            # after InheritableModelAdapter._create() get executed.
+            markup = kw.pop('markup', None)
         InheritableModelAdapter._create(self, id, **kw)
+        if not 'price' in kw and ('cost' in kw and 'category' in kw):
+            markup = markup or kw['category'].get_markup()
+            cost = kw.get('cost', currency(0))
+            self.price = cost * (markup / currency(100) + 1)
+        if not self.commission and self.category:
+            self.commission = self.category.get_commission()
 
     #
     # SQLObject setters
@@ -203,6 +222,41 @@ class AbstractSellable(InheritableModelAdapter):
         if AbstractSellable.check_barcode_exists(barcode):
             raise SellableError("The barcode %s already exists" % barcode)
         self._SO_set_barcode(barcode)
+
+    #
+    # Helper methods
+    #
+
+    def get_price_by_markup(self, markup):
+        return self.cost + (self.cost * (markup / 100))
+
+    #
+    # Properties
+    #
+
+    def get_markup(self):
+        return ((self.price / self.cost) - 1) * 100
+
+    def set_markup(self, markup):
+        self.price = self.get_price_by_markup(markup)
+
+    markup = property(get_markup, set_markup)
+
+    def get_price(self):
+        return self.base_sellable_info.price
+
+    def set_price(self, price):
+        self.base_sellable_info.price = price
+
+    price = property(get_price, set_price)
+
+    def get_commission(self):
+        return self.base_sellable_info.get_commission()
+
+    def set_commission(self, commission):
+        self.base_sellable_info.commission = commission
+
+    commission = property(get_commission, set_commission)
 
     #
     # IContainer methods
@@ -413,18 +467,6 @@ class AbstractSellable(InheritableModelAdapter):
         extra_query = IN(cls.q.status, statuses)
         return cls._get_sellables_by_barcode(conn, barcode, extra_query,
                                              notify_callback)
-
-    #
-    # General methods
-    #
-
-    def set_default_commission(self):
-        if not self.category:
-            self.commission = 0
-        else:
-            commission = self.category.base_category.get_commission()
-            self.commission = (self.category.get_commission()
-                               or commission)
 
 #
 # Views
