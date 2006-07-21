@@ -234,29 +234,31 @@ class AbstractSellable(InheritableModelAdapter):
     # Properties
     #
 
+    # XXX: Make the getters private
+
     def get_markup(self):
         return ((self.price / self.cost) - 1) * 100
 
-    def set_markup(self, markup):
+    def _set_markup(self, markup):
         self.price = self.get_price_by_markup(markup)
 
-    markup = property(get_markup, set_markup)
+    markup = property(get_markup, _set_markup)
 
     def get_price(self):
         return self.base_sellable_info.price
 
-    def set_price(self, price):
+    def _set_price(self, price):
         self.base_sellable_info.price = price
 
-    price = property(get_price, set_price)
+    price = property(get_price, _set_price)
 
     def get_commission(self):
         return self.base_sellable_info.get_commission()
 
-    def set_commission(self, commission):
+    def _set_commission(self, commission):
         self.base_sellable_info.commission = commission
 
-    commission = property(get_commission, set_commission)
+    commission = property(get_commission, _set_commission)
 
     #
     # IContainer methods
