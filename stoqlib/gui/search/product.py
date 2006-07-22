@@ -104,7 +104,7 @@ class ProductSearch(SellableSearch):
     # SearchEditor Hooks
     #
 
-    @argcheck(ProductFullStockView)
+    @argcheck(SellableView)
     def get_editor_model(self, model):
         return Product.get(model.product_id, connection=self.conn)
 
