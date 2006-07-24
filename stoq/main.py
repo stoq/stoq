@@ -34,10 +34,12 @@ from stoqlib.lib.message import error
 from stoqlib.lib.message import ISystemNotifier
 from kiwi.component import provide_utility
 from kiwi.log import Logger
+from psycopg import Error as PostgreSQLError
 
 from stoq.lib.applist import get_application_names
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
+from stoqlib.exceptions import StoqlibError
 
 _ = gettext.gettext
 log = Logger('stoq.main')
@@ -90,7 +92,7 @@ def _initialize(options):
     # 2 seconds) or creating the database
     try:
         setup(config, options)
-    except Exception, e:
+    except (StoqlibError, PostgreSQLError), e:
         error(_('Could not connect to database'),
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
