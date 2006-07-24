@@ -117,7 +117,7 @@ class AbstractSellableItem(InheritableModel):
         if not 'kw' in kw:
             if not 'sellable' in kw:
                 raise TypeError('You must provide a sellable argument')
-            base_price = kw['sellable'].get_price()
+            base_price = kw['sellable'].price
             kw['base_price'] = base_price
         InheritableModel._create(self, id, **kw)
 
@@ -244,13 +244,19 @@ class AbstractSellable(InheritableModelAdapter):
 
     markup = property(get_markup, _set_markup)
 
-    def get_price(self):
+    def _get_price(self):
+        if self.on_sale_info.on_sale_price:
+            today = datetime.datetime.today()
+            start_date = self.on_sale_info.on_sale_start_date
+            end_date = self.on_sale_info.on_sale_end_date
+            if is_date_in_interval(today, start_date, end_date):
+                return self.on_sale_info.on_sale_price
         return self.base_sellable_info.price
 
     def _set_price(self, price):
         self.base_sellable_info.price = price
 
-    price = property(get_price, _set_price)
+    price = property(_get_price, _set_price)
 
     def get_commission(self):
         return self.base_sellable_info.get_commission()
@@ -315,15 +321,6 @@ class AbstractSellable(InheritableModelAdapter):
                              'to be sold')
         self.status = self.STATUS_AVAILABLE
 
-    def get_price(self):
-        if self.on_sale_info.on_sale_price:
-            today = datetime.datetime.today()
-            start_date = self.on_sale_info.on_sale_start_date
-            end_date = self.on_sale_info.on_sale_end_date
-            if is_date_in_interval(today, start_date, end_date):
-                return self.on_sale_info.on_sale_price
-        return self.base_sellable_info.price
-
     def add_sellable_item(self, sale, quantity=1, price=None, **kwargs):
         """Add a new sellable item instance tied to the current
         sellable object
@@ -331,7 +328,7 @@ class AbstractSellable(InheritableModelAdapter):
         if not self.sellableitem_table:
             raise ValueError('Child classes must define a sellableitem_table '
                              'attribute')
-        price = price or self.get_price()
+        price = price or self.price
         conn = self.get_connection()
         return self.sellableitem_table(connection=conn, quantity=quantity,
                                        sale=sale, sellable=self,
@@ -351,7 +348,7 @@ class AbstractSellable(InheritableModelAdapter):
         return u"%05d" % self.code
 
     def get_price_string(self):
-        return get_formatted_price(self.get_price())
+        return get_formatted_price(self.price)
 
     def get_short_description(self):
         return u'%s %s' % (self.code, self.base_sellable_info.description)
