@@ -80,8 +80,8 @@ def set_branch_by_stationid(identifier, conn=None):
     query = AND(q1, q2)
     stations = table.select(query, connection=conn)
     if stations.count() != 1:
-        raise StoqlibError("You should have only one station for the "
-                           "identifier %s" % identifier)
+        raise StoqlibError("You should have one station for the identifier "
+                           "%s, got %d." % (identifier, stations.count()))
     station = stations[0]
     identifier = station.branch.identifier
     register_current_branch_identifier(identifier)
