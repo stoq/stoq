@@ -110,7 +110,7 @@ class GiftCertificateAdaptToSellable(AbstractSellable):
         conn = self.get_connection()
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         adapter = IGiftCertificatePM(base_method, connection=conn)
-        payment = adapter.setup_inpayments(self.get_price(), self.group)
+        payment = adapter.setup_inpayments(self.price, self.group)
         payment.set_to_pay()
         self.status = self.STATUS_CLOSED
 
