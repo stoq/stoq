@@ -350,9 +350,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
                        data_type=currency, width=90)]
 
     def _get_gift_certificates_total(self):
-        total = sum([c.get_price() for c in self.slave.klist],
-                    currency(0))
-        return currency(total)
+        return currency(sum([c.price for c in self.slave.klist], currency(0)))
 
     #
     # BaseEditorSlave hooks
