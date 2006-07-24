@@ -39,9 +39,8 @@ class ISystemNotifier(Interface):
     def error(short, description):
         pass
 
-    def yesno(text, default, buttons):
+    def yesno(text, default, *verbs):
         pass
-
 
 class DefaultSystemNotifier:
     implements(ISystemNotifier)
@@ -55,8 +54,8 @@ class DefaultSystemNotifier:
     def info(self, short, description):
         self._msg('INFO', short, description)
 
-    def yesno(self, text, default=-1, buttons=None):
-        self._msg('YESNO', text, '')
+    def yesno(self, text, default=-1, *verbs):
+        self._msg('YESNO (%s/%s)' % (verbs[0], verbs[1]), text, '')
 
     def warning(self, short, description, *args, **kwargs):
         self._msg('WARNING', short, description, *args, **kwargs)
@@ -80,6 +79,6 @@ def error(short, description=None):
     sn.error(short, description)
     raise SystemExit
 
-def yesno(text, default=-1, buttons=None):
+def yesno(text, default=-1, *verbs):
     sn = get_utility(ISystemNotifier)
-    return sn.yesno(text, default=default, buttons=buttons)
+    return sn.yesno(text, default, *verbs)
