@@ -33,6 +33,7 @@ import time
 import gtk
 from kiwi.log import Logger
 from kiwi.ui.dialogs import warning
+from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.gui.base.gtkadds import register_iconsets
@@ -296,14 +297,9 @@ class AppConfig:
     # Splash screen code
     #
 
-def show_splash(splash_path):
-    msg = "The stoq directory %s doesn't exists." % splash_path
-    assert os.path.isdir(splash_path), msg
-
-    # Interestingly enough, loading an XPM is slower than a JPG here
-    f = os.path.join(splash_path, "splash.jpg")
+def show_splash():
     gtkimage = gtk.Image()
-    gtkimage.set_from_file(f)
+    gtkimage.set_from_file(environ.find_resource("pixmaps", "splash.jpg"))
     gtkimage.show()
     w = gtk.Window()
     w.set_decorated(False)
