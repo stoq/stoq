@@ -165,13 +165,8 @@ class AdditionListSlave(SlaveDelegate):
             msg = _(u'Delete these %d items?') % qty
         else:
             msg = _(u'Delete this item?')
-
-        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                   (_(u"Delete Items"), gtk.RESPONSE_YES))
-        if not (yesno(msg, default=gtk.RESPONSE_YES, buttons=buttons)
-                == gtk.RESPONSE_YES):
+        if yesno(msg, gtk.RESPONSE_YES, _(u"Cancel"), _(u"Delete items")):
             return
-
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):
             self.klist.clear()

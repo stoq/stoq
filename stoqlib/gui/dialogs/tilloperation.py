@@ -219,10 +219,7 @@ class TillOperationDialog(SlaveDelegate):
                      "\nIt's not possible to cancel this payment.")
             warning(text)
             return
-        buttons = ((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                   (_(u"Reverse Items"), gtk.RESPONSE_YES))
-        if (yesno(text, default=gtk.RESPONSE_YES, buttons=buttons) ==
-            gtk.RESPONSE_YES):
+        if not yesno(text, gtk.RESPONSE_YES, _(u"Cancel"), _(u"Reverse Items")):
             for item in self.selected_item:
                 item.cancel_till_entry()
             self.conn.commit()

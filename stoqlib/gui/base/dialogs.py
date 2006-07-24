@@ -31,8 +31,7 @@ import os
 import gtk
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
-from kiwi.ui.dialogs import (ask_overwrite, error, warning, info,
-                             messagedialog)
+from kiwi.ui.dialogs import ask_overwrite, error, warning, info, yesno
 from kiwi.argcheck import argcheck
 from zope.interface import implements
 
@@ -456,12 +455,17 @@ class DialogSystemNotifier:
     def error(self, short, description):
         error(short, description, get_current_toplevel())
 
-    def yesno(self, text, default=gtk.RESPONSE_YES,
-              buttons=gtk.BUTTONS_YES_NO):
-        return messagedialog(gtk.MESSAGE_QUESTION, text, long=None,
-                             parent=get_current_toplevel(), buttons=buttons,
-                             default=default)
-
+    def yesno(self, text, default=gtk.RESPONSE_YES, *verbs):
+        if len(verbs) != 2:
+            raise ValueError(
+                "Button descriptions must be a tuple with 2 items")
+        if verbs == (_("Yes"), _("No")):
+            buttons = gtk.BUTTONS_YES_NO
+        else:
+            buttons = ((verbs[0], gtk.RESPONSE_YES),
+                       (verbs[1], gtk.RESPONSE_NO))
+        return (yesno(text, get_current_toplevel(), default, buttons)
+                == gtk.RESPONSE_YES)
 
 def print_report(report_class, *args, **kwargs):
     run_dialog(PrintDialog, None, report_class, *args, **kwargs)
