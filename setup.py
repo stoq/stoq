@@ -68,7 +68,7 @@ scripts = [
     'bin/init-database']
 data_files = [
     ('$datadir/pixmaps',
-     listfiles('data/pixmaps', '*.png')),
+     listfiles('data/pixmaps', '*.*')),
     ('$datadir/glade',
      listfiles('data', 'glade', '*.glade')),
     ('$sysconfdir/stoq',  ''),
