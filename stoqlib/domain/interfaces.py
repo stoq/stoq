@@ -86,9 +86,6 @@ class ISellable(ConnInterface):
     def set_available():
         pass
 
-    def get_price():
-        pass
-
     def add_sellable_item(sale, quantity, price):
         """Adds a new SellableItem instance for this sellable object"""
 
