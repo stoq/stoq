@@ -353,9 +353,6 @@ class AbstractSellable(InheritableModelAdapter):
     def get_price_string(self):
         return get_formatted_price(self.get_price())
 
-    def get_commission(self):
-        return self.base_sellable_info.commission
-
     def get_short_description(self):
         return u'%s %s' % (self.code, self.base_sellable_info.description)
 
