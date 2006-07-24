@@ -85,7 +85,7 @@ class SellablePriceEditor(BaseEditor):
         self.main_proxy.update('markup')
 
     def update_commission(self):
-        if self.model.get_commission() is not None:
+        if self.model.commission is not None:
             return
         self.model.set_default_commission()
         self.main_proxy.update('base_sellable_info.commission')
@@ -98,7 +98,7 @@ class SellablePriceEditor(BaseEditor):
         if markup is None:
             return
         self.model.base_sellable_info.price = cost + ((markup / 100) * cost)
-        self.main_proxy.update('base_sellable_info.price')
+        self.main_proxy.update('price')
 
     #
     # BaseEditor hooks
