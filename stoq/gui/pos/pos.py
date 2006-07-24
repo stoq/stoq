@@ -367,11 +367,8 @@ class POSApp(AppWindow):
 
     def _cancel_order(self):
         if self.sale is not None:
-            text = _(u'The current order will be canceled, Confirm?')
-            buttons=((_(u"Go Back"), gtk.RESPONSE_CANCEL),
-                     (_(u"Cancel Order"), gtk.RESPONSE_OK))
-            if not yesno(text, default=gtk.RESPONSE_OK,
-                         buttons=buttons) == gtk.RESPONSE_OK:
+            if yesno(_(u'The current order will be canceled, Confirm?'),
+                     gtk.RESPONSE_OK,_(u"Go Back"), _(u"Cancel Order")):
                 return
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
@@ -454,13 +451,11 @@ class POSApp(AppWindow):
         if self.sale.client:
             self.coupon.identify_customer(self.sale.client.get_adapted())
         while not self.coupon.open():
-            if (yesno(_(u"It is not possible to start a new sale if the "
-                        "fiscal coupon cannot be opened."),
-                      default=gtk.RESPONSE_OK,
-                      buttons=((_(u"Cancel"), gtk.RESPONSE_CANCEL),
-                               (_(u"Try Again"), gtk.RESPONSE_OK)))
-                != gtk.RESPONSE_OK):
+            if yesno(_(u"It is not possible to start a new sale if the "
+                       "fiscal coupon cannot be opened."),
+                     gtk.RESPONSE_OK, _(u"Cancel"), _(u"Try Again")):
                 self.app.shutdown()
+                break
 
     def _coupon_add_item(self, sellable_item):
         if self.param.CONFIRM_SALES_ON_TILL:
