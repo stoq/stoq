@@ -79,7 +79,7 @@ class SellablePriceEditor(BaseEditor):
 
     def update_markup(self):
         dec_one = decimal.Decimal('1.0')
-        price = self.model.get_price() or dec_one
+        price = self.model.price or dec_one
         cost = self.model.cost or dec_one
         self.model.markup = ((price / cost) - 1) * 100
         self.main_proxy.update('markup')
