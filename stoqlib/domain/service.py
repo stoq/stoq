@@ -81,7 +81,7 @@ class DeliveryItem(Domain):
     #
 
     def get_price(self):
-        return self.sellable.get_price()
+        return self.sellable.price
 
     def get_total(self):
         return currency(self.get_price() * self.quantity)
