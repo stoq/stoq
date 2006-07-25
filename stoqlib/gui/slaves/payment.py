@@ -721,11 +721,9 @@ class CardMethodSlave(CreditProviderMethodSlave):
         return self.method.get_credit_card_providers()
 
     def _setup_payment_types(self):
-        self.payment_type.clear()
         payment_types = self._get_payment_types(self.providers[0])
         self.ptypes_items = [(p.payment_type_name, p) for p in payment_types]
         self.payment_type.prefill(self.ptypes_items)
-
 
 class FinanceMethodSlave(CreditProviderMethodSlave):
     _payment_types = FinanceDetails,
