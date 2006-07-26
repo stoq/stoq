@@ -27,12 +27,14 @@ import datetime
 import gettext
 
 import gtk
+from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.database import rollback_and_begin
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.runtime import get_current_user, new_transaction
 
 import stoq
@@ -52,7 +54,7 @@ class App(BaseApp):
 
     def revalidate_user(self, *args):
         self.shutdown()
-        self.config.clear_cookie()
+        get_utility(ICookieFile).clear()
         # validate_user raises SystemExit if things go wrong
         self.config.validate_user()
         self.reinit()
@@ -95,13 +97,13 @@ class AppWindow(BaseAppWindow):
 
     def _store_cookie(self, *args):
         u = get_current_user(self.conn)
-        # XXX: with password criptografy, we need to ask it again
-        self.app.config.store_cookie(u.username, u.password)
+        # XXX: encrypt and ask for password it again
+        get_utility(ICookieFile).store(u.username, u.password)
         if hasattr(self, 'user_menu'):
             self._reset_user_menu()
 
     def _clear_cookie(self, *args):
-        self.app.config.clear_cookie()
+        get_utility(ICookieFile).clear()
         if hasattr(self, 'user_menu'):
             self._reset_user_menu()
 

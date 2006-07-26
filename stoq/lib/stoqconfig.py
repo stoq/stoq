@@ -26,16 +26,17 @@
 import gettext
 import os
 import sys
-import binascii
 import warnings
 import time
 
 import gtk
+from kiwi.component import get_utility
 from kiwi.log import Logger
 from kiwi.ui.dialogs import warning
 from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
+from stoqlib.lib.interfaces import CookieError, ICookieFile
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
@@ -174,29 +175,41 @@ class AppConfig:
         user = self._lookup_user(username, password)
         set_current_user(user)
 
+    def _cookie_login(self):
+        try:
+            username, password = get_utility(ICookieFile).get()
+        except CookieError:
+            log.info("Not using cookie based login")
+            return False
+
+        try:
+            self.check_user(username, password)
+        except (LoginError, UserProfileError, DatabaseError), e:
+            log.info("Cookie login failed: %r" % e)
+            return False
+
+        log.info("Logging in using cookie credentials")
+        return True
+
     def validate_user(self):
+        if self._cookie_login():
+            return True
+
+        log.info("Showing login dialog")
         # Loop for logins
         retry = 0
         retry_msg = None
         dialog = None
         choose_applications = self.appname is None
         while retry < self.RETRY_NUMBER:
-            # Try and grab credentials from cookie or dialog
-            ret = self.check_cookie()
-            has_cookie_file = ret is not None
-
-            if not ret:
-                self.splash = 0
-                username = password = appname = None
-            else:
-                username, password, appname = ret
+            self.splash = 0
+            username = password = appname = None
 
             if not dialog:
                 hide_splash()
                 dialog = StoqLoginDialog(_("Access Control"),
                                          choose_applications)
-            if not ret or choose_applications:
-                ret = dialog.run(username, password, msg=retry_msg)
+            ret = dialog.run(username, password, msg=retry_msg)
 
             # user cancelled (escaped) the login dialog
             if not ret:
@@ -206,9 +219,12 @@ class AppConfig:
             if not (isinstance(ret, (tuple, list)) and len(ret) == 3):
                 raise ValueError('Invalid return value, got %s'
                                  % str(ret))
+
             username, password, appname = ret
+
             if choose_applications:
                 self.appname =  appname
+
             if not username:
                 retry_msg = _("specify an username")
                 continue
@@ -218,7 +234,7 @@ class AppConfig:
             except (LoginError, UserProfileError), e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
-                self.clear_cookie()
+                get_utility(ICookieFile).clear()
                 retry += 1
                 retry_msg = str(e)
             except DatabaseError, e:
@@ -226,10 +242,7 @@ class AppConfig:
                     dialog.destroy()
                 self.abort_mission(str(e))
             else:
-                if has_cookie_file:
-                    log.info("Logging in using cookie credentials")
-                else:
-                    log.info("Authenticated user %s" % username)
+                log.info("Authenticated user %s" % username)
                 if dialog:
                     dialog.destroy()
                 return True
@@ -238,47 +251,6 @@ class AppConfig:
             dialog.destroy()
         self.abort_mission("Depleted attempts of authentication")
         return False
-    #
-    # Cookie handling
-    #
-
-    def get_cookiefile(self):
-        cookiefile = os.path.join(self.config.get_config_directory(), "cookie")
-        if os.path.exists(cookiefile):
-            self.config.check_permissions(cookiefile, writable=True)
-        return cookiefile
-
-    def clear_cookie(self):
-        cookiefile = self.get_cookiefile()
-        if os.path.exists(cookiefile):
-            os.remove(cookiefile)
-
-    def store_cookie(self, username, password):
-        cookiefile = self.get_cookiefile()
-        self._store_cookie(cookiefile, username, password)
-
-    def check_cookie(self):
-        cookiefile = self.get_cookiefile()
-        if not os.path.exists(cookiefile):
-            return
-
-        cookiedata = open(cookiefile).read()
-        try:
-            username, text = cookiedata.split(":")
-            password = binascii.a2b_base64(text)
-            return username, password, self.appname
-        except (ValueError, binascii.Error):
-            print "Warning: invalid cookie file, erasing"
-            os.remove(cookiefile)
-            return
-
-    def _store_cookie(self, cookiefile, username, password):
-        fd = open(cookiefile, "w")
-        # obfuscate password to avoid it being easily identified when
-        # editing file on screen. this is *NOT* encryption!
-        text = binascii.b2a_base64(password)
-        fd.write("%s:%s" % (username, text))
-        fd.close()
 
     #
     # Exit strategies

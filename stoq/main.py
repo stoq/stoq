@@ -79,6 +79,11 @@ def _initialize(options):
         _run_first_time_wizard(config)
         return
 
+    from stoqlib.lib.cookie import Base64CookieFile
+    from stoqlib.lib.interfaces import ICookieFile
+    cookiefile = os.path.join(config.get_config_directory(), "cookie")
+    provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+
     try:
         config.check_connection()
     except:
