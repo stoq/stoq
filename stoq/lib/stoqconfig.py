@@ -112,28 +112,6 @@ class AppConfig:
         configdir = self.config.get_config_directory()
         self.check_dir_and_create(configdir)
 
-        # Clean this up after #2450 is solved, disable this since it hides
-        # bugs inside the application log
-        env_log = os.environ.get('%s_LOGFILE' %
-                                 self.config.domain.upper())
-        fd = -1
-        if env_log:
-            fd = open(env_log, 'a', 0)
-        elif self.config.has_option("logfile"):
-            option = self.config.get_option("logfile")
-            logfile = os.path.expanduser(option)
-            fd = open(logfile, 'a', 0)
-
-        class Output:
-            def __init__(self, *fds):
-                self._fds = fds
-
-            def write(self, text):
-                for fd in self._fds:
-                    fd.write(text)
-        if fd != -1:
-            sys.stderr = Output(sys.stderr, fd)
-
         conn = get_connection()
         if not self.validate_user():
             LoginError('Could not authenticate in the system')
@@ -289,11 +267,3 @@ def hide_splash(*args):
         splash_win = None
 
 splash_win = None
-
-#
-# Exception and log stuff
-#
-
-def log_header():
-    now = time.strftime("%Y-%m-%d %H:%M")
-    return "%s (%s)" % (now, os.getpid())
