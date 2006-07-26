@@ -26,17 +26,16 @@
 import gettext
 import os
 import sys
-import warnings
 import time
 
 import gtk
 from kiwi.component import get_utility
 from kiwi.log import Logger
-from kiwi.ui.dialogs import warning
 from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.lib.interfaces import CookieError, ICookieFile
+from stoqlib.lib.message import warning
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
@@ -82,8 +81,7 @@ class AppConfig:
             if os.path.exists(dir):
                 self.config.check_permissions(dir, executable=True)
                 os.remove(dir)
-                warnings.warn('A %s file already exist and was removed.'
-                              % dir)
+                log.warn('A %s file already exist and was removed.' % dir)
             os.mkdir(dir)
             return
         self.config.check_permissions(dir, executable=True)
