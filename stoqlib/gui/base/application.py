@@ -60,7 +60,7 @@ class BaseAppWindow(Delegate):
     """ Class to be inherited by applications main window.  """
     gladefile = toplevel_name = ''
     title = ''
-    size = tuple()
+    size = ()
 
     @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
