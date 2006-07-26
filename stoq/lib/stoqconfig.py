@@ -44,6 +44,8 @@ from stoqlib.domain.tables import get_table_types
 from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
 
+RETRY_NUMBER = 3
+
 _ = gettext.gettext
 log = Logger('stoq.config')
 
@@ -51,13 +53,25 @@ class AppConfig:
     """AppConfig provides features for:
        - Getting the application list
        - Initializing the framework for an application
-       - Managing user cookies and driving authentication
     """
 
-    splash = 0
-    _applications = None
-    RETRY_NUMBER = 3
-    config = get_config()
+
+    def __init__(self, appname):
+        self.appname = appname
+
+        self.config = get_config()
+
+        try:
+            self._check_tables()
+        except DatabaseError, e:
+            self.abort_mission(str(e), _('Database Error'))
+
+        # Ensure user's application directory is created
+        configdir = self.config.get_config_directory()
+        self.check_dir_and_create(configdir)
+
+        if not self.validate_user():
+            raise LoginError('Could not authenticate in the system')
 
     #
     # Application list accessors
@@ -97,25 +111,6 @@ class AppConfig:
                         "This is the database error:\n%s. Error type is %s")
                 raise DatabaseError(msg % (value, type))
 
-
-    def setup_app(self, appname=None, splash=False):
-
-        try:
-            self._check_tables()
-        except DatabaseError, e:
-            self.abort_mission(str(e), _('Database Error'))
-
-        self.appname = appname
-        self.splash = splash
-
-        # Ensure user's application directory is created
-        configdir = self.config.get_config_directory()
-        self.check_dir_and_create(configdir)
-
-        conn = get_connection()
-        if not self.validate_user():
-            LoginError('Could not authenticate in the system')
-        return self.appname
 
     #
     # User validation and AppHelper setup
@@ -179,8 +174,7 @@ class AppConfig:
         retry_msg = None
         dialog = None
         choose_applications = self.appname is None
-        while retry < self.RETRY_NUMBER:
-            self.splash = 0
+        while retry < RETRY_NUMBER:
             username = password = appname = None
 
             if not dialog:
