@@ -24,11 +24,11 @@
 ##
 """ Basic dialogs definition """
 
-import warnings
 import shutil
 import os
 
 import gtk
+from kiwi.log import Logger
 from kiwi.ui.delegates import SlaveDelegate, Delegate
 from kiwi.ui.views import BaseView
 from kiwi.ui.dialogs import ask_overwrite, error, warning, info, yesno
@@ -44,6 +44,7 @@ from stoqlib.reporting.base.utils import print_file
 _ = stoqlib_gettext
 _toplevel_stack = []
 
+log = Logger('stoqlib.dialogs')
 
 #
 # Helper classes
@@ -213,7 +214,7 @@ class BasicPluggableDialog(BasicDialog):
                     hide_footer=False):
         """May be called by refresh by subdialogs, as necessary"""
         if self.slave:
-            warnings.warn("%s had self.slave set to %s!" % (self, self.slave))
+            log.warn("%s had self.slave set to %s!" % (self, self.slave))
         self.slave = slave
         self.attach_slave("main", slave)
         if self.warnbox:
