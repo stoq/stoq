@@ -94,7 +94,7 @@ class BaseAppWindow(Delegate):
 
     #
     # Callbacks
-    #   
+    #
 
     def _on_quit_action__clicked(self, *args):
         self.app.shutdown()
