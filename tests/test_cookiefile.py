@@ -2,11 +2,11 @@ import os
 import unittest
 
 from stoqlib.lib.interfaces import CookieError
-from stoqlib.lib.cookie import SimpleCookieFile
+from stoqlib.lib.cookie import Base64CookieFile
 
 class CookieTest(unittest.TestCase):
     def setUp(self):
-        self.cookie = SimpleCookieFile('test.cookie')
+        self.cookie = Base64CookieFile('test.cookie')
 
     def _write_cookie(self, data):
         print >> open('test.cookie', "w"), data
