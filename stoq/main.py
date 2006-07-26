@@ -100,8 +100,14 @@ def _initialize(options):
 
 def _run_app(options, appname):
     from stoq.lib.stoqconfig import AppConfig, show_splash
+    from stoqlib.gui.base.gtkadds import register_iconsets
+
     log.info('displaying splash screen')
     show_splash()
+
+    log.info('register stock icons')
+    register_iconsets()
+
     log.info('loading application')
     appconf = AppConfig()
     appname = appconf.setup_app(appname, splash=True)
