@@ -114,8 +114,7 @@ def _run_app(options, appname):
     register_iconsets()
 
     log.info('loading application')
-    appconf = AppConfig()
-    appname = appconf.setup_app(appname, splash=True)
+    appconf = AppConfig(appname)
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
     if not hasattr(module, "main"):
         raise RuntimeError(
