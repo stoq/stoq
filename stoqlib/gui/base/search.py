@@ -25,10 +25,10 @@
 
 import string
 import datetime
-import warnings
 
 import gtk
 import gobject
+from kiwi.log import Logger
 from kiwi.utils import gsignal
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.objectlist import Column, ObjectList
@@ -52,6 +52,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 
 _ = stoqlib_gettext
 
+log = Logger("stoqlib.search")
 
 #
 # Slaves for search dialogs.
@@ -215,7 +216,7 @@ class _SearchBarEntry(SlaveDelegate):
     def stop_animate_search_icon(self):
         self.search_button.show()
         if self._animate_search_icon_id == -1:
-            warnings.warn("Search icon animation hasn't started")
+            log.warn("Search icon animation hasn't started")
         gobject.source_remove(self._animate_search_icon_id)
         self.search_icon.hide()
 
@@ -473,8 +474,8 @@ class SearchBar(SlaveDelegate):
 
         if not self._result_strings:
             self._result_strings = _('result'), _('results')
-            warnings.warn('You must define result strings before performing '
-                          'searches in the SearchBar')
+            log.warn('You must define result strings before performing '
+                     'searches in the SearchBar')
 
         msg = self._get_search_results_msg(total, self.max_search_results)
         self.search_results_label.set_text(msg)
