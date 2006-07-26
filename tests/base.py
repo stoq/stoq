@@ -273,3 +273,6 @@ def bootstrap_testsuite():
 
     from stoqlib.domain.examples.createall import create
     create()
+
+bootstrap_testsuite()
+
