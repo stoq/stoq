@@ -36,7 +36,6 @@ from kiwi.ui.dialogs import warning
 from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
-from stoqlib.gui.base.gtkadds import register_iconsets
 from stoqlib.lib.runtime import set_current_user, get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
@@ -133,9 +132,6 @@ class AppConfig:
                     fd.write(text)
         if fd != -1:
             sys.stderr = Output(sys.stderr, fd)
-
-        # Registering some new important stock icons
-        register_iconsets()
 
         conn = get_connection()
         if not self.validate_user():
