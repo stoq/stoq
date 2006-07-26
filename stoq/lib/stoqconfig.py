@@ -297,13 +297,3 @@ splash_win = None
 def log_header():
     now = time.strftime("%Y-%m-%d %H:%M")
     return "%s (%s)" % (now, os.getpid())
-
-def excepthook(tp, v, t):
-    # Reimplement the module formatting PyErr_Display does, more or less
-    if tp.__module__ == "exceptions":
-        tp = str(tp)[11:]
-    elif tp.__module__ is None:
-        tp = "<unknown> %s" % str(tp)
-    sys.__excepthook__("%s: %s" % (log_header(), tp), v, t)
-
-sys.excepthook = excepthook
