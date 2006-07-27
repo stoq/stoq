@@ -33,7 +33,7 @@ from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
                                             FinanceDetails,
                                             get_active_pm_ifaces)
-from stoqlib.lib.exceptions import StoqlibError
+from stoqlib.exceptions import StoqlibError
 
 class CheckBillSettingsSlave(BaseEditorSlave):
     model_type = AbstractCheckBillAdapter
