@@ -27,6 +27,7 @@
 
 import binascii
 import gettext
+import optparse
 import os
 import sys
 from ConfigParser import SafeConfigParser
@@ -253,41 +254,6 @@ dbusername=%(DBUSERNAME)s"""
         """
         self._set_option("General", "station_id", station_id, write_to_file)
 
-    def set_database(self, database):
-        """
-        Overrides the default database configuration option.
-        @param database: the database
-        """
-        self._config.set('Database', 'dbname', database)
-
-    def set_username(self, username):
-        """
-        Overrides the default username configuration option.
-        @param username: the username
-        """
-        self._config.set('Database', 'dbusername', username)
-
-    def set_hostname(self, hostname):
-        """
-        Overrides the default hostname configuration option.
-        @param hostname: the hostname
-        """
-        self._config.set('Database', 'address', hostname)
-
-    def set_port(self, port):
-        """
-        Overrides the default hostname configuration option.
-        param port: the port
-        """
-        self._config.set('Database', 'port', port)
-
-    def set_password(self, password):
-        """
-        Overrides the default hostname configuration option.
-        @param password: the password
-        """
-        self._store_password(password)
-
     def use_test_database(self):
         self.set_database(self._get_option('testdb', section='Database'))
 
@@ -351,6 +317,25 @@ dbusername=%(DBUSERNAME)s"""
                                 self._get_dbname(),
                                 self._get_username(),
                                 self.get_password())
+
+    @argcheck(optparse.Values)
+    def set_from_options(self, options):
+        """
+        Updates the configuration given a values instance
+        @param options: a optparse.Values instance
+        """
+
+        if options.address:
+            self._config.set('Database', 'address', options.hostname)
+        if options.port:
+            self._config.set('Database', 'port', options.port)
+        if options.dbname:
+            self._config.set('Database', 'dbname', options.dbname)
+        if options.username:
+            self._config.set('Database', 'dbusername', options.username)
+        if options.password:
+            self._store_password(options.password)
+
 
 
 #
