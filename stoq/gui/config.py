@@ -414,6 +414,12 @@ class FirstTimeConfigWizard(BaseWizard):
     def cancel(self):
         if self._conn:
             finish_transaction(self._conn)
-        if self.config.has_installed_config_data():
-            self.config.remove_config_file()
+
+        # XXX: Find out when the file was installed and only try to
+        #      remove it if it really was.
+        try:
+            self.config.remove()
+        except IOError:
+            pass
+
         BaseWizard.cancel(self)

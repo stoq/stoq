@@ -45,6 +45,7 @@ _ = gettext.gettext
 log = Logger('stoq.main')
 
 def _check_dependencies():
+    log.info('checking dependencies')
     try:
         import reportlab
     except ImportError:
@@ -53,6 +54,7 @@ def _check_dependencies():
     if map(int, reportlab.Version.split('.')) < [1, 20]:
         raise SystemExit("Reportlab 1.20 is required but %s found" %
                          reportlab.Version)
+    log.info('reportlab okay')
 
 def _run_first_time_wizard(config):
     from stoqlib.gui.base.dialogs import run_dialog
@@ -66,6 +68,7 @@ def _setup_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
         return
+    log.info('providing graphical notification dialogs')
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
@@ -74,14 +77,15 @@ def _initialize(options):
     _setup_dialogs()
     log.info('reading configuration')
     config = StoqConfig(filename=options.filename)
+    config_dir = config.get_config_directory()
 
-    if not config.has_installed_config_data():
+    if not os.path.exists(os.path.join(config_dir, 'stoq.conf')):
         _run_first_time_wizard(config)
         return
 
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
-    cookiefile = os.path.join(config.get_config_directory(), "cookie")
+    cookiefile = os.path.join(config_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
     try:
@@ -144,7 +148,6 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
-    log.info('initializing')
     _check_dependencies()
     _initialize(options)
 
