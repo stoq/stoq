@@ -28,13 +28,12 @@ from kiwi.ui.delegates import SlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.domain.interfaces import (ICheckPM, ICardPM, IBillPM,
-                                       IFinancePM, IGiftCertificatePM,
-                                       IMultiplePM, IMoneyPM)
+from stoqlib.domain.interfaces import IGiftCertificatePM, IMultiplePM, IMoneyPM
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
-                                            FinanceDetails)
-
+                                            FinanceDetails,
+                                            get_active_pm_ifaces)
+from stoqlib.lib.exceptions import StoqlibError
 
 class CheckBillSettingsSlave(BaseEditorSlave):
     model_type = AbstractCheckBillAdapter
@@ -75,32 +74,30 @@ class FinanceDetailsSlave(BaseEditorSlave):
         self.add_proxy(self.model,
                        FinanceDetailsSlave.proxy_widgets)
 
-
-class SelectCashMethodSlave(SlaveDelegate):
-    toplevel_name = gladefile = 'SelectCashMethodSlave'
-
-
 class SelectPaymentMethodSlave(SlaveDelegate):
-    toplevel_name = gladefile = 'SelectPaymentMethodSlave'
+    """ This slave show a radion button group with three payment method options:
+    Money, Gift Certificate and Other (any other method supported by the system).
+    The visibility of these buttons are directly related to payment method
+    availabiltiy in the company.
+    """
+    gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self, active_pm_ifaces):
-        SlaveDelegate.__init__(self, toplevel=self.toplevel_name,
-                               gladefile=self.gladefile)
-        self._setup_widgets(active_pm_ifaces)
+    def __init__(self):
+        SlaveDelegate.__init__(self, gladefile=SelectPaymentMethodSlave.gladefile)
+        self._setup_widgets()
 
-    def _setup_widgets(self, active_pm_ifaces):
-        if len(active_pm_ifaces) == 1:
-            raise ValueError("You should have more than one "
-                             "active payment methods to use "
-                             "this slave")
+    def _setup_widgets(self):
+        active_pm_ifaces = get_active_pm_ifaces()
         if not IGiftCertificatePM in active_pm_ifaces:
             self.certificate_check.hide()
-            return
-        otherm_ifaces = [iface for iface in (ICheckPM, ICardPM,
-                                             IBillPM, IFinancePM)
-                                if iface in active_pm_ifaces]
-        if not otherm_ifaces:
+        else:
+            active_pm_ifaces.remove(IGiftCertificatePM)
+        if not IMoneyPM in active_pm_ifaces:
+            raise StoqlibError("The money payment method should be always "
+                               "available")
+        active_pm_ifaces.remove(IMoneyPM)
+        if not active_pm_ifaces:
             self.othermethods_check.hide()
 
     #

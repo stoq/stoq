@@ -46,14 +46,12 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.slaves.paymentmethod import (SelectCashMethodSlave,
-                                              SelectPaymentMethodSlave)
+from stoqlib.gui.slaves.paymentmethod import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.payment.base import AbstractPaymentGroup
-from stoqlib.domain.payment.methods import get_active_pm_ifaces
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
                                        IMultiplePM, IMoneyPM,
@@ -149,8 +147,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
             self.salesperson_combo.grab_focus()
 
     def _get_selected_payment_method(self):
-        if (isinstance(self.pm_slave, SelectCashMethodSlave)
-            or self.pm_slave.cash_check.get_active()):
+        if self.pm_slave.cash_check.get_active():
             return IMoneyPM
         elif self.pm_slave.certificate_check.get_active():
             return IGiftCertificatePM
@@ -229,14 +226,10 @@ class AbstractSalesPersonStep(WizardEditorStep):
         if self.get_slave(slave_holder):
             self.detach_slave(slave_holder)
         self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
-        pm_ifaces = get_active_pm_ifaces()
-        if len(pm_ifaces) == 1:
-            self.pm_slave = SelectCashMethodSlave()
-        else:
-            self.pm_slave = SelectPaymentMethodSlave(pm_ifaces)
-            self._setup_payment_method_widgets()
-        self.pm_slave.connect('method-changed',
-                              self.on_payment_method_changed)
+
+        self.pm_slave = SelectPaymentMethodSlave()
+        self._setup_payment_method_widgets()
+        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
     def setup_proxies(self):
