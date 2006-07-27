@@ -198,6 +198,7 @@ class AbstractSellable(InheritableModelAdapter):
     category = ForeignKey('SellableCategory', default=None)
 
     def _create(self, id, **kw):
+        markup = None
         if not 'kw' in kw:
             conn = self.get_connection()
             if not 'on_sale_info' in kw:
@@ -207,7 +208,12 @@ class AbstractSellable(InheritableModelAdapter):
             # after InheritableModelAdapter._create() get executed.
             markup = kw.pop('markup', None)
         InheritableModelAdapter._create(self, id, **kw)
-        if not 'price' in kw and ('cost' in kw and 'category' in kw):
+        # I'm not checking price in 'kw' because it can be specified through
+        # base_sellable_info, and then we'll not update the price properly;
+        # instead, I check for "self.price" that, at this point (after
+        # InheritableModelAdapter._create excecution) is already set and
+        # accessible through AbstractSellable's price's accessor.
+        if not self.price and ('cost' in kw and 'category' in kw):
             markup = markup or kw['category'].get_markup()
             cost = kw.get('cost', currency(0))
             self.price = cost * (markup / currency(100) + 1)
@@ -228,14 +234,16 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def get_price_by_markup(self, markup):
-        return self.cost + (self.cost * (markup / 100))
+        return self.cost + (self.cost * (markup / currency(100)))
 
     #
     # Properties
     #
 
     def _get_markup(self):
-        return ((self.price / self.cost) - 1) * 100
+        if self.cost == 0:
+            return currency(0)
+        return ((self.price / self.cost) - 1) * currency(100)
 
     def _set_markup(self, markup):
         self.price = self.get_price_by_markup(markup)
