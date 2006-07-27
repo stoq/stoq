@@ -222,7 +222,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
 
     def setup_slaves(self):
         self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
-                                                    self.model_type)
+                                                          self.model_type)
         self.discsurcharge_slave.connect('discount-changed',
                                       self.on_discsurcharge_slave_changed)
         slave_holder = 'discount_surcharge_slave'
