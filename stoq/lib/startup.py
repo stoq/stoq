@@ -45,22 +45,6 @@ from stoqlib.lib.runtime import (get_connection, set_verbose,
 
 from stoq.lib.configparser import register_config, StoqConfig
 
-
-def _update_config(config, options):
-    if options.address:
-        config.set_hostname(options.address)
-    if options.port:
-        config.set_port(options.port)
-    if options.dbname:
-        config.set_database(options.dbname)
-    if options.username:
-        config.set_username(options.username)
-    if options.password:
-        config.set_password(options.password)
-    if options.verbose:
-        set_verbose(options.verbose)
-
-
 def set_branch_by_stationid(identifier, conn=None):
     from stoqlib.domain.person import BranchStation
     conn = conn or get_connection()
@@ -103,8 +87,11 @@ def setup(config, options=None, stoq_user_password=''):
     #       bin/init-database
     #       python stoq/tests/runtest.py
 
-    if options:
-        _update_config(config, options)
+
+    if options.verbose:
+        set_verbose(options.verbose)
+
+    config.set_from_options(options)
 
     register_config(config)
 
