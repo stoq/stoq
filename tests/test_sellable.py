@@ -126,3 +126,38 @@ class TestAbstractSellable(BaseDomainTest):
                         ("Expected salesperson commission: %r, got %r"
                          % (self._category.salesperson_commission,
                             sellable.commission)))
+
+    def test_prices_and_markups(self):
+        product = Product(connection=self.conn)
+        sellable_info = BaseSellableInfo(description="Test", price=currency(100),
+                                         connection=self.conn)
+        self._category.markup = 0
+        sellable = product.addFacet(ISellable, category=self._category, cost=50,
+                                    base_sellable_info=sellable_info,
+                                    connection=self.conn)
+        self.failUnless(sellable.price == 100,
+                        "Expected price: %r, got %r" % (100, sellable.price))
+        self.failUnless(sellable.markup == 100,
+                        "Expected markup: %r, got %r" % (100, sellable.markup))
+        sellable.markup = 10
+        self.failUnless(sellable.price == 55,
+                        "Expected price: %r, got %r" % (55, sellable.price))
+        sellable.price = 50
+        self.failUnless(sellable.markup == 0,
+                        "Expected markup %r, got %r" % (0, sellable.markup))
+
+        # When the price specified isn't equivalent to the markup specified.
+        # In this case the price don't must be updated based on the markup.
+        product = Product(connection=self.conn)
+        sellable_info = BaseSellableInfo(description="Test", price=currency(100),
+                                         connection=self.conn)
+        sellable = product.addFacet(ISellable, markup=10, cost=50,
+                                    base_sellable_info=sellable_info,
+                                    connection=self.conn)
+        self.failUnless(sellable.price == 100)
+
+        # A simple test: product without cost and price, markup must be 0
+        sellable.cost = currency(0)
+        sellable.price = currency(0)
+        self.failUnless(sellable.markup == 0,
+                        "Expected markup %r, got %r" % (0, sellable.markup))

@@ -25,8 +25,6 @@
 ##
 """ Editors definitions for sellable"""
 
-import decimal
-
 from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 from kiwi.python import Settable
@@ -66,39 +64,11 @@ class SellablePriceEditor(BaseEditor):
 
     general_widgets = ('base_markup',)
 
-    def __init__(self, conn, model=None):
-        BaseEditor.__init__(self, conn, model)
-        self.update_markup()
-        self.update_commission()
-
     def set_widget_formats(self):
         widgets = (self.markup, self.base_markup, self.max_discount,
                    self.commission)
         for widget in widgets:
             widget.set_data_format(get_price_format_str())
-
-    def update_markup(self):
-        dec_one = decimal.Decimal('1.0')
-        price = self.model.price or dec_one
-        cost = self.model.cost or dec_one
-        self.model.markup = ((price / cost) - 1) * 100
-        self.main_proxy.update('markup')
-
-    def update_commission(self):
-        if self.model.commission is not None:
-            return
-        self.model.set_default_commission()
-        self.main_proxy.update('base_sellable_info.commission')
-
-    def update_price(self):
-        cost = self.model.cost
-        markup = self.model.markup
-        # XXX: Kiwi call spinbutton's callback two times, in the first one
-        # the spin value is None, so we need to manage this.
-        if markup is None:
-            return
-        self.model.base_sellable_info.price = cost + ((markup / 100) * cost)
-        self.main_proxy.update('price')
 
     #
     # BaseEditor hooks
@@ -109,12 +79,9 @@ class SellablePriceEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widget_formats()
-        self.main_proxy = self.add_proxy(self.model,
-                                         SellablePriceEditor.proxy_widgets)
-
+        self.main_proxy = self.add_proxy(self.model, SellablePriceEditor.proxy_widgets)
         if self.model.markup is not None:
             return
-
         sellable = ISellable(self.model.get_adapted())
         assert sellable
         self.model.markup = sellable.get_suggested_markup()
@@ -130,12 +97,12 @@ class SellablePriceEditor(BaseEditor):
 
     def after_price__content_changed(self, entry_box):
         self.handler_block(self.markup, 'changed')
-        self.update_markup()
+        self.main_proxy.update("markup")
         self.handler_unblock(self.markup, 'changed')
 
     def after_markup__content_changed(self, spin_button):
         self.handler_block(self.price, 'changed')
-        self.update_price()
+        self.main_proxy.update("price")
         self.handler_unblock(self.price, 'changed')
 
 
