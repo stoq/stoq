@@ -83,8 +83,9 @@ def setup(config, options=None, stoq_user_password=''):
     # NOTE: No GUI calls are allowed in here
     #       If you change anything here, you need to verify that all
     #       callsites are still working properly.
+    #       bin/debug
     #       bin/stoq
-    #       bin/init-database
+    #       bin/stoqdbadmin
     #       python stoq/tests/runtest.py
 
 
