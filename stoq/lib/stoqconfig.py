@@ -24,7 +24,6 @@
 """ Configuration file for stoq applications """
 
 import gettext
-import os
 import sys
 import time
 
@@ -50,7 +49,6 @@ log = Logger('stoq.config')
 
 class AppConfig:
     """AppConfig provides features for:
-       - Getting the application list
        - Initializing the framework for an application
     """
 
@@ -65,26 +63,8 @@ class AppConfig:
         except DatabaseError, e:
             self.abort_mission(str(e), _('Database Error'))
 
-        # Ensure user's application directory is created
-        configdir = self.config.get_config_directory()
-        self.check_dir_and_create(configdir)
-
         if not self.validate_user():
             raise LoginError('Could not authenticate in the system')
-
-    #
-    # Application list accessors
-    #
-
-    def check_dir_and_create(self, dir):
-        if not os.path.isdir(dir):
-            if os.path.exists(dir):
-                self.config.check_permissions(dir, executable=True)
-                os.remove(dir)
-                log.warn('A %s file already exist and was removed.' % dir)
-            os.mkdir(dir)
-            return
-        self.config.check_permissions(dir, executable=True)
 
     #
     # Application setup.
