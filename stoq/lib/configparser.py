@@ -211,15 +211,12 @@ dbusername=%(DBUSERNAME)s"""
         self._config.write(fd)
         fd.close()
 
-    def get_config_directory(self):
-        return os.path.join(os.getenv('HOME'), '.' + self.domain)
-
-    def remove_config_file(self):
+    def remove(self):
         self._check_permissions(self._filename)
         os.remove(self._filename)
 
-    def has_installed_config_data(self):
-        return self._filename != None
+    def get_config_directory(self):
+        return os.path.join(os.getenv('HOME'), '.' + self.domain)
 
     @argcheck(DatabaseSettings, int)
     def install_default(self, config_data, station_id=0):
@@ -251,7 +248,8 @@ dbusername=%(DBUSERNAME)s"""
         self._config.set("General", "station_id", str(station_id))
 
     def use_test_database(self):
-        self.set_database(self._get_option('testdb', section='Database'))
+        self._config.set('Database', 'dbname',
+                         self._get_option('testdb', section='Database'))
 
     def check_connection(self):
         """Checks the stored database rdbms settings and raises ConfigError
