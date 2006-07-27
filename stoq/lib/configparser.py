@@ -163,14 +163,7 @@ dbusername=%(DBUSERNAME)s"""
         data = open(filename).read()
         return binascii.a2b_base64(data)
 
-    #
-    # Public API
-    #
-
-    def get_config_directory(self):
-        return os.path.join(os.getenv('HOME'), '.' + self.domain)
-
-    def check_permissions(self, origin, writable=False, executable=False):
+    def _check_permissions(self, origin, writable=False, executable=False):
         # Make sure permissions are correct on relevant files/directories
         exception = None
         if not os.access(origin, os.R_OK):
@@ -182,8 +175,51 @@ dbusername=%(DBUSERNAME)s"""
         if exception:
             raise FilePermissionError(exception % origin)
 
+    def _has_option(self, name, section='General'):
+        return self._config.has_option(section, name)
+
+    def _get_option(self, name, section='General'):
+        if not section in StoqConfig.sections:
+            raise ConfigError('Invalid section: %s' % section)
+
+        if self._config.has_option(section, name):
+            return self._config.get(section, name)
+
+        raise NoConfigurationError('%s does not have option: %s' %
+                                   (self._filename, name))
+
+    def _set_option(self, section, name, value, write_to_file=False):
+        if not section in StoqConfig.sections:
+            raise ConfigError('Invalid section: %s' % section)
+
+        self._config.set(section, name, value)
+        if write_to_file:
+            self._write_config_data()
+
+    def _get_rdbms_name(self):
+        return self._get_option('rdbms', section='Database')
+
+    def _get_address(self):
+        return self._get_option('address', section='Database')
+
+    def _get_port(self):
+        return self._get_option('port', section='Database')
+
+    def _get_dbname(self):
+        return self._get_option('dbname', section='Database')
+
+    def _get_username(self):
+        return self._get_option('dbusername', section='Database')
+
+    #
+    # Public API
+    #
+
+    def get_config_directory(self):
+        return os.path.join(os.getenv('HOME'), '.' + self.domain)
+
     def remove_config_file(self):
-        self.check_permissions(self._filename)
+        self._check_permissions(self._filename)
         os.remove(self._filename)
 
     def has_installed_config_data(self):
@@ -210,33 +246,12 @@ dbusername=%(DBUSERNAME)s"""
         self._config.read(filename)
         self._filename = filename
 
-    def has_option(self, name, section='General'):
-        return self._config.has_option(section, name)
-
-    def get_option(self, name, section='General'):
-        if not section in StoqConfig.sections:
-            raise ConfigError('Invalid section: %s' % section)
-
-        if self._config.has_option(section, name):
-            return self._config.get(section, name)
-
-        raise NoConfigurationError('%s does not have option: %s' %
-                                   (self._filename, name))
-
-    def set_option(self, section, name, value, write_to_file=False):
-        if not section in StoqConfig.sections:
-            raise ConfigError('Invalid section: %s' % section)
-
-        self._config.set(section, name, value)
-        if write_to_file:
-            self._write_config_data()
-
     def set_station(self, station_id, write_to_file=False):
         """
         Overrides the station_id option
         @param station_id: the identifier of branch station
         """
-        self.set_option("General", "station_id", station_id, write_to_file)
+        self._set_option("General", "station_id", station_id, write_to_file)
 
     def set_database(self, database):
         """
@@ -274,7 +289,7 @@ dbusername=%(DBUSERNAME)s"""
         self._store_password(password)
 
     def use_test_database(self):
-        self.set_database(self.get_option('testdb', section='Database'))
+        self.set_database(self._get_option('testdb', section='Database'))
 
     def check_connection(self):
         """Checks the stored database rdbms settings and raises ConfigError
@@ -302,26 +317,11 @@ dbusername=%(DBUSERNAME)s"""
         @rtype: id
         """
 
-        station_id = self.get_option('station_id', section='General')
+        station_id = self._get_option('station_id', section='General')
         try:
             return int(station_id)
         except ValueError:
             raise AssertionError("Invalid station id: %s\n", station_id)
-
-    def get_rdbms_name(self):
-        return self.get_option('rdbms', section='Database')
-
-    def get_address(self):
-        return self.get_option('address', section='Database')
-
-    def get_port(self):
-        return self.get_option('port', section='Database')
-
-    def get_dbname(self):
-        return self.get_option('dbname', section='Database')
-
-    def get_username(self):
-        return self.get_option('dbusername', section='Database')
 
     def get_password(self):
         """
@@ -333,24 +333,25 @@ dbusername=%(DBUSERNAME)s"""
         return self._get_password(data_file)
 
     def get_connection_uri(self):
-        rdbms = self.get_rdbms_name()
-        dbname = self.get_option('dbname', section='Database')
+        rdbms = self._get_rdbms_name()
+        dbname = self._get_option('dbname', section='Database')
 
-        if self.has_option('dbusername', section='Database'):
-            username = self.get_option('dbusername', section='Database')
+        if self._has_option('dbusername', section='Database'):
+            username = self._get_option('dbusername', section='Database')
         else:
             username = os.getlogin()
-        return build_connection_uri(self.get_address(), self.get_port(),
+        return build_connection_uri(self._get_address(), self._get_port(),
                                     dbname, rdbms, username,
                                     self.get_password())
 
     def get_settings(self):
-        return DatabaseSettings(self.get_rdbms_name(),
-                                self.get_address(),
-                                self.get_port(),
-                                self.get_dbname(),
-                                self.get_username(),
+        return DatabaseSettings(self._get_rdbms_name(),
+                                self._get_address(),
+                                self._get_port(),
+                                self._get_dbname(),
+                                self._get_username(),
                                 self.get_password())
+
 
 #
 # General routines
