@@ -174,7 +174,8 @@ def create_examples(config):
     conn = get_connection()
     station = get_current_station(conn)
     if not station:
-        raise StoqlibError("You should have a valid station set at this"
-                           "point")
-    identifier = station.identifier
-    config.set_station(str(identifier), write_to_file=True)
+        raise StoqlibError(
+            "You should have a valid station set at this point")
+
+    config.set_station_id(station.identifier)
+    config.flush()
