@@ -621,5 +621,5 @@ class POSApp(AppWindow):
                                "at this point")
         self._edit_sellable_item(item)
 
-    def on_sellables__double_click(self, sellables, sellable):
+    def on_sellables__row_activated(self, sellables, sellable):
         self._edit_sellable_item(sellable)
