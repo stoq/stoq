@@ -93,7 +93,7 @@ class POSApp(AppWindow):
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
-        self.coupon = None
+        self._coupon = None
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
@@ -138,7 +138,7 @@ class POSApp(AppWindow):
         list was update and False if not
         """
         existing_item = [item for item in self.sellables
-                            if item.sellable.id == sellable.id]
+                                  if item.sellable.id == sellable.id]
         if not existing_item:
             return False
         item = existing_item[0]
@@ -348,7 +348,7 @@ class POSApp(AppWindow):
         if not get_current_till_operation(self.conn):
             warning(_(u"You need open the till before start doing sales."))
             return
-        if self.coupon is not None:
+        if self._coupon is not None:
             self._cancel_order()
         rollback_and_begin(self.conn)
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
@@ -372,8 +372,8 @@ class POSApp(AppWindow):
                 return
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
-            if self.coupon:
-                self.coupon.cancel()
+            if self._coupon:
+                self._coupon.cancel()
 
     def _add_delivery(self):
         if not self.sellables:
@@ -412,7 +412,7 @@ class POSApp(AppWindow):
             if can_confirm:
                 if not self._finish_coupon():
                     return
-            self.coupon = self.sale = None
+            self._coupon = self.sale = None
             self.conn.commit()
             self._clear_order()
         else:
@@ -439,18 +439,18 @@ class POSApp(AppWindow):
     #
 
     def _finish_coupon(self):
-        if not self.coupon:
+        if not self._coupon:
             return True
-        totalize = self.coupon.totalize()
-        has_payments = self.coupon.setup_payments()
-        close = self.coupon.close()
+        totalize = self._coupon.totalize()
+        has_payments = self._coupon.setup_payments()
+        close = self._coupon.close()
         return totalize and has_payments and close
 
     def _open_coupon(self):
-        self.coupon = FiscalCoupon(self.conn, self.sale)
+        self._coupon = FiscalCoupon(self.conn, self.sale)
         if self.sale.client:
-            self.coupon.identify_customer(self.sale.client.get_adapted())
-        while not self.coupon.open():
+            self._coupon.identify_customer(self.sale.client.get_adapted())
+        while not self._coupon.open():
             if yesno(_(u"It is not possible to start a new sale if the "
                        "fiscal coupon cannot be opened."),
                      gtk.RESPONSE_OK, _(u"Cancel"), _(u"Try Again")):
@@ -463,9 +463,9 @@ class POSApp(AppWindow):
         # Services do not must be added to the coupon
         if isinstance(sellable_item, ServiceSellableItem):
             return
-        if self.coupon is None:
+        if self._coupon is None:
             self._open_coupon()
-        self.coupon.add_item(sellable_item)
+        self._coupon.add_item(sellable_item)
 
     #
     # AppWindow Hooks
@@ -599,7 +599,7 @@ class POSApp(AppWindow):
     def on_remove_item_button__clicked(self, button):
         sellable = self.sellables.get_selected()
         if (not self.param.CONFIRM_SALES_ON_TILL
-            and not self.coupon.remove_item(sellable)):
+            and not self._coupon.remove_item(sellable)):
             return
         self._delete_sellable_item(sellable)
         self._select_first_item()
