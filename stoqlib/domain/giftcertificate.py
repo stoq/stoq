@@ -61,13 +61,6 @@ class GiftCertificateType(Domain):
                 kw['on_sale_info'] = OnSaleInfo(connection=conn)
         Domain._create(self, id, **kw)
 
-    #
-    # IDescribable implementation
-    #
-
-    def get_description(self):
-        return self.base_sellable_info.get_description()
-
     def get_status_string(self):
         if self.is_active:
             return _(u'Active')
@@ -76,6 +69,46 @@ class GiftCertificateType(Domain):
     @classmethod
     def get_active_gift_certificates(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.base_sellable_info.get_description()
+
+    #
+    # Accessors
+    #
+
+    def _set_price(self, price):
+        self.base_sellable_info.price = price
+
+    def _get_price(self):
+        return self.base_sellable_info.price
+
+    price = property(_get_price, _set_price)
+
+    def _get_commission(self):
+        return self.base_sellable_info.get_commission()
+
+    def _set_commission(self, commission):
+        self.base_sellable_info.commission = commission
+
+    commission = property(_get_commission, _set_commission)
+
+    def _set_description(self, description):
+        self.base_sellable_info.description = description
+
+    description = property(get_description, _set_description)
+
+    def _set_max_discount(self, value):
+        self.base_sellable_info.max_discount = value
+
+    def _get_max_discount(self):
+        return self.base_sellable_info.max_discount
+
+    max_discount = property(_get_max_discount, _set_max_discount)
 
 
 class GiftCertificateItem(AbstractSellableItem):
@@ -102,6 +135,11 @@ class GiftCertificateAdaptToSellable(AbstractSellable):
     # This is used by the payment group to find the gift certificates
     # used as a payment method
     group = ForeignKey('AbstractPaymentGroup', default=None)
+
+    def _create(self, id, **kw):
+        if 'status' not in kw:
+            kw['status'] = AbstractSellable.STATUS_AVAILABLE
+        AbstractSellable._create(self, id, **kw)
 
     def apply_as_payment_method(self):
         if self.status != self.STATUS_SOLD:
