@@ -364,8 +364,8 @@ class BranchSearch(BasePersonSearch):
     #
 
     def get_filter_slave(self):
-        statuses = [(value, key) for key, value in
-                    self.table.statuses.items()]
+        statuses = [(value, key)
+                    for key, value in self.table.statuses.items()]
         statuses.append((_('Any'), ALL_ITEMS_INDEX))
         filter_label = _('Show branches with status')
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
@@ -385,5 +385,5 @@ class BranchSearch(BasePersonSearch):
         elif status == self.table.STATUS_INACTIVE:
             return [branch for branch in branches if not branch.is_active]
         else:
-            raise ValueError('Invalid status for User table. got %s'
-                             % status)
+            raise ValueError(
+                'Invalid status for User table. got %s' % status)
