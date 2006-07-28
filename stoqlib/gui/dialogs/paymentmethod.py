@@ -73,7 +73,7 @@ class PaymentMethodsDialog(BasicDialog):
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",
                            self._on_klist__selection_changed)
-        self.klist.connect("double-click", self._on_klist__double_click)
+        self.klist.connect("row-activated", self._on_klist__row_activated)
         self.klist.connect("cell-edited", self.on_cell_edited)
         self.main.remove(self.main.get_child())
         self.main.add(self.klist)
@@ -123,5 +123,5 @@ class PaymentMethodsDialog(BasicDialog):
     def _on_edit_button__clicked(self, toolbar_slave):
         self._edit_item(self.klist.get_selected())
 
-    def _on_klist__double_click(self, list, data):
+    def _on_klist__row_activated(self, list, data):
         self._edit_item(data)
