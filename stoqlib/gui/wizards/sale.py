@@ -614,7 +614,8 @@ class ConfirmSaleWizard(AbstractSaleWizard):
         if self.gift_certificates:
             group = self.payment_group
             for certificate in self.gift_certificates:
-                group.add_payment(certificate)
+                # FIXME: This is wrong, we must use IPaymentGroup's add_payment
+                certificate.group = group
         self.model.confirm_sale(self.gift_certificate_settings)
         print_cheques_for_payment_group(self.conn,
                                         self.payment_group)
