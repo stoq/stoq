@@ -89,10 +89,11 @@ def setup(config, options=None, stoq_user_password=''):
     #       python stoq/tests/runtest.py
 
 
-    if options.verbose:
-        set_verbose(options.verbose)
+    if options:
+        if options.verbose:
+            set_verbose(options.verbose)
 
-    config.set_from_options(options)
+        config.set_from_options(options)
 
     register_config(config)
 
