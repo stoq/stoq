@@ -37,7 +37,8 @@ from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 
-MAX_PURCHASES_NUMBER = 4
+EXPECTED_BRANCHES = 1
+MAX_PURCHASES_NUMBER = 3
 SELLABLES_PER_PURCHASE = 2
 
 def create_purchases():
@@ -52,9 +53,11 @@ def create_purchases():
 
     branch_table = Person.getAdapterClass(IBranch)
     branches = branch_table.get_active_branches(conn)
-    if branches.count() < MAX_PURCHASES_NUMBER:
-        raise ValueError('You must have at least %d branches in your '
-                         'database at this point.' % MAX_PURCHASES_NUMBER)
+    if branches.count() != EXPECTED_BRANCHES:
+        raise ValueError(
+            'Expected %d branches in your database, but found %d' % (
+            EXPECTED_BRANCHES, branches.count()))
+    branch = branches[0]
 
     sellables = AbstractSellable.select(connection=conn)
     sellables_total = SELLABLES_PER_PURCHASE * MAX_PURCHASES_NUMBER
@@ -95,10 +98,10 @@ def create_purchases():
                           surcharge_value=currency(Decimal('34.32')))]
 
     sellable_index = 0
+
     for index in range(MAX_PURCHASES_NUMBER):
 
         supplier = suppliers[index]
-        branch = branches[index]
 
         purchase_args = purchase_data[index]
         order = PurchaseOrder(connection=conn, supplier=supplier,
@@ -119,7 +122,7 @@ def create_purchases():
     new_order = PurchaseOrder(connection=conn,
                               status=PurchaseOrder.ORDER_PENDING,
                               supplier=suppliers[1],
-                              branch=branches[1])
+                              branch=branch)
     new_order.set_valid()
     new_order.addFacet(IPaymentGroup,
                        default_method=METHOD_BILL,

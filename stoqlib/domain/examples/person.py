@@ -39,7 +39,7 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
                                    CityLocation, EmployeeRoleHistory,
                                    BranchStation)
-from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
+from stoqlib.domain.interfaces import (ICompany, ISupplier, 
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
                                        IUser, ICreditProvider,
@@ -175,8 +175,6 @@ def create_people():
 
         person_obj.addFacet(IClient, connection=conn)
         person_obj.addFacet(ISupplier, connection=conn)
-        branch = person_obj.addFacet(IBranch, connection=conn)
-        branch.manager = Person(connection=conn, name="Manager")
 
         credit_provider = credit_provider_data[index]
         person_obj.addFacet(ICreditProvider, connection=conn,
@@ -217,6 +215,8 @@ def create_people():
 
     # Setting up the current branch
     branch = sysparam(conn).MAIN_COMPANY
+    # Set the manager to the last created person
+    branch.manager = person_obj
     register_current_branch_identifier(branch.identifier)
 
     person = branch.get_adapted()
