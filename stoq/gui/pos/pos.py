@@ -333,8 +333,8 @@ class POSApp(AppWindow):
 
     def _edit_sellable_item(self, item):
         if not isinstance(item, ServiceSellableItem):
-            raise StoqlibError("You should have a Service selected "
-                               "at this point.")
+            # Do not raise any exception here, since this method can be called
+            # when the user activate a row with product in the sellables list.
             return
         if IDelivery(item, connection=self.conn):
             editor = DeliveryEditor
