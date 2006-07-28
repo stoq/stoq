@@ -53,7 +53,7 @@ class ClientDetailsDialog(BaseEditor):
         - all services tied with sales
         - all payments already created
     """
-    title = _("Client Details")
+    title = _(u"Client Details")
     hide_footer = True
     size = (780, 400)
     model_type = PersonAdaptToClient
