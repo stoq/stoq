@@ -36,9 +36,7 @@ from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
 _connection = None
 _current_user = None
 _verbose = False
-_test_mode = False
 _app_names = []
-_database_settings = None
 
 
 #
@@ -132,7 +130,6 @@ def print_msg(message, break_line=True):
     if not _verbose:
         return
     print_immediately(message, break_line)
-
 
 def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
