@@ -28,9 +28,8 @@ import sys
 import gettext
 from decimal import Decimal
 
-from kiwi.python import Settable
 from kiwi.argcheck import argcheck
-
+from kiwi.python import Settable
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
