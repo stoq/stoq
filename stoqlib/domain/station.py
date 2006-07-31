@@ -23,12 +23,16 @@
 ##
 """ Station, a branch station per computer """
 
+import socket
+
 from sqlobject import UnicodeCol, ForeignKey, BoolCol
+from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.columns import AutoIncCol
-from stoqlib.domain.interfaces import IActive
+from stoqlib.domain.interfaces import IActive, IBranch
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -77,3 +81,34 @@ class BranchStation(Domain):
         return u"%05d" % self.identifier
 
 
+def create_station(conn, branch=None):
+    """
+    Create a new station id for the current machine.
+    Optionally a branch can be specified which will be set as the branch
+    for created station.
+
+    @param conn: a database connection
+    @param branch: Branch
+    @returns: the name of the created station
+    @rtype: string
+    """
+    from stoqlib.domain.person import Person
+
+    if not branch:
+        branches = Person.iselect(IBranch, connection=conn)
+        if branches.count() != 1:
+            raise StoqlibError("More than one branch detected")
+        branch = branches[0]
+
+    name = socket.gethostname()
+
+    stations = BranchStation.select(
+        AND(BranchStation.q.name == name,
+            BranchStation.q.branchID == branch.id), connection=conn)
+    if stations.count() != 0:
+        raise StoqlibError(
+            "There is already a station registered as `%s'." % name)
+
+    BranchStation(name=name, is_active=True, branch=branch, connection=conn)
+
+    return name
