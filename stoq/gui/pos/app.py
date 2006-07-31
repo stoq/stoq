@@ -24,13 +24,28 @@
 """
 stoq/gui/pos/app.py:
 
-    Main callsite for POS application    
+    Main callsite for POS application
 """
+
+import gettext
+
+from stoqlib.domain.till import get_current_till_operation
+from stoqlib.lib.message import error
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import get_connection
 
 from stoq.gui.application import App
 from stoq.gui.pos.pos import POSApp
 
+_ = gettext.gettext
+
 # Here we define config in the call site: /bin/stoq file
 def main(config):
+    conn = get_connection()
+    param = sysparam(conn)
+    if (param.POS_SEPARATE_CASHIER and
+        not get_current_till_operation(conn)):
+        error(_(u"You need to open the till before start doing sales."))
+
     app = App(POSApp, config)
     app.run()
