@@ -56,14 +56,6 @@ class StoqConfig:
 # to allow output to be sent to stderr/stdout
 logfile=~/.%(DOMAIN)s/application.log
 
-# Set here the Branch Station identifier for the current station. Note that
-# this field is not used when running an example database
-#
-# Warning: you should never change this option unless you know exactly what are
-# you doing
-#
-station_id=%(STATION_ID)s
-
 [Database]
 # Choose here the relational database management system you would like to
 # use. Available is: postgres
@@ -240,8 +232,8 @@ dbusername=%(DBUSERNAME)s"""
     def get_config_directory(self):
         return os.path.join(os.getenv('HOME'), '.' + self.domain)
 
-    @argcheck(DatabaseSettings, int)
-    def install_default(self, config_data, station_id=0):
+    @argcheck(DatabaseSettings)
+    def install_default(self, config_data):
         password = config_data.password
 
         self._store_password(password)
@@ -253,21 +245,12 @@ dbusername=%(DBUSERNAME)s"""
                            PORT=config_data.port,
                            ADDRESS=config_data.address,
                            DBNAME=config_data.dbname,
-                           STATION_ID=station_id,
                            TESTDB=config_data.dbname,
                            DBUSERNAME=config_data.username)
         fd.write(StoqConfig.config_template % config_dict)
         fd.close()
         self._config.read(filename)
         self._filename = filename
-
-    def set_station_id(self, station_id):
-        """
-        Overrides the station_id option
-        @param station_id: the identifier of branch station
-        @type station_id: integer
-        """
-        self._config.set("General", "station_id", str(station_id))
 
     def use_test_database(self):
         self._config.set('Database', 'dbname',
@@ -290,24 +273,6 @@ dbusername=%(DBUSERNAME)s"""
     #
     # Accessors
     #
-
-    def get_station_id(self):
-        """
-        Retrevies the station id for the current installation.
-
-        @returns: station id
-        @rtype: id
-        """
-
-        # XXX: Remove
-        if not self._has_option('station_id', section='General'):
-            return 0
-
-        station_id = self._get_option('station_id', section='General')
-        try:
-            return int(station_id)
-        except ValueError:
-            raise AssertionError("Invalid station id: %s\n", station_id)
 
     def get_password(self):
         """
