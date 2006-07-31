@@ -183,7 +183,7 @@ class Sale(Domain):
         return percentage
 
     surcharge_percentage = property(_get_surcharge_by_percentage,
-                                 _set_surcharge_by_percentage)
+                                    _set_surcharge_by_percentage)
 
     #
     # SQLObject hooks
