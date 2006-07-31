@@ -32,16 +32,18 @@ from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
-from stoqlib.lib.message import warning
-from stoqlib.lib.runtime import new_transaction, get_connection
-from stoqlib.lib.validators import validate_password
-from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
-                                      BaseWizardStep)
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
-from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
-from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IUser
+from stoqlib.domain.person import Person, PersonAdaptToBranch
+from stoqlib.domain.station import BranchStation
+from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
+                                      BaseWizardStep)
+from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
+from stoqlib.lib.message import warning
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.runtime import new_transaction, get_connection
+from stoqlib.lib.validators import validate_password
 
 from stoq.lib.configparser import StoqConfig, register_config
 from stoq.lib.startup import setup, set_branch_by_stationid
@@ -88,18 +90,16 @@ class DeviceSettingsStep(BaseWizardStep):
 class BranchStationSettingsStep(WizardEditorStep):
     gladefile = 'BranchStationSettingsStep'
 
-    def __init__(self, conn, wizard, branch_company, previous):
+    def __init__(self, conn, wizard, branch, previous):
         # This line avoid some problems when importing domain data before
         # setting up the database. That's why we are not using model_type as
         # a class attribute
-        from stoqlib.domain.person import BranchStation
         model = BranchStation(connection=conn, name=None,
-                              branch=branch_company)
+                              branch=branch)
         self.model_type = BranchStation
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        from stoqlib.domain.person import PersonAdaptToBranch
         table = PersonAdaptToBranch
         items = [(branch.get_description(), branch)
                     for branch in table.get_active_branches(self.conn)]
@@ -140,7 +140,6 @@ class BranchStationSettingsStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        from stoqlib.lib.parameters import sysparam
         self.id_proxy = self.add_proxy(self.model, ['identifier'])
 
         model = Settable(name=u"", branch=sysparam(self.conn).MAIN_COMPANY)
@@ -159,10 +158,6 @@ class BranchSettingsStep(WizardEditorStep):
 
 
     def __init__(self, conn, wizard, model, previous):
-        # This line avoid some problems when importing domain data before
-        # setting up the database
-        from stoqlib.domain.person import Person
-        from stoqlib.lib.parameters import sysparam
         self.param = sysparam(conn)
         self.model_type = Person
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -207,10 +202,10 @@ class BranchSettingsStep(WizardEditorStep):
         self.name.grab_focus()
 
     def next_step(self):
-        model = self.param.MAIN_COMPANY
-        self._update_system_parameters(model)
+        branch = self.param.MAIN_COMPANY
+        self._update_system_parameters(branch)
         conn = self.wizard.get_connection()
-        return BranchStationSettingsStep(conn, self.wizard, model, self)
+        return BranchStationSettingsStep(conn, self.wizard, branch, self)
 
     def setup_proxies(self):
         widgets = BranchSettingsStep.person_widgets
@@ -332,7 +327,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         return True
 
     def next_step(self):
-        from stoqlib.lib.parameters import sysparam
         password = self.wizard_model.stoq_user_data.password
 
         has_installed_db = check_installed_database()
