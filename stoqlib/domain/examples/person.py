@@ -29,17 +29,17 @@ import datetime
 import gettext
 import decimal
 
+from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 
-from stoqlib.lib.runtime import (new_transaction, print_msg,
-                                 register_current_station_identifier,
-                                 register_current_branch_identifier)
+from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
                                    CityLocation, EmployeeRoleHistory,
                                    BranchStation)
-from stoqlib.domain.interfaces import (ICompany, ISupplier, 
+from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
                                        IUser, ICreditProvider,
@@ -217,7 +217,7 @@ def create_people():
     branch = sysparam(conn).MAIN_COMPANY
     # Set the manager to the last created person
     branch.manager = person_obj
-    register_current_branch_identifier(branch.identifier)
+    provide_utility(ICurrentBranch, branch)
 
     person = branch.get_adapted()
     person.name = u"Async Open Source"
@@ -242,7 +242,7 @@ def create_people():
     # Creating the current station
     station = BranchStation(name=u"Stoqlib station", branch=branch,
                             connection=conn, is_active=True)
-    register_current_station_identifier(station.identifier)
+    provide_utility(ICurrentBranchStation, station)
 
     conn.commit()
     print_msg('done.')
