@@ -37,7 +37,7 @@ from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import UNIT_WEIGHT
 from stoqlib.exceptions import (StoqlibError, DatabaseInconsistency)
 from stoqlib.database import rollback_and_begin, finish_transaction
-from stoqlib.lib.message import error, warning, yesno
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
@@ -86,10 +86,6 @@ class POSApp(AppWindow):
     def __init__(self, app):
         AppWindow.__init__(self, app)
         self.param = sysparam(self.conn)
-        if (self.param.POS_SEPARATE_CASHIER
-            and not get_current_till_operation(self.conn)):
-            error(_(u"You need to open the till before start doing sales."))
-            self.app.shutdown()
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
