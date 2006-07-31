@@ -31,11 +31,12 @@ class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
 
-    def _read_config(self, options):
+    def _read_config(self, options, create=False):
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig(options.filename)
-        config.check_connection()
+        if create:
+            config.create()
         setup(config, options)
         return config
 
@@ -93,6 +94,16 @@ class StoqCommandHandler:
         group.add_option('-e', '--create-examples',
                          action='store_true',
                          dest='create_examples')
+
+    def cmd_configure(self, options):
+        if not options.dbname:
+            print 'dbname missing'
+            return 1
+        if not options.address:
+            print 'address missing'
+            return 1
+        config = self._read_config(options, create=True)
+        config.flush()
 
 def main(args):
     pname = args[0]

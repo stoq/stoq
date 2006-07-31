@@ -185,23 +185,45 @@ dbusername=%(DBUSERNAME)s"""
                                    (self._filename, name))
 
     def _get_rdbms_name(self):
+        if not self._has_option('rdbms', section='Database'):
+            return 'postgres'
         return self._get_option('rdbms', section='Database')
 
     def _get_address(self):
         return self._get_option('address', section='Database')
 
     def _get_port(self):
+        if not self._has_option('port', section='Database'):
+            return '5432'
         return self._get_option('port', section='Database')
 
     def _get_dbname(self):
+        if not self._has_option('dbname', section='Database'):
+            return self._get_username()
         return self._get_option('dbname', section='Database')
 
     def _get_username(self):
+        if not self._has_option('dbusername', section='Database'):
+            import pwd
+            return pwd.getpwuid(os.getuid())[0]
         return self._get_option('dbusername', section='Database')
 
     #
     # Public API
     #
+
+    def create(self):
+        config_dir = self.get_config_directory()
+        if not os.path.exists(config_dir):
+            os.mkdir(config_dir)
+        self._filename = os.path.join(
+            config_dir, StoqConfig.domain + '.conf')
+
+        if not self._config.has_section('General'):
+            self._config.add_section('General')
+
+        if not self._config.has_section('Database'):
+            self._config.add_section('Database')
 
     def flush(self):
         """
@@ -277,6 +299,10 @@ dbusername=%(DBUSERNAME)s"""
         @rtype: id
         """
 
+        # XXX: Remove
+        if not self._has_option('station_id', section='General'):
+            return 0
+
         station_id = self._get_option('station_id', section='General')
         try:
             return int(station_id)
@@ -320,7 +346,7 @@ dbusername=%(DBUSERNAME)s"""
         """
 
         if options.address:
-            self._config.set('Database', 'address', options.hostname)
+            self._config.set('Database', 'address', options.address)
         if options.port:
             self._config.set('Database', 'port', options.port)
         if options.dbname:
