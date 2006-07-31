@@ -79,14 +79,22 @@ def _initialize(options):
     config = StoqConfig(filename=options.filename)
     config_dir = config.get_config_directory()
 
+    wizard = False
     if not os.path.exists(os.path.join(config_dir, 'stoq.conf')):
         _run_first_time_wizard(config)
-        return
+        wizard = True
 
+    # There must be ICookieFile registration now, regardless if we
+    # ran the wizard or not
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
     cookiefile = os.path.join(config_dir, "cookie")
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+
+    # The rest is only necessary when we're not running the first-time
+    # configuration wizard, so we can safely skip out
+    if wizard:
+        return
 
     try:
         config.check_connection()
