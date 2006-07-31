@@ -33,7 +33,6 @@ import socket
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
-from sqlobject.sqlbuilder import AND
 from stoqlib.database import check_installed_database
 from stoqlib.domain.person import BranchStation
 from stoqlib.lib.admin import initialize_system
@@ -41,7 +40,7 @@ from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
 from stoqlib.lib.parameters import check_parameter_presence
-from stoqlib.lib.runtime import get_connection, set_verbose,
+from stoqlib.lib.runtime import get_connection, set_verbose
 
 from stoq.lib.configparser import register_config, StoqConfig
 
@@ -49,8 +48,6 @@ _ = gettext.gettext
 
 def set_branch_by_stationid(conn):
     name = socket.gethostname()
-    query = AND(BranchStation.q.is_active == True,
-                )
     stations = BranchStation.select(
         BranchStation.q.name == name, connection=conn)
     if stations.count() == 0:
