@@ -26,57 +26,55 @@
 ##
 """ Database startup routines"""
 
+import gettext
 import optparse
+import socket
 
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from sqlobject.sqlbuilder import AND
-
-from stoqlib.exceptions import StoqlibError
 from stoqlib.database import check_installed_database
+from stoqlib.domain.person import BranchStation
 from stoqlib.lib.admin import initialize_system
 from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
 from stoqlib.lib.parameters import check_parameter_presence
-from stoqlib.lib.runtime import (get_connection, set_verbose,
-                                 get_current_station)
+from stoqlib.lib.runtime import get_connection, set_verbose,
 
 from stoq.lib.configparser import register_config, StoqConfig
 
-def set_branch_by_stationid(identifier, conn=None):
-    from stoqlib.domain.person import BranchStation
-    conn = conn or get_connection()
+_ = gettext.gettext
 
-    try:
-        identifier = int(identifier)
-    except ValueError, e:
-        error("Invalid configuration settings for identifier, got %s"
-              % identifier)
-
-    if not identifier:
-        # We are configuring a new computer -> skip
-        return
-    table = BranchStation
-    q1 = table.q.is_active == True
-    q2 = table.q.identifier == identifier
-    query = AND(q1, q2)
-    stations = table.select(query, connection=conn)
-    if stations.count() != 1:
-        raise StoqlibError("You should have one station for the identifier "
-                           "%s, got %d." % (identifier, stations.count()))
+def set_branch_by_stationid(conn):
+    name = socket.gethostname()
+    query = AND(BranchStation.q.is_active == True,
+                )
+    stations = BranchStation.select(
+        BranchStation.q.name == name, connection=conn)
+    if stations.count() == 0:
+        error(_("The computer <u>%s</u> is not registered in Stoq") % name,
+              _("To solve this, open the administrator application "
+                "and register this computer."))
     station = stations[0]
+
+    if not station.is_active:
+        error(_("The computer <u>%s</u> is not active in Stoq") % name,
+              _("To solve this, open the administrator application "
+                "and re-activate this computer."))
 
     provide_utility(ICurrentBranchStation, station)
     provide_utility(ICurrentBranch, station.branch)
 
-def setup(config, options=None, stoq_user_password=''):
+def setup(config, options=None, stoq_user_password='',
+          register_station=True):
     """
     Loads the configuration from arguments and configuration file.
 
     @param config: a StoqConfig instance
     @param options: a Optionparser instance
+    @param register_station: if we should register the branch station.
     """
 
     # NOTE: No GUI calls are allowed in here
@@ -87,7 +85,6 @@ def setup(config, options=None, stoq_user_password=''):
     #       bin/stoqdbadmin
     #       python stoq/tests/runtest.py
 
-
     if options:
         if options.verbose:
             set_verbose(options.verbose)
@@ -96,6 +93,7 @@ def setup(config, options=None, stoq_user_password=''):
 
     register_config(config)
 
+    conn = get_connection()
     if (options and options.clean) or not check_installed_database():
         if not options:
             password = stoq_user_password
@@ -105,11 +103,12 @@ def setup(config, options=None, stoq_user_password=''):
             verbose = options.verbose
         initialize_system(password or '', verbose=verbose)
     else:
-        set_branch_by_stationid(config.get_station_id())
+        if register_station:
+            set_branch_by_stationid(conn)
         schema_migration.update_schema()
         check_parameter_presence()
 
-    sqlhub.threadConnection = get_connection()
+    sqlhub.threadConnection = conn
 
 
 def get_option_parser():
@@ -172,11 +171,3 @@ def create_examples(config):
     """Create example database for a given config file"""
     from stoqlib.domain.examples.createall import create
     create()
-    conn = get_connection()
-    station = get_current_station(conn)
-    if not station:
-        raise StoqlibError(
-            "You should have a valid station set at this point")
-
-    config.set_station_id(station.identifier)
-    config.flush()

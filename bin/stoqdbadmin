@@ -31,13 +31,13 @@ class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
 
-    def _read_config(self, options, create=False):
+    def _read_config(self, options, create=False, register_station=True):
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig(options.filename)
         if create:
             config.create()
-        setup(config, options)
+        setup(config, options, register_station=register_station)
         return config
 
     def add_options(self, parser, cmd):
@@ -90,6 +90,9 @@ class StoqCommandHandler:
             from stoq.lib.startup import create_examples
             create_examples(config)
 
+        # Also register the current computer as a branch station
+        self._register(options.verbose)
+
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
                          action='store_true',
@@ -104,6 +107,26 @@ class StoqCommandHandler:
             return 1
         config = self._read_config(options, create=True)
         config.flush()
+
+    def cmd_register(self, options):
+        self._read_config(options, register_station=False)
+
+        self._register(True)
+
+    def _register(self, verbose):
+        from stoqlib.domain.station import create_station
+        from stoqlib.exceptions import StoqlibError
+        from stoqlib.lib.runtime import new_transaction
+
+        conn = new_transaction()
+        try:
+            station_name = create_station(conn, branch=None)
+        except StoqlibError, e:
+            raise SystemExit("ERROR: %s" % e)
+        conn.commit()
+
+        if verbose:
+            print 'Registered a new station: %s' % station_name
 
 def main(args):
     pname = args[0]

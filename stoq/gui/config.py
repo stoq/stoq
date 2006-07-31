@@ -34,8 +34,8 @@ from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
 from stoqlib.domain.interfaces import IUser
-from stoqlib.domain.person import Person, PersonAdaptToBranch
-from stoqlib.domain.station import BranchStation
+from stoqlib.domain.person import Person
+from stoqlib.domain.station import create_station
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
@@ -83,67 +83,6 @@ class DeviceSettingsStep(BaseWizardStep):
 
     def has_next_step(self):
         return False
-
-
-
-class BranchStationSettingsStep(WizardEditorStep):
-    gladefile = 'BranchStationSettingsStep'
-
-    def __init__(self, conn, wizard, branch, previous):
-        # This line avoid some problems when importing domain data before
-        # setting up the database. That's why we are not using model_type as
-        # a class attribute
-        model = BranchStation(connection=conn, name=None,
-                              branch=branch)
-        self.model_type = BranchStation
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
-
-    def _setup_widgets(self):
-        table = PersonAdaptToBranch
-        items = [(branch.get_description(), branch)
-                    for branch in table.get_active_branches(self.conn)]
-        self.branch.prefill(items)
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-        self.branch_company_title.set_size('medium')
-        self.branch_company_title.set_bold(True)
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-        self.name.grab_focus()
-
-    def validate_step(self):
-        conn = get_connection()
-        name = self.station_proxy.model.name
-        if self.model_type.selectBy(name=name, connection=conn).count():
-            self.name.set_invalid(_(u"This station name already exists"))
-            self.force_validation()
-            return False
-        return True
-
-    def next_step(self):
-        self.model.name = self.station_proxy.model.name
-        # Avoid having unused active stations on database if user go back
-        # to this step
-        self.model.activate()
-        self.wizard.install_default(self.model.identifier)
-
-        set_branch_by_stationid(self.wizard.config.get_station_id(),
-                                self.conn)
-        return DeviceSettingsStep(self.conn, self.wizard, self.model, self)
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.id_proxy = self.add_proxy(self.model, ['identifier'])
-
-        model = Settable(name=u"", branch=sysparam(self.conn).MAIN_COMPANY)
-        self.station_proxy = self.add_proxy(model, ['name', 'branch'])
-
 
 class BranchSettingsStep(WizardEditorStep):
     gladefile = 'BranchSettingsStep'
@@ -204,7 +143,7 @@ class BranchSettingsStep(WizardEditorStep):
         branch = self.param.MAIN_COMPANY
         self._update_system_parameters(branch)
         conn = self.wizard.get_connection()
-        return BranchStationSettingsStep(conn, self.wizard, branch, self)
+        return DeviceSettingsStep(conn, self.wizard, self.model, self)
 
     def setup_proxies(self):
         widgets = BranchSettingsStep.person_widgets
@@ -331,7 +270,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         has_installed_db = check_installed_database()
         # Initialize database connections and create system data if the
         # database is empty
-        setup(self.wizard.config, stoq_user_password=password)
+        setup(self.wizard.config, stoq_user_password=password,
+              register_station=False)
 
         existing_conn = self.wizard.get_connection()
         if existing_conn:
@@ -347,7 +287,17 @@ class DatabaseSettingsStep(WizardEditorStep):
             step_class = BranchSettingsStep
             model = model.get_adapted()
         else:
-            step_class = BranchStationSettingsStep
+            step_class = DeviceSettingsStep
+
+        try:
+            create_station(conn)
+        except StoqlibError:
+            # This happens when a station already exists, it's fine
+            # so we can just ignore the error
+            pass
+
+        set_branch_by_stationid(conn)
+
         return step_class(conn, self.wizard, model, self)
 
     def setup_proxies(self):
@@ -392,8 +342,8 @@ class FirstTimeConfigWizard(BaseWizard):
     def get_connection(self):
         return self._conn
 
-    def install_default(self, station_id=0):
-        self.config.install_default(self.model.db_settings, station_id)
+    def install_default(self):
+        self.config.install_default(self.model.db_settings)
 
     #
     # WizardStep hooks
