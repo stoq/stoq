@@ -26,16 +26,15 @@
 import sys
 from datetime import datetime
 
+from kiwi.argcheck import argcheck
+from kiwi.component import get_utility
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
-from kiwi.argcheck import argcheck
 
-from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
 
 _connection = None
 _current_user = None
-_current_branch_identifier = None
-_current_station_identifier = None
 _verbose = False
 _test_mode = False
 _app_names = []
@@ -164,58 +163,17 @@ def get_application_names():
     global _app_names
     return _app_names
 
-
-#
-# Managing Stations and Branch Companies
-#
-
-
-def _get_data_by_identifier(identifier, table, conn):
-    if not identifier > 0:
-        raise StoqlibError("You should have a valid registered identifier "
-                           "at this point")
-
-    items = table.selectBy(identifier=identifier, connection=conn)
-    qty = items.count()
-    if qty != 1:
-        raise StoqlibError("You should have only one item for the "
-                           "registered identifier %d, got %d"
-                           % (identifier, qty))
-    return items[0]
-
-
-@argcheck(int)
-def register_current_branch_identifier(identifier):
-    """Register the current branch company which is using the system by its
-    identifier attribute value
-    """
-    global _current_branch_identifier
-    _current_branch_identifier = identifier
-
-
 def get_current_branch(conn):
     """Returns the current branch company logged in the stoqlib applications
     """
-    from stoqlib.domain.person import PersonAdaptToBranch
-    global _current_branch_identifier
-    return _get_data_by_identifier(_current_branch_identifier,
-                                   PersonAdaptToBranch, conn)
 
-
-@argcheck(int)
-def register_current_station_identifier(identifier):
-    """Register the current branch company which is using the system by its
-    identifier attribute value
-    """
-    global _current_station_identifier
-    _current_station_identifier = identifier
-
+    branch = get_utility(ICurrentBranch)
+    return branch.get(branch.id, connection=conn)
 
 def get_current_station(conn):
     """Returns the current station (computer) where the stoqlib applications
     are running on
     """
-    from stoqlib.domain.person import BranchStation
-    global _current_station_identifier
-    return _get_data_by_identifier(_current_station_identifier,
-                                   BranchStation, conn)
+    station = get_utility(ICurrentBranchStation)
+    return station.get(station.id, connection=conn)
+

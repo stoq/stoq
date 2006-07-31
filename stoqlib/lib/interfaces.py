@@ -50,3 +50,16 @@ class ICookieFile(Interface):
         """
         Resets the cookie
         """
+
+class ICurrentBranch(Interface):
+    """
+    This is a mainly a marker for the current branch which is expected
+    to implement L{stoqlib.domain.interfaces.IBranch}
+    It's mainly used by get_current_branch()
+    """
+
+class ICurrentBranchStation(Interface):
+    """
+    This is a mainly a marker for the current branch station.
+    It's mainly used by get_current_station()
+    """
