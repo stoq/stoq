@@ -24,7 +24,6 @@
 """ Configuration file for stoq applications """
 
 import gettext
-import sys
 import time
 
 import gtk
@@ -37,7 +36,6 @@ from stoqlib.lib.interfaces import CookieError, ICookieFile, ICurrentUser
 from stoqlib.lib.message import warning
 from stoqlib.lib.runtime import get_connection
 from stoqlib.domain.person import PersonAdaptToUser
-from stoqlib.domain.tables import get_table_types
 
 from stoq.gui.login import StoqLoginDialog
 from stoq.lib.configparser import get_config
@@ -58,36 +56,8 @@ class AppConfig:
 
         self.config = get_config()
 
-        try:
-            self._check_tables()
-        except DatabaseError, e:
-            self.abort_mission(str(e), _('Database Error'))
-
         if not self.validate_user():
             raise LoginError('Could not authenticate in the system')
-
-    #
-    # Application setup.
-    #
-
-    def _check_tables(self):
-        # We must check if all the tables are already in the database.
-        conn = get_connection()
-
-        for table_type in get_table_types():
-            classname = table_type.get_db_table_name()
-            try:
-                if not conn.tableExists(classname):
-                    msg = _("Outdated schema. Table %s doesn't exist.\n"
-                            "Run init-database script to fix this problem."
-                            % classname)
-                    raise DatabaseError, msg
-            except:
-                type, value, trace = sys.exc_info()
-                # TODO Raise a proper error if the database doesn't exist.
-                msg = _("An error ocurred trying to access the database\n"
-                        "This is the database error:\n%s. Error type is %s")
-                raise DatabaseError(msg % (value, type))
 
 
     #

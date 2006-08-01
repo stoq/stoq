@@ -115,6 +115,29 @@ def _initialize(options):
         raise SystemExit("Error: bad connection settings provided")
 
 
+def _check_tables():
+    from stoqlib.domain.tables import get_table_types
+    from stoqlib.exceptions import DatabaseError
+    from stoqlib.lib.runtime import get_connection
+
+    # We must check if all the tables are already in the database.
+    conn = get_connection()
+
+    for table_type in get_table_types():
+        classname = table_type.get_db_table_name()
+        try:
+            if not conn.tableExists(classname):
+                msg = _("Outdated schema. Table %s doesn't exist.\n"
+                        "Run init-database script to fix this problem."
+                        % classname)
+                raise DatabaseError, msg
+        except:
+            type, value, trace = sys.exc_info()
+            # TODO Raise a proper error if the database doesn't exist.
+            msg = _("An error ocurred trying to access the database\n"
+                    "This is the database error:\n%s. Error type is %s")
+            raise DatabaseError(msg % (value, type))
+
 def _run_app(options, appname):
     from stoq.lib.stoqconfig import AppConfig, show_splash
     from stoqlib.gui.base.gtkadds import register_iconsets
@@ -124,6 +147,9 @@ def _run_app(options, appname):
 
     log.info('register stock icons')
     register_iconsets()
+
+    log.info('checking tables')
+    _check_tables()
 
     log.info('loading application')
     appconf = AppConfig(appname)
