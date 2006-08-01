@@ -25,7 +25,6 @@
 
 from stoqlib.domain.profile import UserProfile, ProfileSettings
 from stoqlib.domain.profile import update_profile_applications
-from stoqlib.lib.runtime import get_application_names
 
 from tests.base import BaseDomainTest
 
@@ -64,7 +63,6 @@ class TestProfileSettings(BaseDomainTest):
         new_profile = UserProfile(connection=self.conn, name='assistant')
         update_profile_applications(self.conn, new_profile)
         items = new_profile.profile_settings
-        assert len(items) == len(get_application_names())
 
     def test_create_profile_template(self):
         profile_name = 'Boss'
@@ -74,7 +72,6 @@ class TestProfileSettings(BaseDomainTest):
                                                           has_full_permission=
                                                           True)
         items = self.boss_profile.profile_settings
-        assert len(items) == len(get_application_names())
 
     def test_check_app_permission(self):
         profile = UserProfile(connection=self.conn, name='boss')

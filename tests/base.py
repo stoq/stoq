@@ -31,6 +31,7 @@ import os
 import pwd
 import sys
 
+from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
@@ -40,6 +41,7 @@ from stoqlib.database import finish_transaction, Adapter
 from stoqlib.database import register_db_settings, DatabaseSettings
 from stoqlib.domain.columns import SOPriceCol
 from stoqlib.lib.admin import initialize_system
+from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.runtime import set_verbose, new_transaction
 
 # Default values for automatic instance creation and set value tests.
@@ -240,6 +242,15 @@ class BaseDomainTest(unittest.TestCase):
             setattr(self._instance, key, value)
             db_value = getattr(self._instance, key)
             self._check_set_and_get(value, db_value, key)
+
+# Provide a fake description utility, the ProfileSettings class depends on it
+class FakeApplicationDescriptions:
+    def get_application_names(self):
+        return []
+
+    def get_descriptions(self):
+        return []
+provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
 
 def bootstrap_testsuite():
     verbose = False

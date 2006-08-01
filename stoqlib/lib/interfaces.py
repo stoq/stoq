@@ -81,6 +81,9 @@ class IApplicationDescriptions(Interface):
     """Get a list of application names, useful for launcher programs
     """
 
+    def get_application_names():
+        """@returns: a list of application names"""
+
     def get_descriptions():
         """@returns: a list of tuples with some important Stoq application
         informations. Each tuple has the following data:
