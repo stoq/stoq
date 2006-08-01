@@ -38,7 +38,6 @@ from stoqlib.lib.runtime import get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 
 from stoq.gui.login import StoqLoginDialog
-from stoq.lib.configparser import get_config
 
 RETRY_NUMBER = 3
 
@@ -53,8 +52,6 @@ class AppConfig:
 
     def __init__(self, appname):
         self.appname = appname
-
-        self.config = get_config()
 
         if not self.validate_user():
             raise LoginError('Could not authenticate in the system')
