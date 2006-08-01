@@ -330,11 +330,8 @@ dbusername=%(DBUSERNAME)s"""
 
 def _setup_stoqlib(config):
     from stoqlib.database import register_db_settings
-    from stoqlib.lib.runtime import register_application_names
-    from stoq.lib.applist import get_application_names
 
     register_db_settings(config.get_settings())
-    register_application_names(get_application_names())
 
 @argcheck(StoqConfig)
 def register_config(config):

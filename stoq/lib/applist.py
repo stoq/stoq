@@ -54,12 +54,15 @@ class ApplicationDescriptions:
 
     implements(IApplicationDescriptions)
 
+    def get_application_names(self):
+        return get_application_names()
+
     def get_descriptions(self):
         # Import these modules here to reduce the startup time
         import inspect
         from stoq.gui.application import AppWindow
 
-        applications = get_application_names()
+        applications = self.get_application_names()
         app_desc = []
         for appname in applications:
             module = __import__("stoq.gui.%s.%s" % (appname, appname),
