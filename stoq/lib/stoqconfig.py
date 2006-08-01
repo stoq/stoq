@@ -28,14 +28,14 @@ import sys
 import time
 
 import gtk
-from kiwi.component import get_utility
+from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
-from stoqlib.lib.interfaces import CookieError, ICookieFile
+from stoqlib.lib.interfaces import CookieError, ICookieFile, ICurrentUser
 from stoqlib.lib.message import warning
-from stoqlib.lib.runtime import set_current_user, get_connection
+from stoqlib.lib.runtime import get_connection
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.tables import get_table_types
 
@@ -94,7 +94,7 @@ class AppConfig:
     # User validation and AppHelper setup
     #
 
-    def _lookup_user(self, username, password):
+    def _check_user(self, username, password):
         # This function is really just a post-validation item.
         table = PersonAdaptToUser
         conn = get_connection()
@@ -120,11 +120,8 @@ class AppConfig:
         if not user.profile.check_app_permission(self.appname):
             msg = _("This user lacks credentials \nfor application %s")
             raise UserProfileError(msg % self.appname)
-        return user
 
-    def check_user(self, username, password):
-        user = self._lookup_user(username, password)
-        set_current_user(user)
+        provide_utility(ICurrentUser, user)
 
     def _cookie_login(self):
         try:
@@ -134,7 +131,7 @@ class AppConfig:
             return False
 
         try:
-            self.check_user(username, password)
+            self._check_user(username, password)
         except (LoginError, UserProfileError, DatabaseError), e:
             log.info("Cookie login failed: %r" % e)
             return False
@@ -180,7 +177,7 @@ class AppConfig:
                 continue
 
             try:
-                self.check_user(username, password)
+                self._check_user(username, password)
             except (LoginError, UserProfileError), e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
