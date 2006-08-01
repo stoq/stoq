@@ -36,7 +36,8 @@ from sqlobject import sqlhub
 from stoqlib.database import check_installed_database
 from stoqlib.domain.person import BranchStation
 from stoqlib.lib.admin import initialize_system
-from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
+from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
+                                    IApplicationDescriptions)
 from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
 from stoqlib.lib.parameters import check_parameter_presence
@@ -90,6 +91,9 @@ def setup(config, options=None, stoq_user_password='',
 
     register_config(config)
 
+    from stoq.lib.applist import ApplicationDescriptions
+    provide_utility(IApplicationDescriptions, ApplicationDescriptions())
+
     conn = get_connection()
     if (options and options.clean) or not check_installed_database():
         if not options:
@@ -98,6 +102,7 @@ def setup(config, options=None, stoq_user_password='',
         else:
             password = options.password or config.get_password()
             verbose = options.verbose
+
         initialize_system(password or '', verbose=verbose)
     else:
         if register_station:
