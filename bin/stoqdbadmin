@@ -86,12 +86,12 @@ class StoqCommandHandler:
         options.clean = True
         config = self._read_config(options)
 
+        # Register the current computer as a branch station
+        self._register(options.verbose)
+
         if options.create_examples:
             from stoq.lib.startup import create_examples
             create_examples(config)
-
-        # Also register the current computer as a branch station
-        self._register(options.verbose)
 
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
