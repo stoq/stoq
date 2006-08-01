@@ -28,7 +28,7 @@ import glob
 import os
 
 from kiwi.component import provide_utility, implements
-from stoqlib.gui.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions
 
 import stoq
 
