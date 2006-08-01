@@ -26,7 +26,6 @@
 import sys
 from datetime import datetime
 
-from kiwi.argcheck import argcheck
 from kiwi.component import get_utility
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
@@ -36,7 +35,6 @@ from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
 
 _connection = None
 _verbose = False
-_app_names = []
 
 
 #
@@ -145,15 +143,6 @@ def get_current_user(conn):
     """
     user = get_utility(ICurrentUser)
     return user.get(user.id, connection=conn)
-
-@argcheck(list)
-def register_application_names(app_names):
-    global _app_names
-    _app_names = app_names
-
-def get_application_names():
-    global _app_names
-    return _app_names
 
 def get_current_branch(conn):
     """Returns the current branch company logged in the stoqlib applications

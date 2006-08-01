@@ -21,12 +21,12 @@
 ##
 """ User profile management for applications"""
 
-
+from kiwi.component import get_utility
 from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 
-from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.runtime import get_application_names
 from stoqlib.domain.base import Domain
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.interfaces import IApplicationDescriptions
 
 
 class ProfileSettings(Domain):
@@ -49,7 +49,8 @@ class UserProfile(Domain):
     def create_profile_template(cls, conn, name,
                                 has_full_permission=False):
         profile = cls(connection=conn, name=name)
-        for app_dir in get_application_names():
+        descr = get_utility(IApplicationDescriptions)
+        for app_dir in descr.get_application_names():
             ProfileSettings(connection=conn,
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
@@ -79,7 +80,7 @@ def update_profile_applications(conn, profile=None):
     comparision with the application names stored in user profiles. If a
     certain application is not there it is added.
     """
-    app_list = [app_name for app_name in get_application_names()]
+    app_list = get_utility(IApplicationDescriptions).get_application_names()
     profiles = profile and [profile] or UserProfile.select(connection=conn)
     for app_name in app_list:
         for profile in profiles:
