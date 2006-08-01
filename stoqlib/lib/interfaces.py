@@ -24,7 +24,8 @@
 
 """ Stoqlib Interfaces """
 
-from kiwi.component import Interface
+from zope.interface import Attribute
+from zope.interface.interface import Interface
 
 class CookieError(Exception):
     pass
@@ -63,3 +64,15 @@ class ICurrentBranchStation(Interface):
     This is a mainly a marker for the current branch station.
     It's mainly used by get_current_station()
     """
+
+class ICurrentUser(Interface):
+    """
+    This is a mainly a marker for the current user.
+    It's mainly used by get_current_user()
+    """
+
+    username = Attribute('Username')
+    password = Attribute('Password')
+    profile = Attribute('A profile represents a colection of information '
+                        'which represents what this user can do in the '
+                        'system')

@@ -31,10 +31,10 @@ from kiwi.component import get_utility
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
 
-from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
+from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
+                                    ICurrentUser)
 
 _connection = None
-_current_user = None
 _verbose = False
 _app_names = []
 
@@ -55,7 +55,15 @@ class StoqlibTransaction(Transaction):
             self._change_data.append(new_obj)
 
     def commit(self, *args, **kwargs):
-        current_user = get_current_user(get_connection())
+        # XXX: we may be missing a utility at this point, because
+        #      things might be committed during startup, before
+        #      a user is logged in (and a utility is provided)
+        #      Migration and parameter updates
+        try:
+            current_user = get_current_user(get_connection())
+        except NotImplementedError:
+            current_user = None
+
         for obj in self._change_data:
             if obj.sqlmeta._obsolete:
                 continue
@@ -135,21 +143,8 @@ def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
     logged user on the system
     """
-    from stoqlib.domain.person import Person
-    from stoqlib.domain.interfaces import IUser
-    global _current_user
-    if _current_user is None:
-        return
-    return Person.iget(IUser, _current_user.id, connection=conn)
-
-
-def set_current_user(user):
-    """Sets a PersonAdaptToUser instance which represents the current
-    logged user on the system
-    """
-    global _current_user
-    assert user
-    _current_user = user
+    user = get_utility(ICurrentUser)
+    return user.get(user.id, connection=conn)
 
 @argcheck(list)
 def register_application_names(app_names):
