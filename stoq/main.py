@@ -127,6 +127,9 @@ def _run_app(options, appname):
 
     log.info('loading application')
     appconf = AppConfig(appname)
+    # Get the selected application if not were selected
+    if not appname:
+        appname = appconf.appname
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
     if not hasattr(module, "main"):
         raise RuntimeError(
