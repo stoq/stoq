@@ -36,10 +36,8 @@ from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 from stoqlib.database import (setup_tables, get_registered_db_settings,
                               finish_transaction, run_sql_file)
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import (new_transaction, print_msg,
-                                 set_current_user, get_connection)
+from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 
@@ -88,15 +86,6 @@ def ensure_admin_user(administrator_password):
     assert ret[0].password == administrator_password
     finish_transaction(conn, 1)
     print_msg('done')
-
-def set_current_user_admin():
-    conn = get_connection()
-    branch = sysparam(conn).MAIN_COMPANY
-    user = IUser(branch.get_adapted(), connection=conn)
-    if not user:
-        raise DatabaseInconsistency("You should have a user admin set "
-                                    "at this point")
-    set_current_user(user)
 
 def ensure_sellable_units():
     from stoqlib.domain.sellable import SellableUnit
