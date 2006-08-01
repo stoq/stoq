@@ -76,3 +76,15 @@ class ICurrentUser(Interface):
     profile = Attribute('A profile represents a colection of information '
                         'which represents what this user can do in the '
                         'system')
+
+class IApplicationDescriptions(Interface):
+    """Get a list of application names, useful for launcher programs
+    """
+
+    def get_descriptions():
+        """@returns: a list of tuples with some important Stoq application
+        informations. Each tuple has the following data:
+        * Application name
+        * Application full name
+        * Application icon name
+        """
