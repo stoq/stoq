@@ -23,16 +23,16 @@
 ##
 """ User profile editor implementation.  """
 
-from kiwi.datatypes import ValidationError
 from kiwi.component import get_utility
+from kiwi.datatypes import ValidationError
 from sqlobject.sqlbuilder import func, AND
 
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.profile import UserProfile
-from stoqlib.gui.interfaces import IApplicationDescriptions
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.slaves.profile import UserProfileSettingsSlave
+from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.runtime import get_connection
+from stoqlib.lib.translation import stoqlib_gettext
 
 
 _ = stoqlib_gettext
@@ -83,7 +83,7 @@ class UserProfileEditor(BaseEditor):
     #
     # Kiwi handlers
     #
-    
+
     def on_profile_name__validate(self, widget, value):
         conn = get_connection()
         q1 = func.UPPER(UserProfile.q.name) == value.upper()
