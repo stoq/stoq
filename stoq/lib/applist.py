@@ -27,7 +27,7 @@
 import glob
 import os
 
-from kiwi.component import provide_utility, implements
+from kiwi.component import implements
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
 import stoq
@@ -79,5 +79,3 @@ class ApplicationDescriptions:
                                      % member)
                 app_desc.append((appname, app_full_name, app_icon_name))
         return app_desc
-
-provide_utility(IApplicationDescriptions, ApplicationDescriptions())
