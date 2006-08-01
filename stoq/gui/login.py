@@ -19,19 +19,32 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
-""" Login dialog for users authentication"""
+##  Author(s):  Evandro Vale Miquelito  <evandro@async.com.br>
+##              Johan Dahlin <jdahlin@async.com.br>
+##
+""" Login dialog for user authentication"""
 
 import gettext
 
 import gtk
+from kiwi.component import get_utility, provide_utility
+from kiwi.log import Logger
+from kiwi.python import Settable
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.list import Column
-from kiwi.python import Settable
-from kiwi.component import get_utility
+from stoqlib.exceptions import (DatabaseError, UserProfileError,
+                                LoginError, DatabaseInconsistency)
+from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.gui.login import LoginDialog
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import (IApplicationDescriptions,
+                                    CookieError, ICookieFile, ICurrentUser)
+from stoqlib.lib.message import warning
+from stoqlib.lib.runtime import get_connection
+
 
 _ = gettext.gettext
+RETRY_NUMBER = 3
+log = Logger('stoq.config')
 
 
 class StoqLoginDialog(LoginDialog):
@@ -84,3 +97,125 @@ class SelectApplicationsSlave(SlaveDelegate):
                        icon_size=gtk.ICON_SIZE_LARGE_TOOLBAR),
                 Column('app_full_name', data_type=str,
                        expand=True)]
+
+class LoginHelper:
+
+    def __init__(self, appname):
+        self.appname = appname
+
+        if not self.validate_user():
+            raise LoginError('Could not authenticate in the system')
+
+    def _check_user(self, username, password):
+        # This function is really just a post-validation item.
+        table = PersonAdaptToUser
+        conn = get_connection()
+        res = table.select(table.q.username == '%s' % username,
+                           connection=conn)
+
+        msg = _("Invalid user or password")
+        count = res.count()
+        if not count:
+            raise LoginError(msg)
+
+        if count != 1:
+            raise DatabaseInconsistency("It should exists only one instance "
+                                        "in database for this username, got "
+                                        "%d instead" % count)
+        user = res[0]
+        if not user.is_active:
+            raise LoginError(_('This user is inactive'))
+
+        if not user.password == password:
+            raise LoginError(msg)
+
+        if not user.profile.check_app_permission(self.appname):
+            msg = _("This user lacks credentials \nfor application %s")
+            raise UserProfileError(msg % self.appname)
+
+        provide_utility(ICurrentUser, user)
+
+    def _cookie_login(self):
+        try:
+            username, password = get_utility(ICookieFile).get()
+        except CookieError:
+            log.info("Not using cookie based login")
+            return False
+
+        try:
+            self._check_user(username, password)
+        except (LoginError, UserProfileError, DatabaseError), e:
+            log.info("Cookie login failed: %r" % e)
+            return False
+
+        log.info("Logging in using cookie credentials")
+        return True
+
+    def validate_user(self):
+        if self._cookie_login():
+            return True
+
+        log.info("Showing login dialog")
+        # Loop for logins
+        retry = 0
+        retry_msg = None
+        dialog = None
+        choose_applications = self.appname is None
+        while retry < RETRY_NUMBER:
+            username = password = appname = None
+
+            if not dialog:
+                dialog = StoqLoginDialog(_("Access Control"),
+                                         choose_applications)
+            ret = dialog.run(username, password, msg=retry_msg)
+
+            # user cancelled (escaped) the login dialog
+            if not ret:
+                self._abort()
+
+            # Use credentials
+            if not (isinstance(ret, (tuple, list)) and len(ret) == 3):
+                raise ValueError('Invalid return value, got %s'
+                                 % str(ret))
+
+            username, password, appname = ret
+
+            if choose_applications:
+                self.appname =  appname
+
+            if not username:
+                retry_msg = _("specify an username")
+                continue
+
+            try:
+                self._check_user(username, password)
+            except (LoginError, UserProfileError), e:
+                # We don't hide the dialog here; it's kept open so the
+                # next loop we just can call run() and display the error
+                get_utility(ICookieFile).clear()
+                retry += 1
+                retry_msg = str(e)
+            except DatabaseError, e:
+                if dialog:
+                    dialog.destroy()
+                self._abort(str(e))
+            else:
+                log.info("Authenticated user %s" % username)
+                if dialog:
+                    dialog.destroy()
+                return True
+
+        if dialog:
+            dialog.destroy()
+        self._abort("Depleted attempts of authentication")
+        return False
+
+    #
+    # Exit strategies
+    #
+
+    def _abort(self, msg=None, title=None):
+        if msg:
+            warning(msg)
+        raise SystemExit
+
