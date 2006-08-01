@@ -24,12 +24,9 @@
 """ Configuration file for stoq applications """
 
 import gettext
-import time
 
-import gtk
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
-from kiwi.environ import environ
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.lib.interfaces import CookieError, ICookieFile, ICurrentUser
@@ -120,7 +117,6 @@ class AppConfig:
             username = password = appname = None
 
             if not dialog:
-                hide_splash()
                 dialog = StoqLoginDialog(_("Access Control"),
                                          choose_applications)
             ret = dialog.run(username, password, msg=retry_msg)
@@ -175,35 +171,3 @@ class AppConfig:
             warning(msg)
         raise SystemExit
 
-    #
-    # Splash screen code
-    #
-
-def show_splash():
-    gtkimage = gtk.Image()
-    gtkimage.set_from_file(environ.find_resource("pixmaps", "splash.jpg"))
-    gtkimage.show()
-    w = gtk.Window()
-    f = gtk.Frame()
-    f.set_property('shadow-type', gtk.SHADOW_OUT)
-    w.add(f)
-    f.show()
-    w.set_decorated(False)
-    f.add(gtkimage)
-    w.set_position(gtk.WIN_POS_CENTER)
-    w.show_now()
-    time.sleep(0.01)
-    while gtk.events_pending():
-        time.sleep(0.01)
-        gtk.main_iteration()
-    global splash_win
-    splash_win = w
-
-
-def hide_splash(*args):
-    global splash_win
-    if splash_win:
-        splash_win.destroy()
-        splash_win = None
-
-splash_win = None

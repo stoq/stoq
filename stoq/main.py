@@ -138,12 +138,19 @@ def _check_tables():
                     "This is the database error:\n%s. Error type is %s")
             raise DatabaseError(msg % (value, type))
 
-def _run_app(options, appname):
-    from stoq.lib.stoqconfig import AppConfig, show_splash
-    from stoqlib.gui.base.gtkadds import register_iconsets
+def _show_splash():
+    from stoqlib.gui.splash import SplashScreen
+    from kiwi.environ import environ
 
     log.info('displaying splash screen')
-    show_splash()
+    splash = SplashScreen(environ.find_resource("pixmaps", "splash.jpg"))
+    splash.show()
+
+    return splash
+
+def _run_app(options, appname):
+    from stoq.lib.stoqconfig import AppConfig
+    from stoqlib.gui.base.gtkadds import register_iconsets
 
     log.info('register stock icons')
     register_iconsets()
@@ -153,9 +160,12 @@ def _run_app(options, appname):
 
     log.info('loading application')
     appconf = AppConfig(appname)
-    # Get the selected application if not were selected
+    # Get the selected application if nothing was selected
     if not appname:
         appname = appconf.appname
+
+    splash = _show_splash()
+
     module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
     if not hasattr(module, "main"):
         raise RuntimeError(
@@ -163,10 +173,14 @@ def _run_app(options, appname):
 
     log.info('running application')
     module.main(appconf)
+
+    splash.hide()
+
+    log.info("Entering main loop")
     import gtk
     gtk.main()
-    log.info("Shutting down application")
 
+    log.info("Shutting down application")
 
 def main(args):
     log.info('parsing command line arguments: %s ' % (args,))
