@@ -149,7 +149,7 @@ def _show_splash():
     return splash
 
 def _run_app(options, appname):
-    from stoq.lib.stoqconfig import AppConfig
+    from stoq.gui.login import LoginHelper
     from stoqlib.gui.base.gtkadds import register_iconsets
 
     log.info('register stock icons')
@@ -159,7 +159,7 @@ def _run_app(options, appname):
     _check_tables()
 
     log.info('loading application')
-    appconf = AppConfig(appname)
+    appconf = LoginHelper(appname)
     # Get the selected application if nothing was selected
     if not appname:
         appname = appconf.appname
