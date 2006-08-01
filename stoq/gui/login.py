@@ -29,7 +29,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from kiwi.component import get_utility
 from stoqlib.gui.login import LoginDialog
-from stoqlib.gui.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import IApplicationDescriptions
 
 _ = gettext.gettext
 
