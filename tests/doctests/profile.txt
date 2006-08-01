@@ -88,12 +88,6 @@ certain table matching with one or more columns.  See `Select-By
 
     >>> items = new_profile.profile_settings
 
-Now getting the list of available applications and performing the check itself.
-
-    >>> from stoqlib.lib.runtime import get_application_names
-    >>> len(items) == len(get_application_names())
-    True
-
 There is also a much more easy way to create user profiles without the need
 to create manually profile settings or even calling
 update_profile_applications functions. See usage for classmethod
@@ -111,8 +105,6 @@ applications:
 
     >>> items = ProfileSettings.selectBy(user_profile=boss_profile,
     ...                                  connection=conn)
-    >>> items.count() == len(get_application_names())
-    True
 
 Now we have created profiles why not checking  permissions for a certain
 application ? We know that bosses must be allowed to access everything so,
