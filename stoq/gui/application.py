@@ -38,7 +38,6 @@ from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.lib.runtime import get_current_user, new_transaction
 
 import stoq
-from stoq.lib.stoqconfig import hide_splash
 from stoqlib.gui.slaves.filter import FilterSlave
 
 
@@ -85,8 +84,6 @@ class AppWindow(BaseAppWindow):
         BaseAppWindow.__init__(self, app)
         user_menu_label = get_current_user(self.conn).username.capitalize()
         self.users_menu.set_property('label', user_menu_label)
-        toplevel = self.get_toplevel()
-        toplevel.connect('map_event', hide_splash)
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
