@@ -33,7 +33,7 @@ from stoqlib.domain.sale import (Sale, SaleView,
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.wizards.sale import SaleRenegotiationOverpaidStep
+from stoqlib.gui.wizards.salewizard import SaleRenegotiationOverpaidStep
 
 
 _ = stoqlib_gettext
