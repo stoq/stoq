@@ -46,9 +46,9 @@ from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                                  check_emit_reduce_Z,
                                  check_emit_read_X)
 from stoqlib.reporting.sale import SaleOrderReport
-from stoqlib.gui.editors.person import ClientEditor
-from stoqlib.gui.editors.delivery import DeliveryEditor
-from stoqlib.gui.editors.service import ServiceItemEditor
+from stoqlib.gui.editors.personeditor import ClientEditor
+from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
+from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard, PreOrderWizard
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.search.sellablesearch import SellableSearch

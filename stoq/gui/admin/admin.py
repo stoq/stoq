@@ -34,7 +34,7 @@ from stoqlib.database import finish_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile
-from stoqlib.gui.editors.person import UserEditor
+from stoqlib.gui.editors.personeditor import UserEditor
 from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
@@ -163,7 +163,7 @@ class AdminApp(SearchableAppWindow):
         self._edit_user()
 
     def on_change_password_button__clicked(self, *args):
-        from stoqlib.gui.editors.person import PasswordEditor
+        from stoqlib.gui.editors.personeditor import PasswordEditor
         # This avoid circular import
         user = self.users.get_selected()
         model = self.run_dialog(PasswordEditor, self.conn, user)
