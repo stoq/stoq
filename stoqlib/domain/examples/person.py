@@ -217,7 +217,7 @@ def create_people():
     branch = sysparam(conn).MAIN_COMPANY
     # Set the manager to the last created person
     branch.manager = person_obj
-    provide_utility(ICurrentBranch, branch)
+    #provide_utility(ICurrentBranch, branch)
 
     person = branch.get_adapted()
     person.name = u"Async Open Source"
@@ -240,13 +240,22 @@ def create_people():
     company.fancy_name = u"Async Open Source"
 
     # Creating the current station
-    station = BranchStation(name=u"Stoqlib station", branch=branch,
-                            connection=conn, is_active=True)
-    provide_utility(ICurrentBranchStation, station)
+    #station = BranchStation(name=u"Stoqlib station", branch=branch,
+    #                        connection=conn, is_active=True)
+    #provide_utility(ICurrentBranchStation, station)
 
     conn.commit()
     print_msg('done.')
 
+def set_person_utilities():
+    conn = new_transaction()
+    branch = sysparam(conn).MAIN_COMPANY
+    provide_utility(ICurrentBranch, branch)
+
+    station = BranchStation(name=u"Stoqlib station", branch=branch,
+                            connection=conn, is_active=True)
+    provide_utility(ICurrentBranchStation, station)
+    conn.commit()
 
 if __name__ == "__main__":
     create_people()
