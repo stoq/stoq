@@ -36,7 +36,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receiving import ReceivingInvoiceSlave
-from stoqlib.gui.search.product import ProductSearch
+from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.wizards.abstract import AbstractProductStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam

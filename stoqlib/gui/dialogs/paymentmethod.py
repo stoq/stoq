@@ -40,8 +40,8 @@ from stoqlib.gui.editors.paymentmethod import (PaymentMethodEditor,
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.search.giftcertificate import GiftCertificateTypeSearch
-from stoqlib.gui.search.person import (FinanceProviderSearch,
+from stoqlib.gui.search.giftcertificatesearch import GiftCertificateTypeSearch
+from stoqlib.gui.search.personsearch import (FinanceProviderSearch,
                                        CardProviderSearch)
 
 _ = stoqlib_gettext
