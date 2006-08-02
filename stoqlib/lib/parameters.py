@@ -456,7 +456,6 @@ class ParameterAccess(ClassInittableObject):
 
     def set_defaults(self, update=False):
         self._remove_unused_parameters()
-        self._cash = {}
         constants = [c for c in self.constants if c.initial is not None]
 
         # Creating constants
@@ -626,19 +625,19 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, data.id)
 
     def ensure_default_return_sales_cfop(self):
-        key = "DEFAULT_RETURN_SALES_CFOP"
-        desc = u"Devolucao"
-        self._ensure_cfop(key, desc, u"5.202")
+        self._ensure_cfop("DEFAULT_RETURN_SALES_CFOP",
+                          u"Devolucao",
+                          u"5.202")
 
     def ensure_default_sales_cfop(self):
-        key = "DEFAULT_SALES_CFOP"
-        desc = u"Venda de Mercadoria Adquirida"
-        self._ensure_cfop(key, desc, u"5.102")
+        self._ensure_cfop("DEFAULT_SALES_CFOP",
+                          u"Venda de Mercadoria Adquirida",
+                          u"5.102")
 
     def ensure_default_receiving_cfop(self):
-        key = "DEFAULT_RECEIVING_CFOP"
-        desc = u"Compra para Comercializacao"
-        self._ensure_cfop(key, desc, u"1.102")
+        self._ensure_cfop("DEFAULT_RECEIVING_CFOP",
+                          u"Compra para Comercializacao",
+                          u"1.102")
 
 
 #
@@ -687,26 +686,17 @@ def get_parameter_details(field_name):
 # Ensuring everything
 #
 
-def check_parameter_presence():
+def check_parameter_presence(conn):
     """
-    This is called on stoq startup to make sure that all a parameters
-    are present in the right table.
-    If they are not they will be installed.
+    Check so the number of installed parameters are equal to
+    the number of available ones
+    @returns: True if they're up to date, False otherwise
     """
 
     global _parameter_info
-    conn = new_transaction()
-    param = sysparam(conn)
     results = ParameterData.select(connection=conn)
 
-    # Check so the number of installed parameters are equal to
-    # the number of available ones, if they're not we'll add/remove
-    # It's important that this function is is fast since the function
-    # is called during startup for each application.
-    if results.count() != len(_parameter_info):
-        param.set_defaults(update=True)
-
-    finish_transaction(conn, 1)
+    return results.count() == len(_parameter_info)
 
 def ensure_system_parameters(update=False):
     print_msg("Creating default system parameters...", break_line=False)
