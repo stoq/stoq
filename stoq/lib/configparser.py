@@ -29,7 +29,6 @@ import binascii
 import gettext
 import optparse
 import os
-import sys
 from ConfigParser import SafeConfigParser
 
 from kiwi.environ import environ, EnvironmentError
@@ -260,13 +259,7 @@ dbusername=%(DBUSERNAME)s"""
         """Checks the stored database rdbms settings and raises ConfigError
         if something is wrong
         """
-        try:
-            conn_uri = self.get_connection_uri()
-        except:
-            raise
-            type, value, trace = sys.exc_info()
-            raise ConfigError(value)
-
+        conn_uri = self.get_connection_uri()
         check_database_connection(conn_uri)
 
 
