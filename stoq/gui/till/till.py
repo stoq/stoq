@@ -44,9 +44,9 @@ from stoqlib.gui.dialogs.tilloperation import (TillOperationDialog,
                                                verify_and_open_till,
                                                verify_and_close_till)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
-from stoqlib.gui.search.person import ClientSearch
-from stoqlib.gui.search.sale import SaleSearch
-from stoqlib.gui.search.till import TillFiscalOperationsSearch
+from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.search.salesearch import SaleSearch
+from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard
 from stoqlib.gui.wizards.salereturn import SaleReturnWizard
 
