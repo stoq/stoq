@@ -86,6 +86,9 @@ class SchemaMigration:
                 table.createTable(connection=conn)
         conn.commit()
 
+    def check_updated(self, conn):
+        return not self._check_up_to_date(conn)
+
     def update_schema(self):
         """Check the current version of database and update the schema if
         it's needed
