@@ -36,13 +36,13 @@ from stoqlib.domain.interfaces import (IGiftCertificatePM, ICardPM,
 from stoqlib.domain.payment.methods import (AbstractPaymentMethodAdapter,
                                             PaymentMethod)
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
-                                               CheckBillMethodEditor)
+                                                     CheckBillMethodEditor)
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateTypeSearch
 from stoqlib.gui.search.personsearch import (FinanceProviderSearch,
-                                       CardProviderSearch)
+                                             CardProviderSearch)
 
 _ = stoqlib_gettext
 

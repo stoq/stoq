@@ -36,8 +36,8 @@ from stoqlib.domain.giftcertificate import (GiftCertificateType,
 from stoqlib.gui.slaves.filter import FilterSlave
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import Column
-from stoqlib.gui.editors.giftcertificateeditor import (GiftCertificateTypeEditor,
-                                                 GiftCertificateEditor)
+from stoqlib.gui.editors.giftcertificateeditor import (
+    GiftCertificateTypeEditor, GiftCertificateEditor)
 
 _ = stoqlib_gettext
 
