@@ -24,6 +24,7 @@
 ##
 """ Notifications and messages for stoqlib applications"""
 
+import sys
 
 from zope.interface import Interface, implements
 from kiwi.component import get_utility, provide_utility
@@ -77,7 +78,7 @@ def warning(short, description=None, *args, **kwargs):
 def error(short, description=None):
     sn = get_utility(ISystemNotifier)
     sn.error(short, description)
-    raise SystemExit
+    sys.exit(1)
 
 def yesno(text, default=-1, *verbs):
     sn = get_utility(ISystemNotifier)
