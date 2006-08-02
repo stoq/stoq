@@ -37,6 +37,9 @@ from stoqlib.domain.payment.methods import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.service import ServiceAdaptToSellable
 
+from tests import base
+base # pyflakes
+
 class TestParameter(unittest.TestCase):
 
     def setUp(self):
