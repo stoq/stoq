@@ -39,7 +39,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
-from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 

@@ -49,7 +49,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
 from stoqlib.domain.person import (Person, EmployeeRole, ClientView,
                                    PersonAdaptToClient,
                                    PersonAdaptToEmployee)
-from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 
 _ = stoqlib_gettext
 

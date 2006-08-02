@@ -213,7 +213,7 @@ class SaleListToolbar(SlaveDelegate):
         self._run_details_dialog(sale)
 
     def on_return_sale_button__clicked(self, *args):
-        from stoqlib.gui.wizards.salereturn import SaleReturnWizard
+        from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
         selected = self._get_selected()
         sale = self._lookup_sale_order(selected)
         retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
