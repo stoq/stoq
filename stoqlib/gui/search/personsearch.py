@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
-from stoqlib.gui.editors.person import (ClientEditor, SupplierEditor,
+from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
                                         EmployeeEditor,
                                         TransporterEditor,
                                         EmployeeRoleEditor, BranchEditor,

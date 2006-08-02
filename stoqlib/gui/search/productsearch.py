@@ -36,7 +36,7 @@ from stoqlib.gui.base.columns import Column
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.product import Product, ProductFullStockView
-from stoqlib.gui.editors.product import ProductEditor
+from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.product import ProductFilterSlave
 from stoqlib.gui.search.sellablesearch import SellableSearch, SellableView
 from stoqlib.gui.base.dialogs import print_report

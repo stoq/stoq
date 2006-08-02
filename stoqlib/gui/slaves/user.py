@@ -35,7 +35,7 @@ from stoqlib.lib.validators import validate_password
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.profile import UserProfileEditor
+from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import Person, LoginInfo
 from stoqlib.domain.interfaces import IUser

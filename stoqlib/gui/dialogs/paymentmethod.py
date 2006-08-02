@@ -35,7 +35,7 @@ from stoqlib.domain.interfaces import (IGiftCertificatePM, ICardPM,
                                        IBillPM)
 from stoqlib.domain.payment.methods import (AbstractPaymentMethodAdapter,
                                             PaymentMethod)
-from stoqlib.gui.editors.paymentmethod import (PaymentMethodEditor,
+from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
                                                CheckBillMethodEditor)
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar

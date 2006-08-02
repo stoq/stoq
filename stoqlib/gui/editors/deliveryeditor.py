@@ -39,7 +39,7 @@ from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.service import ServiceSellableItem, DeliveryItem
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.interfaces import IDelivery
-from stoqlib.gui.editors.sellable import SellableItemEditor
+from stoqlib.gui.editors.sellableeditor import SellableItemEditor
 
 _ = stoqlib_gettext
 

@@ -250,7 +250,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
 
     def on_role_editor_button__clicked(self, *args):
         # This will avoid circular imports
-        from stoqlib.gui.editors.person import EmployeeRoleEditor
+        from stoqlib.gui.editors.personeditor import EmployeeRoleEditor
         model =  run_dialog(EmployeeRoleEditor, self, self.conn,
                             self.model.role)
         if model:

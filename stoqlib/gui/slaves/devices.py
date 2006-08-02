@@ -27,7 +27,7 @@ from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.editors.devices import DeviceSettingsEditor
+from stoqlib.gui.editors.deviceseditor import DeviceSettingsEditor
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.lib.translation import stoqlib_gettext
 

@@ -39,7 +39,7 @@ from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.editors.parameters import SystemParameterEditor
+from stoqlib.gui.editors.parameterseditor import SystemParameterEditor
 
 _ = stoqlib_gettext
 

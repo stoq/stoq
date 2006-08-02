@@ -33,7 +33,7 @@ from kiwi.ui.objectlist import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import AccessorColumn
-from stoqlib.gui.editors.category import (BaseSellableCategoryEditor,
+from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
                                           SellableCategoryEditor)
 from stoqlib.domain.sellable import (AbstractSellableCategory,
                                      BaseSellableCategory,

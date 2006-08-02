@@ -47,9 +47,9 @@ from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
-from stoqlib.gui.editors.till import (CashAdvanceEditor, CashInEditor,
+from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                       CashOutEditor)
-from stoqlib.gui.editors.till import TillOpeningEditor, TillClosingEditor
+from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 
 _ = stoqlib_gettext
 
