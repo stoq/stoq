@@ -53,10 +53,9 @@ class StoqlibTransaction(Transaction):
             self._change_data.append(new_obj)
 
     def commit(self, *args, **kwargs):
-        # XXX: we may be missing a utility at this point, because
-        #      things might be committed during startup, before
-        #      a user is logged in (and a utility is provided)
-        #      Migration and parameter updates
+        # This happens during startup, for example when we're creating
+        # a new database or running the migration script, at that point
+        # no users are logged in
         try:
             current_user = get_current_user(get_connection())
         except NotImplementedError:
