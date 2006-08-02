@@ -40,7 +40,7 @@ from stoqlib.lib.runtime import get_connection
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
-from stoqlib.gui.templates.person import BasePersonRoleEditor
+from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.slaves.paymentmethod import FinanceDetailsSlave
 from stoqlib.gui.slaves.client import ClientStatusSlave
 from stoqlib.gui.slaves.credprovider import CreditProviderDetailsSlave
