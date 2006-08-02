@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005, 2006 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -20,6 +20,7 @@
 ##
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Runtime routines for applications"""
 
