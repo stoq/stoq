@@ -33,7 +33,6 @@ import socket
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
-from stoqlib.database import check_installed_database
 from stoqlib.domain.person import BranchStation
 from stoqlib.lib.admin import initialize_system
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
@@ -65,8 +64,7 @@ def set_branch_by_stationid(conn):
     provide_utility(ICurrentBranchStation, station)
     provide_utility(ICurrentBranch, station.branch)
 
-def setup(config, options=None, stoq_user_password='',
-          register_station=True, check_schema=True):
+def setup(config, options=None, register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
 
@@ -96,28 +94,31 @@ def setup(config, options=None, stoq_user_password='',
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
     conn = get_connection()
-    if (options and options.clean) or not check_installed_database():
-        if not options:
-            password = stoq_user_password
-            verbose = False
-        else:
-            password = options.password or config.get_password()
-            verbose = options.verbose
+    if register_station:
+        set_branch_by_stationid(conn)
+    if not schema_migration.check_updated(conn):
+        error(_("Database schema error"),
+              _("The database schema has changed, but the database has "
+                "not been updated. Run 'stoqdbadmin updateschema` to"
+                "update the schema  to the latest available version."))
 
-        initialize_system(password or '', verbose=verbose)
-    else:
-        if register_station:
-            set_branch_by_stationid(conn)
-        if not schema_migration.check_updated(conn):
-            error(_("Database schema error"),
-                  _("The database schema has changed, but the database has "
-                    "not been updated. Run 'stoqdbadmin updateschema` to"
-                    "update the schema  to the latest available version."))
-
-        check_parameter_presence()
+    check_parameter_presence()
 
     sqlhub.threadConnection = conn
 
+def clean_database(config, options):
+    """Clean the database
+    @param config: a StoqConfig instance
+    @param options: a Optionparser instance
+    """
+    if not options:
+        password = ''
+        verbose = False
+    else:
+        password = options.password or config.get_password()
+        verbose = options.verbose
+
+    initialize_system(password or '', verbose=verbose)
 
 def get_option_parser():
     """
@@ -131,11 +132,6 @@ def get_option_parser():
     parser = optparse.OptionParser()
 
     group = optparse.OptionGroup(parser, 'General')
-    group.add_option('-c', '--clean',
-                      action="store_true",
-                      dest="clean",
-                      default=False,
-                      help='Clean up database')
     group.add_option('-f', '--filename',
                       action="store",
                       type="string",
