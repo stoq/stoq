@@ -26,19 +26,19 @@
 """ Stoq startup routines"""
 
 
-import sys
 import gettext
 import os
+import sys
 
-from stoqlib.lib.message import error
 from kiwi.component import provide_utility
 from kiwi.log import Logger
 from psycopg import Error as PostgreSQLError
+from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.message import error
 
 from stoq.lib.applist import get_application_names
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
-from stoqlib.exceptions import StoqlibError
 
 _ = gettext.gettext
 log = Logger('stoq.main')
