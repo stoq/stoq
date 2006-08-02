@@ -45,7 +45,7 @@ from stoqlib.gui.slaves.individual import (IndividualDetailsSlave,
 _ = stoqlib_gettext
 
 
-class PersonEditorTemplate(BaseEditorSlave):
+class _PersonEditorTemplate(BaseEditorSlave):
     model_type = Person
     gladefile = 'PersonEditorTemplate'
 
@@ -145,7 +145,7 @@ class PersonEditorTemplate(BaseEditorSlave):
     def setup_proxies(self):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
-                                    PersonEditorTemplate.proxy_widgets)
+                                    _PersonEditorTemplate.proxy_widgets)
 
     def setup_slaves(self):
         main_address = self.model.get_main_address()
@@ -162,7 +162,7 @@ class PersonEditorTemplate(BaseEditorSlave):
         return self.model
 
 
-class IndividualEditorTemplate(BaseEditorSlave):
+class _IndividualEditorTemplate(BaseEditorSlave):
     model_iface = IIndividual
     gladefile = 'BaseTemplate'
 
@@ -184,7 +184,7 @@ class IndividualEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         if not self._person_slave:
-            klass = PersonEditorTemplate
+            klass = _PersonEditorTemplate
             self._person_slave = klass(self.conn, self.model.get_adapted(),
                                        visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
@@ -207,7 +207,7 @@ class IndividualEditorTemplate(BaseEditorSlave):
         return self.model
 
 
-class CompanyEditorTemplate(BaseEditorSlave):
+class _CompanyEditorTemplate(BaseEditorSlave):
     model_iface = ICompany
     gladefile = 'BaseTemplate'
 
@@ -228,7 +228,7 @@ class CompanyEditorTemplate(BaseEditorSlave):
 
     def setup_slaves(self):
         if not self._person_slave:
-            klass = PersonEditorTemplate
+            klass = _PersonEditorTemplate
             self._person_slave = klass(self.conn, self.model.get_adapted(),
                                        visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
@@ -275,14 +275,14 @@ class BasePersonRoleEditor(BaseEditor):
             raise ValueError('Invalid value for role_type attribute')
 
     def _create_company_slave(self, company, person_slave=None):
-        klass = CompanyEditorTemplate
+        klass = _CompanyEditorTemplate
         self.company_slave = klass(self.conn, company,
                                    person_slave=person_slave,
                                    visual_mode=self.visual_mode)
         return self.company_slave
 
     def _create_individual_slave(self, individual, person_slave=None):
-        klass = IndividualEditorTemplate
+        klass = _IndividualEditorTemplate
         self.individual_slave = klass(self.conn, individual,
                                       person_slave=person_slave,
                                       visual_mode=self.visual_mode)
