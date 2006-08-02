@@ -83,9 +83,19 @@ class SelectPaymentMethodSlave(SlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self):
+    def __init__(self, method_iface=IMoneyPM):
         SlaveDelegate.__init__(self, gladefile=SelectPaymentMethodSlave.gladefile)
         self._setup_widgets()
+        self._select_payment_method_by_iface(method_iface)
+
+    def _select_payment_method_by_iface(self, method_iface):
+        if method_iface is IMoneyPM:
+            widget = self.cash_check
+        elif method_iface is IGiftCertificatePM:
+            widget = self.certificate_check
+        else:
+            widget = self.othermethods_check
+        widget.set_active(True)
 
     def _setup_widgets(self):
         active_pm_ifaces = get_active_pm_ifaces()
@@ -99,6 +109,14 @@ class SelectPaymentMethodSlave(SlaveDelegate):
         active_pm_ifaces.remove(IMoneyPM)
         if not active_pm_ifaces:
             self.othermethods_check.hide()
+
+    def get_selected_method(self):
+        if self.cash_check.get_active():
+            return IMoneyPM
+        elif self.certificate_check.get_active():
+            return IGiftCertificatePM
+        else:
+            return IMultiplePM
 
     #
     # Kiwi callbacks

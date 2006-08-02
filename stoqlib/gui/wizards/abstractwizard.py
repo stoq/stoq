@@ -40,8 +40,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import (METHOD_MONEY, METHOD_MULTIPLE,
-                                  METHOD_GIFT_CERTIFICATE)
+from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import NoteEditor
@@ -50,12 +49,9 @@ from stoqlib.gui.slaves.paymentmethod import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.product import Product
-from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
-                                       IMultiplePM, IMoneyPM,
-                                       IGiftCertificatePM)
+from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson, ISellable
 from stoqlib.domain.sellable import AbstractSellable
 
 _ = stoqlib_gettext
@@ -147,24 +143,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
             self.salesperson_combo.grab_focus()
 
     def _get_selected_payment_method(self):
-        if self.pm_slave.cash_check.get_active():
-            return IMoneyPM
-        elif self.pm_slave.certificate_check.get_active():
-            return IGiftCertificatePM
-        else:
-            return IMultiplePM
-
-    def _setup_payment_method_widgets(self):
-        group = IPaymentGroup(self.model, connection=self.conn)
-        if not group:
-            raise ValueError('You should have a IPaymentGroup facet '
-                             'defined at this point')
-        if group.default_method == METHOD_MONEY:
-            self.pm_slave.cash_check.set_active(True)
-        elif group.default_method == METHOD_GIFT_CERTIFICATE:
-            self.pm_slave.certificate_check.set_active(True)
-        else:
-            self.pm_slave.othermethods_check.set_active(True)
+        return self.pm_slave.get_selected_method()
 
     #
     # Public API
@@ -203,14 +182,9 @@ class AbstractSalesPersonStep(WizardEditorStep):
         raise NotImplementedError("This method must be overwritten on child")
 
     def next_step(self):
-        selected_method = self._get_selected_payment_method()
-        group = self.payment_group
-        if selected_method is IMoneyPM:
-            group.default_method = METHOD_MONEY
-        elif selected_method is IGiftCertificatePM:
-            group.default_method = METHOD_GIFT_CERTIFICATE
-        else:
-            group.default_method = METHOD_MULTIPLE
+        method_iface = self.pm_slave.get_selected_method()
+        self.payment_group.default_method = \
+            self.payment_group.get_method_id_by_iface(method_iface)
         return self.on_next_step()
 
     #
@@ -227,8 +201,12 @@ class AbstractSalesPersonStep(WizardEditorStep):
             self.detach_slave(slave_holder)
         self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
 
-        self.pm_slave = SelectPaymentMethodSlave()
-        self._setup_payment_method_widgets()
+        group = IPaymentGroup(self.model, connection=self.conn)
+        if not group:
+            raise StoqlibError("You should have a IPaymentGroup facet defined at "
+                               "this point")
+        self.pm_slave = SelectPaymentMethodSlave(
+            method_iface=get_all_methods_dict()[group.default_method])
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
