@@ -31,13 +31,15 @@ class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
 
-    def _read_config(self, options, create=False, register_station=True):
+    def _read_config(self, options, create=False, register_station=True,
+                     check_schema=True):
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
         config = StoqConfig(options.filename)
         if create:
             config.create()
-        setup(config, options, register_station=register_station)
+        setup(config, options, register_station=register_station,
+              check_schema=check_schema)
         return config
 
     def add_options(self, parser, cmd):
@@ -127,6 +129,14 @@ class StoqCommandHandler:
 
         if verbose:
             print 'Registered a new station: %s' % station_name
+
+    def cmd_updateschema(self, options):
+        from stoqlib.lib.migration import schema_migration
+        self._read_config(options, check_schema=False)
+
+        schema_migration.update_schema()
+
+        print 'Database schema updated'
 
 def main(args):
     pname = args[0]
