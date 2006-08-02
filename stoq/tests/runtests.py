@@ -32,7 +32,8 @@ from kiwi import environ
 from kiwi.log import set_log_level
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, get_option_parser, create_examples
+from stoq.lib.startup import (setup, get_option_parser, create_examples,
+                              clean_database)
 from stoqlib.lib.runtime import print_immediately
 
 DEFAULT_SEPARATORS = 79
@@ -115,8 +116,6 @@ def test_gui(config, options, tests=None):
 def main(args):
     parser = get_option_parser()
     options, args = parser.parse_args(args)
-    options.clean = True
-
 
     # If a filename is specified on the commandline,
     # send it to all the tests, so we won't end up
@@ -132,6 +131,7 @@ def main(args):
         config.use_test_database()
 
     setup(config, options)
+    clean_database(config, options)
 
     return test_gui(config, options, args[1:])
 
