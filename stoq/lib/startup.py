@@ -39,7 +39,6 @@ from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     IApplicationDescriptions)
 from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
-from stoqlib.lib.parameters import check_parameter_presence
 from stoqlib.lib.runtime import get_connection, set_verbose
 
 from stoq.lib.configparser import register_config, StoqConfig
@@ -101,8 +100,6 @@ def setup(config, options=None, register_station=True, check_schema=True):
               _("The database schema has changed, but the database has "
                 "not been updated. Run 'stoqdbadmin updateschema` to"
                 "update the schema  to the latest available version."))
-
-    check_parameter_presence()
 
     sqlhub.threadConnection = conn
 
