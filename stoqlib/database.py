@@ -29,18 +29,17 @@ import pwd
 import sys
 import socket
 
-from kiwi.argcheck import argcheck
 from sqlobject import connectionForURI
+from zope.interface import implements
 
+from stoqlib.domain.tables import get_table_types, get_sequence_names
 from stoqlib.exceptions import ConfigError, SQLError
+from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import (new_transaction, print_msg, set_verbose,
                                  get_connection)
-from stoqlib.domain.tables import get_table_types, get_sequence_names
 
 _ = stoqlib_gettext
-
-_db_settings = None
 
 DEFAULT_RDBMS = 'postgres'
 
@@ -49,8 +48,8 @@ DEFAULT_RDBMS = 'postgres'
 class Adapter:
     pass
 
-
 class DatabaseSettings:
+    implements(IDatabaseSettings)
     def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,
                  dbname='stoq', username=None, password=''):
         self.rdbms = rdbms
@@ -213,13 +212,3 @@ def setup_tables(delete_only=False, verbose=False):
 
     conn.commit()
     finish_transaction(conn, 1)
-
-@argcheck(DatabaseSettings)
-def register_db_settings(db_settings):
-    global _db_settings
-    _db_settings = db_settings
-
-
-def get_registered_db_settings():
-    global _db_settings
-    return _db_settings

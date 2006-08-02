@@ -27,17 +27,18 @@
 tables, removing tables and configuring administration user.
 """
 
-from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
+from kiwi.component import get_utility
+from kiwi.datatypes import currency
 from kiwi.environ import environ
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database import (setup_tables, get_registered_db_settings,
-                              finish_transaction, run_sql_file)
-from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.database import setup_tables, finish_transaction, run_sql_file
+from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
+from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 
@@ -101,8 +102,7 @@ def ensure_sellable_units():
     print_msg("done")
 
 def create_base_schema():
-    rdbms_name = get_registered_db_settings().rdbms
-    filename = '%s-schema.sql' % rdbms_name
+    filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
     sql_file = environ.find_resource('sql', filename)
     conn = new_transaction()
     run_sql_file(sql_file, conn)

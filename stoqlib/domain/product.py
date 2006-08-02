@@ -47,6 +47,8 @@ from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
 
 _ = stoqlib_gettext
 
+Person # pyflakes
+
 #
 # Base Domain Classes
 #

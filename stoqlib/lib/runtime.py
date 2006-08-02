@@ -30,8 +30,9 @@ from kiwi.component import get_utility
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
 
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
-                                    ICurrentUser)
+                                    ICurrentUser, IDatabaseSettings)
 
 _connection = None
 _verbose = False
@@ -82,14 +83,15 @@ class StoqlibTransaction(Transaction):
 
 def initialize_connection():
     # Avoiding circular imports
-    from stoqlib.database import get_registered_db_settings
     global _connection
     assert not _connection, (
         'The connection for this application was already set.')
 
-    db_settings = get_registered_db_settings()
-    assert db_settings, ('You need to register db settings before calling '
-                         'initialize_connection')
+    try:
+        db_settings = get_utility(IDatabaseSettings)
+    except NotImplementedError, e:
+        raise StoqlibError('You need to register db settings before calling '
+                           'initialize_connection')
     # TODO if port is invalid there will be an error here
     conn = connectionForURI(db_settings.get_connection_uri())
 
