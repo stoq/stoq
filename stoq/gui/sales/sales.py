@@ -39,7 +39,7 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.slaves.sale import SaleListToolbar
-from stoqlib.gui.editors.invoice import InvoiceDetailsEditor
+from stoqlib.gui.editors.invoiceeditor import InvoiceDetailsEditor
 from stoqlib.lib.invoice import SaleInvoice
 from stoqlib.gui.base.dialogs import print_report
 
