@@ -68,6 +68,16 @@ def test_gui(config, options, tests=None):
         raise AssertionError("Gtk cannot be loaded at this point")
 
     create_examples(config, utilities=True)
+    from stoqlib.doman.station import create_station
+    from stoqlib.exceptions import StoqlibError
+    from stoqlib.runtime import get_connection
+    conn = get_connection()
+    try:
+        create_station(conn)
+    except StoqlibError:
+        pass
+    conn.commit()
+
     os.environ['STOQ_TEST_MODE'] = '1'
 
     for filename in tests:
