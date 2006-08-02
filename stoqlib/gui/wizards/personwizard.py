@@ -37,7 +37,7 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.templates.person import BasePersonRoleEditor
+from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.editors.personeditor import (BranchEditor,
                                               ClientEditor, SupplierEditor,
                                               EmployeeEditor,
