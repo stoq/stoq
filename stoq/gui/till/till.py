@@ -47,8 +47,8 @@ from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
-from stoqlib.gui.wizards.sale import ConfirmSaleWizard
-from stoqlib.gui.wizards.salereturn import SaleReturnWizard
+from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard
+from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 
 from stoq.gui.application import SearchableAppWindow
 

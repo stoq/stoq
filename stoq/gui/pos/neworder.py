@@ -36,7 +36,7 @@ from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.editors.personeditor import ClientEditor
 
 

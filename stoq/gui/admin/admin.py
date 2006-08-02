@@ -39,10 +39,11 @@ from stoqlib.gui.dialogs.devices import DeviceSettingsDialog
 from stoqlib.gui.parameters import ParametersListingDialog
 from stoqlib.gui.dialogs.paymentmethod import PaymentMethodsDialog
 from stoqlib.gui.search.profilesearch import UserProfileSearch
-from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
-from stoqlib.gui.search.personsearch import (EmployeeRoleSearch, EmployeeSearch,
-                                       BranchSearch)
+from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
+                                             EmployeeSearch,
+                                             BranchSearch)
 
 from stoq.gui.application import SearchableAppWindow
 
