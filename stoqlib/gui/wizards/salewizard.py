@@ -44,8 +44,8 @@ from stoqlib.lib.drivers import (print_cheques_for_payment_group,
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.wizards.abstract import (AbstractSaleWizard,
-                                          AbstractSalesPersonStep)
+from stoqlib.gui.wizards.abstractwizard import (AbstractSaleWizard,
+                                                AbstractSalesPersonStep)
 from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
                                         CardMethodSlave,
                                         FinanceMethodSlave)

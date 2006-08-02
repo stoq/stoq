@@ -37,7 +37,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_connection
-from stoqlib.gui.wizards.paymentmethod import PaymentMethodDetailsWizard
+from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 from stoqlib.gui.templates.person import BasePersonRoleEditor
