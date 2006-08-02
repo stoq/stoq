@@ -95,11 +95,12 @@ def setup(config, options=None, register_station=True, check_schema=True):
     conn = get_connection()
     if register_station:
         set_branch_by_stationid(conn)
-    if not schema_migration.check_updated(conn):
-        error(_("Database schema error"),
-              _("The database schema has changed, but the database has "
-                "not been updated. Run 'stoqdbadmin updateschema` to"
-                "update the schema  to the latest available version."))
+    if check_schema:
+        if not schema_migration.check_updated(conn):
+            error(_("Database schema error"),
+                  _("The database schema has changed, but the database has "
+                    "not been updated. Run 'stoqdbadmin updateschema` to"
+                    "update the schema  to the latest available version."))
 
     sqlhub.threadConnection = conn
 
