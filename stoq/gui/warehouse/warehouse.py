@@ -32,7 +32,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
-from stoqlib.gui.wizards.receiving import ReceivingOrderWizard
+from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.reporting.product import ProductReport

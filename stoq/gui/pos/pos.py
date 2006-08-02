@@ -49,8 +49,8 @@ from stoqlib.reporting.sale import SaleOrderReport
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.editors.deliveryeditor import DeliveryEditor
 from stoqlib.gui.editors.serviceeditor import ServiceItemEditor
-from stoqlib.gui.wizards.sale import ConfirmSaleWizard, PreOrderWizard
-from stoqlib.gui.wizards.person import run_person_role_dialog
+from stoqlib.gui.wizards.salewizard import ConfirmSaleWizard, PreOrderWizard
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
