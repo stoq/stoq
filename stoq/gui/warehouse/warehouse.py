@@ -31,14 +31,17 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction, get_current_branch
+from stoqlib.lib.message import warning
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
+from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
+from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import SellableView
-from stoqlib.domain.interfaces import ISellable, IBranch
+from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
 from stoqlib.domain.product import (Product, ProductFullStockView,
                                     ProductAdaptToSellable)
 
@@ -88,6 +91,7 @@ class WarehouseApp(SearchableAppWindow):
         self.retention_button.set_sensitive(has_stock)
         one_selected = len(self.products.get_selected_rows()) == 1
         self.history_button.set_sensitive(one_selected)
+        self.retention_button.set_sensitive(one_selected)
         self.print_button.set_sensitive(has_stock)
         self._update_stock_total()
 
@@ -146,6 +150,21 @@ class WarehouseApp(SearchableAppWindow):
     def on_stock_transfer_action_clicked(self, *args):
         # TODO To be implemented
         pass
+
+    def on_retention_button__clicked(self, button):
+        selected = self.products.get_selected_rows()
+        sellable = Product.iget(ISellable, selected[0].id,
+                                connection=self.conn)
+        product = sellable.get_adapted()
+        storable = IStorable(product, connection=self.conn)
+        warehouse = sysparam(self.conn).CURRENT_WAREHOUSE
+        branch = IBranch(warehouse.get_adapted(), connection=self.conn)
+        if not storable or not storable.get_full_balance(branch):
+            warning(_(u'You must have at least one item in stock '
+                      'to perfom this action'))
+            return
+        if self.run_dialog(ProductRetentionDialog, self.conn, product):
+            self.conn.commit()
 
     def on_receiving_search_action_clicked(self, *args):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
