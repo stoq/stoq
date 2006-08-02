@@ -24,6 +24,7 @@
 import decimal
 
 from kiwi.datatypes import currency
+from kiwi.argcheck import argcheck
 from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
                        BoolCol, IntCol)
 from sqlobject.sqlbuilder import AND
@@ -36,13 +37,13 @@ from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.domain.columns import PriceCol, DecimalCol
-from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.domain.person import PersonAdaptToBranch, Person
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                      SellableView)
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
-                                       IDelivery)
+                                       IDelivery, IBranch)
 
 _ = stoqlib_gettext
 
@@ -91,6 +92,14 @@ class ProductSupplierInfo(Domain):
         return self.supplier.get_adapted().name
 
 
+class ProductRetentionHistory(Domain):
+    """Class responsible to store information about product's retention."""
+
+    quantity = DecimalCol(default=0)
+    reason = UnicodeCol(default='')
+    product = ForeignKey('Product')
+
+
 class Product(Domain):
     """Class responsible to store basic products informations."""
 
@@ -104,6 +113,16 @@ class Product(Domain):
         storable = ProductAdaptToStorable(self, **kwargs)
         storable.fill_stocks()
         return storable
+
+    #
+    # General Methods
+    #
+
+    def block(self, conn, quantity, branch, reason, product):
+        storable = IStorable(self, connection=conn)
+        storable.decrease_stock(quantity, branch)
+        return ProductRetentionHistory(quantity=quantity, product=product,
+                                       reason=reason, connection=conn)
 
     #
     # Acessors
@@ -308,6 +327,8 @@ class ProductAdaptToStorable(ModelAdapter):
 
     implements(IStorable, IContainer)
 
+    retention = MultipleJoin('ProductRetentionHistory')
+
     #
     # IContainer implementation
     #
@@ -448,9 +469,16 @@ class ProductAdaptToStorable(ModelAdapter):
         sellable = ISellable(adapted, connection=conn)
         return u"%s %s" % (full_balance, sellable.get_unit_description())
 
+    def get_full_balance_for_current_branch(self):
+        conn = self.get_connection()
+        branch = IBranch(sysparam(conn).CURRENT_WAREHOUSE.get_adapted(),
+                         connection=conn)
+        return self.get_full_balance(branch)
+
     #
     # General methods
     #
+
 
     def _check_logic_quantity(self):
         if not sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
@@ -480,6 +508,7 @@ class ProductAdaptToStorable(ModelAdapter):
                                 logic_quantity=logic_quantity,
                                 storable=self)
 
+    @argcheck(Person.getAdapterClass(IBranch))
     def get_stocks(self, branch=None):
         conn = self.get_connection()
         table, parent = ProductStockItem, AbstractStockItem
