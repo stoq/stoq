@@ -283,7 +283,7 @@ def bootstrap_testsuite():
     initialize_system("", verbose=verbose)
 
     from stoqlib.domain.examples.createall import create
-    create()
+    create(utilities=True)
 
 bootstrap_testsuite()
 
