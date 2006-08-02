@@ -51,12 +51,12 @@ from stoqlib.gui.editors.delivery import DeliveryEditor
 from stoqlib.gui.editors.service import ServiceItemEditor
 from stoqlib.gui.wizards.sale import ConfirmSaleWizard, PreOrderWizard
 from stoqlib.gui.wizards.person import run_person_role_dialog
-from stoqlib.gui.search.sellable import SellableSearch
-from stoqlib.gui.search.person import ClientSearch
-from stoqlib.gui.search.sale import SaleSearch
-from stoqlib.gui.search.product import ProductSearch
-from stoqlib.gui.search.service import ServiceSearch
-from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
+from stoqlib.gui.search.sellablesearch import SellableSearch
+from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.search.salesearch import SaleSearch
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.gui.dialogs.tilloperation import (verify_and_open_till,
                                                verify_and_close_till)

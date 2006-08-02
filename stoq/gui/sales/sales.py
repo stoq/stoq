@@ -34,10 +34,10 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.gui.search.person import ClientSearch
-from stoqlib.gui.search.product import ProductSearch
-from stoqlib.gui.search.service import ServiceSearch
-from stoqlib.gui.search.giftcertificate import GiftCertificateSearch
+from stoqlib.gui.search.personsearch import ClientSearch
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
+from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.slaves.sale import SaleListToolbar
 from stoqlib.gui.editors.invoice import InvoiceDetailsEditor
 from stoqlib.lib.invoice import SaleInvoice

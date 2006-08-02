@@ -34,12 +34,12 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.gui.search.person import SupplierSearch, TransporterSearch
+from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchase import PurchaseWizard
-from stoqlib.gui.search.category import (BaseSellableCatSearch,
+from stoqlib.gui.search.categorysearch import (BaseSellableCatSearch,
                                          SellableCatSearch)
-from stoqlib.gui.search.product import ProductSearch
-from stoqlib.gui.search.service import ServiceSearch
+from stoqlib.gui.search.productsearch import ProductSearch
+from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
