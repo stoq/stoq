@@ -31,7 +31,6 @@ import gettext
 import os
 
 from stoqlib.lib.message import error
-from stoqlib.lib.message import ISystemNotifier
 from kiwi.component import provide_utility
 from kiwi.log import Logger
 from psycopg import Error as PostgreSQLError
@@ -63,17 +62,62 @@ def _run_first_time_wizard(config):
     if not model:
         raise SystemExit("No configuration data provided")
 
-
 def _setup_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
         return
     log.info('providing graphical notification dialogs')
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
+    from stoqlib.lib.message import ISystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
+def _setup_printers():
+    log.info('setting up printers')
+    from stoqlib.lib.runtime import get_connection, get_current_station
+    from stoqlib.lib.drivers import (
+        get_fiscal_printer_settings_by_station,
+        create_virtual_printer_for_current_station)
+
+    conn = get_connection()
+
+    if not get_fiscal_printer_settings_by_station(conn,
+                                                  get_current_station(conn)):
+        create_virtual_printer_for_current_station()
+
+def _setup_cookiefile(config_dir):
+    log.info('setting up cookie file')
+    from stoqlib.lib.cookie import Base64CookieFile
+    from stoqlib.lib.interfaces import ICookieFile
+    cookiefile = os.path.join(config_dir, "cookie")
+    provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+
+def _check_tables():
+    from stoqlib.domain.tables import get_table_types
+    from stoqlib.exceptions import DatabaseError
+    from stoqlib.lib.runtime import get_connection
+
+    log.info('checking tables')
+
+    # We must check if all the tables are already in the database.
+    conn = get_connection()
+
+    for table_type in get_table_types():
+        classname = table_type.get_db_table_name()
+        try:
+            if not conn.tableExists(classname):
+                msg = _("Outdated schema. Table %s doesn't exist.\n"
+                        "Run init-database script to fix this problem."
+                        % classname)
+                raise DatabaseError, msg
+        except:
+            type, value, trace = sys.exc_info()
+            # TODO Raise a proper error if the database doesn't exist.
+            msg = _("An error ocurred trying to access the database\n"
+                    "This is the database error:\n%s. Error type is %s")
+            raise DatabaseError(msg % (value, type))
 
 def _initialize(options):
+    _check_dependencies()
     _setup_dialogs()
     log.info('reading configuration')
     config = StoqConfig(filename=options.filename)
@@ -86,10 +130,7 @@ def _initialize(options):
 
     # There must be ICookieFile registration now, regardless if we
     # ran the wizard or not
-    from stoqlib.lib.cookie import Base64CookieFile
-    from stoqlib.lib.interfaces import ICookieFile
-    cookiefile = os.path.join(config_dir, "cookie")
-    provide_utility(ICookieFile, Base64CookieFile(cookiefile))
+    _setup_cookiefile(config_dir)
 
     # The rest is only necessary when we're not running the first-time
     # configuration wizard, so we can safely skip out
@@ -114,29 +155,8 @@ def _initialize(options):
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
 
-
-def _check_tables():
-    from stoqlib.domain.tables import get_table_types
-    from stoqlib.exceptions import DatabaseError
-    from stoqlib.lib.runtime import get_connection
-
-    # We must check if all the tables are already in the database.
-    conn = get_connection()
-
-    for table_type in get_table_types():
-        classname = table_type.get_db_table_name()
-        try:
-            if not conn.tableExists(classname):
-                msg = _("Outdated schema. Table %s doesn't exist.\n"
-                        "Run init-database script to fix this problem."
-                        % classname)
-                raise DatabaseError, msg
-        except:
-            type, value, trace = sys.exc_info()
-            # TODO Raise a proper error if the database doesn't exist.
-            msg = _("An error ocurred trying to access the database\n"
-                    "This is the database error:\n%s. Error type is %s")
-            raise DatabaseError(msg % (value, type))
+    _setup_printers()
+    _check_tables()
 
 def _show_splash():
     from stoqlib.gui.splash import SplashScreen
@@ -148,15 +168,12 @@ def _show_splash():
 
     return splash
 
-def _run_app(options, appname):
-    from stoq.gui.login import LoginHelper
+def _run_app(appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
+    from stoq.gui.login import LoginHelper
 
     log.info('register stock icons')
     register_iconsets()
-
-    log.info('checking tables')
-    _check_tables()
 
     log.info('loading application')
     appconf = LoginHelper(appname)
@@ -182,7 +199,7 @@ def _run_app(options, appname):
 
     log.info("Shutting down application")
 
-def main(args):
+def _parse_command_line(args):
     log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
     options, args = parser.parse_args(args)
@@ -199,17 +216,10 @@ def main(args):
             raise SystemExit("'%s' is not an application. "
                              "Valid applications are: %s" % (appname, apps))
 
-    _check_dependencies()
+    return options, appname
+
+def main(args):
+    options, appname = _parse_command_line(args)
+
     _initialize(options)
-
-    from stoqlib.lib.runtime import get_connection, get_current_station
-    from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
-                                 create_virtual_printer_for_current_station)
-    conn = get_connection()
-
-    log.info('setting up printers')
-    if not get_fiscal_printer_settings_by_station(conn,
-                                              get_current_station(conn)):
-        create_virtual_printer_for_current_station()
-
-    _run_app(options, appname)
+    _run_app(appname)
