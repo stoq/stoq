@@ -37,11 +37,11 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey)
 
 from stoqlib.exceptions import StoqlibError
-from stoqlib.database import finish_transaction, Adapter
-from stoqlib.database import register_db_settings, DatabaseSettings
+from stoqlib.database import Adapter, DatabaseSettings, finish_transaction
 from stoqlib.domain.columns import SOPriceCol
 from stoqlib.lib.admin import initialize_system
-from stoqlib.lib.interfaces import IApplicationDescriptions
+from stoqlib.lib.interfaces import (IApplicationDescriptions,
+                                    IDatabaseSettings)
 from stoqlib.lib.runtime import set_verbose, new_transaction
 
 # Default values for automatic instance creation and set value tests.
@@ -276,9 +276,9 @@ def bootstrap_testsuite():
                                    dbname=dbname,
                                    username=username,
                                    password=password)
+    provide_utility(IDatabaseSettings, db_settings)
 
     set_verbose(verbose)
-    register_db_settings(db_settings)
 
     initialize_system("", verbose=verbose)
 

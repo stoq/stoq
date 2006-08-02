@@ -91,3 +91,14 @@ class IApplicationDescriptions(Interface):
         * Application full name
         * Application icon name
         """
+
+
+class IDatabaseSettings(Interface):
+    """
+    This is an interface to describe all important database settings
+    """
+
+    rdbms = Attribute('name identifying the database type')
+
+    def get_connection_uri():
+        """@returns: a SQLObject connection URI"""

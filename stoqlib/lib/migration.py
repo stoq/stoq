@@ -26,16 +26,17 @@
 
 import datetime
 
+from kiwi.component import get_utility
 from kiwi.environ import environ
 
 import stoqlib
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.admin import create_base_schema
+from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
-from stoqlib.database import (finish_transaction,
-                              get_registered_db_settings, run_sql_file)
+from stoqlib.lib.runtime import new_transaction
+from stoqlib.database import finish_transaction, run_sql_file
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.domain.tables import get_table_types
@@ -52,7 +53,7 @@ class SchemaMigration:
         """Returns a list of all the migration sql files for a certain
         db schema version
         """
-        rdbms_name = get_registered_db_settings().rdbms
+        rdbms_name = get_utility(IDatabaseSettings).rdbms
         migration_files = []
         for version in range(current_db_version + 1, self.db_version +1):
             filename = '%s-schema-migration-%s.sql' % (rdbms_name, version)
