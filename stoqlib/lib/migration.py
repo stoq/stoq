@@ -32,7 +32,8 @@ import stoqlib
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.admin import create_base_schema
-from stoqlib.lib.parameters import ensure_system_parameters
+from stoqlib.lib.parameters import (check_parameter_presence,
+                                    ensure_system_parameters)
 from stoqlib.database import (finish_transaction,
                               get_registered_db_settings, run_sql_file)
 from stoqlib.domain.profile import update_profile_applications
@@ -87,7 +88,13 @@ class SchemaMigration:
         conn.commit()
 
     def check_updated(self, conn):
-        return not self._check_up_to_date(conn)
+        if not self._check_up_to_date(conn):
+            return True
+
+        if check_parameter_presence(conn):
+            return True
+
+        return False
 
     def update_schema(self):
         """Check the current version of database and update the schema if
