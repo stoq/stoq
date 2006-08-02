@@ -37,7 +37,7 @@ from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receiving import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.wizards.abstract import AbstractProductStep
+from stoqlib.gui.wizards.abstractwizard import AbstractProductStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user, get_current_branch

@@ -34,8 +34,8 @@ from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog, print_report
-from stoqlib.gui.wizards.person import run_person_role_dialog
-from stoqlib.gui.wizards.abstract import AbstractProductStep
+from stoqlib.gui.wizards.personwizard import run_person_role_dialog
+from stoqlib.gui.wizards.abstractwizard import AbstractProductStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
