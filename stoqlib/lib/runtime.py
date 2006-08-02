@@ -53,7 +53,7 @@ class StoqlibTransaction(Transaction):
         if id(new_obj) not in obj_ids:
             self._change_data.append(new_obj)
 
-    def commit(self, *args, **kwargs):
+    def commit(self, close=False):
         # NotImplementedError means that there are no utility for ICurrentUser,
         # which in turn only happens during startup, for example when
         # we're creating a new database or running the migration script,
@@ -69,12 +69,12 @@ class StoqlibTransaction(Transaction):
             obj.model_modified = datetime.now()
             if current_user is not None:
                 obj.last_user_id = current_user.id
-        Transaction.commit(self, *args, **kwargs)
+        Transaction.commit(self, close=close)
         self._change_data = []
 
-    def rollback(self, *args, **kwargs):
+    def rollback(self):
         self._change_data = []
-        Transaction.rollback(self, *args, **kwargs)
+        Transaction.rollback(self)
 
     def close(self):
         self._connection.close()
