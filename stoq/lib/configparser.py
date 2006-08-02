@@ -31,13 +31,15 @@ import optparse
 import os
 from ConfigParser import SafeConfigParser
 
-from kiwi.environ import environ, EnvironmentError
 from kiwi.argcheck import argcheck
+from kiwi.component import provide_utility
+from kiwi.environ import environ, EnvironmentError
 from stoqlib.database import (DEFAULT_RDBMS, DatabaseSettings,
                               build_connection_uri,
                               check_database_connection)
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
+from stoqlib.lib.interfaces import IDatabaseSettings
 
 _ = gettext.gettext
 _config = None
@@ -321,16 +323,12 @@ dbusername=%(DBUSERNAME)s"""
 #
 
 
-def _setup_stoqlib(config):
-    from stoqlib.database import register_db_settings
-
-    register_db_settings(config.get_settings())
-
 @argcheck(StoqConfig)
 def register_config(config):
     global _config
     _config = config
-    _setup_stoqlib(config=config)
+
+    provide_utility(IDatabaseSettings, config.get_settings())
 
 def get_config():
     global _config
