@@ -147,7 +147,7 @@ def get_option_parser():
                       action="store",
                       dest="dbname",
                       help='Database name to use')
-    group.add_option('-h', '--hostname',
+    group.add_option('-H', '--hostname',
                       action="store",
                       dest="address",
                       help='Database address to connect to')
