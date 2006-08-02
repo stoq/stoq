@@ -36,8 +36,8 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.wizards.person import run_person_role_dialog
 from stoqlib.gui.wizards.abstract import AbstractProductStep
-from stoqlib.gui.editors.person import SupplierEditor, TransporterEditor
-from stoqlib.gui.editors.product import ProductEditor
+from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
+from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.person import Person

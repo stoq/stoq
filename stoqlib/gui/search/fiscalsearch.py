@@ -34,9 +34,9 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, IPI_BOOK_ENTRY,
                                   ISS_BOOK_ENTRY, ALL_ITEMS_INDEX)
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.editors.fiscal import CfopEditor
+from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.slaves.fiscal import FiscalBookEntryFilterSlave
-from stoqlib.gui.editors.fiscal import FiscalBookEntryEditor
+from stoqlib.gui.editors.fiscaleditor import FiscalBookEntryEditor
 from stoqlib.domain.fiscal import CfopData, IcmsIpiView, IssView
 
 

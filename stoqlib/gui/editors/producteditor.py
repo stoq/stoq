@@ -39,7 +39,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.product import ProductSupplierInfo, Product
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
-from stoqlib.gui.editors.sellable import SellableEditor
+from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 

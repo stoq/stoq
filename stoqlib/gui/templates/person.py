@@ -35,7 +35,7 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
-from stoqlib.gui.editors.address import AddressAdditionDialog
+from stoqlib.gui.editors.addresseditor import AddressAdditionDialog
 from stoqlib.gui.slaves.liaison import LiaisonListDialog
 from stoqlib.gui.slaves.address import AddressSlave
 from stoqlib.gui.slaves.company import CompanyDocumentsSlave

@@ -31,7 +31,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.sellable import BaseSellableInfo
-from stoqlib.gui.editors.sellable import SellableEditor
+from stoqlib.gui.editors.sellableeditor import SellableEditor
 from stoqlib.domain.interfaces import ISellable
 
 _ = stoqlib_gettext

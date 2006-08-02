@@ -29,7 +29,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.domain.profile import UserProfile
-from stoqlib.gui.editors.profile import UserProfileEditor
+from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.gui.base.dialogs import run_dialog
 
 
