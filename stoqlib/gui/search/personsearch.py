@@ -33,11 +33,11 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.gui.editors.personeditor import (ClientEditor, SupplierEditor,
-                                        EmployeeEditor,
-                                        TransporterEditor,
-                                        EmployeeRoleEditor, BranchEditor,
-                                        CardProviderEditor,
-                                        FinanceProviderEditor)
+                                              EmployeeEditor,
+                                              TransporterEditor,
+                                              EmployeeRoleEditor, BranchEditor,
+                                              CardProviderEditor,
+                                              FinanceProviderEditor)
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn

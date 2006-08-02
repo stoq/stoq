@@ -39,9 +39,9 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.templates.person import BasePersonRoleEditor
 from stoqlib.gui.editors.personeditor import (BranchEditor,
-                                        ClientEditor, SupplierEditor,
-                                        EmployeeEditor,
-                                        CreditProviderEditor)
+                                              ClientEditor, SupplierEditor,
+                                              EmployeeEditor,
+                                              CreditProviderEditor)
 
 
 _ = stoqlib_gettext
