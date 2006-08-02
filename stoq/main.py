@@ -93,7 +93,6 @@ def _setup_cookiefile(config_dir):
 
 def _check_tables():
     from stoqlib.domain.tables import get_table_types
-    from stoqlib.exceptions import DatabaseError
     from stoqlib.lib.runtime import get_connection
 
     log.info('checking tables')
@@ -103,18 +102,12 @@ def _check_tables():
 
     for table_type in get_table_types():
         classname = table_type.get_db_table_name()
-        try:
-            if not conn.tableExists(classname):
-                msg = _("Outdated schema. Table %s doesn't exist.\n"
-                        "Run init-database script to fix this problem."
-                        % classname)
-                raise DatabaseError, msg
-        except:
-            type, value, trace = sys.exc_info()
-            # TODO Raise a proper error if the database doesn't exist.
-            msg = _("An error ocurred trying to access the database\n"
-                    "This is the database error:\n%s. Error type is %s")
-            raise DatabaseError(msg % (value, type))
+        if not conn.tableExists(classname):
+            error(
+                _("Database schema error"),
+                _("Table `%s' does not exist.\n"
+                  "Consult your database administrator to solve this problem.")
+                % classname)
 
 def _initialize(options):
     _check_dependencies()
