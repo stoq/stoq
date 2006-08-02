@@ -66,13 +66,14 @@ def set_branch_by_stationid(conn):
     provide_utility(ICurrentBranch, station.branch)
 
 def setup(config, options=None, stoq_user_password='',
-          register_station=True):
+          register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
 
     @param config: a StoqConfig instance
     @param options: a Optionparser instance
     @param register_station: if we should register the branch station.
+    @param check_schema: if we should check the schema
     """
 
     # NOTE: No GUI calls are allowed in here
@@ -107,7 +108,12 @@ def setup(config, options=None, stoq_user_password='',
     else:
         if register_station:
             set_branch_by_stationid(conn)
-        schema_migration.update_schema()
+        if not schema_migration.check_updated(conn):
+            error(_("Database schema error"),
+                  _("The database schema has changed, but the database has "
+                    "not been updated. Run 'stoqdbadmin updateschema` to"
+                    "update the schema  to the latest available version."))
+
         check_parameter_presence()
 
     sqlhub.threadConnection = conn
