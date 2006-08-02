@@ -67,7 +67,7 @@ def test_gui(config, options, tests=None):
     if 'gtk' in sys.modules:
         raise AssertionError("Gtk cannot be loaded at this point")
 
-    create_examples(config)
+    create_examples(config, utilities=True)
     os.environ['STOQ_TEST_MODE'] = '1'
 
     for filename in tests:

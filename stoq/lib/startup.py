@@ -168,8 +168,8 @@ def get_option_parser():
     parser.add_option_group(group)
     return parser
 
-@argcheck(StoqConfig)
-def create_examples(config):
+@argcheck(StoqConfig, bool)
+def create_examples(config, utilities=False):
     """Create example database for a given config file"""
     from stoqlib.domain.examples.createall import create
-    create()
+    create(utilities=utilities)
