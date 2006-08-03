@@ -28,14 +28,14 @@ tables, removing tables and configuring administration user.
 """
 
 from kiwi.argcheck import argcheck
-from kiwi.component import get_utility
+from kiwi.component import get_utility, provide_utility
 from kiwi.datatypes import currency
 from kiwi.environ import environ
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database import setup_tables, finish_transaction, run_sql_file
-from stoqlib.lib.interfaces import IDatabaseSettings
+from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
@@ -81,11 +81,15 @@ def ensure_admin_user(administrator_password):
     user = person_obj.addFacet(IUser, username=username,
                                password=administrator_password,
                                profile=profile, connection=conn)
+
     table = PersonAdaptToUser
     ret = table.select(table.q.username == username, connection=conn)
     assert ret, ret.count() == 1
     assert ret[0].password == administrator_password
+
     finish_transaction(conn, 1)
+    # We can't provide the utility until it's actually in the database
+    provide_utility(ICurrentUser, user)
     print_msg('done')
 
 def ensure_sellable_units():
