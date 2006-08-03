@@ -160,7 +160,6 @@ class PaymentMethodStep(WizardEditorStep):
     def on_method_combo__changed(self, *args):
         self._update_payment_method_slave()
 
-
 class SaleRenegotiationOutstandingStep(WizardEditorStep):
     gladefile = 'SaleRenegotiationOutstandingStep'
     model_type = Sale
@@ -488,9 +487,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self._add_item()
 
     def on_certificate_number__changed(self, *args):
-        self._update_widgets()
-
-    def after_certificate_number__changed(self, *args):
         self._update_widgets()
 
     def after_delete_items(self, *args):
