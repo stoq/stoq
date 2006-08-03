@@ -36,7 +36,7 @@ from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
 from stoqlib.lib.runtime import new_transaction
-from stoqlib.database import finish_transaction, run_sql_file
+from stoqlib.database import finish_transaction, run_sql_file, db_table_name
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.domain.tables import get_table_types
@@ -84,7 +84,7 @@ class SchemaMigration:
     def _create_tables(self, conn):
         table_types = get_table_types()
         for table in table_types:
-            if not conn.tableExists(table.get_db_table_name()):
+            if not conn.tableExists(db_table_name(table)):
                 table.createTable(connection=conn)
         conn.commit()
 

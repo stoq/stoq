@@ -30,6 +30,7 @@ import sys
 import socket
 
 from sqlobject import connectionForURI
+from sqlobject.styles import mixedToUnder
 from zope.interface import implements
 
 from stoqlib.domain.tables import get_table_types, get_sequence_names
@@ -186,7 +187,7 @@ def setup_tables(delete_only=False, verbose=False):
         print_msg('Dropping tables')
     table_types = get_table_types()
     for table in table_types:
-        table_name = table.get_db_table_name()
+        table_name = db_table_name(table)
         if conn.tableExists(table_name):
             conn.dropTable(table_name, cascade=True)
 
@@ -200,7 +201,7 @@ def setup_tables(delete_only=False, verbose=False):
         if verbose:
             print_msg('Creating tables')
         for table in table_types:
-            table_name = table.get_db_table_name()
+            table_name = db_table_name(table)
             if delete_only:
                 continue
             table.createTable(connection=conn)
@@ -212,3 +213,13 @@ def setup_tables(delete_only=False, verbose=False):
 
     conn.commit()
     finish_transaction(conn, 1)
+
+def db_table_name(cls):
+    """
+    Returns a table name for a specific class, eg SystemTable -> system_table
+    @param cls: a SQLObject class
+    @returns: the table name
+    @rtype: string
+    """
+    className = cls.__name__
+    return (className[0].lower() + mixedToUnder(className[1:]))
