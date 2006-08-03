@@ -394,10 +394,8 @@ class AbstractProductStep(WizardEditorStep):
         self._get_sellable()
         self.quantity.grab_focus()
 
-    def on_product__changed(self, *args):
+    def after_product__content_changed(self, *args):
         self.product.set_valid()
-
-    def after_product__changed(self, *args):
         self._update_widgets()
         product = self.product_proxy.model.product
         if not (product and self.product.get_text()):

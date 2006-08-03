@@ -192,7 +192,7 @@ class ProductSupplierEditor(BaseEditor):
     def on_supplier_list_button__clicked(self, button):
         self.list_suppliers()
 
-    def on_supplier_combo__changed(self, *args):
+    def on_supplier_combo__content_changed(self, *args):
         self.update_model()
 
     def on_base_cost__validate(self, entry, value):
