@@ -89,9 +89,12 @@ class SelectPaymentMethodSlave(SlaveDelegate):
         self._select_payment_method_by_iface(method_iface)
 
     def _select_payment_method_by_iface(self, method_iface):
-        if method_iface is IMoneyPM:
+        if not method_iface in get_active_pm_ifaces():
+            raise StoqlibError("The payment method %r can't be used, since "
+                               "it isn't active." % method_iface)
+        if method_iface == IMoneyPM:
             widget = self.cash_check
-        elif method_iface is IGiftCertificatePM:
+        elif method_iface == IGiftCertificatePM:
             widget = self.certificate_check
         else:
             widget = self.othermethods_check
@@ -115,8 +118,11 @@ class SelectPaymentMethodSlave(SlaveDelegate):
             return IMoneyPM
         elif self.certificate_check.get_active():
             return IGiftCertificatePM
-        else:
+        elif self.othermethods_check.get_active():
             return IMultiplePM
+        else:
+            raise StoqlibError("You should have a valid payment method "
+                               "selected at this point.")
 
     #
     # Kiwi callbacks
