@@ -102,10 +102,12 @@ class SchemaMigration:
         it's needed
         """
         conn = new_transaction()
+
+        self._create_tables(conn)
+
         if not self._check_up_to_date(conn):
             finish_transaction(conn, 1)
             return
-        self._create_tables(conn)
 
         # Updating the schema for all the versions from the current database
         # version to the last schema version.
