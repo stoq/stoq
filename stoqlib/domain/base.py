@@ -30,7 +30,6 @@ from kiwi.component import get_utility
 from kiwi.python import qual
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, ForeignKey, BoolCol, IntCol
-from sqlobject.styles import mixedToUnder
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
@@ -40,7 +39,7 @@ from zope.interface import providedBy
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
-from stoqlib.database import Adapter
+from stoqlib.database import Adapter, db_table_name
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.exceptions import (AdapterError, DatabaseInconsistency,
@@ -134,8 +133,7 @@ class AbstractModel(object):
     @classmethod
     def get_db_table_name(cls):
         assert issubclass(cls, SQLObject)
-        className = cls.__name__
-        return (className[0].lower() + mixedToUnder(className[1:]))
+        return db_table_name(cls)
 
     @classmethod
     def _check_connection(cls, connection):
