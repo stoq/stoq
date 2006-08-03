@@ -165,7 +165,7 @@ class UserDetailsSlave(BaseEditorSlave):
     # Kiwi handlers
     #
 
-    def after_profile__changed(self, widget):
+    def after_profile__content_changed(self, widget):
         # This could be wrriten in this way:
         # sensitive = bool(widget.get_text()) and widget.is_valid()
         # but if widget.get_text() returns "" sensitive will be False

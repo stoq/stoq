@@ -261,7 +261,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
         if value <= 0:
             return ValidationError("Salary must be greater than zero")
 
-    def after_role__changed(self, widget):
+    def after_role__content_changed(self, widget):
         self._update_sensitivity()
 
     def _update_sensitivity(self):

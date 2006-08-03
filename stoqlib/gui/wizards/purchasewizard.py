@@ -192,7 +192,7 @@ class PurchasePaymentStep(WizardEditorStep):
     # callbacks
     #
 
-    def on_method_combo__changed(self, *args):
+    def on_method_combo__content_changed(self, *args):
         self._update_payment_method_slave()
 
 
