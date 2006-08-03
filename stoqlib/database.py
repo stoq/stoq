@@ -29,12 +29,13 @@ import pwd
 import sys
 import socket
 
+from psycopg import ProgrammingError
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
 from zope.interface import implements
 
 from stoqlib.domain.tables import get_table_types, get_sequence_names
-from stoqlib.exceptions import ConfigError, SQLError
+from stoqlib.exceptions import ConfigError, SQLError, StoqlibError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import (new_transaction, print_msg, set_verbose,
@@ -204,7 +205,13 @@ def setup_tables(delete_only=False, verbose=False):
             table_name = db_table_name(table)
             if delete_only:
                 continue
-            table.createTable(connection=conn)
+            try:
+                table.createTable(connection=conn)
+            except ProgrammingError, e:
+                raise StoqlibError(
+                    "An error occurred when creating %s table:\n"
+                    "=========\n"
+                    "%s\n" % (table_name, e))
 
         if verbose:
             print_msg('Creating sequences')
