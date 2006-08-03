@@ -220,8 +220,9 @@ class PurchaseProductStep(AbstractProductStep):
                        width=100)]
 
     def get_order_item(self, sellable, cost, quantity):
-        return PurchaseItem(connection=self.conn, sellable=sellable,
-                            order=self.model, cost=cost, quantity=quantity)
+        item = self.model.add_item(sellable, quantity)
+        item.cost = cost
+        return item
 
     def get_saved_items(self):
         return list(self.model.get_items())
@@ -231,8 +232,7 @@ class PurchaseProductStep(AbstractProductStep):
     #
 
     def next_step(self):
-        return PurchasePaymentStep(self.wizard, self, self.conn,
-                                   self.model)
+        return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
 
     #
     # callbacks
