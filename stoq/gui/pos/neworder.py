@@ -127,7 +127,7 @@ class NewOrderEditor(BaseEditor):
     # Callbacks
     #
 
-    def on_client__changed(self, combo):
+    def on_client__content_changed(self, combo):
         self._update_client_role_box()
         self._update_client_role()
         self._update_client_widgets()
