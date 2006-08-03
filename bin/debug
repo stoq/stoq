@@ -37,6 +37,7 @@ else:
 from sqlobject import *
 from sqlobject.sqlbuilder import *
 
+from kiwi.component import provide_utility
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
 
@@ -48,10 +49,19 @@ options.clean = False
 setup(config, options)
 
 from stoqlib.domain.base import *
+from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.interfaces import *
 from stoqlib.domain.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_connection, new_transaction
+from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
+from stoqlib.lib.interfaces import ICurrentUser
+
+conn = new_transaction()
+
+provide_utility(ICurrentUser, PersonAdaptToUser.select(
+    PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
+    connection=conn)[0])
 
 names = []
 for table in get_table_types():
@@ -59,7 +69,7 @@ for table in get_table_types():
     locals()[table_name] = table
     names.append(table_name)
 
-locals()['conn'] = new_transaction()
+locals()['conn'] = conn
 names.sort()
 
 def get_person():
