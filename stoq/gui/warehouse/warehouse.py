@@ -152,19 +152,23 @@ class WarehouseApp(SearchableAppWindow):
         pass
 
     def on_retention_button__clicked(self, button):
-        selected = self.products.get_selected_rows()
-        sellable = Product.iget(ISellable, selected[0].id,
-                                connection=self.conn)
-        product = sellable.get_adapted()
+        sellable_view = self.products.get_selected_rows()[0]
+        product = Product.get(sellable_view.product_id,
+                              connection=self.conn)
         storable = IStorable(product, connection=self.conn)
         warehouse = sysparam(self.conn).CURRENT_WAREHOUSE
-        branch = IBranch(warehouse.get_adapted(), connection=self.conn)
-        if not storable or not storable.get_full_balance(branch):
-            warning(_(u'You must have at least one item in stock '
-                      'to perfom this action'))
+        warehouse_branch = IBranch(warehouse.get_adapted(),
+                                   connection=self.conn)
+        if (not storable
+            or not storable.get_full_balance(warehouse_branch)):
+            warning(_(u"You must have at least one item "
+                      "in stock to perfom this action."))
             return
-        if self.run_dialog(ProductRetentionDialog, self.conn, product):
-            self.conn.commit()
+        model = self.run_dialog(ProductRetentionDialog, self.conn, product)
+        if not finish_transaction(self.conn, model, keep_transaction=True):
+            return
+        sellable_view.sync()
+        self.products.update(sellable_view)
 
     def on_receiving_search_action_clicked(self, *args):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
