@@ -182,9 +182,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
         raise NotImplementedError("This method must be overwritten on child")
 
     def next_step(self):
-        method_iface = self.pm_slave.get_selected_method()
-        self.payment_group.default_method = \
-            self.payment_group.get_method_id_by_iface(method_iface)
+        self.payment_group.set_method(self.pm_slave.get_selected_method())
         return self.on_next_step()
 
     #
