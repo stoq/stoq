@@ -26,17 +26,15 @@
 import sys
 import datetime
 
-from kiwi.component import provide_utility
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
-from stoqlib.lib.interfaces import ICurrentUser
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import (new_transaction, print_msg,
                                  get_current_station)
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
-                                       ISalesPerson, ICheckPM, IUser)
+                                       ISalesPerson, ICheckPM)
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
@@ -141,9 +139,6 @@ def create_sales():
                                                       installments_numbers)):
         _create_sale(conn, open_date, status, salesperson, client, index,
                      product, installments_number)
-    provide_utility(
-        ICurrentUser,
-        Person.getAdapterClass(IUser).select(connection=conn)[0])
     cancelled_sale = _create_sale(conn, open_dates[0], Sale.STATUS_OPENED,
                                   salespersons[0], clients[0], index+1,
                                   product_list[0], installments_numbers[0])
