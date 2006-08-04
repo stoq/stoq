@@ -22,8 +22,6 @@
 ##
 """ Create service objects for an example database"""
 
-import random
-
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
@@ -44,17 +42,19 @@ def create_services():
 
     barcodes = ['20058', '20059', '20060', '20061']
 
+    prices = [149, 189, 155, 199]
+    costs = [105, 65, 103, 89]
     # Creating services and facets
     for index in range(MAX_SERVICES_NUMBER):
         service_obj = Service(connection=conn)
 
-        price = round(random.uniform(*PRICE_RANGE))
+        price = prices[index]
         description = descriptions[index]
 
         sellable_info = BaseSellableInfo(connection=conn,
                                          description=description,
                                          price=price)
-        cost = round(random.uniform(*COST_RANGE))
+        cost = costs[index]
         barcode = barcodes[index]
         service_obj.addFacet(ISellable, connection=conn,
                              base_sellable_info=sellable_info,
