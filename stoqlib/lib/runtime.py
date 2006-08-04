@@ -24,8 +24,9 @@
 ##
 """ Runtime routines for applications"""
 
+import datetime
+import sets
 import sys
-from datetime import datetime
 
 from kiwi.component import get_utility
 from sqlobject import connectionForURI
@@ -46,13 +47,11 @@ _verbose = False
 class StoqlibTransaction(Transaction):
 
     def __init__(self, *args, **kwargs):
-        self._change_data = []
+        self._objects = sets.Set()
         Transaction.__init__(self, *args, **kwargs)
 
-    def update_change_data(self, new_obj):
-        obj_ids = [id(obj) for obj in self._change_data]
-        if id(new_obj) not in obj_ids:
-            self._change_data.append(new_obj)
+    def add_object(self, obj):
+        self._objects.add(obj)
 
     def commit(self, close=False):
         # NotImplementedError means that there are no utility for ICurrentUser,
@@ -60,27 +59,33 @@ class StoqlibTransaction(Transaction):
         # we're creating a new database or running the migration script,
         # at that point no users are logged in
         try:
-            current_user = get_current_user(get_connection())
+            user_id = get_current_user(self).id
         except NotImplementedError:
-            current_user = None
+            user_id = None
 
-        for obj in self._change_data:
+        try:
+            station_id = get_current_station(self).id
+        except NotImplementedError:
+            station_id = None
+
+        for obj in self._objects:
+            # FIXME: Figure out when this is needed
             if obj.sqlmeta._obsolete:
                 continue
-            obj.model_modified = datetime.now()
-            if current_user is not None:
-                obj.last_user_id = current_user.id
+            obj.te_modified.timestamp = datetime.datetime.now()
+            obj.te_modified.user_id = user_id
+            obj.te_modified.station_id = station_id
+        self._objects.clear()
+
         Transaction.commit(self, close=close)
-        self._change_data = []
 
     def rollback(self):
-        self._change_data = []
+        self._objects.clear()
         Transaction.rollback(self)
 
     def close(self):
         self._connection.close()
         self._obsolete = True
-
 
 def initialize_connection():
     # Avoiding circular imports
