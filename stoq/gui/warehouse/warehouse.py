@@ -115,7 +115,7 @@ class WarehouseApp(SearchableAppWindow):
                 Column('description', title=_("Description"),
                        data_type=str, expand=True),
                 Column('supplier_name', title=('Supplier'),
-                       data_type=str, width=160),
+                       data_type=str, width=170),
                 Column('stock', title=_('Quantity'),
                        data_type=decimal.Decimal, width=90),
                 Column('unit', title=_("Unit"), data_type=str,
