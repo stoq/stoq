@@ -27,6 +27,7 @@
 
 
 import gettext
+import optparse
 import os
 import sys
 
@@ -118,7 +119,8 @@ def _initialize(options):
     config_dir = config.get_config_directory()
 
     wizard = False
-    if not os.path.exists(os.path.join(config_dir, 'stoq.conf')):
+    if (options.wizard or
+        not os.path.exists(os.path.join(config_dir, 'stoq.conf'))):
         _run_first_time_wizard(config)
         wizard = True
 
@@ -196,6 +198,15 @@ def _run_app(appname):
 def _parse_command_line(args):
     log.info('parsing command line arguments: %s ' % (args,))
     parser = get_option_parser()
+
+    group = optparse.OptionGroup(parser, 'Stoq')
+    group.add_option('', '--wizard',
+                      action="store_true",
+                      dest="wizard",
+                      default=None,
+                      help='Run the wizard')
+    parser.add_option_group(group)
+
     options, args = parser.parse_args(args)
 
     apps = get_application_names()
