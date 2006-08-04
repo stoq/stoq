@@ -29,8 +29,6 @@ from stoqlib.lib.runtime import new_transaction, print_msg
 
 
 MAX_SERVICES_NUMBER = 4
-PRICE_RANGE = 100, 200
-COST_RANGE = 1, 99
 
 def create_services():
     print_msg('Creating services...', break_line=False)
