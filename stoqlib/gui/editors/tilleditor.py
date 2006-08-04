@@ -112,7 +112,7 @@ class TillClosingEditor(BaseEditor):
             return ValidationError(_("Value cannot be lesser that zero"))
         if value <= self.total_cash:
             return
-        return ValidationError(_("You can not specifiy an amount"
+        return ValidationError(_("You can not specifiy an amount "
                                  "removed greater than the "
                                  "till balance."))
 
