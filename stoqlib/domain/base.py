@@ -29,7 +29,7 @@ import datetime
 from kiwi.component import get_utility
 from kiwi.python import qual
 from sqlobject import SQLObject
-from sqlobject import DateTimeCol, ForeignKey, BoolCol, IntCol
+from sqlobject import ForeignKey, BoolCol
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
@@ -40,8 +40,10 @@ from zope.interface.adapter import AdapterRegistry
 from zope.interface.interface import Interface, InterfaceClass
 
 from stoqlib.database import Adapter, db_table_name
+from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.interfaces import IDatabaseSettings
-from stoqlib.lib.runtime import StoqlibTransaction
+from stoqlib.lib.runtime import (StoqlibTransaction, get_current_user,
+                                 get_current_station)
 from stoqlib.exceptions import (AdapterError, DatabaseInconsistency,
                                 StoqlibError)
 
@@ -81,11 +83,34 @@ class AbstractModel(object):
     # Overwriting some SQLObject methods
     #
 
+    def _create(self, *args, **kwargs):
+        conn = kwargs.get('connection', self._connection)
+        try:
+            user_id = get_current_user(conn).id
+        except NotImplementedError:
+            user_id = None
+
+        try:
+            station_id = get_current_station(conn).id
+        except NotImplementedError:
+            station_id = None
+
+        timestamp = datetime.datetime.now()
+        for entry in ['te_created', 'te_modified']:
+            kwargs[entry] = TransactionEntry(
+                timestamp=timestamp,
+                user_id=user_id,
+                station_id=station_id,
+                connection=conn)
+        super(AbstractModel, self)._create(*args, **kwargs)
+
     def _SO_setValue(self, *args, **kwargs):
         conn = self.get_connection()
         if not isinstance(conn, StoqlibTransaction):
             raise StoqlibError("Only StoqlibTransactions can edit data")
-        conn.update_change_data(self)
+
+        conn.add_object(self)
+
         cls = self.__class__
         if issubclass(cls, InheritableSQLObject):
             InheritableSQLObject._SO_setValue(self, *args, **kwargs)
@@ -476,20 +501,15 @@ class InheritableModelAdapter(AbstractModel, InheritableSQLObject, Adapter):
         InheritableSQLObject.__init__(self, *args, **kwargs)
 
 
-
-
-for klass in (InheritableModel, Domain, ModelAdapter,
-              InheritableModelAdapter):
-    klass.sqlmeta.cacheValues = False
-    klass.sqlmeta.addColumn(DateTimeCol(name='model_created',
-                                        default=datetime.datetime.now))
-    klass.sqlmeta.addColumn(DateTimeCol(name='model_modified',
-                                        default=datetime.datetime.now))
-    # Do not use ForeignKey field for this attribute since it must be added in
-    # all tables, inclusively the PersonAdaptToUser table
-    klass.sqlmeta.addColumn(IntCol(name='last_user_id', default=None))
-    klass.sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
-                                    forceDBName=True))
+for klass in (InheritableModel, Domain, ModelAdapter, InheritableModelAdapter):
+    sqlmeta = klass.sqlmeta
+    sqlmeta.cacheValues = False
+    sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_created',
+                                 default=None))
+    sqlmeta.addColumn(ForeignKey('TransactionEntry', name='te_modified',
+                                 default=None))
+    sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
+                              forceDBName=True))
 
 _registry = AdapterRegistry()
 

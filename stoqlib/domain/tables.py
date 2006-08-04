@@ -38,6 +38,7 @@ _ = stoqlib_gettext
 
 
 _tables = [
+     ('transaction', ["TransactionEntry"]),
      ('system', ["SystemTable"]),
      ('base', ["InheritableModelAdapter", "InheritableModel"]),
      ('parameter', ["ParameterData"]),
