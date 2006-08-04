@@ -227,6 +227,8 @@ dbusername=%(DBUSERNAME)s"""
         fd.close()
 
     def remove(self):
+        if not self._filename:
+            return
         self._check_permissions(self._filename)
         os.remove(self._filename)
 
