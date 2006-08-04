@@ -13,6 +13,14 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="BranchStationSearch">
+                        <property name="name">BranchStationSearch</property>
+                        <property name="label" translatable="yes">Branch Station...</property>
+                        <signal handler="_on_branchstation_action_clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;s</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="CfopSearch">
                         <property name="name">CfopSearch</property>
                         <property name="label" translatable="yes">CFOP...</property>
@@ -236,7 +244,7 @@
 <menubar action="menubar" name="menubar">
 
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="NewUser" name="NewUser"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="CfopSearch" name="CfopSearch"/><menuitem action="FiscalBook" name="FiscalBook"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="NewUser" name="NewUser"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="CfopSearch" name="CfopSearch"/><menuitem action="FiscalBook" name="FiscalBook"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/><menuitem action="BranchStationSearch" name="BranchStationSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="admin">
