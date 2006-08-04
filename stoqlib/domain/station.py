@@ -80,6 +80,11 @@ class BranchStation(Domain):
     def get_identifier_str(self):
         return u"%05d" % self.identifier
 
+    def get_branch_name(self):
+        """
+        Returns the branch name
+        """
+        return self.branch.get_adapted().name
 
 def create_station(conn, branch=None):
     """
