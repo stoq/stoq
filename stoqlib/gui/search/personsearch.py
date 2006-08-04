@@ -93,7 +93,7 @@ class EmployeeSearch(BasePersonSearch):
     def get_filter_slave(self):
         employees = [(value, key) for key, value in
                      self.table.statuses.items()]
-        employees.append((_('Any'), ALL_ITEMS_INDEX))
+        employees.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(employees, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(self.filter_label)
         return self.filter_slave
@@ -234,7 +234,7 @@ class ClientSearch(BasePersonSearch):
         client_table = Person.getAdapterClass(IClient)
         statuses = [(value, key) for key, value in
                     client_table.statuses.items()]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         filter_label = _('Show clients with status')
         self.filter_slave.set_filter_label(filter_label)
@@ -283,7 +283,7 @@ class TransporterSearch(BasePersonSearch):
     def get_filter_slave(self):
         items = [(_('Active Transporters'), True),
                  (_('Inactive Transporters'), False)]
-        items.append((_('Any Transporters'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any Transporters'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(_('Show:'))
         return self.filter_slave
@@ -366,7 +366,7 @@ class BranchSearch(BasePersonSearch):
     def get_filter_slave(self):
         statuses = [(value, key)
                     for key, value in self.table.statuses.items()]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         filter_label = _('Show branches with status')
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(filter_label)

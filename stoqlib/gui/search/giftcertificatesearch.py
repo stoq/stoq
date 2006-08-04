@@ -63,7 +63,7 @@ class GiftCertificateTypeSearch(SearchEditor):
 
     def get_filter_slave(self):
         certificates = [(_('Active'), True), (_('Inactive'), False)]
-        certificates.append((_('Any'), ALL_ITEMS_INDEX))
+        certificates.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(certificates, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(_('Show gift certificate types '
                                              'with status'))
@@ -134,7 +134,7 @@ class GiftCertificateSearch(SearchEditor):
     def get_filter_slave(self):
         statuses = [(value, constant)
                     for constant, value in AbstractSellable.statuses.items()]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         selected = AbstractSellable.STATUS_AVAILABLE
         self.filter_slave = FilterSlave(statuses, selected=selected)
         self.filter_slave.set_filter_label(_('Show gift certificates with '

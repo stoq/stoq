@@ -90,7 +90,7 @@ class ProductFilterSlave(SlaveDelegate):
         items = AbstractSellable.statuses.items()
         statuses = [(description, identifier)
                        for identifier, description in items]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self._status_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self._status_slave.set_filter_label(_('with status:'))
         self._status_slave.connect("status-changed",

@@ -95,7 +95,7 @@ class SaleSearch(SearchDialog):
 
     def get_filter_slave(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
-        items.append((_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(items, selected=Sale.STATUS_OPENED)
         self.filter_slave.set_filter_label(_('Show sales with status'))
         return self.filter_slave
