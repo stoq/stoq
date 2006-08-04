@@ -261,6 +261,8 @@ class Paragraph(RParagraph):
                        text haven't the required amount of space chars)
         @type ellipsis: bool
         """
+        if not isinstance(text, basestring):
+            raise TypeError("Invalid text specified: %r" % text)
         if not style:
             style = STYLE_SHEET["Raw"]
         if isinstance(style, basestring):
