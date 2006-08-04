@@ -44,6 +44,7 @@ from stoqlib.gui.search.fiscalsearch import CfopSearch, FiscalBookEntrySearch
 from stoqlib.gui.search.personsearch import (EmployeeRoleSearch,
                                              EmployeeSearch,
                                              BranchSearch)
+from stoqlib.gui.search.stationsearch import StationSearch
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -156,6 +157,9 @@ class AdminApp(SearchableAppWindow):
 
     def _on_branch_action_clicked(self, *args):
         self.run_dialog(BranchSearch, self.conn, hide_footer=True)
+
+    def _on_branchstation_action_clicked(self, *args):
+        self.run_dialog(StationSearch, self.conn, hide_footer=True)
 
     def on_add_button__clicked(self, *args):
         self._add_user()
