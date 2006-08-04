@@ -68,7 +68,7 @@ class ServiceSearch(SellableSearch):
     def get_filter_slave(self):
         statuses = [(value, key)
                         for key, value in AbstractSellable.statuses.items()]
-        statuses.append((_('Any'), ALL_ITEMS_INDEX))
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(_('Show services with status'))
         return self.filter_slave
