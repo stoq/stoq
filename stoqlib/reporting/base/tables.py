@@ -118,10 +118,7 @@ class AbstractTableBuilder:
 
     def get_data(self):
         """ Returns all the table lines plus the extra row, if any. """
-        data = self.data + self.extra_rows
-        return [[Paragraph(cell, style="TableCell")
-                     for cell in row]
-                for row in data]
+        return self.data + self.extra_rows
 
     def update_style(self):
         """ Implement this method on subclass to define your own table styles.
