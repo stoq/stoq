@@ -23,8 +23,6 @@
 ##
 """Create simple payments to an example database"""
 
-from  random import randint
-
 from stoqlib.lib.runtime import new_transaction, print_msg
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
@@ -49,8 +47,7 @@ _ = stoqlib_gettext
 
 DEFAULT_CLOSING_DAY = 12
 DEFAULT_PAYMENT_DAY = 15
-# This means 1% of commission to 10 %
-DEFAULT_C0MMISION_RANGE = 1, 10
+DEFAULT_C0MMISION = 8
 
 DEFAULT_RECEIVE_DAY = 5
 
@@ -58,8 +55,7 @@ MAX_INSTALLMENTS_NUMBER = 12
 
 
 def get_percentage_commission():
-    random_commission = randint(*DEFAULT_C0MMISION_RANGE)
-    percentage = (100 - random_commission) / 100.0
+    percentage = (100 - DEFAULT_C0MMISION) / 100.0
     return round(percentage, 2)
 
 def create_payments():
