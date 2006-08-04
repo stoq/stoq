@@ -27,8 +27,6 @@
 """
 
 
-import random
-
 from stoqdrivers.constants import UNIT_CUSTOM
 
 from stoqlib.domain.product import Product, ProductSupplierInfo
@@ -50,12 +48,6 @@ COST_RANGE = 1, 99
 MARKUP_RANGE = 30, 80
 COMMISION_RANGE = 1, 40
 
-
-def get_commission_and_markup():
-    commission = round(random.uniform(*COMMISION_RANGE), 2)
-    markup = round(random.uniform(*MARKUP_RANGE), 2)
-    return commission, markup
-
 def create_products():
     print_msg('Creating products...', break_line=False)
     conn = new_transaction()
@@ -74,6 +66,15 @@ def create_products():
 
     descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG',
                     'Monitor LCD SXDF', 'Processor AMD Durom 1.2Ghz']
+
+    prices = [100, 121, 150, 104] # (100, 200]
+    quantites = [40, 1, 38, 46] # (1, 50]
+    costs = [87, 71, 9, 45] # (1, 99]
+    stock_costs = [90, 10, 60, 87] # (1, 99]
+    commissions = [13, 4, 17, 27] # (1, 40]
+    commissions2 = [27, 16, 23, 13] # (1, 40]
+    markups = [44, 43, 78, 32] # (30, 80]
+    markups2 = [36, 33, 67, 52] # (30, 80]
 
     supplier_table = Person.getAdapterClass(ISupplier)
     suppliers = supplier_table.select(connection=conn)
@@ -98,14 +99,16 @@ def create_products():
                                             product=product_obj)
 
         base_cat_desc = base_category_data[index]
-        commission, markup = get_commission_and_markup()
+        commission = commissions[index]
+        markup = markups[index]
         base_cat = BaseSellableCategory(suggested_markup=markup,
                                         salesperson_commission=commission,
                                         description=base_cat_desc,
                                         connection=conn)
 
         cat_desc = category_data[index]
-        commission, markup = get_commission_and_markup()
+        commission = commissions2[index]
+        markup = markups2[index]
         cat = SellableCategory(description=cat_desc,
                                salesperson_commission=commission,
                                suggested_markup=markup,
@@ -113,12 +116,12 @@ def create_products():
                                connection=conn)
 
         description = descriptions[index]
-        price = random.randrange(*PRICE_RANGE)
+        price = prices[index]
         sellable_info = BaseSellableInfo(connection=conn,
                                          description=description,
                                          price=price)
 
-        cost = random.randrange(*COST_RANGE)
+        cost = costs[index]
         unit = units[index]
         barcode = barcodes[index]
 
@@ -130,8 +133,8 @@ def create_products():
 
         # Setting a initial value for Stocks
         for stock_item in storable.get_stocks():
-            stock_item.quantity = random.randint(*QUANTITY_RANGE)
-            stock_item.stock_cost = random.randrange(*COST_RANGE)
+            stock_item.quantity = quantites[index]
+            stock_item.stock_cost = stock_costs[index]
             stock_item.logic_quantity = stock_item.quantity * 2
 
     conn.commit()
