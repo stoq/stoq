@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s):   J. Victor Martins         <jvdm@sdf.lonestar.org>
+##
+""" Editor dialog for station objects """
+
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.runtime import get_current_station
+from stoqlib.domain.station import BranchStation
+from stoqlib.domain.interfaces import IBranch
+from stoqlib.domain.person import Person
+from stoqlib.gui.base.editors import BaseEditor
+
+_ = stoqlib_gettext
+
+class StationEditor(BaseEditor):
+    model_name = _('BranchStation')
+    model_type = BranchStation
+    gladefile = 'StationEditor'
+    proxy_widgets = ('name', 'branch', 'is_active')
+
+    #
+    # BaseEditor Hooks
+    #
+    def __init__(self, conn, model=None):
+        BaseEditor.__init__(self, conn, model)
+
+        # do not let the user change the current station
+        if model and get_current_station(conn) == model:
+            self.name.set_sensitive(False)
+            self.is_active.set_sensitive(False)
+            self.branch.set_sensitive(False)
+
+    def get_title_model_attribute(self, model):
+        return model.name
+
+    def create_model(self, conn):
+        return BranchStation(name=u"", branch=None,
+                             is_active=True,
+                             connection=conn)
+
+    def setup_proxies(self):
+        statuses = []
+        for branch in Person.iselect(IBranch, connection=self.conn):
+            statuses.append((branch.get_adapted().name, branch))
+        self.branch.prefill(statuses)
+
+        self.add_proxy(self.model, StationEditor.proxy_widgets)
