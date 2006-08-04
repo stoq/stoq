@@ -41,13 +41,6 @@ from stoqlib.lib.runtime import new_transaction, print_msg
 
 MAX_PRODUCT_NUMBER = 4
 
-PRICE_RANGE = 100, 200
-QUANTITY_RANGE = 1, 50
-COST_RANGE = 1, 99
-
-MARKUP_RANGE = 30, 80
-COMMISION_RANGE = 1, 40
-
 def create_products():
     print_msg('Creating products...', break_line=False)
     conn = new_transaction()
