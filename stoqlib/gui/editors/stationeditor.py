@@ -65,3 +65,8 @@ class StationEditor(BaseEditor):
         self.branch.prefill(statuses)
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
+
+    def on_confirm(self):
+        # FIXME: This is a hack, figure out why it's not set by the proxy
+        self.model.branch = self.branch.get_selected_data()
+        return self.model
