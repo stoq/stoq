@@ -667,12 +667,9 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self._setup_payment_types()
 
     def _setup_payments(self):
-        group = self.wizard.payment_group
-        inst_number = self.model.installments_number
-        payment_type = self.model.payment_type
-        first_due_date = self.sale.open_date
-        payment_type.setup_inpayments(group, inst_number, first_due_date,
-                                      self.total_value)
+        self.model.payment_type.setup_inpayments(
+            self.wizard.payment_group, self.model.installments_number,
+            self.sale.open_date, self.total_value)
 
     #
     # PaymentMethodStep hooks
