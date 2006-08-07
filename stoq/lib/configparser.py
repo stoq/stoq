@@ -44,6 +44,9 @@ from stoqlib.lib.interfaces import IDatabaseSettings
 _ = gettext.gettext
 _config = None
 
+def getlogin():
+    import pwd
+    return pwd.getpwuid(os.getuid())[0]
 
 class StoqConfig:
     config_template = \
@@ -197,8 +200,7 @@ dbusername=%(DBUSERNAME)s"""
 
     def _get_username(self):
         if not self._has_option('dbusername', section='Database'):
-            import pwd
-            return pwd.getpwuid(os.getuid())[0]
+            return getlogin()
         return self._get_option('dbusername', section='Database')
 
     #
@@ -287,7 +289,7 @@ dbusername=%(DBUSERNAME)s"""
         if self._has_option('dbusername', section='Database'):
             username = self._get_option('dbusername', section='Database')
         else:
-            username = os.getlogin()
+            username = getlogin()
         return build_connection_uri(self._get_address(), self._get_port(),
                                     dbname, rdbms, username,
                                     self.get_password())
