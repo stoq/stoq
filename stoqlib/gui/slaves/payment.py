@@ -732,7 +732,6 @@ class FinanceMethodSlave(CreditProviderMethodSlave):
         return self.method.get_finance_companies()
 
     def _setup_payment_types(self):
-        self.payment_type.clear()
         payment_types = self._get_payment_types(self.providers[0])
         if len(payment_types) != 1:
             raise ValueError('It should have only one payment type for '
