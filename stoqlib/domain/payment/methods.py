@@ -343,8 +343,9 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         "method iface (= %r)" % (self, res))
         return res[0]
 
-    def _check_installments_number(self, installments_number):
-        max = self.get_max_installments_number()
+    def _check_installments_number(self, installments_number, max=None):
+        if max is None:
+            max = self.get_max_installments_number()
         if installments_number > max:
             raise ValueError(
                 'The number of installments can not be greater than %d '
