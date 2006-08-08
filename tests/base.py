@@ -39,7 +39,7 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import Adapter, DatabaseSettings, finish_transaction
 from stoqlib.domain.columns import SOPriceCol
-from stoqlib.lib.admin import initialize_system
+from stoqlib.lib.admin import initialize_system, ensure_admin_user
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IDatabaseSettings)
 from stoqlib.lib.runtime import set_verbose, new_transaction
@@ -280,7 +280,8 @@ def bootstrap_testsuite():
 
     set_verbose(verbose)
 
-    initialize_system("", verbose=verbose)
+    initialize_system(verbose=verbose)
+    ensure_admin_user("")
 
     from stoqlib.domain.examples.createall import create
     create(utilities=True)

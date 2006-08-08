@@ -112,15 +112,14 @@ def create_base_schema():
     run_sql_file(sql_file, conn)
     finish_transaction(conn, 1)
 
-@argcheck(str, bool, bool)
-def initialize_system(password='', delete_only=False, verbose=False):
+@argcheck(bool, bool)
+def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
     setup_tables(delete_only=delete_only, verbose=verbose)
     create_base_schema()
     ensure_system_parameters()
-    ensure_admin_user(password)
     ensure_sellable_units()
 
     conn = new_transaction()
