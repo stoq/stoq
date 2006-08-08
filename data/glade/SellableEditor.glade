@@ -80,6 +80,7 @@
                     <packing>
                         <property name="top_attach">6</property>
                         <property name="bottom_attach">7</property>
+                        <property name="y_options"></property>
                     </packing>
                 </child>
                 <child>
@@ -245,19 +246,39 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="is_focus">True</property>
-                        <property name="shadow_type">in</property>
+                    <widget class="GtkHBox" id="hbox4">
                         <property name="visible">True</property>
-                        <property name="vscrollbar_policy">automatic</property>
                         <child>
-                            <widget class="ProxyTextView" id="notes">
-                                <property name="data_type">unicode</property>
+                            <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                                <property name="hscrollbar_policy">never</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">notes</property>
+                                <property name="shadow_type">in</property>
                                 <property name="visible">True</property>
+                                <property name="vscrollbar_policy">automatic</property>
+                                <child>
+                                    <widget class="ProxyTextView" id="notes">
+                                        <property name="data_type">unicode</property>
+                                        <property name="is_focus">True</property>
+                                        <property name="model_attribute">notes</property>
+                                        <property name="visible">True</property>
+                                    </widget>
+                                </child>
                             </widget>
+                        </child>
+                        <child>
+                            <widget class="GtkEventBox" id="product_image_holder">
+                                <property name="border_width">1</property>
+                                <property name="visible">True</property>
+                                <child>
+                                    <placeholder/>
+                                </child>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">1</property>
+                            </packing>
                         </child>
                     </widget>
                     <packing>
@@ -372,6 +393,15 @@
                     </packing>
                 </child>
                 <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="left_attach">2</property>
+                        <property name="right_attach">3</property>
+                        <property name="top_attach">6</property>
+                        <property name="bottom_attach">7</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="ProxyLabel" id="requires_weighing_label">
                         <property name="is_focus">True</property>
                         <property name="no_show_all">True</property>
@@ -384,15 +414,6 @@
                         <property name="left_attach">2</property>
                         <property name="right_attach">4</property>
                         <property name="top_attach">6</property>
-                    </packing>
-                </child>
-                <child>
-                    <placeholder/>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
                     </packing>
                 </child>
                 <child>

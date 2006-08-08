@@ -31,6 +31,7 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
 from kiwi.utils import gsignal
 
+from stoqlib.gui.slaves.imageslave import ImageSlave
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
@@ -205,10 +206,12 @@ class ProductEditor(SellableEditor):
 
     def setup_slaves(self):
         supplier_slave = ProductSupplierSlave(self.conn, self.model)
+        image_slave = ImageSlave(self.conn, self.model)
+        tax_slave = TributarySituationSlave(self.conn, ISellable(self.model))
         supplier_slave.connect("cost-changed",
                                self._on_supplier_slave__cost_changed)
         self.attach_slave('product_supplier_holder', supplier_slave)
-        tax_slave = TributarySituationSlave(self.conn, ISellable(self.model))
+        self.attach_slave("product_image_holder", image_slave)
         # XXX: tax_holder is a Brazil-specifc area
         self.attach_slave("tax_holder", tax_slave)
 
@@ -249,3 +252,4 @@ class ProductEditor(SellableEditor):
         price = cost + ((markup / 100) * cost)
         self.sellable_proxy.model.base_sellable_info.price = price
         self.sellable_proxy.update('base_sellable_info.price')
+
