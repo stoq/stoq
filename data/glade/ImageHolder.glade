@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="ImageHolder">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="ProxyButton" id="image">
+                <property name="data_type">Pixbuf</property>
+                <property name="label" context="yes" translatable="yes"></property>
+                <property name="model_attribute">image</property>
+                <property name="visible">True</property>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>

@@ -26,7 +26,7 @@ import decimal
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from sqlobject import (UnicodeCol, ForeignKey, MultipleJoin,
-                       BoolCol, IntCol)
+                       BoolCol, IntCol, BLOBCol)
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
@@ -93,7 +93,6 @@ class ProductSupplierInfo(Domain):
                              'attribute')
         return self.supplier.get_adapted().name
 
-
 class ProductRetentionHistory(Domain):
     """Class responsible to store information about product's retention."""
 
@@ -106,7 +105,7 @@ class Product(Domain):
     """Class responsible to store basic products informations."""
 
     suppliers = MultipleJoin('ProductSupplierInfo')
-
+    image = BLOBCol(default='')
     #
     # Facet hooks
     #
@@ -149,7 +148,7 @@ class Product(Domain):
 
         main_suppliers = [supplier for supplier in self.suppliers
                                        if supplier.is_main_supplier]
-        # A Product can only have on main supplier.
+        # A Product can only have one main supplier.
         # FIXME: Investigate why we can have 0
         if len(main_suppliers) > 1:
             raise DatabaseInconsistency(
