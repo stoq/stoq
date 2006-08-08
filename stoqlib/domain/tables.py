@@ -179,6 +179,10 @@ def get_table_type_by_name(table_name):
     global _table_cache
     if not _table_cache:
         _import()
+
+    if table_name.startswith('stoqlib.domain.'):
+        table_name = table_name[15:]
+
     return _table_cache[table_name]
 
 def get_table_types():
