@@ -41,7 +41,7 @@ from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
 from stoqlib.lib.runtime import (new_transaction, get_current_branch,
                                  get_current_station)
 from stoqlib.database import finish_transaction
-from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
@@ -474,8 +474,14 @@ class FiscalCoupon:
                 raise ValueError("Can't find a valid identifier for the payment"
                                  " method interface: %r. It is not possible add"
                                  " the payment on the coupon" % method_iface)
+            custom_pm = pm_constants.get_value(method_id)
+            if not custom_pm:
+                description = settings.get_printer_description()
+                raise StoqlibError(
+                    "The custom payment method associated with the constant %d "
+                    "is not configured for %s." % (method_id, description))
             self.printer.add_payment(CUSTOM_PM, payment.base_value,
-                                     custom_pm=pm_constants.get_value(method_id))
+                                     custom_pm=custom_pm)
 
         for entry in group.get_till_entries():
             self.printer.add_payment(MONEY_PM, entry.value)
