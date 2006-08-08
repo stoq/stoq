@@ -34,7 +34,7 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from stoqlib.domain.person import BranchStation
-from stoqlib.lib.admin import initialize_system
+from stoqlib.lib.admin import ensure_admin_user, initialize_system
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     IApplicationDescriptions)
 from stoqlib.lib.message import error
@@ -116,7 +116,8 @@ def clean_database(config, options):
         password = options.password or config.get_password()
         verbose = options.verbose
 
-    initialize_system(password or '', verbose=verbose)
+    initialize_system(verbose=verbose)
+    ensure_admin_user(password or '')
 
 def get_option_parser():
     """
