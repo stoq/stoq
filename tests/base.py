@@ -34,7 +34,7 @@ import sys
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
-                           SODateCol, SOBoolCol, SOForeignKey)
+                           SODateCol, SOBoolCol, SOForeignKey, SOBLOBCol)
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import Adapter, DatabaseSettings, finish_transaction
@@ -84,6 +84,8 @@ def column_type_data(column):
         return BOOL_TEST_VALUES
     elif isinstance(column, SOForeignKey):
         return None, None
+    elif isinstance(column, SOBLOBCol):
+        return "", ""
     else:
         raise ValueError('Invalid column type, got %s'
                          % type(column))
