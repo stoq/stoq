@@ -32,7 +32,7 @@ from stoqlib.domain.base import Domain
 class Bank(Domain):
     """A definition of a bank. A bank can have many branches associated with
     it.
-    
+
     B{Important attributes}:
         - I{name}: the name of the bank.
         - I{short_name}: a short idenfier for the bank.
