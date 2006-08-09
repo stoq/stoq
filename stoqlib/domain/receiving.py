@@ -34,6 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import METHOD_BILL
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain
+from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
@@ -104,6 +105,9 @@ class ReceivingOrder(Domain):
     def _create(self, id, **kw):
         # ReceiveOrder objects must be set as valid explicitly
         kw['_is_valid_model'] = False
+        conn = self.get_connection()
+        if not 'cfop' in kw:
+            kw['cfop'] = sysparam(conn).DEFAULT_RECEIVING_CFOP
         Domain._create(self, id, **kw)
 
     def _get_payment_group(self):

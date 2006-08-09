@@ -135,6 +135,7 @@ class Sale(Domain):
     renegotiation_data = ForeignKey("AbstractRenegotiationAdapter",
                                     default=None)
 
+
     def _get_percentage_value(self, percentage):
         if not percentage:
             return currency(0)
@@ -192,6 +193,9 @@ class Sale(Domain):
     def _create(self, id, **kw):
         # Sales objects must be set as valid explicitly
         kw['_is_valid_model'] = False
+        conn = self.get_connection()
+        if not 'cfop' in kw:
+            kw['cfop'] = sysparam(conn).DEFAULT_SALES_CFOP
         Domain._create(self, id, **kw)
 
     #
