@@ -107,9 +107,9 @@ class CityLocation(Domain):
     or birth location.
     """
 
-    country = UnicodeCol(default=None)
-    city = UnicodeCol(default=None)
-    state = UnicodeCol(default=None)
+    country = UnicodeCol(default=u"")
+    city = UnicodeCol(default=u"")
+    state = UnicodeCol(default=u"")
 
     def is_valid_model(self):
         return bool(self.country and self.city and self.state)
