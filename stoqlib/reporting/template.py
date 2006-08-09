@@ -90,14 +90,15 @@ class BaseStoqReport(ReportTemplate):
         main_address = person.get_main_address()
         if main_address:
             address_string1 = main_address.get_address_string()
-            address_string2 = ""
+            address_string2 = []
             if main_address.postal_code:
-                address_string2 += "%s - " % main_address.postal_code
-            address_string2 += "%s - %s" % (main_address.get_city(),
-                                            main_address.get_state())
+                address_string2.append(main_address.postal_code)
+            if main_address.get_city() and main_address.get_state():
+                address_string2.extend([main_address.get_city(),
+                                        main_address.get_state()])
+            address_string2 = " - ".join(address_string2)
         else:
             address_string1 = address_string2 = ''
-
         if person.phone_number:
             contact_string = (_("Phone: %s")
                               % format_phone_number(person.phone_number))
