@@ -270,9 +270,8 @@ class ReceivingOrderWizard(BaseWizard):
     def _create_model(self, conn):
         current_user = get_current_user(conn)
         branch = get_current_branch(conn)
-        cfop = sysparam(conn).DEFAULT_RECEIVING_CFOP
         return ReceivingOrder(responsible=current_user, supplier=None,
-                              invoice_number=None, branch=branch, cfop=cfop,
+                              invoice_number=None, branch=branch,
                               connection=conn)
 
     #
