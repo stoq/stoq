@@ -414,6 +414,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.register_validate_function(self.wizard.refresh_next)
         self._update_total()
         self.certificate_number.grab_focus()
+        self._update_widgets()
 
     #
     # Callbacks
@@ -455,6 +456,10 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     def _update_widgets(self):
         has_gift_certificate = self.certificate_number.get_text() != ''
         self.add_button.set_sensitive(has_gift_certificate)
+        if len(self.slave.klist):
+            self.wizard.enable_next()
+        else:
+            self.wizard.disable_next()
 
     def _add_item(self):
         certificate = self.proxy.model and self.proxy.model.number
@@ -491,7 +496,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 
     def after_delete_items(self, *args):
         self._update_total()
-
+        self._update_widgets()
 
 class SalesPersonStep(AbstractSalesPersonStep):
     """A wizard step used when confirming a sale order """
