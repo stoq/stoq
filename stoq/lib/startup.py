@@ -102,6 +102,8 @@ def setup(config, options=None, register_station=True, check_schema=True):
                     "not been updated. Run 'stoqdbadmin updateschema` to"
                     "update the schema  to the latest available version."))
 
+    if options and options.debug:
+        conn.debug = True
     sqlhub.threadConnection = conn
 
 def clean_database(config, options):
@@ -141,6 +143,9 @@ def get_option_parser():
                      action="store_true",
                      dest="verbose",
                      default=False)
+    group.add_option('', '--debug',
+                     action="store_true",
+                     dest="debug")
     parser.add_option_group(group)
 
     group = optparse.OptionGroup(parser, 'Database access')
