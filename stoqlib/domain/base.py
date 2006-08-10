@@ -27,7 +27,7 @@
 import datetime
 
 from kiwi.component import get_utility
-from kiwi.python import qual
+from kiwi.python import qual, namedAny
 from sqlobject import SQLObject
 from sqlobject import ForeignKey, BoolCol
 from sqlobject.inheritance import InheritableSQLObject
@@ -251,16 +251,11 @@ class Adaptable:
     def __init__(self):
         self._adapterCache = {}
 
-    @classmethod
-    def getAdapterClass(cls, iface):
-        iface_str = qual(iface)
-        if not iface_str in cls._facets:
-            raise TypeError(
-                "%s doesn't have a facet for interface %s" %
-                (cls.__name__, iface.__name__))
-        return cls._facets[iface_str]
+    #
+    # Private
+    #
 
-    def _getComponent(self, iface, registry, connection=None):
+    def _getComponent(self, iface, registry, connection):
         k = qual(iface)
         adapter = self._adapterCache.get(k)
         if adapter is not None:
@@ -280,57 +275,43 @@ class Adaptable:
                 self._adapterCache[k] = adapter
         return adapter
 
-    def addFacet(self, iface, *args, **kwargs):
-        if isinstance(self, Adapter):
-            raise TypeError("An adapter can not be adapted to another "
-                            "object.")
-        if not isinstance(iface, ConnMetaInterface):
-            raise TypeError('iface must be a ConnInterface subclass')
+    #
+    # Class methods
+    #
 
-        k = qual(iface)
-        if k in self._adapterCache:
-            raise AdapterError('%s already  have a facet for interface %s' %
-                               (self.__class__.__name__, iface.__name__))
-
-        facets = self.__class__._facets
-
-        funcName = 'facet_%s_add' % iface.__name__
-        func = getattr(self, funcName, None)
-        if func:
-            adapter = func(*args, **kwargs)
-        elif facets.has_key(k):
-            adapterClass = facets[k]
-            adapter = adapterClass(self, *args, **kwargs)
-        else:
-            raise AdapterError("The object type %s doesn't implement an "
-                               "adapter for interface %s" % (type(self),
-                               iface))
-        if adapter:
-            self._adapterCache[k] = adapter
-
-        return adapter
-
-    def removeFacet(self, iface, *args, **kwargs):
+    @classmethod
+    def getFacetType(cls, iface):
         """
-        @param iface:
+        Fetches a facet associated with an interface
+
+        @param iface: interface name for the facet to grab
+        @returns: the facet type for the interface
         """
-        if not issubclass(iface, Interface):
-            raise TypeError('iface must be a ConnInterface subclass')
 
-        facets = self.__class__._facets
-        if not iface in facets:
-            raise AdapterError('%s does not have a facet for interface %s' %
-                               (self.__class__.__name__, iface.__name__))
+        facets = getattr(cls, '_facets', [])
 
-        funcName = 'facet_%s_remove' % iface.__name__
-        func = getattr(self, funcName, None)
-        if func:
-            func(*args, **kwargs)
+        iface_str = qual(iface)
+        if not iface_str in facets:
+            # XXX: LookupError
+            raise TypeError(
+                "%s doesn't have a facet for interface %s" %
+                (cls.__name__, iface.__name__))
 
-        k = qual(iface)
-        del facets[k]
-        if k in self._adapterCache:
-            del self._adapterCache[k]
+        return facets[iface_str]
+
+    # XXX: Deprecate/Remove this
+    getAdapterClass = getFacetType
+
+    @classmethod
+    def getFacetTypes(cls):
+        """
+        Returns facet classes for this object
+        @returns: a list of facet classes
+        """
+
+        facets = getattr(cls, '_facets', [])
+
+        return facets.values()
 
     @classmethod
     def registerFacet(cls, facet, *ifaces):
@@ -367,7 +348,86 @@ class Adaptable:
                                     name='_original',
                                     forceDBName=True))
 
+    #
+    # Public API
+    #
 
+    def addFacet(self, iface, *args, **kwargs):
+        """
+        Adds a facet implementing iface for the current object
+        @param iface: interface of the facet to add
+        @returns: the facet
+        """
+
+        if isinstance(self, Adapter):
+            raise TypeError("An adapter can not be adapted to another "
+                            "object.")
+        if not isinstance(iface, ConnMetaInterface):
+            raise TypeError('iface must be a ConnInterface subclass')
+
+        k = qual(iface)
+        if k in self._adapterCache:
+            raise AdapterError('%s already  have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
+
+        facets = self.__class__._facets
+
+        funcName = 'facet_%s_add' % iface.__name__
+        func = getattr(self, funcName, None)
+
+        if func:
+            adapter = func(*args, **kwargs)
+        elif facets.has_key(k):
+            adapterClass = facets[k]
+            adapter = adapterClass(self, *args, **kwargs)
+        else:
+            raise AdapterError("The object type %s doesn't implement an "
+                               "adapter for interface %s" % (type(self),
+                               iface))
+        if adapter:
+            self._adapterCache[k] = adapter
+
+        return adapter
+
+    def removeFacet(self, iface, *args, **kwargs):
+        """
+        @param iface:
+        """
+        if not issubclass(iface, Interface):
+            raise TypeError('iface must be a ConnInterface subclass')
+
+        facets = self.__class__._facets
+        if not iface in facets:
+            raise AdapterError('%s does not have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
+
+        funcName = 'facet_%s_remove' % iface.__name__
+        func = getattr(self, funcName, None)
+        if func:
+            func(*args, **kwargs)
+
+        k = qual(iface)
+        del facets[k]
+        if k in self._adapterCache:
+            del self._adapterCache[k]
+
+    def getFacets(self):
+        """
+        Gets a list of facets assoicated with the current object.
+        @returns: a list of facets
+        """
+        facet_types = getattr(self, '_facets', [])
+
+        facets = []
+        for iface_name in facet_types:
+            iface = namedAny(iface_name)
+
+            facet = iface(self)
+            # Filter out facets which are not set
+            if facet is None:
+                continue
+            facets.append(facet)
+        return facets
 
 class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
@@ -393,6 +453,8 @@ class ConnMetaInterface(MetaInterface):
         if isinstance(adaptable, Adapter):
             raise TypeError('Adaptable argument can not be of type Adapter '
                             'got %s instead' % type(adaptable))
+        connection = connection or adaptable.get_connection()
+
         default = _Nothing
         registry = getRegistry()
         # should this be `implements' of some kind?
