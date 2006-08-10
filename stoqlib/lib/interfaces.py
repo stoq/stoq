@@ -99,6 +99,9 @@ class IDatabaseSettings(Interface):
     """
 
     rdbms = Attribute('name identifying the database type')
+    dbname = Attribute('name identifying the database name')
+    address = Attribute('database address')
+    port = Attribute('database port')
 
     def get_connection_uri():
         """@returns: a SQLObject connection URI"""
