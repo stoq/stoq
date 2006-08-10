@@ -29,6 +29,7 @@ import pwd
 import sys
 import socket
 
+from kiwi.log import Logger
 from psycopg import ProgrammingError
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
@@ -38,13 +39,13 @@ from stoqlib.domain.tables import get_table_types, get_sequence_names
 from stoqlib.exceptions import ConfigError, SQLError, StoqlibError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import (new_transaction, print_msg, set_verbose,
-                                 get_connection)
+from stoqlib.lib.runtime import new_transaction, set_verbose, get_connection
 
 _ = stoqlib_gettext
 
 DEFAULT_RDBMS = 'postgres'
 
+log = Logger('stoqlib.database')
 
 # This class will be moved to it's proper place after bug 2253
 class Adapter:
@@ -184,23 +185,20 @@ def setup_tables(delete_only=False, verbose=False):
         ParameterData.clearTable(connection=conn)
     conn.commit()
 
-    if verbose:
-        print_msg('Dropping tables')
+    log.info('Dropping tables')
     table_types = get_table_types()
     for table in table_types:
         table_name = db_table_name(table)
         if conn.tableExists(table_name):
             conn.dropTable(table_name, cascade=True)
 
-    if verbose:
-        print_msg('Dropping sequences')
+    log.info('Dropping sequences')
     for seq_name in get_sequence_names():
         if sequenceExists(conn, seq_name):
             dropSequence(conn, seq_name)
 
     if not delete_only:
-        if verbose:
-            print_msg('Creating tables')
+        log.info('Creating tables')
         for table in table_types:
             table_name = db_table_name(table)
             if delete_only:
@@ -213,8 +211,7 @@ def setup_tables(delete_only=False, verbose=False):
                     "=========\n"
                     "%s\n" % (table_name, e))
 
-        if verbose:
-            print_msg('Creating sequences')
+        log.info('Creating sequences')
         for seq_name in get_sequence_names():
             createSequence(conn, seq_name)
 
