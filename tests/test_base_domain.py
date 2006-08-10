@@ -1,14 +1,12 @@
 import unittest
 
 from zope.interface import implements
-
 from stoqlib.domain.base import ConnInterface, Domain, ModelAdapter
 from stoqlib.lib.runtime import new_transaction
 
 from tests import base
 base # pyflakes
 
-conn = new_transaction()
 
 class IDong(ConnInterface):
     pass
@@ -28,28 +26,36 @@ class DingAdaptToDong(ModelAdapter):
 
 Ding.registerFacet(DingAdaptToDong, IDong)
 
+conn = new_transaction()
 Ding.createTable(connection=conn)
 DingAdaptToDong.createTable(connection=conn)
+conn.commit()
 
 class FacetTests(unittest.TestCase):
+    def setUp(self):
+        self.conn = new_transaction()
+
+    def tearDown(self):
+        self.conn.close()
+
     def testAdd(self):
-        ding = Ding(connection=conn)
+        ding = Ding(connection=self.conn)
         self.assertEqual(IDong(ding), None)
 
-        dong = ding.addFacet(IDong, connection=conn)
+        dong = ding.addFacet(IDong, connection=self.conn)
         self.assertEqual(IDong(ding), dong)
 
     def testAddHook(self):
-        ding = Ding(connection=conn)
+        ding = Ding(connection=self.conn)
         self.assertEqual(ding.called, False)
-        dong = ding.addFacet(IDong, connection=conn)
+        dong = ding.addFacet(IDong, connection=self.conn)
         self.assertEqual(ding.called, True)
 
     def testGetFacets(self):
-        ding = Ding(connection=conn)
+        ding = Ding(connection=self.conn)
         self.assertEqual(ding.getFacets(), [])
 
-        facet = ding.addFacet(IDong, connection=conn)
+        facet = ding.addFacet(IDong, connection=self.conn)
         self.assertEqual(ding.getFacets(), [facet])
 
     def testRegisterAndGetTypes(self):
@@ -59,7 +65,7 @@ class FacetTests(unittest.TestCase):
         class DingAdaptToDang(ModelAdapter):
             implements(IDang)
 
-        DingAdaptToDang.createTable(connection=conn)
+        DingAdaptToDang.createTable(connection=self.conn)
 
         self.assertEqual(Ding.getFacetTypes(), [DingAdaptToDong])
 
