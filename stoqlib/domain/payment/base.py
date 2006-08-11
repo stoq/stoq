@@ -453,7 +453,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         q2 = Payment.q.groupID == self.id
         if ignore_method_iface:
             base_method = sysparam(conn).BASE_PAYMENT_METHOD
-            method = ignore_method_iface(base_method, connection=conn)
+            method = ignore_method_iface(base_method)
             q3 = Payment.q.methodID != method.id
             query = AND(q1, q2, q3)
         else:
@@ -461,7 +461,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         payments = Payment.select(query, connection=conn)
         conn = self.get_connection()
         for payment in payments:
-            inpayment = IInPayment(payment, connection=conn)
+            inpayment = IInPayment(payment)
             if not inpayment:
                 continue
             payment.method.delete_inpayment(inpayment)

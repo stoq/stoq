@@ -277,8 +277,7 @@ class Sale(Domain):
                     salesperson=self.salesperson, connection=conn)
 
     def check_payment_group(self):
-        conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
+        group = IPaymentGroup(self)
         if not group:
             raise ValueError("Sale %s doesn't have an IPaymentGroup "
                              "facet at this point" % self)
@@ -287,8 +286,7 @@ class Sale(Domain):
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
         # callback in SQLObject
-        conn = self.get_connection()
-        client = IClient(person, connection=conn)
+        client = IClient(person)
         if not client:
             raise TypeError("%s cannot be adapted to IClient." % person)
         self.client = client
@@ -381,7 +379,7 @@ class Sale(Domain):
         self.validate()
         conn = self.get_connection()
         self.sell_items()
-        group = IPaymentGroup(self, connection=conn)
+        group = IPaymentGroup(self)
         group.confirm(gift_certificate_settings)
         self.status = self.STATUS_CONFIRMED
         self.confirm_date = datetime.now()
@@ -413,7 +411,7 @@ class Sale(Domain):
             raise DatabaseInconsistency("The sale %r have a client but no "
                                         "client_role defined." % self)
         elif self.client_role == Sale.CLIENT_INDIVIDUAL:
-            individual = IIndividual(person, connection=conn)
+            individual = IIndividual(person)
             if not individual:
                 raise DatabaseInconsistency(
                     "The client_role for sale %r says that the client "
@@ -421,7 +419,7 @@ class Sale(Domain):
                     " facet" % self)
             return individual
         elif self.client_role == Sale.CLIENT_COMPANY:
-            company = ICompany(person, connection=conn)
+            company = ICompany(person)
             if not company:
                 raise DatabaseInconsistency(
                     "The client_role for sale %r says that the client is "

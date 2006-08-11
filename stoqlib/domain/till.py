@@ -87,7 +87,7 @@ class Till(Domain):
 
     def _get_payment_group(self):
         conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
+        group = IPaymentGroup(self)
         if not group:
             group = self.addFacet(IPaymentGroup, connection=conn)
         return group
@@ -146,7 +146,7 @@ class Till(Domain):
             for sale in sales:
                 sale.till = self
 
-        if not IPaymentGroup(self, connection=conn):
+        if not IPaymentGroup(self):
             # Add a IPaymentGroup facet for the new till and make it easily
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
@@ -186,7 +186,7 @@ class Till(Domain):
         for sale in sales:
             if sale.status != Sale.STATUS_CONFIRMED:
                 continue
-            group = IPaymentGroup(sale, connection=conn)
+            group = IPaymentGroup(sale)
             if not group:
                 raise DatabaseInconsistency("Sale must have a"
                                             "IPaymentGroup facet")

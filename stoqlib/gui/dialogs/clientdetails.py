@@ -73,7 +73,7 @@ class ClientDetailsDialog(BaseEditor):
         for sale_view in sales:
             sale = Sale.get(sale_view.id, connection=self.conn)
             self.services.extend(sale.get_services())
-            group = IPaymentGroup(sale, connection=self.conn)
+            group = IPaymentGroup(sale)
             self.payments.extend(group.get_items())
             for product in sale.get_products():
                 qty = product.quantity

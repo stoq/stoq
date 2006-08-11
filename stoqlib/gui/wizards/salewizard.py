@@ -130,7 +130,7 @@ class PaymentMethodStep(WizardEditorStep):
                         for iface, slave in PaymentMethodStep.slaves_info
                             if iface in get_active_pm_ifaces()]
         for iface, slave_class in slaves_info:
-            method = iface(base_method, connection=self.conn)
+            method = iface(base_method)
             if method.is_active:
                 self.method_dict[method] = iface, slave_class
                 combo_items.append((method.description, method))

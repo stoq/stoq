@@ -120,7 +120,7 @@ class Product(Domain):
     #
 
     def block(self, conn, quantity, branch, reason, product):
-        storable = IStorable(self, connection=conn)
+        storable = IStorable(self)
         storable.decrease_stock(quantity, branch)
         return ProductRetentionHistory(quantity=quantity, product=product,
                                        reason=reason, connection=conn)
@@ -229,7 +229,7 @@ class ProductSellableItem(AbstractSellableItem):
             # TODO waiting for bug 2469
             raise StoqlibError("Order products is not a valid feature yet")
         adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted, connection=conn)
+        storable = IStorable(adapted)
         # Update the stock
         storable.decrease_stock(self.quantity, branch)
 
@@ -244,7 +244,7 @@ class ProductSellableItem(AbstractSellableItem):
     def cancel(self, branch):
         conn = self.get_connection()
         adapted = self.sellable.get_adapted()
-        storable = IStorable(adapted, connection=conn)
+        storable = IStorable(adapted)
         # Update the stock
         storable.increase_stock(self.quantity, branch)
 
@@ -264,7 +264,7 @@ class ProductSellableItem(AbstractSellableItem):
             return decimal.Decimal('0.0')
         delivered_qty = decimal.Decimal('0.0')
         for service in services:
-            delivery = IDelivery(service, connection=conn)
+            delivery = IDelivery(service)
             if not delivery:
                 continue
             item = delivery.get_item_by_sellable(self.sellable)
@@ -366,7 +366,7 @@ class ProductAdaptToStorable(ModelAdapter):
             stock_item.quantity += quantity
         conn = self.get_connection()
         adapted = self.get_adapted()
-        sellable = ISellable(adapted, connection=conn)
+        sellable = ISellable(adapted)
         if sellable.is_sold():
             sellable.set_available()
 
@@ -467,13 +467,12 @@ class ProductAdaptToStorable(ModelAdapter):
         full_balance = full_balance or self.get_full_balance(branch)
         adapted = self.get_adapted()
         conn = self.get_connection()
-        sellable = ISellable(adapted, connection=conn)
+        sellable = ISellable(adapted)
         return u"%s %s" % (full_balance, sellable.get_unit_description())
 
     def get_full_balance_for_current_branch(self):
         conn = self.get_connection()
-        branch = IBranch(sysparam(conn).CURRENT_WAREHOUSE.get_adapted(),
-                         connection=conn)
+        branch = IBranch(sysparam(conn).CURRENT_WAREHOUSE.get_adapted())
         return self.get_full_balance(branch)
 
     #

@@ -579,7 +579,7 @@ class ParameterAccess(ClassInittableObject):
         for interface in [ICardPM, IGiftCertificatePM, IFinancePM]:
             pm.addFacet(interface, connection=self.conn)
         self._set_schema('BASE_PAYMENT_METHOD', pm.id, is_editable=False)
-        self._set_schema(key, IMoneyPM(pm, connection=self.conn).id,
+        self._set_schema(key, IMoneyPM(pm).id,
                         is_editable=False)
 
     def ensure_delivery_service(self):

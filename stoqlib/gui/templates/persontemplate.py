@@ -81,8 +81,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         return slave
 
     def _setup_widgets(self):
-        facet_individual = IIndividual(self.model, connection=self.conn)
-        facet_company = ICompany(self.model, connection=self.conn)
+        facet_individual = IIndividual(self.model)
+        facet_company = ICompany(self.model)
         if not (facet_individual or facet_company):
             raise DatabaseInconsistency('A person must have at least a '
                                         'company or an individual facet.')
@@ -303,19 +303,18 @@ class BasePersonRoleEditor(BaseEditor):
             self.person = Person(name="", connection=conn)
         self._check_role_type()
         if (self.role_type == Person.ROLE_INDIVIDUAL and not
-            IIndividual(self.person, connection=conn)):
+            IIndividual(self.person)):
             self.person.addFacet(IIndividual, connection=conn)
         elif (self.role_type == Person.ROLE_COMPANY and not
-              ICompany(self.person, connection=conn)):
+              ICompany(self.person)):
             self.person.addFacet(ICompany, connection=conn)
         else:
             pass
         return self.person
 
     def setup_slaves(self):
-        individual = IIndividual(self.model.get_adapted(),
-                                 connection=self.conn)
-        company = ICompany(self.model.get_adapted(), connection=self.conn)
+        individual = IIndividual(self.model.get_adapted())
+        company = ICompany(self.model.get_adapted())
 
         if not (individual or company):
             raise ValueError('This person must have at least an '

@@ -89,7 +89,7 @@ class SaleDetailsDialog(BaseEditor):
             self.cancel_details_button.hide()
 
         self.items_list.add_list(self.sale_order.get_items())
-        group = IPaymentGroup(self.sale_order, connection=self.conn)
+        group = IPaymentGroup(self.sale_order)
         if not group:
             raise DatabaseInconsistency("Sale order must have a payment "
                                         "group set at this point")

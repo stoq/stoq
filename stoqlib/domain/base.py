@@ -255,7 +255,7 @@ class Adaptable:
     # Private
     #
 
-    def _getComponent(self, iface, registry, connection):
+    def _getComponent(self, iface, registry):
         k = qual(iface)
         adapter = self._adapterCache.get(k)
         if adapter is not None:
@@ -264,7 +264,7 @@ class Adaptable:
         adapterClass = self._facets.get(k)
         if adapterClass:
             results = adapterClass.selectBy(_originalID=self.id,
-                                            connection=connection)
+                                            connection=self._connection)
 
             if results.count() > 1:
                raise DatabaseInconsistency("You should never have more then "
@@ -444,8 +444,7 @@ class ConnMetaInterface(MetaInterface):
     """A special interface for Stoq domain classes. It allows us to make
     mandatory the connection argument
     """
-    def __call__(self, adaptable, persist=None,
-                 registry=None, connection=None):
+    def __call__(self, adaptable, persist=None, registry=None):
         """
         Try to adapt `adaptable' to self; return `default' if it
         was passed, otherwise raise L{CannotAdapt}.
@@ -453,15 +452,12 @@ class ConnMetaInterface(MetaInterface):
         if isinstance(adaptable, Adapter):
             raise TypeError('Adaptable argument can not be of type Adapter '
                             'got %s instead' % type(adaptable))
-        connection = connection or adaptable.get_connection()
-
         default = _Nothing
         registry = getRegistry()
         # should this be `implements' of some kind?
         if ((persist is None or persist)
             and hasattr(adaptable, '_getComponent')):
-            adapter = adaptable._getComponent(self, registry,
-                                              connection=connection)
+            adapter = adaptable._getComponent(self, registry)
         else:
             adapter = registry.getAdapter(adaptable, self, _NoImplementor,
                                           persist=persist)

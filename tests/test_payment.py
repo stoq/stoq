@@ -85,7 +85,7 @@ class TestPaymentMethodDetails(BaseDomainTest):
                                        connection=self.conn)
         payment_type = result[0]
         base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
-        method = IFinancePM(base_method, connection=self.conn)
+        method = IFinancePM(base_method)
         provider = method.get_finance_companies()[0]
         provider_data = CreditProviderGroupData(group=group,
                                                 payment_type=payment_type,

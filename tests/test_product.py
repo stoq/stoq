@@ -69,7 +69,7 @@ class TestProduct(BaseDomainTest):
 
     def test_facet_IStorable_add (self):
         self.create_instance()
-        assert not IStorable(self._instance, connection=self.conn)
+        assert not IStorable(self._instance)
         storable = self._instance.addFacet(IStorable, connection=self.conn)
         table = Person.getAdapterClass(IBranch)
         branches_count = table.select(connection=self.conn).count()

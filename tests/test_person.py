@@ -515,7 +515,7 @@ class TestClient(BaseDomainTest):
         products = Product.select(connection=self.conn)
         assert products.count() > 0
         product = products[0]
-        sellable_product = ISellable(product, connection=self.conn)
+        sellable_product = ISellable(product)
         sellable_product.add_sellable_item(sale=new_sale)
         one_more_sale = client.get_client_sales().count()
         self.assertEquals(count_sales + 1, one_more_sale)
