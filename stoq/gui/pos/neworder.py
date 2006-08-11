@@ -86,8 +86,8 @@ class NewOrderEditor(BaseEditor):
     def _update_client_role_box(self):
         if self.model.client:
             person = self.model.client.get_adapted()
-            if (ICompany(person, connection=self.conn)
-                and IIndividual(person, connection=self.conn)):
+            if (ICompany(person)
+                and IIndividual(person)):
                 self.clientrole_box.show()
                 return
         self.clientrole_box.hide()
@@ -97,8 +97,8 @@ class NewOrderEditor(BaseEditor):
             self.model.client_role = None
             return
         person = self.model.client.get_adapted()
-        if (ICompany(person, connection=self.conn)
-            and not IIndividual(person, connection=self.conn)):
+        if (ICompany(person)
+            and not IIndividual(person)):
             self.model.client_role = Sale.CLIENT_COMPANY
         else:
             self.model.client_role = Sale.CLIENT_INDIVIDUAL
@@ -113,7 +113,7 @@ class NewOrderEditor(BaseEditor):
     def create_model(self, conn):
         till = get_current_till_operation(conn)
         user = get_current_user(conn)
-        salesperson = ISalesPerson(user.get_adapted(), connection=conn)
+        salesperson = ISalesPerson(user.get_adapted())
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
         return Sale(connection=conn, till=till, salesperson=salesperson,
                     cfop=cfop, coupon_id=None)
