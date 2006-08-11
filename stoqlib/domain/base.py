@@ -35,12 +35,11 @@ from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
 
-from zope.interface import providedBy
-from zope.interface.adapter import AdapterRegistry
-from zope.interface.interface import Interface, InterfaceClass
+from zope.interface.interface import Interface
 
-from stoqlib.database import Adapter, db_table_name
+from stoqlib.database import db_table_name
 from stoqlib.domain.transaction import TransactionEntry
+from stoqlib.lib.component import Adapter, ConnMetaInterface
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.runtime import (StoqlibTransaction, get_current_user,
                                  get_current_station)
@@ -49,16 +48,6 @@ from stoqlib.exceptions import (AdapterError, DatabaseInconsistency,
 
 
 DATABASE_ENCODING = 'UTF-8'
-
-
-class MetaInterface(InterfaceClass):
-    pass
-
-class _Nothing:
-    pass
-
-class CannotAdapt(Exception):
-    pass
 
 
 #
@@ -433,59 +422,6 @@ class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
 
 
-#
-# Interfaces
-#
-
-
-_NoImplementor = object()
-
-class ConnMetaInterface(MetaInterface):
-    """A special interface for Stoq domain classes. It allows us to make
-    mandatory the connection argument
-    """
-    def __call__(self, adaptable, persist=None, registry=None):
-        """
-        Try to adapt `adaptable' to self; return `default' if it
-        was passed, otherwise raise L{CannotAdapt}.
-        """
-        if isinstance(adaptable, Adapter):
-            raise TypeError('Adaptable argument can not be of type Adapter '
-                            'got %s instead' % type(adaptable))
-        default = _Nothing
-        registry = getRegistry()
-        # should this be `implements' of some kind?
-        if ((persist is None or persist)
-            and hasattr(adaptable, '_getComponent')):
-            adapter = adaptable._getComponent(self, registry)
-        else:
-            adapter = registry.getAdapter(adaptable, self, _NoImplementor,
-                                          persist=persist)
-        if adapter is _NoImplementor:
-            if hasattr(self, '__adapt__'):
-                adapter = self.__adapt__.im_func(adaptable, default)
-            else:
-                adapter = default
-
-        if adapter is _Nothing:
-            raise CannotAdapt("%s cannot be adapted to %s." %
-                              (adaptable, self))
-        return adapter
-
-    def providedBy(self, adapter):
-        """
-        @param adapter:
-        @returns: If the adapter object implements the given interface
-        """
-        if not isinstance(adapter, Adapter):
-            raise TypeError('adapter argument must be of type Adapter,'
-                            'got %s instead'
-                            % type(adapter))
-        return self in providedBy(adapter)
-
-ConnInterface = ConnMetaInterface('ConnInterface',
-                                  __module__='stoq.domain.base')
-
 
 #
 # Base classes
@@ -569,7 +505,3 @@ for klass in (InheritableModel, Domain, ModelAdapter, InheritableModelAdapter):
     sqlmeta.addColumn(BoolCol(name='_is_valid_model', default=True,
                               forceDBName=True))
 
-_registry = AdapterRegistry()
-
-def getRegistry():
-    return _registry

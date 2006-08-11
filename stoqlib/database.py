@@ -47,10 +47,6 @@ DEFAULT_RDBMS = 'postgres'
 
 log = Logger('stoqlib.database')
 
-# This class will be moved to it's proper place after bug 2253
-class Adapter:
-    pass
-
 class DatabaseSettings:
     implements(IDatabaseSettings)
     def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,

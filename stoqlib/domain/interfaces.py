@@ -23,7 +23,7 @@
 
 from zope.interface import Attribute
 
-from stoqlib.domain.base import ConnInterface
+from stoqlib.lib.component import ConnInterface
 
 #
 # ConnInterfaces
