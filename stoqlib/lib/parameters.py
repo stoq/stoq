@@ -71,8 +71,8 @@ _parameter_info = dict(
     SUGGESTED_SUPPLIER=ParameterDetails(
     _(u'Purchase'),
     _(u'Suggested Supplier'),
-    _(u'The supplier suggested when we are adding a new product\'s '
-      'supplier in the system')),
+    _(u'The supplier suggested when we are adding a new product in the '
+      'system')),
 
     DEFAULT_BASE_CATEGORY=ParameterDetails(
     _(u'Purchase'),
