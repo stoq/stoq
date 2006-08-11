@@ -85,7 +85,7 @@ def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
                 open_date=open_date, coupon_id=coupon_id,
                 salesperson=salesperson, cfop=sysparam(conn).DEFAULT_SALES_CFOP,
                 connection=conn)
-    sellable_facet = ISellable(product, connection=conn)
+    sellable_facet = ISellable(product)
     sellable_facet.add_sellable_item(sale=sale)
     sale_total = sellable_facet.base_sellable_info.price
     # Sale's payments
@@ -95,8 +95,7 @@ def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
                          % (MAX_INSTALLMENTS_NUMBER, installments_number))
-    check_method = ICheckPM(sysparam(conn).BASE_PAYMENT_METHOD,
-                            connection=conn)
+    check_method = ICheckPM(sysparam(conn).BASE_PAYMENT_METHOD)
     check_method.setup_inpayments(pg_facet, installments_number,
                                   open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
                                   DEFAULT_PAYMENTS_INTERVAL, sale_total)

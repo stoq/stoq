@@ -67,7 +67,7 @@ class BaseEditorSlave(SlaveDelegate):
 
         if self.model_iface:
             if not isinstance(model, Adapter):
-                model = self.model_iface(model, connection=self.conn)
+                model = self.model_iface(model)
             elif not self.model_iface.providedBy(model):
                 raise TypeError(
                     "%s editor requires a model implementing %s, got a %r" % (

@@ -358,11 +358,11 @@ class FiscalCoupon:
     def identify_customer(self, person):
         max_len = get_capability(self.printer, "customer_id")
         conn = person.get_connection()
-        if IIndividual(person, connection=conn):
-            individual = IIndividual(person, connection=person.get_connection())
+        if IIndividual(person):
+            individual = IIndividual(person)
             document = individual.cpf[:max_len]
-        elif ICompany(person, connection=conn):
-            company = ICompany(person, connection=person.get_connection())
+        elif ICompany(person):
+            company = ICompany(person)
             document = company.cnpj[:max_len]
         else:
             raise TypeError(
@@ -435,7 +435,7 @@ class FiscalCoupon:
         function must be called after all the payments has been created.
         """
         sale = self.sale
-        group = IPaymentGroup(sale, connection=self.conn)
+        group = IPaymentGroup(sale)
         if not group:
             raise ValueError("The sale object must have a PaymentGroup facet at "
                              "this point.")

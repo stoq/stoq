@@ -393,7 +393,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         payments = Payment.select(query, connection=self.conn)
         inpayments = []
         for payment in payments:
-            inpayment = IInPayment(payment, connection=self.conn)
+            inpayment = IInPayment(payment)
             if inpayment:
                 inpayments.append(inpayment)
         return inpayments

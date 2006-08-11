@@ -67,7 +67,7 @@ class SaleReturnStep(WizardEditorStep):
             # what we need
             return
 
-        group = IPaymentGroup(self.order, connection=self.conn)
+        group = IPaymentGroup(self.order)
         if not group:
             raise StoqlibError("You should have a payment group defined "
                                "at this point")

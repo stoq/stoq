@@ -125,14 +125,14 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
         group = clone.addFacet(IPaymentGroup, connection=conn)
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = IMoneyPM(base_method, connection=conn)
+        adapter = IMoneyPM(base_method)
         adapter.setup_inpayments(overpaid_value, group)
         clone.confirm_sale()
 
         # The new payment for the new sale has it's value already paid
         # in the old sale order. So, create a reversal one
         till = get_current_till_operation(conn)
-        till_group = IPaymentGroup(till, connection=conn)
+        till_group = IPaymentGroup(till)
         if not till_group:
             raise DatabaseInconsistency("You should have a IPaymentGroup "
                                         "facet for the current till at "

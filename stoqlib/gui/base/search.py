@@ -1009,7 +1009,7 @@ class SearchEditor(SearchDialog):
                 adapted = obj.get_adapted()
             else:
                 adapted = obj
-            obj = self.interface(adapted, connection=self.conn)
+            obj = self.interface(adapted)
         rv = self.run_editor(obj)
         if not rv:
             rollback_and_begin(self.conn)

@@ -59,7 +59,7 @@ class DeliveryEditor(BaseEditor):
         self.products = products
         self.sale = sale
         if model is not None:
-            self.delivery = IDelivery(model, connection=conn)
+            self.delivery = IDelivery(model)
         else:
             self.delivery = None
         BaseEditor.__init__(self, conn, model)
@@ -111,7 +111,7 @@ class DeliveryEditor(BaseEditor):
     #
 
     def before_delete_items(self, slave, items):
-        delivery = IDelivery(self.model, connection=self.conn)
+        delivery = IDelivery(self.model)
         delivery.remove_items(items)
         self.force_validation()
 
@@ -163,7 +163,7 @@ class DeliveryEditor(BaseEditor):
         return model
 
     def setup_proxies(self):
-        delivery = IDelivery(self.model, connection=self.conn)
+        delivery = IDelivery(self.model)
         self.add_proxy(delivery, DeliveryEditor.delivery_widgets)
         self.add_proxy(self.model, DeliveryEditor.sellableitem_widgets)
 
@@ -178,7 +178,7 @@ class DeliveryEditor(BaseEditor):
                    Column('quantity', title=_('Quantity'), data_type=float,
                           format_func=format_quantity)]
 
-        delivery = IDelivery(self.model, connection=self.conn)
+        delivery = IDelivery(self.model)
         items = delivery.get_items()
         self.slave = AdditionListSlave(self.conn,
                                        columns,
@@ -193,7 +193,7 @@ class DeliveryEditor(BaseEditor):
 
     def on_cancel(self):
         if not self.edit_mode:
-            delivery = IDelivery(self.model, connection=self.conn)
+            delivery = IDelivery(self.model)
             delivery.remove_items(delivery.get_items())
             table = type(delivery)
             table.delete(delivery.id, connection=self.conn)

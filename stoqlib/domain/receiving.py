@@ -112,13 +112,12 @@ class ReceivingOrder(Domain):
 
     def _get_payment_group(self):
         conn = self.get_connection()
-        group = IPaymentGroup(self, connection=conn)
+        group = IPaymentGroup(self)
         if group:
             raise ValueError("You should not have a IPaymentGroup facet "
                              "defined at this point")
         if self.purchase:
-            purchase_group = IPaymentGroup(self.purchase,
-                                                 connection=conn)
+            purchase_group = IPaymentGroup(self.purchase)
             if not purchase_group:
                 raise DatabaseInconsistency("Purchase order should have "
                                             "a IPaymentGroup facet defined "
@@ -151,7 +150,7 @@ class ReceivingOrder(Domain):
                                                          quantity)
                 continue
             sellable = item.sellable
-            storable = IStorable(adapted, connection=conn)
+            storable = IStorable(adapted)
             if not storable:
                 raise DatabaseInconsistency('Sellable %r must have a '
                                             'storable facet at this point'

@@ -203,7 +203,7 @@ class PurchaseOrder(Domain):
                              % PurchaseOrder.get_status_str(self.status))
         conn = self.get_connection()
         if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(self, connection=conn)
+            group = IPaymentGroup(self)
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
@@ -387,14 +387,14 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         total = order.get_purchase_total()
         first_due_date = order.expected_receival_date
         if self.default_method == METHOD_MONEY:
-            method = IMoneyPM(base_method, connection=conn)
+            method = IMoneyPM(base_method)
             method.setup_outpayments(total, self,
                                      self.installments_number)
             return
         elif self.default_method == METHOD_CHECK:
-            method = ICheckPM(base_method, connection=conn)
+            method = ICheckPM(base_method)
         elif self.default_method == METHOD_BILL:
-            method = IBillPM(base_method, connection=conn)
+            method = IBillPM(base_method)
         else:
             raise ValueError('Invalid payment method, got %d' %
                              self.default_method)

@@ -64,7 +64,7 @@ class ProductRetentionDialog(BaseEditor):
 
     def setup_widgets(self):
         person = sysparam(self.conn).CURRENT_WAREHOUSE.get_adapted()
-        self.branch = IBranch(person, connection=self.conn)
+        self.branch = IBranch(person)
         self.quantity.set_range(1,
                                 self.storable.get_full_balance(self.branch))
 

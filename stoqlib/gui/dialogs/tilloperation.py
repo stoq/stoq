@@ -242,13 +242,13 @@ class TillOperationDialog(SlaveDelegate):
 
     def get_extra_query(self):
         current_till = get_current_till_operation(self.conn)
-        group = IPaymentGroup(current_till, connection=self.conn)
+        group = IPaymentGroup(current_till)
         if not group:
             raise DatabaseInconsistency("Till instance must have a"
                                         "IPaymentGroup facet")
         group_ids = [group.id]
         for sale in Sale.get_available_sales(self.conn, current_till):
-            group = IPaymentGroup(sale, connection=self.conn)
+            group = IPaymentGroup(sale)
             if not group:
                 raise DatabaseInconsistency("Sale instance must have a"
                                             "IPaymentGroup facet")

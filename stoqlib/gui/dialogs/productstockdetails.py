@@ -131,7 +131,7 @@ class ProductStockHistoryDialog(BaseEditor):
          self.add_proxy(self.model, ['product'])
 
          adaptable = self.model.get_adapted()
-         storable = IStorable(adaptable, connection=self.conn)
+         storable = IStorable(adaptable)
          if not storable:
              raise DatabaseInconsistency("You must have a storable set at "
                                          "this point")

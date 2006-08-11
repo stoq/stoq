@@ -235,7 +235,7 @@ def create_people():
     address.district = u"Jd Macarengo"
     address.postal_code = u"13560-450"
 
-    company = ICompany(person, connection=conn)
+    company = ICompany(person)
     company.cnpj = '03.852.995/0001-07'
     company.fancy_name = u"Async Open Source"
 

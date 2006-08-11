@@ -151,7 +151,7 @@ class SellableEditor(BaseEditor):
         self.requires_weighing_label.set_text("")
 
     def edit_sale_price(self):
-        sellable = ISellable(self.model, connection=self.conn)
+        sellable = ISellable(self.model)
         result = run_dialog(SellablePriceEditor, self, self.conn, sellable)
         if result:
             self.sellable_proxy.update('base_sellable_info.price')
@@ -203,7 +203,7 @@ class SellableEditor(BaseEditor):
     #
 
     def get_title_model_attribute(self, model):
-        sellable = ISellable(model, connection=self.conn)
+        sellable = ISellable(model)
         return sellable.base_sellable_info.description
 
     def setup_combos(self):
@@ -221,7 +221,7 @@ class SellableEditor(BaseEditor):
     def setup_proxies(self):
         self.set_widget_formats()
         self.setup_combos()
-        self._sellable = ISellable(self.model, connection=self.conn)
+        self._sellable = ISellable(self.model)
 
         barcode = self._sellable.barcode
         self.barcode_proxy = self.add_proxy(Settable(barcode=barcode),
@@ -229,7 +229,7 @@ class SellableEditor(BaseEditor):
 
         self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
-        storable = IStorable(self.model, connection=self.conn)
+        storable = IStorable(self.model)
         self.storable_proxy = self.add_proxy(storable,
                                              SellableEditor.storable_widgets)
         if self._sellable.unit:

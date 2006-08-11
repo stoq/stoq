@@ -115,7 +115,7 @@ class PaymentMethodDetails(InheritableModel):
     def _get_payment_method_by_interface(self, iface):
         conn = self.get_connection()
         method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = iface(method, connection=conn)
+        adapter = iface(method)
         if not adapter:
             raise TypeError('This object must implement interface '
                             '%s' % iface)

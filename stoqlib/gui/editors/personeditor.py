@@ -74,7 +74,7 @@ class ClientEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        client = IClient(person, connection=conn)
+        client = IClient(person)
         return client or person.addFacet(IClient, connection=conn)
 
     def setup_slaves(self):
@@ -102,7 +102,7 @@ class UserEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        user = IUser(person, connection=conn)
+        user = IUser(person)
         return user or person.addFacet(IUser, connection=conn, username="",
                                        password="", profile=None)
 
@@ -206,7 +206,7 @@ class CreditProviderEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        credprovider = ICreditProvider(person, connection=conn)
+        credprovider = ICreditProvider(person)
         if credprovider:
             return credprovider
         if self.provtype is None:
@@ -301,9 +301,9 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        if ICompany(person, connection=self.conn):
+        if ICompany(person):
             person.addFacet(IIndividual, connection=self.conn)
-        employee = IEmployee(person, connection=conn)
+        employee = IEmployee(person)
         return employee or person.addFacet(IEmployee, connection=conn,
                                            role=None)
 
@@ -390,7 +390,7 @@ class SupplierEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        supplier = ISupplier(person, connection=conn)
+        supplier = ISupplier(person)
         return supplier or person.addFacet(ISupplier, connection=conn)
 
     def setup_slaves(self):
@@ -411,7 +411,7 @@ class TransporterEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        transporter = ITransporter(person, connection=conn)
+        transporter = ITransporter(person)
         if transporter:
             return transporter
         return person.addFacet(ITransporter, connection=conn)
@@ -434,7 +434,7 @@ class BranchEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        branch = IBranch(person, connection=conn)
+        branch = IBranch(person)
         model =  branch or person.addFacet(IBranch, connection=conn)
         model.manager = Person(connection=self.conn, name="")
         return model

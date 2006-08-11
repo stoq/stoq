@@ -289,8 +289,8 @@ class Person(Domain):
 
     def has_individual_or_company_facets(self):
         conn = self.get_connection()
-        return (IIndividual(self, connection=conn) or
-                ICompany(self, connection=conn))
+        return (IIndividual(self) or
+                ICompany(self))
 
     #
     # Facet hooks
@@ -317,7 +317,7 @@ class Person(Domain):
         return adapter_klass(self, **kwargs)
 
     def facet_IEmployee_add(self, **kwargs):
-        individual = IIndividual(self, connection=self.get_connection())
+        individual = IIndividual(self)
         if not individual:
                 msg = ('The person you want to adapt must have '
                        'an individual facet')
@@ -332,7 +332,7 @@ class Person(Domain):
 
     def facet_IBranch_add(self, **kwargs):
         from stoqlib.domain.product import storables_set_branch
-        company = ICompany(self, connection=self.get_connection())
+        company = ICompany(self)
         if not company:
                 msg = ('The person you want to adapt must have '
                        'a company facet')
@@ -345,7 +345,7 @@ class Person(Domain):
         return branch
 
     def facet_ISalesPerson_add(self, **kwargs):
-        employee = IEmployee(self, connection=self.get_connection())
+        employee = IEmployee(self)
         if not employee:
                 msg = ('The person you want to adapt must have '
                        'an employee facet')
