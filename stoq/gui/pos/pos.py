@@ -285,7 +285,7 @@ class POSApp(AppWindow):
 
         if isinstance(sellable, self._product_table):
             adapted = sellable.get_adapted()
-            storable = IStorable(adapted, connection=self.conn)
+            storable = IStorable(adapted)
             # XXX Probably we could get rid of this check using a view and
             # not allowing products without stocks for a certain branch in
             # the pos item list. Waiting for bug 2339
@@ -319,7 +319,7 @@ class POSApp(AppWindow):
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
         if isinstance(item, ServiceSellableItem):
-            delivery = IDelivery(item, connection=self.conn)
+            delivery = IDelivery(item)
             if delivery:
                 delivery.remove_items(delivery.get_items())
                 table = type(delivery)
@@ -332,7 +332,7 @@ class POSApp(AppWindow):
             # Do not raise any exception here, since this method can be called
             # when the user activate a row with product in the sellables list.
             return
-        if IDelivery(item, connection=self.conn):
+        if IDelivery(item):
             editor = DeliveryEditor
         else:
             editor = ServiceItemEditor

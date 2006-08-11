@@ -155,10 +155,9 @@ class WarehouseApp(SearchableAppWindow):
         sellable_view = self.products.get_selected_rows()[0]
         product = Product.get(sellable_view.product_id,
                               connection=self.conn)
-        storable = IStorable(product, connection=self.conn)
+        storable = IStorable(product)
         warehouse = sysparam(self.conn).CURRENT_WAREHOUSE
-        warehouse_branch = IBranch(warehouse.get_adapted(),
-                                   connection=self.conn)
+        warehouse_branch = IBranch(warehouse.get_adapted())
         if (not storable
             or not storable.get_full_balance(warehouse_branch)):
             warning(_(u"You must have at least one item "
