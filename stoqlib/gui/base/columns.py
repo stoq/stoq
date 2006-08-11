@@ -27,7 +27,7 @@
 from kiwi.accessor import kgetattr
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database import Adapter
+from stoqlib.lib.component import Adapter
 
 
 class FacetColumn(Column):

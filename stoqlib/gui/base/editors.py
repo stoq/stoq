@@ -28,7 +28,7 @@
 from kiwi.ui.delegates import SlaveDelegate
 from kiwi.ui.widgets.label import ProxyLabel
 
-from stoqlib.domain.base import Adapter
+from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 

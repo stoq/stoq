@@ -3,7 +3,8 @@ import unittest
 from psycopg import ProgrammingError
 from zope.interface import implements
 
-from stoqlib.domain.base import ConnInterface, Domain, ModelAdapter
+from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.lib.component import ConnInterface
 from stoqlib.lib.runtime import new_transaction
 
 from tests import base

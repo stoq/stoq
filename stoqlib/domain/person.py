@@ -35,13 +35,13 @@ from sqlobject.sqlbuilder import AND, func
 from zope.interface import implements
 from kiwi.argcheck import argcheck
 
+from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_connection, StoqlibTransaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency, CityLocationError
-from stoqlib.domain.base import (CannotAdapt, Domain, ModelAdapter,
-                                 BaseSQLView)
+from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
 from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
