@@ -1,6 +1,8 @@
 import unittest
 
+from psycopg import ProgrammingError
 from zope.interface import implements
+
 from stoqlib.domain.base import ConnInterface, Domain, ModelAdapter
 from stoqlib.lib.runtime import new_transaction
 
@@ -27,9 +29,13 @@ class DingAdaptToDong(ModelAdapter):
 Ding.registerFacet(DingAdaptToDong, IDong)
 
 conn = new_transaction()
-Ding.createTable(connection=conn)
-DingAdaptToDong.createTable(connection=conn)
-conn.commit()
+try:
+    Ding.createTable(connection=conn)
+    DingAdaptToDong.createTable(connection=conn)
+except ProgrammingError:
+    pass
+else:
+    conn.commit()
 
 class FacetTests(unittest.TestCase):
     def setUp(self):
@@ -65,7 +71,10 @@ class FacetTests(unittest.TestCase):
         class DingAdaptToDang(ModelAdapter):
             implements(IDang)
 
-        DingAdaptToDang.createTable(connection=self.conn)
+        try:
+            DingAdaptToDang.createTable(connection=self.conn)
+        except ProgrammingError:
+            pass
 
         self.assertEqual(Ding.getFacetTypes(), [DingAdaptToDong])
 
