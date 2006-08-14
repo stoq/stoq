@@ -24,81 +24,223 @@
 
 """Component infrastructure for Stoqlib"""
 
-from zope.interface import providedBy
-from zope.interface.adapter import AdapterRegistry
-from zope.interface.interface import InterfaceClass
+from kiwi.python import qual, namedAny
+from sqlobject import ForeignKey
+from zope.interface.interface import InterfaceClass, adapter_hooks
 
-#
-# Interface implementation
-#
-
-
-_NoImplementor = object()
+from stoqlib.exceptions import AdapterError
 
 class MetaInterface(InterfaceClass):
     pass
 
-class _Nothing:
-    pass
-
-class ConnMetaInterface(MetaInterface):
-    """A special interface for Stoq domain classes. It allows us to make
-    mandatory the connection argument
+class NoneMetaInterface(MetaInterface):
     """
-    def __call__(self, adaptable, persist=None, registry=None):
-        """
-        Try to adapt `adaptable' to self; return `default' if it
-        was passed, otherwise raise L{CannotAdapt}.
-        """
-        if isinstance(adaptable, Adapter):
-            raise TypeError('Adaptable argument can not be of type Adapter '
-                            'got %s instead' % type(adaptable))
-        default = _Nothing
-        registry = getRegistry()
-        # should this be `implements' of some kind?
-        if ((persist is None or persist)
-            and hasattr(adaptable, '_getComponent')):
-            adapter = adaptable._getComponent(self, registry)
-        else:
-            adapter = registry.getAdapter(adaptable, self, _NoImplementor,
-                                          persist=persist)
-        if adapter is _NoImplementor:
-            if hasattr(self, '__adapt__'):
-                adapter = self.__adapt__.im_func(adaptable, default)
-            else:
-                adapter = default
+    Meta class for NoneInterface
+    It's identical to a normal zope.interface.Interface type except
+    that the default second argument is None
+    """
+    def __call__(self, adaptable, alternate=None):
+        return MetaInterface.__call__(self, adaptable, alternate)
 
-        if adapter is _Nothing:
-            raise CannotAdapt("%s cannot be adapted to %s." %
-                              (adaptable, self))
-        return adapter
-
-    def providedBy(self, adapter):
-        """
-        @param adapter:
-        @returns: If the adapter object implements the given interface
-        """
-        if not isinstance(adapter, Adapter):
-            raise TypeError('adapter argument must be of type Adapter,'
-                            'got %s instead'
-                            % type(adapter))
-        return self in providedBy(adapter)
-
-ConnInterface = ConnMetaInterface('ConnInterface',
-                                  __module__='stoq.domain.base')
+NoneInterface = NoneMetaInterface('NoneInterface',
+                                  __module__='stoqlib.lib.component')
 
 #
 # Adaptors
 #
 
-class CannotAdapt(Exception):
+class CannotAdapt(TypeError):
     pass
 
 class Adapter:
     pass
 
+class AdaptableSQLObject(object):
 
-_registry = AdapterRegistry()
+    def __init__(self):
+        self._adapterCache = {}
 
-def getRegistry():
-    return _registry
+    #
+    # Class methods
+    #
+
+    @classmethod
+    def getFacetType(cls, iface):
+        """
+        Fetches a facet associated with an interface
+
+        @param iface: interface name for the facet to grab
+        @returns: the facet type for the interface
+        """
+
+        facets = getattr(cls, '_facets', [])
+
+        iface_str = qual(iface)
+        if not iface_str in facets:
+            # XXX: LookupError
+            raise TypeError(
+                "%s doesn't have a facet for interface %s" %
+                (cls.__name__, iface.__name__))
+
+        return facets[iface_str]
+
+    # XXX: Deprecate/Remove this
+    getAdapterClass = getFacetType
+
+    @classmethod
+    def getFacetTypes(cls):
+        """
+        Returns facet classes for this object
+        @returns: a list of facet classes
+        """
+
+        facets = getattr(cls, '_facets', [])
+
+        return facets.values()
+
+    @classmethod
+    def registerFacet(cls, facet, *ifaces):
+        """
+        Registers a facet for class cls.
+
+        The 'facet' argument is an adapter class which will be registered
+        using its interfaces specified in __implements__ argument.
+        Unless it already exists in the facet, a foreign key with the name
+        '_original' will be assigned.
+
+        Notes: the assigned key will have the name of the class cls.
+
+        @param cls:
+        @param facet:
+        @param ifaces: optional list of interfaces to attach
+        """
+        if not hasattr(cls, '_facets'):
+            cls._facets = {}
+
+        if not ifaces:
+            raise ValueError("It is not possible to register a facet "
+                             "without specifing an interface")
+
+        for iface in ifaces:
+            if not isinstance(iface, InterfaceClass):
+                raise TypeError('iface must be an Interface')
+
+            if qual(iface) in cls._facets.keys():
+                raise TypeError(
+                    '%s does already have a facet for interface %s' %
+                    (cls.__name__, iface.__name__))
+            cls._facets[qual(iface)] = facet
+
+        if not hasattr(facet, '_original'):
+            facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
+                                    name='_original',
+                                    forceDBName=True))
+
+    #
+    # Public API
+    #
+
+    def addFacet(self, iface, *args, **kwargs):
+        """
+        Adds a facet implementing iface for the current object
+        @param iface: interface of the facet to add
+        @returns: the facet
+        """
+
+        if isinstance(self, Adapter):
+            raise TypeError("An adapter can not be adapted to another "
+                            "object.")
+        if not isinstance(iface, InterfaceClass):
+            raise TypeError('iface must be an Interface')
+
+        k = qual(iface)
+        if k in self._adapterCache:
+            raise AdapterError('%s already  have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
+
+        facets = self.__class__._facets
+
+        funcName = 'facet_%s_add' % iface.__name__
+        func = getattr(self, funcName, None)
+
+        if func:
+            adapter = func(*args, **kwargs)
+        elif facets.has_key(k):
+            adapterClass = facets[k]
+            adapter = adapterClass(self, *args, **kwargs)
+        else:
+            raise AdapterError("The object type %s doesn't implement an "
+                               "adapter for interface %s" % (type(self),
+                               iface))
+        if adapter:
+            self._adapterCache[k] = adapter
+
+        return adapter
+
+    def removeFacet(self, iface, *args, **kwargs):
+        """
+        @param iface:
+        """
+        if not isinstance(iface, InterfaceClass):
+            raise TypeError('iface must be an Interface')
+
+        facets = self.__class__._facets
+        if not iface in facets:
+            raise AdapterError('%s does not have a facet for interface %s' %
+                               (self.__class__.__name__, iface.__name__))
+
+        funcName = 'facet_%s_remove' % iface.__name__
+        func = getattr(self, funcName, None)
+        if func:
+            func(*args, **kwargs)
+
+        k = qual(iface)
+        del facets[k]
+        if k in self._adapterCache:
+            del self._adapterCache[k]
+
+    def getFacets(self):
+        """
+        Gets a list of facets assoicated with the current object.
+        @returns: a list of facets
+        """
+        facet_types = getattr(self, '_facets', [])
+
+        facets = []
+        for iface_name in facet_types:
+            iface = namedAny(iface_name)
+
+            facet = iface(self, None)
+            # Filter out facets which are not set
+            if facet is None:
+                continue
+            facets.append(facet)
+        return facets
+
+# XXX: Cache the adapter so we don't need to refetch the object
+
+def _adaptable_sqlobject_adapter_hook(iface, obj):
+    """
+    A zope.interface hook used to fetch an adapter when calling
+    iface(adaptable).
+    It fetches the facet type and does a select in the database to
+    see if the object is present.
+
+    @param iface: the interface to adapt to
+    @param obj: object we want to adapt
+    """
+
+    # We're only interested in Adaptable subclasses which defines
+    # the getFacetType method
+    if not isinstance(obj, AdaptableSQLObject):
+        return
+
+    facetType = obj.getFacetType(iface)
+    if facetType:
+        results = facetType.selectBy(
+            _originalID=obj.id, connection=obj.get_connection())
+
+    if results.count() == 1:
+        return results[0]
+
+adapter_hooks.append(_adaptable_sqlobject_adapter_hook)
