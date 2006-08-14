@@ -27,7 +27,6 @@
 import datetime
 
 from kiwi.component import get_utility
-from kiwi.python import qual, namedAny
 from sqlobject import SQLObject
 from sqlobject import ForeignKey, BoolCol
 from sqlobject.inheritance import InheritableSQLObject
@@ -35,16 +34,13 @@ from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
 
-from zope.interface.interface import Interface
-
 from stoqlib.database import db_table_name
 from stoqlib.domain.transaction import TransactionEntry
-from stoqlib.lib.component import Adapter, ConnMetaInterface
+from stoqlib.lib.component import Adapter, AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.runtime import (StoqlibTransaction, get_current_user,
                                  get_current_station)
-from stoqlib.exceptions import (AdapterError, DatabaseInconsistency,
-                                StoqlibError)
+from stoqlib.exceptions import StoqlibError
 
 
 DATABASE_ENCODING = 'UTF-8'
@@ -235,189 +231,6 @@ class AbstractModel(object):
         # HMMM!
         self.__dict__['_original'] = _original
 
-
-class Adaptable:
-    def __init__(self):
-        self._adapterCache = {}
-
-    #
-    # Private
-    #
-
-    def _getComponent(self, iface, registry):
-        k = qual(iface)
-        adapter = self._adapterCache.get(k)
-        if adapter is not None:
-            return adapter
-
-        adapterClass = self._facets.get(k)
-        if adapterClass:
-            results = adapterClass.selectBy(_originalID=self.id,
-                                            connection=self._connection)
-
-            if results.count() > 1:
-               raise DatabaseInconsistency("You should never have more then "
-                                           "one adapter with the same "
-                                           "original_id.")
-            if results.count() == 1:
-                adapter = results[0]
-                self._adapterCache[k] = adapter
-        return adapter
-
-    #
-    # Class methods
-    #
-
-    @classmethod
-    def getFacetType(cls, iface):
-        """
-        Fetches a facet associated with an interface
-
-        @param iface: interface name for the facet to grab
-        @returns: the facet type for the interface
-        """
-
-        facets = getattr(cls, '_facets', [])
-
-        iface_str = qual(iface)
-        if not iface_str in facets:
-            # XXX: LookupError
-            raise TypeError(
-                "%s doesn't have a facet for interface %s" %
-                (cls.__name__, iface.__name__))
-
-        return facets[iface_str]
-
-    # XXX: Deprecate/Remove this
-    getAdapterClass = getFacetType
-
-    @classmethod
-    def getFacetTypes(cls):
-        """
-        Returns facet classes for this object
-        @returns: a list of facet classes
-        """
-
-        facets = getattr(cls, '_facets', [])
-
-        return facets.values()
-
-    @classmethod
-    def registerFacet(cls, facet, *ifaces):
-        """
-        Registers a facet for class cls.
-
-        The 'facet' argument is an adapter class which will be registered
-        using its interfaces specified in __implements__ argument.
-        Unless it already exists in the facet, a foreign key with the name
-        '_original' will be assigned.
-
-        Notes: the assigned key will have the name of the class cls.
-
-        @param cls:
-        @param facet:
-        @param ifaces: optional list of interfaces to attach
-        """
-        if not hasattr(cls, '_facets'):
-            cls._facets = {}
-
-        if not ifaces:
-            raise ValueError("It is not possible to register a facet "
-                             "without specifing an interface")
-
-        for iface in ifaces:
-            if qual(iface) in cls._facets.keys():
-                raise TypeError(
-                    '%s does already have a facet for interface %s' %
-                    (cls.__name__, iface.__name__))
-            cls._facets[qual(iface)] = facet
-
-        if not hasattr(facet, '_original'):
-            facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
-                                    name='_original',
-                                    forceDBName=True))
-
-    #
-    # Public API
-    #
-
-    def addFacet(self, iface, *args, **kwargs):
-        """
-        Adds a facet implementing iface for the current object
-        @param iface: interface of the facet to add
-        @returns: the facet
-        """
-
-        if isinstance(self, Adapter):
-            raise TypeError("An adapter can not be adapted to another "
-                            "object.")
-        if not isinstance(iface, ConnMetaInterface):
-            raise TypeError('iface must be a ConnInterface subclass')
-
-        k = qual(iface)
-        if k in self._adapterCache:
-            raise AdapterError('%s already  have a facet for interface %s' %
-                               (self.__class__.__name__, iface.__name__))
-
-        facets = self.__class__._facets
-
-        funcName = 'facet_%s_add' % iface.__name__
-        func = getattr(self, funcName, None)
-
-        if func:
-            adapter = func(*args, **kwargs)
-        elif facets.has_key(k):
-            adapterClass = facets[k]
-            adapter = adapterClass(self, *args, **kwargs)
-        else:
-            raise AdapterError("The object type %s doesn't implement an "
-                               "adapter for interface %s" % (type(self),
-                               iface))
-        if adapter:
-            self._adapterCache[k] = adapter
-
-        return adapter
-
-    def removeFacet(self, iface, *args, **kwargs):
-        """
-        @param iface:
-        """
-        if not issubclass(iface, Interface):
-            raise TypeError('iface must be a ConnInterface subclass')
-
-        facets = self.__class__._facets
-        if not iface in facets:
-            raise AdapterError('%s does not have a facet for interface %s' %
-                               (self.__class__.__name__, iface.__name__))
-
-        funcName = 'facet_%s_remove' % iface.__name__
-        func = getattr(self, funcName, None)
-        if func:
-            func(*args, **kwargs)
-
-        k = qual(iface)
-        del facets[k]
-        if k in self._adapterCache:
-            del self._adapterCache[k]
-
-    def getFacets(self):
-        """
-        Gets a list of facets assoicated with the current object.
-        @returns: a list of facets
-        """
-        facet_types = getattr(self, '_facets', [])
-
-        facets = []
-        for iface_name in facet_types:
-            iface = namedAny(iface_name)
-
-            facet = iface(self)
-            # Filter out facets which are not set
-            if facet is None:
-                continue
-            facets.append(facet)
-        return facets
-
 class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
 
@@ -428,14 +241,14 @@ class BaseDomain(AbstractModel, SQLObject):
 #
 
 
-class Domain(BaseDomain, Adaptable):
+class Domain(BaseDomain, AdaptableSQLObject):
     """If you want to be able to extend a certain class with adapters or
     even just have a simple class without sublasses, this is the right
     choice.
     """
     def __init__(self, *args, **kwargs):
         BaseDomain.__init__(self, *args, **kwargs)
-        Adaptable.__init__(self)
+        AdaptableSQLObject.__init__(self)
 
     @classmethod
     def iselect(cls, iface, *args, **kwargs):
@@ -463,13 +276,13 @@ class Domain(BaseDomain, Adaptable):
         return adapter.get(object_id, **kwargs)
 
 
-class InheritableModel(AbstractModel, InheritableSQLObject, Adaptable):
+class InheritableModel(AbstractModel, InheritableSQLObject, AdaptableSQLObject):
     """Subclasses of InheritableModel are able to be base classes of other
     classes in a database level. Adapters are also allowed for these classes
     """
     def __init__(self, *args, **kwargs):
         InheritableSQLObject.__init__(self, *args, **kwargs)
-        Adaptable.__init__(self)
+        AdaptableSQLObject.__init__(self)
 
 
 class BaseSQLView:

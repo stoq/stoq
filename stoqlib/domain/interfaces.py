@@ -23,13 +23,13 @@
 
 from zope.interface import Attribute
 
-from stoqlib.lib.component import ConnInterface
+from stoqlib.lib.component import NoneInterface
 
 #
-# ConnInterfaces
+# NoneInterfaces
 #
 
-class IContainer(ConnInterface):
+class IContainer(NoneInterface):
     """An objects that holds other objects or items"""
 
     def add_item(item):
@@ -43,7 +43,7 @@ class IContainer(ConnInterface):
     def remove_items(item):
         """Remove from the list or database the item desired."""
 
-class ISellable(ConnInterface):
+class ISellable(NoneInterface):
     """ Represents the sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
     only its reference as a sellable. Concrete items are defined by
@@ -89,7 +89,7 @@ class ISellable(ConnInterface):
     def add_sellable_item(sale, quantity, price):
         """Adds a new SellableItem instance for this sellable object"""
 
-class IStorable(ConnInterface):
+class IStorable(NoneInterface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
@@ -135,7 +135,7 @@ class IStorable(ConnInterface):
         """Check if the quantity requested in a sale is valid and update the
         stock of the sellable item"""
 
-class IIndividual(ConnInterface):
+class IIndividual(NoneInterface):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
@@ -166,7 +166,7 @@ class IIndividual(ConnInterface):
     rg_expedition_local = Attribute('The local which the Brazilian was made')
     gender = Attribute('gender_male, gender_female')
 
-class ICompany(ConnInterface):
+class ICompany(NoneInterface):
     """An institution created to conduct business"""
 
     cnpj = Attribute('A Brazilian government register number for companies')
@@ -174,13 +174,13 @@ class ICompany(ConnInterface):
     state_registry = Attribute('A Brazilian register number associated with '
                                'a certain state')
 
-class IClient(ConnInterface):
+class IClient(NoneInterface):
     """An individual or a company who pays for goods or services"""
 
     status = Attribute('ok, indebted, insolvent, inactive')
     days_late = Attribute('How many days is this client indebted')
 
-class ISupplier(ConnInterface):
+class ISupplier(NoneInterface):
     """A company or an individual that produces, provides, or furnishes
     an item or service"""
 
@@ -188,7 +188,7 @@ class ISupplier(ConnInterface):
                              'this supplier produces')
     status = Attribute('active, inactive, blocked')
 
-class IEmployee(ConnInterface):
+class IEmployee(NoneInterface):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to
     what tasks are done"""
@@ -218,7 +218,7 @@ class IEmployee(ConnInterface):
                               'BankAccount')
     role = Attribute('A reference to an employee role object')
 
-class IUser(ConnInterface):
+class IUser(NoneInterface):
     """An employee which have access to one or more Stoq applications"""
 
     username = Attribute('Username')
@@ -227,13 +227,13 @@ class IUser(ConnInterface):
                         'system')
     password = Attribute('Password')
 
-class IBranch(ConnInterface):
+class IBranch(NoneInterface):
     """An administrative division of some larger or more complex
     organization"""
 
     manager = Attribute('An employee which is in charge of this branch')
 
-class ISalesPerson(ConnInterface):
+class ISalesPerson(NoneInterface):
     """An employee in charge of make sales"""
 
     commission = Attribute('The percentege of commission the company must pay '
@@ -242,20 +242,20 @@ class ISalesPerson(ConnInterface):
                                'commission. This is a reference to another '
                                'object')
 
-class IInPayment(ConnInterface):
-    """ ConnInterface specification for InPayments. """
+class IInPayment(NoneInterface):
+    """ NoneInterface specification for InPayments. """
 
     def receive(value=None, paid_date=None):
         """ Confirm the payment. """
 
-class IOutPayment(ConnInterface):
-    """ ConnInterface specification for OutPayments. """
+class IOutPayment(NoneInterface):
+    """ NoneInterface specification for OutPayments. """
 
     def pay(value=None, paid_date=None):
         """ Confirm the payment."""
 
-class IPaymentGroup(ConnInterface):
-    """ ConnInterface specification for PaymentGroups. """
+class IPaymentGroup(NoneInterface):
+    """ NoneInterface specification for PaymentGroups. """
 
     status = Attribute('The status of the payment group. ')
     open_date = Attribute('The open date of the payment group.')
@@ -289,12 +289,12 @@ class IPaymentGroup(ConnInterface):
     def add_payment():
         """Add a new payment for this group"""
 
-class IDelivery(ConnInterface):
+class IDelivery(NoneInterface):
     """ Specification of a Delivery interface for a sellable. """
 
     address = Attribute('The delivery address.')
 
-class IMoneyPM(ConnInterface):
+class IMoneyPM(NoneInterface):
     """Defines a money payment method"""
 
     def get_change():
@@ -302,37 +302,37 @@ class IMoneyPM(ConnInterface):
         sale value
         """
 
-class ICheckPM(ConnInterface):
+class ICheckPM(NoneInterface):
     """Defines a check payment method"""
 
     def get_check_data_by_payment(payment):
         """Return a CheckData instance for a certain payment"""
 
-class IBillPM(ConnInterface):
+class IBillPM(NoneInterface):
     """Defines a bill payment method"""
 
     def get_available_bill_accounts():
         """Get all the available bill accounts for the current Bill type"""
 
-class IFinancePM(ConnInterface):
+class IFinancePM(NoneInterface):
     """Defines a Finance payment method"""
 
     def get_finance_companies():
         """Get all the finance companies for a certain method"""
 
-class ICardPM(ConnInterface):
+class ICardPM(NoneInterface):
     """Defines a card payment method"""
 
     def get_credit_card_providers():
         """Get all the credit providers for a certain method"""
 
-class IGiftCertificatePM(ConnInterface):
+class IGiftCertificatePM(NoneInterface):
     """A marker interface for gift certificate payment method"""
 
-class IMultiplePM(ConnInterface):
+class IMultiplePM(NoneInterface):
     """A marker interface for multiple payment method"""
 
-class ITillOperation(ConnInterface):
+class ITillOperation(NoneInterface):
     """Basic payment operation like adding a credit and a debit"""
 
     def add_debit(value, reason, category, date=None):
@@ -351,40 +351,40 @@ class ITillOperation(ConnInterface):
         """Cancel a payment in the current till"""
 
 
-class IRenegotiationReturnSale(ConnInterface):
+class IRenegotiationReturnSale(NoneInterface):
     """A definition of a return (or cancellation) of a sale order."""
 
     def confirm(payment_group):
         """Confirm the sale return process."""
 
 
-class IRenegotiationExchange(ConnInterface):
+class IRenegotiationExchange(NoneInterface):
     # TODO to be implemented on bug 2230
     pass
 
 
-class IRenegotiationInstallments(ConnInterface):
+class IRenegotiationInstallments(NoneInterface):
     # TODO to be implemented on bug 2190
     pass
 
 
-class IPaymentDevolution(ConnInterface):
+class IPaymentDevolution(NoneInterface):
     """A devolution payment operation"""
 
     def get_devolution_date():
         """Get the day when the payment was returned"""
 
-class IPaymentDeposit(ConnInterface):
+class IPaymentDeposit(NoneInterface):
     """A deposit payment operation"""
 
     def get_deposit_date():
         """Get the day when the payment was paid"""
 
-class IBankBranch(ConnInterface):
+class IBankBranch(NoneInterface):
     branch = Attribute('A bank branch definition')
 
 
-class ICreditProvider(ConnInterface):
+class ICreditProvider(NoneInterface):
     provider_type = Attribute('This attribute must be either'
                               'provider card or provider '
                               'finance')
@@ -399,7 +399,7 @@ class ICreditProvider(ConnInterface):
     def get_finance_companies(conn):
         """Return a list of finance companies"""
 
-class IActive(ConnInterface):
+class IActive(NoneInterface):
     """It defines if a certain object can be active or not"""
 
     is_active = Attribute('This attribute defines if the object is active')
@@ -410,7 +410,7 @@ class IActive(ConnInterface):
     def activate():
         """Activate an inactive object"""
 
-class ITransporter(ConnInterface):
+class ITransporter(NoneInterface):
     """An individual or company engaged in the transportation"""
 
     open_contract_date = Attribute('The date when we start working with '
@@ -418,7 +418,7 @@ class ITransporter(ConnInterface):
     freight_percentage = Attribute('The percentage amount of freight '
                                    'charged by this transporter')
 
-class IDescribable(ConnInterface):
+class IDescribable(NoneInterface):
     """It defines that a object can be described through get_description
     method.
     """
@@ -426,7 +426,7 @@ class IDescribable(ConnInterface):
         """ Returns a description that identifies the object """
 
 
-class IReversal(ConnInterface):
+class IReversal(NoneInterface):
     """A financial entry which support reversal operations"""
 
     def reverse_entry():
