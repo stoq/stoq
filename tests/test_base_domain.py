@@ -1,17 +1,16 @@
 import unittest
 
 from psycopg import ProgrammingError
-from zope.interface import implements
+from zope.interface import implements, Interface
 
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.lib.component import ConnInterface
 from stoqlib.lib.runtime import new_transaction
 
 from tests import base
 base # pyflakes
 
 
-class IDong(ConnInterface):
+class IDong(Interface):
     pass
 
 class Ding(Domain):
@@ -47,7 +46,7 @@ class FacetTests(unittest.TestCase):
 
     def testAdd(self):
         ding = Ding(connection=self.conn)
-        self.assertEqual(IDong(ding), None)
+        self.assertEqual(IDong(ding, None), None)
 
         dong = ding.addFacet(IDong, connection=self.conn)
         self.assertEqual(IDong(ding), dong)
@@ -66,7 +65,7 @@ class FacetTests(unittest.TestCase):
         self.assertEqual(ding.getFacets(), [facet])
 
     def testRegisterAndGetTypes(self):
-        class IDang(ConnInterface):
+        class IDang(Interface):
             pass
 
         class DingAdaptToDang(ModelAdapter):
