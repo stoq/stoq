@@ -31,6 +31,7 @@ from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
 from zope.interface import implements, implementedBy
+from zope.interface.interface import InterfaceClass
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.runtime import get_connection
@@ -47,7 +48,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.payment.base import (Payment, PaymentAdaptToInPayment,
                                          AbstractPaymentGroup)
 from stoqlib.domain.base import (Domain, InheritableModel,
-                                 InheritableModelAdapter, ConnMetaInterface)
+                                 InheritableModelAdapter)
 from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
                                        IBillPM, IFinancePM, ICardPM,
                                        ICreditProvider, IActive, IOutPayment,
@@ -359,7 +360,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
         return Payment.select(query, connection=conn).count()
 
     @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
-              PaymentMethodDetails, basestring, ConnMetaInterface,
+              PaymentMethodDetails, basestring, InterfaceClass,
               decimal.Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
@@ -608,7 +609,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         return (total_value / installments_number) * interest_rate
 
     @argcheck(AbstractPaymentGroup, int, datetime, int, int,
-              decimal.Decimal, decimal.Decimal, ConnMetaInterface)
+              decimal.Decimal, decimal.Decimal, InterfaceClass)
     def _setup_payments(self, payment_group, installments_number,
                         first_duedate, interval_type, intervals,
                         total_value, monthly_interest=None,
@@ -725,7 +726,7 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     #
 
     @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
-              PaymentMethodDetails, basestring, ConnMetaInterface,
+              PaymentMethodDetails, basestring, InterfaceClass,
               decimal.Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
