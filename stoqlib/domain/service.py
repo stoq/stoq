@@ -27,7 +27,7 @@
 import datetime
 
 from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, SQLObject,
-                       IntCol)
+                       IntCol, BLOBCol)
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
@@ -49,6 +49,8 @@ _ = stoqlib_gettext
 
 class Service(Domain):
     """Class responsible to store basic service informations."""
+    
+    image = BLOBCol(default='')
 
 
 class ServiceSellableItem(AbstractSellableItem):

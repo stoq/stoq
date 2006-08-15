@@ -41,6 +41,7 @@ from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.service import DeliveryItem
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
+from stoqlib.gui.slaves.imageslave import ImageSlave
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import get_price_format_str
 
@@ -141,6 +142,11 @@ class SellableEditor(BaseEditor):
                                         % _(u"This unit type requires "
                                             "weighing"))
         BaseEditor.__init__(self, conn, model)
+
+        # image slave for sellables
+        image_slave = ImageSlave(self.conn, self.model)
+        self.attach_slave("sellable_image_holder", image_slave)
+
         self._original_barcode = self._sellable.barcode
         self.setup_widgets()
 
