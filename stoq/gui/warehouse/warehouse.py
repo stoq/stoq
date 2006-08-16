@@ -33,7 +33,6 @@ from stoqlib.database import finish_transaction
 from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.message import warning
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
-from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
 from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
@@ -156,8 +155,7 @@ class WarehouseApp(SearchableAppWindow):
         product = Product.get(sellable_view.product_id,
                               connection=self.conn)
         storable = IStorable(product)
-        warehouse = sysparam(self.conn).CURRENT_WAREHOUSE
-        warehouse_branch = IBranch(warehouse.get_adapted())
+        warehouse_branch = get_current_branch(self.conn)
         if (not storable
             or not storable.get_full_balance(warehouse_branch)):
             warning(_(u"You must have at least one item "
