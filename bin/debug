@@ -45,7 +45,6 @@ parser = get_option_parser()
 config = StoqConfig()
 
 options, args = parser.parse_args(sys.argv)
-options.clean = False
 setup(config, options)
 
 from stoqlib.domain.base import *
@@ -59,9 +58,9 @@ from stoqlib.lib.interfaces import ICurrentUser
 
 conn = new_transaction()
 
-provide_utility(ICurrentUser, PersonAdaptToUser.select(
-    PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
-    connection=conn)[0])
+#provide_utility(ICurrentUser, PersonAdaptToUser.select(
+#    PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
+#    connection=conn)[0])
 
 names = []
 for table in get_table_types():
@@ -77,5 +76,8 @@ def get_person():
 
 if 'tables' in sys.argv:
     print "Available tables:", ', '.join(names)
-
+elif len(sys.argv) > 1:
+    stmt = sys.argv[1]
+    exec stmt
+    raise SystemExit
 code.interact(local=globals())
