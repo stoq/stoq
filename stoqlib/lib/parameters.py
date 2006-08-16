@@ -57,11 +57,6 @@ _parameter_info = dict(
     _(u'Main Company'),
     _(u'The main company which is the owner of all other branch companies')),
 
-    CURRENT_WAREHOUSE=ParameterDetails(
-    _(u'General'),
-    _(u'Current Warehouse'),
-    _(u'The company\'s warehouse')),
-
     DEFAULT_SALESPERSON_ROLE=ParameterDetails(
     _(u'Sales'),
     _(u'Default Salesperson Role'),
@@ -350,8 +345,6 @@ class ParameterAccess(ClassInittableObject):
                       u'service.ServiceAdaptToSellable'),
         ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
                       u'giftcertificate.GiftCertificateType'),
-        ParameterAttr('CURRENT_WAREHOUSE',
-                      u'person.PersonAdaptToCompany'),
         ]
 
     _cache = {}
@@ -481,7 +474,6 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_base_category()
         self.ensure_default_salesperson_role()
         self.ensure_main_company()
-        self.ensure_current_warehouse()
         self.ensure_payment_destination()
         self.ensure_payment_methods()
         self.ensure_delivery_service()
@@ -538,19 +530,6 @@ class ParameterAccess(ClassInittableObject):
         branch = person_obj.addFacet(IBranch, connection=self.conn)
         branch.manager = Person(connection=self.conn, name=u"Manager")
         self._set_schema(key, branch.id)
-
-    def ensure_current_warehouse(self):
-        from stoqlib.domain.person import Person
-        key = "CURRENT_WAREHOUSE"
-        table = Person.getAdapterClass(ICompany)
-        if self.get_parameter_by_field(key, table):
-            return
-        person_obj = Person(name=key, connection=self.conn)
-        # XXX See ensure_main_company comment: we have the same problem with
-        # cnpj here.
-        company = person_obj.addFacet(ICompany, cnpj=_('current_warehouse'),
-                                      connection=self.conn)
-        self._set_schema(key, company.id)
 
     def ensure_payment_destination(self):
         # Note that this method must always be called after

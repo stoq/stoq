@@ -30,8 +30,8 @@ from kiwi.datatypes import currency
 
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.interfaces import ISellable, IStorable, IBranch
+from stoqlib.lib.runtime import get_current_branch
+from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext
@@ -63,8 +63,7 @@ class ProductRetentionDialog(BaseEditor):
                         quantity=Decimal())
 
     def setup_widgets(self):
-        person = sysparam(self.conn).CURRENT_WAREHOUSE.get_adapted()
-        self.branch = IBranch(person)
+        self.branch = get_current_branch(self.conn)
         self.quantity.set_range(1,
                                 self.storable.get_full_balance(self.branch))
 

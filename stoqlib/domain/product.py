@@ -210,11 +210,10 @@ class ProductSellableItem(AbstractSellableItem):
         conn = self.get_connection()
         sparam = sysparam(conn)
         if not (branch and
-                branch.id == get_current_branch(conn).id or
-                branch.id == sparam.CURRENT_WAREHOUSE.id):
+                branch.id == get_current_branch(conn).id):
             msg = ("Stock still doesn't support sales for "
                    "branch companies different than the "
-                   "current one or the warehouse")
+                   "current one")
             raise SellError(msg)
 
         if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
@@ -472,7 +471,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def get_full_balance_for_current_branch(self):
         conn = self.get_connection()
-        branch = IBranch(sysparam(conn).CURRENT_WAREHOUSE.get_adapted())
+        branch = get_current_branch(conn)
         return self.get_full_balance(branch)
 
     #

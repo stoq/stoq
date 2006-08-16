@@ -685,15 +685,15 @@ class TestBranch(BaseDomainTest):
         person.addFacet(ICompany, connection=self.conn)
         branch = person.addFacet(IBranch, connection=self.conn,
                                  manager=person)
-        self.assertEquals(branch.identifier, 35)
-        self.assertEquals(branch.get_description(), '0035 Winston')
+        self.assertEquals(branch.identifier, 3)
+        self.assertEquals(branch.get_description(), '0003 Winston')
 
     def test_get_active_branches(self):
         person = get_person(self.conn)
         person.addFacet(ICompany, connection=self.conn)
         count = PersonAdaptToBranch.get_active_branches(self.conn).count()
         branch = person.addFacet(IBranch, connection=self.conn,
-                                 manager=person)
+                                 manager=person, is_active=True)
         assert branch.get_active_branches(self.conn).count() == count + 1
 
 
