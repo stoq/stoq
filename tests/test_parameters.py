@@ -99,15 +99,6 @@ class TestParameter(unittest.TestCase):
         adapted = param.get_adapted()
         assert isinstance(adapted, Person)
 
-    def test_CurrentWarehouse(self):
-        warehouse = self.sparam.CURRENT_WAREHOUSE
-        companyTable = Person.getAdapterClass(ICompany)
-        assert isinstance(warehouse, companyTable)
-        person = warehouse.get_adapted()
-        assert isinstance(person, Person)
-        company = ICompany(person)
-        assert isinstance(company, companyTable)
-
     def test_DefaultEmployeeRole(self):
         employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
         assert isinstance(employee_role, EmployeeRole)
