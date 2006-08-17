@@ -315,6 +315,14 @@ class ColumnTableBuilder(ReportTableBuilder):
     # AbstractTableBuilder hooks
     #
 
+    # XXX: AbstractTableBuilder's add_row() overwrite to able of to
+    # align properly the extra row's columns.
+    def add_row(self, data):
+        extra_row = [Paragraph(str(data), style="TableCell",
+                               align=col.get_translated_alignment())
+                           for data, col in zip(data, self.columns)]
+        self.extra_rows.append(extra_row)
+
     def update_style(self):
         """ Apply the column table style. """
         ReportTableBuilder.update_style(self)
