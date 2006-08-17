@@ -27,6 +27,7 @@
 import re
 import string
 
+import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.python import Settable
 from kiwi.decorators import signal_block
@@ -39,7 +40,7 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
 from stoqdrivers.constants import describe_constant
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.runtime import get_connection, get_current_station
 from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   METHOD_MULTIPLE, UNKNOWN_CHARACTER)
@@ -301,6 +302,14 @@ class DeviceSettingsEditor(BaseEditor):
 
 
     def validate_confirm(self):
+        if (self.model.is_a_fiscal_printer() and
+            not self.model.is_custom_pm_configured()):
+            if not yesno(_(u"Some payment methods are not configured. It "
+                           "will not be possible to emit a coupon for "
+                           "sales with these payment methods, are you "
+                           "sure you want to continue?"), gtk.RESPONSE_NO,
+                         _(u"_Continue"), _(u"Configure _Methods")):
+                return False
         if not self.edit_mode:
             conn = get_connection()
             basequery = self._get_existing_printer_basequery()
