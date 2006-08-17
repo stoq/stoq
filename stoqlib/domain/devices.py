@@ -127,6 +127,20 @@ class DeviceSettings(Domain):
                                              connection=self.get_connection())
         Domain._create(self, id, **kw)
 
+    def is_custom_pm_configured(self):
+        """
+        @returns: True if all the custom payment methods is properly configured,
+        False otherwise.
+        """
+        if not self.pm_constants:
+            return False
+        for method in get_all_methods_dict():
+            if method in (METHOD_MONEY, METHOD_CHECK, METHOD_MULTIPLE):
+                continue
+            if self.pm_constants.get_value(method) is None:
+                return False
+        return True
+
     def get_printer_description(self):
         return "%s %s" % (self.brand.capitalize(), self.model)
 
@@ -160,6 +174,9 @@ class DeviceSettings(Domain):
     def is_a_printer(self):
         return self.type in (DeviceSettings.FISCAL_PRINTER_DEVICE,
                              DeviceSettings.CHEQUE_PRINTER_DEVICE)
+
+    def is_a_fiscal_printer(self):
+        return self.type == DeviceSettings.FISCAL_PRINTER_DEVICE
 
     def is_valid(self):
         return (None not in (self.model, self.device, self.brand, self.station)

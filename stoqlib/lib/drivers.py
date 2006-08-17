@@ -37,11 +37,12 @@ from stoqdrivers.exceptions import (CouponOpenError, DriverError,
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, info, yesno
-from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE, get_all_methods_dict
+from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
+                                  get_method_names)
 from stoqlib.lib.runtime import (new_transaction, get_current_branch,
                                  get_current_station)
 from stoqlib.database import finish_transaction
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
@@ -161,12 +162,18 @@ def create_virtual_printer_for_current_station():
     if get_fiscal_printer_settings_by_station(conn, station):
         finish_transaction(conn)
         return
-    DeviceSettings(station=station,
-                   device=DeviceSettings.DEVICE_SERIAL1,
-                   brand='virtual',
-                   model='Simple',
-                   type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                   connection=conn)
+    settings = DeviceSettings(station=station,
+                              device=DeviceSettings.DEVICE_SERIAL1,
+                              brand='virtual',
+                              model='Simple',
+                              type=DeviceSettings.FISCAL_PRINTER_DEVICE,
+                              connection=conn)
+    # Setting default values for payment method constants, to avoid
+    # problems when emitting a coupon with the virtual printer.
+    new_constants = {}
+    for method in settings.pm_constants.get_items():
+        new_constants[method] = '00'
+    settings.pm_constants.set_constants(new_constants)
     finish_transaction(conn, 1)
 
 def check_virtual_printer_for_current_station(conn):
@@ -476,10 +483,15 @@ class FiscalCoupon:
                                  " the payment on the coupon" % method_iface)
             custom_pm = pm_constants.get_value(method_id)
             if not custom_pm:
-                description = settings.get_printer_description()
-                raise StoqlibError(
-                    "The custom payment method associated with the constant %d "
-                    "is not configured for %s." % (method_id, description))
+                method_name = get_method_names()[method_id]
+                if yesno(_(u"The payment method used in this sale (%s) is not "
+                           "configured in the fiscal printer." % method_name),
+                         gtk.RESPONSE_OK, _(u"Use Money as method"),
+                         _(u"Cancel the checkout")):
+                    self.printer.add_payment(MONEY_PM, payment.base_value)
+                    continue
+                else:
+                    return False
             self.printer.add_payment(CUSTOM_PM, payment.base_value,
                                      custom_pm=custom_pm)
 
