@@ -319,7 +319,8 @@ class ColumnTableBuilder(ReportTableBuilder):
     # align properly the extra row's columns.
     def add_row(self, data):
         extra_row = [Paragraph(str(data), style="TableCell",
-                               align=col.get_translated_alignment())
+                               align=col.get_translated_alignment(),
+                               ellipsize=col.truncate)
                            for data, col in zip(data, self.columns)]
         self.extra_rows.append(extra_row)
 
