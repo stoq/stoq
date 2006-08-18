@@ -90,6 +90,7 @@ class AppWindow(BaseAppWindow):
         self._klist = getattr(self, self.klist_name)
         self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
+        self._create_user_menu()
         self.setup_focus()
 
     def _store_cookie(self, *args):
@@ -148,6 +149,37 @@ class AppWindow(BaseAppWindow):
 
         about.run()
         about.destroy()
+
+    def _create_user_menu(self):
+        ui_string = """<ui>
+          <menubar name="Menubar">
+            <menu action="UserMenu">
+              <menuitem action="StoreCookie"/>
+              <menuitem action="ClearCookie"/>
+              <separator/>
+              <menuitem action="ChangeUser"/>
+            </menu>
+          </menubar>
+        </ui>"""
+        actions = [
+            ('UserMenu', None, _('_User')),
+            ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
+             _('Store a cookie'), self.on_StoreCookie__activate),
+            ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
+             _('Clear the cookie'), self.on_ClearCookie__activate),
+            ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
+             _('Change user'), self.on_ChangeUser__activate),
+            ]
+        ag = gtk.ActionGroup('UsersMenuActions')
+        ag.add_actions(actions)
+        self._ui = gtk.UIManager()
+        self._ui.insert_action_group(ag, 0)
+        self._ui.add_ui_from_string(ui_string)
+        window = self.get_toplevel()
+        window.add_accel_group(self._ui.get_accel_group())
+        menubar = self._ui.get_widget('/Menubar')
+        self.menu_hbox.pack_start(menubar, expand=False)
+        menubar.show_all()
 
     def print_report(self, report_class, *args, **kwargs):
         print_report(report_class, *args, **kwargs)

@@ -35,6 +35,7 @@
                         <property name="label" translatable="yes">Clients</property>
                         <property name="stock_id">stoq-clients</property>
                         <signal handler="_on_clients_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;p</property>
                     </widget>
                 </child>
                 <child>
@@ -97,7 +98,7 @@
                         <property name="name">ProductSearch</property>
                         <property name="label" translatable="yes">Products...</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;w</property>
+                        <property name="accelerator">&lt;Control&gt;j</property>
                     </widget>
                 </child>
                 <child>
@@ -106,6 +107,7 @@
                         <property name="label" translatable="yes">Products</property>
                         <property name="stock_id">stoq-products</property>
                         <signal handler="_on_products_action__clicked" name="activate"/>
+                        <property name="accelerator">&lt;Control&gt;d</property>
                     </widget>
                 </child>
                 <child>
@@ -141,7 +143,7 @@
                         <property name="name">ServiceSearch</property>
                         <property name="label" translatable="yes">Services...</property>
                         <signal handler="_on_services_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;s</property>
+                        <property name="accelerator">&lt;Control&gt;i</property>
                     </widget>
                 </child>
                 <child>
@@ -203,6 +205,7 @@
                     <widget class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
             </widget>
@@ -211,7 +214,7 @@
 <menubar action="menubar" name="menubar">
   
   
-<menu action="TillMenu" name="TillMenu"><menuitem action="print_invoice" name="print_invoice"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+<menu action="TillMenu" name="TillMenu"><menuitem action="print_invoice" name="print_invoice"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="SearchMenu" name="SearchMenu"><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="GiftCertificate" name="GiftCertificate"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
@@ -230,8 +233,20 @@
             <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
                 <child>
-                    <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                    <widget class="GtkHBox" id="menu_hbox">
                         <property name="visible">True</property>
+                        <child>
+                            <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
