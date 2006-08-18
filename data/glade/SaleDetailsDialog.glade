@@ -98,8 +98,8 @@
                             <packing>
                                 <property name="left_attach">2</property>
                                 <property name="right_attach">3</property>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -135,8 +135,8 @@
                             <packing>
                                 <property name="left_attach">3</property>
                                 <property name="right_attach">4</property>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -174,8 +174,8 @@
                             <packing>
                                 <property name="left_attach">4</property>
                                 <property name="right_attach">5</property>
-                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                <property name="x_options"></property>
+                                <property name="y_options"></property>
                             </packing>
                         </child>
                         <child>
@@ -265,8 +265,8 @@
                                         <child>
                                             <placeholder/>
                                             <packing>
-                                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -287,7 +287,7 @@
                                             <packing>
                                                 <property name="left_attach">1</property>
                                                 <property name="right_attach">2</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -311,8 +311,8 @@
                                             <packing>
                                                 <property name="left_attach">2</property>
                                                 <property name="right_attach">3</property>
-                                                <property name="x_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -334,7 +334,7 @@
                                             <packing>
                                                 <property name="left_attach">3</property>
                                                 <property name="right_attach">4</property>
-                                                <property name="y_options">&lt;flags 0 of type GtkAttachOptions&gt;</property>
+                                                <property name="y_options"></property>
                                             </packing>
                                         </child>
                                         <child>
@@ -452,12 +452,20 @@
                                 <property name="spacing">6</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="ProxyTextView" id="notes">
-                                        <property name="data_type">unicode</property>
-                                        <property name="editable">False</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">notes</property>
+                                    <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                                        <property name="hscrollbar_policy">automatic</property>
+                                        <property name="shadow_type">out</property>
                                         <property name="visible">True</property>
+                                        <property name="vscrollbar_policy">automatic</property>
+                                        <child>
+                                            <widget class="ProxyTextView" id="notes">
+                                                <property name="data_type">unicode</property>
+                                                <property name="editable">False</property>
+                                                <property name="is_focus">True</property>
+                                                <property name="model_attribute">notes</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                        </child>
                                     </widget>
                                 </child>
                             </widget>
