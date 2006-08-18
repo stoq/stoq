@@ -22,7 +22,7 @@
                 <child>
                     <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
-                        <property name="label" translatable="yes">Change User...</property>
+                        <property name="label" translatable="yes">C_hange User...</property>
                         <property name="stock_id">gtk-refresh</property>
                         <property name="accelerator">&lt;Control&gt;h</property>
                     </widget>
@@ -30,7 +30,7 @@
                 <child>
                     <widget class="GtkAction" id="ClearCookie">
                         <property name="name">ClearCookie</property>
-                        <property name="label" translatable="yes">Clear Cookie</property>
+                        <property name="label" translatable="yes">Cl_ear Cookie</property>
                         <property name="stock_id">gtk-clear</property>
                         <signal handler="_clear_cookie" name="activate"/>
                         <property name="accelerator">&lt;Control&gt;e</property>
@@ -98,6 +98,13 @@
                         <property name="name">GiftCertificateSearch</property>
                         <property name="label" translatable="yes">Gift Certificates...</property>
                         <property name="accelerator">&lt;Control&gt;g</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="New">
+                        <property name="name">New</property>
+                        <property name="tooltip" translatable="yes">Create a new file</property>
+                        <property name="stock_id">gtk-new</property>
                     </widget>
                 </child>
                 <child>
@@ -204,7 +211,7 @@
                 <child>
                     <widget class="GtkAction" id="StoreCookie">
                         <property name="name">StoreCookie</property>
-                        <property name="label" translatable="yes">Store Cookie</property>
+                        <property name="label" translatable="yes">Store Coo_kie</property>
                         <property name="stock_id">gtk-save</property>
                         <property name="accelerator">&lt;Control&gt;k</property>
                     </widget>
@@ -238,12 +245,13 @@
                     <widget class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar"><menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><menuitem action="EditClient" name="EditClient"/><menuitem action="ClientDetails" name="ClientDetails"/><separator name="sep"/><menuitem action="NewDelivery" name="NewDelivery"/><menuitem action="OrderCheckout" name="OrderCheckout"/><separator name="sep10"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
+<menubar action="menubar" name="menubar"><menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><menuitem action="EditClient" name="EditClient"/><menuitem action="ClientDetails" name="ClientDetails"/><separator name="sep"/><menuitem action="NewDelivery" name="NewDelivery"/><menuitem action="OrderCheckout" name="OrderCheckout"/><separator name="sep10"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/></menu><menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="pos">
@@ -257,8 +265,20 @@
             <widget class="GtkVBox" id="main_vbox">
                 <property name="visible">True</property>
                 <child>
-                    <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                    <widget class="GtkHBox" id="menu_hbox">
                         <property name="visible">True</property>
+                        <child>
+                            <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>

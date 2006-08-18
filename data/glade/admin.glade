@@ -236,6 +236,7 @@
                     <widget class="GtkAction" id="users_menu">
                         <property name="name">users_menu</property>
                         <property name="label" translatable="yes">_User</property>
+                        <property name="accelerator">&lt;Control&gt;u</property>
                     </widget>
                 </child>
             </widget>
@@ -244,7 +245,7 @@
 <menubar action="menubar" name="menubar">
 
 
-<menu action="SalesMenu" name="SalesMenu"><menuitem action="NewUser" name="NewUser"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="CfopSearch" name="CfopSearch"/><menuitem action="FiscalBook" name="FiscalBook"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/><menuitem action="BranchStationSearch" name="BranchStationSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="users_menu" name="users_menu"><menuitem action="StoreCookie" name="StoreCookie"/><menuitem action="ClearCookie" name="ClearCookie"/><separator name="sep3"/><menuitem action="ChangeUser" name="ChangeUser"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="SalesMenu" name="SalesMenu"><menuitem action="NewUser" name="NewUser"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="EmployeeRole" name="EmployeeRole"/><menuitem action="EmployeeSearch" name="EmployeeSearch"/><menuitem action="CfopSearch" name="CfopSearch"/><menuitem action="FiscalBook" name="FiscalBook"/><menuitem action="UserProfile" name="UserProfile"/><menuitem action="BranchSearch" name="BranchSearch"/><menuitem action="BranchStationSearch" name="BranchStationSearch"/></menu><menu action="settings_menu" name="settings_menu"><menuitem action="devices_setup" name="devices_setup"/><menuitem action="PaymentMethod" name="PaymentMethod"/><menuitem action="system_parameters" name="system_parameters"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="admin">
@@ -258,8 +259,20 @@
             <widget class="GtkVBox" id="vbox1">
                 <property name="visible">True</property>
                 <child>
-                    <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                    <widget class="GtkHBox" id="menu_hbox">
                         <property name="visible">True</property>
+                        <child>
+                            <widget constructor="initial-state" class="GtkMenuBar" id="menubar">
+                                <property name="visible">True</property>
+                            </widget>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
