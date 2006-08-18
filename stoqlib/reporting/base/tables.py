@@ -49,7 +49,7 @@ HIGHLIGHT_NEVER = 4
 class Table(RTable):
     """ Extension of Reportlab Table """
     def __init__(self, data, colWidths=None, rowHeights=None, style=None,
-                 repeatRows=0, repeatCols=0, splitByRow=True, ident=None,
+                 repeatRows=0, repeatCols=0, splitByRow=True,
                  emptyTableAction=None, hAlign=None, vAlign=None,
                  width=None, align=CENTER):
         """ This class extend Reportlab table supplying extra checks on its
@@ -57,9 +57,11 @@ class Table(RTable):
         """
         hAlign = hAlign or align
         self._width = width
-        RTable.__init__(self, data, colWidths, rowHeights, style,
-                        repeatRows, repeatCols, splitByRow,
-                        emptyTableAction, ident, vAlign, hAlign)
+        RTable.__init__(self, data, colWidths, rowHeights, style, repeatRows,
+                        repeatCols, splitByRow, emptyTableAction)
+        if vAlign:
+            self.vAlign = vAlign
+        self.hAlign = hAlign
 
     def wrap(self, avail_width, avail_height):
         """ Calculate the space required by the table. Internal use by
