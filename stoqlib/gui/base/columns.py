@@ -37,13 +37,13 @@ class FacetColumn(Column):
 
     def get_attribute(self, instance, name, default=None):
         if not isinstance(instance, Adapter):
-            obj = self._iface(instance)
+            facet = self._iface(instance)
         else:
             original = instance.get_adapted()
-            obj = self._iface(original)
-        if not obj:
+            facet = self._iface(original)
+        if not facet:
             return
-        return kgetattr(obj, name, default)
+        return kgetattr(facet, name, default)
 
     def get_iface(self):
         return self._iface
