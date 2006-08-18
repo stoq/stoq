@@ -27,7 +27,6 @@
 import gtk
 from zope.interface import implements
 from sqlobject.sqlbuilder import AND
-from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
@@ -65,10 +64,7 @@ def _get_fiscalprinter(conn):
     station = get_current_station(conn)
     setting = get_fiscal_printer_settings_by_station(conn, station)
     if setting and setting.is_active:
-        _printer = FiscalPrinter(brand=setting.brand,
-                                 model=setting.model,
-                                 device=setting.get_port_name(),
-                                 consts=setting.constants)
+        _printer = setting.get_interface()
     else:
         warning(_(u"There is no fiscal printer"),
                _(u"There is no fiscal printer configured for this "
