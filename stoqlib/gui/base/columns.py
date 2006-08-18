@@ -31,23 +31,22 @@ from stoqlib.lib.component import Adapter
 
 
 class FacetColumn(Column):
-    def __init__(self, facet, *args, **kwargs):
-        self._facet = facet
+    def __init__(self, iface, *args, **kwargs):
+        self._iface = iface
         Column.__init__(self, *args, **kwargs)
 
     def get_attribute(self, instance, name, default=None):
-        conn = instance.get_connection()
         if not isinstance(instance, Adapter):
-            obj = self._facet(instance)
+            obj = self._iface(instance)
         else:
             original = instance.get_adapted()
-            obj = self._facet(original)
+            obj = self._iface(original)
         if not obj:
             return
         return kgetattr(obj, name, default)
 
-    def get_facet(self):
-        return self._facet
+    def get_iface(self):
+        return self._iface
 
 class ForeignKeyColumn(Column):
     """
