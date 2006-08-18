@@ -45,7 +45,7 @@ class SaleOrderReport(BaseStoqReport):
     def __init__(self, filename, sale_order):
         self.order = sale_order
         BaseStoqReport.__init__(self, filename, SaleOrderReport.report_name,
-                                do_footer=True)
+                                do_footer=True, landscape=True)
         self._identify_client()
         self.add_blank_space()
         self._setup_items_table()
@@ -67,7 +67,7 @@ class SaleOrderReport(BaseStoqReport):
                     truncate=True, width=80),
                 OTC(_("Item"),
                     lambda obj: obj.sellable.base_sellable_info.description,
-                    truncate=True, width=130),
+                    truncate=True, expand=True),
                 OTC(_("Quantity"), lambda obj: obj.get_quantity_unit_string(),
                     width=70, align=RIGHT),
                 OTC(_("Price"), lambda obj: get_formatted_price(obj.price),
