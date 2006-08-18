@@ -100,13 +100,14 @@ STYLE_SHEET.add(ParagraphStyle(
     "TableCell",
     parent=STYLE_SHEET["Normal"],
     alignment=TA_LEFT,
-    leftIndent=2,
-    rightIndent=2,))
+    leftIndent=0,
+    rightIndent=0,))
 
 STYLE_SHEET.add(ParagraphStyle(
     "TableHeader",
+    parent=STYLE_SHEET["TableCell"],
     fontName="Vera-B",
-    parent=STYLE_SHEET["TableCell"],))
+    leading=13,))
 
 # This is a total padding preview used to calculate the expanded width for the
 # columns:
