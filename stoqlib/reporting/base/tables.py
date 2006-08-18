@@ -28,6 +28,7 @@ import gtk
 from reportlab.platypus import TableStyle, LongTable as RTable
 from reportlab.lib.enums import TA_LEFT, TA_RIGHT, TA_CENTER
 from reportlab.lib import colors
+from kiwi.log import Logger
 
 from stoqlib.reporting.base.flowables import (LEFT, CENTER, RIGHT,
                                               Paragraph)
@@ -39,6 +40,8 @@ from stoqlib.reporting.base.default_style import (TABLE_HEADER_FONT,
                                                   TABLE_LINE,
                                                   COL_PADDING,
                                                   SOFT_LINE_COLOR)
+
+log = Logger("stoqlib.reporting")
 
 # Highlight rules:
 HIGHLIGHT_ODD = 1
@@ -67,15 +70,19 @@ class Table(RTable):
         """ Calculate the space required by the table. Internal use by
         Reportlab.
         """
-        # If Reportlab doesn't try to calculate the table width before drawning
-        # it out of the sheet, we do it for Reportlab.
         total_width = sum([w or 0 for w in self._colWidths if w != "*"])
+        # Resize columns if needed
         if total_width > avail_width:
-            # We don't use %r on the error message because reportlab dumps all
-            # table data instead of the representation. %s the same.
-            msg = 'Width of table with columns %s exceeded canvas available ' \
-                  'width in %.2f points.'
-            raise RuntimeError, msg % (self._colWidths, total_width - avail_width)
+            log.warning("The column width (%f) is greater than the available "
+                        "space (%r), diff = %f" % (total_width, avail_width,
+                                                   total_width - avail_width))
+            percentages = [(100.0 * w) / total_width for w in self._colWidths]
+            diff = float(total_width - avail_width)
+            new_col_widths = []
+            for percent, width in zip(percentages, self._colWidths):
+                new_width = width - ((diff * percent) / 100.0)
+                new_col_widths.append(new_width)
+            self._argW = self._colWidths = new_col_widths
         return RTable.wrap(self, self._width or avail_width, avail_height)
 
     def identity(self):
