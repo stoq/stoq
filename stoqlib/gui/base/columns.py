@@ -38,10 +38,10 @@ class FacetColumn(Column):
     def get_attribute(self, instance, name, default=None):
         conn = instance.get_connection()
         if not isinstance(instance, Adapter):
-            obj = self._facet(instance, connection=conn)
+            obj = self._facet(instance)
         else:
             original = instance.get_adapted()
-            obj = self._facet(original, connection=conn)
+            obj = self._facet(original)
         if not obj:
             return
         return kgetattr(obj, name, default)
