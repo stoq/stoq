@@ -325,8 +325,8 @@ class SearchBar(SlaveDelegate):
                 if issubclass(self.table_type, Adapter):
                     table_type = self.table_type
                 else:
-                    facet = k_column.get_facet()
-                    table_type = self.table_type.getAdapterClass(facet)
+                    iface = k_column.get_iface()
+                    table_type = self.table_type.getAdapterClass(iface)
             elif isinstance(k_column, ForeignKeyColumn):
                 table_type = k_column._table
             elif isinstance(k_column, Column):
