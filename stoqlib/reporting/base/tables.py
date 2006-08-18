@@ -384,9 +384,11 @@ class ObjectTableBuilder(ColumnTableBuilder):
 
     def _get_header(self):
         """ Return the column names representing the table header. """
-        header = [col.name for col in self.columns]
-        # Avoid passing a list of all empty headers
-        if reduce(lambda h1, h2: h1 or h2, header):
+        col_names = [col.name for col in self.columns]
+        if not '' in col_names:
+            header = [Paragraph(col.name, style="TableHeader",
+                                align=col.get_translated_alignment())
+                          for col in self.columns]
             return header
 
         # If we set a virtual column in a table without header, the first line
