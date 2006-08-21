@@ -122,32 +122,6 @@ dbusername=%(DBUSERNAME)s"""
                     "config file does not have section: %s" % section)
         return True
 
-    def _store_password(self, password):
-        configdir = self.get_config_directory()
-        datafile = os.path.join(configdir, StoqConfig.datafile)
-        if not os.path.exists(datafile):
-            if not os.path.exists(configdir):
-                try:
-                    os.makedirs(configdir)
-                    os.chmod(configdir, 0700)
-                except OSError, e:
-                    if e.errno == 13:
-                        raise FilePermissionError(
-                            "Could not " % configdir)
-                    raise
-
-        try:
-            fd = open(datafile, "w")
-        except OSError, e:
-            if e.errno == 13:
-                raise FilePermissionError("%s is not writable" % datafile)
-            raise
-
-        # obfuscate password to avoid it being easily identified when
-        # editing file on screen. this is *NOT* encryption!
-        fd.write(binascii.b2a_base64(password))
-        fd.close()
-
     def _get_password(self, filename):
         if not os.path.exists(filename):
             return
@@ -241,7 +215,7 @@ dbusername=%(DBUSERNAME)s"""
     def install_default(self, config_data):
         password = config_data.password
 
-        self._store_password(password)
+        self.store_password(password)
         configdir = self.get_config_directory()
         filename = os.path.join(configdir, StoqConfig.domain + '.conf')
         fd = open(filename, 'w')
@@ -268,6 +242,31 @@ dbusername=%(DBUSERNAME)s"""
         conn_uri = self.get_connection_uri()
         check_database_connection(conn_uri)
 
+    def store_password(self, password):
+        configdir = self.get_config_directory()
+        datafile = os.path.join(configdir, StoqConfig.datafile)
+        if not os.path.exists(datafile):
+            if not os.path.exists(configdir):
+                try:
+                    os.makedirs(configdir)
+                    os.chmod(configdir, 0700)
+                except OSError, e:
+                    if e.errno == 13:
+                        raise FilePermissionError(
+                            "Could not " % configdir)
+                    raise
+
+        try:
+            fd = open(datafile, "w")
+        except OSError, e:
+            if e.errno == 13:
+                raise FilePermissionError("%s is not writable" % datafile)
+            raise
+
+        # obfuscate password to avoid it being easily identified when
+        # editing file on screen. this is *NOT* encryption!
+        fd.write(binascii.b2a_base64(password))
+        fd.close()
 
     #
     # Accessors
@@ -318,7 +317,7 @@ dbusername=%(DBUSERNAME)s"""
         if options.username:
             self._config.set('Database', 'dbusername', options.username)
         if options.password:
-            self._store_password(options.password)
+            self.store_password(options.password)
 
 
 
