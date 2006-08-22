@@ -34,6 +34,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
+from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM
+from stoqlib.domain.payment.base import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.search.categorysearch import (BaseSellableCatSearch,
@@ -42,8 +44,9 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.reporting.purchase import PurchaseReport
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX, METHOD_MONEY
 from stoqlib.lib.validators import format_quantity
+from stoqlib.lib.parameters import sysparam
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -113,6 +116,32 @@ class PurchaseApp(SearchableAppWindow):
         self._open_order(order, edit_mode=True)
         self.searchbar.search_items()
 
+    def _confirm_order(self, order):
+        # FIXME: HACK to avoid creating till entry when payment method
+        # is money.  So, directly from PurchaseOrder's confirm_order()
+        # implementation, we have:
+        if order.status != PurchaseOrder.ORDER_PENDING:
+            raise ValueError('Invalid order status, it should be '
+                             'ORDER_PENDING, got %s'
+                             % PurchaseOrder.get_status_str(order.status))
+        if sysparam(self.conn).USE_PURCHASE_PREVIEW_PAYMENTS:
+            group = IPaymentGroup(order)
+            if not group:
+                raise ValueError('You must have a IPaymentGroup facet '
+                                 'defined at this point')
+            if group.default_method == METHOD_MONEY:
+                destination = sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
+                base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
+                method = IMoneyPM(base_method)
+                first_due_date = order.expected_receival_date
+                Payment(value=order.get_purchase_total(), method=method,
+                        due_date=first_due_date, group=group, till=None,
+                        destination=destination, connection=self.conn)
+            else:
+                group.create_preview_outpayments()
+        order.status = PurchaseOrder.ORDER_CONFIRMED
+        order.confirm_date = datetime.datetime.now()
+
     def _run_details_dialog(self, *args):
         orders = self.orders.get_selected_rows()
         qty = len(orders)
@@ -149,7 +178,7 @@ class PurchaseApp(SearchableAppWindow):
             return
         for item in valid_orders:
             order = PurchaseOrder.get(item.id, connection=self.conn)
-            order.confirm_order()
+            self._confirm_order(order)
         self.conn.commit()
         self.searchbar.search_items()
 
