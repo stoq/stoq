@@ -82,8 +82,8 @@ class AppWindow(BaseAppWindow):
     def __init__(self, app):
         self.conn = new_transaction()
         BaseAppWindow.__init__(self, app)
-        user_menu_label = get_current_user(self.conn).username.capitalize()
-        self.users_menu.set_property('label', user_menu_label)
+        self.user_menu_label = get_current_user(self.conn
+                                    ).username.capitalize()
         if not self.app_name:
             raise ValueError('Child classes must define an app_name '
                              'attribute')
@@ -162,7 +162,7 @@ class AppWindow(BaseAppWindow):
           </menubar>
         </ui>"""
         actions = [
-            ('UserMenu', None, _('_User')),
+            ('UserMenu', None, self.user_menu_label),
             ('StoreCookie', gtk.STOCK_SAVE, _('_Store'), '<control>k',
              _('Store a cookie'), self.on_StoreCookie__activate),
             ('ClearCookie',     gtk.STOCK_CLEAR, _('_Clear'), '<control>e',
