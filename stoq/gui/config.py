@@ -270,8 +270,9 @@ class DatabaseSettingsStep(WizardEditorStep):
         has_installed_db = check_installed_database()
         # Initialize database connections and create system data if the
         # database is empty
-        setup(self.wizard.config, stoq_user_password=password,
-              register_station=False)
+        setup(self.wizard.config, register_station=False)
+        if password:
+            self.wizard.config.store_password(password)
 
         existing_conn = self.wizard.get_connection()
         if existing_conn:
