@@ -33,6 +33,7 @@ from stoqdrivers.devices.interfaces import IDriverConstants
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
+from stoqdrivers.devices.serialbase import VirtualPort, SerialPort
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (get_all_methods_dict, METHOD_MONEY,
@@ -127,6 +128,10 @@ class DeviceSettings(Domain):
                                              connection=self.get_connection())
         Domain._create(self, id, **kw)
 
+    def _is_a_virtual_printer(self):
+        return (self.is_a_printer() and self.brand == "virtual" and
+                self.model == "Simple")
+
     def is_custom_pm_configured(self):
         """
         @returns: True if all the custom payment methods is properly configured,
@@ -147,6 +152,7 @@ class DeviceSettings(Domain):
     def get_device_description(self, device=None):
         return DeviceSettings.device_descriptions[device or self.device]
 
+    # TODO: rename to get_device_name
     def get_port_name(self, device=None):
         return DeviceSettings.port_names[device or self.device]
 
@@ -158,12 +164,15 @@ class DeviceSettings(Domain):
         """ Based on the column values instantiate the stoqdrivers interface
         for the device itself.
         """
+        if self._is_a_virtual_printer():
+            port = VirtualPort()
+        else:
+            port = SerialPort(device=self.get_port_name())
+
         if self.type == DeviceSettings.FISCAL_PRINTER_DEVICE:
-            return FiscalPrinter(brand=self.brand, model=self.model,
-                                 device=self.get_port_name())
+            return FiscalPrinter(brand=self.brand, model=self.model, port=port)
         elif self.type == DeviceSettings.CHEQUE_PRINTER_DEVICE:
-            return ChequePrinter(brand=self.brand, model=self.model,
-                                 device=self.get_port_name())
+            return ChequePrinter(brand=self.brand, model=self.model, port=port)
         elif self.type == DeviceSettings.SCALE_DEVICE:
             return Scale(brand=self.brand, model=self.model,
                          device=self.get_port_name())
