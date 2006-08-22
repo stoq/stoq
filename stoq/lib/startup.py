@@ -63,8 +63,7 @@ def set_branch_by_stationid(conn):
     provide_utility(ICurrentBranchStation, station)
     provide_utility(ICurrentBranch, station.branch)
 
-def setup(config, options=None, register_station=True, check_schema=True,
-          stoq_user_password=None):
+def setup(config, options=None, register_station=True, check_schema=True):
     """
     Loads the configuration from arguments and configuration file.
 
@@ -88,8 +87,6 @@ def setup(config, options=None, register_station=True, check_schema=True,
 
         config.set_from_options(options)
 
-    if stoq_user_password is not None:
-        config.store_password(stoq_user_password)
     register_config(config)
 
     from stoq.lib.applist import ApplicationDescriptions
