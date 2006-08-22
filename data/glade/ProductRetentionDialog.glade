@@ -9,20 +9,36 @@
                 <property name="border_width">6</property>
                 <property name="visible">True</property>
                 <child>
-                    <widget class="GtkHBox" id="hbox1">
+                    <widget class="GtkTable" id="table1">
                         <property name="border_width">6</property>
+                        <property name="n_columns">2</property>
+                        <property name="n_rows">2</property>
+                        <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkLabel" id="label1">
                                 <property name="justify">right</property>
-                                <property name="label" context="yes" translatable="yes">Product: </property>
+                                <property name="label" context="yes" translatable="yes">Product:</property>
                                 <property name="visible">True</property>
-                                <property name="width_chars">2</property>
-                                <property name="xalign">0.0</property>
-                                <property name="xpad">36</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="expand">False</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label2">
+                                <property name="justify">right</property>
+                                <property name="label" context="yes" translatable="yes">Main Supplier:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="bottom_attach">2</property>
+                                <property name="top_attach">1</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
                             </packing>
                         </child>
                         <child>
@@ -30,30 +46,12 @@
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">product_description</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <property name="xalign">0.050000001</property>
                                 <property name="yalign">0.0</property>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="GtkHBox" id="hbox2">
-                        <property name="border_width">6</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkLabel" id="label2">
-                                <property name="label" context="yes" translatable="yes">Main Supplier: </property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
                             </packing>
                         </child>
                         <child>
@@ -61,16 +59,18 @@
                                 <property name="data_type">unicode</property>
                                 <property name="model_attribute">supplier</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <property name="xalign">0.050000001</property>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
+                                <property name="bottom_attach">2</property>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="top_attach">1</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
@@ -106,9 +106,9 @@
                         </child>
                         <child>
                             <widget class="GtkLabel" id="label3">
-                                <property name="label" context="yes" translatable="yes">      Available: </property>
+                                <property name="label" context="yes" translatable="yes">Available:</property>
                                 <property name="visible">True</property>
-                                <property name="xalign">0.0</property>
+                                <property name="xpad">3</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -129,7 +129,7 @@
                     </widget>
                     <packing>
                         <property name="expand">False</property>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
                 <child>
@@ -169,7 +169,7 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>

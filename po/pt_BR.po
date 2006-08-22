@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-22 11:04-0300\n"
+"POT-Creation-Date: 2006-08-22 17:06-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -972,12 +972,12 @@ msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
 "printer."
 msgstr ""
-"O método de pagamento desta venda (%s) não está configurado na impressora "
-"fiscal."
+"O método de pagamento usado nesta venda (%s) não está configurado na "
+"impressora fiscal."
 
 #: ../stoqlib/lib/drivers.py:485
-msgid "Use Money as method"
-msgstr "Dinheiro como método"
+msgid "Use Money as payment method"
+msgstr "Usar forma de pagamento dinheiro"
 
 #: ../stoqlib/lib/drivers.py:486
 msgid "Cancel the checkout"
@@ -1164,9 +1164,9 @@ msgid ""
 "application. If you have only one fiscal printer and more than one computer, "
 "set this to False, otherwise True."
 msgstr ""
-"Uma vez que este parâmetro seja definido como falso o item de menu Caixanão "
-"será adicionado à aplicação POS. Se houver somente uma impressorafiscal e "
-"mais de um computador escolha Falso, caso contrário Verdadeiro."
+"Se este parâmetro for setado como Falso o menu Caixa não será adicionado à "
+"aplicação POS. Se você tem somente uma impressora fiscal e mais de um "
+"computador, escolha Falso, caso contrário Verdadeiro."
 
 #: ../stoqlib/lib/parameters.py:138
 msgid "Accept Order Products"
@@ -1777,7 +1777,7 @@ msgid "Delivery Item"
 msgstr "Item de Entrega"
 
 #: ../stoqlib/gui/editors/stationeditor.py:36
-msgid "Branch Station"
+msgid "BranchStation"
 msgstr "Estação Filial"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:68
@@ -1823,9 +1823,8 @@ msgid ""
 "coupon for sales with these payment methods, are you sure you want to "
 "continue?"
 msgstr ""
-"Alguns métodos de pagamento não estão configurados. Não será possível "
-"emitir cupons para vendas com estes métodos, você deseja realmente "
-"continuar?"
+"Alguns métodos de pagamento não estão configurados. Não será possível emitir "
+"cupons para vendas com estes métodos, você deseja realmente continuar?"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:311
 msgid "_Continue"
@@ -1838,11 +1837,11 @@ msgstr "Configurar _Métodos"
 #: ../stoqlib/gui/editors/deviceseditor.py:321
 #, python-format
 msgid "A %s already exists for station \"%s\""
-msgstr "Já existe um %s para a estação %s"
+msgstr "Já existe uma %s para a estação %s"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:337
 msgid "The printer will be disabled"
-msgstr "A impressora será desligada"
+msgstr "A impressora será desabilitada"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:338
 msgid ""
@@ -1907,7 +1906,7 @@ msgstr "Editar Detalhes de Nota Fiscal"
 #: ../stoqlib/gui/editors/parameterseditor.py:109
 #, python-format
 msgid "Edit '%s' Parameter"
-msgstr "Alterar Parâmetros '%s'"
+msgstr "Alterar Parâmetro '%s'"
 
 #: ../stoqlib/gui/editors/serviceeditor.py:41
 msgid "Service"
@@ -1957,8 +1956,7 @@ msgstr "O caixa não pode ser fechado com balanço negativo"
 #: ../stoqlib/gui/editors/tilleditor.py:115
 msgid "You can not specifiy an amount removed greater than the till balance."
 msgstr ""
-"Não é possível especificar uma quantia removida maior que o balanço de "
-"caixa."
+"Não é possível especificar uma quantia removida maior que o balanço de caixa."
 
 #: ../stoqlib/gui/editors/tilleditor.py:169
 msgid "Value Must be greater than zero"
@@ -1978,6 +1976,7 @@ msgid "Cash In"
 msgstr "Complemento de caixa"
 
 #: ../stoqlib/gui/editors/tilleditor.py:259
+#, python-format
 msgid "Cash in for station \"%s\" of branch \"%s\""
 msgstr "Entrada de caixa para estação \"%s\" da unidade \"%s\""
 
@@ -2229,11 +2228,11 @@ msgstr "Operações Fiscais de Caixa"
 
 #: ../stoqlib/gui/search/tillsearch.py:52
 msgid "fiscal operation"
-msgstr "Operações de Fiscais"
+msgstr "operação fiscal"
 
 #: ../stoqlib/gui/search/tillsearch.py:52
 msgid "fiscal operations"
-msgstr "Operações de Fiscais"
+msgstr "operações fiscais"
 
 #: ../stoqlib/gui/search/tillsearch.py:69
 #: ../stoqlib/gui/search/receivingsearch.py:57
@@ -2423,7 +2422,7 @@ msgstr "Pesquisa de Recebimento de Compras"
 
 #: ../stoqlib/gui/search/receivingsearch.py:49
 msgid "Receiving Orders Matching:"
-msgstr "Órdens de Recebimento contendo:"
+msgstr "Ordens de Recebimento contendo:"
 
 #: ../stoqlib/gui/search/receivingsearch.py:50
 msgid "receiving order"
@@ -2468,7 +2467,7 @@ msgstr "Comissão do Vendedor (%)"
 
 #: ../stoqlib/gui/search/categorysearch.py:66
 msgid "Sellable Category Search"
-msgstr "Pequisa de Categoria de Vendaveis"
+msgstr "Pequisa de Categoria de Vendáveis"
 
 #: ../stoqlib/gui/search/categorysearch.py:73
 msgid "category"
@@ -2516,7 +2515,7 @@ msgstr "perfil"
 
 #: ../stoqlib/gui/search/profilesearch.py:52
 msgid "profiles"
-msgstr "Perfis"
+msgstr "perfis"
 
 #: ../stoqlib/gui/search/profilesearch.py:59
 msgid "Profile"
@@ -3344,7 +3343,7 @@ msgstr "Unidade:"
 
 #: ../data/glade/CheckBillSettingsSlave.glade.h:3
 #: ../data/glade/PurchasePaymentSlave.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:2
+#: ../data/glade/ProductRetentionDialog.glade.h:1
 #: ../data/glade/BillCheckMethodSlave.glade.h:3
 #: ../data/glade/InstallmentsNumberSettingsSlave.glade.h:1
 #: ../data/glade/FinanceDetailsSlave.glade.h:3
@@ -3499,21 +3498,23 @@ msgstr "Número do RG:"
 msgid "client_id_slave"
 msgstr "client_id_slave"
 
-#: ../data/glade/ProductRetentionDialog.glade.h:1
-msgid "      Available: "
-msgstr "      Disponível: "
+#: ../data/glade/ProductRetentionDialog.glade.h:2
+msgid "Available:"
+msgstr "Disponível"
 
 #: ../data/glade/ProductRetentionDialog.glade.h:3
-msgid "Main Supplier: "
-msgstr "   Fornecedor: "
+msgid "Main Supplier:"
+msgstr "Fornecedor Principal: "
 
 #: ../data/glade/ProductRetentionDialog.glade.h:4
 msgid "Number of items to block: "
 msgstr "Número de itens a bloquear: "
 
 #: ../data/glade/ProductRetentionDialog.glade.h:5
-msgid "Product: "
-msgstr "Produto: "
+#: ../data/glade/ProductStockHistoryDialog.glade.h:2
+#: ../data/glade/AbstractProductStep.glade.h:5
+msgid "Product:"
+msgstr "Produto:"
 
 #: ../data/glade/ProductRetentionDialog.glade.h:6
 #: ../data/glade/CashOutEditor.glade.h:1
@@ -3626,11 +3627,6 @@ msgstr "Usuário:"
 #: ../data/glade/ProductStockHistoryDialog.glade.h:1
 msgid "Current Stock Balance:"
 msgstr "Saldo atual do estoque:"
-
-#: ../data/glade/ProductStockHistoryDialog.glade.h:2
-#: ../data/glade/AbstractProductStep.glade.h:5
-msgid "Product:"
-msgstr "Produto:"
 
 #: ../data/glade/ProductStockHistoryDialog.glade.h:3
 msgid "Receiving"
@@ -4185,6 +4181,12 @@ msgstr "Adicionar"
 #: ../data/glade/AbstractProductStep.glade.h:7
 msgid "_Search..."
 msgstr "Pe_squisar"
+
+#~ msgid "      Available: "
+#~ msgstr "      Disponível: "
+
+#~ msgid "Product: "
+#~ msgstr "Produto: "
 
 #~ msgid "Current Warehouse"
 #~ msgstr "Almoxarifado Atual"

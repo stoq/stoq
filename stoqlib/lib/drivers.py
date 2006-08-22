@@ -482,7 +482,7 @@ class FiscalCoupon:
                 method_name = get_method_names()[method_id]
                 if yesno(_(u"The payment method used in this sale (%s) is not "
                            "configured in the fiscal printer." % method_name),
-                         gtk.RESPONSE_OK, _(u"Use Money as method"),
+                         gtk.RESPONSE_OK, _(u"Use Money as payment method"),
                          _(u"Cancel the checkout")):
                     self.printer.add_payment(MONEY_PM, payment.base_value)
                     continue

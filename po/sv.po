@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-22 11:04-0300\n"
+"POT-Creation-Date: 2006-08-22 17:06-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -950,7 +950,7 @@ msgid ""
 msgstr ""
 
 #: ../stoqlib/lib/drivers.py:485
-msgid "Use Money as method"
+msgid "Use Money as payment method"
 msgstr ""
 
 #: ../stoqlib/lib/drivers.py:486
@@ -1686,7 +1686,7 @@ msgstr "Välj föremål"
 
 #: ../stoqlib/gui/editors/stationeditor.py:36
 #, fuzzy
-msgid "Branch Station"
+msgid "BranchStation"
 msgstr "Sök"
 
 #: ../stoqlib/gui/editors/deviceseditor.py:68
@@ -3270,7 +3270,7 @@ msgstr ""
 
 #: ../data/glade/CheckBillSettingsSlave.glade.h:3
 #: ../data/glade/PurchasePaymentSlave.glade.h:1
-#: ../data/glade/ProductRetentionDialog.glade.h:2
+#: ../data/glade/ProductRetentionDialog.glade.h:1
 #: ../data/glade/BillCheckMethodSlave.glade.h:3
 #: ../data/glade/InstallmentsNumberSettingsSlave.glade.h:1
 #: ../data/glade/FinanceDetailsSlave.glade.h:3
@@ -3425,12 +3425,13 @@ msgstr ""
 msgid "client_id_slave"
 msgstr ""
 
-#: ../data/glade/ProductRetentionDialog.glade.h:1
-msgid "      Available: "
-msgstr ""
+#: ../data/glade/ProductRetentionDialog.glade.h:2
+#, fuzzy
+msgid "Available:"
+msgstr "ettiket:"
 
 #: ../data/glade/ProductRetentionDialog.glade.h:3
-msgid "Main Supplier: "
+msgid "Main Supplier:"
 msgstr ""
 
 #: ../data/glade/ProductRetentionDialog.glade.h:4
@@ -3438,9 +3439,10 @@ msgid "Number of items to block: "
 msgstr ""
 
 #: ../data/glade/ProductRetentionDialog.glade.h:5
-#, fuzzy
-msgid "Product: "
-msgstr "Sök"
+#: ../data/glade/ProductStockHistoryDialog.glade.h:2
+#: ../data/glade/AbstractProductStep.glade.h:5
+msgid "Product:"
+msgstr ""
 
 #: ../data/glade/ProductRetentionDialog.glade.h:6
 #: ../data/glade/CashOutEditor.glade.h:1
@@ -3554,11 +3556,6 @@ msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.glade.h:1
 msgid "Current Stock Balance:"
-msgstr ""
-
-#: ../data/glade/ProductStockHistoryDialog.glade.h:2
-#: ../data/glade/AbstractProductStep.glade.h:5
-msgid "Product:"
 msgstr ""
 
 #: ../data/glade/ProductStockHistoryDialog.glade.h:3
@@ -4124,6 +4121,10 @@ msgstr ""
 #: ../data/glade/AbstractProductStep.glade.h:7
 msgid "_Search..."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Product: "
+#~ msgstr "Sök"
 
 #, fuzzy
 #~ msgid "Order Number"
