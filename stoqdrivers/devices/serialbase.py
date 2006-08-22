@@ -31,6 +31,13 @@ from zope.interface import implements
 from stoqdrivers.log import Logger
 from stoqdrivers.devices.interfaces import ISerialPort
 
+class VirtualPort:
+    def write(self, data):
+        pass
+
+    def read(self):
+        return ''
+
 class SerialPort(Serial):
     implements(ISerialPort)
 
