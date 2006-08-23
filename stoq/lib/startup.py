@@ -115,9 +115,10 @@ def clean_database(config, options=None):
         password = ''
         verbose = False
     else:
-        password = options.password or config.get_password() or ''
+        password = options.password
         verbose = options.verbose
 
+    password = password or config.get_password()
     initialize_system(verbose=verbose)
     ensure_admin_user(password)
 
