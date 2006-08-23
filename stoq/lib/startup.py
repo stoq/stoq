@@ -106,7 +106,7 @@ def setup(config, options=None, register_station=True, check_schema=True):
         conn.debug = True
     sqlhub.threadConnection = conn
 
-def clean_database(config, options):
+def clean_database(config, options=None):
     """Clean the database
     @param config: a StoqConfig instance
     @param options: a Optionparser instance
@@ -115,11 +115,11 @@ def clean_database(config, options):
         password = ''
         verbose = False
     else:
-        password = options.password or config.get_password()
+        password = options.password or config.get_password() or ''
         verbose = options.verbose
 
     initialize_system(verbose=verbose)
-    ensure_admin_user(password or '')
+    ensure_admin_user(password)
 
 def get_option_parser():
     """
