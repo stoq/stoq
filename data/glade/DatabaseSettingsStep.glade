@@ -285,53 +285,6 @@
                         <property name="position">3</property>
                     </packing>
                 </child>
-                <child>
-                    <widget class="GtkVBox" id="vbox2">
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkHBox" id="hbox1">
-                                <property name="spacing">6</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="ProxyLabel" id="kiwilabel1">
-                                        <property name="label" context="yes" translatable="yes">Stoq user 'administrator' password:</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="stoq_user_passwd">
-                                        <property name="data_type">str</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="mandatory">True</property>
-                                        <property name="model_attribute">password</property>
-                                        <property name="visibility">False</property>
-                                        <property name="visible">True</property>
-                                        <property name="width_chars">12</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="expand">False</property>
-                                        <property name="position">1</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="hint_label">
-                                <property name="label" context="yes" translatable="yes">Hint: this is the first user to start Stoq applications</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                    </widget>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="position">4</property>
-                    </packing>
-                </child>
             </widget>
         </child>
     </widget>
