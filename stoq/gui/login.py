@@ -126,7 +126,7 @@ class LoginHelper:
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
-        if not user.password == password:
+        if user.password is not None and user.password != password:
             raise LoginError(msg)
 
         if not user.profile.check_app_permission(self.appname):
