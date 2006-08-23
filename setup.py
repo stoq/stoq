@@ -29,7 +29,7 @@
 # Dependency checking
 #
 
-dependencies = [('kiwi', 'kiwi', (1, 9, 7),
+dependencies = [('kiwi', 'kiwi', (1, 9, 9),
                  'http://www.async.com.br/projects/kiwi/',
                  lambda x: x.kiwi_version),
                 ('Stoqlib', 'stoqlib', '0.7.0',
