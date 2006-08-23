@@ -30,18 +30,16 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
-from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.exceptions import StoqlibError
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
-from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import create_station
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import new_transaction, get_connection
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import validate_password
 
 from stoq.lib.configparser import StoqConfig
@@ -198,24 +196,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         need_password = selected == self.PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
         self.passwd_label.set_sensitive(need_password)
-
-    def _check_admin_password(self):
-        table = Person.getAdapterClass(IUser)
-        result = table.select(table.q.username == USER_ADMIN_DEFAULT_NAME,
-                              connection=get_connection())
-        if result.count() > 1:
-            raise DatabaseInconsistency("It is not possible have more than "
-                                        "one user with the same username: %s"
-                                        % USER_ADMIN_DEFAULT_NAME)
-        elif result.count() == 1:
-            user = result[0]
-            password = self.wizard_model.stoq_user_data.password
-            if user.password and user.password != password:
-                self.stoq_user_passwd.set_invalid(
-                    _("There is already a user registered as administrator "
-                      "and the password supplied doesn't match it"))
-                return False
-        return True
 
     #
     # WizardStep hooks
