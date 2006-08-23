@@ -24,23 +24,26 @@
 ##
 """ Stoq Configuration dialogs"""
 
-import sys
 import gettext
 from decimal import Decimal
+import time
 
+import gtk
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
-from stoqlib.exceptions import StoqlibError
+from kiwi.ui.dialogs import info, password as password_dialog
+from sqlobject import connectionForURI
+from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import create_station
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
+from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
-from stoqlib.lib.validators import validate_password
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, set_branch_by_stationid
@@ -171,7 +174,6 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'username',
                      'password',
                      'dbname')
-    stoq_user_proxy = ('stoq_user_passwd',)
 
     (TRUST_AUTHENTICATION,
      PASSWORD_AUTHENTICATION) = range(2)
@@ -182,11 +184,12 @@ class DatabaseSettingsStep(WizardEditorStep):
     def __init__(self, wizard, model):
         self.wizard_model = model
         self.authentication_items = None
+        self.has_installed_db = False
+        self.admin_password = None
         WizardEditorStep.__init__(self, None, wizard)
         self.title_label.set_size('xx-large')
         self.title_label.set_bold(True)
         self.title_label.set_color('blue')
-        self.hint_label.set_size('small')
         self._update_widgets()
 
     def _update_widgets(self):
@@ -220,43 +223,77 @@ class DatabaseSettingsStep(WizardEditorStep):
             self.force_validation()
             return False
 
-        password = self.wizard_model.stoq_user_data.password
-        callback = lambda msg: self.stoq_user_passwd.set_invalid(msg)
-        if not validate_password(password, callback):
-            self.force_validation()
-            return False
-
         conn_ok, error_msg = self.model.check_database_connection()
         if not conn_ok:
             warning(_('Invalid database settings'), error_msg)
             return False
 
-        self.wizard.install_default()
-        try:
-            self.wizard.config.check_connection()
-        except:
-            type, value, trace = sys.exc_info()
-            warning(_('Could not open database config file'),
-                    _("Invalid config file settings, got error '%s', "
-                      "of type '%s'" % (value, type)))
-            return False
+        db_settings = self.wizard_model.db_settings
+        conn_uri = db_settings.get_connection_uri()
+        conn = connectionForURI(conn_uri)
+        conn.makeConnection()
+
+        has_installed_db = check_installed_database(conn)
+        if not has_installed_db:
+            admin_password = password_dialog(
+                _('Set administrator password'),
+                _('You need to set an administrator password to continue, '
+                  'an empty password can be set by just pressing Enter'))
+            if admin_password is None:
+                return False
+            self.admin_password = admin_password
+        else:
+            hostname = db_settings.address
+            while True:
+                admin_password = password_dialog(
+                    _('Administrator password'),
+                    _('To be able to continue the wizard you need to enter the '
+                      'administrator password for the database on host %s' % hostname))
+                if admin_password is None:
+                    return False
+
+                if self._check_admin_password(conn, admin_password):
+                    break
+
+                info(_("The supplied administrator password does not match"))
+                while gtk.events_pending():
+                    gtk.main_iteration()
+                time.sleep(1)
+
+        self.has_installed_db = has_installed_db
+        return True
+
+    def _check_admin_password(self, conn, password):
+        # We can't use PersonAdaptToUser.select here because it requires
+        # us to have an IDatabaseSettings utility provided.
+        results = conn.queryOne(
+            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
+            USER_ADMIN_DEFAULT_NAME,))
+        if len(results) > 1:
+            raise DatabaseInconsistency(
+                "It is not possible have more than one user with "
+                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+        elif len(results) == 1:
+            user_password = results[0]
+            if user_password and user_password != password:
+                return False
+
         return True
 
     def next_step(self):
-        try:
-            has_installed_db = check_installed_database()
-        except StoqlibError:
-            has_installed_db = False
+        self.wizard.install_default()
 
         setup(self.wizard.config, register_station=False, check_schema=False)
 
-        # Initialize database connections and create system data if the
-        # database is empty
-        if not has_installed_db:
-            # FIXME: Password is never set
-            password = self.wizard_model.stoq_user_data.password
-            if password:
-                self.wizard.config.store_password(password)
+        if not self.has_installed_db:
+            # Initialize database connections and create system data if the
+            # database is empty
+            if self.admin_password:
+                self.wizard.config.store_password(self.admin_password)
+
+            # To prevent the eventloop from starving
+            while gtk.events_pending():
+                gtk.main_iteration()
             clean_database(self.wizard.config)
 
         existing_conn = self.wizard.get_connection()
@@ -265,11 +302,10 @@ class DatabaseSettingsStep(WizardEditorStep):
             conn = existing_conn
         else:
             conn = new_transaction()
-
         self.wizard.set_connection(conn)
-        model = sysparam(conn).MAIN_COMPANY
 
-        if not has_installed_db:
+        model = sysparam(conn).MAIN_COMPANY
+        if not self.has_installed_db:
             step_class = BranchSettingsStep
             model = model.get_adapted()
         else:
@@ -293,8 +329,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.authentication_items = items
         self.add_proxy(self.model, DatabaseSettingsStep.proxy_widgets)
         self.wizard_model.stoq_user_data = Settable(password='')
-        self.add_proxy(self.wizard_model.stoq_user_data,
-                       DatabaseSettingsStep.stoq_user_proxy)
+        self.add_proxy(self.wizard_model.stoq_user_data)
 
     #
     # Callbacks
