@@ -44,8 +44,9 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction, get_connection
 from stoqlib.lib.validators import validate_password
 
-from stoq.lib.configparser import StoqConfig, register_config
+from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, set_branch_by_stationid
+from stoq.lib.startup import clean_database
 
 
 _ = gettext.gettext
@@ -259,20 +260,24 @@ class DatabaseSettingsStep(WizardEditorStep):
                     _("Invalid config file settings, got error '%s', "
                       "of type '%s'" % (value, type)))
             return False
-        register_config(self.wizard.config)
-        if check_installed_database():
-            return self._check_admin_password()
         return True
 
     def next_step(self):
-        password = self.wizard_model.stoq_user_data.password
+        try:
+            has_installed_db = check_installed_database()
+        except StoqlibError:
+            has_installed_db = False
 
-        has_installed_db = check_installed_database()
+        setup(self.wizard.config, register_station=False, check_schema=False)
+
         # Initialize database connections and create system data if the
         # database is empty
-        setup(self.wizard.config, register_station=False)
-        if password:
-            self.wizard.config.store_password(password)
+        if not has_installed_db:
+            # FIXME: Password is never set
+            password = self.wizard_model.stoq_user_data.password
+            if password:
+                self.wizard.config.store_password(password)
+            clean_database(self.wizard.config)
 
         existing_conn = self.wizard.get_connection()
         if existing_conn:
