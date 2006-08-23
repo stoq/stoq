@@ -133,7 +133,9 @@ class LoginHelper:
             msg = _("This user lacks credentials \nfor application %s")
             raise UserProfileError(msg % self.appname)
 
-        provide_utility(ICurrentUser, user)
+        # ICurrentUser might already be provided which is the case when
+        # creating a new database, thus we need to replace it.
+        provide_utility(ICurrentUser, user, replace=True)
 
     def _cookie_login(self):
         try:
