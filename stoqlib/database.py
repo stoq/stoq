@@ -39,7 +39,7 @@ from stoqlib.domain.tables import get_table_types, get_sequence_names
 from stoqlib.exceptions import ConfigError, SQLError, StoqlibError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, set_verbose, get_connection
+from stoqlib.lib.runtime import new_transaction, set_verbose
 
 _ = stoqlib_gettext
 
@@ -117,13 +117,17 @@ def check_database_connection(conn_uri):
     return True, None
 
 
-def check_installed_database():
+def check_installed_database(conn):
     """Checks if Stoqlib database is properly installed"""
     from stoqlib.domain.system import SystemTable
-    conn = get_connection()
-    if not conn.tableExists(SystemTable.get_db_table_name()):
+    table_name = SystemTable.get_db_table_name()
+    if not conn.tableExists(table_name):
+        log.info('There is no table called %s' % table_name)
         return False
-    return SystemTable.select(connection=conn).count() > 0
+
+    entries = SystemTable.select(connection=conn).count()
+    log.info('Found %d SystemTable entries' % entries)
+    return entries > 0
 
 
 #
