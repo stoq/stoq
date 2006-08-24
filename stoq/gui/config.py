@@ -248,7 +248,7 @@ class DatabaseSettingsStep(WizardEditorStep):
                 admin_password = password_dialog(
                     _('Administrator password'),
                     _('To be able to continue the wizard you need to enter the '
-                      'administrator password for the database on host %s' % hostname))
+                      'administrator password for the database on host %s') % hostname)
                 if admin_password is None:
                     return False
 

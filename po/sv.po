@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-22 11:56-0300\n"
+"POT-Creation-Date: 2006-08-24 17:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoq/main.py:109 ../stoq/lib/startup.py:103
+#: ../stoq/main.py:109 ../stoq/lib/startup.py:100
 msgid "Database schema error"
 msgstr ""
 
@@ -26,11 +26,11 @@ msgid ""
 "Consult your database administrator to solve this problem."
 msgstr ""
 
-#: ../stoq/main.py:140 ../stoq/gui/config.py:258
+#: ../stoq/main.py:140
 msgid "Could not open database config file"
 msgstr ""
 
-#: ../stoq/main.py:141 ../stoq/gui/config.py:259
+#: ../stoq/main.py:141
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
@@ -60,7 +60,7 @@ msgid ""
 "computer."
 msgstr ""
 
-#: ../stoq/lib/startup.py:104
+#: ../stoq/lib/startup.py:101
 msgid ""
 "The database schema has changed, but the database has not been updated. Run "
 "'stoqdbadmin updateschema` toupdate the schema  to the latest available "
@@ -82,11 +82,11 @@ msgid ""
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/login.py:168
+#: ../stoq/gui/login.py:170
 msgid "Access Control"
 msgstr ""
 
-#: ../stoq/gui/login.py:187
+#: ../stoq/gui/login.py:189
 msgid "specify an username"
 msgstr ""
 
@@ -123,36 +123,55 @@ msgstr "_Nollställ order"
 msgid "Stoq - %s"
 msgstr ""
 
-#: ../stoq/gui/config.py:180
+#: ../stoq/gui/config.py:181
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:181
+#: ../stoq/gui/config.py:182
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:214
-msgid ""
-"There is already a user registered as administrator and the password "
-"supplied doesn't match it"
-msgstr ""
-
-#: ../stoq/gui/config.py:234
+#: ../stoq/gui/config.py:218
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:237 ../stoq/gui/config.py:238
+#: ../stoq/gui/config.py:221 ../stoq/gui/config.py:222
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:250
+#: ../stoq/gui/config.py:228
 msgid "Invalid database settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:327
+#: ../stoq/gui/config.py:239
+msgid "Set administrator password"
+msgstr ""
+
+#: ../stoq/gui/config.py:240
+msgid ""
+"You need to set an administrator password to continue, an empty password can "
+"be set by just pressing Enter"
+msgstr ""
+
+#: ../stoq/gui/config.py:249
+msgid "Administrator password"
+msgstr ""
+
+#: ../stoq/gui/config.py:250
+#, python-format
+msgid ""
+"To be able to continue the wizard you need to enter the administrator "
+"password for the database on host %s"
+msgstr ""
+
+#: ../stoq/gui/config.py:258
+msgid "The supplied administrator password does not match"
+msgstr ""
+
+#: ../stoq/gui/config.py:348
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -921,36 +940,28 @@ msgid "Database Name:"
 msgstr ""
 
 #: ../data/glade/DatabaseSettingsStep.glade.h:4
-msgid "Hint: this is the first user to start Stoq applications"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:5
 msgid "Password:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:6
+#: ../data/glade/DatabaseSettingsStep.glade.h:5
 msgid ""
 "Please, fill some important informations before start using the applications"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:7
+#: ../data/glade/DatabaseSettingsStep.glade.h:6
 msgid "Port:"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:8
+#: ../data/glade/DatabaseSettingsStep.glade.h:7
 msgid "PostgreSQL Database Settings"
 msgstr ""
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:9
-msgid "Stoq user 'administrator' password:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:10
+#: ../data/glade/DatabaseSettingsStep.glade.h:8
 #, fuzzy
 msgid "Username:"
 msgstr "_Användare"
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:11
+#: ../data/glade/DatabaseSettingsStep.glade.h:9
 msgid "Welcome to Stoq"
 msgstr ""
 
