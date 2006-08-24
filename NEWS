@@ -1,3 +1,12 @@
+Release 0.4.0 - 24/08/2006:
+
+	* Bug fixes: 2502, 2532, 2641
+
+	* Metrologic MC630 Barcode reader support
+	* Test suite implemented
+	* Implementation of a virtual port for drivers which doesn't requires
+	  communication with a real device (eg, VirtualSimple driver).
+
 Release 0.3.1 - 02/07/2006:
 
 	* Bug fixes: 2246, 2531, 2628
