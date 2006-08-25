@@ -83,6 +83,9 @@ global_resources = dict(
     docs='$prefix/share/doc/stoq',
     config='$sysconfdir/stoq')
 
+templates = [
+    ('share/applications', ['stoq.desktop'])]
+
 setup(name='stoq',
       version=version,
       author='Async Open Source',
@@ -98,5 +101,6 @@ setup(name='stoq',
       scripts=scripts,
       data_files=data_files,
       resources=resources,
-      global_resources=global_resources)
+      global_resources=global_resources,
+      templates=templates)
 

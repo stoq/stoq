@@ -1,4 +1,4 @@
-recursive-include data *.glade
+recursive-include data/glade *.glade
 recursive-include data/pixmaps *.jpg
 recursive-include data/config *.cfg
 recursive-include locale stoq.mo
@@ -10,3 +10,4 @@ include README
 include NEWS
 include INSTALL
 include CONTRIBUTORS
+include stoq.desktop
