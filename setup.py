@@ -29,6 +29,8 @@
 # Dependency checking
 #
 
+# kiwi is only here because we need to use it in setup.py itself,
+# the rest of the dependency checks should be done in stoqlib.
 dependencies = [('kiwi', 'kiwi', (1, 9, 9),
                  'http://www.async.com.br/projects/kiwi/',
                  lambda x: x.kiwi_version),
