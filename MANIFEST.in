@@ -1,5 +1,5 @@
 recursive-include data/glade *.glade
-recursive-include data/pixmaps *.jpg
+recursive-include data/pixmaps *.jpg *.png
 recursive-include data/config *.cfg
 recursive-include locale stoq.mo
 recursive-include po *.po *.pot POTFILES.list
