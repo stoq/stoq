@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-24 17:14-0300\n"
+"POT-Creation-Date: 2006-08-25 16:05-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,27 +15,27 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoq/main.py:109 ../stoq/lib/startup.py:100
+#: ../stoq/main.py:120 ../stoq/lib/startup.py:100
 msgid "Database schema error"
 msgstr ""
 
-#: ../stoq/main.py:110
+#: ../stoq/main.py:121
 #, python-format
 msgid ""
 "Table `%s' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
 
-#: ../stoq/main.py:140
+#: ../stoq/main.py:151
 msgid "Could not open database config file"
 msgstr ""
 
-#: ../stoq/main.py:141
+#: ../stoq/main.py:152
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:150
+#: ../stoq/main.py:161
 msgid "Could not connect to database"
 msgstr ""
 
@@ -123,55 +123,55 @@ msgstr "_Nollställ order"
 msgid "Stoq - %s"
 msgstr ""
 
-#: ../stoq/gui/config.py:181
+#: ../stoq/gui/config.py:196
 msgid "Trust"
 msgstr ""
 
-#: ../stoq/gui/config.py:182
+#: ../stoq/gui/config.py:197
 msgid "Needs Password"
 msgstr ""
 
-#: ../stoq/gui/config.py:218
+#: ../stoq/gui/config.py:233
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:221 ../stoq/gui/config.py:222
+#: ../stoq/gui/config.py:236 ../stoq/gui/config.py:237
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:228
+#: ../stoq/gui/config.py:243
 msgid "Invalid database settings"
 msgstr ""
 
-#: ../stoq/gui/config.py:239
+#: ../stoq/gui/config.py:254
 msgid "Set administrator password"
 msgstr ""
 
-#: ../stoq/gui/config.py:240
+#: ../stoq/gui/config.py:255
 msgid ""
 "You need to set an administrator password to continue, an empty password can "
 "be set by just pressing Enter"
 msgstr ""
 
-#: ../stoq/gui/config.py:249
+#: ../stoq/gui/config.py:264
 msgid "Administrator password"
 msgstr ""
 
-#: ../stoq/gui/config.py:250
+#: ../stoq/gui/config.py:265
 #, python-format
 msgid ""
 "To be able to continue the wizard you need to enter the administrator "
 "password for the database on host %s"
 msgstr ""
 
-#: ../stoq/gui/config.py:258
+#: ../stoq/gui/config.py:273
 msgid "The supplied administrator password does not match"
 msgstr ""
 
-#: ../stoq/gui/config.py:348
+#: ../stoq/gui/config.py:359
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -1174,6 +1174,26 @@ msgstr "_Nollställ order"
 #, fuzzy
 msgid "_Search"
 msgstr "_Sök"
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:1
+msgid "<b>Database initialization</b>"
+msgstr ""
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:2
+msgid "Create an empty database"
+msgstr ""
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:3
+msgid "Create an example database"
+msgstr ""
+
+#: ../data/glade/ExampleDatabaseStep.glade.h:4
+msgid ""
+"You can choose to initialize the system with an empty database or with a "
+"simple examples database.\n"
+"\n"
+"Would you like to:\n"
+msgstr ""
 
 #: ../data/glade/SelectApplicationsSlave.glade.h:1
 msgid "Select an Application:"

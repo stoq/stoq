@@ -38,6 +38,7 @@ from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database, rollback_and_begin)
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import create_station
+from stoqlib.domain.examples import createall as examples
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
@@ -165,6 +166,20 @@ class BranchSettingsStep(WizardEditorStep):
         slave = AddressSlave(self.conn, self.model, address)
         self.attach_slave("address_holder", slave)
 
+
+class ExampleDatabaseStep(WizardEditorStep):
+    gladefile = "ExampleDatabaseStep"
+    model_type = object
+
+    def next_step(self):
+        if self.empty_database_radio.get_active():
+            stepclass = BranchSettingsStep
+        else:
+            self.conn.commit()
+            examples.create()
+            stepclass = DeviceSettingsStep
+        return stepclass(self.conn, self.wizard,
+                         self.model, self)
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -306,11 +321,7 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         model = sysparam(conn).MAIN_COMPANY
         if not self.has_installed_db:
-            step_class = BranchSettingsStep
             model = model.get_adapted()
-        else:
-            step_class = DeviceSettingsStep
-
         try:
             create_station(conn)
         except StoqlibError:
@@ -320,7 +331,7 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         set_branch_by_stationid(conn)
 
-        return step_class(conn, self.wizard, model, self)
+        return ExampleDatabaseStep(conn, self.wizard, model, self)
 
     def setup_proxies(self):
         items = [(value, key)
