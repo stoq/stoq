@@ -57,6 +57,17 @@ def _check_dependencies():
                          reportlab.Version)
     log.info('reportlab okay')
 
+    try:
+        import gazpacho
+    except ImportError:
+        raise SystemExit(
+           "Gazpacho 0.6.6 or higher is required but could not be found.")
+
+    if map(int, gazpacho.__version__.split('.')) < [0, 6, 6]:
+        raise SystemExit("Gazpacho 0.6.6 is required but %s found" %
+                         gazpacho.__version__)
+    log.info('gazpacho okay')
+
 def _run_first_time_wizard(config):
     from stoqlib.gui.base.dialogs import run_dialog
     from stoq.gui.config import FirstTimeConfigWizard
