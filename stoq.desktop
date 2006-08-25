@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=Stoq
+Name[pt_BR]=Stoq
+Name[sv]=Stoq
+GenericName=Stoq
+Exec=$prefix/bin/stoq %F
+Icon=$datadir/pixmaps/stoq.png
+Terminal=false
+MultipleArgs=false
+Categories=Application;Database;Finance
