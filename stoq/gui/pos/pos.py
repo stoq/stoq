@@ -370,6 +370,7 @@ class POSApp(AppWindow):
         if not self.param.CONFIRM_SALES_ON_TILL:
             if self._coupon:
                 self._coupon.cancel()
+                self._coupon = None
 
     def _add_delivery(self):
         if not self.sellables:
