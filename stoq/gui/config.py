@@ -284,6 +284,9 @@ class DatabaseSettingsStep(WizardEditorStep):
         results = conn.queryOne(
             "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
             USER_ADMIN_DEFAULT_NAME,))
+        if not results:
+            return True
+
         if len(results) > 1:
             raise DatabaseInconsistency(
                 "It is not possible have more than one user with "
