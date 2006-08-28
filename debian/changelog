@@ -1,3 +1,9 @@
+stoq (0.8.1-2) dapper; urgency=low
+
+  * Bump requirements
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 28 Aug 2006 12:49:12 -0300
+
 stoq (0.8.1-1) dapper; urgency=low
 
   * Initial release.
