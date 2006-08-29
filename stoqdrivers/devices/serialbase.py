@@ -32,6 +32,18 @@ from stoqdrivers.log import Logger
 from stoqdrivers.devices.interfaces import ISerialPort
 
 class VirtualPort:
+    implements(ISerialPort)
+
+    def getDSR(self):
+        return True
+
+    def setDTR(self, value):
+        pass
+
+    def set_options(self, baudrate=9600, bytesize=EIGHTBITS, parity=PARITY_NONE,
+                    stopbits=STOPBITS_ONE, read_timeout=3, write_timeout=0):
+        pass
+
     def write(self, data):
         pass
 
