@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-08-25 16:05-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../stoq/main.py:120 ../stoq/lib/startup.py:100
 msgid "Database schema error"
-msgstr ""
+msgstr "Databasschemafel"
 
 #: ../stoq/main.py:121
 #, python-format
@@ -25,10 +25,12 @@ msgid ""
 "Table `%s' does not exist.\n"
 "Consult your database administrator to solve this problem."
 msgstr ""
+"Tabellen `%s' existerar inte.\n"
+"Rådfråga din databasadministratör för att lösa detta problemet."
 
 #: ../stoq/main.py:151
 msgid "Could not open database config file"
-msgstr ""
+msgstr "Kunda inte öppna databasekonfigureringsfilen"
 
 #: ../stoq/main.py:152
 #, python-format
@@ -37,7 +39,7 @@ msgstr ""
 
 #: ../stoq/main.py:161
 msgid "Could not connect to database"
-msgstr ""
+msgstr "Kunde inte ansluta till databasen"
 
 #: ../stoq/lib/startup.py:53
 #, python-format
@@ -73,7 +75,7 @@ msgstr ""
 
 #: ../stoq/gui/login.py:127
 msgid "This user is inactive"
-msgstr ""
+msgstr "Den här användaren är inaktiv"
 
 #: ../stoq/gui/login.py:133
 #, python-format
@@ -91,45 +93,42 @@ msgid "specify an username"
 msgstr ""
 
 #: ../stoq/gui/application.py:166
-#, fuzzy
 msgid "_Store"
-msgstr "Kod"
+msgstr "_Lagra"
 
 #: ../stoq/gui/application.py:167
 msgid "Store a cookie"
-msgstr ""
+msgstr "Lagra en kaka"
 
 #: ../stoq/gui/application.py:168
-#, fuzzy
 msgid "_Clear"
-msgstr "Checkout"
+msgstr "_Rensa"
 
 #: ../stoq/gui/application.py:169
 msgid "Clear the cookie"
-msgstr ""
+msgstr "Rensa kakan"
 
 #: ../stoq/gui/application.py:170
 msgid "C_hange User"
-msgstr ""
+msgstr "_Byt användare"
 
 #: ../stoq/gui/application.py:171
-#, fuzzy
 msgid "Change user"
-msgstr "_Nollställ order"
+msgstr "Byt användare"
 
 #. This method must be redefined in child when it's needed
 #: ../stoq/gui/application.py:200
 #, python-format
 msgid "Stoq - %s"
-msgstr ""
+msgstr "Stoq - %s"
 
 #: ../stoq/gui/config.py:196
 msgid "Trust"
-msgstr ""
+msgstr "Lita"
 
 #: ../stoq/gui/config.py:197
 msgid "Needs Password"
-msgstr ""
+msgstr "Kräv lösenord"
 
 #: ../stoq/gui/config.py:233
 #, python-format
@@ -176,19 +175,16 @@ msgid "Setting up Stoq"
 msgstr ""
 
 #: ../stoq/gui/purchase/purchase.py:56
-#, fuzzy
 msgid "Purchase"
-msgstr "Pris"
+msgstr "Köp"
 
 #: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:65
-#, fuzzy
 msgid "order"
-msgstr "Kod"
+msgstr "order"
 
 #: ../stoq/gui/purchase/purchase.py:61 ../stoq/gui/till/till.py:65
-#, fuzzy
 msgid "orders"
-msgstr "Kod"
+msgstr "order"
 
 #: ../stoq/gui/purchase/purchase.py:62 ../stoq/gui/admin/admin.py:61
 #: ../stoq/gui/sales/sales.py:60 ../stoq/gui/till/till.py:66
@@ -202,9 +198,8 @@ msgid "Show orders with status"
 msgstr "Ingen produkt vald"
 
 #: ../stoq/gui/purchase/purchase.py:74
-#, fuzzy
 msgid "Total:"
-msgstr "Totalt"
+msgstr "Total:"
 
 #: ../stoq/gui/purchase/purchase.py:164
 msgid "There are no orders with status pending in the selection"
