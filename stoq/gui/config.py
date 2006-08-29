@@ -250,12 +250,17 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         has_installed_db = check_installed_database(conn)
         if not has_installed_db:
-            admin_password = password_dialog(
-                _('Set administrator password'),
-                _('You need to set an administrator password to continue, '
-                  'an empty password can be set by just pressing Enter'))
-            if admin_password is None:
-                return False
+            # FIXME: This should be moved to a separate page, see bug #2781
+            while True:
+                admin_password = password_dialog(
+                    _('Set administrator password'),
+                    _('You need to set an administrator password to continue'))
+
+                if len(admin_password) >= 6:
+                    break
+
+                info(_("The supplied password must contain at least 6 characters"))
+
             self.admin_password = admin_password
         else:
             hostname = db_settings.address
