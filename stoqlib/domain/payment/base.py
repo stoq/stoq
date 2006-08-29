@@ -192,6 +192,7 @@ class Payment(Domain):
         self.status = self.STATUS_CANCELLED
         self.cancel_date = datetime.now()
 
+    @argcheck(datetime.date)
     def get_payable_value(self, paid_date=None):
         """ Returns the calculated payment value with the daily penalty.
             Note that the payment group daily_penalty must be
@@ -202,10 +203,6 @@ class Payment(Domain):
         if self.status in [self.STATUS_PAID, self.STATUS_REVIEWING,
                            self.STATUS_CONFIRMED]:
             return self.paid_value
-        if paid_date and not isinstance(paid_date, datetime.date):
-            raise TypeError('Argument paid_date must be of type '
-                            'datetime.date, got %s instead' %
-                            type(paid_date))
         if self.method.get_implemented_iface() in (ICheckPM, IBillPM):
             paid_date = paid_date or datetime.now()
             days = (paid_date - self.due_date).days
