@@ -93,7 +93,6 @@ class Payment(Domain):
     discount = PriceCol(default=0)
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
-
     method = ForeignKey('AbstractPaymentMethodAdapter')
     method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
@@ -104,13 +103,6 @@ class Payment(Domain):
         assert self.status == status, ('Invalid status for %s '
                                        'operation: %s' % (operation_name,
                                        self.statuses[self.status]))
-
-    def _register_payment_operation(self,
-                                    operation_date=datetime.now()):
-        conn = self.get_connection()
-        operation = PaymentOperation(connection=conn,
-                                     operation_date=operation_date)
-        return operation
 
     #
     # SQLObject hooks
@@ -164,8 +156,8 @@ class Payment(Domain):
         payment with STATUS_REVIEWING
         """
         self._check_status(self.STATUS_PAID, 'submit')
-        operation = self._register_payment_operation(submit_date)
         conn = self.get_connection()
+        operation = PaymentOperation(connection=conn, operation_date=submit_date)
         operation.addFacet(IPaymentDeposit, connection=conn)
         self.status = self.STATUS_REVIEWING
 
@@ -174,10 +166,9 @@ class Payment(Domain):
         acquittance we must call reject for it.
         """
         self._check_status(self.STATUS_REVIEWING, 'reject')
-        operation = self._register_payment_operation(reject_date)
         conn = self.get_connection()
-        operation.addFacet(IPaymentDevolution, connection=conn,
-                           reason=reason)
+        operation = PaymentOperation(connection=conn, operation_date=reject_date)
+        operation.addFacet(IPaymentDevolution, connection=conn, reason=reason)
         self.status = self.STATUS_PAID
 
     def cancel_till_entry(self):
