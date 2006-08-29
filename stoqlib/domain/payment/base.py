@@ -24,7 +24,7 @@
 ##
 """ Payment management implementations."""
 
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
@@ -192,7 +192,7 @@ class Payment(Domain):
         self.status = self.STATUS_CANCELLED
         self.cancel_date = datetime.now()
 
-    @argcheck(datetime.date)
+    @argcheck(date)
     def get_payable_value(self, paid_date=None):
         """ Returns the calculated payment value with the daily penalty.
             Note that the payment group daily_penalty must be
