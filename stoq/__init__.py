@@ -1,42 +1,38 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
 
-import os
-import sys
+##
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU Lesser General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
+##
+##
 
 program_name    = "Stoq"
 website         = 'http://www.stoq.com.br'
 version         = "0.8.1"
 release_date    = (2006, 8, 25)
 
-# Required version of Python
-REQUIRED_VERSION = (2, 4)
-
-KIWI_REQUIRED = '1.9.9'
-
-# Directory name, defaults to name of binary, it is relative to ..
-# a, __init__.py and main.py is expected to be found there.
-DIRNAME = None
-
-# Application name, defaults to capitalized name of binary
-APPNAME = None
-
-# Do not modify code below this point
-dirname = DIRNAME or os.path.split(sys.argv[0])[1]
-appname = APPNAME or dirname.capitalize()
-
-version_string = sys.version.split(' ')[0]
-majmin = tuple(map(int, version_string.split('.')))
-if majmin < REQUIRED_VERSION:
-    raise SystemExit("ERROR: Python %s or higher is required to run %s, "
-                     "%s found" % ('.'.join(map(str, REQUIRED_VERSION)),
-                                   appname,
-                                   version_string))
-
-
 try:
     from kiwi.environ import Library
 except ImportError:
-    raise SystemExit("Could not find kiwi, is a recent version %s installed?"
-                      % KIWI_REQUIRED)
+    raise SystemExit("Could not find kiwi")
 
 # XXX: Use Application
 lib = Library('stoq')
