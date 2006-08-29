@@ -123,9 +123,6 @@ class Pay2023(SerialBase, BaseChequePrinter):
         15008: ReadXError,
         15011: OutofPaperError
         }
-    #
-    # Cheque elements position
-    #
 
     def __init__(self, port, consts=None):
         port.set_options(baudrate=115200, parity=PARITY_EVEN)
