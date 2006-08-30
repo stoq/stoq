@@ -33,8 +33,7 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger
-from psycopg import Error as PostgreSQLError
-from stoqlib.database import db_table_name
+from stoqlib.database import db_table_name, PostgreSQLError
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error
 
