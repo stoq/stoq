@@ -34,7 +34,7 @@ from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.runtime import get_current_branch 
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
@@ -57,7 +57,7 @@ _ = stoqlib_gettext
 
 
 class Payment(Domain):
-    """Base class for payments.
+    """ The payment representation in Stoq.
 
     B{Importante attributes}:
         - I{interest}: the absolute value for the interest associated with
