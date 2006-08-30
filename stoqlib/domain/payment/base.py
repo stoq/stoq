@@ -420,7 +420,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """
         if not self.status == AbstractPaymentGroup.STATUS_OPEN:
             raise ValueError("The status for this payment group should be "
-                             "opened, got %s" % self.get_status_str())
+                             "opened, got %s" % self.get_status_string())
         payments = self.get_items()
         statuses = [Payment.STATUS_CONFIRMED, Payment.STATUS_CANCELLED]
         for payment in payments:
