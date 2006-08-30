@@ -46,7 +46,7 @@ from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
 _ = stoqlib_gettext
 
 log = Logger('stoqlib.admin')
-USER_ADMIN_DEFAULT_NAME = _('administrator')
+USER_ADMIN_DEFAULT_NAME = 'admin'
 
 def ensure_admin_user(administrator_password):
     from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
