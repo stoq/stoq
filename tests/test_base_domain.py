@@ -1,8 +1,8 @@
 import unittest
 
-from psycopg import ProgrammingError
 from zope.interface import implements, Interface
 
+from stoqlib.database import ProgrammingError
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.lib.runtime import new_transaction
 

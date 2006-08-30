@@ -30,7 +30,7 @@ import sys
 import socket
 
 from kiwi.log import Logger
-from psycopg import ProgrammingError
+from psycopg import ProgrammingError, IntegrityError
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
 from zope.interface import implements
@@ -46,6 +46,10 @@ _ = stoqlib_gettext
 DEFAULT_RDBMS = 'postgres'
 
 log = Logger('stoqlib.database')
+
+# Exported exceptions
+IntegrityError
+ProgrammingError
 
 class DatabaseSettings:
     implements(IDatabaseSettings)
