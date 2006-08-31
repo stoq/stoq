@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005,2006 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -20,6 +20,7 @@
 ##
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Database access methods """
@@ -31,12 +32,14 @@ import socket
 
 from kiwi.log import Logger
 from psycopg import IntegrityError, Error as PostgreSQLError, ProgrammingError
+from psycopg import OperationalError
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
 from zope.interface import implements
 
 from stoqlib.domain.tables import get_table_types, get_sequence_names
-from stoqlib.exceptions import ConfigError, SQLError, StoqlibError
+from stoqlib.exceptions import ConfigError, DatabaseError, SQLError
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import new_transaction, set_verbose
@@ -51,6 +54,7 @@ log = Logger('stoqlib.database')
 IntegrityError
 PostgreSQLError
 ProgrammingError
+OperationalError
 
 class DatabaseSettings:
     implements(IDatabaseSettings)
@@ -65,18 +69,69 @@ class DatabaseSettings:
         self.username = username
         self.password = password
 
-    def get_connection_uri(self):
+    def _get_connection_uri_internal(self, dbname):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
-        if self.rdbms == DEFAULT_RDBMS:
-            authority = '%s:%s@%s:%s' % (
-                self.username, self.password, self.address, self.port)
-            path = '/' + self.dbname
-        else:
+        if self.rdbms != DEFAULT_RDBMS:
             raise ConfigError("Unsupported database type: %s" % self.rdbms)
 
-        return '%s://%s%s' % (self.rdbms, authority, path)
+        authority = '%s:%s@%s:%s' % (
+            self.username, self.password, self.address, self.port)
+        if dbname is None:
+            # template1 is a special database which is always present in 7.4
+            # and later which we current depend on. When we upgrade the
+            # dependency to 8.1 we can switch this to `postgres'
+            dbname = 'template1'
 
+        return '%s://%s/%s' % (self.rdbms, authority, dbname)
+
+    def _get_connection_internal(self, dbname):
+        conn_uri = self._get_connection_uri_internal(dbname)
+        log.info('connecting to %s' % conn_uri)
+        try:
+            conn = connectionForURI(conn_uri)
+            conn.makeConnection()
+        except OperationalError, e:
+            log.info('OperationalError: %s' % e)
+            if 'does not exist' in e.args[0]:
+                return None
+            raise
+        except Exception, e:
+            value = sys.exc_info()[1]
+            raise DatabaseError(
+                _("Could not connect to %s database. The error message is "
+                  "'%s'. Please fix the connection settings you have set "
+                  "and try again." % (DEFAULT_RDBMS, value)))
+        return conn
+
+    # Public API
+
+    def get_connection_uri(self):
+        """
+        Returns a uri representing the current database settings.
+        It's used by SQLObject to connect to a database.
+        @returns: a string like postgresql://username@localhost/dbname
+        """
+        return self._get_connection_uri_internal(self.dbname)
+
+    def get_connection(self):
+        """
+        Returns a connection to the configured database
+        @returns: a database connection
+        """
+        return self._get_connection_internal(self.dbname)
+
+    def get_default_connection(self):
+        """
+        Returns a connection to the default database, note that this
+        different from the configred.
+        This method is mainly here to able to create other databases,
+        which will need a connection, Be careful when using this method.
+        @returns: a database connection
+        """
+        return self._get_connection_internal(None)
+
+    # FIXME: Remove/Rethink these two
     def check_database_address(self):
         try:
             socket.gethostbyaddr(self.address)
@@ -93,6 +148,7 @@ class DatabaseSettings:
         """
         conn_uri = self.get_connection_uri()
         return check_database_connection(conn_uri)
+
 
 def check_database_connection(conn_uri):
     """Checks the database connection according to the stored
@@ -125,6 +181,24 @@ def check_installed_database(conn):
     log.info('Found %d SystemTable entries' % entries)
     return entries > 0
 
+def create_database_if_missing(conn, dbname):
+    """
+    Checks if there's a database present and creates a new one if it's not
+    @param conn: a connection
+    @param dbname: the name of the database
+    @returns: True if a database was created, False otherwise
+    """
+    results = conn.queryOne(
+        "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
+
+    # If it's already present, quit
+    if results[0] == 1:
+        return False
+
+    log.info('Created a SQL batabase called %s' % dbname)
+    conn.query('CREATE DATABASE %s' % dbname)
+
+    return True
 
 #
 # General routines
