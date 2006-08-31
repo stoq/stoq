@@ -32,17 +32,19 @@ import gtk
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info, password as password_dialog
-from sqlobject import connectionForURI
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database import (DatabaseSettings, finish_transaction,
-                              check_installed_database, rollback_and_begin)
+                              check_installed_database,
+                              create_database_if_missing,
+                              rollback_and_begin)
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import create_station
 from stoqlib.domain.examples import createall as examples
+from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
-from stoqlib.lib.message import warning
+from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
 
@@ -238,18 +240,17 @@ class DatabaseSettingsStep(WizardEditorStep):
             self.force_validation()
             return False
 
-        conn_ok, error_msg = self.model.check_database_connection()
-        if not conn_ok:
-            warning(_('Invalid database settings'), error_msg)
+        db_settings = self.wizard_model.db_settings
+        try:
+            conn = db_settings.get_connection()
+        except DatabaseError, e:
+            warning(_('Invalid database settings'), str(e))
             return False
 
-        db_settings = self.wizard_model.db_settings
-        conn_uri = db_settings.get_connection_uri()
-        conn = connectionForURI(conn_uri)
-        conn.makeConnection()
+        # conn is None when the actual database is missing
+        if conn is None:
+            conn = db_settings.get_default_connection()
 
-        has_installed_db = check_installed_database(conn)
-        if not has_installed_db:
             if not user_has_usesuper(conn):
                 username = db_settings.username
                 info(_("User <u>%s</u> has insufficient permissions") % username,
@@ -260,6 +261,19 @@ class DatabaseSettingsStep(WizardEditorStep):
                        "how to solve this problem.") % username)
                 return False
 
+            dbname = db_settings.dbname
+            if not yesno(_("The specifed database `%s' does not exist.\n"
+                           "Do you want to create it?") % dbname,
+                         gtk.RESPONSE_YES,
+                         _("Don't create"), _('Create')):
+                return False
+            create_database_if_missing(conn, db_settings.dbname)
+
+            has_installed_db = False
+        else:
+            has_installed_db = check_installed_database(conn)
+
+        if not has_installed_db:
             # FIXME: This should be moved to a separate page, see bug #2781
             while True:
                 admin_password = password_dialog(
