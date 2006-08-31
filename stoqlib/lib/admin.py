@@ -36,7 +36,7 @@ from kiwi.log import Logger
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database import setup_tables, finish_transaction, run_sql_file
-from stoqlib.database import ProgrammingError
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -111,35 +111,44 @@ def ensure_sellable_units():
         SellableUnit(description=desc, index=index, connection=conn)
     finish_transaction(conn, 1)
 
-def _create_procedural_languages():
+def user_has_usesuper(conn):
+    """
+    This method checks if the currently logged in postgres user has
+    `usesuper' access which is necessary for certain operations
+
+    @param conn: a database connection
+    @returns: if the user has `usesuper' access
+    """
+
+    results = conn.queryOne(
+        'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER')
+    return results[0] == 1
+
+def _create_procedural_languages(conn):
     "Creates procedural SQL languages we're going to use in scripts"
 
-    # Create our own isolated transaction because in case of an error
-    # the transaction will be aborted
-    conn = new_transaction()
+    results = conn.queryAll('SELECT lanname FROM pg_language')
+    languages = [item[0] for item in results]
+    if 'plpgsql' in languages:
+        return
 
-    # The schema file depends on the plpgsql language which needs to be
-    # created for each database, ensure that it's created
-    try:
-        conn.query('CREATE LANGUAGE plpgsql')
-    except ProgrammingError, e:
-        # It was already created, then it can be ignored
-        if 'language "plpgsql" already exists' in e.args[0]:
-            return
-        # We want to see other eventual errors
-        raise
-    else:
-        conn.commit()
+    if not user_has_usesuper(conn):
+        raise StoqlibError(
+            "The current database user does not have super user rights")
+
+    # Create the plpgsql language
+    conn.query('CREATE LANGUAGE plpgsql')
 
 def create_base_schema():
     filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
     sql_file = environ.find_resource('sql', filename)
 
+    conn = new_transaction()
+
     # Create the procedural languages here instead of depending
     # on the user running the `createlang' utility manually.
-    _create_procedural_languages()
+    _create_procedural_languages(conn)
 
-    conn = new_transaction()
     run_sql_file(sql_file, conn)
     finish_transaction(conn, 1)
 
