@@ -66,9 +66,16 @@ class DatabaseSettings:
         self.password = password
 
     def get_connection_uri(self):
-        return build_connection_uri(self.address, self.port, self.dbname,
-                                    self.rdbms, self.username,
-                                    self.password)
+        # Here we construct a uri for database access like:
+        # 'postgresql://username@localhost/dbname'
+        if self.rdbms == DEFAULT_RDBMS:
+            authority = '%s:%s@%s:%s' % (
+                self.username, self.password, self.address, self.port)
+            path = '/' + self.dbname
+        else:
+            raise ConfigError("Unsupported database type: %s" % self.rdbms)
+
+        return '%s://%s%s' % (self.rdbms, authority, path)
 
     def check_database_address(self):
         try:
@@ -86,22 +93,6 @@ class DatabaseSettings:
         """
         conn_uri = self.get_connection_uri()
         return check_database_connection(conn_uri)
-
-
-def build_connection_uri(address, port, dbname, rdbms=DEFAULT_RDBMS,
-                         username=None, password=''):
-    if not username:
-        username = pwd.getpwuid(os.getuid())[0]
-
-    # Here we construct a uri for database access like:
-    # 'postgresql://username@localhost/dbname'
-    if rdbms == DEFAULT_RDBMS:
-        authority = '%s:%s@%s:%s' % (username, password, address, port)
-        path = '/' + dbname
-    else:
-        raise ConfigError("Unsupported database type: %s" % rdbms)
-    return '%s://%s%s' % (rdbms, authority, path)
-
 
 def check_database_connection(conn_uri):
     """Checks the database connection according to the stored
