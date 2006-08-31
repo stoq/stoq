@@ -35,7 +35,6 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from kiwi.environ import environ, EnvironmentError
 from stoqlib.database import (DEFAULT_RDBMS, DatabaseSettings,
-                              build_connection_uri,
                               check_database_connection)
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
@@ -282,6 +281,10 @@ dbusername=%(DBUSERNAME)s"""
         return self._get_password(data_file)
 
     def get_connection_uri(self):
+        db_settings = self.get_settings()
+        return db_settings.get_connection_uri()
+
+    def get_settings(self):
         rdbms = self._get_rdbms_name()
         dbname = self._get_option('dbname', section='Database')
 
@@ -289,17 +292,9 @@ dbusername=%(DBUSERNAME)s"""
             username = self._get_option('dbusername', section='Database')
         else:
             username = getlogin()
-        return build_connection_uri(self._get_address(), self._get_port(),
-                                    dbname, rdbms, username,
-                                    self.get_password())
-
-    def get_settings(self):
-        return DatabaseSettings(self._get_rdbms_name(),
-                                self._get_address(),
-                                self._get_port(),
-                                self._get_dbname(),
-                                self._get_username(),
-                                self.get_password())
+        return DatabaseSettings(
+            rdbms, self._get_address(), self._get_port(),
+            dbname, username, self.get_password())
 
     @argcheck(optparse.Values)
     def set_from_options(self, options):
