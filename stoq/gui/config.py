@@ -41,7 +41,7 @@ from stoqlib.domain.station import create_station
 from stoqlib.domain.examples import createall as examples
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
+from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
 from stoqlib.lib.message import warning
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import new_transaction
@@ -250,6 +250,16 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         has_installed_db = check_installed_database(conn)
         if not has_installed_db:
+            if not user_has_usesuper(conn):
+                username = db_settings.username
+                info(_("User <u>%s</u> has insufficient permissions") % username,
+                     _("The specified user `%s' does not have the required "
+                       "permissions to install Stoq.\n"
+                       "The PostgreSQL user must be a superuser. "
+                       "Consult the Stoq documentation for more information on "
+                       "how to solve this problem.") % username)
+                return False
+
             # FIXME: This should be moved to a separate page, see bug #2781
             while True:
                 admin_password = password_dialog(
