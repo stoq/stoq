@@ -36,6 +36,7 @@ from kiwi.log import Logger
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database import setup_tables, finish_transaction, run_sql_file
+from stoqlib.database import ProgrammingError
 from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -110,9 +111,34 @@ def ensure_sellable_units():
         SellableUnit(description=desc, index=index, connection=conn)
     finish_transaction(conn, 1)
 
+def _create_procedural_languages():
+    "Creates procedural SQL languages we're going to use in scripts"
+
+    # Create our own isolated transaction because in case of an error
+    # the transaction will be aborted
+    conn = new_transaction()
+
+    # The schema file depends on the plpgsql language which needs to be
+    # created for each database, ensure that it's created
+    try:
+        conn.query('CREATE LANGUAGE plpgsql')
+    except ProgrammingError, e:
+        # It was already created, then it can be ignored
+        if 'language "plpgsql" already exists' in e.args[0]:
+            return
+        # We want to see other eventual errors
+        raise
+    else:
+        conn.commit()
+
 def create_base_schema():
     filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
     sql_file = environ.find_resource('sql', filename)
+
+    # Create the procedural languages here instead of depending
+    # on the user running the `createlang' utility manually.
+    _create_procedural_languages()
+
     conn = new_transaction()
     run_sql_file(sql_file, conn)
     finish_transaction(conn, 1)
