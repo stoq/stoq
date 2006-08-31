@@ -279,6 +279,8 @@ class DatabaseSettingsStep(WizardEditorStep):
                 admin_password = password_dialog(
                     _('Set administrator password'),
                     _('You need to set an administrator password to continue'))
+                if admin_password is None:
+                    return False
 
                 if len(admin_password) >= 6:
                     break
