@@ -69,20 +69,18 @@ for (package_name, module_name, required_version, url,
 
     installed_version = get_version(module)
     if isinstance(installed_version, bool):
-            if not installed_version:
-                raise SystemExit("The '%s' module was found but it is too "
-                                 "new for stoqlib requirements.\nPlease "
-                                 "install at least version %s of %s. "
-                                 "Visit %s." % (module_name,
-                                                required_version,
-                                                package_name, url))
+        if not installed_version:
+            raise SystemExit(
+                "The '%s' module was found but it is too new for stoqlib.\n "
+                "requirements. Please install at least version %s of %s. "
+                "Visit %s." % (
+                module_name, required_version, package_name, url))
 
     elif required_version > installed_version:
-        raise SystemExit("The '%s' module was found but it was not "
-                         "recent enough\nPlease install at least "
-                         "version %s of %s. Visit %s."
-                         % (module_name, required_version, package_name,
-                            url))
+        raise SystemExit(
+            "The '%s' module was found but it was not recent enough.\n"
+            "Please install at least version %s of %s. Visit %s."
+            % (module_name, required_version, package_name, url))
 
 
 #
