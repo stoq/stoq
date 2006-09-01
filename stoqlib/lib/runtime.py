@@ -37,7 +37,6 @@ from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     ICurrentUser, IDatabaseSettings)
 
 _connection = None
-_verbose = False
 
 
 #
@@ -126,11 +125,6 @@ def new_transaction():
 # User methods
 #
 
-def set_verbose(verbose_value):
-    global _verbose
-    _verbose = verbose_value
-
-
 def print_immediately(message, break_line=True):
     if break_line:
         print message
@@ -140,10 +134,7 @@ def print_immediately(message, break_line=True):
 
 
 def print_msg(message, break_line=True):
-    global _verbose
-    if not _verbose:
-        return
-    print_immediately(message, break_line)
+    pass
 
 def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
