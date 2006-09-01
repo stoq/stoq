@@ -244,7 +244,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         try:
             conn = db_settings.get_connection()
         except DatabaseError, e:
-            warning(_('Invalid database settings'), str(e))
+            warning(e.short, e.msg)
             return False
 
         # conn is None when the actual database is missing
