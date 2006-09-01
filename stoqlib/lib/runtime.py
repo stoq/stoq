@@ -26,7 +26,6 @@
 
 import datetime
 import sets
-import sys
 
 from kiwi.component import get_utility
 from sqlobject import connectionForURI
@@ -124,17 +123,6 @@ def new_transaction():
 #
 # User methods
 #
-
-def print_immediately(message, break_line=True):
-    if break_line:
-        print message
-    else:
-        print message,
-    sys.stdout.flush()
-
-
-def print_msg(message, break_line=True):
-    pass
 
 def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
