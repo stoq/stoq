@@ -43,7 +43,7 @@ from stoqlib.lib.admin import initialize_system, ensure_admin_user
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IDatabaseSettings)
-from stoqlib.lib.runtime import set_verbose, new_transaction
+from stoqlib.lib.runtime import new_transaction
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')
@@ -280,8 +280,6 @@ def bootstrap_testsuite():
                                    username=username,
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
-
-    set_verbose(verbose)
 
     initialize_system(verbose=verbose)
     ensure_admin_user("")
