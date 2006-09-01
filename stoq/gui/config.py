@@ -217,6 +217,51 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.password.set_sensitive(need_password)
         self.passwd_label.set_sensitive(need_password)
 
+    def _create_database(self, db_settings):
+        # First, ask the user if he really wants to create the database,
+        dbname = db_settings.dbname
+        if not yesno(_("The specifed database `%s' does not exist.\n"
+                       "Do you want to create it?") % dbname,
+                     gtk.RESPONSE_YES,
+                     _("Don't create"), _('Create')):
+            return False
+
+        # Secondly, verify that the user has permission to create the database
+        conn = db_settings.get_default_connection()
+        if not user_has_usesuper(conn):
+            username = db_settings.username
+            info(_("User <u>%s</u> has insufficient permissions") % username,
+                 _("The specified user `%s' does not have the required "
+                   "permissions to install Stoq.\n"
+                   "The PostgreSQL user must be a superuser. "
+                   "Consult the Stoq documentation for more information on "
+                   "how to solve this problem.") % username)
+            return False
+
+        # Finally create it, nothing should go wrong at this point
+        create_database_if_missing(conn, dbname)
+        return True
+
+    def _check_admin_password(self, conn, password):
+        # We can't use PersonAdaptToUser.select here because it requires
+        # us to have an IDatabaseSettings utility provided.
+        results = conn.queryOne(
+            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
+            USER_ADMIN_DEFAULT_NAME,))
+        if not results:
+            return True
+
+        if len(results) > 1:
+            raise DatabaseInconsistency(
+                "It is not possible have more than one user with "
+                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+        elif len(results) == 1:
+            user_password = results[0]
+            if user_password and user_password != password:
+                return False
+
+        return True
+
     #
     # WizardStep hooks
     #
@@ -249,26 +294,8 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         # conn is None when the actual database is missing
         if conn is None:
-            conn = db_settings.get_default_connection()
-
-            if not user_has_usesuper(conn):
-                username = db_settings.username
-                info(_("User <u>%s</u> has insufficient permissions") % username,
-                     _("The specified user `%s' does not have the required "
-                       "permissions to install Stoq.\n"
-                       "The PostgreSQL user must be a superuser. "
-                       "Consult the Stoq documentation for more information on "
-                       "how to solve this problem.") % username)
+            if not self._create_database(db_settings):
                 return False
-
-            dbname = db_settings.dbname
-            if not yesno(_("The specifed database `%s' does not exist.\n"
-                           "Do you want to create it?") % dbname,
-                         gtk.RESPONSE_YES,
-                         _("Don't create"), _('Create')):
-                return False
-            create_database_if_missing(conn, db_settings.dbname)
-
             has_installed_db = False
         else:
             has_installed_db = check_installed_database(conn)
@@ -307,26 +334,6 @@ class DatabaseSettingsStep(WizardEditorStep):
                 time.sleep(1)
 
         self.has_installed_db = has_installed_db
-        return True
-
-    def _check_admin_password(self, conn, password):
-        # We can't use PersonAdaptToUser.select here because it requires
-        # us to have an IDatabaseSettings utility provided.
-        results = conn.queryOne(
-            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
-            USER_ADMIN_DEFAULT_NAME,))
-        if not results:
-            return True
-
-        if len(results) > 1:
-            raise DatabaseInconsistency(
-                "It is not possible have more than one user with "
-                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
-        elif len(results) == 1:
-            user_password = results[0]
-            if user_password and user_password != password:
-                return False
-
         return True
 
     def next_step(self):
