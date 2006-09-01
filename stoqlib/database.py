@@ -95,6 +95,15 @@ class DatabaseSettings:
             log.info('OperationalError: %s' % e)
             if 'does not exist' in e.args[0]:
                 return None
+            elif 'password authentication failed for user' in e.args[0]:
+                raise DatabaseError(
+                    _("Password authentication failed"),
+                    _("The provided password for user %s was not correct") % self.username)
+            elif 'no password supplied' in e.args[0]:
+                raise DatabaseError(
+                    _("Invalid authentication mechanism"),
+                    _("Trust was selected but the database does "
+                      "only support password authentication."))
             raise
         except Exception, e:
             value = sys.exc_info()[1]
