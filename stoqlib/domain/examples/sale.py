@@ -29,9 +29,9 @@ import datetime
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import (new_transaction, print_msg,
-                                 get_current_station)
+from stoqlib.lib.runtime import new_transaction,  get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.domain.examples import log
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
                                        ISalesPerson, ICheckPM)
@@ -108,7 +108,7 @@ def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
 
 def create_sales():
     conn = new_transaction()
-    print_msg("Creating sales... ", break_line=False)
+    log.info("Creating sales")
 
     sale_statuses = Sale.statuses.keys()
     sale_statuses.remove(Sale.STATUS_CANCELLED)
@@ -144,7 +144,6 @@ def create_sales():
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
     conn.commit()
-    print_msg("done.")
 
 if __name__ == '__main__':
     create_sales()

@@ -22,16 +22,17 @@
 ##
 """ Create service objects for an example database"""
 
+from stoqlib.domain.examples import log
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 
 
 MAX_SERVICES_NUMBER = 4
 
 def create_services():
-    print_msg('Creating services...', break_line=False)
+    log.info('Creating services')
     conn = new_transaction()
 
 
@@ -59,7 +60,6 @@ def create_services():
                              cost=cost, barcode=barcode)
 
     conn.commit()
-    print_msg('done.')
 
 if __name__ == "__main__":
     create_services()

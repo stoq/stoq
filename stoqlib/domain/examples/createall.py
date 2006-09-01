@@ -21,7 +21,7 @@
 ##
 """ Create all objects for an example database used by Stoq applications"""
 
-from stoqlib.lib.runtime import print_msg
+from stoqlib.domain.examples import log
 from stoqlib.domain.examples.person import create_people, set_person_utilities
 from stoqlib.domain.examples.product import create_products
 from stoqlib.domain.examples.service import create_services
@@ -32,7 +32,7 @@ from stoqlib.domain.examples.giftcertificate import create_giftcertificates
 from stoqlib.domain.examples.devices import create_device_settings
 
 def create(utilities=False):
-    print_msg('Creating example database...')
+    log.info('Creating example database')
     create_people()
     if utilities:
         set_person_utilities()
@@ -43,4 +43,3 @@ def create(utilities=False):
     create_purchases()
     create_giftcertificates()
     create_device_settings()
-    print_msg('done.')

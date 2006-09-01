@@ -24,13 +24,12 @@
 ##
 """Create a DeviceSettings object that use a VirtualPrinter by default"""
 
-from stoqlib.lib.runtime import print_msg
+from stoqlib.domain.examples import log
 from stoqlib.lib.drivers import create_virtual_printer_for_current_station
 
 def create_device_settings():
-    print_msg("Creating default device settings...", break_line=False)
+    log.info("Creating default device settings")
     create_virtual_printer_for_current_station()
-    print_msg("done.")
 
 if __name__ == "__main__":
     create_device_settings()

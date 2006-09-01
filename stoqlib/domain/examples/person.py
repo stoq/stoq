@@ -33,8 +33,9 @@ from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 
 from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.examples import log
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.person import (Person, EmployeeRole, Address,
                                    CityLocation, EmployeeRoleHistory,
@@ -49,7 +50,7 @@ _ = gettext.gettext
 
 
 def create_people():
-    print_msg('Creating person data...', break_line=False)
+    log.info('Creating person data')
     conn = new_transaction()
 
     person_data = [dict(name='Reginaldo Vasconcellos',
@@ -245,7 +246,6 @@ def create_people():
     #provide_utility(ICurrentBranchStation, station)
 
     conn.commit()
-    print_msg('done.')
 
 def set_person_utilities():
     conn = new_transaction()
