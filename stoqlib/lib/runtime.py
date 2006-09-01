@@ -28,6 +28,7 @@ import datetime
 import sets
 
 from kiwi.component import get_utility
+from kiwi.log import Logger
 from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
 
@@ -36,7 +37,7 @@ from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     ICurrentUser, IDatabaseSettings)
 
 _connection = None
-
+log = Logger('stoqlib.runtime')
 
 #
 # Working with connections and transactions
@@ -116,6 +117,7 @@ def get_connection():
 
 
 def new_transaction():
+    log.info('Creating a new transaction')
     _transaction = StoqlibTransaction(get_connection())
     assert _transaction is not None
     return _transaction
