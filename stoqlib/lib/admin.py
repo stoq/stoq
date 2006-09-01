@@ -157,7 +157,7 @@ def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
-    setup_tables(delete_only=delete_only, verbose=verbose)
+    setup_tables(delete_only=delete_only)
     create_base_schema()
     ensure_system_parameters()
     ensure_sellable_units()
