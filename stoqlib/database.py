@@ -42,7 +42,7 @@ from stoqlib.exceptions import ConfigError, DatabaseError, SQLError
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, set_verbose
+from stoqlib.lib.runtime import new_transaction
 
 _ = stoqlib_gettext
 
@@ -244,8 +244,7 @@ def dropSequence(conn, sequence):
 def sequenceExists(conn, sequence):
     return conn.tableExists(sequence)
 
-def setup_tables(delete_only=False, verbose=False):
-    set_verbose(verbose)
+def setup_tables(delete_only=False):
     conn = new_transaction()
 
     log.info('Dropping tables')
