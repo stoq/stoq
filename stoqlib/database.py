@@ -245,15 +245,8 @@ def sequenceExists(conn, sequence):
     return conn.tableExists(sequence)
 
 def setup_tables(delete_only=False, verbose=False):
-    from stoqlib.domain.parameter import ParameterData
     set_verbose(verbose)
     conn = new_transaction()
-    # We need that since DecimalCol attributes fetch some data from this
-    # table. If we are trying to initialize an existent database this table
-    # can already exist and DecimalCols will get wrong data from it
-    if conn.tableExists(ParameterData.get_db_table_name()):
-        ParameterData.clearTable(connection=conn)
-    conn.commit()
 
     log.info('Dropping tables')
     table_types = get_table_types()
