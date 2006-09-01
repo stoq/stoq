@@ -31,8 +31,6 @@ import sys
 import socket
 
 from kiwi.log import Logger
-from psycopg import IntegrityError, Error as PostgreSQLError, ProgrammingError
-from psycopg import OperationalError
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
 from zope.interface import implements
@@ -51,10 +49,19 @@ DEFAULT_RDBMS = 'postgres'
 log = Logger('stoqlib.database')
 
 # Exported exceptions
-IntegrityError
-PostgreSQLError
-ProgrammingError
-OperationalError
+try:
+    import psycopg2 as psycopg
+    log.info('Using psycopg2')
+    # pyflakes
+    psycopg
+except ImportError:
+    import psycopg
+    log.info('Using psycopg')
+
+PostgreSQLError = psycopg.Error
+IntegrityError = psycopg.IntegrityError
+ProgrammingError = psycopg.ProgrammingError
+OperationalError = psycopg.OperationalError
 
 class DatabaseSettings:
     implements(IDatabaseSettings)
@@ -197,6 +204,7 @@ def create_database_if_missing(conn, dbname):
     @param dbname: the name of the database
     @returns: True if a database was created, False otherwise
     """
+
     results = conn.queryOne(
         "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
 
@@ -204,8 +212,15 @@ def create_database_if_missing(conn, dbname):
     if results[0] == 1:
         return False
 
-    log.info('Created a SQL batabase called %s' % dbname)
-    conn.query('CREATE DATABASE %s' % dbname)
+    # We need to close the current transaction, which is probably created
+    # by SQLObject somehow, the only way to do that is to fetch the psycopg
+    # connection, get the cursor and run the 'commit' statement
+    pgconn = conn.getConnection()
+    curs = pgconn.cursor()
+    curs.execute('commit')
+
+    log.info('Creating SQL batabase: %s' % dbname)
+    curs.execute('CREATE DATABASE %s' % dbname)
 
     return True
 
