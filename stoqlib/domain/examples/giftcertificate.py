@@ -24,15 +24,16 @@
 ##
 """ Create gift certificates for an example database"""
 
+from stoqlib.domain.examples import log
 from stoqlib.domain.giftcertificate import GiftCertificateType, GiftCertificate
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo, AbstractSellable
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 
 MAX_GIFTCERTIFICATE_NUMBER = 2
 
 def create_giftcertificates():
-    print_msg('Creating gift certificates...', break_line=False)
+    log.info('Creating gift certificates')
     conn = new_transaction()
 
     statuses = [AbstractSellable.STATUS_SOLD,
@@ -57,7 +58,6 @@ def create_giftcertificates():
                              base_sellable_info=sellable_info,
                              status=status)
     conn.commit()
-    print_msg('done.')
 
 if __name__ == "__main__":
     create_giftcertificates()

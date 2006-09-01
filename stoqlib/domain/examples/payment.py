@@ -23,9 +23,10 @@
 ##
 """Create simple payments to an example database"""
 
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.examples import log
 from stoqlib.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import (CardInstallmentSettings,
@@ -60,7 +61,7 @@ def get_percentage_commission():
 
 def create_payments():
     conn = new_transaction()
-    print_msg("Creating payments... ", break_line=False)
+    log.info("Creating payments")
 
     table = Person.getAdapterClass(ICreditProvider)
 
@@ -102,7 +103,6 @@ def create_payments():
         method.max_installments_number = MAX_INSTALLMENTS_NUMBER
 
     conn.commit()
-    print_msg("done.")
 
 if __name__ == '__main__':
     create_payments()

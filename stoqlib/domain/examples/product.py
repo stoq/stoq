@@ -29,6 +29,7 @@
 
 from stoqdrivers.constants import UNIT_CUSTOM
 
+from stoqlib.domain.examples import log
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IStorable, ISupplier
@@ -36,13 +37,13 @@ from stoqlib.domain.sellable import (BaseSellableCategory,
                                      SellableCategory,
                                      SellableUnit,
                                      BaseSellableInfo)
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 
 
 MAX_PRODUCT_NUMBER = 4
 
 def create_products():
-    print_msg('Creating products...', break_line=False)
+    log.info('Creating products')
     conn = new_transaction()
 
     base_category_data = ['Keyboard',
@@ -131,7 +132,6 @@ def create_products():
             stock_item.logic_quantity = stock_item.quantity * 2
 
     conn.commit()
-    print_msg('done.')
 
 
 if __name__ == "__main__":

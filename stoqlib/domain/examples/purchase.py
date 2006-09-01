@@ -29,11 +29,12 @@ import datetime
 
 from kiwi.datatypes import currency
 
+from stoqlib.domain.examples import log
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier, IBranch, IPaymentGroup
 from stoqlib.domain.sellable import AbstractSellable
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 
@@ -42,7 +43,7 @@ MAX_PURCHASES_NUMBER = 3
 SELLABLES_PER_PURCHASE = 2
 
 def create_purchases():
-    print_msg('Creating purchase orders...', break_line=False)
+    log.info('Creating purchase orders')
     conn = new_transaction()
 
     supplier_table = Person.getAdapterClass(ISupplier)
@@ -136,8 +137,6 @@ def create_purchases():
     new_order.close()
 
     conn.commit()
-    print_msg('done.')
-
 
 if __name__ == "__main__":
     create_purchases()
