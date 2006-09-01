@@ -24,13 +24,14 @@
 ##
 """ Parameters and system data for applications"""
 
-from kiwi.python import namedAny, ClassInittableObject
 from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
+from kiwi.log import Logger
+from kiwi.python import namedAny, ClassInittableObject
 
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, print_msg
+from stoqlib.lib.runtime import new_transaction
 from stoqlib.database import finish_transaction
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
@@ -44,6 +45,7 @@ _ = stoqlib_gettext
 DECIMAL_PRECISION = 2
 DECIMAL_SIZE = 10
 
+log = Logger('stoqlib.parameters')
 
 class ParameterDetails:
     def __init__(self, group, short_desc, long_desc):
@@ -678,9 +680,8 @@ def check_parameter_presence(conn):
     return results.count() == len(_parameter_info)
 
 def ensure_system_parameters(update=False):
-    print_msg("Creating default system parameters...", break_line=False)
+    log.info("Creating default system parameters")
     conn = new_transaction()
     param = sysparam(conn)
     param.set_defaults(update)
     finish_transaction(conn, 1)
-    print_msg('done')
