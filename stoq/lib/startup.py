@@ -39,7 +39,7 @@ from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     IApplicationDescriptions)
 from stoqlib.lib.message import error
 from stoqlib.lib.migration import schema_migration
-from stoqlib.lib.runtime import get_connection, set_verbose
+from stoqlib.lib.runtime import get_connection
 
 from stoq.lib.configparser import register_config, StoqConfig
 
@@ -83,7 +83,8 @@ def setup(config, options=None, register_station=True, check_schema=True):
 
     if options:
         if options.verbose:
-            set_verbose(options.verbose)
+            # FIXME: Set KIWI_LOG
+            pass
 
         config.set_from_options(options)
 
