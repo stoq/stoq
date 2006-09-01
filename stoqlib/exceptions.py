@@ -50,8 +50,25 @@ class DatabaseInconsistency(Exception):
 
 
 class DatabaseError(Exception):
-    """General database errors"""
+    """
+    General database errors
 
+    There are two ways of raising this exception:
+
+    raise DatabaseError(msg)
+    raise DatabaseError(short, msg)
+    """
+    def __init__(self, msg, long=None):
+        if not long:
+            short = 'Database Error'
+        else:
+            short = msg
+            msg = long
+        self.msg = msg
+        self.short = short
+
+    def __str__(self):
+        return self.msg
 
 class StockError(Exception):
     """Exception for stock operations"""
