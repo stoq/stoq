@@ -34,7 +34,6 @@ from kiwi.log import set_log_level
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import (setup, get_option_parser, create_examples,
                               clean_database)
-from stoqlib.lib.runtime import print_immediately
 
 DEFAULT_SEPARATORS = 79
 
@@ -44,7 +43,7 @@ def test_gui(config, options, tests=None):
 
     if options.verbose:
         set_log_level('uitest', 5)
-        print_immediately('Performing gui module tests... ')
+        print 'Performing gui module tests... '
 
     root = os.path.abspath(os.path.join(sys.argv[0], '..', '..', '..'))
     oldpwd = os.getcwd()
@@ -120,7 +119,7 @@ def test_gui(config, options, tests=None):
 
     os.chdir(oldpwd)
     if options.verbose:
-        print_immediately('gui tests ok')
+        print 'gui tests ok'
     return 0
 
 def main(args):
