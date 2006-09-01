@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              João Victor Duarte Martins  <jvdm@async.com.br>
 ##
 ##
 """ Stoq Configuration dialogs"""
@@ -41,6 +42,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.station import create_station
 from stoqlib.domain.examples import createall as examples
 from stoqlib.exceptions import DatabaseError
+from stoqlib.gui.slaves.user import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
@@ -183,6 +185,40 @@ class ExampleDatabaseStep(WizardEditorStep):
         return stepclass(self.conn, self.wizard,
                          self.model, self)
 
+class AdminPasswordStep(BaseWizardStep):
+    gladefile = 'AdminPasswordStep'
+
+    def __init__(self, conn, wizard, previous, next_model):
+        self._next_model = next_model
+        self.wizard = wizard
+        BaseWizardStep.__init__(self, conn, wizard, previous)
+        self.description_label.set_text(_("I'm adding a user called `%s' which will"
+                                          "have administrator privilegies.\n\nTo be"
+                                          "able to create other users you need to login"
+                                          "with this user in the admin application and"
+                                          "create them.") % USER_ADMIN_DEFAULT_NAME)
+        self.setup_slaves()
+
+    #
+    # WizardStep hooks
+    #
+
+    def setup_slaves(self):
+        self.password_slave = PasswordEditorSlave(self.conn)
+        self.attach_slave("password_holder", self.password_slave)
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.password_slave.password.grab_focus()
+
+    def validate_step(self):
+        return self.password_slave.validate_confirm()
+
+    def next_step(self):
+        return ExampleDatabaseStep(self.conn, self.wizard, self._next_model, self)
+
+
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
     model_type = DatabaseSettings
@@ -300,28 +336,13 @@ class DatabaseSettingsStep(WizardEditorStep):
         else:
             has_installed_db = check_installed_database(conn)
 
-        if not has_installed_db:
-            # FIXME: This should be moved to a separate page, see bug #2781
-            while True:
-                admin_password = password_dialog(
-                    _('Set administrator password'),
-                    _('You need to set an administrator password to continue'))
-                if admin_password is None:
-                    return False
-
-                if len(admin_password) >= 6:
-                    break
-
-                info(_("The supplied password must contain at least 6 characters"))
-
-            self.admin_password = admin_password
-        else:
+        if has_installed_db:
             hostname = db_settings.address
             while True:
                 admin_password = password_dialog(
                     _('Administrator password'),
                     _('To be able to continue the wizard you need to enter the '
-                      'administrator password for the database on host %s') % hostname)
+                      'administrator password for stoq on host %s') % hostname)
                 if admin_password is None:
                     return False
 
@@ -372,7 +393,10 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         set_branch_by_stationid(conn)
 
-        return ExampleDatabaseStep(conn, self.wizard, model, self)
+        if not self.has_installed_db:
+            return AdminPasswordStep(conn, self.wizard, self, next_model = model)
+        else:
+            return ExampleDatabaseStep(conn, self.wizard, model, self)
 
     def setup_proxies(self):
         items = [(value, key)
