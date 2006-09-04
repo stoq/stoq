@@ -357,13 +357,11 @@ class FiscalCoupon:
         # Services are not added, so don't try to remove them
         if isinstance(item, ServiceSellableItem):
             return
-        ids = self._item_ids[item]
-        for item_id in ids:
+        for item_id in self._item_ids.pop(item):
             try:
                 self.printer.cancel_item(item_id)
             except DriverError:
                 return False
-        del self._item_ids[item]
         return True
 
     #
