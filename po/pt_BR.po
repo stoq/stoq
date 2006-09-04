@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-22 17:06-0300\n"
+"POT-Creation-Date: 2006-09-01 18:28-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/database.py:113
+#: ../stoqlib/database.py:102 ../stoqlib/database.py:165
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
@@ -74,7 +74,7 @@ msgstr "Data"
 
 #: ../stoqlib/reporting/purchase.py:68 ../stoqlib/reporting/product.py:61
 #: ../stoqlib/reporting/purchase_receival.py:50
-#: ../stoqlib/gui/editors/personeditor.py:383
+#: ../stoqlib/gui/editors/personeditor.py:387
 #: ../stoqlib/gui/search/sellablesearch.py:90
 #: ../stoqlib/gui/search/receivingsearch.py:63
 #: ../stoqlib/gui/search/productsearch.py:118
@@ -428,7 +428,7 @@ msgid "Received Date"
 msgstr "Data de Recebimento"
 
 #: ../stoqlib/reporting/purchase_receival.py:52
-#: ../stoqlib/gui/editors/personeditor.py:427
+#: ../stoqlib/gui/editors/personeditor.py:433
 #: ../stoqlib/gui/search/receivingsearch.py:65
 #: ../stoqlib/gui/search/stationsearch.py:45
 #: ../stoqlib/gui/search/stationsearch.py:70
@@ -464,7 +464,7 @@ msgstr "recebimentos de compra %s"
 #: ../stoqlib/domain/person.py:653 ../stoqlib/domain/person.py:674
 #: ../stoqlib/domain/person.py:847 ../stoqlib/domain/person.py:874
 #: ../stoqlib/domain/station.py:73 ../stoqlib/gui/slaves/devices.py:65
-#: ../stoqlib/gui/editors/personeditor.py:240
+#: ../stoqlib/gui/editors/personeditor.py:243
 #: ../stoqlib/gui/search/giftcertificatesearch.py:65
 #: ../stoqlib/gui/search/giftcertificatesearch.py:102
 #: ../stoqlib/gui/search/personsearch.py:187
@@ -499,7 +499,7 @@ msgstr "Aberto"
 
 #: ../stoqlib/domain/till.py:79 ../stoqlib/domain/purchase.py:127
 #: ../stoqlib/domain/sellable.py:185 ../stoqlib/domain/sale.py:114
-#: ../stoqlib/domain/payment/base.py:250
+#: ../stoqlib/domain/payment/base.py:238
 msgid "Closed"
 msgstr "Fechado"
 
@@ -641,7 +641,7 @@ msgid "Installments Renegotiation"
 msgstr "Renegociação de Parcelas"
 
 #: ../stoqlib/domain/purchase.py:123 ../stoqlib/domain/sale.py:115
-#: ../stoqlib/domain/payment/base.py:81 ../stoqlib/domain/payment/base.py:251
+#: ../stoqlib/domain/payment/base.py:81 ../stoqlib/domain/payment/base.py:239
 msgid "Cancelled"
 msgstr "Cancelado"
 
@@ -699,27 +699,27 @@ msgstr "Substituição"
 msgid "Exempt"
 msgstr "Isento"
 
-#: ../stoqlib/domain/devices.py:101
+#: ../stoqlib/domain/devices.py:102
 msgid "Serial port 1"
 msgstr "Porta serial 1"
 
-#: ../stoqlib/domain/devices.py:102
+#: ../stoqlib/domain/devices.py:103
 msgid "Serial port 2"
 msgstr "Porta serial 2"
 
-#: ../stoqlib/domain/devices.py:103
+#: ../stoqlib/domain/devices.py:104
 msgid "Parallel port"
 msgstr "Porta paralela"
 
-#: ../stoqlib/domain/devices.py:109
+#: ../stoqlib/domain/devices.py:110
 msgid "Scale"
 msgstr "Balanças"
 
-#: ../stoqlib/domain/devices.py:110
+#: ../stoqlib/domain/devices.py:111
 msgid "Fiscal Printer"
 msgstr "Impressora Fiscal"
 
-#: ../stoqlib/domain/devices.py:111
+#: ../stoqlib/domain/devices.py:112
 msgid "Cheque Printer"
 msgstr "Impressora de Cheque"
 
@@ -754,7 +754,7 @@ msgstr "Secretario(a)"
 msgid "Director"
 msgstr "Diretor"
 
-#: ../stoqlib/domain/payment/base.py:76 ../stoqlib/domain/payment/base.py:248
+#: ../stoqlib/domain/payment/base.py:76 ../stoqlib/domain/payment/base.py:236
 msgid "Preview"
 msgstr "Avaliação"
 
@@ -770,16 +770,16 @@ msgstr "Pago"
 msgid "Reviewing"
 msgstr "Revisão"
 
-#: ../stoqlib/domain/payment/base.py:189
+#: ../stoqlib/domain/payment/base.py:180
 #, python-format
 msgid "Cancellation of payment number %s"
 msgstr "Cancelamento do pagamento número %s"
 
-#: ../stoqlib/domain/payment/base.py:237
+#: ../stoqlib/domain/payment/base.py:225
 msgid "Anonymous"
 msgstr "Anônimo"
 
-#: ../stoqlib/domain/payment/base.py:249
+#: ../stoqlib/domain/payment/base.py:237
 msgid "Open"
 msgstr "Aberto"
 
@@ -847,16 +847,12 @@ msgstr "Parcelado lojista"
 msgid "Installments Provider"
 msgstr "Parcelado administradora"
 
-#: ../stoqlib/lib/admin.py:47
-msgid "administrator"
-msgstr "administrador"
-
 #. Dependencies to create an user.
-#: ../stoqlib/lib/admin.py:63
+#: ../stoqlib/lib/admin.py:66
 msgid "System Administrator"
 msgstr "Administrador de Sistemas"
 
-#: ../stoqlib/lib/admin.py:77
+#: ../stoqlib/lib/admin.py:81
 msgid "Administrator"
 msgstr "Administrador"
 
@@ -1998,78 +1994,106 @@ msgstr "Despesa: %s"
 msgid "Cash out"
 msgstr "Despesa"
 
-#: ../stoqlib/gui/editors/personeditor.py:88
+#: ../stoqlib/gui/editors/personeditor.py:68
+msgid "New Client"
+msgstr "Novo Cliente"
+
+#: ../stoqlib/gui/editors/personeditor.py:89
 msgid "User"
 msgstr "Usuário"
 
-#: ../stoqlib/gui/editors/personeditor.py:117
+#: ../stoqlib/gui/editors/personeditor.py:90
+msgid "New User"
+msgstr "Novo Usuário"
+
+#: ../stoqlib/gui/editors/personeditor.py:119
 msgid "User Details"
 msgstr "Detalhes do Usuário"
 
-#: ../stoqlib/gui/editors/personeditor.py:152
+#: ../stoqlib/gui/editors/personeditor.py:154
 msgid "New Password:"
 msgstr "Nova senha:"
 
-#: ../stoqlib/gui/editors/personeditor.py:153
+#: ../stoqlib/gui/editors/personeditor.py:155
 msgid "Retype New Password:"
 msgstr "Confirme a nova senha:"
 
-#: ../stoqlib/gui/editors/personeditor.py:167
+#: ../stoqlib/gui/editors/personeditor.py:169
 #, python-format
 msgid "Change \"%s\" Password"
 msgstr "Mudar a senha de \"%s\""
 
-#: ../stoqlib/gui/editors/personeditor.py:184
+#: ../stoqlib/gui/editors/personeditor.py:186
 msgid "Password doesn't match with the stored one"
 msgstr "A senha não confere"
 
-#: ../stoqlib/gui/editors/personeditor.py:198
+#: ../stoqlib/gui/editors/personeditor.py:200
 msgid "Credit Provider"
 msgstr "Fornecedor de Crédito"
 
-#: ../stoqlib/gui/editors/personeditor.py:234
+#: ../stoqlib/gui/editors/personeditor.py:201
+msgid "New Credit Provider"
+msgstr "Novo Fornecedor de Crédito"
+
+#: ../stoqlib/gui/editors/personeditor.py:237
 msgid "Payment Type"
 msgstr "Tipo de Pagamento"
 
-#: ../stoqlib/gui/editors/personeditor.py:236
+#: ../stoqlib/gui/editors/personeditor.py:239
 msgid "Destination"
 msgstr "Destino"
 
-#: ../stoqlib/gui/editors/personeditor.py:238
+#: ../stoqlib/gui/editors/personeditor.py:241
 msgid "Commission (%)"
 msgstr "Comissão (%)"
 
-#: ../stoqlib/gui/editors/personeditor.py:254
+#: ../stoqlib/gui/editors/personeditor.py:257
 msgid "Payment Types"
 msgstr "Tipos de Pagamento"
 
-#: ../stoqlib/gui/editors/personeditor.py:290
+#: ../stoqlib/gui/editors/personeditor.py:293
 msgid "Finance Details"
 msgstr "Detalhes da Venda"
 
-#: ../stoqlib/gui/editors/personeditor.py:294
+#: ../stoqlib/gui/editors/personeditor.py:297
 msgid "Employee"
 msgstr "Empregado"
 
-#: ../stoqlib/gui/editors/personeditor.py:316
+#: ../stoqlib/gui/editors/personeditor.py:298
+msgid "New Employee"
+msgstr "Novo Empregado"
+
+#: ../stoqlib/gui/editors/personeditor.py:320
 msgid "Employee Data"
 msgstr "Dados do Empregado"
 
-#: ../stoqlib/gui/editors/personeditor.py:327
+#: ../stoqlib/gui/editors/personeditor.py:331
 msgid "Role History"
 msgstr "Histórico de Cargos"
 
-#: ../stoqlib/gui/editors/personeditor.py:341
+#: ../stoqlib/gui/editors/personeditor.py:345
 msgid "Employee Role"
 msgstr "Cargo de Empregado"
 
-#: ../stoqlib/gui/editors/personeditor.py:346
+#: ../stoqlib/gui/editors/personeditor.py:350
 msgid "Role Name:"
 msgstr "Nome do Cargo:"
 
-#: ../stoqlib/gui/editors/personeditor.py:404
+#: ../stoqlib/gui/editors/personeditor.py:388
+msgid "New Supplier"
+msgstr "Novo Fornecedor"
+
+#: ../stoqlib/gui/editors/personeditor.py:409
 msgid "Transporter"
 msgstr "Transportadora"
+
+#: ../stoqlib/gui/editors/personeditor.py:410
+msgid "New Transporter"
+msgstr "Nova Transportadora"
+
+#: ../stoqlib/gui/editors/personeditor.py:434
+msgid "New Branch"
+msgstr "Nova Unidade"
 
 #: ../stoqlib/gui/editors/categoryeditor.py:37
 msgid "Base Category"
@@ -2663,19 +2687,13 @@ msgid "Mobile"
 msgstr "Celular"
 
 #: ../stoqlib/gui/wizards/personwizard.py:142
-#, python-format
-msgid "Adding a new %s"
-msgstr "Adicionando um novo %s"
+msgid "Adding a %s"
+msgstr "Adicionando %s"
 
 #: ../stoqlib/gui/wizards/personwizard.py:147
 #, python-format
 msgid "What kind of %s are you adding?"
 msgstr "Que tipo de %s você está adicionando?"
-
-#: ../stoqlib/gui/wizards/personwizard.py:209
-#, python-format
-msgid "New %s"
-msgstr "Novo %s"
 
 #: ../stoqlib/gui/wizards/receivingwizard.py:81
 #: ../stoqlib/gui/dialogs/purchasedetails.py:72
@@ -4181,6 +4199,9 @@ msgstr "Adicionar"
 #: ../data/glade/AbstractProductStep.glade.h:7
 msgid "_Search..."
 msgstr "Pe_squisar"
+
+#~ msgid "administrator"
+#~ msgstr "administrador"
 
 #~ msgid "      Available: "
 #~ msgstr "      Disponível: "
