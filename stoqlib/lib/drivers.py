@@ -25,6 +25,7 @@
 """ Useful functions for StoqDrivers interaction """
 
 import gtk
+from kiwi.argcheck import argcheck
 from zope.interface import implements
 from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.cheque import ChequePrinter
@@ -46,6 +47,7 @@ from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
 from stoqlib.domain.service import ServiceSellableItem
+from stoqlib.domain.sellable import AbstractSellableItem
 
 _ = stoqlib_gettext
 _printer = None
@@ -320,6 +322,7 @@ class FiscalCoupon:
                              "configured for this station")
         self._item_ids = {}
 
+    @argcheck(AbstractSellableItem)
     def add_item(self, item):
         # Do not add services to the coupon
         if isinstance(item, ServiceSellableItem):
@@ -349,17 +352,18 @@ class FiscalCoupon:
     def get_items(self):
         return self._item_ids.keys()
 
-    def remove_item(self, sellable):
+    @argcheck(AbstractSellableItem)
+    def remove_item(self, item):
         # Services are not added, so don't try to remove them
-        if isinstance(sellable, ServiceSellableItem):
+        if isinstance(item, ServiceSellableItem):
             return
-        ids = self._item_ids[sellable]
+        ids = self._item_ids[item]
         for item_id in ids:
             try:
                 self.printer.cancel_item(item_id)
             except DriverError:
                 return False
-        del self._item_ids[sellable]
+        del self._item_ids[item]
         return True
 
     #
