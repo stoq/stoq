@@ -45,6 +45,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
+from stoqlib.domain.service import ServiceSellableItem
 
 _ = stoqlib_gettext
 _printer = None
@@ -320,6 +321,10 @@ class FiscalCoupon:
         self._item_ids = {}
 
     def add_item(self, item):
+        # Do not add services to the coupon
+        if isinstance(item, ServiceSellableItem):
+            return
+
         sellable = item.sellable
         max_len = get_capability(self.printer, "item_description")
         description = sellable.base_sellable_info.description[:max_len]
@@ -345,6 +350,9 @@ class FiscalCoupon:
         return self._item_ids.keys()
 
     def remove_item(self, sellable):
+        # Services are not added, so don't try to remove them
+        if isinstance(sellable, ServiceSellableItem):
+            return
         ids = self._item_ids[sellable]
         for item_id in ids:
             try:
