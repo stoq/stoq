@@ -226,6 +226,7 @@ class POSApp(AppWindow):
         self.EditClient.set_sensitive(has_client)
         self.ClientDetails.set_sensitive(has_client)
         self.delivery_button.set_sensitive(has_client and has_sellables)
+        self.NewDelivery.set_sensitive(has_client and has_sellables)
         model = self.sellables.get_selected()
         self.edit_item_button.set_sensitive(
             model is not None and isinstance(model, ServiceSellableItem))
