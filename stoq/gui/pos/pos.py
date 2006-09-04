@@ -596,9 +596,10 @@ class POSApp(AppWindow):
 
     def on_remove_item_button__clicked(self, button):
         sellable = self.sellables.get_selected()
-        if (not self.param.CONFIRM_SALES_ON_TILL
-            and not self._coupon.remove_item(sellable)):
-            return
+        if not self.param.CONFIRM_SALES_ON_TILL:
+            if (not isinstance(sellable, ServiceSellableItem) and
+                not self._coupon.remove_item(sellable)):
+                    return
         self._delete_sellable_item(sellable)
         self._select_first_item()
         self._update_widgets()
