@@ -139,7 +139,7 @@ class PersonRoleTypeStep(WizardEditorStep):
 
     def _setup_widgets(self):
         if self.wizard.role_editor == BranchEditor:
-            label = _('Adding a new %s')
+            label = _('Adding a %s')
             self.individual_check.set_sensitive(False)
             self.company_check.set_sensitive(False)
             self.company_check.set_active(True)
@@ -206,13 +206,19 @@ class PersonRoleWizard(BaseWizard):
 
         BaseWizard.__init__(self, conn,
                             PersonRoleTypeStep(self, conn),
-                            title=_('New %s') % self.get_role_name())
+                            title=self.get_role_title())
 
     def get_role_name(self):
         if not self.role_editor.model_name:
             raise ValueError('Editor %s must define a model_name attribute '
                              % self.role_editor)
         return self.role_editor.model_name
+
+    def get_role_title(self):
+        if not self.role_editor.title:
+            raise ValueError('Editor %s must define a title attribute '
+                             % self.role_editor)
+        return self.role_editor.title
 
     def set_editor(self, editor):
         self.editor = editor

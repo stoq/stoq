@@ -65,6 +65,7 @@ _ = stoqlib_gettext
 
 class ClientEditor(BasePersonRoleEditor):
     model_name = _('Client')
+    title = _('New Client')
     model_iface = IClient
     gladefile = 'BaseTemplate'
 
@@ -86,6 +87,7 @@ class ClientEditor(BasePersonRoleEditor):
 
 class UserEditor(BasePersonRoleEditor):
     model_name = _('User')
+    title = _('New User')
     model_iface = IUser
     gladefile = 'BaseTemplate'
     USER_TAB_POSITION = 0
@@ -196,6 +198,7 @@ class PasswordEditor(BaseEditor):
 
 class CreditProviderEditor(BasePersonRoleEditor):
     model_name = _('Credit Provider')
+    title = _('New Credit Provider')
     model_iface = ICreditProvider
     gladefile = 'BaseTemplate'
     provtype = None
@@ -292,6 +295,7 @@ class FinanceProviderEditor(CreditProviderEditor):
 
 class EmployeeEditor(BasePersonRoleEditor):
     model_name = _('Employee')
+    title = _('New Employee')
     model_iface = IEmployee
     gladefile = 'BaseTemplate'
 
@@ -381,6 +385,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
 
 class SupplierEditor(BasePersonRoleEditor):
     model_name = _('Supplier')
+    title = _('New Supplier')
     model_iface = ISupplier
     gladefile = 'BaseTemplate'
 
@@ -402,6 +407,7 @@ class SupplierEditor(BasePersonRoleEditor):
 
 class TransporterEditor(BasePersonRoleEditor):
     model_name = _('Transporter')
+    title = _('New Transporter')
     model_iface = ITransporter
     gladefile = 'BaseTemplate'
 
@@ -425,6 +431,7 @@ class TransporterEditor(BasePersonRoleEditor):
 
 class BranchEditor(BasePersonRoleEditor):
     model_name = _('Branch')
+    title = _('New Branch')
     model_iface = IBranch
     gladefile = 'BaseTemplate'
 
