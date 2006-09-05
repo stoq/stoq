@@ -506,7 +506,12 @@ class SalesPersonStep(AbstractSalesPersonStep):
     #
 
     def update_discount_and_surcharge(self):
-        self.model.reset_discount_and_surcharge()
+        # Here we need avoid to reset sale data defined when creating the
+        # Sale in the POS application, i.e, we should not reset the
+        # discount and surcharge if they are already set (this is the
+        # case when CONFIRM_SALES_ON_TILL parameter is enabled).
+        if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
+            self.model.reset_discount_and_surcharge()
 
     def setup_invoice_number_widgets(self):
         if not check_virtual_printer_for_current_station(self.conn):
