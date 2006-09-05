@@ -39,7 +39,7 @@ from stoqlib.exceptions import (StoqlibError, DatabaseInconsistency)
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.validators import format_quantity
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.lib.runtime import new_transaction, get_current_user
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                                  get_current_scale_settings,
@@ -65,7 +65,7 @@ from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.till import get_current_till_operation
 from stoqlib.domain.sellable import AbstractSellable
-from stoqlib.domain.interfaces import IDelivery, IStorable
+from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
 
 from stoq.gui.application import AppWindow
 from stoq.gui.pos.neworder import NewOrderEditor
@@ -344,6 +344,10 @@ class POSApp(AppWindow):
     def _new_order(self):
         if not get_current_till_operation(self.conn):
             warning(_(u"You need open the till before start doing sales."))
+            return
+        if not ISalesPerson(get_current_user(self.conn).get_adapted()):
+            warning(_(u"You can't start a new sale, since you are not a "
+                      "salesperson."))
             return
         if self._coupon is not None:
             self._cancel_order()
