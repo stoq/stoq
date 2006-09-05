@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-01 18:28-0300\n"
+"POT-Creation-Date: 2006-09-05 10:35-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,7 +15,26 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoqlib/database.py:102 ../stoqlib/database.py:165
+#: ../stoqlib/database.py:107
+msgid "Password authentication failed"
+msgstr ""
+
+#: ../stoqlib/database.py:108
+#, python-format
+msgid "The provided password for user %s was not correct"
+msgstr ""
+
+#: ../stoqlib/database.py:111
+msgid "Invalid authentication mechanism"
+msgstr ""
+
+#: ../stoqlib/database.py:112
+msgid ""
+"Trust was selected but the database does only support password "
+"authentication."
+msgstr ""
+
+#: ../stoqlib/database.py:118 ../stoqlib/database.py:181
 #, python-format
 msgid ""
 "Could not connect to %s database. The error message is '%s'. Please fix the "
@@ -723,20 +742,20 @@ msgstr ""
 msgid "1/1 Money returned for gift certificate acquittance on sale %04d"
 msgstr ""
 
-#: ../stoqlib/domain/examples/person.py:94
+#: ../stoqlib/domain/examples/person.py:95
 msgid "Clerk"
 msgstr ""
 
-#: ../stoqlib/domain/examples/person.py:95
+#: ../stoqlib/domain/examples/person.py:96
 #: ../stoqlib/gui/search/personsearch.py:355
 msgid "Manager"
 msgstr ""
 
-#: ../stoqlib/domain/examples/person.py:96
+#: ../stoqlib/domain/examples/person.py:97
 msgid "Secretary"
 msgstr ""
 
-#: ../stoqlib/domain/examples/person.py:97
+#: ../stoqlib/domain/examples/person.py:98
 msgid "Director"
 msgstr ""
 
@@ -852,466 +871,466 @@ msgstr ""
 msgid "invoice"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:69
+#: ../stoqlib/lib/drivers.py:70
 msgid "There is no fiscal printer"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:70
+#: ../stoqlib/lib/drivers.py:71
 #, python-format
 msgid ""
 "There is no fiscal printer configured for this station (\"%s\") or the "
 "printer is not enabled currently."
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:89
+#: ../stoqlib/lib/drivers.py:90
 msgid "There is no scale configured"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:90
+#: ../stoqlib/lib/drivers.py:91
 #, python-format
 msgid ""
 "There is no scale configured for this station (\"%s\") or the scale is not "
 "enabled currently"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:194
+#: ../stoqlib/lib/drivers.py:195
 msgid ""
 "It's not possible to emit a read X for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:197 ../stoqlib/lib/drivers.py:215
+#: ../stoqlib/lib/drivers.py:198 ../stoqlib/lib/drivers.py:216
 #: ../stoqlib/gui/base/lists.py:168
 #: ../stoqlib/gui/dialogs/tilloperation.py:222
 msgid "Cancel"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:198 ../stoqlib/lib/drivers.py:216
+#: ../stoqlib/lib/drivers.py:199 ../stoqlib/lib/drivers.py:217
 msgid "Ignore"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:199 ../stoqlib/lib/drivers.py:217
+#: ../stoqlib/lib/drivers.py:200 ../stoqlib/lib/drivers.py:218
 msgid "Try Again"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:212
+#: ../stoqlib/lib/drivers.py:213
 msgid ""
 "It's not possible to emit a reduce Z for the configured printer.\n"
 "Would you like to ignore this error and continue?"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:252
+#: ../stoqlib/lib/drivers.py:253
 msgid "Waiting Scale Reading..."
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:291
+#: ../stoqlib/lib/drivers.py:292
 #, python-format
 msgid "Insert Cheque %d"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:390
+#: ../stoqlib/lib/drivers.py:398
 #, python-format
 msgid ""
 "The printer %s has run out of paper.\n"
 "Add more paper before continuing."
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:392 ../stoqlib/lib/drivers.py:399
+#: ../stoqlib/lib/drivers.py:400 ../stoqlib/lib/drivers.py:407
 msgid "Confirm later"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:392 ../stoqlib/lib/drivers.py:399
+#: ../stoqlib/lib/drivers.py:400 ../stoqlib/lib/drivers.py:407
 #: ../data/glade/TillFiscalOperationsToolbar.glade.h:1
 msgid "Resume"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:397
+#: ../stoqlib/lib/drivers.py:405
 #, python-format
 msgid "The printer %s is offline, turn it on and tryagain"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:403
+#: ../stoqlib/lib/drivers.py:411
 msgid "It is not possible to emit the coupon"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:424
+#: ../stoqlib/lib/drivers.py:432
 msgid "It is not possible to totalize the coupon"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:483
+#: ../stoqlib/lib/drivers.py:491
 #, python-format
 msgid ""
 "The payment method used in this sale (%s) is not configured in the fiscal "
 "printer."
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:485
+#: ../stoqlib/lib/drivers.py:493
 msgid "Use Money as payment method"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:486
+#: ../stoqlib/lib/drivers.py:494
 msgid "Cancel the checkout"
 msgstr ""
 
-#: ../stoqlib/lib/drivers.py:503
+#: ../stoqlib/lib/drivers.py:511
 msgid "It's not possible to close the coupon"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:56 ../stoqlib/lib/parameters.py:144
-#: ../stoqlib/lib/parameters.py:150 ../stoqlib/lib/parameters.py:156
-#: ../stoqlib/lib/parameters.py:174
+#: ../stoqlib/lib/parameters.py:58 ../stoqlib/lib/parameters.py:147
+#: ../stoqlib/lib/parameters.py:153 ../stoqlib/lib/parameters.py:159
+#: ../stoqlib/lib/parameters.py:177
 #: ../data/glade/SystemParameterEditor.glade.h:2
 msgid "General"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:57
+#: ../stoqlib/lib/parameters.py:59
 msgid "Main Company"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:58
+#: ../stoqlib/lib/parameters.py:60
 msgid "The main company which is the owner of all other branch companies"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:61 ../stoqlib/lib/parameters.py:98
-#: ../stoqlib/lib/parameters.py:103 ../stoqlib/lib/parameters.py:116
-#: ../stoqlib/lib/parameters.py:124 ../stoqlib/lib/parameters.py:130
-#: ../stoqlib/lib/parameters.py:137 ../stoqlib/lib/parameters.py:162
-#: ../stoqlib/lib/parameters.py:180 ../stoqlib/lib/parameters.py:186
-#: ../stoqlib/lib/parameters.py:193 ../stoqlib/lib/parameters.py:208
-#: ../stoqlib/lib/parameters.py:222 ../stoqlib/lib/parameters.py:228
-#: ../stoqlib/lib/parameters.py:235 ../stoqlib/lib/parameters.py:241
-#: ../stoqlib/lib/parameters.py:247 ../stoqlib/lib/parameters.py:259
-#: ../stoqlib/lib/parameters.py:266 ../stoqlib/lib/parameters.py:273
+#: ../stoqlib/lib/parameters.py:63 ../stoqlib/lib/parameters.py:100
+#: ../stoqlib/lib/parameters.py:105 ../stoqlib/lib/parameters.py:118
+#: ../stoqlib/lib/parameters.py:126 ../stoqlib/lib/parameters.py:132
+#: ../stoqlib/lib/parameters.py:140 ../stoqlib/lib/parameters.py:165
+#: ../stoqlib/lib/parameters.py:183 ../stoqlib/lib/parameters.py:189
+#: ../stoqlib/lib/parameters.py:196 ../stoqlib/lib/parameters.py:211
+#: ../stoqlib/lib/parameters.py:225 ../stoqlib/lib/parameters.py:231
+#: ../stoqlib/lib/parameters.py:238 ../stoqlib/lib/parameters.py:244
+#: ../stoqlib/lib/parameters.py:250 ../stoqlib/lib/parameters.py:262
+#: ../stoqlib/lib/parameters.py:269 ../stoqlib/lib/parameters.py:276
 #: ../data/glade/ClientDetailsDialog.glade.h:6
 #: ../data/glade/ProductStockHistoryDialog.glade.h:4
 msgid "Sales"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:62
+#: ../stoqlib/lib/parameters.py:64
 msgid "Default Salesperson Role"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:63
+#: ../stoqlib/lib/parameters.py:65
 msgid ""
 "Defines which of the employee roles existent in the system is the "
 "salesperson role"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:67 ../stoqlib/lib/parameters.py:73
-#: ../stoqlib/lib/parameters.py:200 ../stoqlib/lib/parameters.py:215
-#: ../stoqlib/lib/parameters.py:253
+#: ../stoqlib/lib/parameters.py:69 ../stoqlib/lib/parameters.py:75
+#: ../stoqlib/lib/parameters.py:203 ../stoqlib/lib/parameters.py:218
+#: ../stoqlib/lib/parameters.py:256
 msgid "Purchase"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:68
+#: ../stoqlib/lib/parameters.py:70
 msgid "Suggested Supplier"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:69
+#: ../stoqlib/lib/parameters.py:71
 msgid "The supplier suggested when we are adding a new product in the system"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:74
+#: ../stoqlib/lib/parameters.py:76
 msgid "Default Base Sellable Category"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:75
+#: ../stoqlib/lib/parameters.py:77
 msgid ""
 "A default base sellable category which we always get as a suggestion when "
 "adding a new Sellable on the system"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:79 ../stoqlib/lib/parameters.py:86
-#: ../stoqlib/lib/parameters.py:92
+#: ../stoqlib/lib/parameters.py:81 ../stoqlib/lib/parameters.py:88
+#: ../stoqlib/lib/parameters.py:94
 msgid "Financial"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:80
+#: ../stoqlib/lib/parameters.py:82
 msgid "Default Payment Destination"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:81
+#: ../stoqlib/lib/parameters.py:83
 msgid ""
 "A default payment destination which will be used for all the created "
 "payments until the user change the destination of each payment method."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:87
+#: ../stoqlib/lib/parameters.py:89
 msgid "Base Payment Method"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:88
+#: ../stoqlib/lib/parameters.py:90
 msgid ""
 "The base payment method which can easily be converted to other methods like "
 "check and bill."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:93
+#: ../stoqlib/lib/parameters.py:95
 msgid "Money Payment Method"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:94
+#: ../stoqlib/lib/parameters.py:96
 msgid "Definition of the money payment method. This parameter is not editable"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:99
+#: ../stoqlib/lib/parameters.py:101
 msgid "Delivery Service"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:100
+#: ../stoqlib/lib/parameters.py:102
 msgid "The default delivery service in the system."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:104
+#: ../stoqlib/lib/parameters.py:106
 msgid "Default Gift Certificate Type"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:105
+#: ../stoqlib/lib/parameters.py:107
 msgid ""
 "The default gift certificate type used when canceling sales and during "
 "renegotiations."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:109 ../stoqlib/lib/parameters.py:168
+#: ../stoqlib/lib/parameters.py:111 ../stoqlib/lib/parameters.py:171
 #: ../stoqlib/gui/search/sellablesearch.py:95
 msgid "Stock"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:110
+#: ../stoqlib/lib/parameters.py:112
 msgid "Use Logic Quantity"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:111
+#: ../stoqlib/lib/parameters.py:113
 msgid ""
 "An integer that defines if the company can work or not with logic quantities "
 "during stock operations. See StockItem documentation."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:117
+#: ../stoqlib/lib/parameters.py:119
 msgid "Client Maximum Late Days"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:118
+#: ../stoqlib/lib/parameters.py:120
 msgid ""
 "An integer that represents a maximum number of days which a certain client "
 "can have unpaid payments with normal status."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:125
+#: ../stoqlib/lib/parameters.py:127
 msgid "Show POS Application Full Screen"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:126
+#: ../stoqlib/lib/parameters.py:128
 msgid ""
 "Once this parameter is set the Point of Sale application will be showed as "
 "full screen"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:131
+#: ../stoqlib/lib/parameters.py:133
 msgid "Exclude cashier operations in Point of Sale"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:132
+#: ../stoqlib/lib/parameters.py:134
 msgid ""
-"If this parameter is set to False a Till menu will not be added in the POS "
-"application. If you have only one fiscal printer and more than one computer, "
-"set this to False, otherwise True."
+"If you have a computer that will be a Point of Sales and have a fiscal "
+"printer connected, set this False, so the Till menu will appear on POS. If "
+"you prefer to separate the Till menu from POS set this True."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:138
+#: ../stoqlib/lib/parameters.py:141
 msgid "Accept Order Products"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:139
+#: ../stoqlib/lib/parameters.py:142
 msgid ""
 "Can this company make sales for products that doesn't actually exist in the "
 "stock ? If this parameter is True we can order products."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:145
+#: ../stoqlib/lib/parameters.py:148
 msgid "City Suggested"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:146
+#: ../stoqlib/lib/parameters.py:149
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "city."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:151
+#: ../stoqlib/lib/parameters.py:154
 msgid "State Suggested"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:152
+#: ../stoqlib/lib/parameters.py:155
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "state."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:157
+#: ../stoqlib/lib/parameters.py:160
 msgid "Country Suggested"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:158
+#: ../stoqlib/lib/parameters.py:161
 msgid ""
 "When adding a new address for a certain person we will always suggest this "
 "country."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:163
+#: ../stoqlib/lib/parameters.py:166
 msgid "Has Delivery Mode"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:164
+#: ../stoqlib/lib/parameters.py:167
 msgid ""
 "Does this branch work with delivery service? If not, the delivery option "
 "will be disable on Point of Sales Application."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:169
+#: ../stoqlib/lib/parameters.py:172
 msgid "Has Stock Mode"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:170
+#: ../stoqlib/lib/parameters.py:173
 msgid ""
 "Does this branch work with storable items? If the answer is negative, we "
 "will disable stock operations in the system."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:175
+#: ../stoqlib/lib/parameters.py:178
 msgid "Max Search Results"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:176
+#: ../stoqlib/lib/parameters.py:179
 msgid ""
 "The maximum number of results we must show after searching in any dialog."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:181
+#: ../stoqlib/lib/parameters.py:184
 msgid "Mandatory Interest Charge"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:182
+#: ../stoqlib/lib/parameters.py:185
 msgid ""
 "Once this paramter is set, the charge of monthly interest will be mandatory "
 "for every payment"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:187
+#: ../stoqlib/lib/parameters.py:190
 msgid "Confirm Sales on Till"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:188
+#: ../stoqlib/lib/parameters.py:191
 msgid ""
 "Once this parameter is set, the sales confirmation are only made on till "
 "application and the fiscal coupon will be printed on that application "
 "instead of Point of Sales"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:194
+#: ../stoqlib/lib/parameters.py:197
 msgid "Accept Change Salesperson"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:195
+#: ../stoqlib/lib/parameters.py:198
 msgid ""
 "Once this parameter is set to true, the user will be able to change the "
 "salesperson of an opened order on sale checkout dialog"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:201
+#: ../stoqlib/lib/parameters.py:204
 msgid "Use Purchase Preview Payments"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:203
+#: ../stoqlib/lib/parameters.py:206
 msgid ""
 "Generate preview payments for new purchases which are not received yet. Once "
 "the order is received the preview payments will be also confirmed as valid "
 "payments with STATUS_TO_PAY"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:209
+#: ../stoqlib/lib/parameters.py:212
 msgid "Return Money On Sales"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:210
+#: ../stoqlib/lib/parameters.py:213
 msgid ""
 "Once this parameter is set the salesperson can return money to clients when "
 "there is overpaid values in sales with gift certificates as payment method."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:216
+#: ../stoqlib/lib/parameters.py:219
 msgid "Receive Products Without Order"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:217
+#: ../stoqlib/lib/parameters.py:220
 msgid ""
 "Can we receive products without having a purchase order created for them ? "
 "If yes, the first step of ReceivalWizard will accept going to the second "
 "step with no order selected."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:223
+#: ../stoqlib/lib/parameters.py:226
 msgid "Max sale order validity"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:224
+#: ../stoqlib/lib/parameters.py:227
 msgid "The max number of days that a sale order is valid"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:229
+#: ../stoqlib/lib/parameters.py:232
 msgid "Use Scale Price"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:230
+#: ../stoqlib/lib/parameters.py:233
 msgid ""
 "Define if we are going to use the price supplied by the scales for items "
 "that require weighting"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:236
+#: ../stoqlib/lib/parameters.py:239
 msgid "Ask for Sale Order CFOP"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:237
+#: ../stoqlib/lib/parameters.py:240
 msgid ""
 "Once this parameter is set to True we will ask for the CFOP when creating "
 "new sale orders"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:242
+#: ../stoqlib/lib/parameters.py:245
 msgid "Default Sales CFOP"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:243
+#: ../stoqlib/lib/parameters.py:246
 msgid ""
 "Default CFOP (Fiscal Code of Operations) used when generating fiscal book "
 "entries."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:248
+#: ../stoqlib/lib/parameters.py:251
 msgid "Default Return Sales CFOP"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:249
+#: ../stoqlib/lib/parameters.py:252
 msgid ""
 "Default CFOP (Fiscal Code of Operations) used when returning sale orders "
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:254
+#: ../stoqlib/lib/parameters.py:257
 msgid "Default Receiving CFOP"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:255
+#: ../stoqlib/lib/parameters.py:258
 msgid ""
 "Default CFOP (Fiscal Code of Operations) used when receiving products in the "
 "warehouse application."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:260
+#: ../stoqlib/lib/parameters.py:263
 msgid "Default ICMS tax"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:261
+#: ../stoqlib/lib/parameters.py:264
 #, python-format
 msgid ""
 "Default ICMS to be applied on all the products of a sale. Note that this a "
@@ -1319,11 +1338,11 @@ msgid ""
 "which means 18% of tax."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:267
+#: ../stoqlib/lib/parameters.py:270
 msgid "Default ISS tax"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:268
+#: ../stoqlib/lib/parameters.py:271
 #, python-format
 msgid ""
 "Default ISS to be applied on all the services of a sale. Note that this a "
@@ -1331,11 +1350,11 @@ msgid ""
 "which means 12% of tax."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:274
+#: ../stoqlib/lib/parameters.py:277
 msgid "Default Substitution tax"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:275
+#: ../stoqlib/lib/parameters.py:278
 #, python-format
 msgid ""
 "The tax applied on all sale products with substitution tax type. Note that "
@@ -1343,20 +1362,20 @@ msgid ""
 "16, which means 16% of tax."
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:542
+#: ../stoqlib/lib/parameters.py:545
 msgid "Default Store Destination"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:575
+#: ../stoqlib/lib/parameters.py:578
 #: ../stoqlib/gui/editors/deliveryeditor.py:48
 msgid "Delivery"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:590
+#: ../stoqlib/lib/parameters.py:593
 msgid "General Gift Certificate"
 msgstr ""
 
-#: ../stoqlib/lib/parameters.py:646
+#: ../stoqlib/lib/parameters.py:649
 #, python-format
 msgid "There is no defined %s parameter datain the database."
 msgstr ""
