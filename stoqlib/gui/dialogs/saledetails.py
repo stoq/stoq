@@ -36,11 +36,12 @@ from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import SaleView, Sale
+from stoqlib.reporting.sale import SaleOrderReport
 
 _ = stoqlib_gettext
 
@@ -134,6 +135,10 @@ class SaleDetailsDialog(BaseEditor):
     #
     # Kiwi handlers
     #
+
+    def on_print_button__clicked(self, button):
+        print_report(SaleOrderReport,
+                     Sale.get(self.model.id, connection=self.conn))
 
     def on_details_button__clicked(self, *args):
         if not self.model.client_id:
