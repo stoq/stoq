@@ -67,7 +67,8 @@ class AdaptableSQLObject(object):
     @classmethod
     def getFacetType(cls, iface):
         """
-        Fetches a facet associated with an interface
+        Fetches a facet type associated with an interface, or raise
+        LookupError if the facet type cannot be found.
 
         @param iface: interface name for the facet to grab
         @returns: the facet type for the interface
@@ -77,8 +78,7 @@ class AdaptableSQLObject(object):
 
         iface_str = qual(iface)
         if not iface_str in facets:
-            # XXX: LookupError
-            raise TypeError(
+            raise LookupError(
                 "%s doesn't have a facet for interface %s" %
                 (cls.__name__, iface.__name__))
 
@@ -235,7 +235,13 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
     if not isinstance(obj, AdaptableSQLObject):
         return
 
-    facetType = obj.getFacetType(iface)
+    try:
+        facetType = obj.getFacetType(iface)
+    except LookupError:
+        # zope.interface will handle this and raise TypeError,
+        # see InterfaceClass.__call__ in zope/interface/interface.py
+        return None
+
     if facetType:
         results = facetType.selectBy(
             _originalID=obj.id, connection=obj.get_connection())
