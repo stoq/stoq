@@ -75,8 +75,7 @@ class DateSearchSlave(GladeSlaveDelegate):
     gsignal('end-date-selected')
 
     def __init__(self, filter_slave=None):
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               domain='stoqlib')
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
         self.model = DateInterval()
@@ -158,8 +157,7 @@ class _SearchBarEntry(GladeSlaveDelegate):
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, filter_slave=None):
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               domain='stoqlib')
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.search_icon.set_from_stock("stoq-searchtool-icon1",
                                         self.SEARCH_ICON_SIZE)
         if filter_slave:
