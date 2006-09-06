@@ -396,17 +396,17 @@ class FiscalCoupon:
                 if not self.cancel():
                     return False
             except OutofPaperError:
-                if yesno(
+                if not yesno(
                     _(u"The printer %s has run out of paper.\nAdd more paper "
                       "before continuing.") % self.printer.get_printer_name(),
-                    gtk.RESPONSE_OK, _(u"Confirm later"), _(u"Resume")):
+                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except PrinterOfflineError:
-                if yesno(
+                if not yesno(
                     (_(u"The printer %s is offline, turn it on and try"
                        "again") % self.printer.get_model_name()),
-                    gtk.RESPONSE_OK, _(u"Confirm later"), _(u"Resume")):
+                    gtk.RESPONSE_YES, _(u"Resume"), _(u"Confirm later")):
                     return False
                 return self.open()
             except DriverError, details:
@@ -492,7 +492,7 @@ class FiscalCoupon:
                 method_name = get_method_names()[method_id]
                 if yesno(_(u"The payment method used in this sale (%s) is not "
                            "configured in the fiscal printer." % method_name),
-                         gtk.RESPONSE_OK, _(u"Use Money as payment method"),
+                         gtk.RESPONSE_YES, _(u"Use Money as payment method"),
                          _(u"Cancel the checkout")):
                     self.printer.add_payment(MONEY_PM, payment.base_value)
                     continue
