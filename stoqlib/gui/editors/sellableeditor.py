@@ -235,9 +235,11 @@ class SellableEditor(BaseEditor):
 
         self.sellable_proxy = self.add_proxy(self._sellable,
                                              SellableEditor.sellable_widgets)
-        storable = IStorable(self.model)
-        self.storable_proxy = self.add_proxy(storable,
-                                             SellableEditor.storable_widgets)
+
+        storable = IStorable(self.model, None)
+        if storable is not None:
+            self.add_proxy(storable,
+                           SellableEditor.storable_widgets)
         if self._sellable.unit:
             self._sellable.unit = self._sellable.unit.clone()
         else:

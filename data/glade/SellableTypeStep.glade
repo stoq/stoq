@@ -1,0 +1,56 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface>
+    <widget class="GtkWindow" id="SellableTypeStep">
+        <property name="border_width">6</property>
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkTable" id="table1">
+                <property name="border_width">6</property>
+                <property name="n_columns">1</property>
+                <property name="n_rows">3</property>
+                <property name="row_spacing">3</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="ProxyLabel" id="question">
+                        <property name="label" context="yes" translatable="yes">&lt;b&gt;What kind of item do you want to add?&lt;/b&gt;</property>
+                        <property name="visible">True</property>
+                        <property name="xalign">0.0</property>
+                        <property name="ypad">6</property>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="ProxyRadioButton" id="radio_product">
+                        <property name="data_type">bool</property>
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">Product</property>
+                        <property name="model_attribute">editor</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="ProxyRadioButton" id="radio_service">
+                        <property name="active">False</property>
+                        <property name="data_type">bool</property>
+                        <property name="group">radio_product</property>
+                        <property name="is_focus">True</property>
+                        <property name="label" context="yes" translatable="yes">Service</property>
+                        <property name="model_attribute">editor</property>
+                        <property name="visible">True</property>
+                    </widget>
+                    <packing>
+                        <property name="bottom_attach">3</property>
+                        <property name="top_attach">2</property>
+                        <property name="y_options">fill</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
