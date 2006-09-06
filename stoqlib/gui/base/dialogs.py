@@ -463,8 +463,8 @@ class DialogSystemNotifier:
         if verbs == (_("Yes"), _("No")):
             buttons = gtk.BUTTONS_YES_NO
         else:
-            buttons = ((verbs[0], gtk.RESPONSE_NO),
-                       (verbs[1], gtk.RESPONSE_YES))
+            buttons = ((verbs[0], gtk.RESPONSE_YES),
+                       (verbs[1], gtk.RESPONSE_NO))
         return (yesno(text, get_current_toplevel(), default, buttons)
                 == gtk.RESPONSE_YES)
 
