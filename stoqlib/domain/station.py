@@ -114,6 +114,5 @@ def create_station(conn, branch=None):
         raise StoqlibError(
             "There is already a station registered as `%s'." % name)
 
-    BranchStation(name=name, is_active=True, branch=branch, connection=conn)
-
-    return name
+    return BranchStation(name=name, is_active=True, branch=branch,
+                         connection=conn)

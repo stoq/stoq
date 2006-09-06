@@ -163,6 +163,8 @@ class DeviceSettingsEditor(BaseEditor):
                      'is_active_button')
 
     def __init__(self, conn, model=None, station=None):
+        if station is not None and not isinstance(station, BranchStation):
+            raise TypeError("station should be a BranchStation")
         self.printers_dict = get_supported_printers()
         self._branch_station = station
         # This attribute is set to True when setup_proxies is finished
@@ -179,7 +181,7 @@ class DeviceSettingsEditor(BaseEditor):
         if self._branch_station:
             self.station.prefill([(self._branch_station.name,
                                    self._branch_station)])
-            self.station.select_item_by_data(self._branch_station)
+            self.model.station = self._branch_station
             self.station.set_sensitive(False)
             return
         self.station.prefill(
