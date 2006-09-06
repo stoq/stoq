@@ -368,8 +368,8 @@ class POSApp(AppWindow):
 
     def _cancel_order(self):
         if self.sale is not None:
-            if yesno(_(u'The current order will be canceled, Confirm?'),
-                     gtk.RESPONSE_OK,_(u"Go Back"), _(u"Cancel Order")):
+            if not yesno(_(u'The current order will be canceled, Confirm?'),
+                         gtk.RESPONSE_YES,_(u"Cancel Order"), _(u"Go Back")):
                 return
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
@@ -453,20 +453,23 @@ class POSApp(AppWindow):
         if self.sale.client:
             self._coupon.identify_customer(self.sale.client.get_adapted())
         while not self._coupon.open():
-            if yesno(_(u"It is not possible to start a new sale if the "
-                       "fiscal coupon cannot be opened."),
-                     gtk.RESPONSE_OK, _(u"Cancel"), _(u"Try Again")):
+            if not yesno(_(u"It is not possible to start a new sale if the "
+                           "fiscal coupon cannot be opened."),
+                         gtk.RESPONSE_YES, _(u"Try Again"), _(u"Cancel")):
                 self.app.shutdown()
                 break
 
     def _coupon_add_item(self, sellable_item):
         if self.param.CONFIRM_SALES_ON_TILL:
             return
-        # Services do not must be added to the coupon
-        if isinstance(sellable_item, ServiceSellableItem):
-            return
         if self._coupon is None:
             self._open_coupon()
+        self._coupon.add_item(sellable_item)
+
+    def _coupon_remove_item(self, sellable_item):
+        if self.param.CONFIRM_SALES_ON_TILL:
+            return
+
         self._coupon.add_item(sellable_item)
 
     #
@@ -600,10 +603,7 @@ class POSApp(AppWindow):
 
     def on_remove_item_button__clicked(self, button):
         sellable = self.sellables.get_selected()
-        if not self.param.CONFIRM_SALES_ON_TILL:
-            if (not isinstance(sellable, ServiceSellableItem) and
-                not self._coupon.remove_item(sellable)):
-                    return
+        self._coupon_remove_item(sellable)
         self._delete_sellable_item(sellable)
         self._select_first_item()
         self._update_widgets()
