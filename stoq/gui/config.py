@@ -77,7 +77,7 @@ class DeviceSettingsStep(BaseWizardStep):
 
     def _setup_slaves(self, station):
         from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
-        slave = DeviceSettingsDialogSlave(self.conn, station=station)
+        slave = DeviceSettingsDialogSlave(self.conn, station=self.wizard.station)
         self.attach_slave("devices_holder", slave)
 
     #
@@ -385,7 +385,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         if not self.has_installed_db:
             model = model.get_adapted()
         try:
-            create_station(conn)
+            self.wizard.station = create_station(conn)
         except StoqlibError:
             # This happens when a station already exists, it's fine
             # so we can just ignore the error
@@ -394,7 +394,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         set_branch_by_stationid(conn)
 
         if not self.has_installed_db:
-            return AdminPasswordStep(conn, self.wizard, self, next_model = model)
+            return AdminPasswordStep(conn, self.wizard, self, next_model=model)
         else:
             return ExampleDatabaseStep(conn, self.wizard, model, self)
 
@@ -428,6 +428,7 @@ class FirstTimeConfigWizard(BaseWizard):
     def __init__(self, config):
         self.config = config
         self._conn = None
+        self.station = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
