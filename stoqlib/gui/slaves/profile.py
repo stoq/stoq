@@ -52,12 +52,12 @@ class UserProfileSettingsSlave(BaseEditorSlave):
             raise ValueError('You must specify a valid profile')
         if not self.app_name:
             raise ValueError('You must specify an application name')
-        return ProfileSettings(connection=conn, 
+        return ProfileSettings(connection=conn,
                                app_dir_name=self.app_name,
                                has_permission=True,
                                user_profile=self.profile)
 
     def setup_proxies(self):
-        data = self.model.has_permission 
+        data = self.model.has_permission
         self.proxy = self.add_proxy(
             self.model, UserProfileSettingsSlave.proxy_widgets)
