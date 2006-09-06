@@ -30,7 +30,7 @@ import gtk
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from kiwi.python import Settable
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
@@ -65,11 +65,11 @@ class StoqLoginDialog(LoginDialog):
         return None
 
 
-class SelectApplicationsSlave(SlaveDelegate):
+class SelectApplicationsSlave(GladeSlaveDelegate):
     gladefile = "SelectApplicationsSlave"
 
     def __init__(self):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_applist()
 
     def _setup_applist(self):
