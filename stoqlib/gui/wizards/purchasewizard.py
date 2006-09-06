@@ -27,23 +27,28 @@
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.exceptions import StoqlibError
+from stoqlib.database import finish_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.database import rollback_and_begin
 from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
                                   METHOD_CHECK, METHOD_MONEY)
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.dialogs import run_dialog, print_report
+from stoqlib.gui.base.dialogs import print_report, run_dialog
+from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.abstractwizard import AbstractProductStep
+from stoqlib.gui.wizards.abstractwizard import AbstractItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
+from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IPaymentGroup)
+from stoqlib.domain.product import Product
+from stoqlib.domain.service import Service
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -195,29 +200,60 @@ class PurchasePaymentStep(WizardEditorStep):
     def on_method_combo__content_changed(self, *args):
         self._update_payment_method_slave()
 
+class SellableSelectionEditor(BaseEditor):
+    gladefile = 'SellableTypeStep'
 
-class PurchaseProductStep(AbstractProductStep):
+    def on_confirm(self):
+        if self.radio_product.get_active():
+            return ProductEditor
+        elif self.radio_service.get_active():
+            return ServiceEditor
+        raise AssertionError
+
+    # XXX: Remove this, we need to add better infrastructure to handle
+    #      dialogs with a slave but without a model
+    model_name = _('Item')
+    model_type = bool
+    def create_model(self, conn):
+        return True
+
+
+class PurchaseItemStep(AbstractItemStep):
+    """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
 
-    def __init__(self, wizard, previous, conn, model):
-        AbstractProductStep.__init__(self, wizard, previous, conn, model)
-        self.product_button.hide()
+    #
+    # Helper methods
+    #
 
-    def get_columns(self):
-        return [Column('sellable.base_sellable_info.description',
-                       title=_('Description'),
-                       data_type=str, expand=True, searchable=True),
-                Column('quantity', title=_('Quantity'), data_type=float,
-                       width=90, format_func=format_quantity,
-                       editable=True),
-                Column('sellable.unit_description', title=_('Unit'),
-                        data_type=str, width=50),
-                Column('cost', title=_('Cost'), data_type=currency,
-                       editable=True, width=90),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=100)]
+    def run_sellable_editor(self):
+        # We must commit now since we must rollback self.conn if the user
+        # abort the sellable's editor.
+        self.conn.commit()
+        if self.item_proxy.model.item:
+            item = self.item_proxy.model.item.get_adapted()
+            if isinstance(item, Product):
+                editor = ProductEditor
+            elif isinstance(item, Service):
+                editor = ServiceEditor
+            else:
+                raise StoqlibError("Invalid sellable type: %r" % type(item))
+            model = run_dialog(editor, None, self.conn, item)
+        else:
+            editor = run_dialog(SellableSelectionEditor, None, self.conn)
+            model = run_dialog(editor, self, self.conn)
+        if not finish_transaction(self.conn, model, keep_transaction=True):
+            return
+        self.setup_item_entry()
+        item = self.item_proxy.model.item
+        if item:
+            self.item.select(self.item_proxy.model.item)
+
+    #
+    # AbstractItemStep virtual methods
+    #
 
     def get_order_item(self, sellable, cost, quantity):
         item = self.model.add_item(sellable, quantity)
@@ -227,9 +263,25 @@ class PurchaseProductStep(AbstractProductStep):
     def get_saved_items(self):
         return list(self.model.get_items())
 
+    def get_columns(self):
+        return [
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('quantity', title=_('Quantity'), data_type=float, width=90,
+                   format_func=format_quantity, editable=True),
+            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+                   width=50),
+            Column('cost', title=_('Cost'), data_type=currency, editable=True,
+                   width=90),
+            Column('total', title=_('Total'), data_type=currency, width=100),
+            ]
+
     #
     # WizardStep hooks
     #
+
+    def post_init(self):
+        self.product_button.hide()
 
     def next_step(self):
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
@@ -238,19 +290,8 @@ class PurchaseProductStep(AbstractProductStep):
     # callbacks
     #
 
-    def on_add_product_button__clicked(self, *args):
-        if self.product_proxy.model and self.product_proxy.model.product:
-            product = self.product_proxy.model.product.get_adapted()
-        else:
-            product = None
-        # We must commit now since we must rollback self.conn if the user
-        # abort ProductEditor
-        self.conn.commit()
-        if run_dialog(ProductEditor, self, self.conn, product):
-            self.conn.commit()
-            self.setup_product_entry()
-        else:
-            rollback_and_begin(self.conn)
+    def on_add_new_item_button__clicked(self, *args):
+        self.run_sellable_editor()
 
 
 class StartPurchaseStep(WizardEditorStep):
@@ -304,8 +345,7 @@ class StartPurchaseStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
-        return PurchaseProductStep(self.wizard, self, self.conn,
-                                   self.model)
+        return PurchaseItemStep(self.wizard, self, self.conn, self.model)
 
     def has_previous_step(self):
         return False

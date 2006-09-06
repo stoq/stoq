@@ -48,11 +48,11 @@ from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.slaves.paymentmethod import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.product import Product
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson, ISellable
+from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson
 from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.giftcertificate import GiftCertificate
 
 _ = stoqlib_gettext
 
@@ -226,19 +226,19 @@ class AbstractSalesPersonStep(WizardEditorStep):
 
 
 #
-# Abstract Wizards for products
+# Abstract Wizards for items
 #
 
 
-class AbstractProductStep(WizardEditorStep):
-    """An abstract product step for purchases and receiving orders."""
-    gladefile = 'AbstractProductStep'
-    product_widgets = ('product',)
+class AbstractItemStep(WizardEditorStep):
+    """An abstract item step for purchases and receiving orders."""
+    gladefile = 'AbstractItemStep'
+    item_widgets = ('item',)
     proxy_widgets = ('quantity',
                      'unit_label',
                      'cost')
     model_type = None
-    table = Product.getAdapterClass(ISellable)
+    table = AbstractSellable
     item_table = None
     summary_label_text = None
 
@@ -252,43 +252,37 @@ class AbstractProductStep(WizardEditorStep):
             validation_value = False
         self.wizard.refresh_next(validation_value)
 
-    def setup_product_entry(self):
-        items = AbstractSellable.get_unblocked_sellables(self.conn)
-        self.product.prefill([(item.get_description(), item)
-                                  for item in items])
+    def setup_item_entry(self):
+        result = AbstractSellable.get_unblocked_sellables(self.conn)
+        self.item.prefill([(item.get_description(), item)
+                               for item in result
+                                   if not isinstance(item.get_adapted(),
+                                                     GiftCertificate)])
 
     def get_columns(self):
         raise NotImplementedError('This method must be defined on child')
 
     def _update_widgets(self):
-        has_product_str = self.product.get_text() != ''
-        self.add_item_button.set_sensitive(has_product_str)
-        if self.add_item_button.get_property('visible'):
-            has_product = (self.product_proxy.model and
-                           self.product_proxy.model.product is not None)
-            if has_product:
-                text = _('Edit Product...')
-            else:
-                text = _('Add Product...')
-            self.add_product_button.set_label(text)
+        has_item_str = self.item.get_text() != ''
+        self.add_item_button.set_sensitive(has_item_str)
 
-    def _product_notify(self, msg):
-        self.product.set_invalid(msg)
+    def _item_notify(self, msg):
+        self.item.set_invalid(msg)
 
     def _get_sellable(self):
         if self.proxy.model:
-            sellable = self.product_proxy.model.product
+            sellable = self.item_proxy.model.item
         else:
             sellable = None
         if not sellable:
-            barcode = self.product.get_text()
+            barcode = self.item.get_text()
             table = self.table
             sellable = table.get_availables_and_sold_by_barcode(self.conn,
-                                            barcode, self._product_notify)
+                                            barcode, self._item_notify)
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions
-                self.product.set_text(sellable.get_short_description())
+                self.item.set_text(sellable.get_short_description())
         self.add_item_button.set_sensitive(sellable is not None)
         return sellable
 
@@ -296,25 +290,25 @@ class AbstractProductStep(WizardEditorStep):
         self.summary.update_total()
         self.force_validation()
 
-    def _update_list(self, product):
-        products = [s.sellable for s in self.slave.klist]
-        if product in products:
-            msg = (_("The product '%s' was already added to the order")
-                     % product.base_sellable_info.description)
-            self.product.set_invalid(msg)
+    def _update_list(self, item):
+        items = [s.sellable for s in self.slave.klist]
+        if item in items:
+            msg = (_("The item '%s' was already added to the order")
+                     % item.get_description())
+            self.item.set_invalid(msg)
             return
-        if self.product_proxy.model.product is product:
+        if self.item_proxy.model.item is item:
             cost = self.proxy.model.cost
         else:
-            cost = product.cost
+            cost = item.cost
         quantity = (self.proxy.model and self.proxy.model.quantity or
                     decimal.Decimal('1.0'))
-        order_item = self.get_order_item(product, cost, quantity)
+        order_item = self.get_order_item(item, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
         self.proxy.set_model(None, relax_type=True)
-        self.product.set_text('')
-        self.product.grab_focus()
+        self.item.set_text('')
+        self.item.grab_focus()
 
     def get_order_item(self):
         raise NotImplementedError('This method must be defined on child')
@@ -323,10 +317,10 @@ class AbstractProductStep(WizardEditorStep):
         if not self.add_item_button.get_property('sensitive'):
             return
         self.add_item_button.set_sensitive(False)
-        product = self._get_sellable()
-        if not product:
+        item = self._get_sellable()
+        if not item:
             return
-        self._update_list(product)
+        self._update_list(item)
 
     def get_saved_items(self):
         raise NotImplementedError('This method must be defined on child')
@@ -339,22 +333,22 @@ class AbstractProductStep(WizardEditorStep):
         raise NotImplementedError('This method must be defined on child')
 
     def post_init(self):
-        self.product.grab_focus()
-        self.product_hbox.set_focus_chain([self.product,
-                                           self.quantity, self.cost,
-                                           self.add_item_button,
-                                           self.product_button])
+        self.item.grab_focus()
+        self.item_hbox.set_focus_chain([self.item,
+                                       self.quantity, self.cost,
+                                       self.add_item_button,
+                                       self.product_button])
         self.register_validate_function(self._refresh_next)
         self.force_validation()
 
     def setup_proxies(self):
-        self.setup_product_entry()
+        self.setup_item_entry()
         self.proxy = self.add_proxy(None,
-                                    AbstractProductStep.proxy_widgets)
-        widgets = AbstractProductStep.product_widgets
+                                    AbstractItemStep.proxy_widgets)
+        widgets = AbstractItemStep.item_widgets
         model = Settable(quantity=decimal.Decimal('1.0'),
-                         price=currency(0), product=None)
-        self.product_proxy = self.add_proxy(model, widgets)
+                         price=currency(0), item=None)
+        self.item_proxy = self.add_proxy(model, widgets)
 
     def setup_slaves(self):
         items = self.get_saved_items()
@@ -384,26 +378,26 @@ class AbstractProductStep(WizardEditorStep):
     def on_product_button__clicked(self, *args):
         raise NotImplementedError('This method must be defined on child')
 
-    def on_add_product_button__clicked(self, *args):
+    def on_add_new_item_button__clicked(self, *args):
         raise NotImplementedError('This method must be defined on child')
 
     def on_add_item_button__clicked(self, *args):
         self._add_item()
 
-    def on_product__activate(self, *args):
+    def on_item__activate(self, *args):
         self._get_sellable()
         self.quantity.grab_focus()
 
-    def after_product__content_changed(self, *args):
-        self.product.set_valid()
+    def after_item__content_changed(self, *args):
+        self.item.set_valid()
         self._update_widgets()
-        product = self.product_proxy.model.product
-        if not (product and self.product.get_text()):
+        item = self.item_proxy.model.item
+        if not (item and self.item.get_text()):
             self.proxy.set_model(None, relax_type=True)
             return
-        cost = product.cost
+        cost = item.cost
         model = Settable(quantity=decimal.Decimal('1.0'), cost=cost,
-                         product=product)
+                         item=item)
         self.proxy.set_model(model)
 
     def on_quantity__activate(self, *args):

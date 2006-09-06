@@ -37,17 +37,15 @@ from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receiving import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.wizards.abstractwizard import AbstractProductStep
+from stoqlib.gui.wizards.abstractwizard import AbstractItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_current_user, get_current_branch
 from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.product import Product
 from stoqlib.domain.receiving import (ReceivingOrder, ReceivingOrderItem,
                                       get_receiving_items_by_purchase_order)
 from stoqlib.domain.sellable import AbstractSellable
-from stoqlib.domain.interfaces import ISellable
 
 _ = stoqlib_gettext
 
@@ -75,28 +73,46 @@ class ReceivingInvoiceStep(WizardEditorStep):
         self.force_validation()
 
 
-class ReceivingOrderProductStep(AbstractProductStep):
+class ReceivingOrderProductStep(AbstractItemStep):
     model_type = ReceivingOrder
     item_table = ReceivingOrderItem
     summary_label_text = "<b>%s</b>" % _('Total Received:')
 
-    def __init__(self, wizard, previous, conn, model):
-        AbstractProductStep.__init__(self, wizard, previous, conn, model)
-        self.add_product_button.hide()
+    #
+    # AbstractItemStep overrides
+    #
+
+    def setup_item_entry(self):
+        purchase = self.model.purchase
+        if purchase:
+            sellables = [i.sellable for i in purchase.get_pending_items()]
+        else:
+            sellables = AbstractSellable.get_unblocked_sellables(self.conn)
+        self.item.prefill([(sellable.get_description(), sellable)
+                                 for sellable in sellables])
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.add_new_item_button.hide()
+
+    def next_step(self):
+        return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
 
     def get_columns(self):
-        return [Column('sellable.base_sellable_info.description',
-                       title=_('Description'),
-                       data_type=str, expand=True, searchable=True),
-                Column('quantity_received', title=_('Quantity'),
-                       data_type=float, width=90,
-                       format_func=format_quantity, editable=True),
-                Column('sellable.unit_description', title=_('Unit'),
-                        data_type=str, width=50),
-                Column('cost', title=_('Cost'), data_type=currency,
-                       editable=True, width=90),
-                Column('total', title=_('Total'), data_type=currency,
-                       width=100)]
+        return [
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('quantity_received', title=_('Quantity'), data_type=float,
+                   width=90, format_func=format_quantity, editable=True),
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
+                   width=50),
+            Column('cost', title=_('Cost'), data_type=currency, editable=True,
+                   width=90),
+            Column('total', title=_('Total'), data_type=currency, width=100)
+            ]
 
     def get_order_item(self, sellable, cost, quantity):
         return ReceivingOrderItem(connection=self.conn, sellable=sellable,
@@ -110,44 +126,22 @@ class ReceivingOrderProductStep(AbstractProductStep):
                                                      self.model)
 
     #
-    # AbstractProductStep overrides
-    #
-
-    def setup_product_entry(self):
-        purchase = self.model.purchase
-        if purchase:
-            sellables = [i.sellable for i in purchase.get_pending_items()]
-        else:
-            sellables = AbstractSellable.get_unblocked_sellables(self.conn)
-        self.product.prefill([(sellable.get_description(), sellable)
-                                 for sellable in sellables])
-
-    #
-    # WizardStep hooks
-    #
-
-    def next_step(self):
-        return ReceivingInvoiceStep(self.conn, self.wizard,
-                                    self.model, self)
-
-    #
     # callbacks
     #
 
     def on_product_button__clicked(self, *args):
         # We are going to call a SearchEditor subclass which means
         # database synchronization... Outch, time to commit !
-        table = Product.getAdapterClass(ISellable)
-        product_statuses = [table.STATUS_AVAILABLE, table.STATUS_SOLD]
         self.conn.commit()
-        products = run_dialog(ProductSearch, self, self.conn,
-                              hide_footer=False, hide_toolbar=True,
-                              hide_price_column=True,
-                              selection_mode=gtk.SELECTION_MULTIPLE,
-                              use_product_statuses=product_statuses)
-        for product in products:
-            self._update_list(product)
-
+        item_statuses = [AbstractSellable.STATUS_AVAILABLE,
+                         AbstractSellable.STATUS_SOLD]
+        items = run_dialog(ProductSearch, self, self.conn,
+                           hide_footer=False, hide_toolbar=True,
+                           hide_price_column=True,
+                           selection_mode=gtk.SELECTION_MULTIPLE,
+                           use_product_statuses=item_statuses)
+        for item in items:
+            self._update_list(item)
 
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
