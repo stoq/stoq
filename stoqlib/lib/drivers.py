@@ -508,9 +508,9 @@ class FiscalCoupon:
 
     def close(self):
         try:
-            coo = self.printer.close()
+            coupon_id = self.printer.close()
         except DriverError, details:
             warning(_("It's not possible to close the coupon"), str(details))
             return False
-        self.sale.coupon_id = coo
+        self.sale.coupon_id = coupon_id
         return True
