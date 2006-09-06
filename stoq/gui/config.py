@@ -192,10 +192,10 @@ class AdminPasswordStep(BaseWizardStep):
         self._next_model = next_model
         self.wizard = wizard
         BaseWizardStep.__init__(self, conn, wizard, previous)
-        self.description_label.set_text(_("I'm adding a user called `%s' which will"
-                                          "have administrator privilegies.\n\nTo be"
-                                          "able to create other users you need to login"
-                                          "with this user in the admin application and"
+        self.description_label.set_text(_("I'm adding a user called `%s' which will "
+                                          "have administrator privilegies.\n\nTo be "
+                                          "able to create other users you need to login "
+                                          "with this user in the admin application and "
                                           "create them.") % USER_ADMIN_DEFAULT_NAME)
         self.setup_slaves()
 
