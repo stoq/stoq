@@ -129,13 +129,13 @@ class StoqCommandHandler:
 
         conn = new_transaction()
         try:
-            station_name = create_station(conn, branch=None)
+            station = create_station(conn, branch=None)
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
         conn.commit()
 
         if verbose:
-            print 'Registered a new station: %s' % station_name
+            print 'Registered a new station: %s' % station.name
 
     def cmd_updateschema(self, options):
         from stoqlib.lib.migration import schema_migration
