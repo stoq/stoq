@@ -28,7 +28,7 @@ import gtk
 from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.dialogs import run_dialog
@@ -150,14 +150,14 @@ class DiscountSurchargeSlave(BaseEditorSlave):
         self.update_widget_status()
 
 
-class SaleListToolbar(SlaveDelegate):
+class SaleListToolbar(GladeSlaveDelegate):
     """ A simple sale toolbar with common operations like, returning a sale,
     changing installments and showing its details.
     """
     gladefile = "SaleListToolbar"
 
     def __init__(self, conn, searchbar, klist, parent=None):
-        SlaveDelegate.__init__(self, gladefile=SaleListToolbar.gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=SaleListToolbar.gladefile,
                                toplevel_name=SaleListToolbar.gladefile)
         if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "

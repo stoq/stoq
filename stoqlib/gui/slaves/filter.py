@@ -24,7 +24,7 @@
 """ Useful slaves for filtering data in SearchBar """
 
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.lib.translation import stoqlib_gettext
@@ -32,7 +32,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class FilterSlave(SlaveDelegate):
+class FilterSlave(GladeSlaveDelegate):
     """A generic slave for statuses management useful when combined with
     SearchBar as a filter_slave.
 
@@ -48,7 +48,7 @@ class FilterSlave(SlaveDelegate):
 
 
     def __init__(self, statuses, selected=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         if not isinstance(statuses, (tuple, list)):
             raise TypeError('Argument statuses must be of typle list or '
                             'tuple, got %s instead' % type(statuses))

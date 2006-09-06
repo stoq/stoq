@@ -24,11 +24,11 @@
 ##
 """ Slaves for till management """
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 
 
 
-class TillFiscalOperationsToolbar(SlaveDelegate):
+class TillFiscalOperationsToolbar(GladeSlaveDelegate):
     """ A simple sale toolbar with common operations like, returning a sale,
     changing installments and showing its details.
     """
@@ -36,7 +36,7 @@ class TillFiscalOperationsToolbar(SlaveDelegate):
 
     def __init__(self):
         gladefile = TillFiscalOperationsToolbar.gladefile
-        SlaveDelegate.__init__(self, gladefile=gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=gladefile,
                                toplevel_name=gladefile)
 
     def set_tillout_button_sensitive(self, value):

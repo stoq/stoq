@@ -30,7 +30,7 @@ import gtk
 import gobject
 from kiwi.log import Logger
 from kiwi.utils import gsignal
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import Column, ObjectList
 from kiwi.ui.widgets.list import SummaryLabel
 from kiwi.argcheck import argcheck
@@ -67,7 +67,7 @@ class DateInterval:
     end_date = None
 
 
-class DateSearchSlave(SlaveDelegate):
+class DateSearchSlave(GladeSlaveDelegate):
     gladefile = 'DateSearchSlave'
     proxy_widgets = ('start_date',
                      'end_date')
@@ -75,7 +75,7 @@ class DateSearchSlave(SlaveDelegate):
     gsignal('end-date-selected')
 
     def __init__(self, filter_slave=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
                                domain='stoqlib')
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
@@ -150,7 +150,7 @@ class DateSearchSlave(SlaveDelegate):
         self.emit('end-date-selected')
 
 
-class _SearchBarEntry(SlaveDelegate):
+class _SearchBarEntry(GladeSlaveDelegate):
     gladefile = 'SearchBarEntry'
     gsignal('selected')
 
@@ -158,7 +158,7 @@ class _SearchBarEntry(SlaveDelegate):
     ANIMATE_TIMEOUT = 200
 
     def __init__(self, filter_slave=None):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
                                domain='stoqlib')
         self.search_icon.set_from_stock("stoq-searchtool-icon1",
                                         self.SEARCH_ICON_SIZE)
@@ -222,7 +222,7 @@ class _SearchBarEntry(SlaveDelegate):
         self.search_icon.hide()
 
 
-class SearchBar(SlaveDelegate):
+class SearchBar(GladeSlaveDelegate):
     """A portable search bar slave for dialogs and applications"""
 
     gladefile = 'SearchBarHolder'
@@ -241,7 +241,7 @@ class SearchBar(SlaveDelegate):
                            sent to the sqlobject select method
 
         """
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.conn = conn
         self.max_search_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         self._animate_search_icon_id = -1
@@ -608,7 +608,7 @@ class SearchBar(SlaveDelegate):
                      start_date=start_date, end_date=end_date,
                      status=status, *args, **kwargs)
 
-class SearchEditorToolBar(SlaveDelegate):
+class SearchEditorToolBar(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 
@@ -630,7 +630,7 @@ class SearchEditorToolBar(SlaveDelegate):
         self.emit('add')
 
 
-class SearchDialogDetailsSlave(SlaveDelegate):
+class SearchDialogDetailsSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 

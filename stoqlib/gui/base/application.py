@@ -24,7 +24,7 @@
 """ Base classes for applications """
 
 import gtk
-from kiwi.ui.delegates import Delegate
+from kiwi.ui.delegates import GladeDelegate
 from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.dialogs import (get_dialog, run_dialog,
@@ -56,7 +56,7 @@ class BaseApp:
 # Expects an app, with app.shutdown available as a handler
 #
 
-class BaseAppWindow(Delegate):
+class BaseAppWindow(GladeDelegate):
     """ Class to be inherited by applications main window.  """
     gladefile = toplevel_name = ''
     title = ''
@@ -65,7 +65,7 @@ class BaseAppWindow(Delegate):
     @argcheck(BaseApp, object)
     def __init__(self, app, keyactions=None):
         self.app = app
-        Delegate.__init__(self, delete_handler=app.shutdown,
+        GladeDelegate.__init__(self, delete_handler=app.shutdown,
                           keyactions=keyactions,
                           gladefile=self.gladefile,
                           toplevel_name=self.toplevel_name)

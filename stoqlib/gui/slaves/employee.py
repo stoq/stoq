@@ -30,7 +30,7 @@ import datetime
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import ValidationError
 
@@ -277,12 +277,12 @@ class EmployeeRoleSlave(BaseEditorSlave):
         self.comission.set_sensitive(settings)
 
 
-class EmployeeRoleHistorySlave(SlaveDelegate):
+class EmployeeRoleHistorySlave(GladeSlaveDelegate):
     gladefile = "EmployeeRoleHistorySlave"
 
     def __init__(self, employee):
         self.employee = employee
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_widgets()
 
     def _setup_widgets(self):
