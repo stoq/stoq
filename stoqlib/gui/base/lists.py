@@ -69,8 +69,7 @@ class AdditionListSlave(GladeSlaveDelegate):
         if editor_class and not issubclass(editor_class,
                                            (BaseEditor, BaseWizard)):
             raise TypeError("editor_class must be a BaseEditor subclass")
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
-                                    widgets=self.widgets)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._columns = columns or self.get_columns()
         if not self._columns:
             raise StoqlibError("columns must be specified")
