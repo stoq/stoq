@@ -193,10 +193,10 @@ class BasicDialog(AbstractDialog):
     # Kiwi handlers
     #
 
-    def on_ok_button__clicked(self, *args):
+    def on_ok_button__clicked(self, button):
         self.confirm()
 
-    def on_cancel_button__clicked(self, *args):
+    def on_cancel_button__clicked(self, button):
         self.cancel()
 
 #
