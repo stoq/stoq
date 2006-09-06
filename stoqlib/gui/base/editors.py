@@ -25,7 +25,7 @@
 """ Base classes for editors """
 
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.lib.component import Adapter
@@ -35,7 +35,7 @@ from stoqlib.gui.base.dialogs import BasicWrappingDialog
 _ = stoqlib_gettext
 
 
-class BaseEditorSlave(SlaveDelegate):
+class BaseEditorSlave(GladeSlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
     setting up focus sequence, required attributes and validated attrs.
 
@@ -86,7 +86,7 @@ class BaseEditorSlave(SlaveDelegate):
                              "model_iface attributes")
 
         self.model = model
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         if self.visual_mode:
             self._setup_visual_mode()
         self.setup_proxies()

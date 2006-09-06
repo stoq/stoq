@@ -24,7 +24,7 @@
 ##
 """ Slaves for payment methods management"""
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -74,7 +74,7 @@ class FinanceDetailsSlave(BaseEditorSlave):
         self.add_proxy(self.model,
                        FinanceDetailsSlave.proxy_widgets)
 
-class SelectPaymentMethodSlave(SlaveDelegate):
+class SelectPaymentMethodSlave(GladeSlaveDelegate):
     """ This slave show a radion button group with three payment method options:
     Money, Gift Certificate and Other (any other method supported by the system).
     The visibility of these buttons are directly related to payment method
@@ -84,7 +84,7 @@ class SelectPaymentMethodSlave(SlaveDelegate):
     gsignal('method-changed', object)
 
     def __init__(self, method_iface=IMoneyPM):
-        SlaveDelegate.__init__(self, gladefile=SelectPaymentMethodSlave.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=SelectPaymentMethodSlave.gladefile)
         self._setup_widgets()
         self._select_payment_method_by_iface(method_iface)
 

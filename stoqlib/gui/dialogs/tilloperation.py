@@ -31,7 +31,7 @@ import datetime
 import gtk
 from kiwi.datatypes import currency
 from kiwi.utils import gsignal
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
 
@@ -91,7 +91,7 @@ def verify_and_close_till(self, conn, *args):
     for sale in opened_sales:
         sale.till = new_till
 
-class TillOperationDialog(SlaveDelegate):
+class TillOperationDialog(GladeSlaveDelegate):
     app_name = _('Till Operations')
     gladefile = 'TillOperationDialog'
     widgets = ('cash_out_button',
@@ -108,7 +108,7 @@ class TillOperationDialog(SlaveDelegate):
     gsignal('close-till')
 
     def __init__(self, conn):
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets)
         self.main_dialog = BasicWrappingDialog(self, self.title, size=self.size,
                                                hide_footer=True)

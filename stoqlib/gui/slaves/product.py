@@ -24,7 +24,7 @@
 ##
 """ Slaves for products """
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -71,7 +71,7 @@ class TributarySituationSlave(BaseEditorSlave):
         self._update_tax_box()
 
 
-class ProductFilterSlave(SlaveDelegate):
+class ProductFilterSlave(GladeSlaveDelegate):
     """A slave which filter a colection of products by branch companies and
     product status.
     """
@@ -81,7 +81,7 @@ class ProductFilterSlave(SlaveDelegate):
 
     def __init__(self, conn):
         self.conn = conn
-        SlaveDelegate.__init__(self)
+        GladeSlaveDelegate.__init__(self)
         self._setup_slaves()
 
     # the code bellow is duplicated and will be fixed on bug 2651

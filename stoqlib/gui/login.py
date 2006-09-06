@@ -26,7 +26,7 @@
 
 import gtk
 from kiwi.environ import environ
-from kiwi.ui.delegates import Delegate
+from kiwi.ui.delegates import GladeDelegate
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import RunnableView
@@ -34,13 +34,13 @@ from stoqlib.gui.base.dialogs import RunnableView
 _ = stoqlib_gettext
 
 
-class LoginDialog(Delegate, RunnableView):
+class LoginDialog(GladeDelegate, RunnableView):
     toplevel_name = gladefile = "LoginDialog"
     size = (280, 230)
 
     def __init__(self, title=None):
         self.keyactions = { gtk.keysyms.Escape : self.on_escape_pressed }
-        Delegate.__init__(self, gladefile=self.gladefile,
+        GladeDelegate.__init__(self, gladefile=self.gladefile,
                           keyactions=self.keyactions,
                           delete_handler=gtk.main_quit)
         if title:

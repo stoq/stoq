@@ -27,7 +27,7 @@ This whole module is Brazil-specific
 """
 
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.domain.person import PersonAdaptToBranch
@@ -39,7 +39,7 @@ from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, fiscal_book_entries,
 _ = stoqlib_gettext
 
 
-class FiscalBookEntryFilterSlave(SlaveDelegate):
+class FiscalBookEntryFilterSlave(GladeSlaveDelegate):
     """A slave which filter a colection of fiscal book entries by entry type
     (ICMS, IPI or ISS) and branch companies
     """
@@ -48,7 +48,7 @@ class FiscalBookEntryFilterSlave(SlaveDelegate):
 
     def __init__(self, conn):
         self.conn = conn
-        SlaveDelegate.__init__(self, gladefile=self.gladefile)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._setup_slaves()
 
     # the code below is duplicated and will be fixed on bug 2651

@@ -29,7 +29,7 @@ import os
 
 import gtk
 from kiwi.log import Logger
-from kiwi.ui.delegates import SlaveDelegate, Delegate
+from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
 from kiwi.ui.views import BaseView
 from kiwi.ui.dialogs import ask_overwrite, error, warning, info, yesno
 from kiwi.argcheck import argcheck
@@ -51,9 +51,9 @@ log = Logger('stoqlib.dialogs')
 #
 
 
-class Warnbox(SlaveDelegate):
+class Warnbox(GladeSlaveDelegate):
     def __init__(self):
-        SlaveDelegate.__init__(self, gladefile='Warnbox')
+        GladeSlaveDelegate.__init__(self, gladefile='Warnbox')
 
     def setup_label(self, message):
         self.label.set_bold(True)
@@ -80,7 +80,7 @@ class Warnbox(SlaveDelegate):
         self.label.set_text("")
 
 class RunnableView:
-    """A mixin class for any View or Delegate that offers run/close"""
+    """A mixin class for any View or GladeDelegate that offers run/close"""
     retval = None
 
     def close(self, *args):
@@ -101,7 +101,7 @@ class RunnableView:
 # Abstract classes: inherit only, do not use.
 #
 
-class AbstractDialog(Delegate, RunnableView):
+class AbstractDialog(GladeDelegate, RunnableView):
     """Abstract Dialog class that defines a simple run API."""
     gladefile = None
 
@@ -110,7 +110,7 @@ class AbstractDialog(Delegate, RunnableView):
             delete_handler = self.close
 
         self.setup_keyactions()
-        Delegate.__init__(self, gladefile=self.gladefile,
+        GladeDelegate.__init__(self, gladefile=self.gladefile,
                           delete_handler=delete_handler,
                           keyactions=self.keyactions)
 

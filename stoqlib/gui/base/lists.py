@@ -24,7 +24,7 @@
 """ List management for common dialogs.  """
 
 import gtk
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.objectlist import ObjectList
 from kiwi.utils import gsignal
 
@@ -39,7 +39,7 @@ from stoqlib.exceptions import SelectionError, StoqlibError
 _ = stoqlib_gettext
 
 
-class AdditionListSlave(SlaveDelegate):
+class AdditionListSlave(GladeSlaveDelegate):
     """
     A slave that offers a simple list and its management.
     """
@@ -69,7 +69,7 @@ class AdditionListSlave(SlaveDelegate):
         if editor_class and not issubclass(editor_class,
                                            (BaseEditor, BaseWizard)):
             raise TypeError("editor_class must be a BaseEditor subclass")
-        SlaveDelegate.__init__(self, gladefile=self.gladefile,
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
                                widgets=self.widgets, domain='stoqlib')
         self._columns = columns or self.get_columns()
         if not self._columns:

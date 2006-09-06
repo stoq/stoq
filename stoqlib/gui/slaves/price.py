@@ -23,10 +23,10 @@
 ##
 """ A simple slave implementation for price entry/show"""
 
-from kiwi.ui.delegates import SlaveDelegate
+from kiwi.ui.delegates import GladeSlaveDelegate
 
 
-class PriceSlave(SlaveDelegate):
+class PriceSlave(GladeSlaveDelegate):
     """ A simple slave that show a price with a label (when can_edit
     parameter is False) or a entry (can_edit is True).  It is necessary
     that the model has a 'price' attribute
@@ -37,7 +37,7 @@ class PriceSlave(SlaveDelegate):
         else:
             gladefile = "PriceLabelSlave"
         toplevel_name = gladefile
-        SlaveDelegate.__init__(self, toplevel_name=toplevel_name, gladefile=gladefile)
+        GladeSlaveDelegate.__init__(self, toplevel_name=toplevel_name, gladefile=gladefile)
         self._proxy = None
 
     def set_model(self, model):
