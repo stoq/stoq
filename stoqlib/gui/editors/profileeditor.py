@@ -23,13 +23,14 @@
 ##
 """ User profile editor implementation.  """
 
+import gtk
 from kiwi.component import get_utility
 from kiwi.datatypes import ValidationError
+from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from sqlobject.sqlbuilder import func, AND
 
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.slaves.profile import UserProfileSettingsSlave
 from stoqlib.lib.interfaces import IApplicationDescriptions
 from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
@@ -59,26 +60,43 @@ class UserProfileEditor(BaseEditor):
                                     UserProfileEditor.proxy_widgets)
 
     def setup_slaves(self):
+        settings = {}
+        for setting in self.model.profile_settings:
+            settings[setting.app_dir_name] = setting
+
         apps = get_utility(IApplicationDescriptions)
         for name, full_name, icon_name in apps.get_descriptions():
-            model = None
+            # Create the user interface for each application which is
+            # a HBox, a CheckButton and an Image
+            box = gtk.HBox()
+            box.show()
+
+            button = ProxyCheckButton()
+            button.set_label(full_name)
+            button.data_type = bool
+            button.model_attribute = 'has_permission'
+            button.show()
+            box.pack_start(button, padding=6)
+
+            image = gtk.image_new_from_stock(icon_name, gtk.ICON_SIZE_MENU)
+            box.pack_start(image, False, False)
+            image.show()
+
+            self.applications_vbox.pack_start(box, False)
+
             if self.edit_mode:
-                settings = self.model.profile_settings
-                model = [s for s in settings if s.app_dir_name == name]
-                if len(model) > 1:
-                    raise ValueError('You should have only one instance '
-                                     'for application %s' % name)
-                if model:
-                    model = model[0]
-            slave = UserProfileSettingsSlave(self.conn, self.model,
-                                             name, full_name,
-                                             model=model)
-            widget = slave.get_toplevel()
-            self.applications_vbox.pack_start(widget, False)
-            # Scroll to the bottom of the scrolled window
-            vadj = self.scrolled_window.get_vadjustment()
-            vadj.set_value(vadj.upper)
-            widget.show()
+                if not name in settings:
+                    raise AssertionError("Unknown application: %s" % name)
+                model = settings[name]
+            else:
+                model = None
+
+            setattr(self, name, button)
+            self.add_proxy(model, [name])
+
+        # Scroll to the bottom of the scrolled window
+        vadj = self.scrolled_window.get_vadjustment()
+        vadj.set_value(vadj.upper)
 
     #
     # Kiwi handlers
