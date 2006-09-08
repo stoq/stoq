@@ -225,7 +225,7 @@ class Till(Domain):
         branch = get_current_branch(conn)
         result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
                                 cls.q.stationID == BranchStation.q.id,
-                                 BranchStation.q.branchID == branch.id),
+                                BranchStation.q.branchID == branch.id),
                             connection=conn)
         if result.count() > 1:
             raise TillError(
