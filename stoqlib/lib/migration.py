@@ -101,12 +101,12 @@ class SchemaMigration:
         """Check the current version of database and update the schema if
         it's needed
         """
-        conn = new_transaction()
+        trans = new_transaction()
 
-        self._create_tables(conn)
+        self._create_tables(trans)
 
-        if not self._check_up_to_date(conn):
-            finish_transaction(conn, 1)
+        if not self._check_up_to_date(trans):
+            finish_transaction(trans, 1)
             return
 
         # Updating the schema for all the versions from the current database
@@ -114,27 +114,27 @@ class SchemaMigration:
         sql_files = self._get_migration_files(self.current_db_version,
                                               self.db_version)
         for sql_file in sql_files:
-            run_sql_file(sql_file, conn)
+            run_sql_file(sql_file, trans)
             parts = sql_file.replace('.sql', '').split('-')
             version = parts[-1]
             try:
                 version = int(version)
             except ValueError:
                 raise ValueError("Bad sql file name, got %s" % sql_file)
-            add_system_table_reference(conn, version=version)
+            add_system_table_reference(trans, version=version)
         # checks if there is new applications and update all the user
         # profiles on the system
-        update_profile_applications(conn)
+        update_profile_applications(trans)
         # Updating the parameter list
         ensure_system_parameters(update=True)
         # Update the base schema
         create_base_schema()
-        finish_transaction(conn, 1)
+        finish_transaction(trans, 1)
 
 
-def add_system_table_reference(conn, check_new_db=False, version=None):
+def add_system_table_reference(trans, check_new_db=False, version=None):
     """Add a new entry on SystemTable with the current schema version"""
-    result = SystemTable.select(connection=conn).count()
+    result = SystemTable.select(connection=trans).count()
     if result and check_new_db:
         raise ValueError('SystemTable should be empty at this point '
                          'got %d results' % result)
@@ -144,7 +144,7 @@ def add_system_table_reference(conn, check_new_db=False, version=None):
     version = version or stoqlib.db_version
     SystemTable(version=version,
                 update_date=datetime.datetime.now(),
-                connection=conn)
+                connection=trans)
 
 
 schema_migration = SchemaMigration()

@@ -284,12 +284,12 @@ class SaleInvoice(ClassInittableObject):
         return self._syscoord.get_data_as_string()
 
     def _setup_products(self, products):
-        conn = new_transaction()
+        trans = new_transaction()
         icms_total = Decimal("0.0")
         subst_total = Decimal("0.0")
         prod_total = Decimal("0.0")
-        icms_tax = sysparam(conn).ICMS_TAX
-        subst_tax = sysparam(conn).SUBSTITUTION_TAX
+        icms_tax = sysparam(trans).ICMS_TAX
+        subst_tax = sysparam(trans).SUBSTITUTION_TAX
 
         for i, item in enumerate(products):
             if i == SaleInvoice.MAX_PRODUCT_QTY:
