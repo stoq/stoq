@@ -31,6 +31,7 @@ from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from kiwi.datatypes import currency
+from kiwi.log import Logger
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_current_branch
@@ -50,6 +51,8 @@ _ = stoqlib_gettext
 #
 # Domain Classes
 #
+
+log = Logger('stoqlib.till')
 
 class Till(Domain):
     """A definition of till operation.
@@ -212,6 +215,26 @@ class Till(Domain):
         group = self._get_payment_group()
         return group.create_credit(value, reason, self)
 
+    @classmethod
+    def get_current(cls, conn):
+        """
+        Fetches the Till for the current branch.
+        @param conn: a database connection
+        @returns: a Till instance or None
+        """
+        branch = get_current_branch(conn)
+        result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
+                                cls.q.stationID == BranchStation.q.id,
+                                 BranchStation.q.branchID == branch.id),
+                            connection=conn)
+        if result.count() > 1:
+            raise TillError(
+                "You should have only one Till opened. Got %d instead." %
+                result.count())
+        elif result.count() == 0:
+            return None
+        return result[0]
+
 
 class TillEntry(Domain):
     # It's usefull to use the same sequence of Payment table since we want
@@ -309,17 +332,8 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
 
 
 def get_current_till_operation(conn):
-    branch = get_current_branch(conn)
-    result = Till.select(AND(Till.q.status == Till.STATUS_OPEN,
-                             Till.q.stationID == BranchStation.q.id,
-                             BranchStation.q.branchID == branch.id),
-                         connection=conn)
-    if result.count() > 1:
-        raise TillError("You should have only one Till opened. Got %d "
-                        "instead." % result.count())
-    elif result.count() == 0:
-        return None
-    return result[0]
+    log.warn('get_current_till_operation is deprecated, use Till.get_current()')
+    return Till.get_current(conn)
 
 def get_last_till_operation_for_current_branch(conn):
     """  The last till operation is used to get a initial cash amount
