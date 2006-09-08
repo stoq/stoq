@@ -37,23 +37,23 @@ tests.base #pyflakes
 
 class TestStation(unittest.TestCase):
     def setUp(self):
-        self.conn = new_transaction()
+        self.trans = new_transaction()
 
     def tearDown(self):
-        finish_transaction(self.conn)
+        finish_transaction(self.trans)
 
     def test_timestamp(self):
         before = datetime.datetime.now()
         time.sleep(1)
-        person = Person(name="dummy", connection=self.conn)
+        person = Person(name="dummy", connection=self.trans)
         created = datetime.datetime.now()
 
         self.assertEqual(person.te_created.timestamp,
                          person.te_modified.timestamp)
 
-        self.conn.commit()
+        self.trans.commit()
         person.name = 'updated'
-        self.conn.commit()
+        self.trans.commit()
 
         self.assertNotEqual(person.te_created.timestamp,
                             person.te_modified.timestamp)
@@ -74,13 +74,13 @@ class TestStation(unittest.TestCase):
                     before_name, before, after_name, after))
 
     def test_user(self):
-        user = get_current_user(self.conn)
-        person = Person(name="dummy", connection=self.conn)
+        user = get_current_user(self.trans)
+        person = Person(name="dummy", connection=self.trans)
 
         self.assertEqual(person.te_created.user, user)
 
     def test_station(self):
-        station = get_current_station(self.conn)
-        person = Person(name="dummy", connection=self.conn)
+        station = get_current_station(self.trans)
+        person = Person(name="dummy", connection=self.trans)
 
         self.assertEqual(person.te_created.station, station)
