@@ -38,7 +38,7 @@ from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.domain.till import Till
 
 _ = stoqlib_gettext
 
@@ -58,7 +58,7 @@ _till_operation = None
 
 def get_till(conn):
     global _till_operation
-    _till_operation = _till_operation or get_current_till_operation(conn)
+    _till_operation = _till_operation or Till.get_current(conn)
     if _till_operation is None:
         log.info('Creating a new till')
         _till_operation = Till(connection=conn,

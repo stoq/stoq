@@ -29,7 +29,7 @@ from stoqlib.lib.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import Till
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockReference,
                                     ProductSellableItem)
@@ -102,7 +102,7 @@ class TestProductSellableItem(BaseDomainTest):
     _table = ProductSellableItem
 
     def get_foreign_key_data(self):
-        till = get_current_till_operation(self.conn)
+        till = Till.get_current(self.conn)
         person = Person(name='mr been', connection=self.conn)
         person.addFacet(IIndividual, connection=self.conn)
         role = EmployeeRole(connection=self.conn, name="god")

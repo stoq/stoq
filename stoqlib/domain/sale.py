@@ -269,9 +269,9 @@ class Sale(Domain):
         return sellable_cert
 
     def get_clone(self):
-        from stoqlib.domain.till import get_current_till_operation
+        from stoqlib.domain.till import Till
         conn = self.get_connection()
-        till = get_current_till_operation(conn)
+        till = Till.get_current(conn)
         return Sale(client_role=self.client_role, client=self.client,
                     cfop=self.cfop, till=till, coupon_id=None,
                     salesperson=self.salesperson, connection=conn)

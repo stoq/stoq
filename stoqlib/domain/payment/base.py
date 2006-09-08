@@ -280,11 +280,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         """Add a new payment sending correct arguments to Payment
         class
         """
-        from stoqlib.domain.till import get_current_till_operation
+        from stoqlib.domain.till import Till
         conn = self.get_connection()
         destination= destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
         conn = self.get_connection()
-        till = get_current_till_operation(conn)
+        till = Till.get_current(conn)
         return Payment(due_date=due_date, value=value,
                        till=till, description=description, group=self,
                        method=method, destination=destination,
