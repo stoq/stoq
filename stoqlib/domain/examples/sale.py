@@ -60,9 +60,13 @@ def get_till(conn):
     global _till_operation
     _till_operation = _till_operation or get_current_till_operation(conn)
     if _till_operation is None:
+        log.info('Creating a new till')
         _till_operation = Till(connection=conn,
                                station=get_current_station(conn))
         _till_operation.open_till()
+    else:
+        log.info('Returning existing till')
+
     return _till_operation
 
 def get_clients(conn):
@@ -80,8 +84,8 @@ def get_all_products(conn):
     return list(result)
 
 def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
-                 product, installments_number):
-    sale = Sale(till=get_till(conn), client=client, status=status,
+                 product, installments_number, till):
+    sale = Sale(till=till, client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
                 salesperson=salesperson, cfop=sysparam(conn).DEFAULT_SALES_CFOP,
                 connection=conn)
@@ -100,6 +104,7 @@ def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
                                   open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
                                   DEFAULT_PAYMENTS_INTERVAL, sale_total)
     sale.set_valid()
+
     return sale
 
 #
@@ -123,6 +128,7 @@ def create_sales():
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %
                          (DEFAULT_SALE_NUMBER, salespersons.count()))
+    till = get_till(conn)
     open_dates = [datetime.datetime.today(),
                   datetime.datetime.today() + datetime.timedelta(10),
                   datetime.datetime.today() + datetime.timedelta(15),
@@ -137,12 +143,14 @@ def create_sales():
                                                       product_list,
                                                       installments_numbers)):
         _create_sale(conn, open_date, status, salesperson, client, index,
-                     product, installments_number)
+                     product, installments_number, till)
     cancelled_sale = _create_sale(conn, open_dates[0], Sale.STATUS_OPENED,
                                   salespersons[0], clients[0], index+1,
-                                  product_list[0], installments_numbers[0])
+                                  product_list[0], installments_numbers[0], till)
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
+
+    till.close_till()
     conn.commit()
 
 if __name__ == '__main__':
