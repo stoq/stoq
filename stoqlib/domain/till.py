@@ -33,7 +33,7 @@ from zope.interface import implements
 from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_station, get_current_branch
+from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import (TillError, DatabaseInconsistency,
                                 StoqlibError)
 from stoqlib.lib.parameters import sysparam
@@ -43,6 +43,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
+from stoqlib.domain.station import BranchStation
 
 _ = stoqlib_gettext
 
@@ -176,7 +177,7 @@ class Till(Domain):
         these sales are associated with the current one.
         """
 
-        if self.status != Till.STATUS_OPEN:
+        if self.status == Till.STATUS_CLOSED:
             raise StoqlibError("This till is already closed. Open a new till "
                                "before close it.")
         conn = self.get_connection()
@@ -308,17 +309,17 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
 
 
 def get_current_till_operation(conn):
-    query = AND(Till.q.status == Till.STATUS_OPEN,
-                Till.q.stationID == get_current_station(conn).id)
-    result = Till.select(query, connection=conn)
+    branch = get_current_branch(conn)
+    result = Till.select(AND(Till.q.status == Till.STATUS_OPEN,
+                             Till.q.stationID == BranchStation.q.id,
+                             BranchStation.q.branchID == branch.id),
+                         connection=conn)
     if result.count() > 1:
         raise TillError("You should have only one Till opened. Got %d "
                         "instead." % result.count())
     elif result.count() == 0:
         return None
-
     return result[0]
-
 
 def get_last_till_operation_for_current_branch(conn):
     """  The last till operation is used to get a initial cash amount
