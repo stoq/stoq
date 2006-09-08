@@ -219,7 +219,7 @@ def create_database_if_missing(conn, dbname):
     curs = pgconn.cursor()
     curs.execute('commit')
 
-    log.info('Creating SQL batabase: %s' % dbname)
+    log.info('Creating SQL database: %s' % dbname)
     curs.execute('CREATE DATABASE %s' % dbname)
 
     return True
@@ -269,19 +269,19 @@ def sequenceExists(conn, sequence):
     return conn.tableExists(sequence)
 
 def setup_tables(delete_only=False):
-    conn = new_transaction()
+    trans = new_transaction()
 
     log.info('Dropping tables')
     table_types = get_table_types()
     for table in table_types:
         table_name = db_table_name(table)
-        if conn.tableExists(table_name):
-            conn.dropTable(table_name, cascade=True)
+        if trans.tableExists(table_name):
+            trans.dropTable(table_name, cascade=True)
 
     log.info('Dropping sequences')
     for seq_name in get_sequence_names():
-        if sequenceExists(conn, seq_name):
-            dropSequence(conn, seq_name)
+        if sequenceExists(trans, seq_name):
+            dropSequence(trans, seq_name)
 
     if not delete_only:
         log.info('Creating tables')
@@ -290,7 +290,7 @@ def setup_tables(delete_only=False):
             if delete_only:
                 continue
             try:
-                table.createTable(connection=conn)
+                table.createTable(connection=trans)
             except ProgrammingError, e:
                 raise StoqlibError(
                     "An error occurred when creating %s table:\n"
@@ -299,10 +299,10 @@ def setup_tables(delete_only=False):
 
         log.info('Creating sequences')
         for seq_name in get_sequence_names():
-            createSequence(conn, seq_name)
+            createSequence(trans, seq_name)
 
-    conn.commit()
-    finish_transaction(conn, 1)
+    trans.commit()
+    finish_transaction(trans, 1)
 
 def db_table_name(cls):
     """
