@@ -46,51 +46,51 @@ class TestPaymentMethodDetails(BaseDomainTest):
 
     def test_max_installment_number(self):
         # Supplier
-        person = Person(name="Henrique", connection=self.conn)
-        person.addFacet(ICompany, connection=self.conn)
-        supplier = person.addFacet(ISupplier, connection=self.conn)
+        person = Person(name="Henrique", connection=self.trans)
+        person.addFacet(ICompany, connection=self.trans)
+        supplier = person.addFacet(ISupplier, connection=self.trans)
         # Product
-        product = Product(connection=self.conn)
+        product = Product(connection=self.trans)
         # ProductSupplierInfo
         supplier_info = ProductSupplierInfo(supplier=supplier,
                                             base_cost=currency(100),
                                             is_main_supplier=True,
                                             product=product,
-                                            connection=self.conn)
+                                            connection=self.trans)
         # Sellable
         base_category = BaseSellableCategory(description="Monitor",
-                                             connection=self.conn)
+                                             connection=self.trans)
         category = SellableCategory(description="LG",
                                     base_category=base_category,
-                                    connection=self.conn)
+                                    connection=self.trans)
         sellable_info = BaseSellableInfo(description="Studioworks 775N",
                                          price=currency(150),
-                                         connection=self.conn)
+                                         connection=self.trans)
         sellable = product.addFacet(ISellable, category=category,
                                     base_sellable_info=sellable_info,
-                                    connection=self.conn)
+                                    connection=self.trans)
         # Till
-        till = Till.get_current(self.conn)
+        till = Till.get_current(self.trans)
         if till is None:
-            till = Till(connection=self.conn,
-                        station=get_current_station(self.conn))
+            till = Till(connection=self.trans,
+                        station=get_current_station(self.trans))
         # Sale
         sale = Sale(till=till, open_date=datetime.now(), coupon_id=5,
                     salesperson=None,
-                    cfop=sysparam(self.conn).DEFAULT_SALES_CFOP,
-                    connection=self.conn)
+                    cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
+                    connection=self.trans)
         item = sellable.add_sellable_item(sale, price=currency(150))
-        group = sale.addFacet(IPaymentGroup, connection=self.conn)
+        group = sale.addFacet(IPaymentGroup, connection=self.trans)
         result = FinanceDetails.select(FinanceDetails.q.is_active == True,
-                                       connection=self.conn)
+                                       connection=self.trans)
         payment_type = result[0]
-        base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
+        base_method = sysparam(self.trans).BASE_PAYMENT_METHOD
         method = IFinancePM(base_method)
         provider = method.get_finance_companies()[0]
         provider_data = CreditProviderGroupData(group=group,
                                                 payment_type=payment_type,
                                                 provider=provider,
-                                                connection=self.conn)
+                                                connection=self.trans)
         max_installments_number = payment_type.get_max_installments_number()
         self.failUnlessRaises(ValueError,  payment_type.setup_inpayments,
                               group, max_installments_number + 1,

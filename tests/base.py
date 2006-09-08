@@ -114,14 +114,14 @@ class BaseDomainTest(unittest.TestCase):
     def setUp(self):
         if not self._table:
             raise StoqlibError("You must provide a _table attribute")
-        self.conn = new_transaction()
-        self._table_count = self._table.select(connection=self.conn).count()
+        self.trans = new_transaction()
+        self._table_count = self._table.select(connection=self.trans).count()
         self._check_foreign_key_data()
         self.insert_dict, self.edit_dict = self._generate_test_data()
         self._generate_foreign_key_attrs()
 
     def tearDown(self):
-        finish_transaction(self.conn)
+        finish_transaction(self.trans)
 
     #
     # Class methods
@@ -130,7 +130,7 @@ class BaseDomainTest(unittest.TestCase):
     def _check_foreign_key_data(self):
         self._foreign_key_data = self.get_foreign_key_data()
         for fkey_data in self._foreign_key_data:
-            assert fkey_data.get_connection() is self.conn
+            assert fkey_data.get_connection() is self.trans
 
     def _check_foreign_key(self, table, fkey_name):
         return fkey_name == table.sqlmeta.soClass.__name__
@@ -178,10 +178,10 @@ class BaseDomainTest(unittest.TestCase):
         """
         if self.foreign_key_attrs and isinstance(self.foreign_key_attrs, dict):
             for key, klass in self.foreign_key_attrs.items():
-                fk_test_instance = klass(connection=self.conn)
+                fk_test_instance = klass(connection=self.trans)
                 insert_dict, edit_dict = fk_test_instance._generate_test_data()
                 fk_table = fk_test_instance._table
-                fk_instance = fk_table(connection=self.conn,
+                fk_instance = fk_table(connection=self.trans,
                                        **insert_dict)
                 self.insert_dict[key] = fk_instance
 
@@ -229,12 +229,12 @@ class BaseDomainTest(unittest.TestCase):
         if issubclass(self._table, Adapter):
             self._instance = self.get_adapter()
         else:
-            self._instance = self._table(connection=self.conn,
+            self._instance = self._table(connection=self.trans,
                                          **self.insert_dict)
         assert self._instance is not None
         self._table_count = long(self._table_count + 1)
         assert (self._table_count ==
-                self._table.select(connection=self.conn).count())
+                self._table.select(connection=self.trans).count())
 
     def set_and_get(self):
         """Update each common attribute of a domain class using edit_dict

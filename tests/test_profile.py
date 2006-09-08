@@ -50,30 +50,30 @@ class TestProfileSettings(BaseDomainTest):
     _table = ProfileSettings
 
     def get_foreign_key_data(self):
-        return [UserProfile(connection=self.conn, name='Manager')]
+        return [UserProfile(connection=self.trans, name='Manager')]
 
     def test_update_profile_applications(self):
-        profile = UserProfile(connection=self.conn, name='assistant')
+        profile = UserProfile(connection=self.trans, name='assistant')
 
         profile.add_application_reference('warehouse',
                                           has_permission=True)
         items = profile.profile_settings
         assert len(items) == 1
 
-        new_profile = UserProfile(connection=self.conn, name='assistant')
-        update_profile_applications(self.conn, new_profile)
+        new_profile = UserProfile(connection=self.trans, name='assistant')
+        update_profile_applications(self.trans, new_profile)
         items = new_profile.profile_settings
 
     def test_create_profile_template(self):
         profile_name = 'Boss'
         table = UserProfile
-        self.boss_profile = table.create_profile_template(self.conn,
+        self.boss_profile = table.create_profile_template(self.trans,
                                                           profile_name,
                                                           has_full_permission=
                                                           True)
         items = self.boss_profile.profile_settings
 
     def test_check_app_permission(self):
-        profile = UserProfile(connection=self.conn, name='boss')
+        profile = UserProfile(connection=self.trans, name='boss')
         profile.add_application_reference('test_application', True)
         assert profile.check_app_permission('test_application') == True

@@ -91,7 +91,7 @@ class TestCfopData(BaseDomainTest):
     _table = CfopData
 
     def test_get_description(self):
-        cfop = get_cfopdata(self.conn)
+        cfop = get_cfopdata(self.trans)
         full_desc = cfop.get_description()
         assert full_desc == u"%s %s" % (u"2365", u"blabla")
 
@@ -103,44 +103,44 @@ class TestAbstractFiscalBookEntry(BaseDomainTest):
     _table = AbstractFiscalBookEntry
 
     def get_foreign_key_data(self):
-        cfop = get_cfopdata(self.conn)
-        branch = get_branch(self.conn)
-        drawee = get_drawee(self.conn)
-        payment_group = AbstractPaymentGroup(connection=self.conn)
+        cfop = get_cfopdata(self.trans)
+        branch = get_branch(self.trans)
+        drawee = get_drawee(self.trans)
+        payment_group = AbstractPaymentGroup(connection=self.trans)
         return cfop, branch, drawee, payment_group
 
     def test_reverse_entry(self):
-        afbe = get_abstract_fiscal_book_entry(self.conn, 1)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 1)
         self.assertRaises(NotImplementedError, afbe.reverse_entry)
 
     def test_get_reversal_clone(self):
-        afbe = get_abstract_fiscal_book_entry(self.conn, 2)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 2)
         afbe_reversal = afbe.get_reversal_clone(invoice_number=3)
         self.assertEquals(afbe_reversal.invoice_number, 3)
 
     def test_get_entries_by_payment_group(self):
-        afbe = get_abstract_fiscal_book_entry(self.conn, 3)
-        assert afbe._get_entries_by_payment_group(self.conn,
+        afbe = get_abstract_fiscal_book_entry(self.trans, 3)
+        assert afbe._get_entries_by_payment_group(self.trans,
                                                   afbe.payment_group)
-        almost_same_afbe = get_abstract_fiscal_book_entry(self.conn, 4)
+        almost_same_afbe = get_abstract_fiscal_book_entry(self.trans, 4)
         almost_same_afbe.payment_group = afbe.payment_group
         self.assertRaises(DatabaseInconsistency,
                           afbe._get_entries_by_payment_group,
-                          self.conn, afbe.payment_group)
+                          self.trans, afbe.payment_group)
 
     def test_has_entry_by_payment_group(self):
-        new_payment_group = get_new_payment_group(self.conn)
-        afbe = get_abstract_fiscal_book_entry(self.conn, 5)
-        assert afbe.has_entry_by_payment_group(self.conn,
+        new_payment_group = get_new_payment_group(self.trans)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 5)
+        assert afbe.has_entry_by_payment_group(self.trans,
                                                afbe.payment_group)
-        assert not afbe.has_entry_by_payment_group(self.conn,
+        assert not afbe.has_entry_by_payment_group(self.trans,
                                                    new_payment_group)
 
     def test_get_entry_by_payment_group(self):
-        afbe = get_abstract_fiscal_book_entry(self.conn, 6)
-        new_payment_group = get_new_payment_group(self.conn)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 6)
+        new_payment_group = get_new_payment_group(self.trans)
         self.assertRaises(StoqlibError, afbe.get_entry_by_payment_group,
-                          self.conn, new_payment_group)
+                          self.trans, new_payment_group)
 
 
 class TestIcmsIpiBookEntry(BaseDomainTest):
@@ -150,7 +150,7 @@ class TestIcmsIpiBookEntry(BaseDomainTest):
     _table = IcmsIpiBookEntry
 
     def test_reverse_entry(self):
-       icmsipibookentry = get_IcmsIpiBookEntry(self.conn, 7)
+       icmsipibookentry = get_IcmsIpiBookEntry(self.trans, 7)
        reversal = icmsipibookentry.reverse_entry(100)
        self.assertEquals(reversal.icms_value, -10)
        self.assertEquals(reversal.ipi_value, -10)
@@ -163,6 +163,6 @@ class TestIssBookEntry(BaseDomainTest):
     _table = IssBookEntry
 
     def test_reverse_entry(self):
-       issbookentry = get_IssBookEntry(self.conn, 8)
+       issbookentry = get_IssBookEntry(self.trans, 8)
        reversal = issbookentry.reverse_entry(201)
        self.assertEquals(reversal.iss_value, -10)

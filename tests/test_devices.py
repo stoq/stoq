@@ -31,30 +31,30 @@ class TestDevice(BaseDomainTest):
     _table = DeviceSettings
 
     def test_is_a_fiscal_printer(self):
-        station = get_current_station(self.conn)
+        station = get_current_station(self.trans)
         settings = DeviceSettings(station=station,
                                   device=DeviceSettings.DEVICE_SERIAL1,
                                   brand='virtual',
                                   model='Simple',
                                   type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                                  connection=self.conn)
+                                  connection=self.trans)
         self.failUnless(settings.is_a_fiscal_printer())
         settings = DeviceSettings(station=station,
                                   device=DeviceSettings.DEVICE_SERIAL1,
                                   brand='virtual',
                                   model='Simple',
                                   type=DeviceSettings.CHEQUE_PRINTER_DEVICE,
-                                  connection=self.conn)
+                                  connection=self.trans)
         self.failUnless(not settings.is_a_fiscal_printer())
 
     def test_is_custom_pm_configured(self):
-        station = get_current_station(self.conn)
+        station = get_current_station(self.trans)
         settings = DeviceSettings(station=station,
                                   device=DeviceSettings.DEVICE_SERIAL1,
                                   brand='virtual',
                                   model='Simple',
                                   type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                                  connection=self.conn)
+                                  connection=self.trans)
         pm_constants = settings.pm_constants
         self.failUnless(pm_constants is not None, ("pm_constants should be "
                                                    "valid a this point."))
