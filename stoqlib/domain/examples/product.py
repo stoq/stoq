@@ -44,7 +44,7 @@ MAX_PRODUCT_NUMBER = 4
 
 def create_products():
     log.info('Creating products')
-    conn = new_transaction()
+    trans = new_transaction()
 
     base_category_data = ['Keyboard',
                           'Mouse',
@@ -71,23 +71,23 @@ def create_products():
     markups2 = [36, 33, 67, 52] # (30, 80]
 
     supplier_table = Person.getAdapterClass(ISupplier)
-    suppliers = supplier_table.select(connection=conn)
+    suppliers = supplier_table.select(connection=trans)
     if suppliers.count() < MAX_PRODUCT_NUMBER:
         raise ValueError('You must have at least four suppliers on your '
                          'database at this point.')
 
-    units = SellableUnit.select(connection=conn)
+    units = SellableUnit.select(connection=trans)
     if units.count() < MAX_PRODUCT_NUMBER:
-        SellableUnit(connection=conn, description='Cx', index=UNIT_CUSTOM)
-        units = SellableUnit.select(connection=conn)
+        SellableUnit(connection=trans, description='Cx', index=UNIT_CUSTOM)
+        units = SellableUnit.select(connection=trans)
 
     # Creating products and facets
     for index in range(MAX_PRODUCT_NUMBER):
-        product_obj = Product(connection=conn)
+        product_obj = Product(connection=trans)
 
         # Adding a main supplier for the product recently created
         supplier = suppliers[index]
-        supplier_info = ProductSupplierInfo(connection=conn,
+        supplier_info = ProductSupplierInfo(connection=trans,
                                             supplier=supplier,
                                             is_main_supplier=True,
                                             product=product_obj)
@@ -98,7 +98,7 @@ def create_products():
         base_cat = BaseSellableCategory(suggested_markup=markup,
                                         salesperson_commission=commission,
                                         description=base_cat_desc,
-                                        connection=conn)
+                                        connection=trans)
 
         cat_desc = category_data[index]
         commission = commissions2[index]
@@ -107,11 +107,11 @@ def create_products():
                                salesperson_commission=commission,
                                suggested_markup=markup,
                                base_category=base_cat,
-                               connection=conn)
+                               connection=trans)
 
         description = descriptions[index]
         price = prices[index]
-        sellable_info = BaseSellableInfo(connection=conn,
+        sellable_info = BaseSellableInfo(connection=trans,
                                          description=description,
                                          price=price)
 
@@ -119,11 +119,11 @@ def create_products():
         unit = units[index]
         barcode = barcodes[index]
 
-        product_obj.addFacet(ISellable, connection=conn, category=cat,
+        product_obj.addFacet(ISellable, connection=trans, category=cat,
                              cost=cost, unit=unit, barcode=barcode,
                              base_sellable_info=sellable_info)
 
-        storable = product_obj.addFacet(IStorable, connection=conn)
+        storable = product_obj.addFacet(IStorable, connection=trans)
 
         # Setting a initial value for Stocks
         for stock_item in storable.get_stocks():
@@ -131,7 +131,7 @@ def create_products():
             stock_item.stock_cost = stock_costs[index]
             stock_item.logic_quantity = stock_item.quantity * 2
 
-    conn.commit()
+    trans.commit()
 
 
 if __name__ == "__main__":

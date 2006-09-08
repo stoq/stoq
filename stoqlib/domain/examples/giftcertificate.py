@@ -34,7 +34,7 @@ MAX_GIFTCERTIFICATE_NUMBER = 2
 
 def create_giftcertificates():
     log.info('Creating gift certificates')
-    conn = new_transaction()
+    trans = new_transaction()
 
     statuses = [AbstractSellable.STATUS_SOLD,
                 AbstractSellable.STATUS_AVAILABLE]
@@ -47,17 +47,17 @@ def create_giftcertificates():
     # Creating products and facets
     for index in range(MAX_GIFTCERTIFICATE_NUMBER):
         sellable_args = sellable_data[index]
-        sellable_info = BaseSellableInfo(connection=conn, **sellable_args)
+        sellable_info = BaseSellableInfo(connection=trans, **sellable_args)
 
-        cert_type = GiftCertificateType(connection=conn,
+        cert_type = GiftCertificateType(connection=trans,
                                         base_sellable_info=sellable_info)
-        certificate = GiftCertificate(connection=conn)
+        certificate = GiftCertificate(connection=trans)
 
         status = statuses[index]
-        certificate.addFacet(ISellable, connection=conn,
+        certificate.addFacet(ISellable, connection=trans,
                              base_sellable_info=sellable_info,
                              status=status)
-    conn.commit()
+    trans.commit()
 
 if __name__ == "__main__":
     create_giftcertificates()

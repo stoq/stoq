@@ -60,24 +60,24 @@ def get_percentage_commission():
     return round(percentage, 2)
 
 def create_payments():
-    conn = new_transaction()
+    trans = new_transaction()
     log.info("Creating payments")
 
     table = Person.getAdapterClass(ICreditProvider)
 
     # XXX Since SQLObject SelectResults object doesn't provide an
     # index method, I need to use list here.
-    card_providers = table.get_card_providers(conn)
-    finance_companies = table.get_finance_companies(conn)
+    card_providers = table.get_card_providers(trans)
+    finance_companies = table.get_finance_companies(trans)
 
-    destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-    inst_settings = CardInstallmentSettings(connection=conn,
+    destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
+    inst_settings = CardInstallmentSettings(connection=trans,
                                             payment_day=DEFAULT_PAYMENT_DAY,
                                             closing_day=DEFAULT_CLOSING_DAY)
     for provider in card_providers:
         commission = get_percentage_commission()
         general_args = dict(commission=commission, destination=destination,
-                            provider=provider, connection=conn)
+                            provider=provider, connection=trans)
 
         DebitCardDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
         CreditCardDetails(installment_settings=inst_settings,
@@ -93,16 +93,16 @@ def create_payments():
     for provider in finance_companies:
         commission = get_percentage_commission()
         general_args = dict(commission=commission, destination=destination,
-                            connection=conn, provider=provider)
+                            connection=trans, provider=provider)
         FinanceDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
 
 
-    pm = sysparam(conn).BASE_PAYMENT_METHOD
+    pm = sysparam(trans).BASE_PAYMENT_METHOD
     for iface in [ICheckPM, IBillPM]:
         method = iface(pm)
         method.max_installments_number = MAX_INSTALLMENTS_NUMBER
 
-    conn.commit()
+    trans.commit()
 
 if __name__ == '__main__':
     create_payments()
