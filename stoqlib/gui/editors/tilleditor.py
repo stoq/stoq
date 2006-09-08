@@ -33,7 +33,7 @@ from kiwi.python import Settable
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_current_station
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
-from stoqlib.domain.till import Till, get_current_till_operation, TillEntry
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.payment.base import CashAdvanceInfo
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IInPayment, IEmployee, IOutPayment
@@ -144,7 +144,7 @@ class BaseCashSlave(BaseEditorSlave):
 
     def create_model(self, conn):
         reason = self.payment_description
-        current_till = get_current_till_operation(conn)
+        current_till = Till.get_current(conn)
         payment_value = currency(0)
         args = [payment_value, reason]
         if self.payment_iface is IInPayment:
@@ -255,7 +255,7 @@ class CashInEditor(BaseEditor):
         self.attach_slave("main_holder", self.cash_slave)
 
     def create_model(self, conn):
-        current_till = get_current_till_operation(conn)
+        current_till = Till.get_current(conn)
         description = (_(u'Cash in for station "%s" of branch "%s"')
                        % (current_till.station.name,
                           current_till.station.branch.get_adapted().name))

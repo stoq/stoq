@@ -175,8 +175,8 @@ class SellableEditor(BaseEditor):
                              "%%%s%%" % unit.description.upper())
             else:
                 query = SellableUnit.q.index == unit.index
-            conn = new_transaction()
-            result = SellableUnit.select(query, connection=conn)
+            trans = new_transaction()
+            result = SellableUnit.select(query, connection=trans)
             count = result.count()
             if not count:
                 return
@@ -186,8 +186,8 @@ class SellableEditor(BaseEditor):
                     "object representing the same unit."
                     "found %d: %r" % (count, list(result)))
             self._sellable.unit = SellableUnit.get(result[0].id,
-                                                   connection=self.conn)
-        SellableUnit.delete(unit.id, connection=self.conn)
+                                                   connection=self.trans)
+        SellableUnit.delete(unit.id, connection=self.trans)
 
     def update_unit_entry(self):
         if (self._sellable and self._sellable.unit

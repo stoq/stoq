@@ -113,7 +113,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
     def _setup_giftcert_renegotiation(self, sale_order, giftcert_number,
                                       overpaid_value, reason):
-        from stoqlib.domain.till import get_current_till_operation
+        from stoqlib.domain.till import Till
         clone = sale_order.get_clone()
         conn = self.get_connection()
 
@@ -131,7 +131,7 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
         # The new payment for the new sale has it's value already paid
         # in the old sale order. So, create a reversal one
-        till = get_current_till_operation(conn)
+        till = Till.get_current(conn)
         till_group = IPaymentGroup(till)
         if not till_group:
             raise DatabaseInconsistency("You should have a IPaymentGroup "

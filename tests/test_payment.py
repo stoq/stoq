@@ -33,7 +33,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, ISellable,
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.sellable import (BaseSellableCategory, SellableCategory,
                                      BaseSellableInfo)
-from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.domain.till import Till
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
                                             FinanceDetails)
@@ -70,7 +70,7 @@ class TestPaymentMethodDetails(BaseDomainTest):
                                     base_sellable_info=sellable_info,
                                     connection=self.conn)
         # Till
-        till = get_current_till_operation(self.conn)
+        till = Till.get_current(self.conn)
         if till is None:
             till = Till(connection=self.conn,
                         station=get_current_station(self.conn))

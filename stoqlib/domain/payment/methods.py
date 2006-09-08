@@ -40,8 +40,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
 from stoqlib.domain.sale import SaleAdaptToPaymentGroup
-from stoqlib.domain.till import (TillAdaptToPaymentGroup,
-                                 get_current_till_operation)
+from stoqlib.domain.till import TillAdaptToPaymentGroup, Till
 from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
@@ -391,7 +390,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                           method_details=method_details,
                           due_date=due_date, value=value,
                           base_value=base_value,
-                          till=get_current_till_operation(conn),
+                          till=Till.get_current(conn),
                           description=description)
         return payment.addFacet(iface, connection=conn)
 

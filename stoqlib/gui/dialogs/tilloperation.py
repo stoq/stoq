@@ -42,7 +42,7 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation, Till
+from stoqlib.domain.till import Till
 from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.gui.base.search import SearchBar
@@ -55,7 +55,7 @@ _ = stoqlib_gettext
 
 
 def verify_and_open_till(self, conn):
-    if get_current_till_operation(conn) is not None:
+    if Till.get_current(conn) is not None:
         raise TillError("You already have a till operation opened. "
                         "Close the current Till and open another one.")
 
@@ -65,7 +65,7 @@ def verify_and_open_till(self, conn):
         return True
 
 def verify_and_close_till(self, conn, *args):
-    till = get_current_till_operation(conn)
+    till = Till.get_current(conn)
     if till is None:
         raise ValueError("You should have a till operation opened at "
                          "this point")
@@ -241,7 +241,7 @@ class TillOperationDialog(GladeSlaveDelegate):
     #
 
     def get_extra_query(self):
-        current_till = get_current_till_operation(self.conn)
+        current_till = Till.get_current_till(self.conn)
         group = IPaymentGroup(current_till)
         if not group:
             raise DatabaseInconsistency("Till instance must have a"
@@ -276,5 +276,5 @@ class TillOperationDialog(GladeSlaveDelegate):
 
     def on_close_till_button__clicked(self, button):
         self.emit('close-till')
-        if get_current_till_operation(self.conn) is None:
+        if Till.get_current(self.conn) is None:
             self.main_dialog.close()
