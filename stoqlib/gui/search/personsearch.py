@@ -122,9 +122,9 @@ class EmployeeSearch(BasePersonSearch):
         return query
 
     def get_query_args(self):
-        return dict(join=LEFTJOINOn(self.table, EmployeeRole,
-                                    self.table.q.roleID ==
-                                    EmployeeRole.q.id))
+        return dict(join=LEFTJOINOn(
+            self.table, EmployeeRole,
+            self.table.q.roleID == EmployeeRole.q.id))
 
     def get_searchlist_model(self, model):
         return IEmployee(model)
@@ -158,9 +158,9 @@ class SupplierSearch(BasePersonSearch):
 
     def get_query_args(self):
         company_table = Person.getAdapterClass(ICompany)
-        return dict(join=LEFTJOINOn(Person, company_table,
-                                    Person.q.id ==
-                                    company_table.q._originalID))
+        return dict(join=LEFTJOINOn(
+            Person, company_table,
+            Person.q.id == company_table.q._originalID))
 
 
 class AbstractCreditProviderSearch(BasePersonSearch):
