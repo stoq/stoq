@@ -682,7 +682,7 @@ def check_parameter_presence(conn):
 
 def ensure_system_parameters(update=False):
     log.info("Creating default system parameters")
-    conn = new_transaction()
-    param = sysparam(conn)
+    trans = new_transaction()
+    param = sysparam(trans)
     param.set_defaults(update)
-    finish_transaction(conn, 1)
+    finish_transaction(trans, 1)
