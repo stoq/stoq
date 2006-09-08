@@ -425,13 +425,13 @@ class POSApp(AppWindow):
     # Till methods
     #
 
-    def open_till(self):
+    def _open_till(self):
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
             return
         rollback_and_begin(self.conn)
 
-    def close_till(self):
+    def _close_till(self):
         if verify_and_close_till(self, self.conn):
             return
         self.conn.commit()
@@ -569,12 +569,12 @@ class POSApp(AppWindow):
     def on_TillClose__activate(self, action):
         parent = self.get_toplevel()
         if check_emit_reduce_Z(self.conn, parent):
-            self.close_till()
+            self._close_till()
 
     def on_TillOpen__activate(self, action):
         parent = self.get_toplevel()
         if check_emit_read_X(self.conn, parent):
-            self.open_till()
+            self._open_till()
 
     #
     # Other callbacks
