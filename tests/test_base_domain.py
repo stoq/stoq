@@ -39,29 +39,29 @@ else:
 
 class FacetTests(unittest.TestCase):
     def setUp(self):
-        self.conn = new_transaction()
+        self.trans = new_transaction()
 
     def tearDown(self):
-        self.conn.close()
+        self.trans.close()
 
     def testAdd(self):
-        ding = Ding(connection=self.conn)
+        ding = Ding(connection=self.trans)
         self.assertEqual(IDong(ding, None), None)
 
-        dong = ding.addFacet(IDong, connection=self.conn)
+        dong = ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(IDong(ding), dong)
 
     def testAddHook(self):
-        ding = Ding(connection=self.conn)
+        ding = Ding(connection=self.trans)
         self.assertEqual(ding.called, False)
-        dong = ding.addFacet(IDong, connection=self.conn)
+        dong = ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(ding.called, True)
 
     def testGetFacets(self):
-        ding = Ding(connection=self.conn)
+        ding = Ding(connection=self.trans)
         self.assertEqual(ding.getFacets(), [])
 
-        facet = ding.addFacet(IDong, connection=self.conn)
+        facet = ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(ding.getFacets(), [facet])
 
     def testRegisterAndGetTypes(self):
@@ -72,7 +72,7 @@ class FacetTests(unittest.TestCase):
             implements(IDang)
 
         try:
-            DingAdaptToDang.createTable(connection=self.conn)
+            DingAdaptToDang.createTable(connection=self.trans)
         except ProgrammingError:
             pass
 
