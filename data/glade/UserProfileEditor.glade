@@ -79,14 +79,17 @@
                         <property name="visible">True</property>
                         <child>
                             <widget class="GtkScrolledWindow" id="scrolled_window">
-                                <property name="hscrollbar_policy">automatic</property>
+                                <property name="hscrollbar_policy">never</property>
+			        <property name="shadow-type">none</property>
                                 <property name="visible">True</property>
                                 <property name="vscrollbar_policy">never</property>
                                 <child>
                                     <widget class="GtkViewport" id="viewport2">
+				        <property name="shadow-type">none</property>
                                         <property name="visible">True</property>
                                         <child>
                                             <widget class="GtkVBox" id="applications_vbox">
+					        <property name="border_width">6</property>
                                                 <property name="visible">True</property>
                                                 <child>
                                                     <placeholder/>
