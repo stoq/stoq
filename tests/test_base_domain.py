@@ -28,14 +28,14 @@ class DingAdaptToDong(ModelAdapter):
 
 Ding.registerFacet(DingAdaptToDong, IDong)
 
-conn = new_transaction()
+trans = new_transaction()
 try:
-    Ding.createTable(connection=conn)
-    DingAdaptToDong.createTable(connection=conn)
+    Ding.createTable(connection=trans)
+    DingAdaptToDong.createTable(connection=trans)
 except ProgrammingError:
     pass
 else:
-    conn.commit()
+    trans.commit()
 
 class FacetTests(unittest.TestCase):
     def setUp(self):
