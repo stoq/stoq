@@ -54,22 +54,21 @@ class ProductReport(SearchResultsReport):
         self._setup_items_table()
 
     def _get_columns(self):
-        return [OTC(_("Code"), lambda obj: '%03d' % obj.code, width=120,
-                      truncate=True),
-                OTC(_("Description"), lambda obj: obj.description,
-                    width=265, expand=True, expand_factor=1, truncate=True),
-                OTC(_("Supplier"),
-                    lambda obj: obj.get_supplier_name(), width=265,
-                    expand=True, expand_factor=1, truncate=True),
-                OTC(_("Quantity"), lambda obj: format_quantity(obj.stock),
-                    width=60, align=RIGHT, truncate=True),
-                OTC(_("Unit"), lambda obj: obj.get_unit(),
-                    width=30, virtual=True)
-                ]
+        return [
+            OTC(_("Code"), lambda obj: '%03d' % obj.code, width=120,
+                truncate=True),
+            OTC(_("Description"), lambda obj: obj.description, truncate=True),
+            OTC(_("Supplier"), lambda obj: obj.get_supplier_name(),
+                truncate=True),
+            OTC(_("Quantity"), lambda obj: format_quantity(obj.stock), width=80,
+                align=RIGHT, truncate=True),
+            # FIXME: This column should be virtual, waiting for bug #2764
+            OTC(_("Unit"), lambda obj: obj.get_unit(), width=60, virtual=False),
+            ]
 
     def _setup_items_table(self):
         total_qty = sum([item.stock for item in self._products],
                         decimal.Decimal("0.0"))
         summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
         self.add_object_table(self._products, self._get_columns(),
-                              width=740, summary_row=summary_row)
+                              summary_row=summary_row)
