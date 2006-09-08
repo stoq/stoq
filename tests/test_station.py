@@ -37,20 +37,20 @@ tests.base #pyflakes
 
 class TestStation(unittest.TestCase):
     def setUp(self):
-        self.conn = new_transaction()
+        self.trans = new_transaction()
 
     def _create_extra_branch(self):
-        conn = self.conn
+        conn = self.trans
         person = Person(name='Dummy', connection=conn)
         person.addFacet(ICompany, fancy_name='Dummy shop', connection=conn)
         return person.addFacet(IBranch, connection=conn)
 
     def test_create_simple(self):
-        self.assertEqual(create_station(self.conn).name, socket.gethostname())
-        self.assertRaises(StoqlibError, create_station, self.conn)
+        self.assertEqual(create_station(self.trans).name, socket.gethostname())
+        self.assertRaises(StoqlibError, create_station, self.trans)
 
     def test_create_branch(self):
-        conn = self.conn
+        conn = self.trans
         branch = self._create_extra_branch()
 
         results = BranchStation.select(
@@ -68,4 +68,4 @@ class TestStation(unittest.TestCase):
 
     def test_create_error(self):
         branch = self._create_extra_branch()
-        self.assertRaises(StoqlibError, create_station, self.conn)
+        self.assertRaises(StoqlibError, create_station, self.trans)
