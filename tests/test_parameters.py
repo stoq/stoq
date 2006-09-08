@@ -57,38 +57,38 @@ base # pyflakes
 class TestParameter(unittest.TestCase):
 
     def setUp(self):
-        self.conn = new_transaction()
-        self.sparam = sysparam(self.conn)
+        self.trans = new_transaction()
+        self.sparam = sysparam(self.trans)
         assert isinstance(self.sparam, ParameterAccess)
 
-        person = Person(name='Jonas', connection=self.conn)
-        person.addFacet(IIndividual, connection=self.conn)
-        role = EmployeeRole(connection=self.conn, name='desenvolvedor')
-        employee = person.addFacet(IEmployee, connection=self.conn,
+        person = Person(name='Jonas', connection=self.trans)
+        person.addFacet(IIndividual, connection=self.trans)
+        role = EmployeeRole(connection=self.trans, name='desenvolvedor')
+        employee = person.addFacet(IEmployee, connection=self.trans,
                                    role=role)
         self.salesperson = person.addFacet(ISalesPerson,
-                                           connection=self.conn)
-        company = person.addFacet(ICompany, connection=self.conn)
-        client = person.addFacet(IClient, connection=self.conn)
-        self.branch = person.addFacet(IBranch, connection=self.conn)
+                                           connection=self.trans)
+        company = person.addFacet(ICompany, connection=self.trans)
+        client = person.addFacet(IClient, connection=self.trans)
+        self.branch = person.addFacet(IBranch, connection=self.trans)
         self.station = BranchStation(name=u'MegaStation', is_active=True,
-                                     connection=self.conn,
+                                     connection=self.trans,
                                      branch=self.branch)
-        till = Till(connection=self.conn, station=self.station)
-        renegotiation = AbstractRenegotiationAdapter(connection=self.conn)
+        till = Till(connection=self.trans, station=self.station)
+        renegotiation = AbstractRenegotiationAdapter(connection=self.trans)
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
                          salesperson=self.salesperson,
                          renegotiation_data=renegotiation,
-                         till=till, connection=self.conn)
+                         till=till, connection=self.trans)
 
-        product = Product(connection=self.conn)
-        self.storable = product.addFacet(IStorable, connection=self.conn)
+        product = Product(connection=self.trans)
+        self.storable = product.addFacet(IStorable, connection=self.trans)
 
-        self.group = self.sale.addFacet(IPaymentGroup, connection=self.conn)
+        self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
 
     def tearDown(self):
-        finish_transaction(self.conn)
+        finish_transaction(self.trans)
 
     # System instances based on stoq.lib.parameters
 
@@ -166,7 +166,7 @@ class TestParameter(unittest.TestCase):
         assert isinstance(param, int)
 
     def test_LocationSuggested(self):
-        location = get_city_location_template(self.conn)
+        location = get_city_location_template(self.trans)
         self.assertEqual(location.city, self.sparam.CITY_SUGGESTED)
         self.assertEqual(location.state, self.sparam.STATE_SUGGESTED)
         self.assertEqual(location.country, self.sparam.COUNTRY_SUGGESTED)
@@ -188,10 +188,10 @@ class TestParameter(unittest.TestCase):
             parameter_name='MANDATORY_INTEREST_CHARGE',
             value=u'1')
         param = self.sparam.MANDATORY_INTEREST_CHARGE
-        payment_method = PaymentMethod(connection=self.conn)
-        destination = PaymentDestination(connection=self.conn,
+        payment_method = PaymentMethod(connection=self.trans)
+        destination = PaymentDestination(connection=self.trans,
                                          description='test destination')
-        adapter = payment_method.addFacet(IBillPM, connection=self.conn,
+        adapter = payment_method.addFacet(IBillPM, connection=self.trans,
                                           destination=destination)
         self.failUnlessRaises(PaymentError,
                               adapter.calculate_payment_value,
@@ -210,13 +210,13 @@ class TestParameter(unittest.TestCase):
       # Cannot perform this test, see bug 2655 to further details.
 #     def test_PurchasePreviewPayment(self):
 #         supplier = Person.getAdapterClass(ISupplier).select(
-#                        connection=self.conn)[0]
+#                        connection=self.trans)[0]
 #         branch = Person.getAdapterClass(IBranch).select(
-#                      connection=self.conn)[0]
-#         purchase = PurchaseOrder(connection=self.conn, supplier=supplier,
+#                      connection=self.trans)[0]
+#         purchase = PurchaseOrder(connection=self.trans, supplier=supplier,
 #                                  branch=branch,
 #                                  status=PurchaseOrder.ORDER_PENDING)
-#         purchase.addFacet(IPaymentGroup, connection=self.conn)
+#         purchase.addFacet(IPaymentGroup, connection=self.trans)
 #         purchase.confirm_order()
 #         param = self.sparam.USE_PURCHASE_PREVIEW_PAYMENTS
 #         assert isinstance (param, int)
@@ -244,24 +244,24 @@ class TestParameter(unittest.TestCase):
 
     def test_DefaultSalesCFOP(self):
         param = self.sparam.DEFAULT_SALES_CFOP
-        till = Till(connection=self.conn, station=self.station)
+        till = Till(connection=self.trans, station=self.station)
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
-                    till=till, connection=self.conn)
+                    till=till, connection=self.trans)
         self.assertEqual(sale.cfop, param)
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         sale = Sale(coupon_id=432, salesperson=self.salesperson,
-                    till=till, connection=self.conn, cfop=param)
+                    till=till, connection=self.trans, cfop=param)
         self.failIfEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
 
     def test_DefaultReturnSalesCFOP(self):
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
-        drawee = Person(name='Antonione', connection=self.conn)
+        drawee = Person(name='Antonione', connection=self.trans)
         book_entry = AbstractFiscalBookEntry(invoice_number=123,
                                              cfop=wrong_param,
                                              branch=self.branch,
                                              drawee=drawee,
                                              payment_group=self.group,
-                                             connection=self.conn)
+                                             connection=self.trans)
         reversal = book_entry.get_reversal_clone(invoice_number=124)
         self.failIfEqual(wrong_param, reversal.cfop)
         self.assertEqual(self.sparam.DEFAULT_RETURN_SALES_CFOP,
@@ -269,21 +269,21 @@ class TestParameter(unittest.TestCase):
 
     def test_DefaultReceivingCFOP(self):
         param = self.sparam.DEFAULT_RECEIVING_CFOP
-        person = Person(name='Craudinho', connection=self.conn)
-        person.addFacet(IIndividual, connection=self.conn)
-        profile = UserProfile(name='profile', connection=self.conn)
-        responsible = person.addFacet(IUser, connection=self.conn,
+        person = Person(name='Craudinho', connection=self.trans)
+        person.addFacet(IIndividual, connection=self.trans)
+        profile = UserProfile(name='profile', connection=self.trans)
+        responsible = person.addFacet(IUser, connection=self.trans,
                                       password='asdfgh', profile=profile,
                                       username='craudio')
         receiving_order = ReceivingOrder(responsible=responsible,
                                          branch=self.branch,
-                                         connection=self.conn,
+                                         connection=self.trans,
                                          invoice_number=876,
                                          supplier=None)
         param2 = self.sparam.DEFAULT_SALES_CFOP
         receiving_order2 = ReceivingOrder(responsible=responsible,
                                           cfop=param2, branch=self.branch,
-                                          connection=self.conn,
+                                          connection=self.trans,
                                           invoice_number=1231,
                                           supplier=None)
         self.assertEqual(param, receiving_order.cfop)
