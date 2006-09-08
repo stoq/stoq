@@ -241,7 +241,7 @@ class TillOperationDialog(GladeSlaveDelegate):
     #
 
     def get_extra_query(self):
-        current_till = Till.get_current_till(self.conn)
+        current_till = Till.get_current(self.conn)
         group = IPaymentGroup(current_till)
         if not group:
             raise DatabaseInconsistency("Till instance must have a"
