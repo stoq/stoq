@@ -54,20 +54,20 @@ def ensure_admin_user(administrator_password):
     from stoqlib.domain.profile import UserProfile
     from stoqlib.domain.person import EmployeeRoleHistory
     log.info("Creating administrator user")
-    conn = new_transaction()
+    trans = new_transaction()
 
     # XXX Person for administrator user is the same of Current Branch. I'm not
     # sure if it's the best approach but for sure it's better than
     # create another one just for this user.
-    company = sysparam(conn).MAIN_COMPANY
+    company = sysparam(trans).MAIN_COMPANY
     person_obj = company.get_adapted()
 
     # Dependencies to create an user.
-    role = EmployeeRole(name=_('System Administrator'), connection=conn)
-    user = person_obj.addFacet(IIndividual, connection=conn)
+    role = EmployeeRole(name=_('System Administrator'), connection=trans)
+    user = person_obj.addFacet(IIndividual, connection=trans)
     user = person_obj.addFacet(IEmployee, role=role,
-                               connection=conn)
-    role_history = EmployeeRoleHistory(connection=conn,
+                               connection=trans)
+    role_history = EmployeeRoleHistory(connection=trans,
                                        role=role,
                                        employee=user,
                                        is_active=True,
@@ -75,10 +75,10 @@ def ensure_admin_user(administrator_password):
 
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.
-    person_obj.addFacet(ISalesPerson, connection=conn)
+    person_obj.addFacet(ISalesPerson, connection=trans)
 
     log.info("Creating user profile for administrator")
-    profile = UserProfile.create_profile_template(conn, _('Administrator'),
+    profile = UserProfile.create_profile_template(trans, _('Administrator'),
                                                   has_full_permission=True)
 
 
@@ -86,14 +86,14 @@ def ensure_admin_user(administrator_password):
     log.info("Attaching IUser facet (%s)" % (username,))
     user = person_obj.addFacet(IUser, username=username,
                                password=administrator_password,
-                               profile=profile, connection=conn)
+                               profile=profile, connection=trans)
 
     table = PersonAdaptToUser
-    ret = table.select(table.q.username == username, connection=conn)
+    ret = table.select(table.q.username == username, connection=trans)
     assert ret, ret.count() == 1
     assert ret[0].password == administrator_password
 
-    finish_transaction(conn, 1)
+    finish_transaction(trans, 1)
 
     # We can't provide the utility until it's actually in the database
     log.info('providing utility ICurrentUser')
@@ -103,54 +103,54 @@ def ensure_sellable_units():
     from stoqlib.domain.sellable import SellableUnit
     """ Create native sellable units. """
     log.info("Creating sellable units")
-    conn = new_transaction()
+    trans = new_transaction()
     unit_list = [("Kg", UNIT_WEIGHT),
                  ("Lt", UNIT_LITERS),
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
-        SellableUnit(description=desc, index=index, connection=conn)
-    finish_transaction(conn, 1)
+        SellableUnit(description=desc, index=index, connection=trans)
+    finish_transaction(trans, 1)
 
-def user_has_usesuper(conn):
+def user_has_usesuper(trans):
     """
     This method checks if the currently logged in postgres user has
     `usesuper' access which is necessary for certain operations
 
-    @param conn: a database connection
+    @param trans: a database connection
     @returns: if the user has `usesuper' access
     """
 
-    results = conn.queryOne(
+    results = trans.queryOne(
         'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER')
     return results[0] == 1
 
-def _create_procedural_languages(conn):
+def _create_procedural_languages(trans):
     "Creates procedural SQL languages we're going to use in scripts"
 
-    results = conn.queryAll('SELECT lanname FROM pg_language')
+    results = trans.queryAll('SELECT lanname FROM pg_language')
     languages = [item[0] for item in results]
     if 'plpgsql' in languages:
         return
 
-    if not user_has_usesuper(conn):
+    if not user_has_usesuper(trans):
         raise StoqlibError(
             "The current database user does not have super user rights")
 
     # Create the plpgsql language
-    conn.query('CREATE LANGUAGE plpgsql')
+    trans.query('CREATE LANGUAGE plpgsql')
 
 def create_base_schema():
     filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
     sql_file = environ.find_resource('sql', filename)
 
-    conn = new_transaction()
+    trans = new_transaction()
 
     # Create the procedural languages here instead of depending
     # on the user running the `createlang' utility manually.
-    _create_procedural_languages(conn)
+    _create_procedural_languages(trans)
 
-    run_sql_file(sql_file, conn)
-    finish_transaction(conn, 1)
+    run_sql_file(sql_file, trans)
+    finish_transaction(trans, 1)
 
 @argcheck(bool, bool)
 def initialize_system(delete_only=False, verbose=False):
@@ -162,9 +162,9 @@ def initialize_system(delete_only=False, verbose=False):
     ensure_system_parameters()
     ensure_sellable_units()
 
-    conn = new_transaction()
+    trans = new_transaction()
     # Import here since we must create properly the domain schema before
     # importing them in the migration module
     from stoqlib.lib.migration import add_system_table_reference
-    add_system_table_reference(conn, check_new_db=True)
-    finish_transaction(conn, 1)
+    add_system_table_reference(trans, check_new_db=True)
+    finish_transaction(trans, 1)
