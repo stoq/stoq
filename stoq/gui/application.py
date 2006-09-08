@@ -255,7 +255,7 @@ class SearchableAppWindow(AppWindow):
         self.searchbar.register_filter_results_callback(self.filter_results)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
-        self.searchbar.connect('before-search-activate', 
+        self.searchbar.connect('before-search-activate',
                                self.on_searchbar_before_activate)
         self.searchbar.connect('search-activate', self.on_searchbar_activate)
         if filter_slave:
