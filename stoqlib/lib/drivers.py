@@ -158,24 +158,24 @@ def get_current_scale_settings(conn):
     return get_scale_settings_by_station(conn, get_current_station(conn))
 
 def create_virtual_printer_for_current_station():
-    conn = new_transaction()
-    station = get_current_station(conn)
-    if get_fiscal_printer_settings_by_station(conn, station):
-        finish_transaction(conn)
+    trans = new_transaction()
+    station = get_current_station(trans)
+    if get_fiscal_printer_settings_by_station(trans, station):
+        finish_transaction(trans)
         return
     settings = DeviceSettings(station=station,
                               device=DeviceSettings.DEVICE_SERIAL1,
                               brand='virtual',
                               model='Simple',
                               type=DeviceSettings.FISCAL_PRINTER_DEVICE,
-                              connection=conn)
+                              connection=trans)
     # Setting default values for payment method constants, to avoid
     # problems when emitting a coupon with the virtual printer.
     new_constants = {}
     for method in settings.pm_constants.get_items():
         new_constants[method] = '00'
     settings.pm_constants.set_constants(new_constants)
-    finish_transaction(conn, 1)
+    finish_transaction(trans, 1)
 
 def check_virtual_printer_for_current_station(conn):
     """Returns True if the fiscal printer for the current station is
