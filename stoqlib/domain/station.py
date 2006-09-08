@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Station, a branch station per computer """
 
@@ -56,6 +57,38 @@ class BranchStation(Domain):
         """
         return cls.select(cls.q.is_active == True, connection=conn)
 
+    @classmethod
+    def create(cls, conn, branch=None):
+        """
+        Create a new station id for the current machine.
+        Optionally a branch can be specified which will be set as the branch
+        for created station.
+
+        @param conn: a database connection
+        @param branch: Branch
+        @returns: the name of the created station
+        @rtype: string
+        """
+        from stoqlib.domain.person import Person
+
+        if not branch:
+            branches = Person.iselect(IBranch, connection=conn)
+            if branches.count() != 1:
+                raise StoqlibError("More than one branch detected")
+            branch = branches[0]
+
+        name = socket.gethostname()
+
+        stations = cls.select(
+            AND(cls.q.name == name,
+                cls.q.branchID == branch.id), connection=conn)
+        if stations.count() != 0:
+            raise StoqlibError(
+                "There is already a station registered as `%s'." % name)
+
+        return cls(name=name, is_active=True, branch=branch,
+                   connection=conn)
+
     #
     # IActive implementation
     #
@@ -86,33 +119,6 @@ class BranchStation(Domain):
         """
         return self.branch.get_adapted().name
 
+# XXX: Remove and use BranchStation.create() directly
 def create_station(conn, branch=None):
-    """
-    Create a new station id for the current machine.
-    Optionally a branch can be specified which will be set as the branch
-    for created station.
-
-    @param conn: a database connection
-    @param branch: Branch
-    @returns: the name of the created station
-    @rtype: string
-    """
-    from stoqlib.domain.person import Person
-
-    if not branch:
-        branches = Person.iselect(IBranch, connection=conn)
-        if branches.count() != 1:
-            raise StoqlibError("More than one branch detected")
-        branch = branches[0]
-
-    name = socket.gethostname()
-
-    stations = BranchStation.select(
-        AND(BranchStation.q.name == name,
-            BranchStation.q.branchID == branch.id), connection=conn)
-    if stations.count() != 0:
-        raise StoqlibError(
-            "There is already a station registered as `%s'." % name)
-
-    return BranchStation(name=name, is_active=True, branch=branch,
-                         connection=conn)
+    return BranchStation.create(conn, branch)
