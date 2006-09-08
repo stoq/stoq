@@ -28,7 +28,7 @@ import gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import Till
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
                                        ICompany)
@@ -111,7 +111,7 @@ class NewOrderEditor(BaseEditor):
         return _('New Order')
 
     def create_model(self, conn):
-        till = get_current_till_operation(conn)
+        till = Till.get_current(conn)
         user = get_current_user(conn)
         salesperson = ISalesPerson(user.get_adapted())
         cfop = sysparam(conn).DEFAULT_SALES_CFOP

@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database import rollback_and_begin, finish_transaction
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import Till
 from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
                                  check_emit_read_X)
@@ -101,12 +101,12 @@ class TillApp(SearchableAppWindow):
         self.confirm_order_button.set_sensitive(accept_confirm)
 
     def _update_widgets(self, *args):
-        has_till = get_current_till_operation(self.conn) is not None
+        has_till = Till.get_current(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
         self.Treasury.set_sensitive(has_till)
 
-        till = get_current_till_operation(self.conn)
+        till = Till.get_current(self.conn)
         if not till:
             text = _(u"Till Closed")
             self.sales.clear()
