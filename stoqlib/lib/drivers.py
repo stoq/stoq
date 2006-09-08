@@ -26,6 +26,7 @@
 
 import gtk
 from kiwi.argcheck import argcheck
+from kiwi.log import Logger
 from zope.interface import implements
 from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.cheque import ChequePrinter
@@ -52,6 +53,7 @@ from stoqlib.domain.sellable import AbstractSellableItem
 _ = stoqlib_gettext
 _printer = None
 _scale = None
+log = Logger("stoqlib.drivers")
 
 #
 # Private
@@ -304,7 +306,9 @@ def print_cheques_for_payment_group(conn, group):
 
 class FiscalCoupon:
     """ This class is used just to allow us cancel an item with base in a
-    AbstractSellable object.
+    AbstractSellable object. Currently, services can't be added, and they
+    are just ignored -- be aware, if a coupon with only services is
+    emitted, it will not be opened in fact, but just ignored.
     """
     implements(IContainer)
 
@@ -326,6 +330,8 @@ class FiscalCoupon:
     def add_item(self, item):
         # Do not add services to the coupon
         if isinstance(item, ServiceSellableItem):
+            log.info("item %r couldn't added to the coupon, "
+                     "since it is a service" % item)
             return
 
         sellable = item.sellable
@@ -416,6 +422,9 @@ class FiscalCoupon:
         return True
 
     def totalize(self):
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
         discount = self.sale.discount_percentage
         surcharge = self.sale.surcharge_percentage
         if discount > surcharge:
@@ -447,6 +456,9 @@ class FiscalCoupon:
         """ Add the payments defined in the sale to the coupon. Note that this
         function must be called after all the payments has been created.
         """
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
         sale = self.sale
         group = IPaymentGroup(sale)
         if not group:
@@ -507,6 +519,9 @@ class FiscalCoupon:
         return True
 
     def close(self):
+        # XXX: Remove this when bug #2827 is fixed.
+        if not self._item_ids:
+            return True
         try:
             coupon_id = self.printer.close()
         except DriverError, details:
