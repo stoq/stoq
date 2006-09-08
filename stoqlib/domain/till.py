@@ -331,10 +331,6 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
 #
 
 
-def get_current_till_operation(conn):
-    log.warn('get_current_till_operation is deprecated, use Till.get_current()')
-    return Till.get_current(conn)
-
 def get_last_till_operation_for_current_branch(conn):
     """  The last till operation is used to get a initial cash amount
     to a new till operation that will be created, this value is based
