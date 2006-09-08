@@ -29,7 +29,7 @@ stoq/gui/pos/app.py:
 
 import gettext
 
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import Till
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.runtime import get_connection
@@ -44,7 +44,7 @@ def main(config):
     conn = get_connection()
     param = sysparam(conn)
     if (param.POS_SEPARATE_CASHIER and
-        not get_current_till_operation(conn)):
+        not Till.get_current(conn)):
         error(_(u"You need to open the till before start doing sales."))
 
     app = App(POSApp, config)

@@ -63,7 +63,7 @@ from stoqlib.gui.dialogs.tilloperation import (verify_and_open_till,
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
-from stoqlib.domain.till import get_current_till_operation
+from stoqlib.domain.till import Till
 from stoqlib.domain.sellable import AbstractSellable
 from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
 
@@ -215,7 +215,7 @@ class POSApp(AppWindow):
             self.sellables.select(self.sellables[0])
 
     def _update_widgets(self):
-        has_till = get_current_till_operation(self.conn) is not None
+        has_till = Till.get_current(self.conn) is not None
         self.TillOpen.set_sensitive(not has_till and self.sale is None)
         self.TillClose.set_sensitive(has_till and self.sale is None)
         has_sellables = len(self.sellables) >= 1
@@ -342,7 +342,7 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
-        if not get_current_till_operation(self.conn):
+        if not Till.get_current(self.conn):
             warning(_(u"You need open the till before start doing sales."))
             return
         if not ISalesPerson(get_current_user(self.conn).get_adapted()):
