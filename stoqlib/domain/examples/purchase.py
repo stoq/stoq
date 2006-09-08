@@ -44,23 +44,23 @@ SELLABLES_PER_PURCHASE = 2
 
 def create_purchases():
     log.info('Creating purchase orders')
-    conn = new_transaction()
+    trans = new_transaction()
 
     supplier_table = Person.getAdapterClass(ISupplier)
-    suppliers = supplier_table.get_active_suppliers(conn)
+    suppliers = supplier_table.get_active_suppliers(trans)
     if suppliers.count() < MAX_PURCHASES_NUMBER:
         raise ValueError('You must have at least %d suppliers in your '
                          'database at this point.' % MAX_PURCHASES_NUMBER)
 
     branch_table = Person.getAdapterClass(IBranch)
-    branches = branch_table.get_active_branches(conn)
+    branches = branch_table.get_active_branches(trans)
     if branches.count() != EXPECTED_BRANCHES:
         raise ValueError(
             'Expected %d branches in your database, but found %d' % (
             EXPECTED_BRANCHES, branches.count()))
     branch = branches[0]
 
-    sellables = AbstractSellable.select(connection=conn)
+    sellables = AbstractSellable.select(connection=trans)
     sellables_total = SELLABLES_PER_PURCHASE * MAX_PURCHASES_NUMBER
     if sellables.count() < sellables_total:
         raise ValueError('You must have at least %d sellables in your '
@@ -105,7 +105,7 @@ def create_purchases():
         supplier = suppliers[index]
 
         purchase_args = purchase_data[index]
-        order = PurchaseOrder(connection=conn, supplier=supplier,
+        order = PurchaseOrder(connection=trans, supplier=supplier,
                               branch=branch, **purchase_args)
         order.set_valid()
 
@@ -117,10 +117,10 @@ def create_purchases():
         for index in indexes:
             sellable = sellables[index]
             item_args = purchaseitem_data[index]
-            PurchaseItem(connection=conn, cost=sellable.cost,
+            PurchaseItem(connection=trans, cost=sellable.cost,
                          order=order, sellable=sellable,
                          **item_args)
-    new_order = PurchaseOrder(connection=conn,
+    new_order = PurchaseOrder(connection=trans,
                               status=PurchaseOrder.ORDER_PENDING,
                               supplier=suppliers[1],
                               branch=branch)
@@ -129,14 +129,14 @@ def create_purchases():
                        default_method=METHOD_BILL,
                        intervals=1,
                        interval_type=INTERVALTYPE_MONTH,
-                       connection=conn)
+                       connection=trans)
     new_order.confirm_order()
     item = new_order.add_item(sellables[1], purchaseitem_data[0]['quantity'])
     new_order.receive_item(item,
                            purchaseitem_data[0]['quantity'])
     new_order.close()
 
-    conn.commit()
+    trans.commit()
 
 if __name__ == "__main__":
     create_purchases()

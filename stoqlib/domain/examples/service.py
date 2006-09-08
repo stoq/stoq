@@ -33,7 +33,7 @@ MAX_SERVICES_NUMBER = 4
 
 def create_services():
     log.info('Creating services')
-    conn = new_transaction()
+    trans = new_transaction()
 
 
     descriptions = ['General Service', 'Cleanness', 'Computer Maintenance',
@@ -45,21 +45,21 @@ def create_services():
     costs = [105, 65, 103, 89]
     # Creating services and facets
     for index in range(MAX_SERVICES_NUMBER):
-        service_obj = Service(connection=conn)
+        service_obj = Service(connection=trans)
 
         price = prices[index]
         description = descriptions[index]
 
-        sellable_info = BaseSellableInfo(connection=conn,
+        sellable_info = BaseSellableInfo(connection=trans,
                                          description=description,
                                          price=price)
         cost = costs[index]
         barcode = barcodes[index]
-        service_obj.addFacet(ISellable, connection=conn,
+        service_obj.addFacet(ISellable, connection=trans,
                              base_sellable_info=sellable_info,
                              cost=cost, barcode=barcode)
 
-    conn.commit()
+    trans.commit()
 
 if __name__ == "__main__":
     create_services()

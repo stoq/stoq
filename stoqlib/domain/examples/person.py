@@ -51,7 +51,7 @@ _ = gettext.gettext
 
 def create_people():
     log.info('Creating person data')
-    conn = new_transaction()
+    trans = new_transaction()
 
     person_data = [dict(name='Reginaldo Vasconcellos',
                         phone_number='5143-2587',
@@ -159,63 +159,63 @@ def create_people():
 
     # Creating persons and facets
     for index, person_args in enumerate(person_data):
-        person_obj = Person(connection=conn, **person_args)
+        person_obj = Person(connection=trans, **person_args)
 
-        ctloc = CityLocation(connection=conn, **cityloc_data[index])
+        ctloc = CityLocation(connection=trans, **cityloc_data[index])
         address = Address(is_main_address=True,
                           person=person_obj, city_location=ctloc,
-                          connection=conn, **address_data[index])
+                          connection=trans, **address_data[index])
 
         individual_args = individual_data[index]
-        person_obj.addFacet(IIndividual, connection=conn,
+        person_obj.addFacet(IIndividual, connection=trans,
                             **individual_args)
 
         company_args = company_data[index]
-        person_obj.addFacet(ICompany, connection=conn,
+        person_obj.addFacet(ICompany, connection=trans,
                             **company_args)
 
-        person_obj.addFacet(IClient, connection=conn)
-        person_obj.addFacet(ISupplier, connection=conn)
+        person_obj.addFacet(IClient, connection=trans)
+        person_obj.addFacet(ISupplier, connection=trans)
 
         credit_provider = credit_provider_data[index]
-        person_obj.addFacet(ICreditProvider, connection=conn,
+        person_obj.addFacet(ICreditProvider, connection=trans,
                             open_contract_date=datetime.datetime.today(),
                             **credit_provider)
 
         role_args = role_data[index]
-        role = EmployeeRole(connection=conn, **role_args)
+        role = EmployeeRole(connection=trans, **role_args)
         employee_args = employee_data[index]
-        employee = person_obj.addFacet(IEmployee, connection=conn,
+        employee = person_obj.addFacet(IEmployee, connection=trans,
                                        role=role, **employee_args)
         for history in role_history_data:
-            role_history = EmployeeRoleHistory(connection=conn, role=role,
+            role_history = EmployeeRoleHistory(connection=trans, role=role,
                                                employee=employee,
                                                is_active=False,
                                                **history)
         began = now + datetime.timedelta(20)
-        role_history = EmployeeRoleHistory(connection=conn, role=role,
+        role_history = EmployeeRoleHistory(connection=trans, role=role,
                                            employee=employee,
                                            is_active=True,
                                            salary=currency(500),
                                            began=began)
         employee.salary = role_history.salary
         # SalesPerson facet requires an employee facet.
-        person_obj.addFacet(ISalesPerson, connection=conn)
+        person_obj.addFacet(ISalesPerson, connection=trans)
 
         prof_name = profile_names[index]
         # The True argument here means full permition for this profile.
         # This is useful when testing all the fetuares of Stoq applications
-        profile = UserProfile.create_profile_template(conn, prof_name,
+        profile = UserProfile.create_profile_template(trans, prof_name,
                                                       True)
         user_args = user_data[index]
-        person_obj.addFacet(IUser, connection=conn, profile=profile,
+        person_obj.addFacet(IUser, connection=trans, profile=profile,
                             **user_args)
         transporter_args = transporter_data[index]
-        person_obj.addFacet(ITransporter, connection=conn,
+        person_obj.addFacet(ITransporter, connection=trans,
                             **transporter_args)
 
     # Setting up the current branch
-    branch = sysparam(conn).MAIN_COMPANY
+    branch = sysparam(trans).MAIN_COMPANY
     # Set the manager to the last created person
     branch.manager = person_obj
     #provide_utility(ICurrentBranch, branch)
@@ -242,20 +242,20 @@ def create_people():
 
     # Creating the current station
     #station = BranchStation(name=u"Stoqlib station", branch=branch,
-    #                        connection=conn, is_active=True)
+    #                        connection=trans, is_active=True)
     #provide_utility(ICurrentBranchStation, station)
 
-    conn.commit()
+    trans.commit()
 
 def set_person_utilities():
-    conn = new_transaction()
-    branch = sysparam(conn).MAIN_COMPANY
+    trans = new_transaction()
+    branch = sysparam(trans).MAIN_COMPANY
     provide_utility(ICurrentBranch, branch)
 
     station = BranchStation(name=u"Stoqlib station", branch=branch,
-                            connection=conn, is_active=True)
+                            connection=trans, is_active=True)
     provide_utility(ICurrentBranchStation, station)
-    conn.commit()
+    trans.commit()
 
 if __name__ == "__main__":
     create_people()

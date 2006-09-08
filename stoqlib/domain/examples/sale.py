@@ -56,50 +56,50 @@ DEFAULT_PAYMENT_INTERVALS = 1
 
 _till_operation = None
 
-def get_till(conn):
+def get_till(trans):
     global _till_operation
-    _till_operation = _till_operation or Till.get_current(conn)
+    _till_operation = _till_operation or Till.get_current(trans)
     if _till_operation is None:
         log.info('Creating a new till')
-        _till_operation = Till(connection=conn,
-                               station=get_current_station(conn))
+        _till_operation = Till(connection=trans,
+                               station=get_current_station(trans))
         _till_operation.open_till()
     else:
         log.info('Returning existing till')
 
     return _till_operation
 
-def get_clients(conn):
+def get_clients(trans):
     client_table = Person.getAdapterClass(IClient)
-    result = client_table.select(connection=conn)
+    result = client_table.select(connection=trans)
     if result.count() <= 0:
         raise SellError("You must have clients to create a sale!")
     return list(result)
 
-def get_all_products(conn):
-    result = Product.select(connection=conn)
+def get_all_products(trans):
+    result = Product.select(connection=trans)
     if result.count() <= 0:
         raise SellError("You have nothing to sale!")
         sys.exit()
     return list(result)
 
-def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
+def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
                  product, installments_number, till):
     sale = Sale(till=till, client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
-                salesperson=salesperson, cfop=sysparam(conn).DEFAULT_SALES_CFOP,
-                connection=conn)
+                salesperson=salesperson, cfop=sysparam(trans).DEFAULT_SALES_CFOP,
+                connection=trans)
     sellable_facet = ISellable(product)
     sellable_facet.add_sellable_item(sale=sale)
     sale_total = sellable_facet.base_sellable_info.price
     # Sale's payments
-    pg_facet = sale.addFacet(IPaymentGroup, connection=conn,
+    pg_facet = sale.addFacet(IPaymentGroup, connection=trans,
                              installments_number=DEFAULT_PAYMENTS_NUMBER)
     if installments_number > MAX_INSTALLMENTS_NUMBER:
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
                          % (MAX_INSTALLMENTS_NUMBER, installments_number))
-    check_method = ICheckPM(sysparam(conn).BASE_PAYMENT_METHOD)
+    check_method = ICheckPM(sysparam(trans).BASE_PAYMENT_METHOD)
     check_method.setup_inpayments(pg_facet, installments_number,
                                   open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
                                   DEFAULT_PAYMENTS_INTERVAL, sale_total)
@@ -112,23 +112,23 @@ def _create_sale(conn, open_date, status, salesperson, client, coupon_id,
 #
 
 def create_sales():
-    conn = new_transaction()
+    trans = new_transaction()
     log.info("Creating sales")
 
     sale_statuses = Sale.statuses.keys()
     sale_statuses.remove(Sale.STATUS_CANCELLED)
-    clients = get_clients(conn)
+    clients = get_clients(trans)
     if not len(clients) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have clients to create all the sales.")
-    product_list = get_all_products(conn)
+    product_list = get_all_products(trans)
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
-    salespersons = Person.getAdapterClass(ISalesPerson).select(connection=conn)
+    salespersons = Person.getAdapterClass(ISalesPerson).select(connection=trans)
     if salespersons.count() < DEFAULT_SALE_NUMBER:
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %
                          (DEFAULT_SALE_NUMBER, salespersons.count()))
-    till = get_till(conn)
+    till = get_till(trans)
     open_dates = [datetime.datetime.today(),
                   datetime.datetime.today() + datetime.timedelta(10),
                   datetime.datetime.today() + datetime.timedelta(15),
@@ -142,16 +142,16 @@ def create_sales():
                                                       clients,
                                                       product_list,
                                                       installments_numbers)):
-        _create_sale(conn, open_date, status, salesperson, client, index,
+        _create_sale(trans, open_date, status, salesperson, client, index,
                      product, installments_number, till)
-    cancelled_sale = _create_sale(conn, open_dates[0], Sale.STATUS_OPENED,
+    cancelled_sale = _create_sale(trans, open_dates[0], Sale.STATUS_OPENED,
                                   salespersons[0], clients[0], index+1,
                                   product_list[0], installments_numbers[0], till)
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
 
     till.close_till()
-    conn.commit()
+    trans.commit()
 
 if __name__ == '__main__':
     create_sales()
