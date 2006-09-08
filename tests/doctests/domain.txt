@@ -27,11 +27,11 @@ stoqlib/domain/base.py.
 
 Create a new transaction object:
 
-    >>> conn = new_transaction()
+    >>> trans = new_transaction()
 
 Create a new instance of Product class:
 
-    >>> test_product = Product(connection=conn)
+    >>> test_product = Product(connection=trans)
 
 To discover what is the name of database table mapped to this domain class
 you call the AbstractModel get_db_table_name which is a class method.
@@ -75,7 +75,7 @@ the database:
 To get the current connection of a given instance you must call
 get_connection method.
 
-    >>> assert conn is test_product.get_connection()
+    >>> assert trans is test_product.get_connection()
 
 Cloned instances must have the same connection attribute of your original
 instance.
@@ -115,7 +115,7 @@ object is mandatory for every new sellable.
 
     >>> from stoqlib.domain.sellable import BaseSellableInfo
     >>> description = 'Red Mustang, 1960'
-    >>> sellable_info = BaseSellableInfo(connection=conn,
+    >>> sellable_info = BaseSellableInfo(connection=trans,
     ...                                  description=description,
     ...                                  price=1500.45)
 
@@ -124,7 +124,7 @@ method.
 
     >>> adapter = test_product.addFacet(ISellable,
     ...                                 base_sellable_info=sellable_info,
-    ...                                 connection=conn,
+    ...                                 connection=trans,
     ...                                 barcode=product_barcode)
 
 Then you can check if the returned instance is of a correct adapter type:

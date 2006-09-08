@@ -57,7 +57,7 @@ class TestProductSupplierInfo(BaseDomainTest):
     _table = ProductSupplierInfo
 
     def get_foreign_key_data(self):
-        return (Product(connection=self.conn), get_supplier(self.conn))
+        return (Product(connection=self.trans), get_supplier(self.trans))
 
     def test_get_name(self):
         self.create_instance()
@@ -70,16 +70,16 @@ class TestProduct(BaseDomainTest):
     def test_facet_IStorable_add (self):
         self.create_instance()
         assert not IStorable(self._instance)
-        storable = self._instance.addFacet(IStorable, connection=self.conn)
+        storable = self._instance.addFacet(IStorable, connection=self.trans)
         table = Person.getAdapterClass(IBranch)
-        branches_count = table.select(connection=self.conn).count()
+        branches_count = table.select(connection=self.trans).count()
         assert storable.get_stocks().count() == branches_count
 
     def test_get_main_supplier_info (self):
         self.create_instance()
         assert not self._instance.get_main_supplier_info()
-        supplier = get_supplier(self.conn)
-        ProductSupplierInfo(connection=self.conn, supplier=supplier,
+        supplier = get_supplier(self.trans)
+        ProductSupplierInfo(connection=self.trans, supplier=supplier,
                             product=self._instance, is_main_supplier=True)
         assert self._instance.get_main_supplier_info() is not None
 
@@ -102,31 +102,31 @@ class TestProductSellableItem(BaseDomainTest):
     _table = ProductSellableItem
 
     def get_foreign_key_data(self):
-        till = Till.get_current(self.conn)
-        person = Person(name='mr been', connection=self.conn)
-        person.addFacet(IIndividual, connection=self.conn)
-        role = EmployeeRole(connection=self.conn, name="god")
-        person.addFacet(IEmployee, connection=self.conn, role=role)
-        salesperson = person.addFacet(ISalesPerson, connection=self.conn)
-        sales = Sale.select(connection=self.conn)
+        till = Till.get_current(self.trans)
+        person = Person(name='mr been', connection=self.trans)
+        person.addFacet(IIndividual, connection=self.trans)
+        role = EmployeeRole(connection=self.trans, name="god")
+        person.addFacet(IEmployee, connection=self.trans, role=role)
+        salesperson = person.addFacet(ISalesPerson, connection=self.trans)
+        sales = Sale.select(connection=self.trans)
         assert sales.count() > 0
         sale = sales[0]
-        sellable = get_sellable(self.conn)
+        sellable = get_sellable(self.trans)
         return sale, sellable
 
     def test_sell(self):
         self.create_instance()
         # Makes the whole process a bit more consistent and creating a new
         # sellable from the beginning
-        product = Product(connection=self.conn)
-        base_sellable_info = BaseSellableInfo(connection=self.conn)
+        product = Product(connection=self.trans)
+        base_sellable_info = BaseSellableInfo(connection=self.trans)
         sellable = product.addFacet(ISellable, barcode='xyz',
                                     base_sellable_info=base_sellable_info,
-                                    connection=self.conn)
+                                    connection=self.trans)
         self._instance.sellable = sellable
-        storable = product.addFacet(IStorable, connection=self.conn)
+        storable = product.addFacet(IStorable, connection=self.trans)
 
-        branch = get_current_branch(self.conn)
+        branch = get_current_branch(self.trans)
         stock_results = storable.get_stocks(branch)
         assert stock_results.count() == 1
         current_stock = stock_results[0].quantity

@@ -31,8 +31,8 @@ class TestDrivers(BaseDomainTest):
     _table = DeviceSettings
 
     def test_virtual_printer_creation(self):
-        station = get_current_station(self.conn)
-        settings = get_fiscal_printer_settings_by_station(self.conn,
+        station = get_current_station(self.trans)
+        settings = get_fiscal_printer_settings_by_station(self.trans,
                                                           station)
         self.failUnless(settings is not None, ("You should have a valid "
                                                "printer at this point."))
