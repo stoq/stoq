@@ -142,14 +142,11 @@ class BaseCashSlave(BaseEditorSlave):
     #
 
     def create_model(self, conn):
-        reason = self.payment_description
-        current_till = Till.get_current(conn)
-        payment_value = currency(0)
-        args = [payment_value, reason]
-        if self.payment_iface is IInPayment:
-            return current_till.create_credit(*args)
-        elif self.payment_iface is IOutPayment:
-            return current_till.create_debit(*args)
+        till = Till.get_current(conn)
+        if self.payment_iface == IInPayment:
+            return till.create_credit(currency(0), self.payment_description)
+        elif self.payment_iface == IOutPayment:
+            return till.create_debit(currency(0), self.payment_description)
         else:
             raise ValueError('Invalid interface, got %s'
                              % self.payment_iface)
