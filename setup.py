@@ -31,7 +31,7 @@
 #
 
 
-PSYCOPG_REQUIRED = [2, 0, 6]
+PSYCOPG_REQUIRED = [2, 0, 5]
 
 def psycopg_check(mod):
     version = mod.__version__.split(' ', 1)[0]
