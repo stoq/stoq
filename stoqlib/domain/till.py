@@ -197,18 +197,18 @@ class Till(Domain):
         conn = self.get_connection()
         sales = Sale.get_available_sales(conn, self)
         return [sale for sale in sales
-                    if sale.status != Sale.STATUS_CONFIRMED]
+                         if sale.status != Sale.STATUS_CONFIRMED]
 
     def get_credits_total(self):
         entries = self.get_entries()
         total = sum([entry.value for entry in entries
-                     if entry.value > 0], currency(0))
+                                     if entry.value > 0], currency(0))
         return currency(total)
 
     def get_debits_total(self):
         entries = self.get_entries()
         total = sum([entry.value for entry in entries
-                     if entry.value < 0], currency(0))
+                                     if entry.value < 0], currency(0))
         return currency(total)
 
     def create_debit(self, value, reason):
