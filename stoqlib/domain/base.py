@@ -96,6 +96,7 @@ class AbstractModel(object):
 
         conn.add_object(self)
 
+        # FIXME: Move this into subclasses
         cls = self.__class__
         if issubclass(cls, InheritableSQLObject):
             InheritableSQLObject._SO_setValue(self, *args, **kwargs)
