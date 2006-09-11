@@ -31,6 +31,7 @@ import sys
 import socket
 
 from kiwi.log import Logger
+import psycopg2
 from sqlobject import connectionForURI
 from sqlobject.styles import mixedToUnder
 from zope.interface import implements
@@ -48,20 +49,10 @@ DEFAULT_RDBMS = 'postgres'
 
 log = Logger('stoqlib.database')
 
-# Exported exceptions
-try:
-    import psycopg2 as psycopg
-    log.info('Using psycopg2')
-    # pyflakes
-    psycopg
-except ImportError:
-    import psycopg
-    log.info('Using psycopg')
-
-PostgreSQLError = psycopg.Error
-IntegrityError = psycopg.IntegrityError
-ProgrammingError = psycopg.ProgrammingError
-OperationalError = psycopg.OperationalError
+PostgreSQLError = psycopg2.Error
+IntegrityError = psycopg2.IntegrityError
+ProgrammingError = psycopg2.ProgrammingError
+OperationalError = psycopg2.OperationalError
 
 class DatabaseSettings:
     implements(IDatabaseSettings)

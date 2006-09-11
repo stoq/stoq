@@ -31,6 +31,12 @@
 #
 
 
+PSYCOPG_REQUIRED = [2, 0, 6]
+
+def psycopg_check(mod):
+    version = mod.__version__.split(' ', 1)[0]
+    return map(int, version.split('.'))
+
 dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  'http://www.zope.org/Products/ZopeInterface',
                  None),
@@ -40,11 +46,9 @@ dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                 ('Gazpacho', 'gazpacho', '0.6.6',
                  'http://www.gazpacho.sicem.biz',
                  lambda x: x.__version__),
-                ('Psycopg', 'psycopg', '1.1.21',
-                 'http://www.initd.org/projects/psycopg1',
-                 (lambda x: x.__version__
-                            and x.__version__ >= '1.1.21'
-                            and x.__version__ < '2.0' or False)),
+                ('Psycopg', 'psycopg2', PSYCOPG_REQUIRED,
+                 'http://www.initd.org/projects/psycopg2',
+                 psycopg_check),
                 ('SQLObject', 'sqlobject', '0.8.1',
                  'http://www.sqlobject.org', None),
                 ('Stoqdrivers', 'stoqdrivers', (0, 4),
