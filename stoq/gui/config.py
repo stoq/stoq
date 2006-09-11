@@ -183,7 +183,7 @@ class ExampleDatabaseStep(WizardEditorStep):
             examples.create()
             stepclass = DeviceSettingsStep
         return stepclass(self.conn, self.wizard,
-                         self.model, self)
+                         self.model.get_adapted(), self)
 
 class AdminPasswordStep(BaseWizardStep):
     gladefile = 'AdminPasswordStep'
