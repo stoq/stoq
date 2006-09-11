@@ -100,6 +100,63 @@ class Till(Domain):
     # Till methods
     #
 
+    def open_till(self):
+        if self.status == Till.STATUS_OPEN:
+            # TODO: Raise an error
+            log.warning('till_open(): Till was already open')
+
+        conn = self.get_connection()
+        last_till = get_last_till_operation_for_current_branch(conn)
+        if last_till:
+            final_cash = last_till.final_cash_amount
+            if final_cash > 0:
+                reason = _(u'Cash amount remaining of %s'
+                           % last_till.closing_date.strftime('%x'))
+                self.create_credit(final_cash, reason)
+
+            sales = last_till.get_unconfirmed_sales()
+            for sale in sales:
+                sale.till = self
+
+        if not IPaymentGroup(self):
+            # Add a IPaymentGroup facet for the new till and make it easily
+            # available to receive new payments
+            self.addFacet(IPaymentGroup, connection=conn)
+
+        self.status = Till.STATUS_OPEN
+
+    def close_till(self):
+        """ This method close the current till operation with the confirmed
+        sales associated. If there is a sale with a differente status than
+        SALE_CONFIRMED, a new 'pending' till operation is created and
+        these sales are associated with the current one.
+        """
+
+        if self.status == Till.STATUS_CLOSED:
+            raise StoqlibError("This till is already closed. Open a new till "
+                               "before close it.")
+        conn = self.get_connection()
+        sales = Sale.get_available_sales(conn, self)
+        money_payment_method = sysparam(conn).METHOD_MONEY
+
+        for sale in sales:
+            if sale.status != Sale.STATUS_CONFIRMED:
+                continue
+            group = IPaymentGroup(sale)
+            if not group:
+                raise DatabaseInconsistency("Sale must have a"
+                                            "IPaymentGroup facet")
+            for payment in group.get_items():
+                payment.status = Payment.STATUS_TO_PAY
+
+        current_balance = self.get_balance()
+        if self.balance_sent and self.balance_sent > current_balance:
+            raise ValueError("The cash amount that you want to send is "
+                             "greater than the current balance.")
+        self.status = self.STATUS_CLOSED
+        self.closing_date = datetime.now()
+        self.final_cash_amount = current_balance - self.balance_sent
+
     def get_entries(self):
         conn = self.get_connection()
         return TillFiscalOperationsView.selectBy(till_id=self.id,
@@ -136,31 +193,6 @@ class Till(Domain):
         total = sum([entry.value for entry in entries], currency(0))
         return currency(total)
 
-    def open_till(self):
-        if self.status == Till.STATUS_OPEN:
-            # TODO: Raise an error
-            log.warning('till_open(): Till was already open')
-
-        conn = self.get_connection()
-        last_till = get_last_till_operation_for_current_branch(conn)
-        if last_till:
-            final_cash = last_till.final_cash_amount
-            if final_cash > 0:
-                reason = _(u'Cash amount remaining of %s'
-                           % last_till.closing_date.strftime('%x'))
-                self.create_credit(final_cash, reason)
-
-            sales = last_till.get_unconfirmed_sales()
-            for sale in sales:
-                sale.till = self
-
-        if not IPaymentGroup(self):
-            # Add a IPaymentGroup facet for the new till and make it easily
-            # available to receive new payments
-            self.addFacet(IPaymentGroup, connection=conn)
-
-        self.status = Till.STATUS_OPEN
-
     def get_unconfirmed_sales(self):
         conn = self.get_connection()
         sales = Sale.get_available_sales(conn, self)
@@ -178,38 +210,6 @@ class Till(Domain):
         total = sum([entry.value for entry in entries
                      if entry.value < 0], currency(0))
         return currency(total)
-
-    def close_till(self):
-        """ This method close the current till operation with the confirmed
-        sales associated. If there is a sale with a differente status than
-        SALE_CONFIRMED, a new 'pending' till operation is created and
-        these sales are associated with the current one.
-        """
-
-        if self.status == Till.STATUS_CLOSED:
-            raise StoqlibError("This till is already closed. Open a new till "
-                               "before close it.")
-        conn = self.get_connection()
-        sales = Sale.get_available_sales(conn, self)
-        money_payment_method = sysparam(conn).METHOD_MONEY
-
-        for sale in sales:
-            if sale.status != Sale.STATUS_CONFIRMED:
-                continue
-            group = IPaymentGroup(sale)
-            if not group:
-                raise DatabaseInconsistency("Sale must have a"
-                                            "IPaymentGroup facet")
-            for payment in group.get_items():
-                payment.status = Payment.STATUS_TO_PAY
-
-        current_balance = self.get_balance()
-        if self.balance_sent and self.balance_sent > current_balance:
-            raise ValueError("The cash amount that you want to send is "
-                             "greater than the current balance.")
-        self.status = self.STATUS_CLOSED
-        self.closing_date = datetime.now()
-        self.final_cash_amount = current_balance - self.balance_sent
 
     def create_debit(self, value, reason):
         conn = self.get_connection()
