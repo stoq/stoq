@@ -137,6 +137,10 @@ class Till(Domain):
         return currency(total)
 
     def open_till(self):
+        if self.status == Till.STATUS_OPEN:
+            # TODO: Raise an error
+            log.warning('till_open(): Till was already open')
+
         conn = self.get_connection()
         last_till = get_last_till_operation_for_current_branch(conn)
         if last_till:
@@ -154,6 +158,8 @@ class Till(Domain):
             # Add a IPaymentGroup facet for the new till and make it easily
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
+
+        self.status = Till.STATUS_OPEN
 
     def get_unconfirmed_sales(self):
         conn = self.get_connection()
