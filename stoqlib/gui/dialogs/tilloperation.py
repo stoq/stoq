@@ -109,8 +109,7 @@ class TillOperationDialog(GladeSlaveDelegate):
     gsignal('close-till')
 
     def __init__(self, conn):
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile,
-                               widgets=self.widgets)
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.main_dialog = BasicWrappingDialog(self, self.title, size=self.size,
                                                hide_footer=True)
         self.conn = conn
