@@ -1,0 +1,78 @@
+# -*- coding: utf-8 -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+##
+## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## All rights reserved
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU Lesser General Public License as published by
+## the Free Software Foundation; either version 2 of the License, or
+## (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU Lesser General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., or visit: http://www.gnu.org/.
+##
+## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+##
+""" This module test all class in stoq/domain/station.py """
+
+import unittest
+
+from stoqlib.lib.runtime import new_transaction, get_current_station
+from stoqlib.domain.station import BranchStation
+from stoqlib.domain.till import Till
+
+import tests.base
+tests.base #pyflakes
+
+class TestStation(unittest.TestCase):
+    def setUp(self):
+        self.trans = new_transaction()
+
+    def tearDown(self):
+        self.trans.rollback()
+
+    def testGetCurrentTillOpen(self):
+        self.assertEqual(Till.get_current(self.trans), None)
+
+        station = get_current_station(self.trans)
+        till = Till(connection=self.trans, station=station)
+
+        self.assertEqual(Till.get_current(self.trans), None)
+        till.open_till()
+        self.assertEqual(Till.get_current(self.trans), till)
+
+    def testGetCurrentTillClose(self):
+        station = get_current_station(self.trans)
+
+        self.assertEqual(Till.get_current(self.trans), None)
+        till = Till(connection=self.trans, station=station)
+        till.open_till()
+
+        self.assertEqual(Till.get_current(self.trans), till)
+        till.close_till()
+        self.assertEqual(Till.get_current(self.trans), None)
+
+    def testGetCurrentOtherStation(self):
+        # Test bug #2734
+        self.assertEqual(Till.get_current(self.trans), None)
+
+        # Create a new station in the same branch as the current one
+        station = get_current_station(self.trans)
+        newstation = BranchStation.create(self.trans, branch=station.branch)
+
+        # Create a Till for the new station and open it
+        till = Till(connection=self.trans, station=newstation)
+        till.open_till()
+
+        # Verify that it's set for "us" as well since
+        # Till.get_current calls get_current_branch()
+        self.assertEqual(Till.get_current(self.trans), till)
+
