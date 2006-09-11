@@ -229,6 +229,8 @@ class Till(Domain):
         @returns: a Till instance or None
         """
         branch = get_current_branch(conn)
+        assert branch is not None
+
         result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
                                 cls.q.stationID == BranchStation.q.id,
                                 BranchStation.q.branchID == branch.id),
