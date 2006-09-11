@@ -26,7 +26,6 @@
 
 from datetime import datetime
 
-import gtk
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
@@ -124,9 +123,6 @@ class BaseCashSlave(BaseEditorSlave):
     model_type = TillEntry
     gladefile = 'BaseCashSlave'
     proxy_widgets = ('cash_amount',)
-    label_widgets = ('date',
-                     'date_lbl',
-                     'cash_amount_lbl')
 
     def __init__(self, conn, payment_description,
                  payment_iface=IInPayment):
@@ -171,31 +167,10 @@ class CashAdvanceEditor(BaseEditor):
     model_name = _(u'Cash Advance')
     model_type = CashAdvanceInfo
     gladefile = 'CashAdvanceEditor'
-    label_widgets = ('employee_lbl',)
-    entry_widgets = ('employee_combo',)
 
     payment_iface = IOutPayment
 
-    def _setup_size_group(self, size_group, widgets, obj):
-        for widget_name in widgets:
-            widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)
-
     def _setup_widgets(self):
-        self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.entry_size_group,
-                               CashAdvanceEditor.entry_widgets,
-                               self)
-        self._setup_size_group(self.entry_size_group,
-                               self.cash_slave.proxy_widgets,
-                               self.cash_slave)
-        self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.label_size_group,
-                               CashAdvanceEditor.label_widgets,
-                               self)
-        self._setup_size_group(self.label_size_group,
-                               self.cash_slave.label_widgets,
-                               self.cash_slave)
         employees = [(p.get_adapted().name, p)
                      for p in Person.iselect(IEmployee, connection=self.conn)]
         self.employee_combo.prefill(employees)
@@ -270,32 +245,9 @@ class CashOutEditor(BaseEditor):
     model_name = _(u'Cash Out')
     model_type = TillEntry
     gladefile = 'CashOutEditor'
-    label_widgets = ('reason_lbl',)
-    entry_widgets = ('reason',)
     title = _(u'Reverse Payment')
 
     payment_iface = IOutPayment
-
-    def _setup_size_group(self, size_group, widgets, obj):
-        for widget_name in widgets:
-            widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)
-
-    def _setup_widgets(self):
-        self.entry_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.entry_size_group,
-                               CashOutEditor.entry_widgets,
-                               self)
-        self._setup_size_group(self.entry_size_group,
-                               self.cash_slave.proxy_widgets,
-                               self.cash_slave)
-        self.label_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(self.label_size_group,
-                               CashOutEditor.label_widgets,
-                               self)
-        self._setup_size_group(self.label_size_group,
-                               self.cash_slave.label_widgets,
-                               self.cash_slave)
 
     #
     # BaseEditorSlave Hooks
@@ -311,7 +263,6 @@ class CashOutEditor(BaseEditor):
             raise ValueError("The cash_slave attribute should be defined at "
                              "this point")
         self.attach_slave("base_cash_holder", self.cash_slave)
-        self._setup_widgets()
 
     def validate_confirm(self):
         return self.cash_slave.validate_confirm()
