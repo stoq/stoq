@@ -1,6 +1,12 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="casheditor_label_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkSizeGroup" id="casheditor_entry_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="CashAdvanceEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -28,6 +34,7 @@
                         <child>
                             <widget class="GtkLabel" id="employee_lbl">
                                 <property name="label" context="yes" translatable="yes">Credit for Employee:</property>
+                                <property name="sizegroup">casheditor_label_sizegroup</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -49,9 +56,10 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+combobox+ComboBoxEntry" id="employee_combo">
+                            <widget class="ProxyComboBoxEntry" id="employee_combo">
                                 <property name="data_type">unicode</property>
                                 <property name="mandatory">True</property>
+                                <property name="sizegroup">casheditor_entry_sizegroup</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

@@ -1,6 +1,12 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="casheditor_entry_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkSizeGroup" id="casheditor_label_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="CashOutEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -29,6 +35,7 @@
                         <child>
                             <widget class="GtkLabel" id="reason_lbl">
                                 <property name="label" context="yes" translatable="yes">Reason:</property>
+                                <property name="sizegroup">casheditor_label_sizegroup</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -38,7 +45,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label1"/>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                            </widget>
                             <packing>
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
@@ -47,9 +56,11 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="reason">
+                            <widget class="ProxyEntry" id="reason">
                                 <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
                                 <property name="model_attribute">description</property>
+                                <property name="sizegroup">casheditor_entry_sizegroup</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
