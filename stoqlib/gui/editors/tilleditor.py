@@ -51,8 +51,7 @@ class TillOpeningEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        model = Till(connection=conn, status=Till.STATUS_OPEN,
-                     station=get_current_station(conn))
+        model = Till(connection=conn, station=get_current_station(conn))
         model.open_till()
         return model
 
