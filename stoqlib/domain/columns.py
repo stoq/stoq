@@ -36,27 +36,13 @@ from sqlobject.converters import registerConverter
 from stoqlib.lib.parameters import DECIMAL_PRECISION, DECIMAL_SIZE
 
 
+# Currency
+
 def _CurrencyConverter(value, db):
     return repr(float(value))
 registerConverter(currency, _CurrencyConverter)
 
-
-#
-# Validators
-#
-
-
-class _PriceValidator(Validator):
-
-    def to_python(self, value, state):
-        # Do not allow empty strings or None Values
-        value = value or currency(0)
-        if not isinstance(value, decimal.Decimal):
-            value = decimal.Decimal(str(value))
-        return currency(value)
-
-    def from_python(self, value, state):
-        return value
+# Decimal
 
 class _DecimalValidator(Validator):
 
@@ -70,12 +56,6 @@ class _DecimalValidator(Validator):
     def from_python(self, value, state):
         return value
 
-
-#
-# Abstract Classes
-#
-
-
 class AbstractDecimalCol(SODecimalCol):
     def __init__(self, **kw):
         kw['size'] = DECIMAL_SIZE
@@ -86,9 +66,33 @@ class AbstractDecimalCol(SODecimalCol):
         return ([_DecimalValidator()] +
                 super(AbstractDecimalCol, self).createValidators())
 
+class DecimalCol(Col):
+    baseClass = AbstractDecimalCol
+
+
+# Price
+
+class _PriceValidator(Validator):
+
+    def to_python(self, value, state):
+        # Do not allow empty strings or None Values
+        value = value or currency(0)
+        if not isinstance(value, decimal.Decimal):
+            value = decimal.Decimal(str(value))
+        return currency(value)
+
+    def from_python(self, value, state):
+        return value
+
+
 class SOPriceCol(AbstractDecimalCol):
     def createValidators(self):
         return [_PriceValidator()] + super(SOPriceCol, self).createValidators()
+
+class PriceCol(DecimalCol):
+    baseClass = SOPriceCol
+
+# Autoinc
 
 class SOAutoIncCol(SOIntCol):
     def __init__(self, **kw):
@@ -96,17 +100,6 @@ class SOAutoIncCol(SOIntCol):
         kw['alternateID'] = True
         SOIntCol.__init__(self, **kw)
 
-
-#
-# Custom SQLObject columns
-#
-
-
-class DecimalCol(Col):
-    baseClass = AbstractDecimalCol
-
-class PriceCol(DecimalCol):
-    baseClass = SOPriceCol
 
 class AutoIncCol(Col):
     """This column defines an auto increment integer column. Domain classes
