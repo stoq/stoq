@@ -137,7 +137,7 @@ class Till(Domain):
             for sale in sales:
                 sale.till = self
 
-        if not IPaymentGroup(self):
+        if IPaymentGroup(self, None) is None:
             # Add a IPaymentGroup facet for the new till and make it easily
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
@@ -157,7 +157,7 @@ class Till(Domain):
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale, None)
-            if not group:
+            if group is None:
                 raise DatabaseInconsistency(
                     "Sale must have a IPaymentGroup facet")
 
