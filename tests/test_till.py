@@ -25,6 +25,8 @@
 
 import unittest
 
+from kiwi.datatypes import currency
+
 from stoqlib.lib.runtime import new_transaction, get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
@@ -75,4 +77,51 @@ class TestStation(unittest.TestCase):
         # Verify that it's set for "us" as well since
         # Till.get_current calls get_current_branch()
         self.assertEqual(Till.get_current(self.trans), till)
+
+    def testGetCashTotal(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        old = till.get_cash_total()
+        till.create_credit(currency(10), u"")
+        self.assertEqual(till.get_cash_total(), old + 10)
+        till.create_debit(currency(5), u"")
+        self.assertEqual(till.get_cash_total(), old + 5)
+
+
+    def testGetBalance(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        old = till.get_balance()
+        till.create_credit(currency(10), u"")
+        self.assertEqual(till.get_balance(), old + 10)
+        till.create_debit(currency(5), u"")
+        self.assertEqual(till.get_balance(), old + 5)
+
+    def testGetCreditsTotal(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        old = till.get_credits_total()
+        till.create_credit(currency(10), u"")
+        self.assertEqual(till.get_credits_total(), old + 10)
+        # This should not affect the credit
+        till.create_debit(currency(5), u"")
+        self.assertEqual(till.get_credits_total(), old + 10)
+
+    def testGetDebitsTotal(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        old = till.get_debits_total()
+        till.create_debit(currency(10), u"")
+        self.assertEqual(till.get_debits_total(), old - 10)
+        # This should not affect the debit
+        till.create_credit(currency(5), u"")
+        self.assertEqual(till.get_debits_total(), old - 10)
 
