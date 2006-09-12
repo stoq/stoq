@@ -163,9 +163,8 @@ class Till(Domain):
                                                  connection=conn)
     def get_cash_total(self):
         conn = self.get_connection()
-        entries = TillEntry.selectBy(tillID=self.id, connection=conn)
-        total = sum([entry.value for entry in entries], currency(0))
-        return currency(total)
+        results = TillEntry.selectBy(tillID=self.id, connection=conn)
+        return currency(results.sum('value') or 0)
 
     def get_initial_cash_amount(self):
         q1 = TillFiscalOperationsView.q.till_id == self.id
@@ -189,9 +188,10 @@ class Till(Domain):
         money, of all the sales associated with this operation
         *plus* the initial cash amount.
         """
-        entries = self.get_entries()
-        total = sum([entry.value for entry in entries], currency(0))
-        return currency(total)
+        conn = self.get_connection()
+        results = TillFiscalOperationsView.selectBy(till_id=self.id,
+                                                    connection=conn)
+        return currency(results.sum('value') or 0)
 
     def get_unconfirmed_sales(self):
         conn = self.get_connection()
@@ -200,23 +200,37 @@ class Till(Domain):
                          if sale.status != Sale.STATUS_CONFIRMED]
 
     def get_credits_total(self):
-        entries = self.get_entries()
-        total = sum([entry.value for entry in entries
-                                     if entry.value > 0], currency(0))
-        return currency(total)
+        conn = self.get_connection()
+        view = TillFiscalOperationsView
+        results = view.select(AND(view.q.value > 0,
+                                  view.q.till_id == self.id), connection=conn)
+        return currency(results.sum('value') or 0)
 
     def get_debits_total(self):
-        entries = self.get_entries()
-        total = sum([entry.value for entry in entries
-                                     if entry.value < 0], currency(0))
-        return currency(total)
+        conn = self.get_connection()
+        view = TillFiscalOperationsView
+        results = view.select(AND(view.q.value < 0,
+                                  view.q.till_id == self.id), connection=conn)
+        return currency(results.sum('value') or 0)
 
     def create_debit(self, value, reason):
+        """
+        Add debit to the till
+        @param value: amount to add
+        @param reason: description of payment
+        @returns: payment group representing the added debit
+        """
         conn = self.get_connection()
         group = self._get_payment_group()
         return group.create_debit(value, reason, self)
 
     def create_credit(self, value, reason):
+        """
+        Add credit to the till
+        @param value: amount to add
+        @param reason: description of payment
+        @returns: payment group representing the added credit
+        """
         conn = self.get_connection()
         group = self._get_payment_group()
         return group.create_credit(value, reason, self)
