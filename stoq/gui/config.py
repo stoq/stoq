@@ -38,7 +38,7 @@ from stoqlib.database import (DatabaseSettings, finish_transaction,
                               check_installed_database,
                               create_database_if_missing,
                               rollback_and_begin)
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.station import create_station
 from stoqlib.domain.examples import createall as examples
 from stoqlib.exceptions import DatabaseError
@@ -185,6 +185,7 @@ class ExampleDatabaseStep(WizardEditorStep):
         return stepclass(self.conn, self.wizard,
                          self.model.get_adapted(), self)
 
+
 class AdminPasswordStep(BaseWizardStep):
     gladefile = 'AdminPasswordStep'
 
@@ -213,10 +214,21 @@ class AdminPasswordStep(BaseWizardStep):
         self.password_slave.password.grab_focus()
 
     def validate_step(self):
-        return self.password_slave.validate_confirm()
+        good_pass =  self.password_slave.validate_confirm()
+        if good_pass:
+            results = PersonAdaptToUser.select(
+                PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
+                connection=self.conn)
+            if results.count() != 1:
+                raise DatabaseInconsistency(
+                    "It is not possible to have more than one user with "
+                    "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+            results[0].password = self.password_slave.model.new_password
+        return good_pass
 
     def next_step(self):
-        return ExampleDatabaseStep(self.conn, self.wizard, self._next_model, self)
+        return ExampleDatabaseStep(
+            self.conn, self.wizard, self._next_model, self)
 
 
 class DatabaseSettingsStep(WizardEditorStep):
