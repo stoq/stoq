@@ -21,6 +21,7 @@
 ##
 ## Author(s):    Henrique Romano        <henrique@async.com.br>
 ##               Evandro Vale Miquelito <evandro@async.com.br>
+##               Johan Dahlin           <jdahlin@async.com.br>
 ##
 """ Implementation of classes related to Payment management. """
 
