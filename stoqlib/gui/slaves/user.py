@@ -130,9 +130,8 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
-        results = UserProfile.select(connection=self.conn)
-        items = [(p.name, p) for p in results.limit(self.max_results)]
-        self.profile.prefill(items)
+        profiles = UserProfile.select(connection=self.conn)[:self.max_results]
+        self.profile.prefill([(p.name, p) for p in profiles])
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)
