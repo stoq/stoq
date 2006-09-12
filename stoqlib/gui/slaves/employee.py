@@ -28,7 +28,6 @@
 
 import datetime
 
-import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
@@ -50,31 +49,6 @@ _ = stoqlib_gettext
 class EmployeeDetailsSlave(BaseEditorSlave):
     gladefile = 'EmployeeDetailsSlave'
     model_iface = IEmployee
-
-    #
-    # Widgets specification for size groups.
-    #
-
-    left_widgets_group =  ('admission_date_label',
-                           'registry_number_label',
-                           'military_cert_serie_label',
-                           'military_cert_category_label',
-                           'military_cert_number_label',
-                           'voter_id_number_label',
-                           'voter_id_zone_label',
-                           'voter_id_section_label',
-                           'expire_vacation_label')
-
-    right_widgets_group = ('person_dependent_number_label',
-                           'education_level_label',
-                           'pis_number_label',
-                           'pis_registry_date_label',
-                           'pis_bank_label',
-                           'workpermit_number_label',
-                           'workpermit_serie_label',
-                           'bank_account_label',
-                           'bank_label',
-                           'bank_agency_label')
 
     #
     # Proxy widgets
@@ -104,24 +78,11 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                            'military_doc_serie',
                            'military_doc_number')
 
-    def setup_widgets(self):
-        self.right_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self.left_size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-
-        for widget in EmployeeDetailsSlave.left_widgets_group:
-            w = getattr(self, widget)
-            self.left_size_group.add_widget(w)
-
-        for widget in EmployeeDetailsSlave.right_widgets_group:
-            w = getattr(self, widget)
-            self.right_size_group.add_widget(w)
-
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
-        self.setup_widgets()
 
         assert(self.model)
 
