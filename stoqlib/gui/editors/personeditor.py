@@ -29,7 +29,6 @@
 import datetime
 import decimal
 
-import gtk
 from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
@@ -137,7 +136,6 @@ class PasswordEditor(BaseEditor):
     gladefile = 'PasswordEditor'
     model_type = LoginInfo
     proxy_widgets = ('current_password',)
-    size_group_widgets = ('current_password_lbl',)
 
     def __init__(self, conn, user, visual_mode=False):
         self.user = user
@@ -145,21 +143,9 @@ class PasswordEditor(BaseEditor):
         BaseEditor.__init__(self, conn, visual_mode=visual_mode)
         self._setup_widgets()
 
-    def _setup_size_group(self, size_group, widgets, obj):
-        for widget_name in widgets:
-            widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)
-
     def _setup_widgets(self):
         self.password_slave.set_password_labels(_('New Password:'),
                                                 _('Retype New Password:'))
-        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-        self._setup_size_group(size_group,
-                               PasswordEditor.size_group_widgets,
-                               self)
-        self._setup_size_group(size_group,
-                               self.password_slave.size_group_widgets,
-                               self.password_slave)
 
     #
     # BaseEditorSlave Hooks

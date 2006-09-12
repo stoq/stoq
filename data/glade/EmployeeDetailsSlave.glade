@@ -1,6 +1,12 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="left_size_group">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkSizeGroup" id="right_size_group">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="EmployeeDetailsSlave">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -25,6 +31,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="admission_date_label">
                                         <property name="label" context="yes" translatable="yes">Date:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -35,6 +42,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="registry_number_label">
                                         <property name="label" context="yes" translatable="yes">Registry:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -47,6 +55,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="expire_vacation_label">
                                         <property name="label" context="yes" translatable="yes">Vacation:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -69,7 +78,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="registry_number">
+                                    <widget class="ProxyEntry" id="registry_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">registry_number</property>
@@ -117,6 +126,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="workpermit_number_label">
                                         <property name="label" context="yes" translatable="yes">Number:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -127,6 +137,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="workpermit_serie_label">
                                         <property name="label" context="yes" translatable="yes">Serie:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -137,7 +148,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="workpermit_number">
+                                    <widget class="ProxyEntry" id="workpermit_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
@@ -150,7 +161,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="workpermit_serie">
+                                    <widget class="ProxyEntry" id="workpermit_serie">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
@@ -188,6 +199,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_number_label">
                                         <property name="label" context="yes" translatable="yes">Number:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -198,6 +210,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_serie_label">
                                         <property name="label" context="yes" translatable="yes">Serie:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -210,6 +223,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="military_cert_category_label">
                                         <property name="label" context="yes" translatable="yes">Category:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -220,7 +234,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_number">
+                                    <widget class="ProxyEntry" id="military_doc_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
@@ -233,7 +247,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_serie">
+                                    <widget class="ProxyEntry" id="military_doc_serie">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">series_number</property>
@@ -248,7 +262,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="military_doc_category">
+                                    <widget class="ProxyEntry" id="military_doc_category">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">category</property>
@@ -286,6 +300,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_number_label">
                                         <property name="label" context="yes" translatable="yes">Number:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -296,6 +311,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_section_label">
                                         <property name="label" context="yes" translatable="yes">Section:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -308,6 +324,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="voter_id_zone_label">
                                         <property name="label" context="yes" translatable="yes">Zone:</property>
+                                        <property name="sizegroup">left_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -318,7 +335,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_number">
+                                    <widget class="ProxyEntry" id="voter_id_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">number</property>
@@ -331,7 +348,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_section">
+                                    <widget class="ProxyEntry" id="voter_id_section">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">section</property>
@@ -346,7 +363,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="voter_id_zone">
+                                    <widget class="ProxyEntry" id="voter_id_zone">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">zone</property>
@@ -384,6 +401,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="pis_number_label">
                                         <property name="label" context="yes" translatable="yes">Number:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -394,6 +412,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="pis_registry_date_label">
                                         <property name="label" context="yes" translatable="yes">Date:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -406,6 +425,7 @@
                                 <child>
                                     <widget class="GtkLabel" id="pis_bank_label">
                                         <property name="label" context="yes" translatable="yes">Bank:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -416,7 +436,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="pis_number">
+                                    <widget class="ProxyEntry" id="pis_number">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_number</property>
@@ -443,7 +463,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="pis_bank">
+                                    <widget class="ProxyEntry" id="pis_bank">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">pis_bank</property>
@@ -483,6 +503,7 @@
                                         <property name="justify">right</property>
                                         <property name="label" context="yes" translatable="yes">Education 
 Level:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -495,6 +516,7 @@ Level:</property>
                                         <property name="justify">right</property>
                                         <property name="label" context="yes" translatable="yes">Dependent 
 Number:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -505,7 +527,7 @@ Number:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="education_level">
+                                    <widget class="ProxyEntry" id="education_level">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">education_level</property>
@@ -518,7 +540,7 @@ Number:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="dependent_person_number">
+                                    <widget class="ProxyEntry" id="dependent_person_number">
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">dependent_person_number</property>
@@ -559,6 +581,7 @@ Number:</property>
                                 <child>
                                     <widget class="GtkLabel" id="bank_label">
                                         <property name="label" context="yes" translatable="yes">Bank ID:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -569,6 +592,7 @@ Number:</property>
                                 <child>
                                     <widget class="GtkLabel" id="bank_agency_label">
                                         <property name="label" context="yes" translatable="yes">Branch Number:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -581,6 +605,7 @@ Number:</property>
                                 <child>
                                     <widget class="GtkLabel" id="bank_account_label">
                                         <property name="label" context="yes" translatable="yes">Account:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -591,7 +616,7 @@ Number:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="name">
+                                    <widget class="ProxyEntry" id="name">
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">bank_id</property>
@@ -605,7 +630,7 @@ Number:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="branch">
+                                    <widget class="ProxyEntry" id="branch">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">branch</property>
@@ -620,7 +645,7 @@ Number:</property>
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+entry+Entry" id="account">
+                                    <widget class="ProxyEntry" id="account">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">account</property>

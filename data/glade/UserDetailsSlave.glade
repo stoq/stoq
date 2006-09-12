@@ -1,6 +1,9 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="userdetails_size_group">
+        <property name="mode">horizontal</property>
+    </widget>
     <widget class="GtkWindow" id="UserDetailsSlave">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
@@ -14,6 +17,7 @@
                 <child>
                     <widget class="GtkLabel" id="username_lbl">
                         <property name="label" context="yes" translatable="yes">Username:</property>
+                        <property name="sizegroup">userdetails_size_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -40,6 +44,7 @@
                 <child>
                     <widget class="GtkLabel" id="profile_lbl">
                         <property name="label" context="yes" translatable="yes">Profile:</property>
+                        <property name="sizegroup">userdetails_size_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -56,6 +61,7 @@
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">username</property>
+                        <property name="sizegroup">userdetails_size_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -72,8 +78,8 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
-                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
                     </packing>
                 </child>
                 <child>
@@ -81,6 +87,7 @@
                         <property name="data_type">object</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">profile</property>
+                        <property name="sizegroup">userdetails_size_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -97,8 +104,8 @@
                     <packing>
                         <property name="left_attach">2</property>
                         <property name="right_attach">3</property>
-                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
-                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
                     </packing>
                 </child>
                 <child>
@@ -108,8 +115,8 @@
                         <property name="right_attach">3</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
-                        <property name="x_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
-                        <property name="y_options">&amp;lt;flags 0 of type GtkAttachOptions&amp;gt;</property>
+                        <property name="x_options"></property>
+                        <property name="y_options"></property>
                     </packing>
                 </child>
                 <child>

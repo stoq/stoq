@@ -25,7 +25,6 @@
 ##
 """ User editor slaves implementation.  """
 
-import gtk
 from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
@@ -63,8 +62,6 @@ class PasswordEditorSlave(BaseEditorSlave):
     model_type = LoginInfo
     proxy_widgets = ('password',
                      'confirm_password')
-    size_group_widgets = ('password_lbl',
-                          'confirm_password_lbl')
 
     def __init__(self, conn, model=None, confirm_password=True):
         BaseEditorSlave.__init__(self, conn, model)
@@ -121,30 +118,15 @@ class UserDetailsSlave(BaseEditorSlave):
     proxy_widgets = ('username',
                      'profile')
 
-    size_group_widgets = ('username_lbl',
-                          'profile_lbl') + proxy_widgets
-
     def __init__(self, conn, model, show_password_fields=True,
                  visual_mode=False):
         self.show_password_fields = show_password_fields
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
-    def _setup_size_group(self, size_group, widgets, obj):
-        for widget_name in widgets:
-            widget = getattr(obj, widget_name)
-            size_group.add_widget(widget)
-
     def _setup_widgets(self):
         if self.show_password_fields:
             self._attach_slaves()
-            size_group = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
-            self._setup_size_group(size_group,
-                                   UserDetailsSlave.size_group_widgets,
-                                   self)
-            self._setup_size_group(size_group,
-                                   self.password_slave.size_group_widgets,
-                                   self.password_slave)
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
