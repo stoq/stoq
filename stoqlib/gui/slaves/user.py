@@ -66,7 +66,7 @@ class PasswordEditorSlave(BaseEditorSlave):
     size_group_widgets = ('password_lbl',
                           'confirm_password_lbl')
 
-    def __init__(self, conn, model=None, confirm_password=False):
+    def __init__(self, conn, model=None, confirm_password=True):
         BaseEditorSlave.__init__(self, conn, model)
         self._confirm_password = confirm_password
         self._setup_widgets()
