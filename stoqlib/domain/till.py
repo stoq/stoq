@@ -154,16 +154,14 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise StoqlibError("This till is already closed. Open a new till "
                                "before close it.")
-        conn = self.get_connection()
-        sales = Sale.get_available_sales(conn, self)
 
-        for sale in sales:
-            if sale.status != Sale.STATUS_CONFIRMED:
-                continue
-            group = IPaymentGroup(sale)
+        for sale in self.get_unconfirmed_sales():
+            group = IPaymentGroup(sale, None)
             if not group:
                 raise DatabaseInconsistency(
                     "Sale must have a IPaymentGroup facet")
+
+            # FIXME: Move this to payment itself
             for payment in group.get_items():
                 payment.status = Payment.STATUS_TO_PAY
 
@@ -171,6 +169,7 @@ class Till(Domain):
         if self.balance_sent and self.balance_sent > current_balance:
             raise ValueError("The cash amount that you want to send is "
                              "greater than the current balance.")
+
         self.closing_date = datetime.now()
         self.final_cash_amount = current_balance - self.balance_sent
         self.status = self.STATUS_CLOSED
