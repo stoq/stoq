@@ -153,9 +153,9 @@ class Till(Domain):
         if self.balance_sent and self.balance_sent > current_balance:
             raise ValueError("The cash amount that you want to send is "
                              "greater than the current balance.")
-        self.status = self.STATUS_CLOSED
         self.closing_date = datetime.now()
         self.final_cash_amount = current_balance - self.balance_sent
+        self.status = self.STATUS_CLOSED
 
     def get_entries(self):
         conn = self.get_connection()
