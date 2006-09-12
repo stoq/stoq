@@ -155,8 +155,7 @@ class UserDetailsSlave(BaseEditorSlave):
         self.profile.prefill(items)
 
     def _attach_slaves(self):
-        klass = PasswordEditorSlave
-        self.password_slave = klass(self.conn, visual_mode=self.visual_mode)
+        self.password_slave = PasswordEditorSlave(self.conn)
         self.attach_slave('password_holder', self.password_slave)
 
     #
