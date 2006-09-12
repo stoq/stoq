@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
+##              Henrique Romano   <henrique@async.com.br>
 ##
 """ This module test all class in stoq/domain/station.py """
 
@@ -69,3 +70,38 @@ class TestStation(unittest.TestCase):
     def test_create_error(self):
         branch = self._create_extra_branch()
         self.assertRaises(StoqlibError, create_station, self.trans)
+
+    def test_get_station(self):
+        self.assertRaises(TypeError, BranchStation.get_station,
+                          self.trans, branch=None)
+        branch = self._create_extra_branch()
+        self.assertRaises(TypeError, BranchStation.get_station,
+                          self.trans, branch=branch.get_adapted())
+        # Creating a station
+        station = BranchStation.get_station(self.trans, branch=branch,
+                                            create=True)
+        self.failUnless(isinstance(station, BranchStation),
+                        ("A valid branch station should be created, "
+                         "got %r instead" % station))
+        # Create a new station and assert it raises AssertionError
+        BranchStation(name=station.name, branch=branch,
+                      is_active=True, connection=self.trans)
+        self.assertRaises(AssertionError, BranchStation.get_station,
+                          self.trans, branch=branch)
+
+    def test_get_active_stations(self):
+        # Test BranchStation.get_active_stations as well inactivate and
+        # activate methods
+        branch = self._create_extra_branch()
+        station = BranchStation.create(self.trans, branch=branch)
+        self.failUnless(
+            station in BranchStation.get_active_stations(self.trans),
+            "The new station %r should be active" % station)
+        station.inactivate()
+        self.failUnless(
+            station not in BranchStation.get_active_stations(self.trans),
+            "The station %r should not be active" % station)
+        station.activate()
+        self.failUnless(
+            station in BranchStation.get_active_stations(self.trans),
+            "The new station %r should be active" % station)

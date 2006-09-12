@@ -49,6 +49,8 @@ class BranchStation(Domain):
     is_active = BoolCol(default=False)
     branch = ForeignKey("PersonAdaptToBranch")
 
+    # Public
+
     @classmethod
     def get_active_stations(cls, conn):
         """
@@ -76,18 +78,40 @@ class BranchStation(Domain):
             if branches.count() != 1:
                 raise StoqlibError("More than one branch detected")
             branch = branches[0]
-
         name = socket.gethostname()
-
-        stations = cls.select(
-            AND(cls.q.name == name,
-                cls.q.branchID == branch.id), connection=conn)
-        if stations.count() != 0:
+        station = cls._get_station(conn, branch)
+        if station:
             raise StoqlibError(
                 "There is already a station registered as `%s'." % name)
-
         return cls(name=name, is_active=True, branch=branch,
                    connection=conn)
+
+    @classmethod
+    def get_station(cls, conn, branch=None, create=False):
+        station = cls._get_station(conn, branch=branch)
+        if not station and create:
+            station = create_station(conn, branch)
+        return station
+
+    # Private
+
+    @classmethod
+    def _get_station(cls, conn, branch):
+        from stoqlib.domain.person import Person
+        if (branch is None or not
+            isinstance(branch, Person.getAdapterClass(IBranch))):
+            raise TypeError("Invalid branch: %r" % branch)
+        name = socket.gethostname()
+        result = cls.select(
+            AND(cls.q.name == name,
+                cls.q.branchID == branch.id), connection=conn)
+        if result.count() > 1:
+            raise AssertionError("You should have only one station with "
+                                 "name `%s' for branch `%s'"
+                                 % (name, branch.get_adapted().name))
+        elif result.count() == 1:
+            return result[0]
+        return None
 
     #
     # IActive implementation
