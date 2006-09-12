@@ -55,12 +55,26 @@ class UserStatusSlave(BaseEditorSlave):
 
 
 class PasswordEditorSlave(BaseEditorSlave):
+    """ A slave for asking (and confirming) password; Optionally, this slave
+    can be used just to ask the password once, i.e, not displaying the entry
+    for confirmation (see confirm_password parameter).
+    """
     gladefile = 'PasswordEditorSlave'
     model_type = LoginInfo
     proxy_widgets = ('password',
                      'confirm_password')
     size_group_widgets = ('password_lbl',
                           'confirm_password_lbl')
+
+    def __init__(self, conn, model=None, confirm_password=False):
+        BaseEditorSlave.__init__(self, conn, model)
+        self._confirm_password = confirm_password
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        if not self._confirm_password:
+            self.confirm_password_lbl.hide()
+            self.confirm_password.hide()
 
     #
     # Hooks
@@ -86,6 +100,8 @@ class PasswordEditorSlave(BaseEditorSlave):
         new_passwd = self.model.new_password
         if not validate_password(new_passwd, callback):
             return False
+        if not self._confirm_password:
+            return True
 
         callback = lambda msg: self.confirm_password.set_invalid(msg)
         confirm_passwd = self.model.confirm_password
