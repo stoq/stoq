@@ -124,4 +124,3 @@ setup(name='stoqlib',
       resources=resources,
       global_resources=global_resources,
       )
-
