@@ -22,9 +22,6 @@
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
-"""Setup file for stoqlib package"""
-
-
 
 #
 # Dependency checking
