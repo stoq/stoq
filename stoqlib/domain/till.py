@@ -89,12 +89,32 @@ class Till(Domain):
     closing_date = DateTimeCol(default=None)
     station = ForeignKey('BranchStation')
 
-    def _get_payment_group(self):
-        conn = self.get_connection()
-        group = IPaymentGroup(self)
-        if not group:
-            group = self.addFacet(IPaymentGroup, connection=conn)
-        return group
+
+    #
+    # Classmethods
+    #
+
+    @classmethod
+    def get_current(cls, conn):
+        """
+        Fetches the Till for the current branch.
+        @param conn: a database connection
+        @returns: a Till instance or None
+        """
+        branch = get_current_branch(conn)
+        assert branch is not None
+
+        result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
+                                cls.q.stationID == BranchStation.q.id,
+                                BranchStation.q.branchID == branch.id),
+                            connection=conn)
+        if result.count() > 1:
+            raise TillError(
+                "You should have only one Till opened. Got %d instead." %
+                result.count())
+        elif result.count() == 0:
+            return None
+        return result[0]
 
     #
     # Till methods
@@ -144,8 +164,8 @@ class Till(Domain):
                 continue
             group = IPaymentGroup(sale)
             if not group:
-                raise DatabaseInconsistency("Sale must have a"
-                                            "IPaymentGroup facet")
+                raise DatabaseInconsistency(
+                    "Sale must have a IPaymentGroup facet")
             for payment in group.get_items():
                 payment.status = Payment.STATUS_TO_PAY
 
@@ -157,62 +177,6 @@ class Till(Domain):
         self.final_cash_amount = current_balance - self.balance_sent
         self.status = self.STATUS_CLOSED
 
-    def get_entries(self):
-        conn = self.get_connection()
-        return TillFiscalOperationsView.selectBy(till_id=self.id,
-                                                 connection=conn)
-    def get_cash_total(self):
-        conn = self.get_connection()
-        results = TillEntry.selectBy(tillID=self.id, connection=conn)
-        return currency(results.sum('value') or 0)
-
-    def get_initial_cash_amount(self):
-        q1 = TillFiscalOperationsView.q.till_id == self.id
-        q2 = TillFiscalOperationsView.q.is_initial_cash_amount == True
-        query = AND(q1, q2)
-        conn = self.get_connection()
-        entries = TillFiscalOperationsView.select(query, connection=conn)
-        count = entries.count()
-        if count > 1 or not count:
-            raise DatabaseInconsistency("You should have only one initial "
-                                        "cash amount entry at this point")
-        return entries[0].value
-
-    def get_float_remaining(self):
-        return currency(self.get_balance() - self.balance_sent)
-
-    def get_balance(self):
-        """ Return the total of all "extra" payments (like cash
-        advance, till complement, ...) associated to this till
-        operation *plus* all the payments, which payment method is
-        money, of all the sales associated with this operation
-        *plus* the initial cash amount.
-        """
-        conn = self.get_connection()
-        results = TillFiscalOperationsView.selectBy(till_id=self.id,
-                                                    connection=conn)
-        return currency(results.sum('value') or 0)
-
-    def get_unconfirmed_sales(self):
-        conn = self.get_connection()
-        sales = Sale.get_available_sales(conn, self)
-        return [sale for sale in sales
-                         if sale.status != Sale.STATUS_CONFIRMED]
-
-    def get_credits_total(self):
-        conn = self.get_connection()
-        view = TillFiscalOperationsView
-        results = view.select(AND(view.q.value > 0,
-                                  view.q.till_id == self.id), connection=conn)
-        return currency(results.sum('value') or 0)
-
-    def get_debits_total(self):
-        conn = self.get_connection()
-        view = TillFiscalOperationsView
-        results = view.select(AND(view.q.value < 0,
-                                  view.q.till_id == self.id), connection=conn)
-        return currency(results.sum('value') or 0)
-
     def create_debit(self, value, reason):
         """
         Add debit to the till
@@ -220,7 +184,6 @@ class Till(Domain):
         @param reason: description of payment
         @returns: payment group representing the added debit
         """
-        conn = self.get_connection()
         group = self._get_payment_group()
         return group.create_debit(value, reason, self)
 
@@ -231,37 +194,94 @@ class Till(Domain):
         @param reason: description of payment
         @returns: payment group representing the added credit
         """
-        conn = self.get_connection()
         group = self._get_payment_group()
         return group.create_credit(value, reason, self)
 
-    @classmethod
-    def get_current(cls, conn):
-        """
-        Fetches the Till for the current branch.
-        @param conn: a database connection
-        @returns: a Till instance or None
-        """
-        branch = get_current_branch(conn)
-        assert branch is not None
+    def get_cash_total(self):
+        results = TillEntry.selectBy(
+            tillID=self.id, connection=self.get_connection())
+        return currency(results.sum('value') or 0)
 
-        result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
-                                cls.q.stationID == BranchStation.q.id,
-                                BranchStation.q.branchID == branch.id),
-                            connection=conn)
-        if result.count() > 1:
-            raise TillError(
-                "You should have only one Till opened. Got %d instead." %
-                result.count())
-        elif result.count() == 0:
-            return None
-        return result[0]
+    def get_unconfirmed_sales(self):
+        sales = Sale.get_available_sales(self.get_connection(), self)
+        return [sale for sale in sales
+                         if sale.status != Sale.STATUS_CONFIRMED]
 
+    #
+    # Operations on TillFiscalOperationsView
+    #
+    # TODO: Should they be moved to the view itself or should the view
+    #       only be treated as an implementation details?
+    #       or just add a layer of extra indirection?
+    #
+
+    def get_balance(self):
+        """ Return the total of all "extra" payments (like cash
+        advance, till complement, ...) associated to this till
+        operation *plus* all the payments, which payment method is
+        money, of all the sales associated with this operation
+        *plus* the initial cash amount.
+        """
+        results = TillFiscalOperationsView.selectBy(
+            till_id=self.id, connection=self.get_connection())
+        return currency(results.sum('value') or 0)
+
+    def get_entries(self):
+        return TillFiscalOperationsView.selectBy(
+            till_id=self.id, connection=self.get_connection())
+
+    def get_initial_cash_amount(self):
+        view = TillFiscalOperationsView
+        entries = view.select(
+            AND(view.q.till_id == self.id,
+                view.q.is_initial_cash_amount == True),
+            connection=self.get_connection())
+        count = entries.count()
+        if count > 1 or not count:
+            raise DatabaseInconsistency("You should have only one initial "
+                                        "cash amount entry at this point")
+        return entries[0].value
+
+    def get_credits_total(self):
+        view = TillFiscalOperationsView
+        results = view.select(AND(view.q.value > 0,
+                                  view.q.till_id == self.id),
+                              connection=self.get_connection())
+        return currency(results.sum('value') or 0)
+
+    def get_debits_total(self):
+        view = TillFiscalOperationsView
+        results = view.select(AND(view.q.value < 0,
+                                  view.q.till_id == self.id),
+                              connection=self.get_connection())
+        return currency(results.sum('value') or 0)
+
+    def get_float_remaining(self):
+        return currency(self.get_balance() - self.balance_sent)
+
+    #
+    # Private
+    #
+
+    def _get_payment_group(self):
+        group = IPaymentGroup(self, None)
+
+        # TODO: Add a payment group when we create the till, or is
+        #       okay/better to do it only when it's needed?
+        if group is None:
+            group = self.addFacet(IPaymentGroup,
+                                  connection=self.get_connection())
+        return group
 
 class TillEntry(Domain):
+    #
     # It's usefull to use the same sequence of Payment table since we want
     # sometimes do mix payments and till entries in the same database view,
     # so we can search properly by identifier field
+    #
+    # TODO: Document that a positive "value" attribute represents something
+    #       completely different from a negative value.
+    #
     identifier = AutoIncCol("stoqlib_payment_identifier_seq")
     date = DateTimeCol(default=datetime.now)
     description = UnicodeCol()
