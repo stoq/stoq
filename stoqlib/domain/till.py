@@ -200,6 +200,11 @@ class Till(Domain):
         return currency(results.sum('value') or 0)
 
     def get_unconfirmed_sales(self):
+        """
+        Fetches a list of all sales which are not confirmed
+
+        @returns: a list of L{stoqlib.domain.sale.Sale} objects
+        """
         sales = Sale.get_available_sales(self.get_connection(), self)
         return [sale for sale in sales
                          if sale.status != Sale.STATUS_CONFIRMED]
