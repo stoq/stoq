@@ -37,7 +37,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import (TillError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sale import Sale
@@ -157,7 +156,6 @@ class Till(Domain):
                                "before close it.")
         conn = self.get_connection()
         sales = Sale.get_available_sales(conn, self)
-        money_payment_method = sysparam(conn).METHOD_MONEY
 
         for sale in sales:
             if sale.status != Sale.STATUS_CONFIRMED:
