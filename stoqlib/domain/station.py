@@ -97,10 +97,8 @@ class BranchStation(Domain):
 
     @classmethod
     def _get_station(cls, conn, branch):
-        from stoqlib.domain.person import Person
-        if (branch is None or not
-            isinstance(branch, Person.getAdapterClass(IBranch))):
-            raise TypeError("Invalid branch: %r" % branch)
+        if IBranch(branch, None) is None:
+            raise TypeError("%r must implemented IBranch" % (branch,))
         name = socket.gethostname()
         result = cls.select(
             AND(cls.q.name == name,
