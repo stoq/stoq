@@ -173,6 +173,14 @@ class DeviceSettingsEditor(BaseEditor):
         self._original_brand = self.model.brand
         self._original_model = self.model.model
 
+    def _check_device_needs_configuration(self):
+        """ Returns True if the selected device needs specifical configuration
+        through the DeviceConstantsEditor, False otherwise. """
+        if not self.model.is_valid() or not self.model.is_a_printer():
+            return False
+        # Bematech DP20C doesn't need special configuration
+        return self.model.brand != "bematech" and self.model.model != "DP20C"
+
     def refresh_ok(self, *args):
         if self._is_initialized:
             BaseEditor.refresh_ok(self, self.model.is_valid())
@@ -252,11 +260,8 @@ class DeviceSettingsEditor(BaseEditor):
         self.model_combo.prefill(items)
 
     def _update_constants_button(self, *args):
-        is_enabled = self.model.is_valid() and self.model.is_a_printer()
-        # FIXME: this part will be improved after changes in bug #2641
-        is_enabled = (is_enabled and self.model.brand != "bematech"
-                      and self.model.model != "DP20C")
-        self.constants_button.set_sensitive(is_enabled)
+        self.constants_button.set_sensitive(
+            self._check_device_needs_configuration())
 
     def _edit_driver_constants(self, *args):
         if ((self._original_brand != self.model.brand
