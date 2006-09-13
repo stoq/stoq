@@ -63,8 +63,9 @@ class PasswordEditorSlave(BaseEditorSlave):
     proxy_widgets = ('password',
                      'confirm_password')
 
-    def __init__(self, conn, model=None, confirm_password=True):
-        BaseEditorSlave.__init__(self, conn, model)
+    def __init__(self, conn, model=None, visual_mode=False,
+                 confirm_password=True):
+        BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
         self._confirm_password = confirm_password
         self._setup_widgets()
 
