@@ -1,0 +1,47 @@
+Release process of Stoq
+=======================
+
+Dependencies
+  Check & Release Kiwi
+  
+Packages:
+  Debian
+    Build
+    Test
+  psycopg
+  SQLObject
+  kiwi
+  stoqdrivers
+  stoqlib
+  stoq
+
+Testing:
+  Unittests must pass
+  Wizard tests
+    Clean database
+      Trust
+      Password anthem:5433
+    Existing database
+    Existing database different machine
+  POS
+    Create a new sale
+  Till
+
+When Testing is fine
+  Build source packages
+  Build debian packages
+  Upload packages to the website
+
+Verify dependencies are okay
+  README
+  setup.py
+
+Write changelog:
+  Script to find resolved bugs
+  Update NEWS
+  Translate into Portuguese, send release announcement
+
+Update Website
+Tag SVN
+Freshmeat
+Gnomefiles
