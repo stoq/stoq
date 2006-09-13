@@ -138,7 +138,7 @@ class StoqCommandHandler:
             print 'Registered a new station: %s' % station.name
 
     def cmd_updateschema(self, options):
-        from stoqlib.lib.migration import schema_migration
+        from stoqlib.database.migration import schema_migration
         self._read_config(options, check_schema=False)
 
         schema_migration.update_schema()
