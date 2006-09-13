@@ -30,11 +30,18 @@
  (classA, classB, ...).
 """
 
+from kiwi.log import Logger
 from kiwi.python import namedAny
 
+from stoqlib.database.exceptions import ProgrammingError
+from stoqlib.database.runtime import new_transaction
+from stoqlib.database.database import db_table_name, finish_transaction
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
+
+log = Logger('stoqlib.database.tables')
 
 
 _tables = [
@@ -198,3 +205,50 @@ def get_sequence_names():
     """
     global _sequences
     return ['stoqlib_%s_seq' % seq for seq in _sequences]
+
+
+# FIXME: Move into SQLObject itself
+def createSequence(conn, sequence):
+    conn.query('CREATE SEQUENCE "%s"' % sequence)
+
+def dropSequence(conn, sequence):
+    conn.query('DROP SEQUENCE "%s"' % sequence)
+
+def sequenceExists(conn, sequence):
+    return conn.tableExists(sequence)
+
+def create_tables(delete_only=False):
+    trans = new_transaction()
+
+    log.info('Dropping tables')
+    table_types = get_table_types()
+    for table in table_types:
+        table_name = db_table_name(table)
+        if trans.tableExists(table_name):
+            trans.dropTable(table_name, cascade=True)
+
+    log.info('Dropping sequences')
+    for seq_name in get_sequence_names():
+        if sequenceExists(trans, seq_name):
+            dropSequence(trans, seq_name)
+
+    if not delete_only:
+        log.info('Creating tables')
+        for table in table_types:
+            table_name = db_table_name(table)
+            if delete_only:
+                continue
+            try:
+                table.createTable(connection=trans)
+            except ProgrammingError, e:
+                raise StoqlibError(
+                    "An error occurred when creating %s table:\n"
+                    "=========\n"
+                    "%s\n" % (table_name, e))
+
+        log.info('Creating sequences')
+        for seq_name in get_sequence_names():
+            createSequence(trans, seq_name)
+
+    trans.commit()
+    finish_transaction(trans, 1)

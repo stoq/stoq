@@ -35,9 +35,9 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database.database import setup_tables, finish_transaction, \
-     run_sql_file
+from stoqlib.database.database import finish_transaction, run_sql_file
 from stoqlib.database.runtime import new_transaction
+from stoqlib.database.tables import create_tables
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -158,7 +158,7 @@ def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
-    setup_tables(delete_only=delete_only)
+    create_tables(delete_only=delete_only)
     create_base_schema()
     ensure_system_parameters()
     ensure_sellable_units()
