@@ -49,7 +49,7 @@ class BaseStoqReport(ReportTemplate):
 
     def __init__(self, *args, **kwargs):
         ReportTemplate.__init__(self, *args, **kwargs)
-        self.conn = new_transaction()
+        self.trans = new_transaction()
         self._logotype = self._get_logotype()
         # The BaseReportTemplate's header_height attribute define the
         # vertical position where the document really must starts be
@@ -69,7 +69,7 @@ class BaseStoqReport(ReportTemplate):
 
     def draw_header(self, canvas):
         canvas.saveState()
-        person = get_current_branch(self.conn).get_adapted()
+        person = get_current_branch(self.trans).get_adapted()
 
         logo_width, logo_height = self._logotype.getSize()
         header_y = self._topMargin - logo_height - BaseStoqReport.logo_border
