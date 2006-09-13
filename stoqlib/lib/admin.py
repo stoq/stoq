@@ -166,6 +166,6 @@ def initialize_system(delete_only=False, verbose=False):
     trans = new_transaction()
     # Import here since we must create properly the domain schema before
     # importing them in the migration module
-    from stoqlib.lib.migration import add_system_table_reference
+    from stoqlib.database.migration import add_system_table_reference
     add_system_table_reference(trans, check_new_db=True)
     finish_transaction(trans, 1)
