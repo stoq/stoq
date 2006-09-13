@@ -27,9 +27,8 @@ import re
 from kiwi.datatypes import format_price
 from kiwi.argcheck import argcheck
 
-from stoqlib.lib.parameters import DECIMAL_PRECISION
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import MINIMUM_PASSWORD_CHAR_LEN
+from stoqlib.lib.defaults import DECIMAL_PRECISION, MINIMUM_PASSWORD_CHAR_LEN
 
 _ = stoqlib_gettext
 

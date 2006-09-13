@@ -152,3 +152,11 @@ def get_country_states():
              'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
              'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO' ]
 
+
+#
+# Decimal precision
+#
+
+DECIMAL_PRECISION = 2
+DECIMAL_SIZE = 10
+

@@ -31,19 +31,16 @@ from kiwi.python import namedAny, ClassInittableObject
 
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
-from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
                                        ISellable, IMoneyPM, ICheckPM, IBillPM,
                                        ICardPM, IFinancePM,
                                        IGiftCertificatePM)
+from stoqlib.exceptions import DatabaseInconsistency
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-
-DECIMAL_PRECISION = 2
-DECIMAL_SIZE = 10
 
 log = Logger('stoqlib.parameters')
 
