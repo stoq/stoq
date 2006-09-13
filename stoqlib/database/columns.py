@@ -33,7 +33,7 @@ from sqlobject.col import SODecimalCol, Col, SOIntCol
 from sqlobject.sqlbuilder import func
 from sqlobject.converters import registerConverter
 
-from stoqlib.lib.parameters import DECIMAL_PRECISION, DECIMAL_SIZE
+from stoqlib.lib.defaults import DECIMAL_PRECISION, DECIMAL_SIZE
 
 
 # Currency
