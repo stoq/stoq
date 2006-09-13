@@ -181,7 +181,7 @@ class UserDetailsSlave(BaseEditorSlave):
         if self.model.username != value:
             return ValidationError('Username already exist')
 
-    def on_profile_button__clicked(self, *args):
+    def on_profile_button__clicked(self, button):
         if not self.profile.get_text():
             self.model.profile = None
         user_profile = self.model.profile
