@@ -33,7 +33,8 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger
-from stoqlib.database import db_table_name, PostgreSQLError
+from stoqlib.database.database import db_table_name
+from stoqlib.database.exceptions import PostgreSQLError
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error
 
@@ -85,7 +86,7 @@ def _setup_dialogs():
 
 def _setup_printers():
     log.info('setting up printers')
-    from stoqlib.lib.runtime import get_connection, get_current_station
+    from stoqlib.database.runtime import get_connection, get_current_station
     from stoqlib.lib.drivers import (
         get_fiscal_printer_settings_by_station,
         create_virtual_printer_for_current_station)
@@ -104,8 +105,8 @@ def _setup_cookiefile(config_dir):
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
 def _check_tables():
-    from stoqlib.domain.tables import get_table_types
-    from stoqlib.lib.runtime import get_connection
+    from stoqlib.database.tables import get_table_types
+    from stoqlib.database.runtime import get_connection
 
     log.info('checking tables')
 

@@ -29,8 +29,8 @@ import decimal
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.database import finish_transaction
-from stoqlib.lib.runtime import new_transaction, get_current_branch
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.lib.message import warning
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard

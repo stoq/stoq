@@ -32,6 +32,7 @@ from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
+from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import (DatabaseError, UserProfileError,
                                 LoginError, DatabaseInconsistency)
 from stoqlib.domain.person import PersonAdaptToUser
@@ -39,7 +40,6 @@ from stoqlib.gui.login import LoginDialog
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     CookieError, ICookieFile, ICurrentUser)
 from stoqlib.lib.message import warning
-from stoqlib.lib.runtime import get_connection
 
 
 _ = gettext.gettext

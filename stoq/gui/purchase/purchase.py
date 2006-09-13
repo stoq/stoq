@@ -31,7 +31,7 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from stoqlib.database import rollback_and_begin
+from stoqlib.database.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM

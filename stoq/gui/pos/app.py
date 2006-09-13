@@ -29,10 +29,10 @@ stoq/gui/pos/app.py:
 
 import gettext
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.till import Till
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_connection
 
 from stoq.gui.application import App
 from stoq.gui.pos.pos import POSApp

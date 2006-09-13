@@ -32,10 +32,10 @@ import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError
-from stoqlib.database import rollback_and_begin, finish_transaction
+from stoqlib.database.database import rollback_and_begin, finish_transaction
+from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
-from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
                                  check_emit_read_X)
 from stoqlib.lib.validators import format_quantity

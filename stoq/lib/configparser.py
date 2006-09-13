@@ -34,8 +34,8 @@ from ConfigParser import SafeConfigParser
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from kiwi.environ import environ, EnvironmentError
-from stoqlib.database import (DEFAULT_RDBMS, DatabaseSettings,
-                              check_database_connection)
+from stoqlib.database.settings import (DEFAULT_RDBMS, DatabaseSettings,
+                                       check_database_connection)
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
 from stoqlib.lib.interfaces import IDatabaseSettings

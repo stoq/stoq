@@ -30,7 +30,7 @@ from kiwi.ui.widgets.list import Column
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.gui.base.columns import ForeignKeyColumn
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.profile import UserProfile

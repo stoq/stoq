@@ -34,10 +34,12 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info, password as password_dialog
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
-from stoqlib.database import (DatabaseSettings, finish_transaction,
-                              check_installed_database,
-                              create_database_if_missing,
-                              rollback_and_begin)
+from stoqlib.database.database import (finish_transaction,
+                                       check_installed_database,
+                                       create_database_if_missing,
+                                       rollback_and_begin)
+from stoqlib.database.runtime import new_transaction
+from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person, PersonAdaptToUser
 from stoqlib.domain.station import create_station
 from stoqlib.domain.examples import createall as examples
@@ -48,7 +50,6 @@ from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import new_transaction
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, set_branch_by_stationid

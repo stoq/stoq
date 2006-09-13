@@ -25,6 +25,7 @@
 
 import gettext
 
+from stoqlib.database.runtime import get_current_user
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.sale import Sale
@@ -32,7 +33,6 @@ from stoqlib.domain.till import Till
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (IClient, ISalesPerson, IIndividual,
                                        ICompany)
-from stoqlib.lib.runtime import get_current_user
 from stoqlib.lib.parameters import sysparam
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
