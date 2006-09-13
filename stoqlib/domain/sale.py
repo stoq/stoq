@@ -33,14 +33,14 @@ from zope.interface import implements
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
+from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.defaults import METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_current_user
 from stoqlib.exceptions import (SellError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.renegotiation import (RenegotiationData,
                                           AbstractRenegotiationAdapter)
 from stoqlib.domain.base import Domain, BaseSQLView

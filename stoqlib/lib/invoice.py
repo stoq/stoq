@@ -32,7 +32,7 @@ from kiwi.argcheck import argcheck, number
 from kiwi.python import ClassInittableObject
 from stoqdrivers.constants import TAX_SUBSTITUTION, TAX_ICMS
 
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext as _
 from stoqlib.domain.interfaces import IIndividual, ICompany

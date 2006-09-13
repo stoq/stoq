@@ -29,7 +29,7 @@ from stoqlib.domain.fiscal import (CfopData,
                                    AbstractFiscalBookEntry,
                                    IcmsIpiBookEntry, IssBookEntry)
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.runtime import get_current_branch
+from stoqlib.database.runtime import get_current_branch
 from tests.base import BaseDomainTest
 
 def get_cfopdata(conn):

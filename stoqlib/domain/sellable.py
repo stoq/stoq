@@ -32,12 +32,12 @@ from sqlobject.sqlbuilder import AND, IN, OR
 from zope.interface import implements
 from kiwi.datatypes import currency
 
+from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
+from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseInconsistency, SellableError
-from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel, BaseSQLView)

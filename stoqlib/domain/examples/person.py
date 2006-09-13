@@ -32,8 +32,8 @@ import decimal
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples import log
 from stoqlib.domain.profile import UserProfile

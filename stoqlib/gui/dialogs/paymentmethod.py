@@ -29,7 +29,7 @@ from kiwi.ui.objectlist import ObjectList
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
 from stoqlib.domain.interfaces import (IGiftCertificatePM, ICardPM,
                                        IFinancePM, IMoneyPM, ICheckPM,
                                        IBillPM)

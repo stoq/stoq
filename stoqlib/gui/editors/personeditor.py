@@ -33,9 +33,9 @@ from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_connection
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor

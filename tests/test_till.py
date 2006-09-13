@@ -27,7 +27,7 @@ import unittest
 
 from kiwi.datatypes import currency
 
-from stoqlib.lib.runtime import new_transaction, get_current_station
+from stoqlib.database.runtime import new_transaction, get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 

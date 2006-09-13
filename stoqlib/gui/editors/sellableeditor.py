@@ -29,6 +29,7 @@ from sqlobject.sqlbuilder import LIKE, func
 from stoqdrivers.constants import UNIT_CUSTOM, UNIT_WEIGHT
 from kiwi.python import Settable
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
@@ -42,7 +43,6 @@ from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.service import DeliveryItem
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.gui.slaves.imageslave import ImageSlave
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext

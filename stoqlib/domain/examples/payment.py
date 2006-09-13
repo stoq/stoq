@@ -23,7 +23,7 @@
 ##
 """Create simple payments to an example database"""
 
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples import log

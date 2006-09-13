@@ -28,7 +28,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
 from stoqlib.exceptions import StoqlibError
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
                                   METHOD_CHECK, METHOD_MONEY)

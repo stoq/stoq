@@ -16,7 +16,7 @@ profile:
 
 First we need to import the modules and initialize a new transaction.
 
-    >>> from stoqlib.lib.runtime import new_transaction
+    >>> from stoqlib.database.runtime import new_transaction
     >>> from stoqlib.domain.profile import ProfileSettings, UserProfile
     >>> trans = new_transaction()
 

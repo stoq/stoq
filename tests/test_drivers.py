@@ -23,7 +23,7 @@
 ##
 
 from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
-from stoqlib.lib.runtime import get_current_station
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.devices import DeviceSettings
 from tests.base import BaseDomainTest
 

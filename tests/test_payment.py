@@ -38,7 +38,7 @@ from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
                                             FinanceDetails)
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_current_station
+from stoqlib.database.runtime import get_current_station
 from tests.base import BaseDomainTest
 
 class TestPaymentMethodDetails(BaseDomainTest):

@@ -35,7 +35,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
 
-from stoqlib.database import finish_transaction, rollback_and_begin
+from stoqlib.database.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency, TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize

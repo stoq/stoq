@@ -26,10 +26,10 @@
 import sys
 import datetime
 
+from stoqlib.database.runtime import new_transaction,  get_current_station
 from stoqlib.exceptions import SellError
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import new_transaction,  get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples import log
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER

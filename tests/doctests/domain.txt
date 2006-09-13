@@ -22,7 +22,7 @@ be used on stoq, and to be compatible with SQLObject.
 We need to import modules and classes inherited from classes defined in
 stoqlib/domain/base.py.
 
-    >>> from stoqlib.lib.runtime import new_transaction
+    >>> from stoqlib.database.runtime import new_transaction
     >>> from stoqlib.domain.product import Product
 
 Create a new transaction object:

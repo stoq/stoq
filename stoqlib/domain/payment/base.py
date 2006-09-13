@@ -33,15 +33,15 @@ from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.database.columns import PriceCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
-from stoqlib.lib.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
                                   METHOD_MONEY)
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
-from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,

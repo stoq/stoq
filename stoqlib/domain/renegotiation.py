@@ -27,11 +27,11 @@ from sqlobject import ForeignKey, UnicodeCol, IntCol
 from zope.interface import implements
 from kiwi.datatypes import currency
 
+from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, InheritableModelAdapter
-from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.interfaces import (IRenegotiationReturnSale,
                                        IDescribable, IPaymentGroup,
                                        IMoneyPM, IRenegotiationExchange,

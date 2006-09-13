@@ -30,6 +30,7 @@ from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 
+from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import METHOD_BILL
 from stoqlib.exceptions import DatabaseInconsistency
@@ -38,7 +39,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
-from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.service import Service
 
 _ = stoqlib_gettext

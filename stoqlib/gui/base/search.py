@@ -41,8 +41,8 @@ from sqlobject.col import SOUnicodeCol, SOIntCol, SODateTimeCol, SODateCol
 
 import stoqlib
 from stoqlib.common import is_integer, is_float
-from stoqlib.database import rollback_and_begin
-from stoqlib.domain.columns import AbstractDecimalCol, SOPriceCol
+from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
 from stoqlib.lib.component import Adapter

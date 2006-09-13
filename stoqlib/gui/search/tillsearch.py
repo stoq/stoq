@@ -31,8 +31,8 @@ from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
 
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_branch
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.slaves.filter import FilterSlave

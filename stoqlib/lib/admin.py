@@ -35,10 +35,11 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database import setup_tables, finish_transaction, run_sql_file
+from stoqlib.database.database import setup_tables, finish_transaction, \
+     run_sql_file
+from stoqlib.database.runtime import new_transaction
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
