@@ -29,10 +29,10 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.checkbutton import ProxyCheckButton
 from sqlobject.sqlbuilder import func, AND
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.profile import UserProfile
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.interfaces import IApplicationDescriptions
-from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 
 

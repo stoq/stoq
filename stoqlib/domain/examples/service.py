@@ -22,11 +22,11 @@
 ##
 """ Create service objects for an example database"""
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.service import Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.lib.runtime import new_transaction
 
 
 MAX_SERVICES_NUMBER = 4

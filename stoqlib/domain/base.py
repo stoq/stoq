@@ -34,12 +34,12 @@ from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
 
-from stoqlib.database import db_table_name
+from stoqlib.database.database import db_table_name
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.component import Adapter, AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
-from stoqlib.lib.runtime import (StoqlibTransaction, get_current_user,
-                                 get_current_station)
+from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
+                                      get_current_station)
 from stoqlib.exceptions import StoqlibError
 
 

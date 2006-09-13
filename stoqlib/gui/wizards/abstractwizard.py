@@ -36,8 +36,8 @@ from kiwi.datatypes import currency
 from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 
+from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import get_all_methods_dict

@@ -36,14 +36,15 @@ from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey, SOBLOBCol)
 
+from stoqlib.database.columns import SOPriceCol
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import new_transaction
+from stoqlib.database.settings import DatabaseSettings
 from stoqlib.exceptions import StoqlibError
-from stoqlib.database import DatabaseSettings, finish_transaction
-from stoqlib.domain.columns import SOPriceCol
 from stoqlib.lib.admin import initialize_system, ensure_admin_user
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IDatabaseSettings)
-from stoqlib.lib.runtime import new_transaction
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')

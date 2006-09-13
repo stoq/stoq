@@ -38,7 +38,7 @@ from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.lib.validators import get_price_format_str
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
 from stoqlib.exceptions import StoqlibError
 from stoqlib.reporting.sale import SalesReport
 

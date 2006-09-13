@@ -25,7 +25,7 @@
 """ This module test all class in stoq/domain/product.py """
 
 
-from stoqlib.lib.runtime import get_current_branch
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.sale import Sale

@@ -28,9 +28,9 @@
 import unittest
 from decimal import Decimal
 
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.parameters import ParameterAccess, sysparam
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.fiscal import AbstractFiscalBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IStorable, ISalesPerson, IClient,

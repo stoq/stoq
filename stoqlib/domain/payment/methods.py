@@ -33,15 +33,15 @@ from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
 from zope.interface import implements, implementedBy
 from zope.interface.interface import InterfaceClass
 
+from stoqlib.database.columns import DecimalCol
+from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
 from stoqlib.domain.sale import SaleAdaptToPaymentGroup
 from stoqlib.domain.till import TillAdaptToPaymentGroup, Till
-from stoqlib.domain.columns import DecimalCol
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.base import (Payment, PaymentAdaptToInPayment,

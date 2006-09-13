@@ -28,9 +28,9 @@ from sqlobject import UnicodeCol, ForeignKey, BoolCol, SQLObject, IntCol
 from kiwi.python import Settable
 from zope.interface import implements
 
+from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.columns import PriceCol
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
                                      OnSaleInfo)

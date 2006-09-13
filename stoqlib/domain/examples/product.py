@@ -29,6 +29,7 @@
 
 from stoqdrivers.constants import UNIT_CUSTOM
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.person import Person
@@ -37,7 +38,6 @@ from stoqlib.domain.sellable import (BaseSellableCategory,
                                      SellableCategory,
                                      SellableUnit,
                                      BaseSellableInfo)
-from stoqlib.lib.runtime import new_transaction
 
 
 MAX_PRODUCT_NUMBER = 4

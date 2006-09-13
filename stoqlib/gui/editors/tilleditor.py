@@ -29,8 +29,8 @@ from datetime import datetime
 from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
+from stoqlib.database.runtime import get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_station
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.domain.payment.base import CashAdvanceInfo

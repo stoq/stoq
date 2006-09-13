@@ -24,11 +24,11 @@
 ##
 """ Create gift certificates for an example database"""
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.giftcertificate import GiftCertificateType, GiftCertificate
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo, AbstractSellable
-from stoqlib.lib.runtime import new_transaction
 
 MAX_GIFTCERTIFICATE_NUMBER = 2
 

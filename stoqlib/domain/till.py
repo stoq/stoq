@@ -34,11 +34,11 @@ from zope.interface import implements
 from kiwi.datatypes import currency
 from kiwi.log import Logger
 
+from stoqlib.database.columns import PriceCol, AutoIncCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_branch
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.exceptions import (TillError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.domain.columns import PriceCol, AutoIncCol
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment

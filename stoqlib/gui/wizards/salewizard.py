@@ -33,9 +33,9 @@ from kiwi.datatypes import currency
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 
+from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.message import warning
-from stoqlib.lib.runtime import StoqlibTransaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam

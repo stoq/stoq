@@ -28,6 +28,7 @@
 from datetime import datetime
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.account import BankAccount, Bank
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
@@ -59,7 +60,6 @@ from stoqlib.exceptions import CityLocationError, DatabaseInconsistency
 from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_station
 
 from tests.base import BaseDomainTest
 

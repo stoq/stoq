@@ -35,11 +35,11 @@ from sqlobject import (UnicodeCol, DateTimeCol, ForeignKey, IntCol,
                        SQLObject, BoolCol)
 from zope.interface import implements
 
+from stoqlib.database.columns import PriceCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView, InheritableModel
 from stoqlib.domain.interfaces import IDescribable, IReversal
-from stoqlib.domain.columns import PriceCol, AutoIncCol
 
 
 class CfopData(Domain):

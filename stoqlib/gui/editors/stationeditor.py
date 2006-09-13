@@ -23,8 +23,8 @@
 ##
 """ Editor dialog for station objects """
 
+from stoqlib.database.runtime import get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.interfaces import IBranch
 from stoqlib.domain.person import Person

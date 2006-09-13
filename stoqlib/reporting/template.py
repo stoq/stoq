@@ -28,9 +28,9 @@ from kiwi.environ import environ
 from reportlab.lib.units import mm
 from reportlab.lib.utils import ImageReader
 
+from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.reporting.base.printing import ReportTemplate
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import new_transaction, get_current_branch
 from stoqlib.lib.validators import format_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
 

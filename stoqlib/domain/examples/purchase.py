@@ -29,12 +29,12 @@ import datetime
 
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier, IBranch, IPaymentGroup
 from stoqlib.domain.sellable import AbstractSellable
-from stoqlib.lib.runtime import new_transaction
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 

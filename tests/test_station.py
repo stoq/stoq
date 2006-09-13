@@ -27,7 +27,7 @@
 import socket
 import unittest
 
-from stoqlib.lib.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.station import BranchStation, create_station
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IBranch, ICompany

@@ -31,12 +31,12 @@ from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 
+from stoqlib.database.columns import PriceCol, DecimalCol
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_current_branch
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.domain.columns import PriceCol, DecimalCol
 from stoqlib.domain.person import PersonAdaptToBranch, Person
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter

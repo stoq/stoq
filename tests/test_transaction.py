@@ -27,10 +27,10 @@ import datetime
 import time
 import unittest
 
-from stoqlib.database import finish_transaction
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import (new_transaction, get_current_user,
+                                      get_current_station)
 from stoqlib.domain.person import Person
-from stoqlib.lib.runtime import (new_transaction, get_current_user,
-                                 get_current_station)
 
 import tests.base
 tests.base #pyflakes

@@ -39,9 +39,9 @@ from stoqdrivers.devices.interfaces import (ICouponPrinter,
                                             IChequePrinter)
 from stoqdrivers.constants import describe_constant
 
+from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, yesno
-from stoqlib.lib.runtime import get_connection, get_current_station
 from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   METHOD_MULTIPLE, UNKNOWN_CHARACTER)
 from stoqlib.domain.devices import DeviceSettings, DeviceConstants

@@ -30,8 +30,8 @@ from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
+from stoqlib.database.columns import AutoIncCol
 from stoqlib.domain.base import Domain
-from stoqlib.domain.columns import AutoIncCol
 from stoqlib.domain.interfaces import IActive, IBranch
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext

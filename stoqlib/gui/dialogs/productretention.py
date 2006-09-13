@@ -28,10 +28,10 @@ from decimal import Decimal
 from kiwi.python import Settable
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import get_current_branch
+from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.runtime import get_current_branch
-from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.lib.message import warning
 
 _ = stoqlib_gettext

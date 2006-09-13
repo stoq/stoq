@@ -32,9 +32,9 @@ from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from zope.interface import implements
 
+from stoqlib.database.columns import DecimalCol, PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
-from stoqlib.domain.columns import DecimalCol, PriceCol
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
 from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer

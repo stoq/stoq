@@ -33,6 +33,7 @@ from zope.interface import implements
 from sqlobject import (ForeignKey, IntCol, DateTimeCol, UnicodeCol,
                        SQLObject)
 
+from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.defaults import (METHOD_CHECK, METHOD_BILL,
                                   METHOD_MONEY)
@@ -40,7 +41,6 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.base import AbstractPaymentGroup
-from stoqlib.domain.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
                                        IPaymentGroup, IContainer)
 from stoqlib.lib.validators import format_quantity
