@@ -47,12 +47,12 @@ config = StoqConfig()
 options, args = parser.parse_args(sys.argv)
 setup(config, options)
 
+from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.tables import get_table_types
 from stoqlib.domain.base import *
 from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.domain.interfaces import *
-from stoqlib.domain.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.runtime import get_connection, new_transaction
 from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME
 from stoqlib.lib.interfaces import ICurrentUser
 
