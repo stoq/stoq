@@ -29,7 +29,6 @@ import sets
 
 from kiwi.component import get_utility
 from kiwi.log import Logger
-from sqlobject import connectionForURI
 from sqlobject.dbconnection import Transaction
 
 from stoqlib.exceptions import StoqlibError
@@ -97,8 +96,7 @@ def initialize_connection():
     except NotImplementedError, e:
         raise StoqlibError('You need to register db settings before calling '
                            'initialize_connection')
-    # TODO if port is invalid there will be an error here
-    conn = connectionForURI(db_settings.get_connection_uri())
+    conn = db_settings.get_connection()
 
     # Stoq applications always use transactions explicitly
     conn.autoCommit = False
