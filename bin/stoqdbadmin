@@ -85,8 +85,8 @@ class StoqCommandHandler:
         return 0
 
     def cmd_init(self, options):
+        from stoqlib.database.runtime import get_connection
         from stoq.lib.startup import clean_database, set_branch_by_stationid
-        from stoqlib.lib.runtime import get_connection
 
         config = self._read_config(options, register_station=False,
                                    check_schema=False)
@@ -123,9 +123,9 @@ class StoqCommandHandler:
         self._register(True)
 
     def _register(self, verbose):
+        from stoqlib.database.runtime import new_transaction
         from stoqlib.domain.station import create_station
         from stoqlib.exceptions import StoqlibError
-        from stoqlib.lib.runtime import new_transaction
 
         conn = new_transaction()
         try:
