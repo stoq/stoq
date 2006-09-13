@@ -74,6 +74,9 @@ class PasswordEditorSlave(BaseEditorSlave):
             self.confirm_password_lbl.hide()
             self.confirm_password.hide()
 
+    def invalidate_password(self, message):
+        self.password.set_invalid(message)
+
     #
     # Hooks
     #
@@ -94,18 +97,21 @@ class PasswordEditorSlave(BaseEditorSlave):
                                     PasswordEditorSlave.proxy_widgets)
 
     def validate_confirm(self):
+        # If we aren't confirming passwords, we don't need to validate
+        # it, i.e, when asking the password once, we just wants to
+        # compare it to the stored password and check if they matches,
+        # no need to check the text lenght, nor anything related to
+        # security.
+        if not self._confirm_password:
+            return True
         callback = lambda msg: self.password.set_invalid(msg)
         new_passwd = self.model.new_password
         if not validate_password(new_passwd, callback):
             return False
-        if not self._confirm_password:
-            return True
-
         callback = lambda msg: self.confirm_password.set_invalid(msg)
         confirm_passwd = self.model.confirm_password
         if not validate_password(confirm_passwd, callback):
             return False
-
         if confirm_passwd != new_passwd:
             msg = _(u"New password and confirm password don't match")
             self.password.set_invalid(msg)
