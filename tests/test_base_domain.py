@@ -2,9 +2,9 @@ import unittest
 
 from zope.interface import implements, Interface
 
-from stoqlib.database.database import ProgrammingError
-from stoqlib.domain.base import Domain, ModelAdapter
+from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.database.runtime import new_transaction
+from stoqlib.domain.base import Domain, ModelAdapter
 
 from tests import base
 base # pyflakes
