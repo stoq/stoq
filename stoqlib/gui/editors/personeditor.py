@@ -161,7 +161,6 @@ class PasswordEditor(BaseEditor):
     def setup_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn, self.model,
                                                   visual_mode=self.visual_mode)
-        print "password slave = ", self.password_slave
         self.attach_slave('password_holder', self.password_slave)
 
     def setup_proxies(self):
