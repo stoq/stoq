@@ -39,7 +39,7 @@ DEFAULT_SEPARATORS = 79
 
 
 def test_gui(config, options, tests=None):
-    from stoqlib.lib.runtime import new_transaction
+    from stoqlib.database.runtime import new_transaction
 
     if options.verbose:
         set_log_level('uitest', 5)
@@ -69,7 +69,7 @@ def test_gui(config, options, tests=None):
     create_examples(config, utilities=True)
     from stoqlib.doman.station import create_station
     from stoqlib.exceptions import StoqlibError
-    from stoqlib.runtime import get_connection
+    from stoqlib.database.database import get_connection
     conn = get_connection()
     try:
         create_station(conn)

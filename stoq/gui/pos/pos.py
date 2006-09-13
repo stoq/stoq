@@ -36,10 +36,10 @@ from kiwi.python import Settable
 from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import UNIT_WEIGHT
 from stoqlib.exceptions import (StoqlibError, DatabaseInconsistency)
-from stoqlib.database import rollback_and_begin, finish_transaction
+from stoqlib.database.database import rollback_and_begin, finish_transaction
+from stoqlib.database.runtime import new_transaction, get_current_user
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.validators import format_quantity
-from stoqlib.lib.runtime import new_transaction, get_current_user
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
                                  get_current_scale_settings,

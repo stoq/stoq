@@ -31,11 +31,11 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import SearchBar
-from stoqlib.database import rollback_and_begin
+from stoqlib.database.database import rollback_and_begin
+from stoqlib.database.runtime import get_current_user, new_transaction
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.interfaces import ICookieFile
-from stoqlib.lib.runtime import get_current_user, new_transaction
 
 import stoq
 from stoqlib.gui.slaves.filter import FilterSlave
