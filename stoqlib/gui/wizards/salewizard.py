@@ -350,6 +350,69 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     def _get_gift_certificates_total(self):
         return currency(sum([c.price for c in self.slave.klist], currency(0)))
 
+    def _update_total(self, *args):
+        self.summary.update_total()
+        gift_total = self._get_gift_certificates_total()
+        if gift_total == self.sale_total:
+            text = ''
+            value = ''
+            self.wizard.enable_finish()
+        else:
+            value = self.sale_total - gift_total
+            if gift_total < self.sale_total:
+                text = _('Outstanding:')
+            else:
+                text = _('Overpaid:')
+                value = -value
+            value = get_formatted_price(value)
+            self.wizard.disable_finish()
+        self.difference_label.set_text(text)
+        self.difference_value_label.set_text(value)
+
+    def _get_certificate_by_code(self, code):
+        certificate = self.table.selectBy(code=code, connection=self.conn)
+        qty = certificate.count()
+        if not qty:
+            msg = _("The gift certificate with code '%s' doesn't "
+                    "exists") % code
+            self.certificate_number.set_invalid(msg)
+            return
+        if qty != 1:
+            raise DatabaseInconsistency('You should have only one '
+                                        'gift certificate with code %s'
+                                        % code)
+        return certificate[0]
+
+    def _update_widgets(self):
+        has_gift_certificate = self.certificate_number.get_text() != ''
+        self.add_button.set_sensitive(has_gift_certificate)
+        if len(self.slave.klist):
+            self.wizard.enable_next()
+        else:
+            self.wizard.disable_next()
+
+    def _add_item(self):
+        certificate = self.proxy.model and self.proxy.model.number
+        self.add_button.set_sensitive(False)
+        if not certificate:
+            code = self.certificate_number.get_text()
+            certificate = self._get_certificate_by_code(code)
+            if not certificate:
+                return
+        if certificate in self.slave.klist[:]:
+            msg = (_("The gift certificate '%s' was already added to the"
+                     "list") % certificate.get_short_description())
+            self.certificate_number.set_invalid(msg)
+            return
+        item = certificate or self.model.number
+        self.slave.klist.append(item)
+        # As we have a selection extended mode for kiwi list, we
+        # need to unselect everything before select the new instance.
+        self.slave.klist.unselect_all()
+        self.slave.klist.select(item)
+        self.certificate_number.set_text('')
+        self._update_total()
+
     #
     # BaseEditorSlave hooks
     #
@@ -418,69 +481,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     #
     # Callbacks
     #
-
-    def _update_total(self, *args):
-        self.summary.update_total()
-        gift_total = self._get_gift_certificates_total()
-        if gift_total == self.sale_total:
-            text = ''
-            value = ''
-            self.wizard.enable_finish()
-        else:
-            value = self.sale_total - gift_total
-            if gift_total < self.sale_total:
-                text = _('Outstanding:')
-            else:
-                text = _('Overpaid:')
-                value = -value
-            value = get_formatted_price(value)
-            self.wizard.disable_finish()
-        self.difference_label.set_text(text)
-        self.difference_value_label.set_text(value)
-
-    def _get_certificate_by_code(self, code):
-        certificate = self.table.selectBy(code=code, connection=self.conn)
-        qty = certificate.count()
-        if not qty:
-            msg = _("The gift certificate with code '%s' doesn't "
-                    "exists") % code
-            self.certificate_number.set_invalid(msg)
-            return
-        if qty != 1:
-            raise DatabaseInconsistency('You should have only one '
-                                        'gift certificate with code %s'
-                                        % code)
-        return certificate[0]
-
-    def _update_widgets(self):
-        has_gift_certificate = self.certificate_number.get_text() != ''
-        self.add_button.set_sensitive(has_gift_certificate)
-        if len(self.slave.klist):
-            self.wizard.enable_next()
-        else:
-            self.wizard.disable_next()
-
-    def _add_item(self):
-        certificate = self.proxy.model and self.proxy.model.number
-        self.add_button.set_sensitive(False)
-        if not certificate:
-            code = self.certificate_number.get_text()
-            certificate = self._get_certificate_by_code(code)
-            if not certificate:
-                return
-        if certificate in self.slave.klist[:]:
-            msg = (_("The gift certificate '%s' was already added to the"
-                     "list") % certificate.get_short_description())
-            self.certificate_number.set_invalid(msg)
-            return
-        item = certificate or self.model.number
-        self.slave.klist.append(item)
-        # As we have a selection extended mode for kiwi list, we
-        # need to unselect everything before select the new instance.
-        self.slave.klist.unselect_all()
-        self.slave.klist.select(item)
-        self.certificate_number.set_text('')
-        self._update_total()
 
     def on_add_button__clicked(self, *args):
         self._add_item()
