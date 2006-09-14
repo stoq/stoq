@@ -44,8 +44,17 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.database')
 
-class DatabaseSettings:
+class DatabaseSettings(object):
+    """
+    DatabaseSettings contains all the information required to connect to
+    a database, such as hostname, username and password.
+
+    It also provides helpers on top of SQLObject to return a database
+    connection using the settings inside the object.
+    """
+
     implements(IDatabaseSettings)
+
     def __init__(self, rdbms=DEFAULT_RDBMS, address='localhost', port=5432,
                  dbname='stoq', username=None, password=''):
         self.rdbms = rdbms
@@ -81,17 +90,23 @@ class DatabaseSettings:
             conn.makeConnection()
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
+
+            # FIXME: Use error codes
             if 'does not exist' in e.args[0]:
                 return None
             elif 'password authentication failed for user' in e.args[0]:
                 raise DatabaseError(
                     _("Password authentication failed"),
-                    _("The provided password for user %s was not correct") % self.username)
+                    _("The provided password for user %s was not correct") %
+                    self.username)
             elif 'no password supplied' in e.args[0]:
                 raise DatabaseError(
                     _("Invalid authentication mechanism"),
                     _("Trust was selected but the database does "
                       "only support password authentication."))
+
+            # Raise the exception otherwise to avoid swallowing unexpected
+            # exceptions.
             raise
         except Exception, e:
             value = sys.exc_info()[1]
@@ -128,40 +143,10 @@ class DatabaseSettings:
         """
         return self._get_connection_internal(None)
 
-    # FIXME: Remove/Rethink these two
+    # FIXME: Remove/Rethink
     def check_database_address(self):
         try:
             socket.gethostbyaddr(self.address)
         except socket.gaierror:
             return False
         return True
-
-    def check_database_connection(self):
-        """Checks the database connection according to the stored
-        database settings.
-        @return: a tuple with two itens where the first one is the check
-                 ok status (True or False) and the second one is the error
-                 message. The error message is None if the status is ok.
-        """
-        conn_uri = self.get_connection_uri()
-        return check_database_connection(conn_uri)
-
-
-
-def check_database_connection(conn_uri):
-    """Checks the database connection according to the stored
-    database settings.
-    @return: a tuple with two itens where the first one is the check
-             ok status (True or False) and the second one is the error
-             message. The error message is None if the status is ok.
-    """
-    try:
-        conn = connectionForURI(conn_uri)
-        conn.makeConnection()
-    except:
-        type, value, trace = sys.exc_info()
-        msg = _("Could not connect to %s database. The error message is "
-                "'%s'. Please fix the connection settings you have set "
-                "and try again." % (DEFAULT_RDBMS, value))
-        return False, msg
-    return True, None
