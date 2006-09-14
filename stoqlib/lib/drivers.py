@@ -462,8 +462,9 @@ class FiscalCoupon:
         sale = self.sale
         group = IPaymentGroup(sale)
         if not group:
-            raise ValueError("The sale object must have a PaymentGroup facet at "
-                             "this point.")
+            raise ValueError(
+                "The sale object must have a PaymentGroup facet at "
+                "this point.")
         if group.default_method == METHOD_GIFT_CERTIFICATE:
             self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True
@@ -472,10 +473,11 @@ class FiscalCoupon:
         settings = get_fiscal_printer_settings_by_station(self.conn, station)
         pm_constants = settings.pm_constants
         if not pm_constants:
-            raise ValueError("It is not possible to setup the payments for sale "
-                             "%r, since there is no payment methods defined for "
-                             "the current printer being used (%r)"
-                             % (sale, self.printer))
+            raise ValueError(
+                "It is not possible to setup the payments for sale "
+                "%r, since there is no payment methods defined for "
+                "the current printer being used (%r)"
+                % (sale, self.printer))
         all_methods = get_all_methods_dict()
         for payment in group.get_items():
             method = payment.method
@@ -491,14 +493,16 @@ class FiscalCoupon:
             for identifier, iface in all_methods.items():
                 if iface is method_iface:
                     if method_id is not None:
-                        raise TypeError("There is the same identifier for two "
-                                        "different payment method interfaces. "
-                                        "The identifier is %d" % method_id)
+                        raise TypeError(
+                            "There is the same identifier for two "
+                            "different payment method interfaces. "
+                            "The identifier is %d" % method_id)
                     method_id = identifier
             if method_id is None:
-                raise ValueError("Can't find a valid identifier for the payment"
-                                 " method interface: %r. It is not possible add"
-                                 " the payment on the coupon" % method_iface)
+                raise ValueError(
+                    "Can't find a valid identifier for the payment "
+                    "method interface: %r. It is not possible add "
+                    "the payment on the coupon" % method_iface)
             custom_pm = pm_constants.get_value(method_id)
             if not custom_pm:
                 method_name = get_method_names()[method_id]
