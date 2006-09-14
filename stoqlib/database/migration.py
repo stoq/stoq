@@ -30,7 +30,7 @@ from kiwi.environ import environ
 import stoqlib
 from stoqlib.database.database import finish_transaction, run_sql_file, \
      db_table_name
-from stoqlib.database.admin import create_base_schema, update_system_table
+from stoqlib.database.admin import create_base_schema
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import get_table_types
 from stoqlib.domain.profile import update_profile_applications
@@ -64,8 +64,8 @@ class SchemaMigration:
         if not conn.tableExists(SystemTable.get_db_table_name()):
             SystemTable.createTable(connection=conn)
             self.current_db_version = stoqlib.FIRST_DB_VERSION
-            update_system_table(conn, check_new_db=True,
-                                version=self.current_db_version)
+            SystemTable.update(conn, check_new_db=True,
+                               version=self.current_db_version)
             return True
         results = SystemTable.select(connection=conn)
         self.current_db_version = results.max('version')
@@ -119,7 +119,7 @@ class SchemaMigration:
                 version = int(version)
             except ValueError:
                 raise ValueError("Bad sql file name, got %s" % sql_file)
-            update_system_table(trans, version=version)
+            SystemTable.update(trans, version=version)
         # checks if there is new applications and update all the user
         # profiles on the system
         update_profile_applications(trans)
