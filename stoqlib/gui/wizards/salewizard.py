@@ -342,11 +342,10 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 
     def _get_columns(self):
         return [Column('code', title=_('Number'), data_type=str, width=90),
-                Column('base_sellable_info.description',
-                       title=_('Description'),
-                       data_type=str, expand=True, searchable=True),
-                Column('base_sellable_info.price', title=_('Price'),
-                       data_type=currency, width=90)]
+                Column('description', title=_('Description'), data_type=str,
+                       expand=True, searchable=True),
+                Column('price', title=_('Price'), data_type=currency,
+                       width=90)]
 
     def _get_gift_certificates_total(self):
         return currency(sum([c.price for c in self.slave.klist], currency(0)))
@@ -360,8 +359,8 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 
     def setup_proxies(self):
         self._setup_widgets()
-        klass = GiftCertificateSelectionStep
-        self.proxy = self.add_proxy(self.model, klass.proxy_widgets)
+        self.proxy = self.add_proxy(
+            self.model, GiftCertificateSelectionStep.proxy_widgets)
 
     def setup_slaves(self):
         certificates = []
@@ -387,22 +386,22 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         if not len(self.slave.klist):
             raise ValueError('You should have at least one gift certificate '
                              'selected at this point')
+        gift_total = 0
         for certificate in self.slave.klist:
             self.wizard.gift_certificates.append(certificate)
-        gift_total = self._get_gift_certificates_total()
+            gift_total += certificate.price
         if gift_total == self.sale_total:
             # finish the wizard
             return
         elif self.sale_total > gift_total:
             outstanding_value = self.sale_total - gift_total
-            return SaleRenegotiationOutstandingStep(self.wizard, self,
-                                                    self.conn, self.sale,
-                                                    outstanding_value)
+            return SaleRenegotiationOutstandingStep(
+                self.wizard, self, self.conn, self.sale, outstanding_value)
         else:
             overpaid_value = gift_total - self.sale_total
-            step = SaleRenegotiationOverpaidStep(self.wizard, self,
-                                                 self.conn, self.sale,
-                                                 self.group, overpaid_value)
+            step = SaleRenegotiationOverpaidStep(
+                self.wizard, self, self.conn, self.sale, self.group,
+                overpaid_value)
             step.connect('on-validate-step',
                          self.wizard.set_gift_certificate_settings)
             return step
