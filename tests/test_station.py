@@ -47,7 +47,7 @@ class TestStation(unittest.TestCase):
         return person.addFacet(IBranch, connection=conn)
 
     def test_create_simple(self):
-        self.assertEqual(create_station(self.trans).name, socket.gethostname())
+        self.assertEqual(create_station(self.trans).name, name='simple')
         self.assertRaises(StoqlibError, create_station, self.trans)
 
     def test_create_branch(self):

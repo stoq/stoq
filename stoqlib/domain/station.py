@@ -60,7 +60,7 @@ class BranchStation(Domain):
         return cls.select(cls.q.is_active == True, connection=conn)
 
     @classmethod
-    def create(cls, conn, branch=None):
+    def create(cls, conn, branch=None, name=None):
         """
         Create a new station id for the current machine.
         Optionally a branch can be specified which will be set as the branch
@@ -68,18 +68,22 @@ class BranchStation(Domain):
 
         @param conn: a database connection
         @param branch: Branch
-        @returns: the name of the created station
-        @rtype: string
+        @param name: name of the station (optional
+        @returns: a BranchStation instance
         """
-        from stoqlib.domain.person import Person
 
+        # FIXME: Move this to stoqdbadmin register
+        from stoqlib.domain.person import Person
         if not branch:
             branches = Person.iselect(IBranch, connection=conn)
             if branches.count() != 1:
                 raise StoqlibError("More than one branch detected")
             branch = branches[0]
-        name = socket.gethostname()
-        station = cls._get_station(conn, branch)
+
+        if not name:
+            name = socket.gethostname()
+
+        station = cls._get_station(conn, branch, name)
         if station:
             raise StoqlibError(
                 "There is already a station registered as `%s'." % name)
@@ -88,7 +92,7 @@ class BranchStation(Domain):
 
     @classmethod
     def get_station(cls, conn, branch=None, create=False):
-        station = cls._get_station(conn, branch=branch)
+        station = cls._get_station(conn, branch=branch, name=None)
         if not station and create:
             station = create_station(conn, branch)
         return station
@@ -96,10 +100,11 @@ class BranchStation(Domain):
     # Private
 
     @classmethod
-    def _get_station(cls, conn, branch):
+    def _get_station(cls, conn, branch, name):
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
-        name = socket.gethostname()
+        if not name:
+            name = socket.gethostname()
         result = cls.select(
             AND(cls.q.name == name,
                 cls.q.branchID == branch.id), connection=conn)
