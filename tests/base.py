@@ -36,12 +36,12 @@ from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey, SOBLOBCol)
 
+from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.columns import SOPriceCol
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.admin import initialize_system, ensure_admin_user
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     IDatabaseSettings)
