@@ -292,16 +292,19 @@ def _provide_current_user():
 def _provide_current_station():
     trans = new_transaction()
     branches = Person.iselect(IBranch, connection=trans)
-    station = BranchStation.get_station(trans, branch=branches[0])
+    assert branches.count() >= 0
+    branch = branches[0]
+    provide_utility(ICurrentBranch, branch)
+
+    station = BranchStation.get_station(trans, branch)
     if not station:
-        station = BranchStation.create(trans, branch=branches[0])
+        station = BranchStation.create(trans, branch)
         trans.commit()
 
     assert station
     assert station.is_active
 
     provide_utility(ICurrentBranchStation, station)
-    provide_utility(ICurrentBranch, station.branch)
 
 def _provide_devices():
     conn = get_connection()
