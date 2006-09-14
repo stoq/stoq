@@ -312,10 +312,6 @@ class FiscalCoupon:
     """
     implements(IContainer)
 
-    #
-    # IContainer implementation
-    #
-
     def __init__(self, conn, sale):
         self.sale = sale
         self.conn = conn
@@ -325,6 +321,10 @@ class FiscalCoupon:
                              "since there is no fiscal printer "
                              "configured for this station")
         self._item_ids = {}
+
+    #
+    # IContainer implementation
+    #
 
     @argcheck(AbstractSellableItem)
     def add_item(self, item):
