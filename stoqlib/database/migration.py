@@ -24,24 +24,21 @@
 ##
 """ Routines for database schema migration"""
 
-import datetime
-
 from kiwi.component import get_utility
 from kiwi.environ import environ
 
 import stoqlib
 from stoqlib.database.database import finish_transaction, run_sql_file, \
      db_table_name
-from stoqlib.database.admin import create_base_schema
+from stoqlib.database.admin import create_base_schema, update_system_table
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import get_table_types
+from stoqlib.domain.profile import update_profile_applications
+from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
-from stoqlib.domain.profile import update_profile_applications
-from stoqlib.domain.system import SystemTable
-
 
 class SchemaMigration:
     """Schema migration management"""
@@ -67,8 +64,8 @@ class SchemaMigration:
         if not conn.tableExists(SystemTable.get_db_table_name()):
             SystemTable.createTable(connection=conn)
             self.current_db_version = stoqlib.FIRST_DB_VERSION
-            add_system_table_reference(conn, check_new_db=True,
-                                       version=self.current_db_version)
+            update_system_table(conn, check_new_db=True,
+                                version=self.current_db_version)
             return True
         results = SystemTable.select(connection=conn)
         self.current_db_version = results.max('version')
@@ -122,7 +119,7 @@ class SchemaMigration:
                 version = int(version)
             except ValueError:
                 raise ValueError("Bad sql file name, got %s" % sql_file)
-            add_system_table_reference(trans, version=version)
+            update_system_table(trans, version=version)
         # checks if there is new applications and update all the user
         # profiles on the system
         update_profile_applications(trans)
@@ -131,21 +128,5 @@ class SchemaMigration:
         # Update the base schema
         create_base_schema()
         finish_transaction(trans, 1)
-
-
-def add_system_table_reference(trans, check_new_db=False, version=None):
-    """Add a new entry on SystemTable with the current schema version"""
-    result = SystemTable.select(connection=trans).count()
-    if result and check_new_db:
-        raise ValueError('SystemTable should be empty at this point '
-                         'got %d results' % result)
-    elif not result and not check_new_db:
-        raise ValueError('SystemTable should have at least one '
-                         'item at this point, got nothing')
-    version = version or stoqlib.db_version
-    SystemTable(version=version,
-                update_date=datetime.datetime.now(),
-                connection=trans)
-
 
 schema_migration = SchemaMigration()
