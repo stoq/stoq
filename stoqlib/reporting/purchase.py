@@ -109,20 +109,22 @@ class PurchaseOrderReport(BaseStoqReport):
         self._setup_items_table()
 
     def _get_items_table_columns(self):
-        return [OTC(_("Item"), lambda obj: ("%s - %s"
-                                            % (obj.sellable.code,
-                                               obj.sellable.get_description())),
-                    width=300, expand=True, expand_factor=1, truncate=True),
-                OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
-                    width=50, align=RIGHT),
-                OTC("", lambda obj: obj.sellable.get_unit_description(),
-                    virtual=True, width=25, align=LEFT),
-                OTC(_("Cost"), lambda obj: get_formatted_price(obj.cost),
-                    width=60, align=RIGHT),
-                OTC(_("Total"),
-                    lambda obj: get_formatted_price(obj.get_total()), width=70,
-                    align=RIGHT),
-                ]
+        return [
+            OTC(_("Item"),
+                lambda obj: ("%s - %s" % (obj.sellable.code,
+                                          obj.sellable.get_description())),
+                expand=True, truncate=True),
+            OTC(_("Quantity"), lambda obj: format_quantity(obj.quantity),
+                width=80, align=RIGHT),
+            # FIXME: This column should be virtual, waiting for bug #2764
+            OTC("Unit", lambda obj: obj.sellable.get_unit_description(),
+                virtual=False, width=60, align=LEFT),
+            OTC(_("Cost"), lambda obj: get_formatted_price(obj.cost),
+                width=70, align=RIGHT),
+            OTC(_("Total"),
+                lambda obj: get_formatted_price(obj.get_total()), width=70,
+                align=RIGHT),
+            ]
 
     def _add_items_table(self, items):
         total_cost = Decimal("0.0")
@@ -133,7 +135,7 @@ class PurchaseOrderReport(BaseStoqReport):
         extra_row = ["", _("Totals:"), "", get_formatted_price(total_cost),
                      get_formatted_price(total_value)]
         self.add_object_table(items, self._get_items_table_columns(),
-                              width=730, summary_row=extra_row)
+                              summary_row=extra_row)
 
     def _add_ordered_items_table(self, items):
         self.add_paragraph(_("Ordered Items"), style="Title")
