@@ -36,7 +36,9 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
                            SODateCol, SOBoolCol, SOForeignKey, SOBLOBCol)
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
+from stoqlib.database.database import create_database_if_missing
 from stoqlib.database.columns import SOPriceCol
+from stoqlib.exceptions import DatabaseError
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.settings import DatabaseSettings
@@ -280,6 +282,18 @@ def _provide_database_settings():
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
 
+    # To check that the connection is up
+    try:
+        db_settings.get_connection()
+    except DatabaseError:
+        print 'Database %s missing, creating it' % dbname
+        conn = db_settings.get_default_connection()
+        create_database_if_missing(conn, dbname)
+
+        return True
+
+    return False
+
 def _provide_current_user():
     conn = get_connection()
     table = Person.getAdapterClass(IUser)
@@ -316,9 +330,9 @@ def _provide_devices():
 def bootstrap_testsuite():
     quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
 
-    _provide_database_settings()
+    empty = _provide_database_settings()
 
-    if quick:
+    if quick and not empty:
         _provide_current_user()
         _provide_current_station()
         _provide_devices()
