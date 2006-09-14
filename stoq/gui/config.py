@@ -437,11 +437,11 @@ class DatabaseSettingsStep(WizardEditorStep):
                 conn, branch=model, create=True)
         set_branch_by_stationid(conn)
 
+        model = self.get_adapted()
         if self.has_installed_db:
-            return ExistingAdminPasswordStep(conn, self.wizard, self,
-                                             model.get_adapted())
-        return AdminPasswordStep(
-            conn, self.wizard, self, next_model=model.get_adapted())
+            return ExistingAdminPasswordStep(conn, self.wizard, self, model)
+        else:
+            return AdminPasswordStep(conn, self.wizard, self, model)
 
     def setup_proxies(self):
         items = [(value, key)
