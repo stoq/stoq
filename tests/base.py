@@ -29,6 +29,7 @@ import decimal
 import unittest
 import os
 import pwd
+import socket
 
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
@@ -38,7 +39,7 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.database import create_database_if_missing
 from stoqlib.database.columns import SOPriceCol
-from stoqlib.exceptions import DatabaseError
+from stoqlib.database.exceptions import DatabaseDoesNotExistError
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.runtime import get_current_station
 from stoqlib.database.settings import DatabaseSettings
@@ -285,7 +286,7 @@ def _provide_database_settings():
     # To check that the connection is up
     try:
         db_settings.get_connection()
-    except DatabaseError:
+    except DatabaseDoesNotExistError:
         print 'Database %s missing, creating it' % dbname
         conn = db_settings.get_default_connection()
         create_database_if_missing(conn, dbname)
@@ -310,9 +311,10 @@ def _provide_current_station():
     branch = branches[0]
     provide_utility(ICurrentBranch, branch)
 
-    station = BranchStation.get_station(trans, branch)
+    name = socket.gethostname()
+    station = BranchStation.get_station(trans, branch, name)
     if not station:
-        station = BranchStation.create(trans, branch)
+        station = BranchStation.create(trans, branch, name)
         trans.commit()
 
     assert station

@@ -24,11 +24,10 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
-import socket
 import unittest
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.domain.station import BranchStation, create_station
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IBranch, ICompany
 from stoqlib.exceptions import StoqlibError
@@ -37,8 +36,13 @@ import tests.base
 tests.base #pyflakes
 
 class TestStation(unittest.TestCase):
+    name = 'test-station'
+
     def setUp(self):
         self.trans = new_transaction()
+
+    def tearDown(self):
+        self.trans.rollback()
 
     def _create_extra_branch(self):
         conn = self.trans
@@ -46,46 +50,39 @@ class TestStation(unittest.TestCase):
         person.addFacet(ICompany, fancy_name='Dummy shop', connection=conn)
         return person.addFacet(IBranch, connection=conn)
 
-    def test_create_simple(self):
-        self.assertEqual(BranchStation.create(self.trans, name='simple').name,
-                         'simple')
-        self.assertRaises(StoqlibError, BranchStation.create, self.trans,
-                          name='simple')
-
-    def test_create_branch(self):
-        conn = self.trans
+    def test_create(self):
         branch = self._create_extra_branch()
 
         results = BranchStation.select(
             BranchStation.q.branchID == branch.id,
-            connection=conn)
+            connection=self.trans)
         self.assertEquals(results.count(), 0)
-        create_station(conn, branch=branch)
+
+        station = BranchStation.create(self.trans, branch, name=self.name)
 
         results = BranchStation.select(
             BranchStation.q.branchID == branch.id,
-            connection=conn)
+            connection=self.trans)
         self.assertEquals(results.count(), 1)
-        self.assertEquals(results[0].name, socket.gethostname())
+        self.assertEquals(results[0].name, self.name)
         self.assertEquals(results[0].branch, branch)
 
     def test_create_error(self):
         branch = self._create_extra_branch()
-        self.assertRaises(StoqlibError, create_station, self.trans)
+        BranchStation.create(self.trans, branch, self.name)
+        self.assertRaises(StoqlibError,
+                          BranchStation.create, self.trans, branch,
+                          self.name)
 
     def test_get_station(self):
+        name = 'test-station'
         self.assertRaises(TypeError, BranchStation.get_station,
-                          self.trans, branch=None)
-        branch = self._create_extra_branch()
-
-        # FIXME: Should this really raise an exception?
-        #        it ties the implementation to a Person
-        #self.assertRaises(TypeError, BranchStation.get_station,
-        #                  self.trans, branch=branch.get_adapted())
+                          self.trans, branch=None, name=name)
 
         # Creating a station
-        station = BranchStation.get_station(self.trans, branch=branch,
-                                            create=True)
+        branch = self._create_extra_branch()
+        station = BranchStation.create(self.trans, branch, name)
+
         self.failUnless(isinstance(station, BranchStation),
                         ("A valid branch station should be created, "
                          "got %r instead" % station))
@@ -93,13 +90,14 @@ class TestStation(unittest.TestCase):
         BranchStation(name=station.name, branch=branch,
                       is_active=True, connection=self.trans)
         self.assertRaises(AssertionError, BranchStation.get_station,
-                          self.trans, branch=branch)
+                          self.trans, branch=branch, name=name)
 
     def test_get_active_stations(self):
         # Test BranchStation.get_active_stations as well inactivate and
         # activate methods
         branch = self._create_extra_branch()
-        station = BranchStation.create(self.trans, branch=branch)
+        station = BranchStation.create(self.trans, branch=branch,
+                                       name=self.name)
         self.failUnless(
             station in BranchStation.get_active_stations(self.trans),
             "The new station %r should be active" % station)

@@ -33,7 +33,8 @@ from kiwi.log import Logger
 from sqlobject import connectionForURI
 from zope.interface import implements
 
-from stoqlib.database.exceptions import OperationalError
+from stoqlib.database.exceptions import (DatabaseDoesNotExistError,
+                                         OperationalError)
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
@@ -93,7 +94,9 @@ class DatabaseSettings(object):
 
             # FIXME: Use error codes
             if 'does not exist' in e.args[0]:
-                return None
+                raise DatabaseDoesNotExistError(
+                    _("Database Error"),
+                    _("A database called %s does not exist") % dbname)
             elif 'password authentication failed for user' in e.args[0]:
                 raise DatabaseError(
                     _("Password authentication failed"),
