@@ -47,8 +47,10 @@ class TestStation(unittest.TestCase):
         return person.addFacet(IBranch, connection=conn)
 
     def test_create_simple(self):
-        self.assertEqual(create_station(self.trans).name, name='simple')
-        self.assertRaises(StoqlibError, create_station, self.trans)
+        self.assertEqual(BranchStation.create(self.trans, name='simple').name,
+                         'simple')
+        self.assertRaises(StoqlibError, BranchStation.create, self.trans,
+                          name='simple')
 
     def test_create_branch(self):
         conn = self.trans
