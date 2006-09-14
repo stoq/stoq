@@ -38,6 +38,10 @@ from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 from stoqlib.database.database import finish_transaction, run_sql_file
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import create_tables
+from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
+from stoqlib.domain.person import EmployeeRoleHistory
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.sellable import SellableUnit
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
@@ -51,9 +55,6 @@ log = Logger('stoqlib.admin')
 USER_ADMIN_DEFAULT_NAME = 'admin'
 
 def ensure_admin_user(administrator_password):
-    from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
-    from stoqlib.domain.profile import UserProfile
-    from stoqlib.domain.person import EmployeeRoleHistory
     log.info("Creating administrator user")
     trans = new_transaction()
 
@@ -101,7 +102,6 @@ def ensure_admin_user(administrator_password):
     provide_utility(ICurrentUser, user)
 
 def ensure_sellable_units():
-    from stoqlib.domain.sellable import SellableUnit
     """ Create native sellable units. """
     log.info("Creating sellable units")
     trans = new_transaction()
@@ -164,8 +164,8 @@ def initialize_system(delete_only=False, verbose=False):
     ensure_sellable_units()
 
     trans = new_transaction()
-    # Import here since we must create properly the domain schema before
-    # importing them in the migration module
+
+    # Circular dependencies
     from stoqlib.database.migration import add_system_table_reference
     add_system_table_reference(trans, check_new_db=True)
     finish_transaction(trans, 1)
