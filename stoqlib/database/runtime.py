@@ -79,7 +79,10 @@ class StoqlibTransaction(Transaction):
 
     def rollback(self):
         self._objects.clear()
-        Transaction.rollback(self)
+
+        # FIXME: SQLObject is busted, this is called from __del__
+        if Transaction is not None:
+            Transaction.rollback(self)
 
     def close(self):
         self._connection.close()
