@@ -33,10 +33,10 @@ import socket
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
+from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import schema_migration
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.person import BranchStation
-from stoqlib.lib.admin import ensure_admin_user, initialize_system
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     IApplicationDescriptions)
 from stoqlib.lib.message import error

@@ -33,6 +33,7 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
 from stoqlib.database.database import (finish_transaction,
                                        check_installed_database,
                                        create_database_if_missing,
@@ -47,7 +48,6 @@ from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.user import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
-from stoqlib.lib.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 
