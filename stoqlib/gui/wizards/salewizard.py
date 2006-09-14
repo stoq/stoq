@@ -431,11 +431,10 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.slave.hide_edit_button()
         self.slave.hide_add_button()
         self.slave.connect('after-delete-items', self.after_delete_items)
-        value_format = '<b>%s</b>'
         self.summary = SummaryLabel(klist=self.slave.klist,
-                                    column='base_sellable_info.price',
+                                    column='price',
                                     label=_('<b>Total:</b>'),
-                                    value_format=value_format)
+                                    value_format="<b>%s</b>")
         self.summary.show()
         self.slave.list_vbox.pack_start(self.summary, expand=False)
         self.attach_slave('list_holder', self.slave)
