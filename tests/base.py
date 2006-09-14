@@ -313,8 +313,9 @@ def _provide_devices():
 def bootstrap_testsuite():
     quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
 
+    _provide_database_settings()
+
     if quick:
-        _provide_database_settings()
         _provide_current_user()
         _provide_current_station()
         _provide_devices()
