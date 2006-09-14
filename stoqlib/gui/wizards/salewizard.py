@@ -347,12 +347,10 @@ class GiftCertificateSelectionStep(WizardEditorStep):
                 Column('price', title=_('Price'), data_type=currency,
                        width=90)]
 
-    def _get_gift_certificates_total(self):
-        return currency(sum([c.price for c in self.slave.klist], currency(0)))
-
     def _update_total(self, *args):
         self.summary.update_total()
-        gift_total = self._get_gift_certificates_total()
+        gift_total = currency(
+            sum([gift.price for gift in self.slave.klist], currency(0)))
         if gift_total == self.sale_total:
             text = ''
             value = ''
@@ -366,6 +364,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
                 value = -value
             value = get_formatted_price(value)
             self.wizard.disable_finish()
+
         self.difference_label.set_text(text)
         self.difference_value_label.set_text(value)
 
