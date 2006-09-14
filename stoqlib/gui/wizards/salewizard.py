@@ -384,10 +384,10 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     #
 
     def next_step(self):
-        if not len(self.slave.klist[:]):
+        if not len(self.slave.klist):
             raise ValueError('You should have at least one gift certificate '
                              'selected at this point')
-        for certificate in self.slave.klist[:]:
+        for certificate in self.slave.klist:
             self.wizard.gift_certificates.append(certificate)
         gift_total = self._get_gift_certificates_total()
         if gift_total == self.sale_total:
