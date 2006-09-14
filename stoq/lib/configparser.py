@@ -34,8 +34,7 @@ from ConfigParser import SafeConfigParser
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from kiwi.environ import environ, EnvironmentError
-from stoqlib.database.settings import (DEFAULT_RDBMS, DatabaseSettings,
-                                       check_database_connection)
+from stoqlib.database.settings import DEFAULT_RDBMS, DatabaseSettings
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
                                 NoConfigurationError)
 from stoqlib.lib.interfaces import IDatabaseSettings
@@ -235,11 +234,8 @@ dbusername=%(DBUSERNAME)s"""
                          self._get_option('testdb', section='Database'))
 
     def check_connection(self):
-        """Checks the stored database rdbms settings and raises ConfigError
-        if something is wrong
-        """
-        conn_uri = self.get_connection_uri()
-        check_database_connection(conn_uri)
+        # This will trigger a "check"
+        self.get_connection_uri()
 
     def store_password(self, password):
         configdir = self.get_config_directory()
