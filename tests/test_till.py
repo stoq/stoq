@@ -68,7 +68,8 @@ class TestStation(unittest.TestCase):
 
         # Create a new station in the same branch as the current one
         station = get_current_station(self.trans)
-        newstation = BranchStation.create(self.trans, branch=station.branch)
+        newstation = BranchStation.create(
+            self.trans, branch=station.branch, name='teststation')
 
         # Create a Till for the new station and open it
         till = Till(connection=self.trans, station=newstation)

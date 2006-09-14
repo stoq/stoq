@@ -27,7 +27,6 @@ import datetime
 import time
 import unittest
 
-from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import (new_transaction, get_current_user,
                                       get_current_station)
 from stoqlib.domain.person import Person
@@ -40,7 +39,7 @@ class TestStation(unittest.TestCase):
         self.trans = new_transaction()
 
     def tearDown(self):
-        finish_transaction(self.trans)
+        self.trans.rollback()
 
     def test_timestamp(self):
         before = datetime.datetime.now()

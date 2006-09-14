@@ -29,7 +29,6 @@ import unittest
 from decimal import Decimal
 
 from stoqlib.lib.parameters import ParameterAccess, sysparam
-from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.fiscal import AbstractFiscalBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
@@ -88,7 +87,7 @@ class TestParameter(unittest.TestCase):
         self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
 
     def tearDown(self):
-        finish_transaction(self.trans)
+        self.trans.rollback()
 
     # System instances based on stoq.lib.parameters
 

@@ -29,7 +29,6 @@ import decimal
 import unittest
 import os
 import pwd
-import sys
 
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
@@ -38,12 +37,21 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.columns import SOPriceCol
-from stoqlib.database.database import finish_transaction
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import new_transaction, get_connection
+from stoqlib.database.runtime import get_current_station
 from stoqlib.database.settings import DatabaseSettings
+from stoqlib.domain.examples.createall import create
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IBranch, IUser
+from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.component import Adapter
+from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
+                                 create_virtual_printer_for_current_station)
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
+                                    ICurrentBranch,
+                                    ICurrentBranchStation,
+                                    ICurrentUser,
                                     IDatabaseSettings)
 
 # Default values for automatic instance creation and set value tests.
@@ -122,7 +130,7 @@ class BaseDomainTest(unittest.TestCase):
         self._generate_foreign_key_attrs()
 
     def tearDown(self):
-        finish_transaction(self.trans)
+        self.trans.rollback()
 
     #
     # Class methods
@@ -256,14 +264,7 @@ class FakeApplicationDescriptions:
         return []
 provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
 
-def bootstrap_testsuite():
-    verbose = False
-    # Get from trial, hack warning
-    if '--reporter=verbose' in sys.argv:
-        verbose = True
-
-    if verbose:
-        print 'Bootstrapping testsuite'
+def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
                               pwd.getpwuid(os.getuid())[0])
     hostname = os.environ.get('STOQLIB_TEST_HOSTNAME', 'localhost')
@@ -272,9 +273,6 @@ def bootstrap_testsuite():
                              '%s_test' % username)
     password = ''
 
-    if verbose:
-        print 'Connecting to %s@%s:%s, database %s' % (username, hostname,
-                                                       port, dbname)
     db_settings = DatabaseSettings(address=hostname,
                                    port=port,
                                    dbname=dbname,
@@ -282,11 +280,48 @@ def bootstrap_testsuite():
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
 
-    initialize_system(verbose=verbose)
-    ensure_admin_user("")
+def _provide_current_user():
+    conn = get_connection()
+    table = Person.getAdapterClass(IUser)
+    results = table.select(
+        table.q.username == 'admin',
+        connection=conn)
 
-    from stoqlib.domain.examples.createall import create
-    create(utilities=True)
+    provide_utility(ICurrentUser, results[0])
+
+def _provide_current_station():
+    trans = new_transaction()
+    branches = Person.iselect(IBranch, connection=trans)
+    station = BranchStation.get_station(trans, branch=branches[0])
+    if not station:
+        station = BranchStation.create(trans, branch=branches[0])
+        trans.commit()
+
+    assert station
+    assert station.is_active
+
+    provide_utility(ICurrentBranchStation, station)
+    provide_utility(ICurrentBranch, station.branch)
+
+def _provide_devices():
+    conn = get_connection()
+
+    station = get_current_station(conn)
+    if not get_fiscal_printer_settings_by_station(conn, station):
+        create_virtual_printer_for_current_station()
+
+def bootstrap_testsuite():
+    quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
+
+    if quick:
+        _provide_database_settings()
+        _provide_current_user()
+        _provide_current_station()
+        _provide_devices()
+    else:
+        initialize_system()
+        ensure_admin_user("")
+        create(utilities=True)
 
 bootstrap_testsuite()
 
