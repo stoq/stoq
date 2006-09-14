@@ -27,6 +27,7 @@
 
 import gettext
 from decimal import Decimal
+import socket
 
 import gtk
 from kiwi.argcheck import argcheck
@@ -38,6 +39,7 @@ from stoqlib.database.database import (finish_transaction,
                                        check_installed_database,
                                        create_database_if_missing,
                                        rollback_and_begin)
+from stoqlib.database.exceptions import DatabaseDoesNotExistError
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
@@ -346,10 +348,10 @@ class DatabaseSettingsStep(WizardEditorStep):
     def _create_database(self, db_settings):
         # First, ask the user if he really wants to create the database,
         dbname = db_settings.dbname
-        if not yesno(_("The specifed database `%s' does not exist.\n"
-                       "Do you want to create it?") % dbname,
-                     gtk.RESPONSE_YES,
-                     _("Create"), _("Don't create")):
+        if yesno(_("The specifed database `%s' does not exist.\n"
+                   "Do you want to create it?") % dbname,
+                 gtk.RESPONSE_NO,
+                 _("Don't create"), _("Create")):
             return False
 
         # Secondly, verify that the user has permission to create the database
@@ -367,6 +369,13 @@ class DatabaseSettingsStep(WizardEditorStep):
         # Finally create it, nothing should go wrong at this point
         create_database_if_missing(conn, dbname)
         return True
+
+    def _create_station(self, conn, branch):
+        name = socket.gethostname()
+        station = BranchStation.get_station(conn, branch, name)
+        if not station:
+            station = BranchStation.create(conn, branch, name)
+        return station
 
     #
     # WizardStep hooks
@@ -394,6 +403,8 @@ class DatabaseSettingsStep(WizardEditorStep):
         db_settings = self.wizard_model.db_settings
         try:
             conn = db_settings.get_connection()
+        except DatabaseDoesNotExistError:
+            conn = None
         except DatabaseError, e:
             warning(e.short, e.msg)
             return False
@@ -433,8 +444,7 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         model = sysparam(conn).MAIN_COMPANY
         if not self.wizard.station:
-            self.wizard.station = BranchStation.get_station(
-                conn, branch=model, create=True)
+            self.wizard.station = self._create_station(conn, model)
         set_branch_by_stationid(conn)
 
         model = model.get_adapted()
