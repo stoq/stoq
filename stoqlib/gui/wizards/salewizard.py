@@ -425,9 +425,9 @@ class GiftCertificateSelectionStep(WizardEditorStep):
             self.model, GiftCertificateSelectionStep.proxy_widgets)
 
     def setup_slaves(self):
-        certificates = []
-        self.slave = AdditionListSlave(self.conn, self._get_columns(),
-                                       klist_objects=certificates)
+        self.slave = AdditionListSlave(self.conn,
+                                       self._get_columns(),
+                                       klist_objects=[])
         self.slave.hide_edit_button()
         self.slave.hide_add_button()
         self.slave.connect('after-delete-items', self.after_delete_items)
