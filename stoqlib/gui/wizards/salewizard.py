@@ -327,7 +327,6 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 
     def __init__(self, wizard, previous, conn, sale):
         self.sale = sale
-        self.table = GiftCertificate.getAdapterClass(ISellable)
         self.sale_total = self.sale.get_total_sale_amount()
         self.group = wizard.payment_group
         WizardEditorStep.__init__(self, conn, wizard, previous=previous)
@@ -335,9 +334,9 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     def _setup_widgets(self):
         self.header_label.set_size('large')
         self.header_label.set_bold(True)
-
-        certificates = self.table.get_sold_sellables(self.conn)
-        items = [(c.get_short_description(), c) for c in certificates]
+        adapter_class = GiftCertificate.getAdapterClass(ISellable)
+        items = [(sellable.get_short_description(), sellable)
+                     for sellable in adapter_class.get_sold_sellables(self.conn)]
         self.certificate_number.prefill(items)
 
     def _get_columns(self):
@@ -369,18 +368,17 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.difference_value_label.set_text(value)
 
     def _get_certificate_by_code(self, code):
-        certificate = self.table.selectBy(code=code, connection=self.conn)
-        qty = certificate.count()
+        adapter_class = GiftCertificate.getAdapterClass(ISellable)
+        result = adapter_class.selectBy(code=code, connection=self.conn)
+        qty = result.count()
         if not qty:
-            msg = _("The gift certificate with code '%s' doesn't "
-                    "exists") % code
-            self.certificate_number.set_invalid(msg)
+            self.certificate_number.set_invalid(
+                _("The gift certificate with code '%s' doesn't exists.") % code)
             return
         if qty != 1:
-            raise DatabaseInconsistency('You should have only one '
-                                        'gift certificate with code %s'
-                                        % code)
-        return certificate[0]
+            raise DatabaseInconsistency(
+                "You should have only one gift certificate with code %s" % code)
+        return result[0]
 
     def _update_widgets(self):
         has_gift_certificate = self.certificate_number.get_text() != ''
