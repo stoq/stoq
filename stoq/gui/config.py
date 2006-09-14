@@ -27,12 +27,11 @@
 
 import gettext
 from decimal import Decimal
-import time
 
 import gtk
 from kiwi.argcheck import argcheck
 from kiwi.python import Settable
-from kiwi.ui.dialogs import info, password as password_dialog
+from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.database import (finish_transaction,
                                        check_installed_database,
@@ -40,9 +39,10 @@ from stoqlib.database.database import (finish_transaction,
                                        rollback_and_begin)
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.settings import DatabaseSettings
-from stoqlib.domain.person import Person, PersonAdaptToUser
-from stoqlib.domain.station import create_station
+from stoqlib.domain.person import Person
+from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
+from stoqlib.domain.interfaces import IUser
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.user import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -183,30 +183,40 @@ class ExampleDatabaseStep(WizardEditorStep):
             self.conn.commit()
             examples.create()
             stepclass = DeviceSettingsStep
-        return stepclass(self.conn, self.wizard,
-                         self.model.get_adapted(), self)
+        return stepclass(self.conn, self.wizard, self.model, self)
 
 
 class AdminPasswordStep(BaseWizardStep):
+    """ Ask a password for the new user being created. """
     gladefile = 'AdminPasswordStep'
 
     def __init__(self, conn, wizard, previous, next_model):
         self._next_model = next_model
-        self.wizard = wizard
         BaseWizardStep.__init__(self, conn, wizard, previous)
-        self.description_label.set_text(_("I'm adding a user called `%s' which will "
-                                          "have administrator privilegies.\n\nTo be "
-                                          "able to create other users you need to login "
-                                          "with this user in the admin application and "
-                                          "create them.") % USER_ADMIN_DEFAULT_NAME)
+        self.description_label.set_markup(
+            self.get_description_label())
+        self.title_label.set_markup(self.get_title_label())
         self.setup_slaves()
+
+    def get_title_label(self):
+        return _("<b>Administrator Account Creation</b>")
+
+    def get_description_label(self):
+        return _("I'm adding a user called `%s' which will "
+                 "have administrator privilegies.\n\nTo be "
+                 "able to create other users you need to login "
+                 "with this user in the admin application and "
+                 "create them.") % USER_ADMIN_DEFAULT_NAME
+
+    def get_slave(self):
+        return PasswordEditorSlave(self.conn)
 
     #
     # WizardStep hooks
     #
 
     def setup_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn)
+        self.password_slave = self.get_slave()
         self.attach_slave("password_holder", self.password_slave)
 
     def post_init(self):
@@ -217,13 +227,14 @@ class AdminPasswordStep(BaseWizardStep):
     def validate_step(self):
         good_pass =  self.password_slave.validate_confirm()
         if good_pass:
-            results = PersonAdaptToUser.select(
-                PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
+            table = Person.getAdapterClass(IUser)
+            results = table.select(
+                table.q.username == USER_ADMIN_DEFAULT_NAME,
                 connection=self.conn)
             if results.count() != 1:
                 raise DatabaseInconsistency(
-                    "It is not possible to have more than one user with "
-                    "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+                    ("You should have only one user with username: %s"
+                     % USER_ADMIN_DEFAULT_NAME))
             results[0].password = self.password_slave.model.new_password
         return good_pass
 
@@ -231,6 +242,72 @@ class AdminPasswordStep(BaseWizardStep):
         return ExampleDatabaseStep(
             self.conn, self.wizard, self._next_model, self)
 
+class ExistingAdminPasswordStep(AdminPasswordStep):
+    def _check_password(self, conn, password):
+        # We can't use PersonAdaptToUser.select here because it requires
+        # us to have an IDatabaseSettings utility provided.
+        results = conn.queryOne(
+            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
+            USER_ADMIN_DEFAULT_NAME,))
+        if not results:
+            return True
+        if len(results) > 1:
+            raise DatabaseInconsistency(
+                "It is not possible have more than one user with "
+                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+        elif len(results) == 1:
+            user_password = results[0]
+            if user_password and user_password != password:
+                return False
+        return True
+
+    def _setup_widgets(self):
+        msg = (_(u"This machine which has the name <b>%s</b> will be "
+                 "registered so it can be used to access the system.")
+               % self.wizard.station.name)
+        label = gtk.Label()
+        label.set_use_markup(True)
+        label.set_markup(msg)
+        label.set_alignment(0.0, 0.0)
+        label.set_line_wrap(True)
+        self.slave_box.pack_start(label, False, False, 10)
+        label.show()
+
+    #
+    # Hooks
+    #
+
+    def setup_slaves(self):
+        AdminPasswordStep.setup_slaves(self)
+        self._setup_widgets()
+
+    def get_description_label(self):
+        db_settings = self.wizard.model.db_settings
+        return (_("There is already a database called <b>%s</b> on <b>%s</b>. "
+                  "You must enter the password for the user <b>%s</b> to "
+                  "continue the installation: ")
+                % (db_settings.dbname, db_settings.address,
+                   USER_ADMIN_DEFAULT_NAME))
+
+    def get_title_label(self):
+        return _("<b>Administrator Account</b>")
+
+    def get_slave(self):
+        return PasswordEditorSlave(self.conn, confirm_password=False)
+
+    def validate_step(self):
+        if not self.password_slave.validate_confirm():
+            return False
+        slave = self.password_slave
+        if self._check_password(self.conn, slave.model.new_password):
+            return True
+        slave.invalidate_password(_("The password supplied is "
+                                    "not valid."))
+        return False
+
+    def next_step(self):
+        return DeviceSettingsStep(self.conn, self.wizard,
+                                  self._next_model, self)
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -291,26 +368,6 @@ class DatabaseSettingsStep(WizardEditorStep):
         create_database_if_missing(conn, dbname)
         return True
 
-    def _check_admin_password(self, conn, password):
-        # We can't use PersonAdaptToUser.select here because it requires
-        # us to have an IDatabaseSettings utility provided.
-        results = conn.queryOne(
-            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
-            USER_ADMIN_DEFAULT_NAME,))
-        if not results:
-            return True
-
-        if len(results) > 1:
-            raise DatabaseInconsistency(
-                "It is not possible have more than one user with "
-                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
-        elif len(results) == 1:
-            user_password = results[0]
-            if user_password and user_password != password:
-                return False
-
-        return True
-
     #
     # WizardStep hooks
     #
@@ -345,29 +402,9 @@ class DatabaseSettingsStep(WizardEditorStep):
         if conn is None:
             if not self._create_database(db_settings):
                 return False
-            has_installed_db = False
+            self.has_installed_db = False
         else:
-            has_installed_db = check_installed_database(conn)
-
-        if has_installed_db:
-            hostname = db_settings.address
-            while True:
-                admin_password = password_dialog(
-                    _('Administrator password'),
-                    _('To be able to continue the wizard you need to enter the '
-                      'administrator password for stoq on host %s') % hostname)
-                if admin_password is None:
-                    return False
-
-                if self._check_admin_password(conn, admin_password):
-                    break
-
-                info(_("The supplied administrator password does not match"))
-                while gtk.events_pending():
-                    gtk.main_iteration()
-                time.sleep(1)
-
-        self.has_installed_db = has_installed_db
+            self.has_installed_db = check_installed_database(conn)
         return True
 
     def next_step(self):
@@ -395,21 +432,16 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.wizard.set_connection(conn)
 
         model = sysparam(conn).MAIN_COMPANY
-        if not self.has_installed_db:
-            model = model.get_adapted()
-        try:
-            self.wizard.station = create_station(conn)
-        except StoqlibError:
-            # This happens when a station already exists, it's fine
-            # so we can just ignore the error
-            pass
-
+        if not self.wizard.station:
+            self.wizard.station = BranchStation.get_station(
+                conn, branch=model, create=True)
         set_branch_by_stationid(conn)
 
-        if not self.has_installed_db:
-            return AdminPasswordStep(conn, self.wizard, self, next_model=model)
-        else:
-            return ExampleDatabaseStep(conn, self.wizard, model, self)
+        if self.has_installed_db:
+            return ExistingAdminPasswordStep(conn, self.wizard, self,
+                                             model.get_adapted())
+        return AdminPasswordStep(
+            conn, self.wizard, self, next_model=model.get_adapted())
 
     def setup_proxies(self):
         items = [(value, key)
@@ -462,6 +494,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     def finish(self):
         finish_transaction(self._conn, 1)
+
         self.retval = self.model
         self.close()
 
