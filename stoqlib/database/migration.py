@@ -32,10 +32,10 @@ from kiwi.environ import environ
 import stoqlib
 from stoqlib.database.database import finish_transaction, run_sql_file, \
      db_table_name
+from stoqlib.database.admin import create_base_schema
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import get_table_types
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.admin import create_base_schema
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
