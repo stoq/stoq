@@ -100,6 +100,7 @@ def initialize_connection():
         raise StoqlibError('You need to register db settings before calling '
                            'initialize_connection')
     conn = db_settings.get_connection()
+    assert conn is not None
 
     # Stoq applications always use transactions explicitly
     conn.autoCommit = False

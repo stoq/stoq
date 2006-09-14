@@ -24,8 +24,6 @@
 ##
 """ Station, a branch station per computer """
 
-import socket
-
 from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
@@ -56,34 +54,24 @@ class BranchStation(Domain):
         """
         Returns the currently active branch stations.
         @param conn: a database connection
+        @returns: a sequence of currently active stations
         """
         return cls.select(cls.q.is_active == True, connection=conn)
 
     @classmethod
-    def create(cls, conn, branch=None, name=None):
+    def create(cls, conn, branch, name):
         """
         Create a new station id for the current machine.
         Optionally a branch can be specified which will be set as the branch
         for created station.
 
         @param conn: a database connection
-        @param branch: Branch
-        @param name: name of the station (optional
+        @param branch: the branch
+        @param name: name of the station
         @returns: a BranchStation instance
         """
 
-        # FIXME: Move this to stoqdbadmin register
-        from stoqlib.domain.person import Person
-        if not branch:
-            branches = Person.iselect(IBranch, connection=conn)
-            if branches.count() != 1:
-                raise StoqlibError("More than one branch detected")
-            branch = branches[0]
-
-        if not name:
-            name = socket.gethostname()
-
-        station = cls._get_station(conn, branch, name)
+        station = cls.get_station(conn, branch, name)
         if station:
             raise StoqlibError(
                 "There is already a station registered as `%s'." % name)
@@ -91,20 +79,16 @@ class BranchStation(Domain):
                    connection=conn)
 
     @classmethod
-    def get_station(cls, conn, branch=None, create=False):
-        station = cls._get_station(conn, branch=branch, name=None)
-        if not station and create:
-            station = create_station(conn, branch)
-        return station
+    def get_station(cls, conn, branch, name):
+        """
+        Fetches a station from a branch
 
-    # Private
-
-    @classmethod
-    def _get_station(cls, conn, branch, name):
+        @param conn: a database connection
+        @param branch: the branch
+        @param name: name of the station
+        """
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
-        if not name:
-            name = socket.gethostname()
         result = cls.select(
             AND(cls.q.name == name,
                 cls.q.branchID == branch.id), connection=conn)
@@ -145,7 +129,3 @@ class BranchStation(Domain):
         Returns the branch name
         """
         return self.branch.get_adapted().name
-
-# XXX: Remove and use BranchStation.create() directly
-def create_station(conn, branch=None):
-    return BranchStation.create(conn, branch)
