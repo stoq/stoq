@@ -27,8 +27,6 @@
 tables, removing tables and configuring administration user.
 """
 
-import datetime
-
 from kiwi.argcheck import argcheck
 from kiwi.component import get_utility, provide_utility
 from kiwi.datatypes import currency
@@ -37,7 +35,6 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-import stoqlib
 from stoqlib.database.database import finish_transaction, run_sql_file
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import create_tables
@@ -157,20 +154,6 @@ def create_base_schema():
     run_sql_file(sql_file, trans)
     finish_transaction(trans, 1)
 
-def update_system_table(trans, check_new_db=False, version=None):
-    """Add a new entry on SystemTable with the current schema version"""
-    result = SystemTable.select(connection=trans).count()
-    if result and check_new_db:
-        raise ValueError('SystemTable should be empty at this point '
-                         'got %d results' % result)
-    elif not result and not check_new_db:
-        raise ValueError('SystemTable should have at least one '
-                         'item at this point, got nothing')
-    version = version or stoqlib.db_version
-    SystemTable(version=version,
-                update_date=datetime.datetime.now(),
-                connection=trans)
-
 @argcheck(bool, bool)
 def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
@@ -182,5 +165,5 @@ def initialize_system(delete_only=False, verbose=False):
     ensure_sellable_units()
 
     trans = new_transaction()
-    update_system_table(trans, check_new_db=True)
+    SystemTable.update(trans, check_new_db=True)
     finish_transaction(trans, 1)

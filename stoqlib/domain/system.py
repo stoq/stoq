@@ -20,16 +20,18 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Routines for system data management"""
 
+import datetime
 
 from sqlobject import SQLObject
 from sqlobject import DateTimeCol, IntCol
 
+from stoqlib import db_version
 from stoqlib.domain.base import AbstractModel
-
 
 class SystemTable(SQLObject, AbstractModel):
     """Stores information about database schema migration
@@ -37,5 +39,23 @@ class SystemTable(SQLObject, AbstractModel):
     I{update_date}: the date when the database schema was updated
     I{version}: the version of the schema installed
     """
+
     update_date = DateTimeCol()
     version = IntCol()
+
+    @classmethod
+    def update(cls, trans, check_new_db=False, version=None):
+        """Add a new entry on SystemTable with the current schema version"""
+        result = cls.select(connection=trans).count()
+        if result and check_new_db:
+            raise ValueError(
+                'SystemTable should be empty at this point got %d results' %
+                result)
+        elif not result and not check_new_db:
+            raise ValueError(
+                'SystemTable should have at least one item at this point, '
+                'got nothing')
+
+        return cls(version=version or db_version,
+                   update_date=datetime.datetime.now(),
+                   connection=trans)
