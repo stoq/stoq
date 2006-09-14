@@ -124,11 +124,12 @@ class PaymentMethodStep(WizardEditorStep):
         self.attach_slave(self.slave_holder, self.method_slave)
 
     def setup_combo(self):
+        active_pm_ifaces = get_active_pm_ifaces()
+        slaves_info = [(iface, slave)
+                           for iface, slave in PaymentMethodStep.slaves_info
+                               if iface in active_pm_ifaces]
         base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
         combo_items = []
-        slaves_info = [(iface, slave)
-                        for iface, slave in PaymentMethodStep.slaves_info
-                            if iface in get_active_pm_ifaces()]
         for iface, slave_class in slaves_info:
             method = iface(base_method)
             if method.is_active:
