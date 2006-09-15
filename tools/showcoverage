@@ -80,7 +80,8 @@ def generate():
         files = glob.glob(pattern)
 
     return [filename for filename in files
-                          if not 'unittest' in filename]
+                          if (not 'unittest' in filename and
+                              not 'examples' in filename)]
 
 def main(args):
     c = Coverage()
