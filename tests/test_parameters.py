@@ -28,8 +28,8 @@
 import unittest
 from decimal import Decimal
 
-from stoqlib.lib.parameters import ParameterAccess, sysparam
-from stoqlib.database.runtime import new_transaction
+from stoqlib.lib.parameters import sysparam
+from stoqlib.database.runtime import new_transaction, get_current_station
 from stoqlib.domain.fiscal import AbstractFiscalBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IStorable, ISalesPerson, IClient,
@@ -46,7 +46,6 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceAdaptToSellable
-from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import StockError, PaymentError
 
@@ -55,11 +54,17 @@ base # pyflakes
 
 class TestParameter(unittest.TestCase):
 
-    def setUp(self):
-        self.trans = new_transaction()
-        self.sparam = sysparam(self.trans)
-        assert isinstance(self.sparam, ParameterAccess)
+    def _create_branch(self):
+        conn = self.trans
+        person = Person(name='Dummy', connection=conn)
+        person.addFacet(ICompany, fancy_name='Dummy shop', connection=conn)
+        return person.addFacet(IBranch, connection=conn)
 
+    def _create_storable(self):
+        product = Product(connection=self.trans)
+        return product.addFacet(IStorable, connection=self.trans)
+
+    def _create_examples(self):
         person = Person(name='Jonas', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         role = EmployeeRole(connection=self.trans, name='desenvolvedor')
@@ -70,10 +75,9 @@ class TestParameter(unittest.TestCase):
         company = person.addFacet(ICompany, connection=self.trans)
         client = person.addFacet(IClient, connection=self.trans)
         self.branch = person.addFacet(IBranch, connection=self.trans)
-        self.station = BranchStation(name=u'MegaStation', is_active=True,
-                                     connection=self.trans,
-                                     branch=self.branch)
-        till = Till(connection=self.trans, station=self.station)
+
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
         renegotiation = AbstractRenegotiationAdapter(connection=self.trans)
         self.sale = Sale(coupon_id=123, client=client,
                          cfop=self.sparam.DEFAULT_SALES_CFOP,
@@ -81,10 +85,14 @@ class TestParameter(unittest.TestCase):
                          renegotiation_data=renegotiation,
                          till=till, connection=self.trans)
 
-        product = Product(connection=self.trans)
-        self.storable = product.addFacet(IStorable, connection=self.trans)
+        self.storable = self._create_storable()
 
         self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
+
+
+    def setUp(self):
+        self.trans = new_transaction()
+        self.sparam = sysparam(self.trans)
 
     def tearDown(self):
         self.trans.rollback()
@@ -116,6 +124,7 @@ class TestParameter(unittest.TestCase):
         assert isinstance(base_category, BaseSellableCategory)
 
     def test_PaymentDestination (self):
+        self._create_examples()
         param = self.sparam.DEFAULT_PAYMENT_DESTINATION
         new_payment = self.group.add_payment(value=10, description='testing',
                                              method=self.sparam.METHOD_MONEY)
@@ -130,6 +139,7 @@ class TestParameter(unittest.TestCase):
         assert isinstance(service, ServiceAdaptToSellable)
 
     def test_DefaultGiftCertificateType(self):
+        self._create_examples()
         param = self.sparam.DEFAULT_GIFT_CERTIFICATE_TYPE
         sellable_cert = self.sale.add_custom_gift_certificate(
                             certificate_value=Decimal(200),
@@ -141,12 +151,13 @@ class TestParameter(unittest.TestCase):
     # System constants based on stoq.lib.parameters
 
     def test_UseLogicQuantity(self):
+        storable = self._create_storable()
         param = self.sparam.USE_LOGIC_QUANTITY
-        self.assertEqual(self.storable._check_logic_quantity(), None)
+        self.assertEqual(storable._check_logic_quantity(), None)
         self.sparam.update_parameter(parameter_name='USE_LOGIC_QUANTITY',
                                      value=u'0')
         self.failUnlessRaises(StockError,
-                              self.storable._check_logic_quantity)
+                              storable._check_logic_quantity)
 
     def test_MaxLateDays(self):
         param = self.sparam.MAX_LATE_DAYS
@@ -242,8 +253,10 @@ class TestParameter(unittest.TestCase):
         assert isinstance(param, bool)
 
     def test_DefaultSalesCFOP(self):
+        self._create_examples()
         param = self.sparam.DEFAULT_SALES_CFOP
-        till = Till(connection=self.trans, station=self.station)
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
         sale = Sale(coupon_id=123, salesperson=self.salesperson,
                     till=till, connection=self.trans)
         self.assertEqual(sale.cfop, param)
@@ -253,6 +266,7 @@ class TestParameter(unittest.TestCase):
         self.failIfEqual(sale.cfop, self.sparam.DEFAULT_SALES_CFOP)
 
     def test_DefaultReturnSalesCFOP(self):
+        self._create_examples()
         wrong_param = self.sparam.DEFAULT_SALES_CFOP
         drawee = Person(name='Antonione', connection=self.trans)
         book_entry = AbstractFiscalBookEntry(invoice_number=123,
@@ -267,6 +281,7 @@ class TestParameter(unittest.TestCase):
                          reversal.cfop)
 
     def test_DefaultReceivingCFOP(self):
+        branch = self._create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name='Craudinho', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
@@ -275,13 +290,13 @@ class TestParameter(unittest.TestCase):
                                       password='asdfgh', profile=profile,
                                       username='craudio')
         receiving_order = ReceivingOrder(responsible=responsible,
-                                         branch=self.branch,
+                                         branch=branch,
                                          connection=self.trans,
                                          invoice_number=876,
                                          supplier=None)
         param2 = self.sparam.DEFAULT_SALES_CFOP
         receiving_order2 = ReceivingOrder(responsible=responsible,
-                                          cfop=param2, branch=self.branch,
+                                          cfop=param2, branch=branch,
                                           connection=self.trans,
                                           invoice_number=1231,
                                           supplier=None)
