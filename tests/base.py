@@ -36,6 +36,7 @@ from stoqlib.database.columns import SOPriceCol
 from stoqlib.database.runtime import new_transaction
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.component import Adapter
+from stoqlib.domain.interfaces import IBranch, ICompany, IStorable
 
 from bootstrap import bootstrap_testsuite
 
@@ -92,6 +93,18 @@ class DomainTest(unittest.TestCase):
 
     def tearDown(self):
         self.trans.rollback()
+
+    def create_branch(self):
+        from stoqlib.domain.person import Person
+        person = Person(name='Dummy', connection=self.trans)
+        person.addFacet(ICompany, fancy_name='Dummy shop', connection=self.trans)
+        return person.addFacet(IBranch, connection=self.trans)
+
+    def create_storable(self):
+        from stoqlib.domain.product import Product
+        product = Product(connection=self.trans)
+        return product.addFacet(IStorable, connection=self.trans)
+
 
 class BaseDomainTest(unittest.TestCase):
     """Base class to be used by all domain test classes.
