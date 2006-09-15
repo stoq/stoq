@@ -121,9 +121,6 @@ class BranchStation(Domain):
     # Accessors
     #
 
-    def get_identifier_str(self):
-        return u"%05d" % self.identifier
-
     def get_branch_name(self):
         """
         Returns the branch name
