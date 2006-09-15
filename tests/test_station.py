@@ -31,6 +31,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IBranch, ICompany
 from stoqlib.exceptions import StoqlibError
+from stoqlib.lib.translation import stoqlib_gettext as _
 
 import tests.base
 tests.base #pyflakes
@@ -109,3 +110,19 @@ class TestStation(unittest.TestCase):
         self.failUnless(
             station in BranchStation.get_active_stations(self.trans),
             "The new station %r should be active" % station)
+
+    def test_get_status_str(self):
+        branch = self._create_extra_branch()
+        station = BranchStation.create(self.trans, branch=branch,
+                                       name=self.name)
+        station.inactivate()
+        self.assertEqual(station.get_status_str(), _(u'Inactive'))
+
+        station.activate()
+        self.assertEqual(station.get_status_str(), _(u'Active'))
+
+    def test_get_branch_name(self):
+        branch = self._create_extra_branch()
+        station = BranchStation.create(self.trans, branch=branch,
+                                       name=self.name)
+        self.assertEqual(station.get_branch_name(), 'Dummy')
