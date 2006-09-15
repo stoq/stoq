@@ -31,7 +31,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.fiscal import AbstractFiscalBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
-                                       IStorable, ISalesPerson, IClient,
+                                       ISalesPerson, IClient,
                                        IUser, IPaymentGroup, IEmployee,
                                        IIndividual, IMoneyPM, IBillPM)
 from stoqlib.domain.person import (Person, EmployeeRole,
@@ -40,7 +40,6 @@ from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.sellable import BaseSellableCategory, AbstractSellable
 from stoqlib.domain.payment.methods import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.sale import Sale
@@ -51,16 +50,6 @@ from stoqlib.exceptions import StockError, PaymentError
 from tests.base import DomainTest
 
 class TestParameter(DomainTest):
-
-    def _create_branch(self):
-        conn = self.trans
-        person = Person(name='Dummy', connection=conn)
-        person.addFacet(ICompany, fancy_name='Dummy shop', connection=conn)
-        return person.addFacet(IBranch, connection=conn)
-
-    def _create_storable(self):
-        product = Product(connection=self.trans)
-        return product.addFacet(IStorable, connection=self.trans)
 
     def _create_examples(self):
         person = Person(name='Jonas', connection=self.trans)
@@ -83,7 +72,7 @@ class TestParameter(DomainTest):
                          renegotiation_data=renegotiation,
                          till=till, connection=self.trans)
 
-        self.storable = self._create_storable()
+        self.storable = self.create_storable()
 
         self.group = self.sale.addFacet(IPaymentGroup, connection=self.trans)
 
@@ -146,7 +135,7 @@ class TestParameter(DomainTest):
     # System constants based on stoq.lib.parameters
 
     def test_UseLogicQuantity(self):
-        storable = self._create_storable()
+        storable = self.create_storable()
         param = self.sparam.USE_LOGIC_QUANTITY
         self.assertEqual(storable._check_logic_quantity(), None)
         self.sparam.update_parameter(parameter_name='USE_LOGIC_QUANTITY',
@@ -276,7 +265,7 @@ class TestParameter(DomainTest):
                          reversal.cfop)
 
     def test_DefaultReceivingCFOP(self):
-        branch = self._create_branch()
+        branch = self.create_branch()
         param = self.sparam.DEFAULT_RECEIVING_CFOP
         person = Person(name='Craudinho', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)

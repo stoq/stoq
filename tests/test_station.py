@@ -25,8 +25,6 @@
 """ This module test all class in stoq/domain/station.py """
 
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IBranch, ICompany
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext as _
 
@@ -35,14 +33,8 @@ from tests.base import DomainTest
 class TestStation(DomainTest):
     name = 'test-station'
 
-    def _create_extra_branch(self):
-        conn = self.trans
-        person = Person(name='Dummy', connection=conn)
-        person.addFacet(ICompany, fancy_name='Dummy shop', connection=conn)
-        return person.addFacet(IBranch, connection=conn)
-
     def test_create(self):
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
 
         results = BranchStation.select(
             BranchStation.q.branchID == branch.id,
@@ -59,7 +51,7 @@ class TestStation(DomainTest):
         self.assertEquals(results[0].branch, branch)
 
     def test_create_error(self):
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
         BranchStation.create(self.trans, branch, self.name)
         self.assertRaises(StoqlibError,
                           BranchStation.create, self.trans, branch,
@@ -71,7 +63,7 @@ class TestStation(DomainTest):
                           self.trans, branch=None, name=name)
 
         # Creating a station
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
         station = BranchStation.create(self.trans, branch, name)
 
         self.failUnless(isinstance(station, BranchStation),
@@ -86,7 +78,7 @@ class TestStation(DomainTest):
     def test_get_active_stations(self):
         # Test BranchStation.get_active_stations as well inactivate and
         # activate methods
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
         station = BranchStation.create(self.trans, branch=branch,
                                        name=self.name)
         self.failUnless(
@@ -102,7 +94,7 @@ class TestStation(DomainTest):
             "The new station %r should be active" % station)
 
     def test_get_status_str(self):
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
         station = BranchStation.create(self.trans, branch=branch,
                                        name=self.name)
         station.inactivate()
@@ -112,7 +104,7 @@ class TestStation(DomainTest):
         self.assertEqual(station.get_status_str(), _(u'Active'))
 
     def test_get_branch_name(self):
-        branch = self._create_extra_branch()
+        branch = self.create_branch()
         station = BranchStation.create(self.trans, branch=branch,
                                        name=self.name)
         self.assertEqual(station.get_branch_name(), 'Dummy')
