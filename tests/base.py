@@ -86,6 +86,13 @@ def column_type_data(column):
                          % type(column))
 
 
+class DomainTest(unittest.TestCase):
+    def setUp(self):
+        self.trans = new_transaction()
+
+    def tearDown(self):
+        self.trans.rollback()
+
 class BaseDomainTest(unittest.TestCase):
     """Base class to be used by all domain test classes.
     This class has some basic infrastructure:

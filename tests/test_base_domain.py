@@ -1,14 +1,10 @@
-import unittest
-
 from zope.interface import implements, Interface
 
-from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.database.runtime import new_transaction
+from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.domain.base import Domain, ModelAdapter
 
-from tests import base
-base # pyflakes
-
+from tests.base import DomainTest
 
 class IDong(Interface):
     pass
@@ -37,13 +33,7 @@ except ProgrammingError:
 else:
     trans.commit()
 
-class FacetTests(unittest.TestCase):
-    def setUp(self):
-        self.trans = new_transaction()
-
-    def tearDown(self):
-        self.trans.close()
-
+class FacetTests(DomainTest):
     def testAdd(self):
         ding = Ding(connection=self.trans)
         self.assertEqual(IDong(ding, None), None)
