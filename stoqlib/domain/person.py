@@ -686,16 +686,14 @@ class PersonAdaptToBranch(ModelAdapter):
     #
 
     def get_active_stations(self):
-        conn = self.get_connection()
-        q1 = BranchStation.q.is_active == True
-        q2 = BranchStation.q.branchID == self.id
-        query = AND(q1, q2)
-        return PersonAdaptToBranch.select(query, connection=conn)
+        return self.select(
+            AND(BranchStation.q.is_active == True,
+                BranchStation.q.branchID == self.id),
+            connection=self.get_connection())
 
     @classmethod
     def get_active_branches(cls, conn):
-        query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
+        return cls.select(cls.q.is_active == True, connection=conn)
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
