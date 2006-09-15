@@ -24,26 +24,16 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
-import unittest
-
-from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IBranch, ICompany
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext as _
 
-import tests.base
-tests.base #pyflakes
+from tests.base import DomainTest
 
-class TestStation(unittest.TestCase):
+class TestStation(DomainTest):
     name = 'test-station'
-
-    def setUp(self):
-        self.trans = new_transaction()
-
-    def tearDown(self):
-        self.trans.rollback()
 
     def _create_extra_branch(self):
         conn = self.trans

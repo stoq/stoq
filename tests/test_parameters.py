@@ -25,11 +25,10 @@
 ##
 """ Test for lib/parameters module.  """
 
-import unittest
 from decimal import Decimal
 
 from stoqlib.lib.parameters import sysparam
-from stoqlib.database.runtime import new_transaction, get_current_station
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.fiscal import AbstractFiscalBookEntry
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        IStorable, ISalesPerson, IClient,
@@ -49,10 +48,9 @@ from stoqlib.domain.service import ServiceAdaptToSellable
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import StockError, PaymentError
 
-from tests import base
-base # pyflakes
+from tests.base import DomainTest
 
-class TestParameter(unittest.TestCase):
+class TestParameter(DomainTest):
 
     def _create_branch(self):
         conn = self.trans
@@ -91,11 +89,8 @@ class TestParameter(unittest.TestCase):
 
 
     def setUp(self):
-        self.trans = new_transaction()
+        DomainTest.setUp(self)
         self.sparam = sysparam(self.trans)
-
-    def tearDown(self):
-        self.trans.rollback()
 
     # System instances based on stoq.lib.parameters
 

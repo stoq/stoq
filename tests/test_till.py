@@ -23,24 +23,15 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
-import unittest
-
 from kiwi.datatypes import currency
 
-from stoqlib.database.runtime import new_transaction, get_current_station
+from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 
-import tests.base
-tests.base #pyflakes
+from tests.base import DomainTest
 
-class TestStation(unittest.TestCase):
-    def setUp(self):
-        self.trans = new_transaction()
-
-    def tearDown(self):
-        self.trans.rollback()
-
+class TestStation(DomainTest):
     def testGetCurrentTillOpen(self):
         self.assertEqual(Till.get_current(self.trans), None)
 

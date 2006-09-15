@@ -25,22 +25,14 @@
 
 import datetime
 import time
-import unittest
 
-from stoqlib.database.runtime import (new_transaction, get_current_user,
+from stoqlib.database.runtime import (get_current_user,
                                       get_current_station)
 from stoqlib.domain.person import Person
 
-import tests.base
-tests.base #pyflakes
+from tests.base import DomainTest
 
-class TestStation(unittest.TestCase):
-    def setUp(self):
-        self.trans = new_transaction()
-
-    def tearDown(self):
-        self.trans.rollback()
-
+class TestStation(DomainTest):
     def test_timestamp(self):
         before = datetime.datetime.now()
         time.sleep(1)
