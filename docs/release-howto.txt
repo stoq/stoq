@@ -1,9 +1,20 @@
 Release process of Stoq
 =======================
 
+Translation
+  Update translation for
+    kiwi
+    stoqdrivers
+    stoqlib
+    stoq
+
+Screenshots
+  Update screnshots for the website
+
 Dependencies
   Check & Release Kiwi
-  
+  Build package of psycopg
+
 Packages:
   Debian
     Build
@@ -36,7 +47,7 @@ Verify dependencies are okay
   README
   setup.py
 
-Write changelog:
+Write changes:
   Script to find resolved bugs
   Update NEWS
   Translate into Portuguese, send release announcement
