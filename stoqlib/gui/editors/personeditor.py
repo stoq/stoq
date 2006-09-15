@@ -48,13 +48,13 @@ from stoqlib.gui.slaves.employee import (EmployeeDetailsSlave,
                                       EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
 from stoqlib.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
-                                  PasswordEditorSlave)
+                                     PasswordEditorSlave, LoginInfo)
 from stoqlib.gui.slaves.supplier import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporter import TransporterDataSlave
 from stoqlib.gui.slaves.branch import BranchDetailsSlave
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             FinanceDetails)
-from stoqlib.domain.person import EmployeeRole, LoginInfo, Person
+from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.interfaces import (IClient, ICreditProvider, IEmployee,
                                        ISupplier, ITransporter, IUser,
                                        ICompany, IIndividual, IBranch)

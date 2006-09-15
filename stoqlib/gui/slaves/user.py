@@ -36,12 +36,19 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.person import Person, LoginInfo
+from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IUser
 
 
 _ = stoqlib_gettext
 
+class LoginInfo:
+    """ This class is used by password editor only for validation of the
+        fields.
+    """
+    current_password = None
+    new_password = None
+    confirm_password = None
 
 class UserStatusSlave(BaseEditorSlave):
     gladefile = 'UserStatusSlave'
