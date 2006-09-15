@@ -885,15 +885,6 @@ class PersonAdaptToTransporter(ModelAdapter):
 Person.registerFacet(PersonAdaptToTransporter, ITransporter)
 
 
-class LoginInfo:
-    """ This class is used by password editor only for validation of the
-        fields.
-    """
-    current_password = None
-    new_password = None
-    confirm_password = None
-
-
 class EmployeeRoleHistory(Domain):
     """Base class to store the employee role history."""
 
