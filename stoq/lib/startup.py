@@ -37,6 +37,7 @@ from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import schema_migration
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.person import BranchStation
+from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     IApplicationDescriptions)
 from stoqlib.lib.message import error
@@ -93,7 +94,11 @@ def setup(config, options=None, register_station=True, check_schema=True):
     from stoq.lib.applist import ApplicationDescriptions
     provide_utility(IApplicationDescriptions, ApplicationDescriptions())
 
-    conn = get_connection()
+    try:
+        conn = get_connection()
+    except DatabaseError, e:
+        error(e.short, e.msg)
+
     if register_station:
         set_branch_by_stationid(conn)
     if check_schema:
