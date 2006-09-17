@@ -112,8 +112,8 @@ class AbstractSaleWizard(BaseWizard):
 
 
 class AbstractSalesPersonStep(WizardEditorStep):
-    """ An abstract step which allows defining salesperson and general
-    informations for sale orders
+    """ An abstract step which allows to define a salesperson, the sale's
+    discount and surcharge as well the invoice number, when it is needed.
     """
     gladefile = 'SalesPersonStep'
     model_type = Sale
