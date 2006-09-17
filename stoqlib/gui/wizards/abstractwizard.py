@@ -190,7 +190,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
         self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
                                                           self.model_type)
         self.discsurcharge_slave.connect('discount-changed',
-                                      self.on_discsurcharge_slave_changed)
+                                         self.on_discsurcharge_slave_changed)
         slave_holder = 'discount_surcharge_slave'
         if self.get_slave(slave_holder):
             self.detach_slave(slave_holder)
