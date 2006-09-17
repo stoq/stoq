@@ -273,9 +273,8 @@ class AbstractItemStep(WizardEditorStep):
             sellable = None
         if not sellable:
             barcode = self.item.get_text()
-            table = self.table
-            sellable = table.get_availables_and_sold_by_barcode(self.conn,
-                                            barcode, self._item_notify)
+            sellable = AbstractSellable.get_availables_and_sold_by_barcode(
+                self.conn, barcode, self._item_notify)
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions
