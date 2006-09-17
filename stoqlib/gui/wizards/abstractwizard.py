@@ -178,9 +178,6 @@ class AbstractSalesPersonStep(WizardEditorStep):
     # WizardStep hooks
     #
 
-    def post_init(self):
-        raise NotImplementedError("This method must be overwritten on child")
-
     def next_step(self):
         self.payment_group.set_method(self.pm_slave.get_selected_method())
         return self.on_next_step()
