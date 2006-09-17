@@ -497,6 +497,17 @@ class GiftCertificateSelectionStep(WizardEditorStep):
 class SalesPersonStep(AbstractSalesPersonStep):
     """A wizard step used when confirming a sale order """
 
+    def _update_next_step(self, pm_iface):
+        if pm_iface is IMoneyPM:
+            self.wizard.enable_finish()
+        elif (pm_iface is IGiftCertificatePM
+              or pm_iface is IMultiplePM):
+            self.wizard.disable_finish()
+        else:
+            raise ValueError(
+                "Invalid payment method interface, got %s" % pm_iface)
+
+
     #
     # AbstractSalesPersonStep hooks
     #
@@ -515,14 +526,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
         self.force_validation()
 
     def on_payment_method_changed(self, slave, method_iface):
-        if method_iface is IMoneyPM:
-            self.wizard.enable_finish()
-        elif (method_iface is IGiftCertificatePM
-              or method_iface is IMultiplePM):
-            self.wizard.disable_finish()
-        else:
-            raise ValueError("Invalid payment method interface, got %s"
-                             % method_iface)
+        self._update_next_step(method_iface)
 
     #
     # WizardStep hooks
@@ -531,10 +535,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
     def post_init(self):
         self.wizard.payment_group.clear_preview_payments()
         self.register_validate_function(self.wizard.refresh_next)
-        if self._get_selected_payment_method() is IMoneyPM:
-            self.wizard.enable_finish()
-        else:
-            self.wizard.disable_finish()
+        self._update_next_step(self._get_selected_payment_method())
         self.force_validation()
 
     def on_next_step(self):
