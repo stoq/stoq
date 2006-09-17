@@ -290,7 +290,7 @@ class AbstractItemStep(WizardEditorStep):
         items = [s.sellable for s in self.slave.klist]
         if item in items:
             msg = (_("The item '%s' was already added to the order")
-                     % item.get_description())
+                   % item.get_description())
             self.item.set_invalid(msg)
             return
         if self.item_proxy.model.item is item:
@@ -331,9 +331,9 @@ class AbstractItemStep(WizardEditorStep):
     def post_init(self):
         self.item.grab_focus()
         self.item_hbox.set_focus_chain([self.item,
-                                       self.quantity, self.cost,
-                                       self.add_item_button,
-                                       self.product_button])
+                                        self.quantity, self.cost,
+                                        self.add_item_button,
+                                        self.product_button])
         self.register_validate_function(self._refresh_next)
         self.force_validation()
 
