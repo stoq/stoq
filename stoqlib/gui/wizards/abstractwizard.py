@@ -112,7 +112,7 @@ class AbstractSaleWizard(BaseWizard):
 
 
 class AbstractSalesPersonStep(WizardEditorStep):
-    """An abstract step which allows defining salesperson a general
+    """ An abstract step which allows defining salesperson and general
     informations for sale orders
     """
     gladefile = 'SalesPersonStep'
