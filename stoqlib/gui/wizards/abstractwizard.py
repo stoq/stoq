@@ -339,11 +339,10 @@ class AbstractItemStep(WizardEditorStep):
 
     def setup_proxies(self):
         self.setup_item_entry()
-        self.proxy = self.add_proxy(None,
-                                    AbstractItemStep.proxy_widgets)
         widgets = AbstractItemStep.item_widgets
-        model = Settable(quantity=decimal.Decimal('1.0'),
-                         price=currency(0), item=None)
+        self.proxy = self.add_proxy(None, widgets)
+        model = Settable(quantity=decimal.Decimal('1.0'), price=currency(0),
+                         item=None)
         self.item_proxy = self.add_proxy(model, widgets)
 
     def setup_slaves(self):
