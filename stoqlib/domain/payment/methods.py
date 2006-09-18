@@ -94,6 +94,10 @@ class PaymentMethodDetails(InheritableModel):
         assert self.is_active, ('This provider is already inactive')
         self.is_active = False
 
+    def activate(self):
+        assert not self.is_active, ('This provider is already active')
+        self.active = True
+
     #
     # IDescribable implementation
     #
