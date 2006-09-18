@@ -22,26 +22,28 @@
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
 ##
 
-from twisted.trial import unittest
+import glob
+import inspect
 
+from kiwi.dist import listpackages
+from kiwi.python import namedAny
+from twisted.trial import unittest
 from zope.interface import implementedBy
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
-from stoqlib.database.tables import get_table_types
-
-def _test_table(self, table):
-    ifaces = implementedBy(table)
+def _test_class(self, klass):
+    ifaces = implementedBy(klass)
     if not ifaces:
         return
     for iface in ifaces:
         try:
-            verifyClass(iface, table)
+            verifyClass(iface, klass)
         except Invalid, message:
-            self.fail("%s: %s" % (table.__name__, message))
+            self.fail("%s: %s" % (klass.__name__, message))
 
 namespace = {}
-namespace['_test_table'] = _test_table
+namespace['_test_class'] = _test_class
 TODO = {
     "AbstractCheckBillAdapter": "activate attribute was not provided",
     "AbstractPaymentGroup": "requires too many arguments",
@@ -75,14 +77,28 @@ TODO = {
     "SaleAdaptToPaymentGroup": "requires too many arguments",
     "ServiceAdaptToSellable": "set_sold attribute was not provided",
     "TillAdaptToPaymentGroup": "requires too many arguments",
+    "VirtualPort": "doesn't allow enough arguments",
+    "FiscalCoupon": "remove_items attribute was not provided",
+    "Base64CookieFile": "reset attribute was not provided",
     }
 
-for table in get_table_types():
-    if not hasattr(table, "__implemented__"):
+def get_all_classes():
+    classes = []
+    for package in listpackages('stoqlib'):
+        package = package.replace('.', '/')
+        for filename in glob.glob(package + '/*.py'):
+            modulename = filename[:-3].replace('/', '.')
+            module = namedAny(modulename)
+            for name, klass in inspect.getmembers(module, inspect.isclass):
+                classes.append(klass)
+    return classes
+
+for klass in get_all_classes():
+    if not hasattr(klass, "__implemented__"):
         continue
-    tname = table.__name__
+    tname = klass.__name__
     name = 'test_' + tname
-    func = lambda self, f=table: self._test_table(f)
+    func = lambda self, f=klass: self._test_class(f)
     func.__name__ = name
     if tname in TODO:
         func.todo = TODO[tname]
