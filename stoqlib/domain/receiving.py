@@ -279,7 +279,7 @@ class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         supplier = order.supplier
         return supplier.get_adapted()
 
-    def set_thirdparty(self):
+    def set_thirdparty(self, person):
         raise NotImplementedError
 
     def get_group_description(self):

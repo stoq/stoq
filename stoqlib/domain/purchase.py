@@ -369,7 +369,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
             raise DatabaseInconsistency('An order must have a supplier')
         return order.supplier.get_adapted()
 
-    def set_thirdparty(self):
+    def set_thirdparty(self, person):
         raise NotImplementedError
 
     def get_group_description(self):
