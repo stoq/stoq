@@ -30,6 +30,7 @@ from kiwi.dist import listpackages
 from kiwi.python import namedAny
 from twisted.trial import unittest
 from zope.interface import implementedBy
+from zope.interface.interface import InterfaceClass
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
@@ -95,6 +96,8 @@ for klass in get_all_classes():
     if not implementedBy(klass):
         continue
     if not klass.__module__.startswith('stoqlib.'):
+        continue
+    if isinstance(klass, InterfaceClass) or issubclass(klass, InterfaceClass):
         continue
     tname = klass.__name__
     name = 'test_' + tname
