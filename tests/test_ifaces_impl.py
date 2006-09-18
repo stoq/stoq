@@ -96,7 +96,7 @@ for klass in get_all_classes():
         continue
     if not klass.__module__.startswith('stoqlib.'):
         continue
-    if isinstance(klass, InterfaceClass) or issubclass(klass, InterfaceClass):
+    if issubclass(klass, InterfaceClass):
         continue
     tname = klass.__name__
     name = 'test_' + tname
