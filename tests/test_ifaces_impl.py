@@ -60,12 +60,6 @@ TODO = {
     "PMAdaptToMoneyPM": "activate attribute was not provided",
     "PaymentMethodDetails": "activate attribute was not provided",
 
-    # ISellable
-    "AbstractSellable": "set_sold attribute was not provided",
-    "ProductAdaptToSellable": "set_sold attribute was not provided.",
-    "ServiceAdaptToSellable": "set_sold attribute was not provided",
-    "GiftCertificateAdaptToSellable": "set_sold attribute was not provided",
-
     # invalid arguments
     "AbstractPaymentGroup": "requires too many arguments",
     "DeviceConstants": "doesn't allow enough arguments",
