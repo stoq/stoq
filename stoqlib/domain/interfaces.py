@@ -80,9 +80,6 @@ class ISellable(NoneInterface):
     def is_sold():
         pass
 
-    def set_sold():
-        pass
-
     def set_available():
         pass
 
