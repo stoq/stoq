@@ -44,16 +44,6 @@ def _test_class(self, klass):
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
-    # IActivate
-    "AbstractCheckBillAdapter": "activate attribute was not provided",
-    "AbstractPaymentMethodAdapter": "activate attribute was not provided",
-    "PMAdaptToBillPM": "activate attribute was not provided",
-    "PMAdaptToCardPM": "activate attribute was not provided",
-    "PMAdaptToCheckPM": "activate attribute was not provided",
-    "PMAdaptToFinancePM": "activate attribute was not provided",
-    "PMAdaptToGiftCertificatePM": "activate attribute was not provided",
-    "PMAdaptToMoneyPM": "activate attribute was not provided",
-
     # invalid arguments
     "AbstractPaymentGroup": "requires too many arguments",
     "DeviceConstants": "doesn't allow enough arguments",
