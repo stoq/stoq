@@ -93,7 +93,8 @@ def get_all_classes():
 for klass in get_all_classes():
     if not implementedBy(klass):
         continue
-
+    if not klass.__module__.startswith('stoqlib.'):
+        continue
     tname = klass.__name__
     name = 'test_' + tname
     func = lambda self, f=klass: self._test_class(f)
