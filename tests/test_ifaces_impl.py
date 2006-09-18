@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
+##              Johan Dahlin  <jdahlin@async.com.br>
 ##
 
 import glob
