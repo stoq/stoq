@@ -46,8 +46,6 @@ dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                 ('Psycopg', 'psycopg2', PSYCOPG_REQUIRED,
                  'http://www.initd.org/projects/psycopg2',
                  psycopg_check),
-                ('SQLObject', 'sqlobject', '0.8.1',
-                 'http://www.sqlobject.org', None),
                 ('Stoqdrivers', 'stoqdrivers', (0, 4),
                  'http://www.stoq.com.br',
                  lambda x: x.__version__),
@@ -92,6 +90,17 @@ from kiwi.dist import setup, listfiles, listpackages
 
 from stoqlib import version, website
 
+def listexternal():
+    dirs = []
+    for package in listpackages('external'):
+        # strip external
+        dirs.append(package.replace('.', '/'))
+    files = []
+    for directory in dirs:
+        files.append(('lib/stoqlib/' + directory[9:],
+                      listfiles(directory, '*.py')))
+    return files
+
 data_files = [
     ('$datadir/pixmaps', listfiles('data', 'pixmaps', '*.png')),
     ('$datadir/sql', listfiles('data', 'sql', '*.sql')),
@@ -99,6 +108,7 @@ data_files = [
     ('$datadir/fonts', listfiles('data', 'fonts', '*.ttf')),
     ('share/doc/stoqlib',
      ('AUTHORS', 'CONTRIBUTORS', 'README'))]
+data_files += listexternal()
 resources = dict(
     locale='$prefix/share/locale')
 global_resources = dict(
