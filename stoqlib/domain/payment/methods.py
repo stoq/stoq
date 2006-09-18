@@ -26,6 +26,7 @@
 import decimal
 from datetime import datetime, timedelta
 
+from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck, percent
 from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
@@ -38,7 +39,6 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.relativedelta import relativedelta
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
 from stoqlib.domain.sale import SaleAdaptToPaymentGroup
 from stoqlib.domain.till import TillAdaptToPaymentGroup, Till
