@@ -42,7 +42,7 @@ def _test_table(self, table):
 
 namespace = {}
 namespace['_test_table'] = _test_table
-SKIPPED = {
+TODO = {
     "AbstractCheckBillAdapter": "activate attribute was not provided",
     "AbstractPaymentGroup": "requires too many arguments",
     "AbstractPaymentMethodAdapter": "activate attribute was not provided",
@@ -84,8 +84,8 @@ for table in get_table_types():
     name = 'test_' + tname
     func = lambda self, f=table: self._test_table(f)
     func.__name__ = name
-    if tname in SKIPPED:
-        func.skip = SKIPPED[tname]
+    if tname in TODO:
+        func.todo = TODO[tname]
     namespace[name] = func
 
 TestInterfacesImplementation = type('TestInterfacesImplementation',
