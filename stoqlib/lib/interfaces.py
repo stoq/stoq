@@ -47,7 +47,7 @@ class ICookieFile(Interface):
         @param password: password
         """
 
-    def reset():
+    def clear():
         """
         Resets the cookie
         """

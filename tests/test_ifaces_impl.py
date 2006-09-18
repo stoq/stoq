@@ -78,7 +78,6 @@ TODO = {
     "TillAdaptToPaymentGroup": "requires too many arguments",
     "VirtualPort": "doesn't allow enough arguments",
     "FiscalCoupon": "remove_items attribute was not provided",
-    "Base64CookieFile": "reset attribute was not provided",
     }
 
 def get_all_classes():
