@@ -50,15 +50,13 @@ class TestStation(DomainTest):
         self.assertEquals(results[0].name, self.name)
         self.assertEquals(results[0].branch, branch)
 
-    test_create.skip = "Skipping test"
-
     def test_create_error(self):
         branch = self.create_branch()
         BranchStation.create(self.trans, branch, self.name)
         self.assertRaises(StoqlibError,
                           BranchStation.create, self.trans, branch,
                           self.name)
-
+        raise TypeError
     test_create_error.todo = "Todo test"
 
     def test_get_station(self):
