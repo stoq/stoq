@@ -275,6 +275,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def get_balance(self):
         return sum([s.value for s in self.get_items()])
 
+    # FIXME: Use None instead of datetime.now() as a default argument
     def add_payment(self, value, description, method, destination=None,
                     due_date=datetime.now(), status=Payment.STATUS_PREVIEW):
         """Add a new payment sending correct arguments to Payment

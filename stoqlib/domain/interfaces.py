@@ -279,7 +279,8 @@ class IPaymentGroup(NoneInterface):
     def get_balance():
         """The total amount of all the payments this payment group holds"""
 
-    def add_payment():
+    def add_payment(value, description, method, destination=None,
+                    due_date=None, status=None):
         """Add a new payment for this group"""
 
 class IDelivery(NoneInterface):
