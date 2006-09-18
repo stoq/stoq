@@ -76,7 +76,7 @@ class IDriverConstants(Interface):
     that wants didacte constant values for stoqdrivers devices drivers.
     """
 
-    def get_items(self):
+    def get_items():
         """ Returns all the constant identifiers which this object has
         values assigned to.
         """
