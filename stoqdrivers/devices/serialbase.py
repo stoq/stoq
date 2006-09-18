@@ -47,7 +47,7 @@ class VirtualPort:
     def write(self, data):
         pass
 
-    def read(self):
+    def read(self, n_bytes=1):
         return ''
 
 class SerialPort(Serial):
