@@ -498,6 +498,7 @@ class PaymentAdaptToInPayment(ModelAdapter):
 
     implements(IInPayment)
 
+    # TODO: Unused
     def receive(self):
         payment = self.get_adapted()
         if not payment.is_to_pay():

@@ -49,8 +49,6 @@ TODO = {
     "DeviceConstants": "doesn't allow enough arguments",
     "IcmsIpiBookEntry": "requires too many arguments",
     "IssBookEntry": "requires too many arguments",
-    "PaymentAdaptToInPayment": "doesn't allow enough arguments",
-    "PaymentAdaptToOutPayment": "doesn't allow enough arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
     "SaleAdaptToPaymentGroup": "requires too many arguments",
