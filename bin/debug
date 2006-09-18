@@ -34,12 +34,11 @@ else:
     import rlcompleter
     readline.parse_and_bind("tab: complete")
 
-from sqlobject import *
-from sqlobject.sqlbuilder import *
-
 from kiwi.component import provide_utility
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
+from sqlobject import *
+from sqlobject.sqlbuilder import *
 
 parser = get_option_parser()
 config = StoqConfig()
