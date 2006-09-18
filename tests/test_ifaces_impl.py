@@ -45,7 +45,6 @@ def _test_class(self, klass):
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
-    "VirtualPort": "doesn't allow enough arguments",
     }
 
 def get_all_classes():
