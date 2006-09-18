@@ -46,7 +46,6 @@ namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
     # IPayment.add_payment
-    "AbstractPaymentGroup": "requires too many arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
     "SaleAdaptToPaymentGroup": "requires too many arguments",

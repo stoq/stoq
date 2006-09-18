@@ -263,6 +263,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def get_thirdparty(self):
         raise NotImplementedError
 
+    def set_thirdparty(self, person):
+        raise NotImplementedError
+
     def get_group_description(self):
         """Returns a small description for the payment group which will be
         used in payment descriptions
