@@ -29,15 +29,11 @@ from kiwi.dist import listpackages
 from kiwi.python import namedAny
 from twisted.trial import unittest
 from zope.interface import implementedBy
-from zope.interface.interface import InterfaceClass
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
 def _test_class(self, klass):
-    ifaces = implementedBy(klass)
-    if not ifaces:
-        return
-    for iface in ifaces:
+    for iface in implementedBy(klass):
         try:
             verifyClass(iface, klass)
         except Invalid, message:
@@ -95,9 +91,7 @@ def get_all_classes():
     return classes
 
 for klass in get_all_classes():
-    if not hasattr(klass, "__implemented__"):
-        continue
-    if isinstance(klass, InterfaceClass):
+    if not implementedBy(klass):
         continue
 
     tname = klass.__name__
