@@ -67,7 +67,7 @@ class AbstractFiscalBookEntry(InheritableModel):
     drawee = ForeignKey("Person")
     payment_group = ForeignKey("AbstractPaymentGroup")
 
-    def reverse_entry(self):
+    def reverse_entry(self, invoice_number):
         raise NotImplementedError("This method must be overwrited on child")
 
     def get_reversal_clone(self, invoice_number, **kwargs):
