@@ -26,7 +26,11 @@
 
 import datetime
 import decimal
-import unittest
+try:
+    from twisted.trial import unittest
+    unittest # pyflakes
+except:
+    import unittest
 
 from kiwi.datatypes import currency
 from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
