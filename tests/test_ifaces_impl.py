@@ -60,9 +60,6 @@ TODO = {
     "PMAdaptToMoneyPM": "activate attribute was not provided",
     "PaymentMethodDetails": "activate attribute was not provided",
 
-    # IContainer
-    "ServiceSellableItemAdaptToDelivery": "remove_item attribute was not provided",
-
     # ISellable
     "AbstractSellable": "set_sold attribute was not provided",
     "ProductAdaptToSellable": "set_sold attribute was not provided.",
