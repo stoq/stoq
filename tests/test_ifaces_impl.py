@@ -47,27 +47,29 @@ namespace['_test_class'] = _test_class
 TODO = {
     }
 
-def get_all_classes():
-    classes = []
-    for package in listpackages('stoqlib'):
+def get_all_classes(package):
+    for package in listpackages(package):
         package = package.replace('.', '/')
         for filename in glob.glob(package + '/*.py'):
             modulename = filename[:-3].replace('/', '.')
             module = namedAny(modulename)
             for name, klass in inspect.getmembers(module, inspect.isclass):
-                classes.append(klass)
-    return classes
+                yield klass
 
-for klass in get_all_classes():
-    if not implementedBy(klass):
-        continue
-    if not klass.__module__.startswith('stoqlib.'):
-        continue
-    if issubclass(klass, InterfaceClass):
-        continue
-    tname = klass.__name__
+def get_interfaces_for_package(package):
+    for klass in get_all_classes(package):
+        if not implementedBy(klass):
+            continue
+        if not klass.__module__.startswith(package + '.'):
+            continue
+        if issubclass(klass, InterfaceClass):
+            continue
+        yield klass
+
+for iface in get_interfaces_for_package('stoqlib'):
+    tname = iface.__name__
     name = 'test_' + tname
-    func = lambda self, f=klass: self._test_class(f)
+    func = lambda self, f=iface: self._test_class(f)
     func.__name__ = name
     if tname in TODO:
         func.todo = TODO[tname]
