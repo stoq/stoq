@@ -47,8 +47,6 @@ TODO = {
     # invalid arguments
     "AbstractPaymentGroup": "requires too many arguments",
     "DeviceConstants": "doesn't allow enough arguments",
-    "IcmsIpiBookEntry": "requires too many arguments",
-    "IssBookEntry": "requires too many arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
     "SaleAdaptToPaymentGroup": "requires too many arguments",

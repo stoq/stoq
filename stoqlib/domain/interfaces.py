@@ -422,7 +422,7 @@ class IDescribable(NoneInterface):
 class IReversal(NoneInterface):
     """A financial entry which support reversal operations"""
 
-    def reverse_entry():
+    def reverse_entry(invoice_number):
         """Takes a financial entry and reverse it, creating a new instance
         with an oposite value
         """
