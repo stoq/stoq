@@ -111,7 +111,7 @@ class TestAbstractFiscalBookEntry(BaseDomainTest):
 
     def test_reverse_entry(self):
         afbe = get_abstract_fiscal_book_entry(self.trans, 1)
-        self.assertRaises(NotImplementedError, afbe.reverse_entry)
+        self.assertRaises(NotImplementedError, afbe.reverse_entry, 1)
 
     def test_get_reversal_clone(self):
         afbe = get_abstract_fiscal_book_entry(self.trans, 2)
