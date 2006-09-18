@@ -24,6 +24,9 @@
 ##
 ##
 
+import os
+import sys
+
 from kiwi.environ import Library
 
 FIRST_DB_VERSION = 5
@@ -43,4 +46,8 @@ if library.uninstalled:
                                  sql='data/sql',
                                  glade='data/glade',
                                  fonts='data/fonts')
+    externals = os.path.join(library.get_root(), 'external')
+else:
+    externals = os.path.join(library.get_root(), 'lib', 'stoqlib')
+sys.path.insert(0, externals)
 library.enable_translation()
