@@ -6,6 +6,7 @@ recursive-include docs *
 recursive-include external *.py
 recursive-include locale stoqlib.mo
 recursive-include po *.po *.pot POTFILES.list
+include debian/changelog debian/compat debian/copyright debian/control debian/rules
 include AUTHORS
 include COPYING
 include MANIFEST.in
