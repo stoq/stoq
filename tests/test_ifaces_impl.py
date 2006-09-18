@@ -45,9 +45,6 @@ def _test_class(self, klass):
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
-    # IContainer.get_items
-    "DeviceConstants": "doesn't allow enough arguments",
-
     # IPayment.add_payment
     "AbstractPaymentGroup": "requires too many arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
