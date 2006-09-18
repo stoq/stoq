@@ -56,8 +56,6 @@ class TestStation(DomainTest):
         self.assertRaises(StoqlibError,
                           BranchStation.create, self.trans, branch,
                           self.name)
-        raise TypeError
-    test_create_error.todo = "Todo test"
 
     def test_get_station(self):
         name = 'test-station'
