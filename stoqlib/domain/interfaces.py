@@ -128,10 +128,6 @@ class IStorable(NoneInterface):
         object) of all the branches DIVIDED BY SUM(quantity atribute,
         StockReference object)
         """
-    def ensure_qty_requested(quantity, branch):
-        """Check if the quantity requested in a sale is valid and update the
-        stock of the sellable item"""
-
 class IIndividual(NoneInterface):
     """Being or characteristic of a single person, concerning one
     person exclusively

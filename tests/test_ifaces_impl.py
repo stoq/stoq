@@ -51,7 +51,6 @@ TODO = {
     "IssBookEntry": "requires too many arguments",
     "PaymentAdaptToInPayment": "doesn't allow enough arguments",
     "PaymentAdaptToOutPayment": "doesn't allow enough arguments",
-    "ProductAdaptToStorable": "doesn't allow enough arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
     "SaleAdaptToPaymentGroup": "requires too many arguments",
