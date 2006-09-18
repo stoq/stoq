@@ -39,14 +39,17 @@ def _test_class(self, klass):
         try:
             verifyClass(iface, klass)
         except Invalid, message:
-            self.fail("%s: %s" % (klass.__name__, message))
+            self.fail("%s(%s): %s" % (
+                klass.__name__, iface.__name__, message))
 
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
-    # invalid arguments
-    "AbstractPaymentGroup": "requires too many arguments",
+    # IContainer.get_items
     "DeviceConstants": "doesn't allow enough arguments",
+
+    # IPayment.add_payment
+    "AbstractPaymentGroup": "requires too many arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
     "SaleAdaptToPaymentGroup": "requires too many arguments",
