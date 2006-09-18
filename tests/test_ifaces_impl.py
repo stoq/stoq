@@ -61,10 +61,7 @@ TODO = {
     "PaymentMethodDetails": "activate attribute was not provided",
 
     # IContainer
-    "ProductSellableItem": "remove_items attribute was not provided",
-    "PurchaseOrder": "remove_items attribute was not provided",
-    "Sale": "remove_items attribute was not provided",
-    "FiscalCoupon": "remove_items attribute was not provided",
+    "ServiceSellableItemAdaptToDelivery": "remove_item attribute was not provided",
 
     # ISellable
     "AbstractSellable": "set_sold attribute was not provided",

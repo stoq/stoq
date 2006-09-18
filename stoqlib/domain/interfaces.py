@@ -40,7 +40,7 @@ class IContainer(NoneInterface):
         """Get all the items in the container. The result value could be a
         simple python list or an instance which maps to SQL statement.  """
 
-    def remove_items(item):
+    def remove_item(item):
         """Remove from the list or database the item desired."""
 
 class ISellable(NoneInterface):
