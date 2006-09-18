@@ -238,13 +238,13 @@ class ISalesPerson(NoneInterface):
 class IInPayment(NoneInterface):
     """ NoneInterface specification for InPayments. """
 
-    def receive(value=None, paid_date=None):
+    def receive():
         """ Confirm the payment. """
 
 class IOutPayment(NoneInterface):
     """ NoneInterface specification for OutPayments. """
 
-    def pay(value=None, paid_date=None):
+    def pay():
         """ Confirm the payment."""
 
 class IPaymentGroup(NoneInterface):
