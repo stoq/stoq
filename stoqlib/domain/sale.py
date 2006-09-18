@@ -44,7 +44,7 @@ from stoqlib.exceptions import (SellError, DatabaseInconsistency,
 from stoqlib.domain.renegotiation import (RenegotiationData,
                                           AbstractRenegotiationAdapter)
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.sellable import AbstractSellableItem
+from stoqlib.domain.sellable import AbstractSellableItem, AbstractSellable
 from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.product import ProductSellableItem
@@ -202,18 +202,16 @@ class Sale(Domain):
     # IContainer methods
     #
 
+    @argcheck(AbstractSellable)
     def add_item(self, item):
-        raise NotImplementedError(
-            "You should call add_selabble_item SellableItem method instead.")
+        item.add_sellable_item(sale=self)
 
     def get_items(self):
         conn = self.get_connection()
         return AbstractSellableItem.selectBy(connection=conn, saleID=self.id)
 
+    @argcheck(AbstractSellableItem)
     def remove_item(self, item):
-        if not isinstance(item, AbstractSellableItem):
-            raise TypeError("Item should be of type AbstractSellableItem "
-                            "got %s instead" % item)
         conn = self.get_connection()
         table = type(item)
         table.delete(item.id, connection=conn)
