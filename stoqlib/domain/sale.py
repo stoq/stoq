@@ -505,7 +505,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         client = sale.client
         return client and client.get_adapted() or None
 
-    def set_thirdparty(self):
+    def set_thirdparty(self, person):
         raise NotImplementedError
 
     def get_group_description(self):

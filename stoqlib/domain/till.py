@@ -336,7 +336,7 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
         branch = self.get_adapted().branch
         return branch.get_adapted()
 
-    def set_thirdparty(self):
+    def set_thirdparty(self, person):
         raise NotImplementedError
 
     def get_group_description(self):

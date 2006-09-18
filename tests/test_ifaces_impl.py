@@ -45,11 +45,6 @@ def _test_class(self, klass):
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
-    # IPayment.add_payment
-    "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
-    "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
-    "SaleAdaptToPaymentGroup": "requires too many arguments",
-    "TillAdaptToPaymentGroup": "requires too many arguments",
     "VirtualPort": "doesn't allow enough arguments",
     }
 
