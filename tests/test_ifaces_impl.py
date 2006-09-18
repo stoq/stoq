@@ -44,40 +44,47 @@ def _test_class(self, klass):
 namespace = {}
 namespace['_test_class'] = _test_class
 TODO = {
+    # IActivate
     "AbstractCheckBillAdapter": "activate attribute was not provided",
-    "AbstractPaymentGroup": "requires too many arguments",
     "AbstractPaymentMethodAdapter": "activate attribute was not provided",
-    "AbstractSellable": "set_sold attribute was not provided",
     "CardInstallmentsProviderDetails": "activate attribute was not provided",
     "CardInstallmentsStoreDetails": "activate attribute was not provided",
     "CreditCardDetails": "activate attribute was not provided",
     "DebitCardDetails": "activate attribute was not provided",
-    "DeviceConstants": "doesn't allow enough arguments",
     "FinanceDetails": "activate attribute was not provided",
-    "GiftCertificateAdaptToSellable": "set_sold attribute was not provided",
-    "IcmsIpiBookEntry": "requires too many arguments",
-    "IssBookEntry": "requires too many arguments",
     "PMAdaptToBillPM": "activate attribute was not provided",
     "PMAdaptToCardPM": "activate attribute was not provided",
     "PMAdaptToCheckPM": "activate attribute was not provided",
     "PMAdaptToFinancePM": "activate attribute was not provided",
     "PMAdaptToGiftCertificatePM": "activate attribute was not provided",
     "PMAdaptToMoneyPM": "activate attribute was not provided",
-    "PaymentAdaptToInPayment": "doesn't allow enough arguments",
-    "PaymentAdaptToOutPayment": "doesn't allow enough arguments",
     "PaymentMethodDetails": "activate attribute was not provided",
-    "ProductAdaptToSellable": "set_sold attribute was not provided.",
-    "ProductAdaptToStorable": "doesn't allow enough arguments",
+
+    # IContainer
     "ProductSellableItem": "remove_items attribute was not provided",
     "PurchaseOrder": "remove_items attribute was not provided",
+    "Sale": "remove_items attribute was not provided",
+    "FiscalCoupon": "remove_items attribute was not provided",
+
+    # ISellable
+    "AbstractSellable": "set_sold attribute was not provided",
+    "ProductAdaptToSellable": "set_sold attribute was not provided.",
+    "ServiceAdaptToSellable": "set_sold attribute was not provided",
+    "GiftCertificateAdaptToSellable": "set_sold attribute was not provided",
+
+    # invalid arguments
+    "AbstractPaymentGroup": "requires too many arguments",
+    "DeviceConstants": "doesn't allow enough arguments",
+    "IcmsIpiBookEntry": "requires too many arguments",
+    "IssBookEntry": "requires too many arguments",
+    "PaymentAdaptToInPayment": "doesn't allow enough arguments",
+    "PaymentAdaptToOutPayment": "doesn't allow enough arguments",
+    "ProductAdaptToStorable": "doesn't allow enough arguments",
     "PurchaseOrderAdaptToPaymentGroup": "requires too many arguments",
     "ReceivingOrderAdaptToPaymentGroup": "requires too many arguments",
-    "Sale": "remove_items attribute was not provided",
     "SaleAdaptToPaymentGroup": "requires too many arguments",
-    "ServiceAdaptToSellable": "set_sold attribute was not provided",
     "TillAdaptToPaymentGroup": "requires too many arguments",
     "VirtualPort": "doesn't allow enough arguments",
-    "FiscalCoupon": "remove_items attribute was not provided",
     }
 
 def get_all_classes():
