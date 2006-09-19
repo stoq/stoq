@@ -259,9 +259,8 @@ class IPaymentGroup(NoneInterface):
     thirdparty = Attribute('The thirdparty associated to this payment group.')
 
     def set_thirdparty(person):
-        """Define a new thirdparty. Must of times this is a person adpter
-        instance defined by IPaymentGroup adapters. Note that person also
-        must implement a facet defined in each adapter"""
+        """Define a new thirdparty. The parameter is a person, but also have
+        to implement specific facets to each PaymentGroup adapter. """
 
     def get_thirdparty():
         """Return the thirdparty attached to the payment group. It must be
