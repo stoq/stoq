@@ -30,7 +30,8 @@ from stoqlib.domain.fiscal import (CfopData,
                                    IcmsIpiBookEntry, IssBookEntry)
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.database.runtime import get_current_branch
-from tests.base import BaseDomainTest
+
+from tests.base import DomainTest
 
 def get_cfopdata(conn):
     return CfopData(code=u"2365", description=u"blabla", connection=conn)
@@ -84,11 +85,7 @@ def get_IssBookEntry(conn, identifier):
                         identifier=identifier)
 
 
-class TestCfopData(BaseDomainTest):
-    """
-    C{CfopData} TestCase
-    """
-    _table = CfopData
+class TestCfopData(DomainTest):
 
     def test_get_description(self):
         cfop = get_cfopdata(self.trans)
@@ -96,11 +93,7 @@ class TestCfopData(BaseDomainTest):
         assert full_desc == u"%s %s" % (u"2365", u"blabla")
 
 
-class TestAbstractFiscalBookEntry(BaseDomainTest):
-    """
-    C{AbstractFiscalBookEntry} TestCase
-    """
-    _table = AbstractFiscalBookEntry
+class TestAbstractFiscalBookEntry(DomainTest):
 
     def get_foreign_key_data(self):
         cfop = get_cfopdata(self.trans)
@@ -143,11 +136,7 @@ class TestAbstractFiscalBookEntry(BaseDomainTest):
                           self.trans, new_payment_group)
 
 
-class TestIcmsIpiBookEntry(BaseDomainTest):
-    """
-    C{IcmsIpiBookEntry} TestCase
-    """
-    _table = IcmsIpiBookEntry
+class TestIcmsIpiBookEntry(DomainTest):
 
     def test_reverse_entry(self):
        icmsipibookentry = get_IcmsIpiBookEntry(self.trans, 7)
@@ -156,11 +145,7 @@ class TestIcmsIpiBookEntry(BaseDomainTest):
        self.assertEquals(reversal.ipi_value, -10)
 
 
-class TestIssBookEntry(BaseDomainTest):
-    """
-    C{IssBookEntry} TestCase
-    """
-    _table = IssBookEntry
+class TestIssBookEntry(DomainTest):
 
     def test_reverse_entry(self):
        issbookentry = get_IssBookEntry(self.trans, 8)

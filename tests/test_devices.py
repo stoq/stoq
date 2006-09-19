@@ -25,9 +25,10 @@
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.database.runtime import get_current_station
 from stoqlib.lib.defaults import get_all_methods_dict, METHOD_CARD
-from tests.base import BaseDomainTest
 
-class TestDevice(BaseDomainTest):
+from tests.base import DomainTest
+
+class TestDevice(DomainTest):
     _table = DeviceSettings
 
     def test_is_a_fiscal_printer(self):
