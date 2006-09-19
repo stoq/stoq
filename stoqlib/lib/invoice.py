@@ -46,7 +46,7 @@ INVOICE_TYPE_OUT = 2
 
 class InvoiceType(number):
     @classmethod
-    def value_check(cls, name, value):
+    def value_check(mcs, name, value):
         if not value in (INVOICE_TYPE_IN, INVOICE_TYPE_OUT):
             raise ValueError("%s must be one of INVOICE_TYPE_* "
                              "constants" % name)
@@ -69,7 +69,7 @@ class SysCoordinate:
     def __init__(self, lines, cols):
         self._lines = lines
         self._cols = cols
-        self._data = [[' ' for i in range(cols)] for j in range(lines)]
+        self._data = [[' ' for _ in range(cols)] for _ in range(lines)]
 
     def get_data(self):
         return self._data
@@ -93,7 +93,6 @@ class SysCoordinate:
         elif col < 0:
             raise ValueError("col can't be less than 0")
 
-        max_len = self._cols - (col + len(data)) + 1
         for idx, d in enumerate(data[:self._cols - col]):
             self._data[line][col+idx] = d
 
@@ -206,6 +205,7 @@ class SaleInvoice(ClassInittableObject):
                           'da operacao' field on invoice).
         @type type_desc:  basestring
         """
+        ClassInittableObject.__init__(self)
         if sale.client is None:
             raise ValueError("It is not possible to emit an invoice for a "
                              "sale without client")

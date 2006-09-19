@@ -376,7 +376,6 @@ class FiscalCoupon:
 
     def identify_customer(self, person):
         max_len = get_capability(self.printer, "customer_id")
-        conn = person.get_connection()
         if IIndividual(person):
             individual = IIndividual(person)
             document = individual.cpf[:max_len]

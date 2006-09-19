@@ -357,6 +357,7 @@ class ParameterAccess(ClassInittableObject):
             setattr(cls, obj.key, prop)
 
     def __init__(self, conn):
+        ClassInittableObject.__init__(self)
         self.conn = conn
 
     def _remove_unused_parameters(self):
@@ -376,9 +377,9 @@ class ParameterAccess(ClassInittableObject):
         res = ParameterData.select(ParameterData.q.field_name == param_name,
                                    connection=self.conn)
         if not res.count():
-                raise DatabaseInconsistency("Can't find a ParameterData"
-                                            "object for the key %s"
-                                            % param_name)
+            raise DatabaseInconsistency("Can't find a ParameterData"
+                                        "object for the key %s"
+                                        % param_name)
         elif res.count() > 1:
             raise DatabaseInconsistency("It is not possible have more than "
                                         "one ParameterData for the same "
@@ -522,9 +523,9 @@ class ParameterAccess(ClassInittableObject):
 
         person_obj = Person(name=None, connection=self.conn)
         city_location = CityLocation(country=u"Brasil", connection=self.conn)
-        main_address = Address(is_main_address=True,
-                               person=person_obj, city_location=city_location,
-                               connection=self.conn)
+        Address(is_main_address=True,
+                person=person_obj, city_location=city_location,
+                connection=self.conn)
         person_obj.addFacet(ICompany, cnpj=None, fancy_name=None,
                             connection=self.conn)
         branch = person_obj.addFacet(IBranch, connection=self.conn)
