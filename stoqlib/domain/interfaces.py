@@ -46,8 +46,9 @@ class IContainer(NoneInterface):
 class ISellable(NoneInterface):
     """ Represents the sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
-    only its reference as a sellable. Concrete items are defined by
+    only its reference as a sellable. Concrete items are created by
     IContainer routines.
+
     @itype status enum
     @itype price float
     @itype description string
