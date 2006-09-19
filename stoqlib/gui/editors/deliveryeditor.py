@@ -112,7 +112,8 @@ class DeliveryEditor(BaseEditor):
 
     def before_delete_items(self, slave, items):
         delivery = IDelivery(self.model)
-        delivery.remove_items(items)
+        for item in delivery.get_items():
+            delivery.remove_item(item)
         self.force_validation()
 
     def on_change_address_button__clicked(self, button):
@@ -194,7 +195,8 @@ class DeliveryEditor(BaseEditor):
     def on_cancel(self):
         if not self.edit_mode:
             delivery = IDelivery(self.model)
-            delivery.remove_items(delivery.get_items())
+            for item in delivery.get_items():
+                delivery.remove_item(item)
             table = type(delivery)
             table.delete(delivery.id, connection=self.conn)
             self.model_type.delete(self.model.id, connection=self.conn)
