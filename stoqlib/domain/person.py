@@ -76,7 +76,7 @@ class WorkPermitData(Domain):
     """Work permit data for employees.
 
     B{Important Attributes}:
-        - I{pis_*}: is a reference to PIS ("Programa de IntegraçÂão Social"),
+        - I{pis_*}: is a reference to PIS ("Programa de Integracao Social"),
                     that is a Brazil-specific information.
     """
 
@@ -288,7 +288,6 @@ class Person(Domain):
     #
 
     def has_individual_or_company_facets(self):
-        conn = self.get_connection()
         return (IIndividual(self) or
                 ICompany(self))
 
@@ -319,9 +318,9 @@ class Person(Domain):
     def facet_IEmployee_add(self, **kwargs):
         individual = IIndividual(self)
         if not individual:
-                msg = ('The person you want to adapt must have '
-                       'an individual facet')
-                raise CannotAdapt(msg)
+            msg = ('The person you want to adapt must have '
+                   'an individual facet')
+            raise CannotAdapt(msg)
         adapter_klass = self.getAdapterClass(IEmployee)
         return adapter_klass(self, **kwargs)
 
@@ -334,9 +333,9 @@ class Person(Domain):
         from stoqlib.domain.product import storables_set_branch
         company = ICompany(self)
         if not company:
-                msg = ('The person you want to adapt must have '
-                       'a company facet')
-                raise CannotAdapt(msg)
+            msg = ('The person you want to adapt must have '
+                   'a company facet')
+            raise CannotAdapt(msg)
         adapter_klass = self.getAdapterClass(IBranch)
         branch = adapter_klass(self, **kwargs)
         # XXX I'm not sure yet if this is the right place to update stocks
@@ -347,9 +346,9 @@ class Person(Domain):
     def facet_ISalesPerson_add(self, **kwargs):
         employee = IEmployee(self)
         if not employee:
-                msg = ('The person you want to adapt must have '
-                       'an employee facet')
-                raise CannotAdapt(msg)
+            msg = ('The person you want to adapt must have '
+                   'an employee facet')
+            raise CannotAdapt(msg)
         adapter_klass = self.getAdapterClass(ISalesPerson)
         return adapter_klass(self, **kwargs)
 

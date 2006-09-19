@@ -87,10 +87,10 @@ def create_products():
 
         # Adding a main supplier for the product recently created
         supplier = suppliers[index]
-        supplier_info = ProductSupplierInfo(connection=trans,
-                                            supplier=supplier,
-                                            is_main_supplier=True,
-                                            product=product_obj)
+        ProductSupplierInfo(connection=trans,
+                            supplier=supplier,
+                            is_main_supplier=True,
+                            product=product_obj)
 
         base_cat_desc = base_category_data[index]
         commission = commissions[index]

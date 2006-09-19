@@ -49,8 +49,8 @@ def create_giftcertificates():
         sellable_args = sellable_data[index]
         sellable_info = BaseSellableInfo(connection=trans, **sellable_args)
 
-        cert_type = GiftCertificateType(connection=trans,
-                                        base_sellable_info=sellable_info)
+        GiftCertificateType(connection=trans,
+                            base_sellable_info=sellable_info)
         certificate = GiftCertificate(connection=trans)
 
         status = statuses[index]

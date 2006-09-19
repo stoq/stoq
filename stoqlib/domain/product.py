@@ -236,16 +236,15 @@ class ProductSellableItem(AbstractSellableItem):
         # Update the stock
         storable.decrease_stock(self.quantity, branch)
 
-        # The function get_full_balance returns the current amount of items in the
-        # stock. If get_full_balance == 0 we have no more stock for this product
-        # and we need to set it as sold.
+        # The function get_full_balance returns the current amount of items
+        # in the stock. If get_full_balance == 0 we have no more stock for
+        # this product and we need to set it as sold.
         logic_qty = storable.get_logic_balance()
         balance = storable.get_full_balance() - logic_qty
         if not balance:
             self.sellable.sell()
 
     def cancel(self, branch):
-        conn = self.get_connection()
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted)
         # Update the stock
@@ -367,7 +366,6 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         for stock_item in stocks:
             stock_item.quantity += quantity
-        conn = self.get_connection()
         adapted = self.get_adapted()
         sellable = ISellable(adapted)
         if sellable.is_sold():
@@ -408,7 +406,6 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def decrease_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
-        rejected = []
 
         stocks = self.get_stocks(branch)
         self.check_rejected_stocks(stocks, quantity, check_logic=True)
@@ -469,7 +466,6 @@ class ProductAdaptToStorable(ModelAdapter):
     def get_full_balance_string(self, branch=None, full_balance=None):
         full_balance = full_balance or self.get_full_balance(branch)
         adapted = self.get_adapted()
-        conn = self.get_connection()
         sellable = ISellable(adapted)
         return u"%s %s" % (full_balance, sellable.get_unit_description())
 

@@ -222,7 +222,7 @@ def create_people():
 
     person = branch.get_adapted()
     person.name = u"Async Open Source"
-    person.phone_number= u"33760125"
+    person.phone_number = u"33760125"
     person.fax_number = u"35015394"
 
     address = person.get_main_address()

@@ -167,7 +167,6 @@ class PaymentMethodDetails(InheritableModel):
                               values are total_value divided by
                               installments_number
         """
-        conn = self.get_connection()
         method = self.get_payment_method()
         max = self.get_max_installments_number()
         method._check_installments_number(installments_number, max)
@@ -278,8 +277,8 @@ class CardInstallmentSettings(Domain):
 
     def _check_max_day_number(self, value):
         if value > self.MAX_DAY_NUMBER:
-                raise ValueError('This attribute can not be greater '
-                                 'then %d' % self.MAX_DAY_NUMBER)
+            raise ValueError('This attribute can not be greater '
+                             'then %d' % self.MAX_DAY_NUMBER)
 
     def calculate_payment_duedate(self, first_duedate):
         if first_duedate.day > self.closing_day:
@@ -644,7 +643,6 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
                                              installments_number,
                                              monthly_interest)
 
-        conn = self.get_connection()
         if monthly_interest:
             interest_total = value * installments_number - total_value
         else:
