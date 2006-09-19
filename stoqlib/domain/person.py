@@ -48,6 +48,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ISalesPerson, IBankBranch, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable)
+from stoqlib.domain.salesperson import ASalesPerson
 from stoqlib.domain.station import BranchStation
 
 _ = stoqlib_gettext
@@ -785,64 +786,17 @@ class PersonAdaptToCreditProvider(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
-class PersonAdaptToSalesPerson(ModelAdapter):
-    """A sales person facet of a person.
+class PersonAdaptToSalesPerson(ASalesPerson):
+    """A sales person facet of a person."""
 
-    B{Important attributes}:
-        - I{commission_type}: specifies the type of commission to be used by
-                             the salesman.
-    """
-    implements(ISalesPerson, IActive)
-
-    (COMMISSION_GLOBAL,
-     COMMISSION_BY_SALESPERSON,
-     COMMISSION_BY_SELLABLE,
-     COMMISSION_BY_PAYMENT_METHOD,
-     COMMISSION_BY_BASE_SELLABLE_CATEGORY,
-     COMMISSION_BY_SELLABLE_CATEGORY,
-     COMMISSION_BY_SALE_TOTAL) = range(7)
-
-    comission_types = {COMMISSION_GLOBAL: _(u'Globally'),
-                       COMMISSION_BY_SALESPERSON: _(u'By Salesperson'),
-                       COMMISSION_BY_SELLABLE: _(u'By Sellable'),
-                       COMMISSION_BY_PAYMENT_METHOD: _(u'By Payment Method'),
-                       COMMISSION_BY_BASE_SELLABLE_CATEGORY: _(u'By Base '
-                                                              u'Sellable '
-                                                              u'Category'),
-                       COMMISSION_BY_SELLABLE_CATEGORY: _(u'By Sellable '
-                                                         u'Category'),
-                       COMMISSION_BY_SALE_TOTAL: _(u'By Sale Total')}
-
-    comission = DecimalCol(default=0)
-    comission_type = IntCol(default=COMMISSION_BY_SALESPERSON)
-    is_active = BoolCol(default=True)
+    implements(IDescribable)
 
     #
-    # IActive implementation
+    # IDescribable implementation
     #
 
-    def inactivate(self):
-        assert self.is_active, ('This salesperson is already inactive')
-        self.is_active = False
-
-    def activate(self):
-        assert not self.is_active, ('This salesperson is already active')
-        self.is_active = True
-
-    #
-    # Auxiliar methods
-    #
-
-    @classmethod
-    def get_active_salespersons(cls, conn):
-        """Get a list of all active salespersons"""
-        query = cls.q.is_active == True
-        return cls.select(query, connection=conn)
-
-    def get_status_string(self):
-        if self.is_active:
-            return _(u'Active')
-        return _(u'Inactive')
+    def get_description(self):
+        return self.get_adapted().name
 
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
