@@ -130,7 +130,7 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     @argcheck(ASellable)
     def get_item_by_sellable(self, sellable):
         items = [item for item in self.get_items()
-                    if item.sellable.id == sellable.id]
+                           if item.sellable.id == sellable.id]
         qty = len(items)
         if not qty:
             return
