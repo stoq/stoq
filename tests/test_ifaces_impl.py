@@ -34,6 +34,9 @@ from zope.interface.interface import InterfaceClass
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
+from stoqlib.domain.base import InheritableModelAdapter, ModelAdapter
+from stoqlib.lib.component import Adapter
+
 def _test_class(self, klass):
     for iface in implementedBy(klass):
         try:
@@ -41,11 +44,6 @@ def _test_class(self, klass):
         except Invalid, message:
             self.fail("%s(%s): %s" % (
                 klass.__name__, iface.__name__, message))
-
-namespace = {}
-namespace['_test_class'] = _test_class
-TODO = {
-    }
 
 def get_all_classes(package):
     for package in listpackages(package):
@@ -66,15 +64,100 @@ def get_interfaces_for_package(package):
             continue
         yield klass
 
-for iface in get_interfaces_for_package('stoqlib'):
-    tname = iface.__name__
-    name = 'test_' + tname
-    func = lambda self, f=iface: self._test_class(f)
-    func.__name__ = name
-    if tname in TODO:
-        func.todo = TODO[tname]
-    namespace[name] = func
+def _create_adapter_test():
+    TODO = {
+        'AbstractCheckBillAdapter': ' ',
+        'AbstractPaymentGroup': ' ',
+        'AbstractPaymentMethodAdapter': ' ',
+        'AbstractRenegotiationAdapter': ' ',
+        'AbstractSellable': ' ',
+        'GiftCertificateAdaptToSellable': ' ',
+        'PMAdaptToCardPM': ' ',
+        'PMAdaptToCheckPM': ' ',
+        'PMAdaptToFinancePM': ' ',
+        'PMAdaptToGiftCertificatePM': ' ',
+        'PMAdaptToMoneyPM': ' ',
+        'PersonAdaptToBranch': ' ',
+        'PersonAdaptToClient': ' ',
+        'PersonAdaptToCreditProvider': ' ',
+        'PersonAdaptToEmployee': ' ',
+        'PersonAdaptToIndividual': ' ',
+        'PersonAdaptToSalesPerson': ' ',
+        'PersonAdaptToSupplier': ' ',
+        'PersonAdaptToTransporter': ' ',
+        'PersonAdaptToUser': ' ',
+        'ProductAdaptToStorable': ' ',
+        'PurchaseOrderAdaptToPaymentGroup': ' ',
+        'RenegotiationAdaptToChangeInstallments': ' ',
+        'RenegotiationAdaptToExchange': ' ',
+        'SaleAdaptToPaymentGroup': ' ',
+        'ServiceSellableItemAdaptToDelivery': ' ',
+        'TillAdaptToPaymentGroup': ' ',
+        }
 
-TestInterfacesImplementation = type('TestInterfacesImplementation',
-                                    (unittest.TestCase, ),
-                                    namespace)
+    def _test_adapter(self, adapter):
+        ifaces = implementedBy(adapter)
+        if not ifaces:
+            self.fail("%s does not provide any interfaces" % adapter)
+
+        # Collect methods
+        methods = []
+        for part in adapter.__dict__.keys():
+            if part.startswith('_'):
+                continue
+            attr = getattr(adapter, part)
+            if not inspect.ismethod(attr):
+                continue
+
+            # Skip lambdas and methods added by SQLObject
+            aname = attr.__name__
+            if aname in ('<lambda>', 'to_python', 'from_python'):
+                continue
+            methods.append(aname)
+
+        # Remove methods which are part of an interface
+        for iface in ifaces:
+            for name, desc in iface.namesAndDescriptions():
+                if not name in methods:
+                    continue
+                methods.remove(name)
+        if methods:
+            self.fail(
+                "%s has public methods %s which are not part of an "
+                "interface" % (adapter.__name__, ', '.join(methods)))
+    namespace = dict(_test_adapter=_test_adapter)
+
+    for klass in get_all_classes('stoqlib'):
+        if not issubclass(klass, Adapter):
+            continue
+
+        # Skip bases classes
+        if klass in (Adapter, InheritableModelAdapter, ModelAdapter):
+            continue
+
+        tname = klass.__name__
+        name = 'test_' + tname
+        func = lambda self, adapter=klass: self._test_adapter(adapter)
+        func.__name__ = name
+        if tname in TODO:
+            func.todo = TODO[tname]
+        namespace[name] = func
+
+    return type('TestAdapters', (unittest.TestCase, ), namespace)
+
+def _create_iface_test():
+    TODO = {}
+    namespace = dict(_test_class=_test_class)
+    for iface in get_interfaces_for_package('stoqlib'):
+        tname = iface.__name__
+        name = 'test_' + tname
+        func = lambda self, f=iface: self._test_class(f)
+        func.__name__ = name
+        if tname in TODO:
+            func.todo = TODO[tname]
+        namespace[name] = func
+
+    return type('TestIfaces', (unittest.TestCase, ), namespace)
+
+TestAdapters = _create_adapter_test()
+TestIfaces = _create_iface_test()
