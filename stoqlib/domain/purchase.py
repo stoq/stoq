@@ -42,7 +42,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
-                                       IPaymentGroup, IContainer)
+                                       IPaymentGroup, IContainer,
+                                       ISupplier)
 from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
@@ -362,6 +363,14 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
     #
     # IPaymentGroup implementation
     #
+
+    def set_thirdparty(self, person):
+        order = self.get_adapted()
+        supplier = ISupplier(person)
+        if not supplier:
+            raise StoqlibError("the purchase thirdparty should have an "
+                               "ISupplier facet at this point")
+        order.supplier = supplier
 
     def get_thirdparty(self):
         order = self.get_adapted()
