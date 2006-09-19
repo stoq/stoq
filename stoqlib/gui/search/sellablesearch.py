@@ -120,6 +120,7 @@ class SellableSearch(SearchEditor):
     def get_filter_slave(self):
         if not self.has_stock_mode:
             return
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branch_list = table.get_active_branches(self.conn)
         items = [(branch.get_adapted().name, branch)

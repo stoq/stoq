@@ -61,12 +61,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
     # We will avoid duplicating code like when setting up entry completions
     # on bug 2275.
     def _setup_transporter_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
         table = PersonAdaptToTransporter
         transporters = table.get_active_transporters(self.conn)
         items = [(t.get_adapted().name, t) for t in transporters]
         self.transporter.prefill(items)
 
     def _setup_supplier_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
         table = PersonAdaptToSupplier
         suppliers = table.get_active_suppliers(self.conn)
         items = [(s.get_adapted().name, s) for s in suppliers]
