@@ -214,19 +214,19 @@ class ReportTableBuilder(AbstractTableBuilder):
         style = self.style
         border_reach = len(self.data)
         if self.header:
-            style.add('LINEBELOW', (0,0), (-1,0), *self.table_line)
-            style.add('FONTNAME', (0,0), (-1,0), TABLE_HEADER_FONT)
-            style.add('FONTSIZE', (0,0), (-1,0), TABLE_HEADER_FONT_SIZE)
-            style.add('TEXTCOLOR', (0,0), (-1,0), TABLE_HEADER_TEXT_COLOR)
-            style.add('BACKGROUND', (0,0), (-1,0), TABLE_HEADER_BACKGROUND)
+            style.add('LINEBELOW', (0, 0), (-1, 0), *self.table_line)
+            style.add('FONTNAME', (0, 0), (-1, 0), TABLE_HEADER_FONT)
+            style.add('FONTSIZE', (0, 0), (-1, 0), TABLE_HEADER_FONT_SIZE)
+            style.add('TEXTCOLOR', (0, 0), (-1, 0), TABLE_HEADER_TEXT_COLOR)
+            style.add('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_BACKGROUND)
         else:
             border_reach -= 1
         if self.highlight != HIGHLIGHT_NEVER:
             for i in range(0, len(self.data), 2):
                 if self.header:
                     i += 1
-                style.add('BACKGROUND', (0,i), (-1,i), HIGHLIGHT_COLOR)
-        style.add('BOX', (0,0), (-1, border_reach), *self.table_line)
+                style.add('BACKGROUND', (0, i), (-1, i), HIGHLIGHT_COLOR)
+        style.add('BOX', (0, 0), (-1, border_reach), *self.table_line)
 
 class ColumnTableBuilder(ReportTableBuilder):
     """ Column table builder """
@@ -552,18 +552,18 @@ class GroupingTableBuilder(AbstractTableBuilder):
             for obj_idx in range(len_objs):
                 group.update_style(self.style, obj_idx, line_offset)
 
-        style.add('LINEBEFORE', (0,0), (0,-1), *TABLE_LINE)
-        style.add('LINEABOVE', (0,0), (-1,0), *TABLE_LINE)
-        style.add('LINEBELOW', (0,0), (-1,-1), *TABLE_LINE)
+        style.add('LINEBEFORE', (0, 0), (0, -1), *TABLE_LINE)
+        style.add('LINEABOVE', (0, 0), (-1, 0), *TABLE_LINE)
+        style.add('LINEBELOW', (0, 0), (-1, -1), *TABLE_LINE)
 
     def update_header_style(self):
         style = self.style
         header = self.header
-        style.add('LINEBELOW', (0,0), (-1,0), *TABLE_LINE)
-        style.add('FONTNAME', (0,0), (-1,0), TABLE_HEADER_FONT)
-        style.add('FONTSIZE', (0,0), (-1,0), TABLE_HEADER_FONT_SIZE)
-        style.add('TEXTCOLOR', (0,0), (-1,0), TABLE_HEADER_TEXT_COLOR)
-        style.add('BACKGROUND', (0,0), (-1,0), TABLE_HEADER_BACKGROUND)
+        style.add('LINEBELOW', (0, 0), (-1, 0), *TABLE_LINE)
+        style.add('FONTNAME', (0, 0), (-1, 0), TABLE_HEADER_FONT)
+        style.add('FONTSIZE', (0, 0), (-1, 0), TABLE_HEADER_FONT_SIZE)
+        style.add('TEXTCOLOR', (0, 0), (-1, 0), TABLE_HEADER_TEXT_COLOR)
+        style.add('BACKGROUND', (0, 0), (-1, 0), TABLE_HEADER_BACKGROUND)
         header_span = 0
         for i in range(len(header) - 1, -1, -1):
             if not header[i]:
@@ -708,7 +708,7 @@ class TableColumn:
             style.add('SPAN', (idx-1, 0), (idx, 0))
         else:
             j = has_summary_row and 1 or 0
-            style.add('LINEBEFORE', (idx,0), (idx,-1-j),
+            style.add('LINEBEFORE', (idx, 0), (idx, -1-j),
                       *table_line)
 
 class ObjectTableColumn(TableColumn):

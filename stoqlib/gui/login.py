@@ -98,7 +98,7 @@ class LoginDialog(GladeDelegate, RunnableView):
         msg = _(" Authenticating user...")
         self.notification_label.set_text(msg)
         while gtk.events_pending():
-             gtk.main_iteration()
+            gtk.main_iteration()
         gtk.main_quit()
         self.set_field_sensitivity(True)
 

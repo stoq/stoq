@@ -335,7 +335,7 @@ class EmployeeRoleSearch(SearchEditor):
 
 
 class BranchSearch(BasePersonSearch):
-    size = (750,500)
+    size = (750, 500)
     title = _('Branch Search')
     editor_class = BranchEditor
     table = Person.getAdapterClass(IBranch)

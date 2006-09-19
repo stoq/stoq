@@ -58,7 +58,8 @@ class ImageSlave(BaseEditorSlave):
         if not model.image:
             self._show_image(default_filename, sensitive=False)
         else:
-            self.image.set_from_pixbuf(self.pixbuf_converter.from_string(model.image))
+            self.image.set_from_pixbuf(
+                self.pixbuf_converter.from_string(model.image))
 
     def _setup_menu(self):
         """ Create popup """
@@ -93,7 +94,8 @@ class ImageSlave(BaseEditorSlave):
             return
 
         self._show_image(filename, sensitive=True)
-        self.model.image = self.pixbuf_converter.as_string(self.image.get_pixbuf())
+        self.model.image = self.pixbuf_converter.as_string(
+            self.image.get_pixbuf())
 
     #
     # Gtk Callbacks, for the popup menu

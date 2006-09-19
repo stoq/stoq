@@ -202,14 +202,14 @@ class BankDataSlave(BaseEditorSlave):
                      'branch')
 
     def __init__(self, conn, model):
-       BaseEditorSlave.__init__(self, conn, model)
+        BaseEditorSlave.__init__(self, conn, model)
 
     #
     # BaseEditorSlave hooks
     #
 
     def setup_proxies(self):
-        proxy = self.add_proxy(self.model, BankDataSlave.proxy_widgets)
+        self.add_proxy(self.model, BankDataSlave.proxy_widgets)
 
 class BillDataSlave(BaseEditorSlave):
     """ A slave to set payment information of bill payment method.
@@ -609,7 +609,8 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         self.method = payment_method
         self.payment_group = self.wizard.payment_group
         self._pmdetails_objs = None
-        self.total_value = outstanding_value or self.sale.get_total_sale_amount()
+        self.total_value = (outstanding_value or
+                            self.sale.get_total_sale_amount())
         self.providers = self._get_credit_providers()
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
@@ -646,7 +647,6 @@ class CreditProviderMethodSlave(BaseEditorSlave):
             raise ValueError('You must have payment information objs '
                              'stored in the database before start doing '
                              'sales')
-        payment_info = objs[0]
         pmdetails_objs = [obj for obj in objs
                                 if obj.is_active and
                                     isinstance(obj, self._payment_types)]
