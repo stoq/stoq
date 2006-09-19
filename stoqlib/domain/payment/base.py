@@ -287,18 +287,15 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     # FIXME: Use None instead of datetime.now() as a default argument
     def add_payment(self, value, description, method, destination=None,
-                    due_date=datetime.now(), status=Payment.STATUS_PREVIEW):
-        """Add a new payment sending correct arguments to Payment
-        class
-        """
+                    due_date=datetime.now()):
+        """Create a new payment and add it to the group"""
         from stoqlib.domain.till import Till
         conn = self.get_connection()
         destination = destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
         till = Till.get_current(conn)
-        return Payment(due_date=due_date, value=value,
-                       till=till, description=description, group=self,
-                       method=method, destination=destination,
-                       status=status, connection=conn)
+        return Payment(due_date=due_date, value=value, till=till,
+                       description=description, group=self, method=method,
+                       destination=destination, connection=conn)
 
     #
     # IContainer implementation
