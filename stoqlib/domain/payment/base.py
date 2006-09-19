@@ -94,6 +94,7 @@ class Payment(Domain):
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
     method = ForeignKey('AbstractPaymentMethodAdapter')
+    # FIXME: Move to methods itself?
     method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')
     till = ForeignKey('Till')
