@@ -20,7 +20,6 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
-##              Henrique Romano   <henrique@async.com.br>
 ##
 """ This module test all class in stoq/domain/station.py """
 
