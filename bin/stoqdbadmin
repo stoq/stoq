@@ -27,6 +27,8 @@
 import optparse
 import sys
 
+import stoqlib
+
 class StoqCommandHandler:
     def __init__(self, prog_name):
         self.prog_name = prog_name
@@ -132,14 +134,13 @@ class StoqCommandHandler:
 
         conn = new_transaction()
 
-        if not branch:
-            branches = Person.iselect(IBranch, connection=conn)
-            if branches.count() != 1:
-                raise StoqlibError("More than one branch detected")
-            branch = branches[0]
+        branches = Person.iselect(IBranch, connection=conn)
+        if branches.count() != 1:
+            raise StoqlibError("More than one branch detected")
+        branch = branches[0]
 
         try:
-            station = BranchStation.create(conn, branch=None,
+            station = BranchStation.create(conn, branch=branch,
                                            name=socket.gethostname())
         except StoqlibError, e:
             raise SystemExit("ERROR: %s" % e)
