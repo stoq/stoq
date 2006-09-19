@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificateView)
 from stoqlib.gui.slaves.filter import FilterSlave
@@ -133,9 +133,9 @@ class GiftCertificateSearch(SearchEditor):
 
     def get_filter_slave(self):
         statuses = [(value, constant)
-                    for constant, value in AbstractSellable.statuses.items()]
+                    for constant, value in ASellable.statuses.items()]
         statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        selected = AbstractSellable.STATUS_AVAILABLE
+        selected = ASellable.STATUS_AVAILABLE
         self.filter_slave = FilterSlave(statuses, selected=selected)
         self.filter_slave.set_filter_label(_('Show gift certificates with '
                                              'status'))

@@ -35,7 +35,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import ServiceSellableItem, DeliveryItem
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.interfaces import IDelivery
@@ -169,10 +169,10 @@ class DeliveryEditor(BaseEditor):
         self.add_proxy(self.model, DeliveryEditor.sellableitem_widgets)
 
     def setup_slaves(self):
-        columns = [ForeignKeyColumn(AbstractSellable, 'code_str', title=_('Code'),
+        columns = [ForeignKeyColumn(ASellable, 'code_str', title=_('Code'),
                                     data_type=str, sorted=True,
                                     obj_field='sellable'),
-                   ForeignKeyColumn(AbstractSellable,
+                   ForeignKeyColumn(ASellable,
                                     'base_sellable_info.description',
                                     title=_('Description'), data_type=str,
                                     expand=True, obj_field='sellable'),

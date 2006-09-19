@@ -48,7 +48,7 @@ from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
 from stoqlib.domain.service import ServiceSellableItem
-from stoqlib.domain.sellable import AbstractSellableItem
+from stoqlib.domain.sellable import ASellableItem
 
 _ = stoqlib_gettext
 _printer = None
@@ -306,7 +306,7 @@ def print_cheques_for_payment_group(conn, group):
 
 class FiscalCoupon:
     """ This class is used just to allow us cancel an item with base in a
-    AbstractSellable object. Currently, services can't be added, and they
+    ASellable object. Currently, services can't be added, and they
     are just ignored -- be aware, if a coupon with only services is
     emitted, it will not be opened in fact, but just ignored.
     """
@@ -326,7 +326,7 @@ class FiscalCoupon:
     # IContainer implementation
     #
 
-    @argcheck(AbstractSellableItem)
+    @argcheck(ASellableItem)
     def add_item(self, item):
         # Do not add services to the coupon
         if isinstance(item, ServiceSellableItem):
@@ -358,7 +358,7 @@ class FiscalCoupon:
     def get_items(self):
         return self._item_ids.keys()
 
-    @argcheck(AbstractSellableItem)
+    @argcheck(ASellableItem)
     def remove_item(self, item):
         # Services are not added, so don't try to remove them
         if isinstance(item, ServiceSellableItem):

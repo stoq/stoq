@@ -54,7 +54,7 @@ class ReceivingOrderItem(Domain):
     """
     quantity_received = DecimalCol()
     cost = PriceCol()
-    sellable = ForeignKey('AbstractSellable')
+    sellable = ForeignKey('ASellable')
     receiving_order = ForeignKey('ReceivingOrder')
 
     #

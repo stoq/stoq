@@ -30,7 +30,7 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
@@ -67,7 +67,7 @@ class ServiceSearch(SellableSearch):
 
     def get_filter_slave(self):
         statuses = [(value, key)
-                        for key, value in AbstractSellable.statuses.items()]
+                        for key, value in ASellable.statuses.items()]
         statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(_('Show services with status'))

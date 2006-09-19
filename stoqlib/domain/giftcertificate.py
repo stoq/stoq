@@ -32,7 +32,7 @@ from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView
-from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
+from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      OnSaleInfo)
 from stoqlib.domain.interfaces import (ISellable, IDescribable,
                                        IGiftCertificatePM)
@@ -111,7 +111,7 @@ class GiftCertificateType(Domain):
     max_discount = property(_get_max_discount, _set_max_discount)
 
 
-class GiftCertificateItem(AbstractSellableItem):
+class GiftCertificateItem(ASellableItem):
     """A gift certificate item represent a sale item with a special
     property: it can be used as a payment method for another sale.
     """
@@ -127,7 +127,7 @@ class GiftCertificate(Domain):
 # Adapters
 #
 
-class GiftCertificateAdaptToSellable(AbstractSellable):
+class GiftCertificateAdaptToSellable(ASellable):
     """A gift certificate can also be used as a sellable that can be sold
     normally through POS application
     """
@@ -138,8 +138,8 @@ class GiftCertificateAdaptToSellable(AbstractSellable):
 
     def _create(self, id, **kw):
         if 'status' not in kw:
-            kw['status'] = AbstractSellable.STATUS_AVAILABLE
-        AbstractSellable._create(self, id, **kw)
+            kw['status'] = ASellable.STATUS_AVAILABLE
+        ASellable._create(self, id, **kw)
 
     def apply_as_payment_method(self):
         if self.status != self.STATUS_SOLD:

@@ -34,7 +34,7 @@ from stoqlib.domain.examples import log
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISupplier, IBranch, IPaymentGroup
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 
@@ -60,7 +60,7 @@ def create_purchases():
             EXPECTED_BRANCHES, branches.count()))
     branch = branches[0]
 
-    sellables = AbstractSellable.select(connection=trans)
+    sellables = ASellable.select(connection=trans)
     sellables_total = SELLABLES_PER_PURCHASE * MAX_PURCHASES_NUMBER
     if sellables.count() < sellables_total:
         raise ValueError('You must have at least %d sellables in your '

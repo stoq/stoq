@@ -39,7 +39,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.sellable import (AbstractSellable, SellableView,
+from stoqlib.domain.sellable import (ASellable, SellableView,
                                      SellableFullStockView)
 from stoqlib.domain.product import Product
 from stoqlib.domain.person import Person
@@ -114,7 +114,7 @@ class SellableSearch(SearchEditor):
         service = sysparam(self.conn).DELIVERY_SERVICE
         return AND(self.search_table.q.id != service.id,
                    (self.search_table.q.status
-                    == AbstractSellable.STATUS_AVAILABLE),
+                    == ASellable.STATUS_AVAILABLE),
                    branch_query)
 
     def get_filter_slave(self):

@@ -51,7 +51,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import GiftCertificate
 
 _ = stoqlib_gettext
@@ -235,7 +235,7 @@ class AbstractItemStep(WizardEditorStep):
                      'unit_label',
                      'cost')
     model_type = None
-    table = AbstractSellable
+    table = ASellable
     item_table = None
     summary_label_text = None
 
@@ -250,7 +250,7 @@ class AbstractItemStep(WizardEditorStep):
         self.wizard.refresh_next(validation_value)
 
     def setup_item_entry(self):
-        result = AbstractSellable.get_unblocked_sellables(self.conn)
+        result = ASellable.get_unblocked_sellables(self.conn)
         self.item.prefill([(item.get_description(), item)
                                for item in result
                                    if not isinstance(item.get_adapted(),
@@ -273,7 +273,7 @@ class AbstractItemStep(WizardEditorStep):
             sellable = None
         if not sellable:
             barcode = self.item.get_text()
-            sellable = AbstractSellable.get_availables_and_sold_by_barcode(
+            sellable = ASellable.get_availables_and_sold_by_barcode(
                 self.conn, barcode, self._item_notify)
             if sellable:
                 # Waiting for a select method on kiwi entry using entry

@@ -64,7 +64,7 @@ class SellableUnit(Domain):
     description = UnicodeCol()
     index = IntCol()
 
-class AbstractSellableCategory(InheritableModel):
+class ASellableCategory(InheritableModel):
     """ Abstract class for sellable's category. This class can represents a
     sellable's category as well its base category.
 
@@ -86,10 +86,10 @@ class AbstractSellableCategory(InheritableModel):
     def get_description(self):
         return self.description
 
-class BaseSellableCategory(AbstractSellableCategory):
+class BaseSellableCategory(ASellableCategory):
     pass
 
-class SellableCategory(AbstractSellableCategory):
+class SellableCategory(ASellableCategory):
     base_category = ForeignKey('BaseSellableCategory')
 
     implements(IDescribable)
@@ -105,14 +105,14 @@ class SellableCategory(AbstractSellableCategory):
         return ("%s %s"
                 % (self.base_category.get_description(), self.description))
 
-class AbstractSellableItem(InheritableModel):
+class ASellableItem(InheritableModel):
     """Abstract representation of a concrete sellable."""
 
     quantity = DecimalCol()
     base_price = PriceCol()
     price = PriceCol()
     sale = ForeignKey('Sale')
-    sellable = ForeignKey('AbstractSellable')
+    sellable = ForeignKey('ASellable')
 
     def _create(self, id, **kw):
         if not 'kw' in kw:
@@ -169,7 +169,7 @@ class BaseSellableInfo(Domain):
         return self.description
 
 
-class AbstractSellable(InheritableModelAdapter):
+class ASellable(InheritableModelAdapter):
     """A sellable (a product or a service, for instance)."""
 
     implements(ISellable, IContainer, IDescribable)
@@ -213,7 +213,7 @@ class AbstractSellable(InheritableModelAdapter):
         # base_sellable_info, and then we'll not update the price properly;
         # instead, I check for "self.price" that, at this point (after
         # InheritableModelAdapter._create excecution) is already set and
-        # accessible through AbstractSellable's price's accessor.
+        # accessible through ASellable's price's accessor.
         if not self.price and ('cost' in kw and 'category' in kw):
             markup = markup or kw['category'].get_markup()
             cost = kw.get('cost', currency(0))
@@ -226,7 +226,7 @@ class AbstractSellable(InheritableModelAdapter):
     #
 
     def _set_barcode(self, barcode):
-        if AbstractSellable.check_barcode_exists(barcode):
+        if ASellable.check_barcode_exists(barcode):
             raise SellableError("The barcode %s already exists" % barcode)
         self._SO_set_barcode(barcode)
 
@@ -286,7 +286,7 @@ class AbstractSellable(InheritableModelAdapter):
             raise TypeError("Subclasses must provide a sellableitem_table"
                             " attribute")
         conn = self.get_connection()
-        table, parent = self.sellableitem_table, AbstractSellableItem
+        table, parent = self.sellableitem_table, ASellableItem
         query = table.q.id == parent.q.sellableID
         return self.sellableitem_table.select(query, connection=conn)
 
@@ -384,9 +384,9 @@ class AbstractSellable(InheritableModelAdapter):
         if not barcode:
             return False
         conn = get_connection()
-        # XXX Do not use cls instead of AbstractSellable here since SQLObject
+        # XXX Do not use cls instead of ASellable here since SQLObject
         # can deal properly with queries in inherited tables in this case
-        results = AbstractSellable.selectBy(barcode=barcode, connection=conn)
+        results = ASellable.selectBy(barcode=barcode, connection=conn)
         return results.count()
 
     @classmethod
@@ -423,7 +423,7 @@ class AbstractSellable(InheritableModelAdapter):
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
                                   notify_callback):
-        q1 = AbstractSellable.q.barcode == barcode
+        q1 = ASellable.q.barcode == barcode
         query = AND(q1, extra_query)
         sellables = cls.select(query, connection=conn)
         qty = sellables.count()
@@ -452,7 +452,7 @@ class AbstractSellable(InheritableModelAdapter):
         """
         return cls._get_sellables_by_barcode(
             conn, barcode,
-            AbstractSellable.q.status == AbstractSellable.STATUS_AVAILABLE,
+            ASellable.q.status == ASellable.STATUS_AVAILABLE,
             notify_callback)
 
     @classmethod

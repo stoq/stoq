@@ -35,7 +35,7 @@ from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
                                           SellableCategoryEditor)
-from stoqlib.domain.sellable import (AbstractSellableCategory,
+from stoqlib.domain.sellable import (ASellableCategory,
                                      BaseSellableCategory,
                                      SellableCategory)
 
@@ -66,9 +66,9 @@ class SellableCatSearch(SearchEditor):
     title = _('Sellable Category Search')
 
     def __init__(self, conn):
-        # I'm using AbstractSellableCategory here because I want to be able of
+        # I'm using ASellableCategory here because I want to be able of
         # to search in sellable category *and* its base category data as well.
-        SearchEditor.__init__(self, conn, AbstractSellableCategory,
+        SearchEditor.__init__(self, conn, ASellableCategory,
                               SellableCategoryEditor)
         self.set_result_strings(_('category'), _('categories'))
         self.set_searchbar_labels(_('Categories Matching:'))
@@ -104,8 +104,8 @@ class SellableCatSearch(SearchEditor):
 
     # XXX: I need to overwrite SearchEditor's get_searchlist_model because
     # its search_table differs from the objects in the Kiwi list -- but we
-    # need this, since we want to search in AbstractSellableCategory and
+    # need this, since we want to search in ASellableCategory and
     # prefill the list with SellableCategory objects (which have a foreign
-    # key to AbstractSellableCategory).
+    # key to ASellableCategory).
     def get_searchlist_model(self, model):
         return model

@@ -34,7 +34,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.domain.sellable import (SellableCategory, AbstractSellable,
+from stoqlib.domain.sellable import (SellableCategory, ASellable,
                                      SellableUnit)
 from stoqlib.domain.interfaces import ISellable, IStorable
 from stoqlib.domain.product import ProductSellableItem
@@ -54,7 +54,7 @@ _ = stoqlib_gettext
 
 class SellablePriceEditor(BaseEditor):
     model_name = 'Product Price'
-    model_type = AbstractSellable
+    model_type = ASellable
     gladefile = 'SellablePriceEditor'
 
     proxy_widgets = ('cost',
@@ -115,7 +115,7 @@ class SellablePriceEditor(BaseEditor):
 class SellableEditor(BaseEditor):
     """This is a base class for ProductEditor and ServiceEditor and should be used
     when editing sellable objects. Note that sellable objects are instances
-    inherited by AbstractSellable."""
+    inherited by ASellable."""
 
     # This must be be properly defined in the child classes
     model_name = None
@@ -264,7 +264,7 @@ class SellableEditor(BaseEditor):
     def validate_confirm(self, *args):
         barcode = self.barcode_proxy.model.barcode
         if barcode != self._original_barcode:
-            if AbstractSellable.check_barcode_exists(barcode):
+            if ASellable.check_barcode_exists(barcode):
                 msg = _('The barcode %s already exists') % barcode
                 self.barcode.set_invalid(msg)
                 return False

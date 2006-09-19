@@ -40,7 +40,7 @@ from stoqlib.domain.product import (ProductAdaptToSellable,
                                     ProductSellableItem)
 from stoqlib.domain.interfaces import IStorable
 from stoqlib.domain.receiving import ReceivingOrderItem
-from stoqlib.domain.sellable import AbstractSellableItem
+from stoqlib.domain.sellable import ASellableItem
 
 _ = stoqlib_gettext
 
@@ -69,7 +69,7 @@ class ProductStockHistoryDialog(BaseEditor):
                                             connection=self.conn)
         self.receiving_list.add_list(list(items))
 
-        query = AbstractSellableItem.q.sellableID == self.model.id
+        query = ASellableItem.q.sellableID == self.model.id
         items = ProductSellableItem.select(query, connection=self.conn)
         self.sales_list.add_list(list(items))
 

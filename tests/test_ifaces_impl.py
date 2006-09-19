@@ -75,7 +75,7 @@ def _create_adapter_test():
         'AbstractPaymentGroup': ' ',
         'AbstractPaymentMethodAdapter': ' ',
         'AbstractRenegotiationAdapter': ' ',
-        'AbstractSellable': ' ',
+        'ASellable': ' ',
         'GiftCertificateAdaptToSellable': ' ',
         'PMAdaptToCardPM': ' ',
         'PMAdaptToCheckPM': ' ',
