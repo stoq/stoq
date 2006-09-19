@@ -101,6 +101,7 @@ class ProductSupplierEditor(BaseEditor):
         self.new_supplier_button.set_sensitive(False)
 
     def setup_combos(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
         supplier_list = Person.iselect(ISupplier, connection=self.conn)
         items = [(obj.get_adapted().name, obj) for obj in supplier_list]
 

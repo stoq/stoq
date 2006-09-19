@@ -71,6 +71,7 @@ class FinishPurchaseStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_transporter_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
         table = Person.getAdapterClass(ITransporter)
         transporters = table.get_active_transporters(self.conn)
         items = [(t.get_adapted().name, t) for t in transporters]
@@ -308,6 +309,7 @@ class StartPurchaseStep(WizardEditorStep):
         self._update_widgets()
 
     def _setup_supplier_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
         table = Person.getAdapterClass(ISupplier)
         suppliers = table.get_active_suppliers(self.conn)
         items = [(s.get_adapted().name, s) for s in suppliers]
@@ -315,6 +317,7 @@ class StartPurchaseStep(WizardEditorStep):
 
     def _setup_widgets(self):
         self._setup_supplier_entry()
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branches = table.get_active_branches(self.conn)
         items = [(s.get_adapted().name, s) for s in branches]

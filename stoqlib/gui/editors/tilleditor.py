@@ -171,6 +171,7 @@ class CashAdvanceEditor(BaseEditor):
     payment_iface = IOutPayment
 
     def _setup_widgets(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToEmployee
         employees = [(p.get_adapted().name, p)
                      for p in Person.iselect(IEmployee, connection=self.conn)]
         self.employee_combo.prefill(employees)
@@ -227,6 +228,7 @@ class CashInEditor(BaseEditor):
 
     def create_model(self, conn):
         current_till = Till.get_current(conn)
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         description = (_(u'Cash in for station "%s" of branch "%s"')
                        % (current_till.station.name,
                           current_till.station.branch.get_adapted().name))

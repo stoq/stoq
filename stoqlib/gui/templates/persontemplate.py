@@ -293,6 +293,7 @@ class BasePersonRoleEditor(BaseEditor):
     #
 
     def get_title_model_attribute(self, model):
+        # FIXME: Implement and use IDescribable on the model
         return model.get_adapted().name
 
 
