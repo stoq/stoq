@@ -101,7 +101,6 @@ def _create_adapter_test():
         'ProductAdaptToStorable': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
         'SaleAdaptToPaymentGroup': ' ',
-        'ServiceSellableItemAdaptToDelivery': ' ',
         }
 
     def _test_adapter(self, adapter):
