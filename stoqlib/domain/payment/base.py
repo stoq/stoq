@@ -282,6 +282,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         raise NotImplementedError
 
     def get_balance(self):
+        # FIXME: Move sum to SQL statement
         return sum([s.value for s in self.get_items()])
 
     # FIXME: Use None instead of datetime.now() as a default argument
@@ -293,7 +294,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         from stoqlib.domain.till import Till
         conn = self.get_connection()
         destination = destination or sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-        conn = self.get_connection()
         till = Till.get_current(conn)
         return Payment(due_date=due_date, value=value,
                        till=till, description=description, group=self,
