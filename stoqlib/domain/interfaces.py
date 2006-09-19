@@ -352,13 +352,13 @@ class IRenegotiationReturnSale(NoneInterface):
 
 
 class IRenegotiationExchange(NoneInterface):
-    # TODO to be implemented on bug 2230
-    pass
+    def confirm():
+        """Confirm the exchange operation """
 
 
 class IRenegotiationInstallments(NoneInterface):
-    # TODO to be implemented on bug 2190
-    pass
+    def confirm():
+        """Confirm the operation """
 
 
 class IPaymentDevolution(NoneInterface):
