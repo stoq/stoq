@@ -96,7 +96,7 @@ def initialize_connection():
 
     try:
         db_settings = get_utility(IDatabaseSettings)
-    except NotImplementedError, e:
+    except NotImplementedError:
         raise StoqlibError('You need to register db settings before calling '
                            'initialize_connection')
     conn = db_settings.get_connection()

@@ -109,7 +109,7 @@ def run_sql_file(sql_file, conn):
     try:
         conn.query(file_data)
     except:
-        type, value, trace = sys.exc_info()
+        type, value = sys.exc_info()[:2]
         raise SQLError("Bad sql script, got error %s, of type %s"
                        % (value, type))
 

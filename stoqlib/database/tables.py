@@ -24,7 +24,7 @@
 """A list of all tables in database and a way to get them.
 
  Add new tables here:
- ('domain.módulo') : ['classA', 'classB', ...],
+ ('domain.modulo') : ['classA', 'classB', ...],
 
  module is the domain module which lives the classes in the list
  (classA, classB, ...).
