@@ -30,6 +30,8 @@ import sets
 from kiwi.component import get_utility
 from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
+from sqlobject.inheritance import InheritableSQLObject
+from sqlobject.main import SQLObject
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
@@ -87,6 +89,18 @@ class StoqlibTransaction(Transaction):
     def close(self):
         self._connection.close()
         self._obsolete = True
+
+    def get(self, obj):
+        """
+        Fetches an object in the current transaction
+        @param obj: a SQLObject
+        @returns: the same object in our transaction
+        """
+        if not isinstance(obj, (SQLObject, InheritableSQLObject)):
+            raise TypeError("obj must be a SQLObject")
+
+        table = type(obj)
+        return table.get(obj.id, connection=self)
 
 def initialize_connection():
     # Avoiding circular imports
