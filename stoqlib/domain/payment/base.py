@@ -260,6 +260,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     # IPaymentGroup implementation
     #
 
+    #
+    # FIXME: We should to remove all these methods without implementation, so
+    # we can ensure that interface are properly implemented in subclasses.
+    #
     def get_thirdparty(self):
         raise NotImplementedError
 
