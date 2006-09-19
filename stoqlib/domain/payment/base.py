@@ -369,15 +369,18 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return self._create_till_entry(value, description, till)
 
     def get_paid_payments(self):
+        # FIXME: Logic in SQL
         statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
                     Payment.STATUS_CONFIRMED)
         return [p for p in self.get_items() if p.status in statuses]
 
     def get_unpaid_payments(self):
+        # FIXME: Logic in SQL
         statuses = Payment.STATUS_PREVIEW, Payment.STATUS_TO_PAY
         return [p for p in self.get_items() if p.status in statuses]
 
     def get_total_paid(self):
+        # FIXME: Move sum to SQL statement
         paid_values = [payment.paid_value
                             for payment in self.get_paid_payments()]
         return sum(paid_values, currency(0))
