@@ -238,12 +238,12 @@ class ProductEditor(SellableEditor):
 
     def _on_supplier_slave__cost_changed(self, slave):
         if not self.sellable_proxy.model.cost and self.model.suppliers:
-           base_cost = self.model.get_main_supplier_info().base_cost
-           self.sellable_proxy.model.cost = base_cost or currency(0)
-           self.sellable_proxy.update('cost')
+            base_cost = self.model.get_main_supplier_info().base_cost
+            self.sellable_proxy.model.cost = base_cost or currency(0)
+            self.sellable_proxy.update('cost')
 
         if self.sellable_proxy.model.base_sellable_info.price:
-           return
+            return
         cost = self.sellable_proxy.model.cost or currency(0)
         markup = (self.sellable_proxy.model.get_suggested_markup()
                   or decimal.Decimal("0.0"))

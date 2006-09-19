@@ -292,16 +292,16 @@ class SearchBar(GladeSlaveDelegate):
             value = (column.name, table_type)
             if (isinstance(column, SOUnicodeCol)
                 and value not in self.str_fields):
-               self.str_fields.append(value)
+                self.str_fields.append(value)
             elif (isinstance(column, SOIntCol)
                   and value not in self.int_fields):
-                 self.int_fields.append(value)
+                self.int_fields.append(value)
             elif (isinstance(column, (SOPriceCol, AbstractDecimalCol))
                   and value not in self.decimal_fields):
-                 self.decimal_fields.append(value)
+                self.decimal_fields.append(value)
             elif (isinstance(column, (SODateTimeCol, SODateCol))
                   and value not in self.dtime_fields):
-                 self.dtime_fields.append(value)
+                self.dtime_fields.append(value)
 
     def split_field_types(self):
         self.int_fields = []
