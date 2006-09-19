@@ -512,9 +512,8 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
                                              group_desc)
         conn = self.get_connection()
         destination = sysparam(conn).DEFAULT_PAYMENT_DESTINATION
-        payment = group.add_payment(total, description, self,
-                                    destination, due_date)
-        return payment
+        return group.add_payment(total, description, self, destination,
+                                 due_date)
 
     def setup_outpayments(self, total, group, installments_number=None):
         raise NotImplementedError("Not supported by gift certificates")
