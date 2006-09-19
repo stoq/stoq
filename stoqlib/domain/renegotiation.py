@@ -184,8 +184,8 @@ class RenegotiationAdaptToExchange(AbstractRenegotiationAdapter):
     type_description = _("Exchange")
 
     def confirm(self):
-        """Confirm the exchange operation """
         # TODO to be implemented on bug 2230
+        pass
 
 RenegotiationData.registerFacet(RenegotiationAdaptToExchange,
                                 IRenegotiationExchange)
@@ -197,8 +197,8 @@ class RenegotiationAdaptToChangeInstallments(AbstractRenegotiationAdapter):
     type_description = _("Installments Renegotiation")
 
     def confirm(self):
-        """Confirm the operation """
         # TODO to be implemented on bug 2190
+        pass
 
 RenegotiationData.registerFacet(RenegotiationAdaptToChangeInstallments,
                                 IRenegotiationInstallments)

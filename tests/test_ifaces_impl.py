@@ -88,8 +88,6 @@ def _create_adapter_test():
         'PersonAdaptToUser': ' ',
         'ProductAdaptToStorable': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
-        'RenegotiationAdaptToChangeInstallments': ' ',
-        'RenegotiationAdaptToExchange': ' ',
         'SaleAdaptToPaymentGroup': ' ',
         'ServiceSellableItemAdaptToDelivery': ' ',
         }
