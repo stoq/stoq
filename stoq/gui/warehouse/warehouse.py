@@ -142,9 +142,9 @@ class WarehouseApp(SearchableAppWindow):
         self._update_widgets()
 
     def _on_receive_action_clicked(self, *args):
-        conn = new_transaction()
-        model = self.run_dialog(ReceivingOrderWizard, conn)
-        finish_transaction(conn, model)
+        trans = new_transaction()
+        model = self.run_dialog(ReceivingOrderWizard, trans)
+        finish_transaction(trans, model)
 
     def on_stock_transfer_action_clicked(self, *args):
         # TODO To be implemented
