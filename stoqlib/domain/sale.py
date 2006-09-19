@@ -321,7 +321,6 @@ class Sale(Domain):
         """Checks if the payment group has all the payments paid and close
         the group and the sale order
         """
-        conn = self.get_connection()
         group = self.check_payment_group()
         if not group.check_close():
             return
@@ -369,7 +368,6 @@ class Sale(Domain):
             raise SellError('The sale must have STATUS_OPENED for this '
                             'operation, got status %s instead'
                             % self.get_status_name(self.status))
-        conn = self.get_connection()
         self.check_payment_group()
         if not self.get_valid():
             self.set_valid()
@@ -377,7 +375,6 @@ class Sale(Domain):
     @argcheck(GiftCertificateOverpaidSettings)
     def confirm_sale(self, gift_certificate_settings=None):
         self.validate()
-        conn = self.get_connection()
         self.sell_items()
         group = IPaymentGroup(self)
         group.confirm(gift_certificate_settings)
@@ -405,7 +402,6 @@ class Sale(Domain):
     def get_sale_client_role(self):
         if not self.client:
             return None
-        conn = self.get_connection()
         person = self.client.get_adapted()
         if self.client_role is None:
             raise DatabaseInconsistency("The sale %r have a client but no "

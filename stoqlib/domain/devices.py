@@ -118,7 +118,7 @@ class DeviceSettings(Domain):
 #                                         "for pm_constants, since it will "
 #                                         "be created internally")
         data = {}
-        for payment_method, iface in get_all_methods_dict().items():
+        for payment_method in get_all_methods_dict():
             # We don't store these constants to reach compatibility with
             # stoqdrivers.
             if payment_method not in (METHOD_MONEY, METHOD_CHECK,

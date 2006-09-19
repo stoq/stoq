@@ -120,8 +120,8 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
         if not giftcert_number:
             raise StoqlibError("You should provide a valid gift "
                                "certificate number at this point")
-        cert = clone.add_custom_gift_certificate(overpaid_value,
-                                                 giftcert_number)
+        clone.add_custom_gift_certificate(overpaid_value,
+                                          giftcert_number)
 
         group = clone.addFacet(IPaymentGroup, connection=conn)
         base_method = sysparam(conn).BASE_PAYMENT_METHOD

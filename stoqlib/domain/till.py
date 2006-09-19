@@ -352,8 +352,8 @@ Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
 
 
 class TillFiscalOperationsView(SQLObject, BaseSQLView):
-    """Stores informations about till fiscal operations, which is a union between
-    till_entry and payment tables
+    """Stores informations about till fiscal operations, which is a union
+    between till_entry and payment tables
     """
 
     identifier = IntCol()

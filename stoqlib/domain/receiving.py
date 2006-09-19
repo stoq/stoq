@@ -138,7 +138,6 @@ class ReceivingOrder(Domain):
                              intervals=intervals, connection=conn)
 
     def confirm(self):
-        conn = self.get_connection()
         # Stock management
         for item in self.get_items():
             adapted = item.sellable.get_adapted()

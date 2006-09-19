@@ -95,7 +95,8 @@ class SellableCategory(AbstractSellableCategory):
     implements(IDescribable)
 
     def get_commission(self):
-        return self.salesperson_commission or self.base_category.get_commission()
+        return (self.salesperson_commission or
+                self.base_category.get_commission())
 
     def get_markup(self):
         return self.suggested_markup or self.base_category.suggested_markup
@@ -383,8 +384,8 @@ class AbstractSellable(InheritableModelAdapter):
         if not barcode:
             return False
         conn = get_connection()
-        # XXX Do not use cls instead of AbstractSellable here since SQLObject can deal
-        # properly with queries in inherited tables in this case
+        # XXX Do not use cls instead of AbstractSellable here since SQLObject
+        # can deal properly with queries in inherited tables in this case
         results = AbstractSellable.selectBy(barcode=barcode, connection=conn)
         return results.count()
 
@@ -449,9 +450,10 @@ class AbstractSellable(InheritableModelAdapter):
                           if the sellable barcode doesn't exists
 
         """
-        extra_query = AbstractSellable.q.status == AbstractSellable.STATUS_AVAILABLE
-        return cls._get_sellables_by_barcode(conn, barcode, extra_query,
-                                             notify_callback)
+        return cls._get_sellables_by_barcode(
+            conn, barcode,
+            AbstractSellable.q.status == AbstractSellable.STATUS_AVAILABLE,
+            notify_callback)
 
     @classmethod
     def get_availables_and_sold_by_barcode(cls, conn, barcode, notify_callback):

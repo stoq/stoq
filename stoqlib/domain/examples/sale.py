@@ -87,7 +87,8 @@ def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
                  product, installments_number, till):
     sale = Sale(till=till, client=client, status=status,
                 open_date=open_date, coupon_id=coupon_id,
-                salesperson=salesperson, cfop=sysparam(trans).DEFAULT_SALES_CFOP,
+                salesperson=salesperson,
+                cfop=sysparam(trans).DEFAULT_SALES_CFOP,
                 connection=trans)
     sellable_facet = ISellable(product)
     sellable_facet.add_sellable_item(sale=sale)
@@ -146,7 +147,8 @@ def create_sales():
                      product, installments_number, till)
     cancelled_sale = _create_sale(trans, open_dates[0], Sale.STATUS_OPENED,
                                   salespersons[0], clients[0], index+1,
-                                  product_list[0], installments_numbers[0], till)
+                                  product_list[0], installments_numbers[0],
+                                  till)
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
 
