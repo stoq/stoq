@@ -288,6 +288,15 @@ class IDelivery(NoneInterface):
 
     address = Attribute('The delivery address.')
 
+    def get_item_by_sellable(sellable):
+        """
+        Gets all delivery items for a sellable
+
+        @param sellable: a sellable
+        @type sellable: ASellable
+        @returns: a list of DeliveryItems
+        """
+
 class IMoneyPM(NoneInterface):
     """Defines a money payment method"""
 
