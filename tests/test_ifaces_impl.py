@@ -104,18 +104,17 @@ def _create_adapter_test():
 
         # Collect methods
         methods = []
-        for part in adapter.__dict__.keys():
-            if part.startswith('_'):
+        for name in adapter.__dict__.keys():
+            if name.startswith('_'):
                 continue
-            attr = getattr(adapter, part)
-            if not inspect.ismethod(attr):
+            value = getattr(adapter, name)
+            if not inspect.ismethod(value):
                 continue
 
             # Skip lambdas and methods added by SQLObject
-            aname = attr.__name__
-            if aname in ('<lambda>', 'to_python', 'from_python'):
+            if name in ('to_python', 'from_python'):
                 continue
-            methods.append(aname)
+            methods.append(name)
 
         # Remove methods which are part of an interface
         for iface in ifaces:
