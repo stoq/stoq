@@ -304,18 +304,18 @@ class BasePersonRoleEditor(BaseEditor):
             self.person = Person(name="", connection=conn)
         self._check_role_type()
         if (self.role_type == Person.ROLE_INDIVIDUAL and not
-            IIndividual(self.person)):
+            IIndividual(self.person, None)):
             self.person.addFacet(IIndividual, connection=conn)
         elif (self.role_type == Person.ROLE_COMPANY and not
-              ICompany(self.person)):
+              ICompany(self.person, None)):
             self.person.addFacet(ICompany, connection=conn)
         else:
             pass
         return self.person
 
     def setup_slaves(self):
-        individual = IIndividual(self.model.get_adapted())
-        company = ICompany(self.model.get_adapted())
+        individual = IIndividual(self.model.get_adapted(), None)
+        company = ICompany(self.model.get_adapted(), None)
 
         if not (individual or company):
             raise ValueError('This person must have at least an '
