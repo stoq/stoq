@@ -120,14 +120,9 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
         return DeliveryItem.selectBy(connection=self.get_connection(),
                                      deliveryID=self.id)
 
-    def remove_item(self, items):
-        for item in items:
-            if not isinstance(item, DeliveryItem):
-                raise TypeError('Invalid type for delivery item, it should '
-                                'be DeliveryItem, got %s instead'
-                                % type(item))
-            conn = item.get_connection()
-            DeliveryItem.delete(item.id, connection=conn)
+    @argcheck(DeliveryItem)
+    def remove_item(self, item):
+        DeliveryItem.delete(item.id, connection=item.get_connection())
 
     #
     # General methods
