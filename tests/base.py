@@ -40,7 +40,10 @@ from stoqlib.database.columns import SOPriceCol
 from stoqlib.database.runtime import new_transaction
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.component import Adapter
-from stoqlib.domain.interfaces import IBranch, ICompany, IStorable
+from stoqlib.lib.parameters import sysparam
+from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
+                                       IIndividual,
+                                       ISellable, IStorable, ISalesPerson)
 
 from bootstrap import bootstrap_testsuite
 
@@ -109,6 +112,36 @@ class DomainTest(unittest.TestCase):
         product = Product(connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
+    def create_sellable(self):
+        from stoqlib.domain.product import Product
+        from stoqlib.domain.sellable import BaseSellableInfo
+        product = Product(connection=self.trans)
+        sellable_info = BaseSellableInfo(connection=self.trans,
+                                         description="Description",
+                                         price=10)
+        return product.addFacet(ISellable,
+                                base_sellable_info=sellable_info,
+                                connection=self.trans)
+
+    def create_salesperson(self):
+        from stoqlib.domain.person import Person, EmployeeRole
+        person = Person(name='SalesPerson', connection=self.trans)
+        person.addFacet(IIndividual, connection=self.trans)
+        role = EmployeeRole(name='Role', connection=self.trans)
+        person.addFacet(IEmployee, role=role, connection=self.trans)
+        return person.addFacet(ISalesPerson, connection=self.trans)
+
+    def create_sale(self):
+        from stoqlib.domain.sale import Sale
+        from stoqlib.domain.till import Till
+        till = Till.get_current(self.trans)
+        salesperson = self.create_salesperson()
+        return Sale(till=till,
+                    coupon_id=0,
+                    open_date=datetime.datetime.now(),
+                    salesperson=salesperson,
+                    cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
+                    connection=self.trans)
 
 class BaseDomainTest(unittest.TestCase):
     """Base class to be used by all domain test classes.
