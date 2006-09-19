@@ -26,17 +26,14 @@ from kiwi.datatypes import currency
 
 from stoqlib.domain.sellable import (SellableCategory,
                                      BaseSellableCategory,
-                                     ASellable,
                                      BaseSellableInfo)
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
-from tests.base import BaseDomainTest
+from tests.base import DomainTest
 
-class TestSellableCategory(BaseDomainTest):
-    _table = SellableCategory
-
+class TestSellableCategory(DomainTest):
     def setUp(self):
-        BaseDomainTest.setUp(self)
+        DomainTest.setUp(self)
         base_category = BaseSellableCategory(description="Monitor",
                                              connection=self.trans)
         self._category = SellableCategory(description="LCD",
@@ -54,11 +51,9 @@ class TestSellableCategory(BaseDomainTest):
         self._category.suggested_markup = None
         self.failUnless(self._category.get_markup() == currency(20))
 
-class TestASellable(BaseDomainTest):
-    _table = ASellable
-
+class TestASellable(DomainTest):
     def setUp(self):
-        BaseDomainTest.setUp(self)
+        DomainTest.setUp(self)
         self._base_category = BaseSellableCategory(description="Cigarro",
                                                    connection=self.trans)
         self._category = SellableCategory(description="Hollywood",

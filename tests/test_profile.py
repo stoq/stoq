@@ -23,32 +23,28 @@
 ##
 """ This module tests all classes in stoq/domain/profile.py"""
 
-from stoqlib.domain.profile import UserProfile, ProfileSettings
+from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import update_profile_applications
 
-from tests.base import BaseDomainTest
+from tests.base import DomainTest
 
-class TestUserProfile(BaseDomainTest):
+class TestUserProfile(DomainTest):
     """
     C{UserProfile} TestCase
     """
-    _table = UserProfile
-
     def test_add_application_reference(self):
-        self.create_instance()
-        assert not self._instance.profile_settings
-        self._instance.add_application_reference('my_app',
-                                                  has_permission=True)
-        assert len(self._instance.profile_settings) == 1
-        assert self._instance.check_app_permission('my_app')
+        profile = UserProfile(connection=self.trans, name="foo")
+        assert not profile.profile_settings
+        profile.add_application_reference(
+            'my_app', has_permission=True)
+        assert len(profile.profile_settings) == 1
+        assert profile.check_app_permission('my_app')
 
 
-class TestProfileSettings(BaseDomainTest):
+class TestProfileSettings(DomainTest):
     """
     C{ProfileSettings} TestCase
     """
-    _table = ProfileSettings
-
     def get_foreign_key_data(self):
         return [UserProfile(connection=self.trans, name='Manager')]
 
