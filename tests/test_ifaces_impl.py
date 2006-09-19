@@ -111,7 +111,7 @@ def _create_adapter_test():
             if not inspect.ismethod(value):
                 continue
 
-            # Skip lambdas and methods added by SQLObject
+            # Skip methods added by SQLObject
             if name in ('to_python', 'from_python'):
                 continue
             methods.append(name)
