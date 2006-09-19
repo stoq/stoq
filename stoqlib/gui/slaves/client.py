@@ -34,13 +34,13 @@ class ClientStatusSlave(BaseEditorSlave):
 
     proxy_widgets = ('statuses_combo',)
 
-    # 
+    #
     # BaseEditorSlave hooks
-    # 
+    #
 
     def setup_proxies(self):
         table = self.model_type
-        items = [(value, constant) 
+        items = [(value, constant)
                     for constant, value in table.statuses.items()]
         self.statuses_combo.prefill(items)
         self.proxy = self.add_proxy(self.model,
