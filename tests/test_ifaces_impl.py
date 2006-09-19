@@ -92,7 +92,6 @@ def _create_adapter_test():
         'RenegotiationAdaptToExchange': ' ',
         'SaleAdaptToPaymentGroup': ' ',
         'ServiceSellableItemAdaptToDelivery': ' ',
-        'TillAdaptToPaymentGroup': ' ',
         }
 
     def _test_adapter(self, adapter):
