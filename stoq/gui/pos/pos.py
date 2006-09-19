@@ -322,7 +322,8 @@ class POSApp(AppWindow):
         if isinstance(item, ServiceSellableItem):
             delivery = IDelivery(item)
             if delivery:
-                delivery.remove_items(delivery.get_items())
+                for item in delivery.get_items():
+                    delivery.remove_item(item)
                 table = type(delivery)
                 table.delete(delivery.id, connection=self.conn)
         table = type(item)
