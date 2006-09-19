@@ -23,6 +23,7 @@
 ##              Johan Dahlin  <jdahlin@async.com.br>
 ##
 
+import os
 import glob
 import inspect
 
@@ -47,9 +48,13 @@ def _test_class(self, klass):
 
 def get_all_classes(package):
     for package in listpackages(package):
-        package = package.replace('.', '/')
-        for filename in glob.glob(package + '/*.py'):
-            modulename = filename[:-3].replace('/', '.')
+        # stoqlib.domain -> stoqlib/domain
+        package = package.replace('.', os.path.sep)
+
+        # List all python files in stoqlib/domain
+        for filename in glob.glob(os.path.join(package, '*.py')):
+            # stoqlib/domain/base.py -> stoqlib.domain.base
+            modulename = filename[:-3].replace(os.path.sep, '.')
             module = namedAny(modulename)
             for name, klass in inspect.getmembers(module, inspect.isclass):
                 yield klass
