@@ -70,6 +70,14 @@ def get_interfaces_for_package(package):
         yield klass
 
 def _create_adapter_test():
+    # Create a dynamic test class which verifies that methods in all adapters
+    # are defined in an interface.
+    #
+    # Exceptions:
+    #    SQLObject create to_python/from_python
+    #    Private methods, which has a name starting with _
+    #    class methods
+    #
     TODO = {
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
@@ -88,7 +96,6 @@ def _create_adapter_test():
         'PersonAdaptToEmployee': ' ',
         'PersonAdaptToIndividual': ' ',
         'PersonAdaptToSalesPerson': ' ',
-        'PersonAdaptToSupplier': ' ',
         'PersonAdaptToTransporter': ' ',
         'PersonAdaptToUser': ' ',
         'ProductAdaptToStorable': ' ',
@@ -113,6 +120,11 @@ def _create_adapter_test():
 
             # Skip methods added by SQLObject
             if name in ('to_python', 'from_python'):
+                continue
+
+            # Skip classmethods
+            if value.im_self is not None:
+                # TODO: Only allow classmethods on base/abstract classes
                 continue
             methods.append(name)
 
