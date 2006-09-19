@@ -300,6 +300,7 @@ class PaymentMethod(Domain):
 #
 
 
+# FIXME: Remove Adapter from class name
 class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     implements(IActive, IDescribable)
 
