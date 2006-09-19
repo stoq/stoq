@@ -37,9 +37,19 @@ from stoqlib.domain.till import Till
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
                                             FinanceDetails)
+from stoqlib.domain.payment.base import Payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
 from tests.base import BaseDomainTest
+
+class TestPayment(BaseDomainTest):
+    _table = Payment
+
+    def test_status(self):
+        payment = Payment(value=currency(10), due_date=datetime.now(),
+                          method=None, group=None, till=None,
+                          destination=None, connection=self.trans)
+        self.failUnless(payment.status == Payment.STATUS_PREVIEW)
 
 class TestPaymentMethodDetails(BaseDomainTest):
     _table = PaymentMethodDetails
