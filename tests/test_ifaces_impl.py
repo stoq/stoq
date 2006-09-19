@@ -79,11 +79,17 @@ def _create_adapter_test():
     #    class methods
     #
     TODO = {
+        # Add get_status_string to IActive
+        'ASalesPerson': 'get_status_string',
+        'PersonAdaptToEmployee': ' ',
+        'PersonAdaptToBranch': ' ',
+        'PersonAdaptToTransporter': ' ',
+        'PersonAdaptToUser': ' ',
+
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
         'AbstractPaymentMethodAdapter': ' ',
         'AbstractRenegotiationAdapter': ' ',
-        'ASalesPerson': 'Add get_status_string to IActive',
         'ASellable': ' ',
         'GiftCertificateAdaptToSellable': ' ',
         'PMAdaptToCardPM': ' ',
@@ -91,13 +97,9 @@ def _create_adapter_test():
         'PMAdaptToFinancePM': ' ',
         'PMAdaptToGiftCertificatePM': ' ',
         'PMAdaptToMoneyPM': ' ',
-        'PersonAdaptToBranch': ' ',
         'PersonAdaptToClient': ' ',
         'PersonAdaptToCreditProvider': ' ',
-        'PersonAdaptToEmployee': ' ',
         'PersonAdaptToIndividual': ' ',
-        'PersonAdaptToTransporter': ' ',
-        'PersonAdaptToUser': ' ',
         'ProductAdaptToStorable': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
         'SaleAdaptToPaymentGroup': ' ',
