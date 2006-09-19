@@ -64,7 +64,7 @@ CREATE VIEW abstract_stock_view AS
   --
   -- This is an abstract view which stores stock informations to other views.
   -- Available fields are:
-  --     id              - the id of the abstract_sellable table
+  --     id              - the id of the asellable table
   --     code            - the product code
   --     barcode         - the product barcode
   --     status          - the product status
@@ -74,12 +74,12 @@ CREATE VIEW abstract_stock_view AS
   --     product_id      - the id of product table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
-  abstract_sellable.status,
+  asellable.id, asellable.code, asellable.barcode,
+  asellable.status,
   abstract_stock_item.quantity + abstract_stock_item.logic_quantity as stock,
   abstract_stock_item.branch_id, abstract_stock_item.stock_cost,
   product.id as product_id
-     FROM abstract_stock_item, abstract_sellable, product,
+     FROM abstract_stock_item, asellable, product,
      product_adapt_to_sellable, product_stock_item
 
         LEFT JOIN product_adapt_to_storable
@@ -88,7 +88,7 @@ CREATE VIEW abstract_stock_view AS
           WHERE (abstract_stock_item.id = product_stock_item.id
           AND product.id = product_adapt_to_storable.original_id
           AND product.id = product_adapt_to_sellable.original_id
-          AND abstract_sellable.id = product_adapt_to_sellable.id);
+          AND asellable.id = product_adapt_to_sellable.id);
 
 
 select drop_existing_view('abstract_product_supplier_view');
@@ -140,7 +140,7 @@ CREATE VIEW abstract_sales_client_view AS
 select drop_existing_view('abstract_product_item_view');
 CREATE VIEW abstract_product_item_view AS
   --
-  -- Stores information about abstract_sellable_item objects
+  -- Stores information about asellable_item objects
   --
   -- Available fields are:
   --     sale_id            - the id of the sale table
@@ -149,7 +149,7 @@ CREATE VIEW abstract_product_item_view AS
   --
   SELECT
   sale_id, quantity, quantity * price as subtotal
-    FROM abstract_sellable_item;
+    FROM asellable_item;
 
 
 select drop_existing_view('abstract_sales_product_view');
@@ -261,7 +261,7 @@ CREATE VIEW sellable_view AS
   -- Usage: select * from sellable_view where branch_id=1;
   --
   -- Available fields are:
-  --     id                 - the id of the abstract_sellable table
+  --     id                 - the id of the asellable table
   --     code               - the sellable code
   --     barcode            - the sellable barcode
   --     status             - the sellable status
@@ -278,34 +278,34 @@ CREATE VIEW sellable_view AS
   --     product_id         - the id of the product table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
-  abstract_sellable.status,
+  asellable.id, asellable.code, asellable.barcode,
+  asellable.status,
   sum(abstract_stock_view.stock) as stock, abstract_stock_view.branch_id,
-  abstract_sellable.cost, base_sellable_info.price,
+  asellable.cost, base_sellable_info.price,
   base_sellable_info.is_valid_model,
   base_sellable_info.description, sellable_unit.description as unit,
   abstract_product_supplier_view.supplier_name, abstract_stock_view.product_id
 
-    FROM base_sellable_info, abstract_sellable
+    FROM base_sellable_info, asellable
 
       LEFT JOIN product_adapt_to_sellable
-      ON (abstract_sellable.id = product_adapt_to_sellable.id)
+      ON (asellable.id = product_adapt_to_sellable.id)
 
       LEFT JOIN sellable_unit
-      ON (abstract_sellable.unit_id = sellable_unit.id)
+      ON (asellable.unit_id = sellable_unit.id)
 
       LEFT JOIN abstract_stock_view
-      ON (abstract_sellable.id = abstract_stock_view.id)
+      ON (asellable.id = abstract_stock_view.id)
 
       LEFT JOIN abstract_product_supplier_view
       ON (abstract_stock_view.product_id = abstract_product_supplier_view.id)
 
-        WHERE (abstract_sellable.base_sellable_info_id =
+        WHERE (asellable.base_sellable_info_id =
         base_sellable_info.id AND base_sellable_info.is_valid_model = 't')
 
-    group by abstract_sellable.code, abstract_sellable.status,
-    abstract_sellable.barcode, abstract_sellable.id,
-    abstract_sellable.cost, base_sellable_info.price,
+    group by asellable.code, asellable.status,
+    asellable.barcode, asellable.id,
+    asellable.cost, base_sellable_info.price,
     base_sellable_info.description, sellable_unit.description,
     base_sellable_info.is_valid_model, abstract_stock_view.branch_id,
     abstract_product_supplier_view.supplier_name, abstract_stock_view.product_id;
@@ -346,7 +346,7 @@ CREATE VIEW service_view AS
   -- Stores information about services
   --
   -- Available fields are:
-  --     id                 - the id of the abstract_sellable table
+  --     id                 - the id of the asellable table
   --     code               - the sellable code
   --     barcode            - the sellable barcode
   --     status             - the sellable status
@@ -358,24 +358,24 @@ CREATE VIEW service_view AS
   --     service_id         - the id of the service table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
-  abstract_sellable.status,
-  abstract_sellable.cost, base_sellable_info.price,
+  asellable.id, asellable.code, asellable.barcode,
+  asellable.status,
+  asellable.cost, base_sellable_info.price,
   base_sellable_info.description, sellable_unit.description as unit,
   service.id as service_id
-    FROM abstract_sellable
+    FROM asellable
 
       INNER JOIN base_sellable_info
-      ON (abstract_sellable.base_sellable_info_id = base_sellable_info.id)
+      ON (asellable.base_sellable_info_id = base_sellable_info.id)
 
       INNER JOIN service_adapt_to_sellable
-      ON (abstract_sellable.id = service_adapt_to_sellable.id)
+      ON (asellable.id = service_adapt_to_sellable.id)
 
       INNER JOIN service
       ON (service.id = service_adapt_to_sellable.original_id)
 
       LEFT JOIN sellable_unit
-      ON (abstract_sellable.unit_id = sellable_unit.id)
+      ON (asellable.unit_id = sellable_unit.id)
 
         WHERE service.is_valid_model = 't';
 
@@ -386,7 +386,7 @@ CREATE VIEW gift_certificate_view AS
   -- Stores information about gift certificates
   --
   -- Available fields are:
-  --     id                 - the id of the abstract_sellable table
+  --     id                 - the id of the asellable table
   --     code               - the sellable code
   --     barcode            - the sellable barcode
   --     status             - the sellable status
@@ -397,21 +397,21 @@ CREATE VIEW gift_certificate_view AS
   --     giftcertificate_id - the id of giftcertificate table
   --
   SELECT DISTINCT
-  abstract_sellable.id, abstract_sellable.code, abstract_sellable.barcode,
-  abstract_sellable.status,
-  abstract_sellable.cost, base_sellable_info.price,
+  asellable.id, asellable.code, asellable.barcode,
+  asellable.status,
+  asellable.cost, base_sellable_info.price,
   on_sale_info.on_sale_price,
   base_sellable_info.description, gift_certificate.id as giftcertificate_id
-    FROM abstract_sellable
+    FROM asellable
 
       INNER JOIN base_sellable_info
-      ON (abstract_sellable.base_sellable_info_id = base_sellable_info.id)
+      ON (asellable.base_sellable_info_id = base_sellable_info.id)
 
       INNER JOIN on_sale_info
-      ON (abstract_sellable.on_sale_info_id = on_sale_info.id)
+      ON (asellable.on_sale_info_id = on_sale_info.id)
 
       INNER JOIN gift_certificate_adapt_to_sellable
-      ON (abstract_sellable.id = gift_certificate_adapt_to_sellable.id)
+      ON (asellable.id = gift_certificate_adapt_to_sellable.id)
 
       INNER JOIN gift_certificate
       ON (gift_certificate_adapt_to_sellable.original_id = gift_certificate.id)

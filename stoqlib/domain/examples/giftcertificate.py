@@ -28,7 +28,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.giftcertificate import GiftCertificateType, GiftCertificate
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.domain.sellable import BaseSellableInfo, AbstractSellable
+from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 
 MAX_GIFTCERTIFICATE_NUMBER = 2
 
@@ -36,8 +36,8 @@ def create_giftcertificates():
     log.info('Creating gift certificates')
     trans = new_transaction()
 
-    statuses = [AbstractSellable.STATUS_SOLD,
-                AbstractSellable.STATUS_AVAILABLE]
+    statuses = [ASellable.STATUS_SOLD,
+                ASellable.STATUS_AVAILABLE]
 
     sellable_data = [dict(description='Christmas Gift Certificate',
                           price=430),

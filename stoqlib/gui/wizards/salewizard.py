@@ -52,7 +52,7 @@ from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
 from stoqlib.domain.payment.methods import get_active_pm_ifaces
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale, GiftCertificateOverpaidSettings
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             get_volatile_gift_certificate)
 from stoqlib.domain.interfaces import (ICheckPM, ICardPM, IBillPM,
@@ -279,7 +279,7 @@ class SaleRenegotiationOverpaidStep(WizardEditorStep):
 
     def validate_step(self):
         number = self.model.number
-        if AbstractSellable.check_barcode_exists(number):
+        if ASellable.check_barcode_exists(number):
             msg = _(u"The barcode %s already exists") % number
             self.certificate_number.set_invalid(msg)
             return False

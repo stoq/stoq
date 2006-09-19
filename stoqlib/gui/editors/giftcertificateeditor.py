@@ -30,7 +30,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
-from stoqlib.domain.sellable import BaseSellableInfo, AbstractSellable
+from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             GiftCertificateType,
                                             get_volatile_gift_certificate)
@@ -134,7 +134,7 @@ class GiftCertificateEditor(BaseEditor):
         msg = _(u"The barcode %s already exists")
         if self.single_check.get_active():
             barcode = self.model.number
-            if AbstractSellable.check_barcode_exists(barcode):
+            if ASellable.check_barcode_exists(barcode):
                 self.number.set_invalid(msg % barcode)
                 self.main_dialog.enable_ok()
                 return False
@@ -142,7 +142,7 @@ class GiftCertificateEditor(BaseEditor):
             for number in range(self.model.first_number,
                                 self.model.last_number + 1):
                 barcode = unicode(number)
-                if AbstractSellable.check_barcode_exists(barcode):
+                if ASellable.check_barcode_exists(barcode):
                     self.first_number.set_invalid(msg % barcode)
                     self.main_dialog.enable_ok()
                     return False

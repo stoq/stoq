@@ -37,7 +37,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
 from stoqlib.domain.person import (Person, EmployeeRole,
                                    get_city_location_template)
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
-from stoqlib.domain.sellable import BaseSellableCategory, AbstractSellable
+from stoqlib.domain.sellable import BaseSellableCategory, ASellable
 from stoqlib.domain.payment.methods import PaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.profile import UserProfile
@@ -128,7 +128,7 @@ class TestParameter(DomainTest):
         sellable_cert = self.sale.add_custom_gift_certificate(
                             certificate_value=Decimal(200),
                             certificate_number=u'500')
-        assert isinstance(sellable_cert, AbstractSellable)
+        assert isinstance(sellable_cert, ASellable)
         self.assertEqual(sellable_cert.base_sellable_info.description,
                          param.base_sellable_info.description)
 

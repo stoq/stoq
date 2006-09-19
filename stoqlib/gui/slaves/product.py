@@ -33,7 +33,7 @@ from stoqlib.domain.product import ProductAdaptToSellable
 from stoqdrivers.constants import TAX_NONE
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.person import PersonAdaptToBranch
 
 _ = stoqlib_gettext
@@ -87,7 +87,7 @@ class ProductFilterSlave(GladeSlaveDelegate):
     # the code bellow is duplicated and will be fixed on bug 2651
     # the duplicated code is in slaves/fiscal.py
     def _setup_slaves(self):
-        items = AbstractSellable.statuses.items()
+        items = ASellable.statuses.items()
         statuses = [(description, identifier)
                        for identifier, description in items]
         statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))

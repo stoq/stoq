@@ -40,7 +40,7 @@ from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
 from stoqlib.domain.person import PersonAdaptToBranch, Person
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter
-from stoqlib.domain.sellable import (AbstractSellable, AbstractSellableItem,
+from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      SellableView)
 from stoqlib.domain.interfaces import (ISellable, IStorable, IContainer,
                                        IDelivery, IBranch)
@@ -181,7 +181,7 @@ class ProductStockReference(Domain):
     product_item =  ForeignKey('ProductSellableItem')
 
 
-class ProductSellableItem(AbstractSellableItem):
+class ProductSellableItem(ASellableItem):
     """Class responsible to store basic products informations."""
 
     implements(IContainer)
@@ -258,10 +258,10 @@ class ProductSellableItem(AbstractSellableItem):
         # Avoiding circular imports here
         from stoqlib.domain.service import ServiceSellableItem
         conn = self.get_connection()
-        q1 = AbstractSellableItem.q.saleID == self.sale.id
-        q2 = AbstractSellableItem.q.id == ServiceSellableItem.q.id
+        q1 = ASellableItem.q.saleID == self.sale.id
+        q2 = ASellableItem.q.id == ServiceSellableItem.q.id
         query = AND(q1, q2)
-        services = AbstractSellableItem.select(query, connection=conn)
+        services = ASellableItem.select(query, connection=conn)
         if not services.count():
             return decimal.Decimal('0.0')
         delivered_qty = decimal.Decimal('0.0')
@@ -299,7 +299,7 @@ class ProductStockItem(AbstractStockItem):
 #
 
 
-class ProductAdaptToSellable(AbstractSellable):
+class ProductAdaptToSellable(ASellable):
     """A product implementation as a sellable facet."""
 
     sellableitem_table = ProductSellableItem
@@ -321,7 +321,7 @@ class ProductAdaptToSellable(AbstractSellable):
                 kw['tax_value'] = param.ICMS_TAX
             else:
                 kw['tax_value'] = param.SUBSTITUTION_TAX
-        AbstractSellable._create(self, id, **kw)
+        ASellable._create(self, id, **kw)
 
 Product.registerFacet(ProductAdaptToSellable, ISellable)
 

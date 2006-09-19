@@ -60,7 +60,7 @@ class PurchaseItem(Domain):
     quantity_received = DecimalCol(default=0)
     base_cost = PriceCol()
     cost = PriceCol()
-    sellable = ForeignKey('AbstractSellable')
+    sellable = ForeignKey('ASellable')
     order = ForeignKey('PurchaseOrder')
 
     def _create(self, id, **kw):

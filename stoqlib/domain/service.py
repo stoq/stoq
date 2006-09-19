@@ -36,7 +36,7 @@ from stoqlib.database.columns import DecimalCol, PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.exceptions import SellError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
-from stoqlib.domain.sellable import AbstractSellable, AbstractSellableItem
+from stoqlib.domain.sellable import ASellable, ASellableItem
 from stoqlib.domain.interfaces import ISellable, IDelivery, IContainer
 from stoqlib.domain.product import ProductSellableItem
 
@@ -53,7 +53,7 @@ class Service(Domain):
     image = BLOBCol(default='')
 
 
-class ServiceSellableItem(AbstractSellableItem):
+class ServiceSellableItem(ASellableItem):
     """A service implementation as a sellable item."""
 
     notes = UnicodeCol(default=None)
@@ -74,7 +74,7 @@ class DeliveryItem(Domain):
     """Class responsible to store all the products for a certain delivery"""
 
     quantity = DecimalCol()
-    sellable = ForeignKey('AbstractSellable')
+    sellable = ForeignKey('ASellable')
     delivery = ForeignKey('ServiceSellableItemAdaptToDelivery')
 
     #
@@ -127,7 +127,7 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     # General methods
     #
 
-    @argcheck(AbstractSellable)
+    @argcheck(ASellable)
     def get_item_by_sellable(self, sellable):
         items = [item for item in self.get_items()
                     if item.sellable.id == sellable.id]
@@ -144,15 +144,15 @@ ServiceSellableItem.registerFacet(ServiceSellableItemAdaptToDelivery,
                                   IDelivery)
 
 
-class ServiceAdaptToSellable(AbstractSellable):
+class ServiceAdaptToSellable(ASellable):
     """A service implementation as a sellable facet."""
 
     sellableitem_table = ServiceSellableItem
 
     def _create(self, id, **kw):
         if 'status' not in kw:
-            kw['status'] = AbstractSellable.STATUS_AVAILABLE
-        AbstractSellable._create(self, id, **kw)
+            kw['status'] = ASellable.STATUS_AVAILABLE
+        ASellable._create(self, id, **kw)
 
 Service.registerFacet(ServiceAdaptToSellable, ISellable)
 
