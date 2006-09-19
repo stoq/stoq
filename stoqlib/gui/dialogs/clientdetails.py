@@ -80,7 +80,7 @@ class ClientDetailsDialog(BaseEditor):
                 price = product.price
                 total_value = price * qty
                 unit = product.sellable.get_unit_description()
-                qty_str = '%s %s' %(qty, unit)
+                qty_str = '%s %s' % (qty, unit)
                 product_codes = [item.code for item in product_dict.values()]
                 sellable = product.sellable
                 if not sellable.code in product_codes:
@@ -92,7 +92,7 @@ class ClientDetailsDialog(BaseEditor):
                 else:
                     product_dict[sellable]._total_qty += qty
                     table = product_dict[sellable]
-                    table.qty_str = '%s %s'  %(table._total_qty, table.unit)
+                    table.qty_str = '%s %s' % (table._total_qty, table.unit)
                     table.total_value  = table._total_qty * table.price
         self.products = product_dict.values()
 

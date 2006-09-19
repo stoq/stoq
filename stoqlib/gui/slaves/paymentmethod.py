@@ -84,7 +84,8 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gsignal('method-changed', object)
 
     def __init__(self, method_iface=IMoneyPM):
-        GladeSlaveDelegate.__init__(self, gladefile=SelectPaymentMethodSlave.gladefile)
+        GladeSlaveDelegate.__init__(
+            self, gladefile=SelectPaymentMethodSlave.gladefile)
         self._setup_widgets()
         self._select_payment_method_by_iface(method_iface)
 

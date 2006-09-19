@@ -43,68 +43,67 @@ _ = stoqlib_gettext
 
 
 class ReceivingOrderDetailsDialog(BaseEditor):
-     """This dialog shows some important details about purchase receiving
+    """This dialog shows some important details about purchase receiving
         orders like:
          -history of received products
          -Invoice Details
          -Order details such transporter, supplier, etc.
 
-     """
+    """
 
-     title = _("Receiving Order Details")
-     hide_footer = True
-     size = (700, 400)
-     model_type = ReceivingOrder
-     gladefile = "ReceivingOrderDetailsDialog"
+    title = _("Receiving Order Details")
+    hide_footer = True
+    size = (700, 400)
+    model_type = ReceivingOrder
+    gladefile = "ReceivingOrderDetailsDialog"
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self._setup_widgets()
 
-     def __init__(self, conn, model):
-         BaseEditor.__init__(self, conn, model)
-         self._setup_widgets()
+    def _setup_widgets(self):
+        self.product_list.set_columns(self._get_product_columns())
+        products = ReceivingOrderItem.selectBy(receiving_orderID=self.model.id,
+                                               connection=self.conn)
+        self.product_list.add_list(list(products))
 
-     def _setup_widgets(self):
-         self.product_list.set_columns(self._get_product_columns())
-         products = ReceivingOrderItem.selectBy(receiving_orderID=self.model.id,
-                                                connection=self.conn)
-         self.product_list.add_list(list(products))
+        value_format = '<b>%s</b>'
+        total_label = value_format % _("Total:")
+        products_summary_label = SummaryLabel(klist=self.product_list,
+                                              column='total',
+                                             label=total_label,
+                                              value_format=value_format)
 
-         value_format = '<b>%s</b>'
-         total_label = value_format % _("Total:")
-         products_summary_label = SummaryLabel(klist=self.product_list,
-                                               column='total',
-                                               label=total_label,
-                                               value_format=value_format)
+        products_summary_label.show()
+        self.products_vbox.pack_start(products_summary_label, False)
 
-         products_summary_label.show()
-         self.products_vbox.pack_start(products_summary_label, False)
+    def _get_product_columns(self):
+        return [Column("sellable.code", title=_("Code"),
+                       data_type=int, justify=gtk.JUSTIFY_RIGHT,
+                       format="%04d", width=80),
+                Column("sellable.description", title=_("Description"),
+                       data_type=str, width=80, expand=True),
+                Column("quantity_unit_string", title=_("Quantity"),
+                       data_type=str, width=90,
+                       justify=gtk.JUSTIFY_RIGHT),
+                Column("cost", title=_("Cost"), width=80,
+                       data_type=currency, justify=gtk.JUSTIFY_RIGHT),
+                Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
+                       data_type=currency, width=100)]
 
-     def _get_product_columns(self):
-         return [Column("sellable.code", title=_("Code"),
-                        data_type=int, justify=gtk.JUSTIFY_RIGHT,
-                        format="%04d", width=80),
-                 Column("sellable.description", title=_("Description"),
-                        data_type=str, width=80, expand=True),
-                 Column("quantity_unit_string", title=_("Quantity"),
-                        data_type=str, width=90,
-                        justify=gtk.JUSTIFY_RIGHT),
-                 Column("cost", title=_("Cost"), width=80,
-                        data_type=currency, justify=gtk.JUSTIFY_RIGHT),
-                 Column("total", title=_("Total"), justify=gtk.JUSTIFY_RIGHT,
-                        data_type=currency, width=100)]
+    #
+    # BaseEditor Hooks
+    #
 
-     #
-     # BaseEditor Hooks
-     #
+    def setup_proxies(self):
+        receiving_date = self.model.get_receival_date_str()
+        branch_name = self.model.get_branch_name()
+        text = _('Received in <b>%s</b> for branch <b>%s</b>')
+        header_text = text % (receiving_date, branch_name)
+        self.header_label.set_markup(header_text)
+        self.add_proxy(self.model, ['notes'])
 
-     def setup_proxies(self):
-         receiving_date = self.model.get_receival_date_str()
-         branch_name = self.model.get_branch_name()
-         text = _('Received in <b>%s</b> for branch <b>%s</b>')
-         header_text = text % (receiving_date, branch_name)
-         self.header_label.set_markup(header_text)
-         self.add_proxy(self.model, ['notes'])
-
-     def setup_slaves(self):
-         self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model,
-                                                    visual_mode=True)
-         self.attach_slave("details_holder", self.invoice_slave)
+    def setup_slaves(self):
+        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model,
+                                                   visual_mode=True)
+        self.attach_slave("details_holder", self.invoice_slave)

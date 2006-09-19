@@ -123,7 +123,7 @@ class DiscountSurchargeSlave(BaseEditorSlave):
     def after_discount_value__changed(self, *args):
         self.setup_discount_surcharge()
         if self.model.discount_percentage > 100:
-            msg =_("Discount can not be greater then 100 percent")
+            msg = _("Discount can not be greater then 100 percent")
             self.discount_value.set_invalid(msg)
 
     @signal_block('surcharge_value.changed')
@@ -134,7 +134,7 @@ class DiscountSurchargeSlave(BaseEditorSlave):
     def after_surcharge_value__changed(self, *args):
         self.setup_discount_surcharge()
         if self.model.surcharge_percentage > 100:
-            msg =_("Surcharge can not be greater then 100 percent")
+            msg = _("Surcharge can not be greater then 100 percent")
             self.surcharge_value.set_invalid(msg)
 
     def on_surcharge_perc_ck__toggled(self, *args):

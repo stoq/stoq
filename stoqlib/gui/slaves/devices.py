@@ -36,7 +36,8 @@ _ = stoqlib_gettext
 class DeviceSettingsDialogSlave(AdditionListSlave):
     def __init__(self, conn, visual_mode=False, station=None):
         self._station = station
-        AdditionListSlave.__init__(self, conn, editor_class=DeviceSettingsEditor,
+        AdditionListSlave.__init__(self, conn,
+                                   editor_class=DeviceSettingsEditor,
                                    visual_mode=visual_mode)
         if self._station is not None:
             self.register_editor_kwargs(station=self._station)

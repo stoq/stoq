@@ -97,7 +97,6 @@ class ReportLine(Flowable):
         Reportlab.
         """
         self.avail_width = avail_width
-        x = avail_width, 2 * self.v_margins + self.thickness
         return avail_width, 2 * self.v_margins + self.thickness
 
     def drawOn(self, canvas, x, y, *args, **kwargs):
@@ -314,7 +313,6 @@ class Paragraph(RParagraph):
         if self._ellipsize and self.frags and not self._first_line_frags:
             total_width = 0.0
             first_line_frags = []
-            space_width = 0.0
             style = self.style
             max_width = (width - (style.leftIndent + style.firstLineIndent)
                          - style.rightIndent)
