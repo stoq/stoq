@@ -56,6 +56,7 @@ class DeliveryEditor(BaseEditor):
                             'delivery_date')
 
     def __init__(self, conn, model=None, sale=None, products=None):
+        # FIXME: rename product to sellable_items
         self.products = products
         self.sale = sale
         if model is not None:
@@ -102,7 +103,8 @@ class DeliveryEditor(BaseEditor):
         for product in self.products:
             if product.has_been_totally_delivered():
                 continue
-            item = self.delivery.add_item(product)
+            item = DeliveryItem.create_from_sellable_item(product)
+            self.delivery.add_item(item)
             delivery_items.append(item)
         self.delivery_items = delivery_items
 

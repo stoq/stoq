@@ -75,7 +75,7 @@ class DeliveryItem(Domain):
 
     quantity = DecimalCol()
     sellable = ForeignKey('ASellable')
-    delivery = ForeignKey('ServiceSellableItemAdaptToDelivery')
+    delivery = ForeignKey('ServiceSellableItemAdaptToDelivery', default=None)
 
     #
     # Accessors
@@ -86,6 +86,18 @@ class DeliveryItem(Domain):
 
     def get_total(self):
         return currency(self.get_price() * self.quantity)
+
+    @classmethod
+    def create_from_sellable_item(cls, item):
+        if not isinstance(item, ProductSellableItem):
+            raise TypeError(
+                "It's only possible to deliver products, not %r" % (
+                type(item),))
+
+        quantity = item.quantity - item.get_quantity_delivered()
+        return cls(connection=item.get_connection(),
+                   sellable=item.sellable,
+                   quantity=quantity)
 
 #
 # Adapters
@@ -103,22 +115,9 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     # IContainer implementation
     #
 
-    # FIXME: @argcheck(DeliveryItem)
+    @argcheck(DeliveryItem)
     def add_item(self, item):
-        if not isinstance(item, ProductSellableItem):
-            raise TypeError(
-                "It's only possible to deliver products, not %r" % (
-                type(item),))
-
-        conn = self.get_connection()
-
-        # FIXME: Is this necessary? Seems to be the same connection
-        obj = item.sellable
-        sellable = type(obj).get(obj.id, connection=conn)
-
-        quantity = item.quantity - item.get_quantity_delivered()
-        return DeliveryItem(connection=conn, sellable=sellable,
-                            delivery=self, quantity=quantity)
+        item.delivery = self
 
     def get_items(self):
         return DeliveryItem.selectBy(connection=self.get_connection(),
@@ -127,6 +126,7 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     @argcheck(DeliveryItem)
     def remove_item(self, item):
         DeliveryItem.delete(item.id, connection=item.get_connection())
+
 
     #
     # General methods
