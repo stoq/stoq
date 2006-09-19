@@ -319,9 +319,6 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     def add_complement(self, value, reason, category, date=None):
         raise NotImplementedError
 
-    def add_expenditure(self, value, reason, category, date=None):
-        raise NotImplementedError
-
     def get_cash_advance(self, value, reason, category, employee, date=None):
         raise NotImplementedError
 
