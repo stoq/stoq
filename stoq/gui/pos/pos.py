@@ -64,7 +64,7 @@ from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.domain.till import Till
-from stoqlib.domain.sellable import AbstractSellable
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.interfaces import IDelivery, IStorable, ISalesPerson
 
 from stoq.gui.application import AppWindow
@@ -127,7 +127,7 @@ class POSApp(AppWindow):
         text = _(u"Total: %s") % converter.as_string(currency, subtotal)
         self.order_total_label.set_text(text)
 
-    @argcheck(AbstractSellable)
+    @argcheck(ASellable)
     def _update_klist_item(self, sellable):
         """Checks if a certain sellable was already added to the order and
         update the item quantity on the sellable list. Returns True if the
@@ -165,7 +165,7 @@ class POSApp(AppWindow):
         self._reset_quantity_proxy()
         self._update_totals()
 
-    @argcheck(AbstractSellable, bool)
+    @argcheck(ASellable, bool)
     def _update_list(self, sellable, notify_on_entry=False):
         if not isinstance(sellable.get_adapted(), Service):
             if self._update_klist_item(sellable):
@@ -195,7 +195,7 @@ class POSApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        table = AbstractSellable
+        table = ASellable
         q1 = table.q.barcode == barcode
         q2 = table.q.status == table.STATUS_AVAILABLE
         query = AND(q1, q2)
@@ -262,7 +262,7 @@ class POSApp(AppWindow):
         if not items:
             return
         for item in items:
-            sellable = AbstractSellable.get(item.id, connection=self.conn)
+            sellable = ASellable.get(item.id, connection=self.conn)
             self._update_list(sellable)
         self.barcode.grab_focus()
 
