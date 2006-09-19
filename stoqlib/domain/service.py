@@ -103,14 +103,19 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
     # IContainer implementation
     #
 
+    # FIXME: @argcheck(DeliveryItem)
     def add_item(self, item):
         if not isinstance(item, ProductSellableItem):
-            raise TypeError("Received a %s object, expected %s."
-                            % (type(item), ProductSellableItem))
+            raise TypeError(
+                "It's only possible to deliver products, not %r" % (
+                type(item),))
 
         conn = self.get_connection()
+
+        # FIXME: Is this necessary? Seems to be the same connection
         obj = item.sellable
         sellable = type(obj).get(obj.id, connection=conn)
+
         quantity = item.quantity - item.get_quantity_delivered()
         return DeliveryItem(connection=conn, sellable=sellable,
                             delivery=self, quantity=quantity)
