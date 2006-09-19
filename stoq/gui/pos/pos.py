@@ -393,11 +393,13 @@ class POSApp(AppWindow):
         # We must commit now since we would like to have some of the
         # instances created in self.conn in a new transaction
         self.conn.commit()
-        conn = new_transaction()
-        service = self.run_dialog(DeliveryEditor, conn,
-                                  sale=self.sale,
-                                  products=products)
-        if not finish_transaction(conn, service):
+
+        trans = new_transaction()
+        sale = trans.get(self.sale)
+        products = (trans.get(product) for product in products)
+        service = self.run_dialog(DeliveryEditor, trans,
+                                  sale=sale, products=products)
+        if not finish_transaction(trans, service):
             return
         # Synchronize self.conn and bring the new delivery instances to it
         self.conn.commit()
