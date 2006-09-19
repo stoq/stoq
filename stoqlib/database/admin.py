@@ -70,11 +70,11 @@ def ensure_admin_user(administrator_password):
     user = person_obj.addFacet(IIndividual, connection=trans)
     user = person_obj.addFacet(IEmployee, role=role,
                                connection=trans)
-    role_history = EmployeeRoleHistory(connection=trans,
-                                       role=role,
-                                       employee=user,
-                                       is_active=True,
-                                       salary=currency(800))
+    EmployeeRoleHistory(connection=trans,
+                        role=role,
+                        employee=user,
+                        is_active=True,
+                        salary=currency(800))
 
     # This is usefull when testing a initial database. Admin user actually
     # must have all the facets.
