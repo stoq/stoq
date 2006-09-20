@@ -103,8 +103,8 @@ def get_employee(conn, role_name):
                            voter_data=voter_data, bank_account=bank_account)
 
 def get_salesperson(conn, role_name):
-    person = get_employee(conn, role_name)
-    person = person.get_adapted()
+    employee = get_employee(conn, role_name)
+    person = employee.person
     return person.addFacet(ISalesPerson, connection=conn)
 
 

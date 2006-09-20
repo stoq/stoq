@@ -62,7 +62,7 @@ class TestProductSupplierInfo(BaseDomainTest):
     def test_get_name(self):
         self.create_instance()
         assert (self._instance.get_name()
-                == self._instance.supplier.get_adapted().name)
+                == self._instance.supplier.person.name)
 
 class TestProduct(BaseDomainTest):
     _table = Product
