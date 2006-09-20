@@ -29,10 +29,11 @@ import time
 from stoqlib.database.runtime import (get_current_user,
                                       get_current_station)
 from stoqlib.domain.person import Person
+from stoqlib.domain.transaction import TransactionEntry
 
 from tests.base import DomainTest
 
-class TestStation(DomainTest):
+class TestTransaction(DomainTest):
     def test_timestamp(self):
         before = datetime.datetime.now()
         time.sleep(1)
@@ -75,3 +76,9 @@ class TestStation(DomainTest):
         person = Person(name="dummy", connection=self.trans)
 
         self.assertEqual(person.te_created.station, station)
+
+    def test_empty(self):
+        entry = TransactionEntry(timestamp=datetime.datetime.now(),
+                                 connection=self.trans)
+        self.assertEqual(entry.user, None)
+        self.assertEqual(entry.station, None)
