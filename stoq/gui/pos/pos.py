@@ -346,7 +346,7 @@ class POSApp(AppWindow):
         if not Till.get_current(self.conn):
             warning(_(u"You need open the till before start doing sales."))
             return
-        if not ISalesPerson(get_current_user(self.conn).get_adapted()):
+        if not ISalesPerson(get_current_user(self.conn).person):
             warning(_(u"You can't start a new sale, since you are not a "
                       "salesperson."))
             return
@@ -454,7 +454,7 @@ class POSApp(AppWindow):
     def _open_coupon(self):
         self._coupon = FiscalCoupon(self.conn, self.sale)
         if self.sale.client:
-            self._coupon.identify_customer(self.sale.client.get_adapted())
+            self._coupon.identify_customer(self.sale.client.person)
         while not self._coupon.open():
             if not yesno(_(u"It is not possible to start a new sale if the "
                            "fiscal coupon cannot be opened."),
