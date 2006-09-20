@@ -398,12 +398,12 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                                   connection=self.get_connection())
 
     def setup_inpayments(self):
-        payment_cout = self.get_items().count()
+        payment_count = self.get_items().count()
         till_entries_count = self.get_till_entries().count()
-        if not (payment_cout or till_entries_count):
+        if not (payment_count or till_entries_count):
             raise ValueError('You must have at least one payment for each '
                              'payment group')
-        self.installments_number = payment_cout
+        self.installments_number = payment_count
 
         # FIXME: Check if all the payments are in STATUS_PREVIEW state?
         for payment in self.get_items():
