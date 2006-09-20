@@ -220,7 +220,7 @@ def create_people():
     branch.manager = person_obj
     #provide_utility(ICurrentBranch, branch)
 
-    person = branch.get_adapted()
+    person = branch.person
     person.name = u"Async Open Source"
     person.phone_number = u"33760125"
     person.fax_number = u"35015394"

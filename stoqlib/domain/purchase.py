@@ -376,8 +376,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         order = self.get_adapted()
         if not order.supplier:
             raise DatabaseInconsistency('An order must have a supplier')
-        # FIXME: Don't use suppler.get_adapted()
-        return order.supplier.get_adapted()
+        return order.supplier.person
 
     def get_group_description(self):
         order = self.get_adapted()

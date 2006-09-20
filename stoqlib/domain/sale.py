@@ -332,14 +332,12 @@ class Sale(Domain):
         if current_user is None:
             raise StoqlibError("You should have a user for a sale "
                                "renegotiation")
-        # FIXME: Don't use current_user.get_adapted()
-        responsible = current_user.get_adapted()
         group = self.check_payment_group()
         paid_total = group.get_total_paid()
         reg_data = RenegotiationData(connection=conn,
                                      paid_total=paid_total,
                                      invoice_number=None,
-                                     responsible=responsible)
+                                     responsible=current_user.person)
         return reg_data.addFacet(IRenegotiationReturnSale, connection=conn)
 
     @argcheck(AbstractRenegotiationAdapter)
@@ -404,8 +402,7 @@ class Sale(Domain):
     def get_sale_client_role(self):
         if not self.client:
             return None
-        # FIXME: Don't use client.get_adapted()
-        person = self.client.get_adapted()
+        person = self.client.person
         if self.client_role is None:
             raise DatabaseInconsistency("The sale %r have a client but no "
                                         "client_role defined." % self)
@@ -502,8 +499,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_thirdparty(self):
         sale = self.get_adapted()
         client = sale.client
-        # FIXME: Don't use client.get_adapted()
-        return client and client.get_adapted() or None
+        return client and client.person or None
 
     def set_thirdparty(self, person):
         raise NotImplementedError
