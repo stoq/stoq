@@ -133,9 +133,6 @@ class Payment(Domain):
         else:
             return days_late.days
 
-    def is_to_pay(self):
-        return self.status == self.STATUS_PENDING
-
     def set_to_pay(self):
         """Set a STATUS_PREVIEW payment as STATUS_PENDING. This also means
         that this is valid payment and its owner actually can charge it
@@ -512,7 +509,7 @@ class PaymentAdaptToInPayment(ModelAdapter):
     # TODO: Unused
     def receive(self):
         payment = self.get_adapted()
-        if not payment.is_to_pay():
+        if not payment.status == Payment.STATUS_PENDING:
             raise ValueError("This payment is already received.")
         payment.pay()
         payment.group.update_thirdparty_status()
@@ -527,7 +524,7 @@ class PaymentAdaptToOutPayment(ModelAdapter):
 
     def pay(self):
         payment = self.get_adapted()
-        if not payment.is_to_pay():
+        if not payment.status == Payment.STATUS_PENDING:
             raise ValueError("This payment is already paid.")
         payment.pay()
         # TODO we must also add new till entries here
