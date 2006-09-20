@@ -277,6 +277,7 @@ class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_thirdparty(self):
         order = self.get_adapted()
         supplier = order.supplier
+        # FIXME: Don't use supplier.get_adapted()
         return supplier.get_adapted()
 
     def set_thirdparty(self, person):
