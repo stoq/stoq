@@ -34,7 +34,7 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      OnSaleInfo)
-from stoqlib.domain.interfaces import (ISellable, IDescribable,
+from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive,
                                        IGiftCertificatePM)
 
 _ = stoqlib_gettext
@@ -48,7 +48,7 @@ class GiftCertificateType(Domain):
     certificate items which can be sold or used as payment method in a
     sale.
     """
-    implements(IDescribable)
+    implements(IDescribable, IActive)
 
     is_active = BoolCol(default=True)
     base_sellable_info = ForeignKey('BaseSellableInfo')
@@ -69,6 +69,16 @@ class GiftCertificateType(Domain):
     @classmethod
     def get_active_gift_certificates(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
+
+    #
+    # IActive implementation
+    #
+
+    def activate(self):
+        self.is_active = True
+
+    def inactivate(self):
+        self.is_active = False
 
     #
     # IDescribable implementation
