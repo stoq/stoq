@@ -95,7 +95,7 @@ class ProductSupplierInfo(Domain):
         if not self.supplier:
             raise ValueError('This object must have a valid supplier '
                              'attribute')
-        return self.supplier.get_adapted().name
+        return self.supplier.get_description()
 
 class ProductRetentionHistory(Domain):
     """Class responsible to store information about product's retention."""
@@ -231,6 +231,9 @@ class ProductSellableItem(ASellableItem):
         if order_product:
             # TODO waiting for bug 2469
             raise StoqlibError("Order products is not a valid feature yet")
+
+        # FIXME: We cannot assume that the object our sellable adapts
+        #        implements IStorable
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted)
         # Update the stock
@@ -245,6 +248,8 @@ class ProductSellableItem(ASellableItem):
             self.sellable.sell()
 
     def cancel(self, branch):
+        # FIXME: We cannot assume that the object our sellable adapts
+        #        implements IStorable
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted)
         # Update the stock
@@ -366,6 +371,7 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         for stock_item in stocks:
             stock_item.quantity += quantity
+        # FIXME: We cannot assume that the object we adapt implements ISellable
         adapted = self.get_adapted()
         sellable = ISellable(adapted)
         if sellable.is_sold():
@@ -440,9 +446,9 @@ class ProductAdaptToStorable(ModelAdapter):
             total_qty += stock_item.quantity
 
         if total_cost and not total_qty:
-            msg = ('%s has inconsistent stock information: Quantity = 0 '
+            msg = ('%r has inconsistent stock information: Quantity = 0 '
                    'and TotalCost= %f')
-            raise StockError(msg % (self.get_adapted(), total_cost))
+            raise StockError(msg % (self, total_cost))
         if not total_qty:
             return currency(0)
         return currency(total_cost / total_qty)
@@ -465,6 +471,7 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def get_full_balance_string(self, branch=None, full_balance=None):
         full_balance = full_balance or self.get_full_balance(branch)
+        # FIXME: We cannot assume that the object we adapt implements ISellable
         adapted = self.get_adapted()
         sellable = ISellable(adapted)
         return u"%s %s" % (full_balance, sellable.get_unit_description())
