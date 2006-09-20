@@ -53,7 +53,7 @@ class StationSearch(SearchEditor):
         statuses = [(_('All branches'), ALL_ITEMS_INDEX)]
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         for branch in Person.iselect(IBranch, connection=self.conn):
-            statuses.append((branch.get_adapted().name, branch))
+            statuses.append((branch.person.name, branch))
         self.filter_slave = FilterSlave(statuses, selected=ALL_ITEMS_INDEX)
         self.filter_slave.set_filter_label(self.filter_label)
         return self.filter_slave

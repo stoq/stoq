@@ -123,7 +123,7 @@ class SellableSearch(SearchEditor):
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branch_list = table.get_active_branches(self.conn)
-        items = [(branch.get_adapted().name, branch)
+        items = [(branch.person.name, branch)
                     for branch in branch_list]
         if not items:
             raise ValueError('You should have at least one branch at '

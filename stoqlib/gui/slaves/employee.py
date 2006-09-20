@@ -128,7 +128,7 @@ class EmployeeRoleSlave(BaseEditorSlave):
     def __init__(self, conn, employee, edit_mode, visual_mode=False):
         self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         self.employee = employee
-        self.person = employee.get_adapted()
+        self.person = employee.person
         self.salesperson = ISalesPerson(self.person)
         self.is_edit_mode = edit_mode
         self.current_role_history = self._get_active_role_history()

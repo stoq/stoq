@@ -102,8 +102,8 @@ class ProductSupplierEditor(BaseEditor):
 
     def setup_combos(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
-        supplier_list = Person.iselect(ISupplier, connection=self.conn)
-        items = [(obj.get_adapted().name, obj) for obj in supplier_list]
+        suppliers = Person.iselect(ISupplier, connection=self.conn)
+        items = [(obj.person.name, obj) for obj in suppliers]
 
         assert items, ("There is no suppliers in database!")
 
