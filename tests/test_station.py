@@ -33,28 +33,29 @@ from tests.base import DomainTest
 class TestStation(DomainTest):
     name = 'test-station'
 
-    def test_create(self):
-        branch = self.create_branch()
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.branch = self.create_branch()
 
+    def test_create(self):
         results = BranchStation.select(
-            BranchStation.q.branchID == branch.id,
+            BranchStation.q.branchID == self.branch.id,
             connection=self.trans)
         self.assertEquals(results.count(), 0)
 
-        station = BranchStation.create(self.trans, branch, name=self.name)
+        station = BranchStation.create(self.trans, self.branch, name=self.name)
 
         results = BranchStation.select(
-            BranchStation.q.branchID == branch.id,
+            BranchStation.q.branchID == self.branch.id,
             connection=self.trans)
         self.assertEquals(results.count(), 1)
         self.assertEquals(results[0].name, self.name)
-        self.assertEquals(results[0].branch, branch)
+        self.assertEquals(results[0].branch, self.branch)
 
     def test_create_error(self):
-        branch = self.create_branch()
-        BranchStation.create(self.trans, branch, self.name)
+        BranchStation.create(self.trans, self.branch, self.name)
         self.assertRaises(StoqlibError,
-                          BranchStation.create, self.trans, branch,
+                          BranchStation.create, self.trans, self.branch,
                           self.name)
 
     def test_get_station(self):
@@ -63,23 +64,21 @@ class TestStation(DomainTest):
                           self.trans, branch=None, name=name)
 
         # Creating a station
-        branch = self.create_branch()
-        station = BranchStation.create(self.trans, branch, name)
+        station = BranchStation.create(self.trans, self.branch, name)
 
         self.failUnless(isinstance(station, BranchStation),
                         ("A valid branch station should be created, "
                          "got %r instead" % station))
         # Create a new station and assert it raises AssertionError
-        BranchStation(name=station.name, branch=branch,
+        BranchStation(name=station.name, branch=self.branch,
                       is_active=True, connection=self.trans)
         self.assertRaises(AssertionError, BranchStation.get_station,
-                          self.trans, branch=branch, name=name)
+                          self.trans, branch=self.branch, name=name)
 
     def test_get_active_stations(self):
         # Test BranchStation.get_active_stations as well inactivate and
         # activate methods
-        branch = self.create_branch()
-        station = BranchStation.create(self.trans, branch=branch,
+        station = BranchStation.create(self.trans, branch=self.branch,
                                        name=self.name)
         self.failUnless(
             station in BranchStation.get_active_stations(self.trans),
@@ -94,8 +93,7 @@ class TestStation(DomainTest):
             "The new station %r should be active" % station)
 
     def test_get_status_str(self):
-        branch = self.create_branch()
-        station = BranchStation.create(self.trans, branch=branch,
+        station = BranchStation.create(self.trans, branch=self.branch,
                                        name=self.name)
         station.inactivate()
         self.assertEqual(station.get_status_str(), _(u'Inactive'))
@@ -104,7 +102,6 @@ class TestStation(DomainTest):
         self.assertEqual(station.get_status_str(), _(u'Active'))
 
     def test_get_branch_name(self):
-        branch = self.create_branch()
-        station = BranchStation.create(self.trans, branch=branch,
+        station = BranchStation.create(self.trans, branch=self.branch,
                                        name=self.name)
         self.assertEqual(station.get_branch_name(), 'Dummy')
