@@ -602,7 +602,7 @@ Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 class PersonAdaptToUser(ModelAdapter):
     """An user facet of a person."""
-    implements(IUser, IActive)
+    implements(IUser, IActive, IDescribable)
 
     (STATUS_ACTIVE,
      STATUS_INACTIVE) = range(2)
@@ -630,6 +630,13 @@ class PersonAdaptToUser(ModelAdapter):
         if self.is_active:
             return _('Active')
         return _('Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_adapted().name
 
     @classmethod
     def check_password_for(cls, username, password, conn):
