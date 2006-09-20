@@ -80,9 +80,9 @@ def _create_adapter_test():
     #
     TODO = {
         # Add get_status_string to IActive
-        'ASalesPerson': 'get_status_string',
         'PersonAdaptToEmployee': ' ',
         'PersonAdaptToBranch': ' ',
+        'PersonAdaptToSalesPerson': ' ',
         'PersonAdaptToTransporter': ' ',
         'PersonAdaptToUser': ' ',
 
