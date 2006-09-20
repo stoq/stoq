@@ -107,7 +107,7 @@ class TestParameter(DomainTest):
         base_category = self.sparam.DEFAULT_BASE_CATEGORY
         assert isinstance(base_category, BaseSellableCategory)
 
-    def test_PaymentDestination (self):
+    def test_PaymentDestination(self):
         self._create_examples()
         param = self.sparam.DEFAULT_PAYMENT_DESTINATION
         new_payment = self.group.add_payment(value=10, description='testing',
