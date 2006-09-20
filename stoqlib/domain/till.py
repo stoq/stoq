@@ -164,7 +164,7 @@ class Till(Domain):
 
             # FIXME: Move this to payment itself
             for payment in group.get_items():
-                payment.status = Payment.STATUS_TO_PAY
+                payment.status = Payment.STATUS_PENDING
 
         current_balance = self.get_balance()
         if self.balance_sent and self.balance_sent > current_balance:
