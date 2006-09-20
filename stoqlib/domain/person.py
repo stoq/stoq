@@ -807,7 +807,7 @@ Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
 class PersonAdaptToTransporter(ModelAdapter):
     """A transporter facet of a person."""
-    implements(ITransporter, IActive)
+    implements(ITransporter, IActive, IDescribable)
 
     is_active = BoolCol(default=True)
     open_contract_date = DateTimeCol(default=datetime.datetime.now)
@@ -829,6 +829,13 @@ class PersonAdaptToTransporter(ModelAdapter):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
+
+    #
+    # IDescribable implementation
+    #
+
+    def get_description(self):
+        return self.get_adapted().name
 
     #
     # Auxiliar methods
