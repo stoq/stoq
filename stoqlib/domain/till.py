@@ -25,7 +25,7 @@
 ##
 """ Implementation of classes related to Payment management. """
 
-from datetime import datetime
+import datetime
 
 from sqlobject import (IntCol, DateTimeCol, ForeignKey, BoolCol, UnicodeCol,
                        SQLObject)
@@ -85,7 +85,7 @@ class Till(Domain):
     status = IntCol(default=STATUS_PENDING)
     balance_sent = PriceCol(default=0)
     final_cash_amount = PriceCol(default=0)
-    opening_date = DateTimeCol(default=datetime.now)
+    opening_date = DateTimeCol(default=datetime.datetime.now)
     closing_date = DateTimeCol(default=None)
     station = ForeignKey('BranchStation')
 
@@ -171,7 +171,7 @@ class Till(Domain):
             raise ValueError("The cash amount that you want to send is "
                              "greater than the current balance.")
 
-        self.closing_date = datetime.now()
+        self.closing_date = datetime.datetime.now()
         self.final_cash_amount = current_balance - self.balance_sent
         self.status = self.STATUS_CLOSED
 
@@ -286,7 +286,7 @@ class TillEntry(Domain):
     #       completely different from a negative value.
     #
     identifier = AutoIncCol("stoqlib_payment_identifier_seq")
-    date = DateTimeCol(default=datetime.now)
+    date = DateTimeCol(default=datetime.datetime.now)
     description = UnicodeCol()
     value = PriceCol()
     is_initial_cash_amount = BoolCol(default=False)
