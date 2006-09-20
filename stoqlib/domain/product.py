@@ -232,8 +232,7 @@ class ProductSellableItem(ASellableItem):
             # TODO waiting for bug 2469
             raise StoqlibError("Order products is not a valid feature yet")
 
-        # FIXME: We cannot assume that the object our sellable adapts
-        #        implements IStorable
+        # FIXME: Don't use sellable.get_adapted()
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted)
         # Update the stock
@@ -248,8 +247,7 @@ class ProductSellableItem(ASellableItem):
             self.sellable.sell()
 
     def cancel(self, branch):
-        # FIXME: We cannot assume that the object our sellable adapts
-        #        implements IStorable
+        # FIXME: Don't use sellable.get_adapted()
         adapted = self.sellable.get_adapted()
         storable = IStorable(adapted)
         # Update the stock
