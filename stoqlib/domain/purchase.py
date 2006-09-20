@@ -315,15 +315,15 @@ class PurchaseOrder(Domain):
         return self.freight_types[self.freight_type]
 
     def get_branch_name(self):
-        return self.branch.get_adapted().name
+        return self.branch.get_description()
 
     def get_supplier_name(self):
-        return self.supplier.get_adapted().name
+        return self.supplier.get_description()
 
     def get_transporter_name(self):
         if not self.transporter:
             return u""
-        return self.transporter.get_adapted().name
+        return self.transporter.get_description()
 
     def get_order_number_str(self):
         return u'%05d' % self.order_number
@@ -365,17 +365,18 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
     #
 
     def set_thirdparty(self, person):
-        order = self.get_adapted()
         supplier = ISupplier(person)
         if not supplier:
             raise StoqlibError("the purchase thirdparty should have an "
                                "ISupplier facet at this point")
+        order = self.get_adapted()
         order.supplier = supplier
 
     def get_thirdparty(self):
         order = self.get_adapted()
         if not order.supplier:
             raise DatabaseInconsistency('An order must have a supplier')
+        # FIXME: Don't use suppler.get_adapted()
         return order.supplier.get_adapted()
 
     def get_group_description(self):
