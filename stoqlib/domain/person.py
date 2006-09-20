@@ -47,7 +47,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
                                        ICreditProvider, ITransporter,
-                                       IDescribable)
+                                       IDescribable, IPersonFacet)
 from stoqlib.domain.salesperson import ASalesPerson
 from stoqlib.domain.station import BranchStation
 
@@ -357,7 +357,14 @@ class Person(Domain):
 # Adapters
 #
 
-class PersonAdaptToIndividual(ModelAdapter):
+class _PersonAdapter(ModelAdapter):
+    implements(IPersonFacet)
+
+    @property
+    def person(self):
+        return self.get_adapted()
+
+class PersonAdaptToIndividual(_PersonAdapter):
     """An individual facet of a person.
 
     B{Important attributes}:
@@ -412,7 +419,7 @@ class PersonAdaptToIndividual(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToIndividual, IIndividual)
 
-class PersonAdaptToCompany(ModelAdapter):
+class PersonAdaptToCompany(_PersonAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
@@ -433,11 +440,11 @@ class PersonAdaptToCompany(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
 Person.registerFacet(PersonAdaptToCompany, ICompany)
 
-class PersonAdaptToClient(ModelAdapter):
+class PersonAdaptToClient(_PersonAdapter):
     """A client facet of a person."""
 
     implements(IClient, IActive)
@@ -475,7 +482,7 @@ class PersonAdaptToClient(ModelAdapter):
     #
 
     def get_name(self):
-        return self.get_adapted().name
+        return self.person.name
 
     def get_status_string(self):
         if not self.statuses.has_key(self.status):
@@ -513,7 +520,7 @@ class PersonAdaptToClient(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToClient, IClient)
 
-class PersonAdaptToSupplier(ModelAdapter):
+class PersonAdaptToSupplier(_PersonAdapter):
     """A supplier facet of a person.
 
     B{Notes}:
@@ -546,11 +553,11 @@ class PersonAdaptToSupplier(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
 Person.registerFacet(PersonAdaptToSupplier, ISupplier)
 
-class PersonAdaptToEmployee(ModelAdapter):
+class PersonAdaptToEmployee(_PersonAdapter):
     """An employee facet of a person."""
     implements(IEmployee)
 
@@ -600,7 +607,7 @@ class PersonAdaptToEmployee(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
-class PersonAdaptToUser(ModelAdapter):
+class PersonAdaptToUser(_PersonAdapter):
     """An user facet of a person."""
     implements(IUser, IActive, IDescribable)
 
@@ -636,7 +643,7 @@ class PersonAdaptToUser(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
     @classmethod
     def check_password_for(cls, username, password, conn):
@@ -650,7 +657,7 @@ class PersonAdaptToUser(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
-class PersonAdaptToBranch(ModelAdapter):
+class PersonAdaptToBranch(_PersonAdapter):
     """A branch facet of a person."""
     implements(IBranch, IActive, IDescribable)
 
@@ -686,7 +693,7 @@ class PersonAdaptToBranch(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
     #
     # Branch Company methods
@@ -704,7 +711,7 @@ class PersonAdaptToBranch(ModelAdapter):
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
-class PersonAdaptToBankBranch(ModelAdapter):
+class PersonAdaptToBankBranch(_PersonAdapter):
     """A bank branch facet of a person."""
     implements(IBankBranch, IActive, IDescribable)
 
@@ -726,11 +733,11 @@ class PersonAdaptToBankBranch(ModelAdapter):
     # IDescribable
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
 Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
-class PersonAdaptToCreditProvider(ModelAdapter):
+class PersonAdaptToCreditProvider(_PersonAdapter):
     """A credit provider facet of a person."""
     implements(ICreditProvider, IActive)
 
@@ -808,11 +815,11 @@ class PersonAdaptToSalesPerson(ASalesPerson):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
 Person.registerFacet(PersonAdaptToSalesPerson, ISalesPerson)
 
-class PersonAdaptToTransporter(ModelAdapter):
+class PersonAdaptToTransporter(_PersonAdapter):
     """A transporter facet of a person."""
     implements(ITransporter, IActive, IDescribable)
 
@@ -842,7 +849,7 @@ class PersonAdaptToTransporter(ModelAdapter):
     #
 
     def get_description(self):
-        return self.get_adapted().name
+        return self.person.name
 
     #
     # Auxiliar methods
