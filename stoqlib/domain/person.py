@@ -699,7 +699,7 @@ Person.registerFacet(PersonAdaptToBranch, IBranch)
 
 class PersonAdaptToBankBranch(ModelAdapter):
     """A bank branch facet of a person."""
-    implements(IBankBranch, IActive)
+    implements(IBankBranch, IActive, IDescribable)
 
     is_active = BoolCol(default=True)
     bank = ForeignKey('Bank')
@@ -715,6 +715,11 @@ class PersonAdaptToBankBranch(ModelAdapter):
     def activate(self):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
+
+    # IDescribable
+
+    def get_description(self):
+        return self.get_adapted().name
 
 Person.registerFacet(PersonAdaptToBankBranch, IBankBranch)
 
