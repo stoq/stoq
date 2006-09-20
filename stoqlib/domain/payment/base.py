@@ -133,11 +133,11 @@ class Payment(Domain):
         else:
             return days_late.days
 
-    def set_to_pay(self):
+    def set_pending(self):
         """Set a STATUS_PREVIEW payment as STATUS_PENDING. This also means
         that this is valid payment and its owner actually can charge it
         """
-        self._check_status(self.STATUS_PREVIEW, 'set_to_pay')
+        self._check_status(self.STATUS_PREVIEW, 'set_pending')
         self.status = self.STATUS_PENDING
 
     def pay(self, paid_date=None, paid_value=None):
@@ -404,7 +404,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             raise ValueError('You must have at least one payment for each '
                              'payment group')
         self.installments_number = payment_cout
-        self.set_payments_to_pay()
+        self.set_payments_pending()
+
+        # FIXME: Check if all the payments are in STATUS_PREVIEW state?
+        for payment in self.get_items():
+            payment.set_pending()
 
     def confirm_money_payments(self):
         from stoqlib.domain.payment.methods import PMAdaptToMoneyPM
@@ -412,13 +416,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             if not isinstance(payment.method, PMAdaptToMoneyPM):
                 continue
             payment.pay()
-
-    def set_payments_to_pay(self):
-        """Checks if all the payments have STATUS_PREVIEW and set them as
-        STATUS_PENDING
-        """
-        for payment in self.get_items():
-            payment.set_to_pay()
 
     def check_close(self):
         """Verifies if the payment group can be closed and close it.

@@ -159,7 +159,7 @@ class GiftCertificateAdaptToSellable(ASellable):
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         adapter = IGiftCertificatePM(base_method)
         payment = adapter.setup_inpayments(self.price, self.group)
-        payment.set_to_pay()
+        payment.set_pending()
         self.status = self.STATUS_CLOSED
 
 
