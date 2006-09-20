@@ -404,7 +404,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             raise ValueError('You must have at least one payment for each '
                              'payment group')
         self.installments_number = payment_cout
-        self.set_payments_pending()
 
         # FIXME: Check if all the payments are in STATUS_PREVIEW state?
         for payment in self.get_items():
