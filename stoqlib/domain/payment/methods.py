@@ -523,8 +523,7 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
         installments_number = (installments_number or
                                self.get_max_installments_number())
         payment = self._get_new_payment(total, group, installments_number)
-        conn = self.get_connection()
-        payment.addFacet(IInPayment, connection=conn)
+        payment.addFacet(IInPayment, connection=self.get_connection())
         return payment
 
     def add_payment(self, payment_group, due_date, value,
