@@ -87,6 +87,7 @@ class BranchStation(Domain):
         @param branch: the branch
         @param name: name of the station
         """
+
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
         result = cls.select(
@@ -95,7 +96,7 @@ class BranchStation(Domain):
         if result.count() > 1:
             raise AssertionError("You should have only one station with "
                                  "name `%s' for branch `%s'"
-                                 % (name, branch.get_adapted().name))
+                                 % (name, branch.get_description()))
         elif result.count() == 1:
             return result[0]
         return None
