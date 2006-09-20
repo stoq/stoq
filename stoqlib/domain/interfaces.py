@@ -21,15 +21,26 @@
 ##
 """ Interfaces definition for all domain classes """
 
-from zope.interface import Attribute
+from zope.interface import Attribute, Interface
 
 from stoqlib.lib.component import NoneInterface
 
 #
-# NoneInterfaces
+# Interfaces
 #
 
-class IContainer(NoneInterface):
+class IActive(Interface):
+    """It defines if a certain object can be active or not"""
+
+    is_active = Attribute('This attribute defines if the object is active')
+
+    def inactivate():
+        """Inactivate an active object"""
+
+    def activate():
+        """Activate an inactive object"""
+
+class IContainer(Interface):
     """An objects that holds other objects or items"""
 
     def add_item(item):
@@ -42,6 +53,19 @@ class IContainer(NoneInterface):
 
     def remove_item(item):
         """Remove from the list or database the item desired."""
+
+
+
+class IDescribable(Interface):
+    """It defines that a object can be described through get_description
+    method.
+    """
+    def get_description():
+        """ Returns a description that identifies the object """
+
+#
+# NoneInterfaces
+#
 
 class ISellable(NoneInterface):
     """ Represents the sellable information of a certain item such a product
@@ -417,25 +441,6 @@ class IPaymentDeposit(NoneInterface):
 
     def get_deposit_date():
         """Get the day when the payment was paid"""
-
-class IActive(NoneInterface):
-    """It defines if a certain object can be active or not"""
-
-    is_active = Attribute('This attribute defines if the object is active')
-
-    def inactivate():
-        """Inactivate an active object"""
-
-    def activate():
-        """Activate an inactive object"""
-
-class IDescribable(NoneInterface):
-    """It defines that a object can be described through get_description
-    method.
-    """
-    def get_description():
-        """ Returns a description that identifies the object """
-
 
 class IReversal(NoneInterface):
     """A financial entry which support reversal operations"""
