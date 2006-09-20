@@ -58,7 +58,7 @@ class NewOrderEditor(BaseEditor):
         clients = client_table.get_active_clients(self.conn)
         max_results = sysparam(self.conn).MAX_SEARCH_RESULTS
         clients = clients[:max_results]
-        items = [(c.get_adapted().name, c) for c in clients]
+        items = [(c.person.name, c) for c in clients]
         self.client.prefill(items)
 
     def _setup_widgets(self):
@@ -85,7 +85,7 @@ class NewOrderEditor(BaseEditor):
 
     def _update_client_role_box(self):
         if self.model.client:
-            person = self.model.client.get_adapted()
+            person = self.model.client.person
             if (ICompany(person)
                 and IIndividual(person)):
                 self.clientrole_box.show()
@@ -96,7 +96,7 @@ class NewOrderEditor(BaseEditor):
         if not self.model.client:
             self.model.client_role = None
             return
-        person = self.model.client.get_adapted()
+        person = self.model.client.person
         if (ICompany(person)
             and not IIndividual(person)):
             self.model.client_role = Sale.CLIENT_COMPANY
@@ -113,7 +113,7 @@ class NewOrderEditor(BaseEditor):
     def create_model(self, conn):
         till = Till.get_current(conn)
         user = get_current_user(conn)
-        salesperson = ISalesPerson(user.get_adapted())
+        salesperson = ISalesPerson(user.person)
         cfop = sysparam(conn).DEFAULT_SALES_CFOP
         return Sale(connection=conn, till=till, salesperson=salesperson,
                     cfop=cfop, coupon_id=None)

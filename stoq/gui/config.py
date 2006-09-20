@@ -126,7 +126,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.param.update_parameter('SUBSTITUTION_TAX',
                                     unicode(substitution))
 
-        address = company.get_adapted().get_main_address()
+        address = company.person.get_main_address()
         if not address:
             raise StoqlibError("You should have an address defined at "
                                "this point")
@@ -447,7 +447,7 @@ class DatabaseSettingsStep(WizardEditorStep):
             self.wizard.station = self._create_station(conn, model)
         set_branch_by_stationid(conn)
 
-        model = model.get_adapted()
+        model = model.person
         if self.has_installed_db:
             return ExistingAdminPasswordStep(conn, self.wizard, self, model)
         else:
