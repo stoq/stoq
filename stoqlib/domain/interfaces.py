@@ -161,6 +161,20 @@ class IPersonFacet(NoneInterface):
     """
     person = Attribute("a Person")
 
+class IPaymentFacet(NoneInterface):
+    """
+    A facet on a Payment, the only thing it has is a named reference
+    back to the payment itself.
+    """
+    payment = Attribute("a Payment")
+
+class IPaymentMethodFacet(NoneInterface):
+    """
+    A facet on a PaymentMethod, the only thing it has is a named reference
+    back to the payment method itself.
+    """
+    method = Attribute("a PaymentMethod")
+
 class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
@@ -295,13 +309,13 @@ class ITransporter(IPersonFacet):
     freight_percentage = Attribute('The percentage amount of freight '
                                    'charged by this transporter')
 
-class IInPayment(NoneInterface):
+class IInPayment(IPaymentFacet):
     """ NoneInterface specification for InPayments. """
 
     def receive():
         """ Confirm the payment. """
 
-class IOutPayment(NoneInterface):
+class IOutPayment(IPaymentFacet):
     """ NoneInterface specification for OutPayments. """
 
     def pay():
@@ -356,7 +370,8 @@ class IDelivery(NoneInterface):
         @returns: a list of DeliveryItems
         """
 
-class IMoneyPM(NoneInterface):
+
+class IMoneyPM(IPaymentMethodFacet):
     """Defines a money payment method"""
 
     def get_change():
@@ -364,34 +379,34 @@ class IMoneyPM(NoneInterface):
         sale value
         """
 
-class ICheckPM(NoneInterface):
+class ICheckPM(IPaymentMethodFacet):
     """Defines a check payment method"""
 
     def get_check_data_by_payment(payment):
         """Return a CheckData instance for a certain payment"""
 
-class IBillPM(NoneInterface):
+class IBillPM(IPaymentMethodFacet):
     """Defines a bill payment method"""
 
     def get_available_bill_accounts():
         """Get all the available bill accounts for the current Bill type"""
 
-class IFinancePM(NoneInterface):
+class IFinancePM(IPaymentMethodFacet):
     """Defines a Finance payment method"""
 
     def get_finance_companies():
         """Get all the finance companies for a certain method"""
 
-class ICardPM(NoneInterface):
+class ICardPM(IPaymentMethodFacet):
     """Defines a card payment method"""
 
     def get_credit_card_providers():
         """Get all the credit providers for a certain method"""
 
-class IGiftCertificatePM(NoneInterface):
+class IGiftCertificatePM(IPaymentMethodFacet):
     """A marker interface for gift certificate payment method"""
 
-class IMultiplePM(NoneInterface):
+class IMultiplePM(IPaymentMethodFacet):
     """A marker interface for multiple payment method"""
 
 class ITillOperation(NoneInterface):
