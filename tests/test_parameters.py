@@ -84,11 +84,10 @@ class TestParameter(DomainTest):
     # System instances based on stoq.lib.parameters
 
     def test_MainCompany(self):
-        param = self.sparam.MAIN_COMPANY
+        company = self.sparam.MAIN_COMPANY
         branchTable = Person.getAdapterClass(IBranch)
-        assert isinstance(param, branchTable)
-        adapted = param.get_adapted()
-        assert isinstance(adapted, Person)
+        assert isinstance(company, branchTable)
+        assert isinstance(company.person, Person)
 
     def test_DefaultEmployeeRole(self):
         employee_role = self.sparam.DEFAULT_SALESPERSON_ROLE
@@ -98,7 +97,7 @@ class TestParameter(DomainTest):
         supplier = self.sparam.SUGGESTED_SUPPLIER
         supplierTable = Person.getAdapterClass(ISupplier)
         assert isinstance(supplier, supplierTable)
-        person = supplier.get_adapted()
+        person = supplier.person
         assert isinstance(person, Person)
         supplier = ISupplier(person)
         assert isinstance(supplier, supplierTable)
