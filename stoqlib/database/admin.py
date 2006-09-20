@@ -129,6 +129,7 @@ def user_has_usesuper(trans):
 def _create_procedural_languages(trans):
     "Creates procedural SQL languages we're going to use in scripts"
 
+    log.info('Creating procedural SQL languages')
     results = trans.queryAll('SELECT lanname FROM pg_language')
     languages = [item[0] for item in results]
     if 'plpgsql' in languages:
@@ -142,8 +143,7 @@ def _create_procedural_languages(trans):
     trans.query('CREATE LANGUAGE plpgsql')
 
 def create_base_schema():
-    filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
-    sql_file = environ.find_resource('sql', filename)
+    log.info('Creating base schema')
 
     trans = new_transaction()
 
@@ -151,7 +151,11 @@ def create_base_schema():
     # on the user running the `createlang' utility manually.
     _create_procedural_languages(trans)
 
+    log.info('Creating views')
+    filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
+    sql_file = environ.find_resource('sql', filename)
     run_sql_file(sql_file, trans)
+
     finish_transaction(trans, 1)
 
 @argcheck(bool, bool)
