@@ -49,9 +49,9 @@ from stoqlib.gui.slaves.paymentmethod import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup
-from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson
 from stoqlib.domain.sellable import ASellable
-from stoqlib.domain.salesperson import ASalesPerson
 from stoqlib.domain.giftcertificate import GiftCertificate
 
 _ = stoqlib_gettext
@@ -134,8 +134,8 @@ class AbstractSalesPersonStep(WizardEditorStep):
             self.proxy.update(field_name)
 
     def setup_widgets(self):
-        salespersons = ASalesPerson.select(connection=self.conn)
-        items = [(s.get_description(), s) for s in salespersons]
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        items = [(s.get_adapted().name, s) for s in salespersons]
         self.salesperson_combo.prefill(items)
         if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
             self.salesperson_combo.set_sensitive(False)

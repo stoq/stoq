@@ -43,6 +43,7 @@ from stoqlib.domain.person import (Person, CityLocation, Address,
                                    PersonAdaptToCompany,
                                    PersonAdaptToBranch,
                                    PersonAdaptToIndividual,
+                                   PersonAdaptToSalesPerson,
                                    PersonAdaptToSupplier,
                                    PersonAdaptToEmployee,
                                    PersonAdaptToUser,
@@ -54,7 +55,6 @@ from stoqlib.domain.person import (Person, CityLocation, Address,
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.salesperson import ASalesPerson
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import CityLocationError, DatabaseInconsistency
 from stoqlib.lib.component import CannotAdapt
@@ -502,7 +502,7 @@ class TestClient(BaseDomainTest):
         branch = branches[0]
         till = Till(connection=self.trans,
                     station=get_current_station(self.trans))
-        people = ASalesPerson.select(connection=self.trans)
+        people = PersonAdaptToSalesPerson.select(connection=self.trans)
         assert people.count() > 0
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
@@ -809,15 +809,15 @@ class TestCreditProvider(BaseDomainTest):
 
 class TestSalesPerson(BaseDomainTest):
     """
-    C{ASalesPerson} TestCase
+    C{PersonAdaptToSalesPerson} TestCase
     """
-    _table = ASalesPerson
+    _table = PersonAdaptToSalesPerson
 
     def get_adapter(self):
         return get_salesperson(self.trans, 'vigia')
 
     def test_inactivate(self):
-        people = ASalesPerson.select(connection=self.trans)
+        people = PersonAdaptToSalesPerson.select(connection=self.trans)
         assert people.count() > 0
         salesperson = people[0]
         salesperson.is_active = True
@@ -825,7 +825,7 @@ class TestSalesPerson(BaseDomainTest):
         assert salesperson.is_active is False
 
     def test_activate(self):
-        people = ASalesPerson.select(connection=self.trans)
+        people = PersonAdaptToSalesPerson.select(connection=self.trans)
         assert people.count() > 0
         salesperson = people[0]
         salesperson.is_active = False
@@ -833,7 +833,7 @@ class TestSalesPerson(BaseDomainTest):
         assert salesperson.is_active is True
 
     def test_get_active_salespersons(self):
-        table = ASalesPerson
+        table = PersonAdaptToSalesPerson
         count = table.get_active_salespersons(self.trans).count()
         salesperson = get_salesperson(self.trans, 'vendedor')
         one_more = salesperson.get_active_salespersons(self.trans).count()

@@ -34,11 +34,10 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples import log
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
-                                       ICheckPM)
+                                       ISalesPerson, ICheckPM)
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.salesperson import ASalesPerson
 from stoqlib.domain.till import Till
 
 _ = stoqlib_gettext
@@ -125,7 +124,7 @@ def create_sales():
     product_list = get_all_products(trans)
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
-    salespersons = ASalesPerson.select(connection=trans)
+    salespersons = Person.getAdapterClass(ISalesPerson).select(connection=trans)
     if salespersons.count() < DEFAULT_SALE_NUMBER:
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %

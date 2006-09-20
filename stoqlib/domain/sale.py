@@ -131,7 +131,7 @@ class Sale(Domain):
     client = ForeignKey('PersonAdaptToClient', default=None)
     cfop = ForeignKey("CfopData")
     till = ForeignKey('Till')
-    salesperson = ForeignKey('ASalesPerson')
+    salesperson = ForeignKey('PersonAdaptToSalesPerson')
     renegotiation_data = ForeignKey("AbstractRenegotiationAdapter",
                                     default=None)
 

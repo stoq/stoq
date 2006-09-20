@@ -51,7 +51,6 @@ _tables = [
      ('parameter', ["ParameterData"]),
      ('account', ["BankAccount", "Bank"]),
      ('profile', ["UserProfile", "ProfileSettings"]),
-     ('salesperson', ['ASalesPerson']),
      ('person', ["CityLocation",
                  "EmployeeRole",
                  "WorkPermitData",
