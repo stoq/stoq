@@ -44,9 +44,9 @@ _ = stoqlib_gettext
 #
 
 class GiftCertificateType(Domain):
-    """
-    A gift certificate item represents a sale item with a special
-    property: it can be used as a payment method for another sale.
+    """ A gift certificate type is like a template for creation of gift
+    certificate items which can be sold or used as payment method in a
+    sale.
     """
     implements(IDescribable)
 
