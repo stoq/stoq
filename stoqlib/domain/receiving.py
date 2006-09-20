@@ -140,6 +140,7 @@ class ReceivingOrder(Domain):
     def confirm(self):
         # Stock management
         for item in self.get_items():
+            # FIXME: Don't use sellable.get_adapted() here
             adapted = item.sellable.get_adapted()
             # We don't need manage stock for services, however
             # we need increase the quantity received for the item
@@ -179,21 +180,21 @@ class ReceivingOrder(Domain):
     def get_transporter_name(self):
         if not self.transporter:
             return u""
-        return self.transporter.get_adapted().name
+        return self.transporter.get_description()
 
     def get_receiving_number_str(self):
         return u"%04d" % self.receiving_number
 
     def get_branch_name(self):
-        return self.branch.get_adapted().name
+        return self.branch.get_description()
 
     def get_supplier_name(self):
         if not self.supplier:
             return u""
-        return self.supplier.get_adapted().name
+        return self.supplier.get_description()
 
     def get_responsible_name(self):
-        return self.responsible.get_adapted().name
+        return self.responsible.get_description()
 
     def get_products_total(self):
         total = sum([item.get_total() for item in self.get_items()],
