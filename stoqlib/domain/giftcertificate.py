@@ -36,6 +36,7 @@ from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      OnSaleInfo)
 from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive,
                                        IGiftCertificatePM)
+from stoqlib.exceptions import InvalidStatus
 
 _ = stoqlib_gettext
 
@@ -153,8 +154,8 @@ class GiftCertificateAdaptToSellable(ASellable):
 
     def apply_as_payment_method(self):
         if self.status != self.STATUS_SOLD:
-            raise ValueError('This gift certificate must be sold to '
-                             'be used as a payment method.')
+            raise InvalidStatus('This gift certificate must be sold to be used '
+                                'as a payment method.')
         conn = self.get_connection()
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         adapter = IGiftCertificatePM(base_method)
