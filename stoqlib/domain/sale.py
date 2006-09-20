@@ -332,6 +332,7 @@ class Sale(Domain):
         if current_user is None:
             raise StoqlibError("You should have a user for a sale "
                                "renegotiation")
+        # FIXME: Don't use current_user.get_adapted()
         responsible = current_user.get_adapted()
         group = self.check_payment_group()
         paid_total = group.get_total_paid()
@@ -351,6 +352,7 @@ class Sale(Domain):
         self.cancel_date = datetime.now()
         group = self.check_payment_group()
 
+        # FIXME: Don't use renegotiation_adapter.get_adapted()
         adapted = renegotiation_adapter.get_adapted()
         return_invoice_number = adapted.invoice_number
         group.cancel(return_invoice_number)
@@ -390,7 +392,7 @@ class Sale(Domain):
         return u'%05d' % self.order_number
 
     def get_salesperson_name(self):
-        return self.salesperson.get_adapted().name
+        return self.salesperson.get_description()
 
     def get_client_name(self):
         if not self.client:
@@ -402,6 +404,7 @@ class Sale(Domain):
     def get_sale_client_role(self):
         if not self.client:
             return None
+        # FIXME: Don't use client.get_adapted()
         person = self.client.get_adapted()
         if self.client_role is None:
             raise DatabaseInconsistency("The sale %r have a client but no "
@@ -499,6 +502,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_thirdparty(self):
         sale = self.get_adapted()
         client = sale.client
+        # FIXME: Don't use client.get_adapted()
         return client and client.get_adapted() or None
 
     def set_thirdparty(self, person):
@@ -678,8 +682,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
             order_number = order.order_number
             reason = _(u'1/1 Money returned for gift certificate '
                         'acquittance on sale %04d' % order_number)
-            self.create_debit(overpaid_value, reason,
-                              self.get_adapted().till)
+            self.create_debit(overpaid_value, reason, order.till)
 
         elif (regtype ==
               GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
