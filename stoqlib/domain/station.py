@@ -126,4 +126,4 @@ class BranchStation(Domain):
         """
         Returns the branch name
         """
-        return self.branch.get_adapted().name
+        return self.branch.get_description()
