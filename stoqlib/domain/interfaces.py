@@ -129,7 +129,15 @@ class IStorable(NoneInterface):
         object) of all the branches DIVIDED BY SUM(quantity atribute,
         StockReference object)
         """
-class IIndividual(NoneInterface):
+
+class IPersonFacet(NoneInterface):
+    """
+    A facet on a Person, the only thing it has is a named reference
+    back to the person itself.
+    """
+    person = Attribute("a Person")
+
+class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
@@ -160,7 +168,7 @@ class IIndividual(NoneInterface):
     rg_expedition_local = Attribute('The local which the Brazilian was made')
     gender = Attribute('gender_male, gender_female')
 
-class ICompany(NoneInterface):
+class ICompany(IPersonFacet):
     """An institution created to conduct business"""
 
     cnpj = Attribute('A Brazilian government register number for companies')
@@ -168,13 +176,13 @@ class ICompany(NoneInterface):
     state_registry = Attribute('A Brazilian register number associated with '
                                'a certain state')
 
-class IClient(NoneInterface):
+class IClient(IPersonFacet):
     """An individual or a company who pays for goods or services"""
 
     status = Attribute('ok, indebted, insolvent, inactive')
     days_late = Attribute('How many days is this client indebted')
 
-class ISupplier(NoneInterface):
+class ISupplier(IPersonFacet):
     """A company or an individual that produces, provides, or furnishes
     an item or service"""
 
@@ -182,7 +190,7 @@ class ISupplier(NoneInterface):
                              'this supplier produces')
     status = Attribute('active, inactive, blocked')
 
-class IEmployee(NoneInterface):
+class IEmployee(IPersonFacet):
     """An individual who performs work for an employer under a verbal
     or written understanding where the employer gives direction as to
     what tasks are done"""
@@ -212,7 +220,7 @@ class IEmployee(NoneInterface):
                               'BankAccount')
     role = Attribute('A reference to an employee role object')
 
-class IUser(NoneInterface):
+class IUser(IPersonFacet):
     """An employee which have access to one or more Stoq applications"""
 
     username = Attribute('Username')
@@ -221,13 +229,13 @@ class IUser(NoneInterface):
                         'system')
     password = Attribute('Password')
 
-class IBranch(NoneInterface):
+class IBranch(IPersonFacet):
     """An administrative division of some larger or more complex
     organization"""
 
     manager = Attribute('An employee which is in charge of this branch')
 
-class ISalesPerson(NoneInterface):
+class ISalesPerson(IPersonFacet):
     """An employee in charge of make sales"""
 
     commission = Attribute('The percentege of commission the company must pay '
@@ -235,6 +243,33 @@ class ISalesPerson(NoneInterface):
     commission_type = Attribute('A rule used to calculate the amount of '
                                'commission. This is a reference to another '
                                'object')
+
+
+class IBankBranch(IPersonFacet):
+    branch = Attribute('A bank branch definition')
+
+class ICreditProvider(IPersonFacet):
+    provider_type = Attribute('This attribute must be either'
+                              'provider card or provider '
+                              'finance')
+    short_name  = Attribute('A short description of this provider')
+    provider_id = Attribute('An identification for this provider')
+    open_contract_date = Attribute('The date when we start working with '
+                                   'this provider')
+
+    def get_card_providers(conn):
+        """Return a list of credit card providers"""
+
+    def get_finance_companies(conn):
+        """Return a list of finance companies"""
+
+class ITransporter(IPersonFacet):
+    """An individual or company engaged in the transportation"""
+
+    open_contract_date = Attribute('The date when we start working with '
+                                   'this transporter')
+    freight_percentage = Attribute('The percentage amount of freight '
+                                   'charged by this transporter')
 
 class IInPayment(NoneInterface):
     """ NoneInterface specification for InPayments. """
@@ -383,25 +418,6 @@ class IPaymentDeposit(NoneInterface):
     def get_deposit_date():
         """Get the day when the payment was paid"""
 
-class IBankBranch(NoneInterface):
-    branch = Attribute('A bank branch definition')
-
-
-class ICreditProvider(NoneInterface):
-    provider_type = Attribute('This attribute must be either'
-                              'provider card or provider '
-                              'finance')
-    short_name  = Attribute('A short description of this provider')
-    provider_id = Attribute('An identification for this provider')
-    open_contract_date = Attribute('The date when we start working with '
-                                   'this provider')
-
-    def get_card_providers(conn):
-        """Return a list of credit card providers"""
-
-    def get_finance_companies(conn):
-        """Return a list of finance companies"""
-
 class IActive(NoneInterface):
     """It defines if a certain object can be active or not"""
 
@@ -412,14 +428,6 @@ class IActive(NoneInterface):
 
     def activate():
         """Activate an inactive object"""
-
-class ITransporter(NoneInterface):
-    """An individual or company engaged in the transportation"""
-
-    open_contract_date = Attribute('The date when we start working with '
-                                   'this transporter')
-    freight_percentage = Attribute('The percentage amount of freight '
-                                   'charged by this transporter')
 
 class IDescribable(NoneInterface):
     """It defines that a object can be described through get_description
