@@ -67,14 +67,14 @@ class Payment(Domain):
     """
 
     (STATUS_PREVIEW,
-     STATUS_TO_PAY,
+     STATUS_PENDING,
      STATUS_PAID,
      STATUS_REVIEWING,
      STATUS_CONFIRMED,
      STATUS_CANCELLED) = range(6)
 
     statuses = {STATUS_PREVIEW: _(u'Preview'),
-                STATUS_TO_PAY: _(u'To Pay'),
+                STATUS_PENDING: _(u'To Pay'),
                 STATUS_PAID: _(u'Paid'),
                 STATUS_REVIEWING: _(u'Reviewing'),
                 STATUS_CONFIRMED: _(u'Confirmed'),
@@ -134,18 +134,18 @@ class Payment(Domain):
             return days_late.days
 
     def is_to_pay(self):
-        return self.status == self.STATUS_TO_PAY
+        return self.status == self.STATUS_PENDING
 
     def set_to_pay(self):
-        """Set a STATUS_PREVIEW payment as STATUS_TO_PAY. This also means
+        """Set a STATUS_PREVIEW payment as STATUS_PENDING. This also means
         that this is valid payment and its owner actually can charge it
         """
         self._check_status(self.STATUS_PREVIEW, 'set_to_pay')
-        self.status = self.STATUS_TO_PAY
+        self.status = self.STATUS_PENDING
 
     def pay(self, paid_date=None, paid_value=None):
         """Pay the current payment set its status as STATUS_PAID"""
-        self._check_status(self.STATUS_TO_PAY, 'pay')
+        self._check_status(self.STATUS_PENDING, 'pay')
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
@@ -177,7 +177,7 @@ class Payment(Domain):
     def cancel_till_entry(self):
         if self.status == Payment.STATUS_CANCELLED:
             raise StoqlibError("This payment is already cancelled")
-        self._check_status(self.STATUS_TO_PAY, 'reverse selection')
+        self._check_status(self.STATUS_PENDING, 'reverse selection')
         self.status = self.STATUS_CANCELLED
         payment = self.clone()
         description = (_('Cancellation of payment number %s')
@@ -189,7 +189,7 @@ class Payment(Domain):
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if
         # it's possible. Bug 2598
-        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_TO_PAY]:
+        if self.status not in [Payment.STATUS_PREVIEW, Payment.STATUS_PENDING]:
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
         self.status = self.STATUS_CANCELLED
@@ -377,7 +377,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def get_unpaid_payments(self):
         # FIXME: Logic in SQL
-        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_TO_PAY
+        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_PENDING
         return [p for p in self.get_items() if p.status in statuses]
 
     def get_total_paid(self):
@@ -418,7 +418,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
     def set_payments_to_pay(self):
         """Checks if all the payments have STATUS_PREVIEW and set them as
-        STATUS_TO_PAY
+        STATUS_PENDING
         """
         for payment in self.get_items():
             payment.set_to_pay()

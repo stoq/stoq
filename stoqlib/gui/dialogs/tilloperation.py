@@ -151,7 +151,7 @@ class TillOperationDialog(GladeSlaveDelegate):
         for item in self.selected_item:
             if item.status == Payment.STATUS_CANCELLED:
                 self.canceled_items += 1
-            if item.status == Payment.STATUS_TO_PAY:
+            if item.status == Payment.STATUS_PENDING:
                 self.selected += 1
         self.reverse_selection_button.set_sensitive(self.selected > 0)
 

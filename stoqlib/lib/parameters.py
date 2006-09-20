@@ -202,7 +202,7 @@ _parameter_info = dict(
       'Payments'),
     _(u'Generate preview payments for new purchases which are not received '
       'yet. Once the order is received the preview payments will be '
-      'also confirmed as valid payments with STATUS_TO_PAY')),
+      'also confirmed as valid payments with STATUS_PENDING')),
 
     RETURN_MONEY_ON_SALES=ParameterDetails(
     _(u'Sales'),
