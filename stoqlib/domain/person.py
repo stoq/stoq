@@ -679,7 +679,7 @@ class PersonAdaptToBranch(ModelAdapter):
     #
 
     def get_description(self):
-        return u"%04d %s" % (self.identifier, self.get_adapted().name)
+        return self.get_adapted().name
 
     #
     # Branch Company methods

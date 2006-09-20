@@ -685,7 +685,7 @@ class TestBranch(BaseDomainTest):
         person.addFacet(ICompany, connection=self.trans)
         branch = person.addFacet(IBranch, connection=self.trans,
                                  manager=person)
-        self.failUnless(branch.get_description().endswith(' Winston'))
+        self.failUnless(branch.get_description(), person.name)
 
     def test_get_active_branches(self):
         person = get_person(self.trans)
