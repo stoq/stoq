@@ -42,7 +42,7 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
-                                       IIndividual,
+                                       IIndividual, ISupplier,
                                        ISellable, IStorable, ISalesPerson)
 
 from bootstrap import bootstrap_testsuite
@@ -106,6 +106,12 @@ class DomainTest(unittest.TestCase):
         person = Person(name='Dummy', connection=self.trans)
         person.addFacet(ICompany, fancy_name='Dummy shop', connection=self.trans)
         return person.addFacet(IBranch, connection=self.trans)
+
+    def create_supplier(self):
+        from stoqlib.domain.person import Person
+        person = Person(name='Supplier', connection=self.trans)
+        person.addFacet(ICompany, fancy_name='Company Name', connection=self.trans)
+        return person.addFacet(ISupplier, connection=self.trans)
 
     def create_storable(self):
         from stoqlib.domain.product import Product
