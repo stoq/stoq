@@ -62,7 +62,7 @@ class StationEditor(BaseEditor):
         statuses = []
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         for branch in Person.iselect(IBranch, connection=self.conn):
-            statuses.append((branch.get_adapted().name, branch))
+            statuses.append((branch.person.name, branch))
         self.branch.prefill(statuses)
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)

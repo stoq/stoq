@@ -185,7 +185,7 @@ class _IndividualEditorTemplate(BaseEditorSlave):
     def setup_slaves(self):
         if not self._person_slave:
             klass = _PersonEditorTemplate
-            self._person_slave = klass(self.conn, self.model.get_adapted(),
+            self._person_slave = klass(self.conn, self.model.person,
                                        visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
 
@@ -229,7 +229,7 @@ class _CompanyEditorTemplate(BaseEditorSlave):
     def setup_slaves(self):
         if not self._person_slave:
             klass = _PersonEditorTemplate
-            self._person_slave = klass(self.conn, self.model.get_adapted(),
+            self._person_slave = klass(self.conn, self.model.person,
                                        visual_mode=self.visual_mode)
             self.attach_slave('main_holder', self._person_slave)
 
@@ -294,7 +294,7 @@ class BasePersonRoleEditor(BaseEditor):
 
     def get_title_model_attribute(self, model):
         # FIXME: Implement and use IDescribable on the model
-        return model.get_adapted().name
+        return model.person.name
 
 
     def create_model(self, conn):
@@ -314,8 +314,8 @@ class BasePersonRoleEditor(BaseEditor):
         return self.person
 
     def setup_slaves(self):
-        individual = IIndividual(self.model.get_adapted(), None)
-        company = ICompany(self.model.get_adapted(), None)
+        individual = IIndividual(self.model.person, None)
+        company = ICompany(self.model.person, None)
 
         if not (individual or company):
             raise ValueError('This person must have at least an '

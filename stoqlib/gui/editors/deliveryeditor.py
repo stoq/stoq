@@ -94,7 +94,7 @@ class DeliveryEditor(BaseEditor):
                             "a model defined." % self)
 
     def _check_client_addresses(self):
-        if not self.sale.client.get_adapted().get_main_address():
+        if not self.sale.client.person.get_main_address():
             raise TypeError("The client "%r" doesn't have a main "
                             "address" % self.sale.client)
 
@@ -124,7 +124,7 @@ class DeliveryEditor(BaseEditor):
                 Column('city', title=_('City'), width=100, data_type=str),
                 Column('state', title=_('State'), data_type=str)]
 
-        addresses = self.model.sale.client.get_adapted().addresses
+        addresses = self.model.sale.client.person.addresses
         result = run_dialog(SimpleListDialog, self, cols,
                             addresses, title=_('Client Addresses'),
                             selection_mode=gtk.SELECTION_BROWSE)
@@ -157,7 +157,7 @@ class DeliveryEditor(BaseEditor):
         self.delivery = model.addFacet(IDelivery, connection=conn)
         self._create_delivery_items()
 
-        main_address = sale.client.get_adapted().get_main_address()
+        main_address = sale.client.person.get_main_address()
         address_string = ("%s - %s/%s"
                           % (main_address.get_address_string(),
                              main_address.get_city(),

@@ -63,7 +63,7 @@ def ensure_admin_user(administrator_password):
     # sure if it's the best approach but for sure it's better than
     # create another one just for this user.
     company = sysparam(trans).MAIN_COMPANY
-    person_obj = company.get_adapted()
+    person_obj = company.person
 
     # Dependencies to create an user.
     role = EmployeeRole(name=_('System Administrator'), connection=trans)

@@ -261,7 +261,6 @@ class SaleInvoice(ClassInittableObject):
 
     @argcheck(PersonAdaptToClient)
     def _identify_client(self, client):
-        person = client.get_adapted()
         self.client_name = client.get_name()
         client_role = self._sale.get_sale_client_role()
         if IIndividual.providedBy(client_role):
@@ -272,13 +271,13 @@ class SaleInvoice(ClassInittableObject):
         else:
             raise TypeError("The client role for sale %r must be a "
                             "Invidual or a Company" % self._sale)
-        address = person.get_main_address()
+        address = client.person.get_main_address()
         self.client_address = "%s, %s" % (address.street, address.number)
         self.client_district = address.district
         self.client_postal_code = address.postal_code
         self.client_city = address.city_location.city
         self.client_state = address.city_location.state
-        self.client_phone = person.phone_number
+        self.client_phone = client.person.phone_number
 
     def get_document_as_string(self):
         return self._syscoord.get_data_as_string()

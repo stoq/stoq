@@ -237,8 +237,7 @@ def emit_coupon(sale, conn):
         return True
     coupon = FiscalCoupon(conn, sale)
     if sale.client:
-        person = sale.client.get_adapted()
-        coupon.identify_customer(person)
+        coupon.identify_customer(sale.client.person)
     if not coupon.open():
         return False
     map(coupon.add_item, products)
@@ -275,7 +274,7 @@ def print_cheques_for_payment_group(conn, group):
         return
     printer_banks = printer.get_banks()
     current_branch = get_current_branch(conn)
-    main_address = current_branch.get_adapted().get_main_address()
+    main_address = current_branch.person.get_main_address()
     if not main_address:
         raise ValueError("The cheque can not be printed since there is no "
                          "main address defined for the current branch.")

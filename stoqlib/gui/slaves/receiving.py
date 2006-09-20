@@ -64,14 +64,14 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
         table = PersonAdaptToTransporter
         transporters = table.get_active_transporters(self.conn)
-        items = [(t.get_adapted().name, t) for t in transporters]
+        items = [(t.person.name, t) for t in transporters]
         self.transporter.prefill(items)
 
     def _setup_supplier_entry(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
         table = PersonAdaptToSupplier
         suppliers = table.get_active_suppliers(self.conn)
-        items = [(s.get_adapted().name, s) for s in suppliers]
+        items = [(s.person.name, s) for s in suppliers]
         self.supplier.prefill(items)
 
     def _setup_widgets(self):
