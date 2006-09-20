@@ -125,3 +125,6 @@ class SellableError(Exception):
 
 class StoqlibError(Exception):
     """General Error for stoqlib domain classes and dialogs"""
+
+class InvalidStatus(Exception):
+    """Invalid status for the object which the operation was requested"""
