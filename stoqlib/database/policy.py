@@ -38,38 +38,38 @@ class SynchronizationPolicy(object):
 class Shop(SynchronizationPolicy):
     name = 'shop'
     tables = [
-        ('transaction.TransactionEntry', SyncPolicy.FROM_SOURCE),
+        ('TransactionEntry', SyncPolicy.FROM_SOURCE),
 
-        ('profile.UserProfile', SyncPolicy.INITIAL),
-        ('profile.ProfileSettings', SyncPolicy.INITIAL),
+        ('UserProfile', SyncPolicy.INITIAL),
+        ('ProfileSettings', SyncPolicy.INITIAL),
 
-        ('person.EmployeeRole', SyncPolicy.FROM_SOURCE),
-        ('person.Person', SyncPolicy.BOTH),
-        ('station.BranchStation', SyncPolicy.FROM_SOURCE),
+        ('EmployeeRole', SyncPolicy.FROM_SOURCE),
+        ('Person', SyncPolicy.BOTH),
+        ('BranchStation', SyncPolicy.FROM_SOURCE),
 
-        ('sellable.BaseSellableInfo', SyncPolicy.FROM_SOURCE),
-        ('sellable.OnSaleInfo', SyncPolicy.FROM_SOURCE),
-        ('sellable.SellableUnit', SyncPolicy.FROM_SOURCE),
-        ('sellable.BaseSellableCategory', SyncPolicy.FROM_SOURCE),
-        ('sellable.SellableCategory', SyncPolicy.FROM_SOURCE),
+        ('BaseSellableInfo', SyncPolicy.FROM_SOURCE),
+        ('OnSaleInfo', SyncPolicy.FROM_SOURCE),
+        ('SellableUnit', SyncPolicy.FROM_SOURCE),
+        ('BaseSellableCategory', SyncPolicy.FROM_SOURCE),
+        ('SellableCategory', SyncPolicy.FROM_SOURCE),
 
-        ('product.Product', SyncPolicy.FROM_SOURCE),
-        ('product.ProductSupplierInfo', SyncPolicy.FROM_SOURCE),
-        ('product.ProductStockItem', SyncPolicy.FROM_SOURCE),
-        ('product.ProductRetentionHistory', SyncPolicy.FROM_SOURCE),
+        ('Product', SyncPolicy.FROM_SOURCE),
+        ('ProductSupplierInfo', SyncPolicy.FROM_SOURCE),
+        ('ProductStockItem', SyncPolicy.FROM_SOURCE),
+        ('ProductRetentionHistory', SyncPolicy.FROM_SOURCE),
 
-        ('giftcertificate.GiftCertificate', SyncPolicy.INITIAL),
+        ('GiftCertificate', SyncPolicy.INITIAL),
 
-        ('service.Service', SyncPolicy.FROM_SOURCE),
-        ('sale.Sale', SyncPolicy.FROM_TARGET),
-        ('parameter.ParameterData', SyncPolicy.INITIAL),
+        ('Service', SyncPolicy.FROM_SOURCE),
+        ('Sale', SyncPolicy.FROM_TARGET),
+        ('ParameterData', SyncPolicy.INITIAL),
 
-        ("fiscal.CfopData", SyncPolicy.INITIAL),
-        ('payment.destination.PaymentDestination', SyncPolicy.INITIAL),
-        ('account.BankAccount', SyncPolicy.INITIAL),
-        ('payment.methods.PaymentMethod', SyncPolicy.INITIAL),
-        ('payment.methods.AbstractPaymentMethodAdapter', SyncPolicy.INITIAL),
-        ('payment.methods.PaymentMethodDetails', SyncPolicy.INITIAL),
+        ("CfopData", SyncPolicy.INITIAL),
+        ('PaymentDestination', SyncPolicy.INITIAL),
+        ('BankAccount', SyncPolicy.INITIAL),
+        ('PaymentMethod', SyncPolicy.INITIAL),
+        ('AbstractPaymentMethodAdapter', SyncPolicy.INITIAL),
+        ('PaymentMethodDetails', SyncPolicy.INITIAL),
         ]
 
 _policies.append(Shop)
