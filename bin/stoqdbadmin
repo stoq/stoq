@@ -163,13 +163,18 @@ class StoqCommandHandler:
         service = SynchronizationService("", 9000)
         service.serve()
 
-    def cmd_clone(self, options, hostname):
+    def cmd_clone(self, options, hostname, station):
         from stoqlib.database.synchronization import SynchronizationClient
         self._read_config(options)
 
         client = SynchronizationClient(hostname, 9000)
+        client_station = client.get_station_name()
+        if client_station != station:
+            raise SystemExit(
+                "The station name for the server is %s, expected %s" %
+                (client_station, station))
         client.clean()
-        client.clone()
+        client.clone(station)
 
 def main(args):
     pname = args[0]
