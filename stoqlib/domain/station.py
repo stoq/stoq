@@ -28,7 +28,6 @@ from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
-from stoqlib.database.columns import AutoIncCol
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IBranch
 from stoqlib.exceptions import StoqlibError
@@ -42,7 +41,6 @@ class BranchStation(Domain):
     """
     implements(IActive)
 
-    identifier = AutoIncCol('stoqlib_branch_station_seq')
     name = UnicodeCol()
     is_active = BoolCol(default=False)
     branch = ForeignKey("PersonAdaptToBranch")
