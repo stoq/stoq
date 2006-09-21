@@ -94,7 +94,7 @@ class AdaptableSQLObject(object):
         @returns: a list of facet classes
         """
 
-        facets = getattr(cls, '_facets', [])
+        facets = getattr(cls, '_facets', {})
 
         return facets.values()
 
