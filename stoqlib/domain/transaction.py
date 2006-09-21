@@ -32,7 +32,15 @@ class TransactionEntry(SQLObject):
     A TransactionEntry keeps track of state associated with a transaction.
     It's main use case is to know information about the system when
     a domain object is created or modified.
+
+    @cvar timestamp:
+    @cvar type: if it represents a creation or modification
+    @cvar user_id:
+    @cvar station_id:
     """
+
+    (CREATED,
+     MODIFIED) = range(2)
 
     timestamp = DateTimeCol(notNone=True)
 
@@ -42,6 +50,7 @@ class TransactionEntry(SQLObject):
 
     user_id = IntCol(default=0) # ForeignKey('PersonAdaptToUser')
     station_id = IntCol(default=0) # ForeignKey('BranchStation')
+    type = IntCol()
 
     @property
     def user(self):

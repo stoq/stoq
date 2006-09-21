@@ -81,11 +81,13 @@ class AbstractModel(object):
             station_id = None
 
         timestamp = datetime.datetime.now()
-        for entry in ['te_created', 'te_modified']:
+        for entry, entry_type in [('te_created', TransactionEntry.CREATED),
+                                  ('te_modified', TransactionEntry.MODIFIED)]:
             kwargs[entry] = TransactionEntry(
                 timestamp=timestamp,
                 user_id=user_id,
                 station_id=station_id,
+                type=entry_type,
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
 
