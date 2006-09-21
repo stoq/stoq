@@ -157,6 +157,20 @@ class StoqCommandHandler:
 
         print 'Database schema updated'
 
+    def cmd_serve(self, options):
+        from stoqlib.database.synchronization import SynchronizationService
+        self._read_config(options, check_schema=False, register_station=False)
+        service = SynchronizationService("", 9000)
+        service.serve()
+
+    def cmd_clone(self, options, hostname):
+        from stoqlib.database.synchronization import SynchronizationClient
+        self._read_config(options)
+
+        client = SynchronizationClient(hostname, 9000)
+        client.clean()
+        client.clone()
+
 def main(args):
     pname = args[0]
     args = args[1:]
