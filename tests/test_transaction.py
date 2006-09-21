@@ -79,6 +79,7 @@ class TestTransaction(DomainTest):
 
     def test_empty(self):
         entry = TransactionEntry(timestamp=datetime.datetime.now(),
-                                 connection=self.trans)
+                                 connection=self.trans,
+                                 type=TransactionEntry.CREATED)
         self.assertEqual(entry.user, None)
         self.assertEqual(entry.station, None)
