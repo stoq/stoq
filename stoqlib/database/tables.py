@@ -73,6 +73,7 @@ _tables = [
                  "PersonAdaptToCreditProvider",
                  "PersonAdaptToTransporter",
                  "EmployeeRoleHistory"]),
+     ('synchronization', ["BranchSynchronization"]),
      ('station', ["BranchStation"]),
      ('till', ["Till",
                "TillAdaptToPaymentGroup"]),
