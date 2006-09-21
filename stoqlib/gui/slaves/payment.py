@@ -201,9 +201,6 @@ class BankDataSlave(BaseEditorSlave):
     proxy_widgets = ('bank',
                      'branch')
 
-    def __init__(self, conn, model):
-        BaseEditorSlave.__init__(self, conn, model)
-
     #
     # BaseEditorSlave hooks
     #
