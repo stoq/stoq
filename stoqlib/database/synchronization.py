@@ -144,10 +144,40 @@ class SynchronizationClient(object):
 
         return configuration
 
-    # Public API
+    def _get_station(self, conn, name):
+        log.info("Fetching station %s" % (name, ))
 
-    def clean(self):
-        self.proxy.clean()
+        # Note: This assumes that names of the stations are unique
+        stations = BranchStation.select(BranchStation.q.name == name,
+                                        connection=conn)
+        if stations.count() != 1:
+            raise Exception(
+                "There is no station for %s" % (name,))
+
+        return stations[0]
+
+    def _get_synchronization(self, trans, branch):
+        results = BranchSynchronization.select(
+            BranchSynchronization.q.branchID == branch.id,
+            connection=trans)
+
+        if results.count() == 0:
+            return None
+        return results[0]
+
+    def _update_synchronization(self, trans, station_name, timestamp, policy):
+        station = self._get_station(trans, station_name)
+
+        sync = self._get_synchronization(trans, station.branch)
+        if not sync:
+            log.info("Created BranchSynchronization object")
+            sync = BranchSynchronization(timestamp=timestamp,
+                                         branch=station.branch,
+                                         policy=policy,
+                                         connection=trans)
+        else:
+            log.info("Updating BranchSynchronization object")
+            sync.timestamp = timestamp
 
     def _collect_table(self, tables, table):
         if table in tables:
@@ -170,19 +200,7 @@ class SynchronizationClient(object):
             for facet_type in table.getFacetTypes():
                 self._collect_table(tables, facet_type)
 
-    def get_station_name(self):
-        return self.proxy.get_station_name()
-
-    def clone(self, station_name):
-        policy = self._get_policy('shop')
-
-        trans = new_transaction()
-        station = self._get_station(trans, station_name)
-        timestamp = datetime.datetime.now()
-
-        sid = self.proxy.sql_prepare()
-
-        combined = ""
+    def _get_tables(self, policy):
         tables = []
         for table_name, table_policy in policy.tables:
             if table_policy == SyncPolicy.FROM_TARGET:
@@ -190,7 +208,27 @@ class SynchronizationClient(object):
             table = get_table_type_by_name(table_name)
             self._collect_table(tables, table)
 
-        for table in tables:
+        return tables
+
+    # Public API
+
+    def clean(self):
+        self.proxy.clean()
+
+    def get_station_name(self):
+        return self.proxy.get_station_name()
+
+    def clone(self, station_name):
+        policy = self._get_policy('shop')
+
+        trans = new_transaction()
+        timestamp = datetime.datetime.now()
+
+        sid = self.proxy.sql_prepare()
+
+        combined = ""
+
+        for table in self._get_tables(policy):
             proc = self._pg_dump_table(table)
 
             # This is kind of tricky, only send data when we reached CHUNKSIZE,
@@ -205,40 +243,12 @@ class SynchronizationClient(object):
                     self.proxy.sql_insert(sid, combined[:CHUNKSIZE])
                     combined = combined[CHUNKSIZE:]
 
-        # Also send left overs
+        # Finally send leftovers
         if combined:
             self.proxy.sql_insert(sid, combined)
 
         self.proxy.sql_finish(sid)
 
-        sync = self._get_synchronization(trans, station.branch)
-        if not sync:
-            sync = BranchSynchronization(timestamp=timestamp,
-                                         branch=station.branch,
-                                         policy=policy,
-                                         connection=trans)
-        else:
-            sync.timestamp = timestamp
+        self._update_synchronization(trans, station_name, timestamp, policy)
 
         trans.commit()
-
-    def _get_station(self, conn, name):
-        log.info("Fetch station %s" % (name, ))
-        # Note: This assumes that names of the stations are unique
-        stations = BranchStation.select(BranchStation.q.name == name,
-                                        connection=conn)
-        if stations.count() != 1:
-            raise Exception(
-                "There is no station for %s" % (name,))
-
-        return stations[0]
-
-    def _get_synchronization(self, trans, branch):
-        results = BranchSynchronization.select(
-            BranchSynchronization.q.branchID == branch.id,
-            connection=trans)
-
-        if results.count() == 0:
-            return None
-        return results[0]
-
