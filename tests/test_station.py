@@ -24,6 +24,7 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
+from stoqlib.database.exceptions import IntegrityError
 from stoqlib.domain.station import BranchStation
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext as _
@@ -69,11 +70,9 @@ class TestStation(DomainTest):
         self.failUnless(isinstance(station, BranchStation),
                         ("A valid branch station should be created, "
                          "got %r instead" % station))
-        # Create a new station and assert it raises AssertionError
-        BranchStation(name=station.name, branch=self.branch,
-                      is_active=True, connection=self.trans)
-        self.assertRaises(AssertionError, BranchStation.get_station,
-                          self.trans, branch=self.branch, name=name)
+        self.assertRaises(IntegrityError,
+                          BranchStation, name=station.name, branch=self.branch,
+                          is_active=True, connection=self.trans)
 
     def test_get_active_stations(self):
         # Test BranchStation.get_active_stations as well inactivate and
