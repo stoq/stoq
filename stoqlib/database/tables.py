@@ -30,6 +30,7 @@
  (classA, classB, ...).
 """
 
+
 from kiwi.log import Logger
 from kiwi.python import namedAny
 
@@ -172,23 +173,19 @@ def _import():
     for path, table_names in _tables:
         for table_name in table_names:
             klass = namedAny('stoqlib.domain.%s.%s' % (path, table_name))
-            _table_cache[path + '.' + table_name] = klass
+            _table_cache[table_name] = klass
             _table_list.append(klass)
 
 def get_table_type_by_name(table_name):
     """
     Gets a table by name.
 
-    @param table_name: name of the table, including module name after
-      stoqlib.domain, eg person.Person or product.Product
+    @param table_name: name of the table
     """
 
     global _table_cache
     if not _table_cache:
         _import()
-
-    if table_name.startswith('stoqlib.domain.'):
-        table_name = table_name[15:]
 
     return _table_cache[table_name]
 
