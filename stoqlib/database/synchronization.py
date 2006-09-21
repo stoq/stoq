@@ -22,7 +22,8 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-import select
+import datetime
+import socket
 import subprocess
 
 from kiwi.component import get_utility
@@ -33,9 +34,10 @@ from stoqlib.database.database import db_table_name
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import create_tables, get_table_type_by_name
+from stoqlib.domain.station import BranchStation
+from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.system import SystemTable
 from stoqlib.enums import SyncPolicy
-from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.component import AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.xmlrpc import ServerProxy, XMLRPCService
@@ -57,15 +59,6 @@ class SynchronizationService(XMLRPCService):
         SystemTable.update(trans, check_new_db=True)
         trans.commit()
 
-    def _check_error(self, proc):
-        fds =  select.select([proc.stderr], [], [], .500)[0]
-        if not fds:
-            return
-        data = (proc.stderr.readline() +
-                proc.stderr.readline()[:-1])
-        if data:
-            raise DatabaseError(data)
-
     #
     # Protocol / Public Methods
     #
@@ -79,7 +72,8 @@ class SynchronizationService(XMLRPCService):
         log.info('service.sql_prepare()')
         settings = get_utility(IDatabaseSettings)
 
-        CMD = "psql -n -h %(address)s -p %(port)s %(dbname)s -q"
+        CMD = ("psql -n -h %(address)s -p %(port)s %(dbname)s -q "
+               "--variable ON_ERROR_STOP=")
         cmd = CMD % dict(
             address=settings.address,
             port=settings.port,
@@ -88,9 +82,7 @@ class SynchronizationService(XMLRPCService):
         log.info('sql_prepare: executing %s' % cmd)
         proc = subprocess.Popen(cmd, shell=True,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE
-                                )
+                                stdout=subprocess.PIPE)
 
         self._processes[proc.pid] = proc
         log.info('sql_prepare: return %d' % (proc.pid, ))
@@ -101,7 +93,6 @@ class SynchronizationService(XMLRPCService):
         proc = self._processes[pid]
 
         proc.stdin.write(dump.encode('utf-8'))
-        self._check_error(proc)
 
     def sql_finish(self, pid):
         log.info('service.sql_finish(%d)' % (pid,))
@@ -110,18 +101,21 @@ class SynchronizationService(XMLRPCService):
 
         log.info('sql_finish: closing stdin for pg_dump process %d' % (pid,))
         proc.stdin.close()
-        self._check_error(proc)
 
         returncode = proc.wait()
         log.info('sql_finish: psql process returned %d' % (returncode,))
 
         self._add_remaning_schema()
 
+    def get_station_name(self):
+        return socket.gethostname()
+
     # Twisted
     xmlrpc_clean = clean
     xmlrpc_sql_prepare = sql_prepare
     xmlrpc_sql_insert = sql_insert
     xmlrpc_sql_finish = sql_finish
+    xmlrpc_get_station_name = get_station_name
 
 class SynchronizationClient(object):
     def __init__(self, hostname, port):
@@ -176,10 +170,15 @@ class SynchronizationClient(object):
             for facet_type in table.getFacetTypes():
                 self._collect_table(tables, facet_type)
 
-    def clone(self):
-        tables = ('transaction_entry', 'person',)
+    def get_station_name(self):
+        return self.proxy.get_station_name()
 
+    def clone(self, station_name):
         policy = self._get_policy('shop')
+
+        trans = new_transaction()
+        station = self._get_station(trans, station_name)
+        timestamp = datetime.datetime.now()
 
         sid = self.proxy.sql_prepare()
 
@@ -211,3 +210,35 @@ class SynchronizationClient(object):
             self.proxy.sql_insert(sid, combined)
 
         self.proxy.sql_finish(sid)
+
+        sync = self._get_synchronization(trans, station.branch)
+        if not sync:
+            sync = BranchSynchronization(timestamp=timestamp,
+                                         branch=station.branch,
+                                         policy=policy,
+                                         connection=trans)
+        else:
+            sync.timestamp = timestamp
+
+        trans.commit()
+
+    def _get_station(self, conn, name):
+        log.info("Fetch station %s" % (name, ))
+        # Note: This assumes that names of the stations are unique
+        stations = BranchStation.select(BranchStation.q.name == name,
+                                        connection=conn)
+        if stations.count() != 1:
+            raise Exception(
+                "There is no station for %s" % (name,))
+
+        return stations[0]
+
+    def _get_synchronization(self, trans, branch):
+        results = BranchSynchronization.select(
+            BranchSynchronization.q.branchID == branch.id,
+            connection=trans)
+
+        if results.count() == 0:
+            return None
+        return results[0]
+
