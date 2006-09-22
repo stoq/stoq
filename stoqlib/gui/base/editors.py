@@ -55,9 +55,7 @@ class BaseEditorSlave(GladeSlaveDelegate):
         @param visual_mode: does this slave must be opened in visual mode?
                             if so, all the proxy widgets will be disable
         """
-
-        # The model attribute represents the
-        self.conn = conn
+        self.conn = self.trans = conn
         self.edit_mode = model is not None
         self.visual_mode = visual_mode
 
