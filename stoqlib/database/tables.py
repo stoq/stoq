@@ -36,7 +36,7 @@ from kiwi.python import namedAny
 
 from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.database import db_table_name, finish_transaction
+from stoqlib.database.database import db_table_name
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -249,4 +249,3 @@ def create_tables(delete_only=False):
             createSequence(trans, seq_name)
 
     trans.commit()
-    finish_transaction(trans, 1)
