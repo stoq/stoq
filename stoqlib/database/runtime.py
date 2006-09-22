@@ -72,6 +72,7 @@ class StoqlibTransaction(Transaction):
             # FIXME: Figure out when this is needed
             if obj.sqlmeta._obsolete:
                 continue
+
             obj.te_modified.timestamp = datetime.datetime.now()
             obj.te_modified.user_id = user_id
             obj.te_modified.station_id = station_id

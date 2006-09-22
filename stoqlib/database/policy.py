@@ -38,6 +38,8 @@ class SynchronizationPolicy(object):
 class Shop(SynchronizationPolicy):
     name = 'shop'
     tables = [
+        ('TransactionEntry', SyncPolicy.INITIAL),
+
         ('UserProfile', SyncPolicy.INITIAL),
         ('ProfileSettings', SyncPolicy.INITIAL),
 
