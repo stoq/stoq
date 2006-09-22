@@ -32,7 +32,7 @@ from kiwi.log import Logger
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import db_table_name
 from stoqlib.database.policy import get_policy_by_name
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import create_tables, get_table_type_by_name
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
@@ -46,6 +46,116 @@ from sqlobject.sqlbuilder import AND
 log = Logger('stoqlib.synchronization')
 
 CHUNKSIZE = 40960
+
+def _collect_table(tables, table):
+    if table in tables:
+        return
+
+    parent = table.sqlmeta.parentClass
+    while parent:
+        _collect_table(tables, parent)
+        parent = parent.sqlmeta.parentClass
+
+   ##for column in table.sqlmeta.columnList:
+   ##    if isinstance(column, SOForeignKey):
+   ##        foreign_table = findClass(column.foreignKey)
+   ##        _collect_table(tables, foreign_table)
+
+    tables.append(table)
+
+    if issubclass(table, AdaptableSQLObject):
+        for facet_type in table.getFacetTypes():
+            _collect_table(tables, facet_type)
+
+def _get_tables(policy, filter):
+    tables = []
+    for table_name, table_policy in policy.tables:
+        if table_policy in filter:
+            continue
+        table = get_table_type_by_name(table_name)
+        _collect_table(tables, table)
+
+    return tables
+
+class TableSerializer:
+    def __init__(self, conn, tables):
+        self._conn = conn
+        self._tables = tables
+
+    def _serialize_update(self, obj):
+        values = []
+        for column in obj.sqlmeta.columnList:
+            value = getattr(obj, column.name)
+            values.append("%s = %s" % (column.dbName, self._conn.sqlrepr(value)))
+
+        return ("UPDATE %s SET %s WHERE %s = %s;" %
+                (obj.sqlmeta.table,
+                 ", ".join(values),
+                 obj.sqlmeta.idName,
+                 self._conn.sqlrepr(obj.id)))
+
+    def _serialize_updates(self, results):
+        data = ""
+        for so in results:
+            te = TransactionEntry.get(so.te_modifiedID, connection=self._conn)
+            data += self._serialize_update(te)
+            data += self._serialize_update(so)
+
+        return data
+
+    def _serialize_insert(self, obj):
+        names = [obj.sqlmeta.idName]
+        values = [str(obj.id)]
+        for column in obj.sqlmeta.columnList:
+            value = getattr(obj, column.name)
+            names.append(column.dbName)
+            values.append(self._conn.sqlrepr(value))
+
+        return ("INSERT INTO %s (%s) VALUES (%s);" %
+                (obj.sqlmeta.table,
+                 ", ".join(names),
+                 ", ".join(values)))
+
+    def _serialize_inserts(self, results):
+        data = ""
+        for so in results:
+            te = TransactionEntry.get(so.te_createdID, connection=self._conn)
+            data += self._serialize_insert(te)
+            data += self._serialize_insert(so)
+
+        return data
+
+    def get_chunks(self, timestamp):
+
+        data = ""
+        for table in self._tables:
+            # Created
+            results = table.select(
+                AND(TransactionEntry.q.id == table.q.te_createdID,
+                    TransactionEntry.q.timestamp > timestamp),
+                connection=self._conn)
+            if results.count():
+                log.info("Serializing %d inserts() to table %s" % (
+                    results.count(), table.sqlmeta.table))
+                data += self._serialize_inserts(results)
+
+            # Modified
+            results = table.select(
+                AND(TransactionEntry.q.id == table.q.te_modifiedID,
+                    TransactionEntry.q.timestamp > timestamp),
+                connection=self._conn)
+
+            if results.count():
+                log.info("Serializing %d update(s) to table %s" % (
+                    results.count(), table.sqlmeta.table))
+                data += self._serialize_updates(results)
+
+            if len(data) >= CHUNKSIZE:
+                yield data[:CHUNKSIZE]
+                data = data[CHUNKSIZE:]
+
+        if data:
+            yield data
 
 class SynchronizationService(XMLRPCService):
     def __init__(self, hostname, port):
@@ -87,8 +197,7 @@ class SynchronizationService(XMLRPCService):
         log.info('sql_prepare: executing %s' % cmd)
         proc = subprocess.Popen(cmd, shell=True,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+                                stdout=subprocess.PIPE)
 
         self._processes[proc.pid] = proc
         log.info('sql_prepare: return %d' % (proc.pid, ))
@@ -121,9 +230,18 @@ class SynchronizationService(XMLRPCService):
         log.info('sql_finish: psql process returned %d' % (returncode,))
 
         if returncode == 3:
-            return proc.stderr.read()[:-1]
+            return "psql returned an error: see the error log"
 
         return None
+
+    def sql_changes(self, tables, timestamp):
+        conn = get_connection()
+        s = TableSerializer(conn, tables)
+        data = ""
+        for chunk in s.get_chunks(timestamp):
+            data += chunk
+
+        return data
 
     # Twisted
     xmlrpc_clean = clean
@@ -150,6 +268,27 @@ class SynchronizationClient(object):
         log.info('executing %s' % cmd)
         return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                 env=dict(LANG='C'))
+
+    def _dump_tables(self, tables):
+        combined = ''
+        for table in tables:
+            proc = self._pg_dump_table(table)
+
+            # This is kind of tricky, only send data when we reached CHUNKSIZE,
+            # it saves resources since rpc calls can be expensive
+            while True:
+                data = proc.stdout.read(CHUNKSIZE)
+                if not data:
+                    break
+
+                combined += data
+                if len(combined) >= CHUNKSIZE:
+                    yield combined[:CHUNKSIZE]
+                    combined = combined[CHUNKSIZE:]
+
+        # Finally send leftovers
+        if combined:
+            yield combined
 
     def _get_policy(self, policy):
         log.info('Fetching policy %s' % (policy,))
@@ -195,82 +334,20 @@ class SynchronizationClient(object):
             log.info("Updating BranchSynchronization object")
             sync.timestamp = timestamp
 
-    def _collect_table(self, tables, table):
-        if table in tables:
+    def _sql_send(self, iterator):
+        if not self._commit:
+            import pprint
+            pprint.pprint(list(iterator))
             return
 
-        parent = table.sqlmeta.parentClass
-        while parent:
-            self._collect_table(tables, parent)
-            parent = parent.sqlmeta.parentClass
+        proxy = self.proxy
+        sid = proxy.sql_prepare()
+        for item in iterator:
+            proxy.sql_insert(sid, item)
 
-       ##for column in table.sqlmeta.columnList:
-       ##    if isinstance(column, SOForeignKey):
-       ##        foreign_table = findClass(column.foreignKey)
-       ##        self._collect_table(tables, foreign_table)
-
-        tables.append(table)
-
-        if issubclass(table, AdaptableSQLObject):
-            for facet_type in table.getFacetTypes():
-                self._collect_table(tables, facet_type)
-
-    def _get_tables(self, policy, filter):
-        tables = []
-        for table_name, table_policy in policy.tables:
-            if table_policy in filter:
-                continue
-            table = get_table_type_by_name(table_name)
-            self._collect_table(tables, table)
-
-        return tables
-
-    def _serialize_update(self, trans, obj):
-        values = []
-        for column in obj.sqlmeta.columnList:
-            value = getattr(obj, column.name)
-            values.append("%s = %s" % (column.dbName, trans.sqlrepr(value)))
-
-        return ("UPDATE %s SET %s WHERE %s = %s;" %
-                (obj.sqlmeta.table,
-                 ", ".join(values),
-                 obj.sqlmeta.idName,
-                 trans.sqlrepr(obj.id)))
-
-    def _serialize_updates(self, trans, results):
-        data = ""
-        for so in results:
-            te = TransactionEntry.get(so.te_modifiedID, connection=trans)
-            data += self._serialize_update(trans, te)
-            data += self._serialize_update(trans, so)
-
-        return data
-
-    def _serialize_insert(self, trans, obj):
-        names = [obj.sqlmeta.idName]
-        values = [str(obj.id)]
-        for column in obj.sqlmeta.columnList:
-            value = getattr(obj, column.name)
-            names.append(column.dbName)
-            values.append(trans.sqlrepr(value))
-
-        return ("INSERT INTO %s (%s) VALUES (%s);" %
-                (obj.sqlmeta.table,
-                 ", ".join(names),
-                 ", ".join(values)))
-
-    def _serialize_inserts(self, trans, results):
-        data = ""
-        for so in results:
-            te = TransactionEntry.get(so.te_createdID, connection=trans)
-            data += self._serialize_insert(trans, te)
-            data += self._serialize_insert(trans, so)
-
-        return data
-
-    def _sql_insert(self, sid, data):
-        if self._commit:
-            self.proxy.sql_insert(sid, data)
+        error = proxy.sql_finish(sid)
+        if error:
+            raise SystemExit('sql_finish returned an error:\n %s' % error)
 
     # Public API
 
@@ -280,13 +357,7 @@ class SynchronizationClient(object):
     def get_station_name(self):
         return self.proxy.get_station_name()
 
-    def update(self, station_name):
-        """
-        @param station_name:
-        """
-        policy = self._get_policy('shop')
-
-        trans = new_transaction()
+    def _get_last_timestamp(self, trans, station_name):
         station = self._get_station(trans, station_name)
         sync = self._get_synchronization(trans, station.branch)
         if not sync:
@@ -294,43 +365,24 @@ class SynchronizationClient(object):
                 "Tried to synchronize against for station %s which does "
                 "not have an entry in the BranchSynchronization table")
 
+        return sync.timestamp
 
-        sid = self.proxy.sql_prepare()
+    def update(self, station_name):
+        """
+        @param station_name:
+        """
+        policy = self._get_policy('shop')
 
+        trans = new_transaction()
+
+        last_sync = self._get_last_timestamp(trans, station_name)
         timestamp = datetime.datetime.now()
 
-        data = ''
+        tables = _get_tables(policy, (SyncPolicy.FROM_TARGET,
+                                      SyncPolicy.INITIAL))
+        ts = TableSerializer(trans, tables)
 
-        for table in self._get_tables(policy,
-                                      filter=(SyncPolicy.FROM_TARGET,
-                                              SyncPolicy.INITIAL)):
-            # Created
-            results = table.select(
-                AND(TransactionEntry.q.id == table.q.te_createdID,
-                    TransactionEntry.q.timestamp > sync.timestamp),
-                connection=trans)
-            if results.count():
-                data += self._serialize_inserts(trans, results)
-
-            # Modified
-            results = table.select(
-                AND(TransactionEntry.q.id == table.q.te_modifiedID,
-                    TransactionEntry.q.timestamp > sync.timestamp),
-                connection=trans)
-            if results.count():
-                data += self._serialize_updates(trans, results)
-
-            if len(data) >= CHUNKSIZE:
-                self._sql_insert(sid, data[:CHUNKSIZE])
-                data = data[CHUNKSIZE:]
-
-        # Finally send leftovers
-        if data:
-            self._sql_insert(sid, data)
-
-        error = self.proxy.sql_finish(sid)
-        if error:
-            raise SystemExit('sql_finish returned an error:\n %s' % error)
+        self._sql_send(ts.get_chunks(last_sync))
 
         self._update_synchronization(trans, station_name, timestamp,
                                      policy.name)
@@ -348,35 +400,11 @@ class SynchronizationClient(object):
         policy = self._get_policy('shop')
 
         trans = new_transaction()
+
         timestamp = datetime.datetime.now()
 
-        sid = self.proxy.sql_prepare()
-
-        combined = ""
-
-        for table in self._get_tables(policy,
-                                      filter=(SyncPolicy.FROM_TARGET,)):
-            proc = self._pg_dump_table(table)
-
-            # This is kind of tricky, only send data when we reached CHUNKSIZE,
-            # it saves resources since rpc calls can be expensive
-            while True:
-                data = proc.stdout.read(CHUNKSIZE)
-                if not data:
-                    break
-
-                combined += data
-                if len(combined) >= CHUNKSIZE:
-                    self._sql_insert(sid, combined[:CHUNKSIZE])
-                    combined = combined[CHUNKSIZE:]
-
-        # Finally send leftovers
-        if combined:
-            self._sql_insert(sid, combined)
-
-        error = self.proxy.sql_finish(sid)
-        if error:
-            raise SystemExit(error)
+        tables = _get_tables(policy, filter=(SyncPolicy.FROM_TARGET,))
+        self._sql_send(self._dump_tables(tables))
 
         self._update_synchronization(trans, station_name, timestamp,
                                      policy.name)
