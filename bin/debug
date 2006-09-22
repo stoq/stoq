@@ -24,59 +24,66 @@
 ##
 """ A debug session for domain objects.  """
 
-import sys
 import code
-try:
-    import readline
-except ImportError:
-    print "Module readline not available."
-else:
-    import rlcompleter
-    readline.parse_and_bind("tab: complete")
+import sys
 
 from kiwi.component import provide_utility
-from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, get_option_parser
-from sqlobject import *
-from sqlobject.sqlbuilder import *
-
-parser = get_option_parser()
-config = StoqConfig()
-
-options, args = parser.parse_args(sys.argv)
-setup(config, options)
-
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import get_table_types
-from stoqlib.domain.base import *
 from stoqlib.domain.person import PersonAdaptToUser
-from stoqlib.domain.interfaces import *
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.interfaces import ICurrentUser
 
-conn = new_transaction()
+from stoq.lib.configparser import StoqConfig
+from stoq.lib.startup import setup, get_option_parser
 
-#provide_utility(ICurrentUser, PersonAdaptToUser.select(
-#    PersonAdaptToUser.q.username == USER_ADMIN_DEFAULT_NAME,
-#    connection=conn)[0])
+def _interactive(ns):
+    import readline
+    import rlcompleter
+    readline.parse_and_bind("tab: complete")
 
-names = []
-for table in get_table_types():
-    table_name = table.__name__
-    locals()[table_name] = table
-    names.append(table_name)
+    code.interact(local=ns)
 
-locals()['conn'] = conn
-names.sort()
+def main(args):
+    parser = get_option_parser()
+    parser.add_option('-c', '--commit',
+                      action="store_true",
+                      dest="commit")
+    parser.add_option('-s', '--script',
+                      action="store",
+                      type="string",
+                      dest="script")
 
-def get_person():
-    return Person(name='a person', connection=conn)
+    options, args = parser.parse_args(args)
 
-if 'tables' in sys.argv:
-    print "Available tables:", ', '.join(names)
-elif len(sys.argv) > 1:
-    stmt = sys.argv[1]
-    exec stmt
-    raise SystemExit
-code.interact(local=globals())
+    config = StoqConfig()
+    setup(config, options)
+
+    # Namespace
+    ns = locals().copy()
+    for table in get_table_types():
+        ns[table.__name__] = table
+
+    ns['conn'] = get_connection()
+    ns['trans'] = trans = new_transaction()
+
+    for name in ('sqlobject', 'sqlobject.sqlbuilder',
+                 'stoqlib.lib.interfaces',
+                 'stoqlib.domain.interfaces'):
+        mod = __import__(name, {}, {}, ' ')
+        ns.update(mod.__dict__)
+
+    if options.script:
+        execfile(options.script, ns)
+    elif len(args) > 1:
+        stmt = args[1]
+        exec stmt in ns
+    else:
+        _interactive(ns)
+
+    if options.commit:
+        trans.commit()
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
