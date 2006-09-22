@@ -38,8 +38,6 @@ class SynchronizationPolicy(object):
 class Shop(SynchronizationPolicy):
     name = 'shop'
     tables = [
-        ('TransactionEntry', SyncPolicy.FROM_SOURCE),
-
         ('UserProfile', SyncPolicy.INITIAL),
         ('ProfileSettings', SyncPolicy.INITIAL),
 
@@ -70,6 +68,8 @@ class Shop(SynchronizationPolicy):
         ('PaymentMethod', SyncPolicy.INITIAL),
         ('AbstractPaymentMethodAdapter', SyncPolicy.INITIAL),
         ('PaymentMethodDetails', SyncPolicy.INITIAL),
+        ('SystemTable', SyncPolicy.INITIAL),
+        ('SellableUnit', SyncPolicy.INITIAL),
         ]
 
 _policies.append(Shop)
