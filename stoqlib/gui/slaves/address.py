@@ -26,6 +26,8 @@
 """ Address slave implementation"""
 
 
+from kiwi.argcheck import argcheck
+
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.domain.person import Address, Person, get_city_location_template
@@ -55,11 +57,10 @@ class AddressSlave(BaseEditorSlave):
         'city',
         ) + left_proxy
 
+
+    @argcheck(object, Person, Address, bool, bool)
     def __init__(self, conn, person, model=None, is_main_address=True,
                  visual_mode=False):
-        if not isinstance(person, Person):
-            raise TypeError("Invalid type for person argument. It should "
-                            "be of type Person, got %s" % type(person))
         self.person = person
         self.is_main_address = (model and model.is_main_address
                                 or is_main_address)
