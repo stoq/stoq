@@ -42,6 +42,19 @@ class SelectResults(object):
         conn = self._getConnection()
         return conn.queryForSelect(self)
 
+    def __nonzero__(self):
+        start = self.ops.get('start', 0)
+        if start is None:
+            start = 0
+        end = self.ops.get('end', None)
+        if end is None:
+            end = start + 1
+        end = min(end, start + 1)
+        clone = self.clone(start=start, end=end, distinct=False, orderBy='')
+        # do we get any rows?
+        results = list(clone)
+        return len(results) != 0
+
     def _mungeOrderBy(self, orderBy):
         if isinstance(orderBy, str) and orderBy.startswith('-'):
             orderBy = orderBy[1:]
