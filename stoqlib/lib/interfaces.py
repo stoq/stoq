@@ -105,3 +105,23 @@ class IDatabaseSettings(Interface):
 
     def get_connection_uri():
         """@returns: a SQLObject connection URI"""
+
+class IXMLRPCService(Interface):
+    def __init__(hostname, port):
+        """
+        @param port: port to listen to
+        @param hostname: hostname to bind to or an empty string
+                         to bind to all addresses
+        """
+
+    def serve():
+        """
+        Starts the XMLRPC service so it's ready
+        to accept clients.
+        This call will block until stop() is called
+        """
+
+    def stop():
+        """
+        Stops the service, eg break out of serve
+        """

@@ -31,6 +31,9 @@ import SimpleXMLRPCServer
 
 from kiwi.log import Logger
 from kiwi.python import namedAny
+from zope.interface import implements
+
+from stoqlib.lib.interfaces import IXMLRPCService
 
 log = Logger('stoqlib.xmlrpc')
 
@@ -72,6 +75,10 @@ class XMLRPCWebService(SimpleXMLRPCServer.SimpleXMLRPCServer):
     allow_reuse_address = True
 
 class XMLRPCService(object):
+    """
+    An XMLRPCService using SimpleXMLRPCServer from the standard library
+    """
+    implements(IXMLRPCService)
     def __init__(self, hostname, port):
         self.hostname = hostname
         self.port = port
@@ -85,6 +92,8 @@ class XMLRPCService(object):
                                                      self.port))
         self.service.serve_forever()
 
+    def stop(self):
+        raise SystemExit
 try:
     from twisted.web import xmlrpc, server
     from twisted.internet import reactor
@@ -94,11 +103,20 @@ except ImportError:
 
 if has_twisted:
     class XMLRPCService(xmlrpc.XMLRPC):
+        """
+        An XMLRPCService using Twisted
+        """
+        implements(IXMLRPCService)
         def __init__(self, hostname, port):
-            log.info('Listening on port %d' % port)
-            reactor.listenTCP(port, server.Site(self))
+            self._hostname = hostname
+            self._port = port
+            self._service = server.Site(self)
 
         def serve(self):
-            log.info('Starting reactor')
+            log.info('Listening on port %d' % self._port)
+            reactor.listenTCP(self._port, self._service)
             reactor.run()
 
+        def stop(self):
+            self._service.stopFactory()
+            reactor.callLater(0, reactor.stop)
