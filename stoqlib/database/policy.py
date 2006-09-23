@@ -38,13 +38,21 @@ class SynchronizationPolicy(object):
 class Shop(SynchronizationPolicy):
     name = 'shop'
     tables = [
-        ('TransactionEntry', SyncPolicy.INITIAL),
+        ('TransactionEntry', SyncPolicy.BOTH),
 
-        ('UserProfile', SyncPolicy.INITIAL),
         ('ProfileSettings', SyncPolicy.INITIAL),
 
-        ('EmployeeRole', SyncPolicy.FROM_SOURCE),
         ('Person', SyncPolicy.BOTH),
+        ('Address', SyncPolicy.BOTH),
+        ('Liason', SyncPolicy.BOTH),
+        ('Calls', SyncPolicy.BOTH),
+        ('EmployeeRole', SyncPolicy.BOTH),
+        ('WorkpermitData', SyncPolicy.BOTH),
+        ('MilitaryData', SyncPolicy.BOTH),
+        ('VoterData', SyncPolicy.BOTH),
+        ('BankAcount', SyncPolicy.BOTH),
+        ('UserProfile', SyncPolicy.BOTH),
+
         ('BranchStation', SyncPolicy.FROM_SOURCE),
 
         ('BaseSellableInfo', SyncPolicy.FROM_SOURCE),
