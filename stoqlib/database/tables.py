@@ -204,17 +204,6 @@ def get_sequence_names():
     global _sequences
     return ['stoqlib_%s_seq' % seq for seq in _sequences]
 
-
-# FIXME: Move into SQLObject itself
-def createSequence(conn, sequence):
-    conn.query('CREATE SEQUENCE "%s"' % sequence)
-
-def dropSequence(conn, sequence):
-    conn.query('DROP SEQUENCE "%s"' % sequence)
-
-def sequenceExists(conn, sequence):
-    return conn.tableExists(sequence)
-
 def create_tables(delete_only=False):
     trans = new_transaction()
 
@@ -227,8 +216,8 @@ def create_tables(delete_only=False):
 
     log.info('Dropping sequences')
     for seq_name in get_sequence_names():
-        if sequenceExists(trans, seq_name):
-            dropSequence(trans, seq_name)
+        if trans.sequenceExists(seq_name):
+            trans.dropSequence(seq_name)
 
     if not delete_only:
         log.info('Creating tables')
@@ -246,6 +235,6 @@ def create_tables(delete_only=False):
 
         log.info('Creating sequences')
         for seq_name in get_sequence_names():
-            createSequence(trans, seq_name)
+            trans.createSequence(seq_name)
 
     trans.commit()
