@@ -178,7 +178,7 @@ class PostgresConnection(DBAPI):
         self.query('DROP SEQUENCE "%s"' % sequence)
 
     def bumpSequence(self, sequence, start, minvalue, maxvalue):
-        self.query("ALTER SEQUENCE %s START %s MINVALUE %s MAXVALUE %s" % (
+        self.query("ALTER SEQUENCE %s START %d MINVALUE %d MAXVALUE %d" % (
             sequence, start, minvalue, maxvalue))
 
     def addColumn(self, tableName, column):
