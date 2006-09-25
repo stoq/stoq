@@ -27,7 +27,7 @@
 import datetime
 import sets
 
-from kiwi.component import get_utility
+from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
 from sqlobject.inheritance import InheritableSQLObject
@@ -36,7 +36,10 @@ from sqlobject.main import SQLObject
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     ICurrentUser, IDatabaseSettings)
+from stoqlib.lib.message import error
+from stoqlib.lib.translation import stoqlib_gettext
 
+_ = stoqlib_gettext
 _connection = None
 log = Logger('stoqlib.runtime')
 
@@ -142,6 +145,32 @@ def new_transaction():
 #
 # User methods
 #
+
+def set_current_branch_station(conn, station_name):
+    """
+    Registers the current station and the branch of the station
+    as the current branch for the system
+    @param conn: a database connection
+    @param station_name: name of the station to register
+    """
+    from stoqlib.domain.station import BranchStation
+    stations = BranchStation.select(
+        BranchStation.q.name == station_name, connection=conn)
+    if stations.count() == 0:
+        error(_("The computer <u>%s</u> is not registered in Stoq") %
+              station_name,
+              _("To solve this, open the administrator application "
+                "and register this computer."))
+    station = stations[0]
+
+    if not station.is_active:
+        error(_("The computer <u>%s</u> is not active in Stoq") %
+              station_name,
+              _("To solve this, open the administrator application "
+                "and re-activate this computer."))
+
+    provide_utility(ICurrentBranchStation, station)
+    provide_utility(ICurrentBranch, station.branch)
 
 def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
