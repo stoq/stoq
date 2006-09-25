@@ -35,34 +35,14 @@ from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from stoqlib.database.admin import ensure_admin_user, initialize_system
 from stoqlib.database.migration import schema_migration
-from stoqlib.database.runtime import get_connection
-from stoqlib.domain.person import BranchStation
+from stoqlib.database.runtime import get_connection, set_current_branch_station
 from stoqlib.exceptions import DatabaseError
-from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
-                                    IApplicationDescriptions)
+from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
 
 from stoq.lib.configparser import register_config, StoqConfig
 
 _ = gettext.gettext
-
-def set_branch_by_stationid(conn):
-    name = socket.gethostname()
-    stations = BranchStation.select(
-        BranchStation.q.name == name, connection=conn)
-    if stations.count() == 0:
-        error(_("The computer <u>%s</u> is not registered in Stoq") % name,
-              _("To solve this, open the administrator application "
-                "and register this computer."))
-    station = stations[0]
-
-    if not station.is_active:
-        error(_("The computer <u>%s</u> is not active in Stoq") % name,
-              _("To solve this, open the administrator application "
-                "and re-activate this computer."))
-
-    provide_utility(ICurrentBranchStation, station)
-    provide_utility(ICurrentBranch, station.branch)
 
 def setup(config, options=None, register_station=True, check_schema=True):
     """
@@ -100,7 +80,7 @@ def setup(config, options=None, register_station=True, check_schema=True):
         error(e.short, e.msg)
 
     if register_station:
-        set_branch_by_stationid(conn)
+        set_current_branch_station(conn, socket.gethostname())
     if check_schema:
         if not schema_migration.check_updated(conn):
             error(_("Database schema error"),
