@@ -91,16 +91,28 @@ def ensure_admin_user(administrator_password):
                                password=administrator_password,
                                profile=profile, connection=trans)
 
-    table = PersonAdaptToUser
-    ret = table.select(table.q.username == username, connection=trans)
-    assert ret, ret.count() == 1
-    assert ret[0].password == administrator_password
+    user = get_admin_user(trans)
+    assert user.password == administrator_password
 
     finish_transaction(trans, 1)
 
     # We can't provide the utility until it's actually in the database
     log.info('providing utility ICurrentUser')
     provide_utility(ICurrentUser, user)
+
+def get_admin_user(conn):
+    """
+    Retrieves the current administrator user for the
+    system
+    @param conn: a database connection
+    @returns: the admin user for the system
+    """
+    table = PersonAdaptToUser
+    results = table.select(table.q.username == USER_ADMIN_DEFAULT_NAME,
+                           connection=conn)
+    if results.count() != 1:
+        raise AssertionError
+    return results[0]
 
 def ensure_sellable_units():
     """ Create native sellable units. """
