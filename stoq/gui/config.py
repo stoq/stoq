@@ -40,7 +40,8 @@ from stoqlib.database.database import (finish_transaction,
                                        create_database_if_missing,
                                        rollback_and_begin)
 from stoqlib.database.exceptions import DatabaseDoesNotExistError
-from stoqlib.database.runtime import new_transaction
+from stoqlib.database.runtime import (new_transaction,
+                                      set_current_branch_station)
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
@@ -54,8 +55,7 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, set_branch_by_stationid
-from stoq.lib.startup import clean_database
+from stoq.lib.startup import clean_database, setup
 
 
 _ = gettext.gettext
@@ -370,11 +370,10 @@ class DatabaseSettingsStep(WizardEditorStep):
         create_database_if_missing(conn, dbname)
         return True
 
-    def _create_station(self, conn, branch):
-        name = socket.gethostname()
-        station = BranchStation.get_station(conn, branch, name)
+    def _create_station(self, conn, branch, station_name):
+        station = BranchStation.get_station(conn, branch, station_name)
         if not station:
-            station = BranchStation.create(conn, branch, name)
+            station = BranchStation.create(conn, branch, station_name)
         return station
 
     #
@@ -442,10 +441,12 @@ class DatabaseSettingsStep(WizardEditorStep):
             conn = new_transaction()
         self.wizard.set_connection(conn)
 
+        station_name = socket.gethostname()
         model = sysparam(conn).MAIN_COMPANY
         if not self.wizard.station:
-            self.wizard.station = self._create_station(conn, model)
-        set_branch_by_stationid(conn)
+            self.wizard.station = self._create_station(conn, model,
+                                                       station_name)
+        set_current_branch_station(conn, station_name)
 
         model = model.person
         if self.has_installed_db:
