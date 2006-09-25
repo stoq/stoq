@@ -87,8 +87,10 @@ class StoqCommandHandler:
         return 0
 
     def cmd_init(self, options):
-        from stoqlib.database.runtime import get_connection
-        from stoq.lib.startup import clean_database, set_branch_by_stationid
+        import socket
+        from stoqlib.database.runtime import (get_connection,
+                                              set_current_branch_station)
+        from stoq.lib.startup import clean_database
 
         config = self._read_config(options, register_station=False,
                                    check_schema=False)
@@ -97,7 +99,7 @@ class StoqCommandHandler:
         # Register the current computer as a branch station
         self._register(options.verbose)
 
-        set_branch_by_stationid(get_connection())
+        set_current_branch_station(get_connection(), socket.gethostname())
 
         if options.create_examples:
             from stoq.lib.startup import create_examples
