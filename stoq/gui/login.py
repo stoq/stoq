@@ -113,11 +113,10 @@ class LoginHelper:
         res = table.select(table.q.username == '%s' % username,
                            connection=conn)
 
-        msg = _("Invalid user or password")
-        count = res.count()
-        if not count:
-            raise LoginError(msg)
+        if not res:
+            raise LoginError(_("Invalid user or password"))
 
+        count = res.count()
         if count != 1:
             raise DatabaseInconsistency("It should exists only one instance "
                                         "in database for this username, got "
@@ -127,7 +126,7 @@ class LoginHelper:
             raise LoginError(_('This user is inactive'))
 
         if user.password is not None and user.password != password:
-            raise LoginError(msg)
+            raise LoginError(_("Invalid user or password"))
 
         if not user.profile.check_app_permission(self.appname):
             msg = _("This user lacks credentials \nfor application %s")
