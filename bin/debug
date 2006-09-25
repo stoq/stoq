@@ -3,7 +3,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ A debug session for domain objects.  """
 
@@ -28,10 +29,9 @@ import code
 import sys
 
 from kiwi.component import provide_utility
-from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME
+from stoqlib.database.admin import get_admin_user
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import get_table_types
-from stoqlib.domain.person import PersonAdaptToUser
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.interfaces import ICurrentUser
 
@@ -41,6 +41,7 @@ from stoq.lib.startup import setup, get_option_parser
 def _interactive(ns):
     import readline
     import rlcompleter
+    rlcompleter # pyflakes
     readline.parse_and_bind("tab: complete")
 
     code.interact(local=ns)
@@ -65,10 +66,16 @@ def main(args):
     for table in get_table_types():
         ns[table.__name__] = table
 
-    ns['conn'] = conn = get_connection()
+    conn = get_connection()
+
+    provide_utility(ICurrentUser, get_admin_user(conn))
+
+    ns['conn'] = conn
     ns['trans'] = trans = new_transaction()
+    ns['sysparam'] = sysparam
 
     for name in ('sqlobject', 'sqlobject.sqlbuilder',
+                 'stoqlib.database.runtime',
                  'stoqlib.lib.interfaces',
                  'stoqlib.domain.interfaces'):
         mod = __import__(name, {}, {}, ' ')
