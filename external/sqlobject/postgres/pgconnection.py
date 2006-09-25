@@ -167,6 +167,20 @@ class PostgresConnection(DBAPI):
                                % self.sqlrepr(tableName))
         return result[0]
 
+    # Johan 2006-09-24: Add Sequence methods
+    def sequenceExists(self, sequence):
+        return self.tableExists(sequence)
+
+    def createSequence(self, sequence):
+        self.query('CREATE SEQUENCE "%s"' % sequence)
+
+    def dropSequence(self, sequence):
+        self.query('DROP SEQUENCE "%s"' % sequence)
+
+    def bumpSequence(self, sequence, start, minvalue, maxvalue):
+        self.query("ALTER SEQUENCE %s START %s MINVALUE %s MAXVALUE %s" % (
+            sequence, start, minvalue, maxvalue))
+
     def addColumn(self, tableName, column):
         self.query('ALTER TABLE %s ADD COLUMN %s' %
                    (tableName,
