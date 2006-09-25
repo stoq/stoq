@@ -265,7 +265,7 @@ class ProductSellableItem(ASellableItem):
         q2 = ASellableItem.q.id == ServiceSellableItem.q.id
         query = AND(q1, q2)
         services = ASellableItem.select(query, connection=conn)
-        if not services.count():
+        if not services:
             return decimal.Decimal('0.0')
         delivered_qty = decimal.Decimal('0.0')
         for service in services:
@@ -420,7 +420,7 @@ class ProductAdaptToStorable(ModelAdapter):
     def get_full_balance(self, branch=None):
         """ Get the stock balance and the logic balance."""
         stocks = self.get_stocks(branch)
-        if not stocks.count():
+        if not stocks:
             raise StockError, 'Invalid stock references for %s' % self
         value = decimal.Decimal('0.0')
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY

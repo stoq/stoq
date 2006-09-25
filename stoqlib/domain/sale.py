@@ -359,7 +359,7 @@ class Sale(Domain):
         self.status = self.STATUS_CANCELLED
 
     def validate(self):
-        if not self.get_items().count():
+        if not self.get_items():
             raise SellError('The sale must have sellable items')
         if self.client and not self.client.is_active:
             raise SellError('Unable to make sales for clients with status '

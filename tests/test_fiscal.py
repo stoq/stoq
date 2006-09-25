@@ -41,12 +41,12 @@ def get_branch(conn):
 
 def get_drawee(conn):
     people = Person.select(connection=conn)
-    assert people.count() > 0
+    assert people
     return people[0]
 
 def get_payment_group(conn):
     groups = AbstractPaymentGroup.select(connection=conn)
-    assert groups.count() > 0
+    assert groups
     return groups[0]
 
 def get_new_payment_group(conn):

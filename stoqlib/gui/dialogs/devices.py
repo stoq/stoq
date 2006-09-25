@@ -47,7 +47,7 @@ class DeviceSettingsDialog(AdditionListDialog):
         result = DeviceSettings.select((DeviceSettings.q.type
                                         == DeviceSettings.FISCAL_PRINTER_DEVICE),
                                        connection=self.conn)
-        if result.count():
+        if result:
             return
         create_virtual_printer_for_current_station()
         # getting virtual printer back to this connection

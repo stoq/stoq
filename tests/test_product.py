@@ -91,7 +91,7 @@ class TestProductStockReference(BaseDomainTest):
     def get_foreign_key_data(cls):
         sellable = get_sellable(cls.conn)
         sales = Sale.select(connection=cls.conn)
-        assert sales.count() > 0
+        assert sales
         sale = sales[0]
         product_item = sellable.add_sellable_item(sale)
         branch = get_current_branch(cls.conn)
@@ -109,7 +109,7 @@ class TestProductSellableItem(BaseDomainTest):
         person.addFacet(IEmployee, connection=self.trans, role=role)
         salesperson = person.addFacet(ISalesPerson, connection=self.trans)
         sales = Sale.select(connection=self.trans)
-        assert sales.count() > 0
+        assert sales
         sale = sales[0]
         sellable = get_sellable(self.trans)
         return sale, sellable

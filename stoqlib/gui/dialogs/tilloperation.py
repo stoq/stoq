@@ -79,7 +79,7 @@ def verify_and_close_till(self, conn, *args):
     self._update_widgets()
     opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
                                connection=self.conn)
-    if opened_sales.count() == 0:
+    if not opened_sales:
         return False
 
     # A new till object to "store" the sales that weren't

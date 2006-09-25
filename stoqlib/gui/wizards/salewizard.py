@@ -548,7 +548,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
 
         elif selected_method is IGiftCertificatePM:
             table = GiftCertificate.getAdapterClass(ISellable)
-            if not table.get_sold_sellables(self.conn).count():
+            if not table.get_sold_sellables(self.conn):
                 msg = _('There is no sold gift certificates at this moment.'
                         '\nPlease select another payment method.')
                 warning(msg)

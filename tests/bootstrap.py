@@ -96,7 +96,7 @@ def _provide_current_user():
 def _provide_current_station():
     trans = new_transaction()
     branches = Person.iselect(IBranch, connection=trans)
-    assert branches.count() >= 0
+    assert branches
     branch = branches[0]
     provide_utility(ICurrentBranch, branch)
 

@@ -48,9 +48,7 @@ def check_installed_database(conn):
         log.info('There is no table called %s' % table_name)
         return False
 
-    entries = SystemTable.select(connection=conn).count()
-    log.info('Found %d SystemTable entries' % entries)
-    return entries > 0
+    return bool(SystemTable.select(connection=conn))
 
 def create_database_if_missing(conn, dbname):
     """

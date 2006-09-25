@@ -383,7 +383,7 @@ def get_last_till_operation_for_current_branch(conn):
     query = AND(table.q.status == Till.STATUS_CLOSED,
                 table.q.branch_id == get_current_branch(conn).id)
     result = table.select(query, connection=conn).orderBy('closing_date')
-    if not result.count():
+    if not result:
         return
     till_entry = result[-1]
     return Till.get(till_entry.till_id, connection=conn)

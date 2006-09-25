@@ -173,7 +173,7 @@ class PersonRoleTypeStep(WizardEditorStep):
             role_type = Person.ROLE_INDIVIDUAL
         else:
             role_type = Person.ROLE_COMPANY
-        if persons and persons.count():
+        if persons:
             return ExistingPersonStep(self.wizard, self.conn, self,
                                       role_type, persons,
                                       phone_number=phone_number)

@@ -46,7 +46,7 @@ class SystemTable(SQLObject, AbstractModel):
     @classmethod
     def update(cls, trans, check_new_db=False, version=None):
         """Add a new entry on SystemTable with the current schema version"""
-        result = cls.select(connection=trans).count()
+        result = cls.select(connection=trans)
         if result and check_new_db:
             raise ValueError(
                 'SystemTable should be empty at this point got %d results' %

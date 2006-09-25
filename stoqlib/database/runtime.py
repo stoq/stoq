@@ -156,7 +156,7 @@ def set_current_branch_station(conn, station_name):
     from stoqlib.domain.station import BranchStation
     stations = BranchStation.select(
         BranchStation.q.name == station_name, connection=conn)
-    if stations.count() == 0:
+    if not stations:
         error(_("The computer <u>%s</u> is not registered in Stoq") %
               station_name,
               _("To solve this, open the administrator application "

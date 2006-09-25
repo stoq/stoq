@@ -70,7 +70,7 @@ class DeliveryEditor(BaseEditor):
         self.update_widgets()
 
     def _validate_widgets(self, validation_value):
-        if not self.delivery.get_items().count():
+        if not self.delivery.get_items():
             validation_value = False
         self.refresh_ok(validation_value)
 

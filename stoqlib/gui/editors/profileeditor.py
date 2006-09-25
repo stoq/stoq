@@ -107,5 +107,5 @@ class UserProfileEditor(BaseEditor):
         q1 = func.UPPER(UserProfile.q.name) == value.upper()
         q2 = UserProfile.q.id != self.model.id
         query = AND(q1, q2)
-        if UserProfile.select(query, connection=conn).count():
+        if UserProfile.select(query, connection=conn):
             return ValidationError('This profile already exists!')
