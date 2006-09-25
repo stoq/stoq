@@ -511,7 +511,7 @@ class PersonAdaptToClient(_PersonAdapter):
 
     def get_last_purchase_date(self):
         sales = self.get_client_sales()
-        if sales.count():
+        if sales:
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
             return sales[-1].open_date

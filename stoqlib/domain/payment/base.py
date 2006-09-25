@@ -339,7 +339,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         if entries.count() > 1:
             raise DatabaseInconsistency("You should have only one fiscal "
                                         "entry per payment group")
-        if not entries.count():
+        if not entries:
             return
         entries[0].reverse_entry(invoice_number)
 

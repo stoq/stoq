@@ -365,7 +365,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
         q1 = func.UPPER(EmployeeRole.q.name) == value.upper()
         q2 = EmployeeRole.q.id != self.model.id
         query = AND(q1, q2)
-        if EmployeeRole.select(query, connection=conn).count():
+        if EmployeeRole.select(query, connection=conn):
             return ValidationError('This role already exists!')
 
 

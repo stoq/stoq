@@ -640,7 +640,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         objs = PaymentMethodDetails.selectBy(providerID=credit_provider.id,
                                              is_active=True,
                                              connection=self.conn)
-        if not objs.count():
+        if not objs:
             raise ValueError('You must have payment information objs '
                              'stored in the database before start doing '
                              'sales')
@@ -686,7 +686,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
                                     CreditProviderMethodSlave.proxy_widgets)
 
     def create_model(self, conn):
-        if not self.providers.count():
+        if not self.providers:
             raise ValueError('You must have credit providers information '
                              'stored in the database before start doing '
                              'sales')

@@ -323,7 +323,7 @@ class DeviceSettingsEditor(BaseEditor):
             q2 = DeviceSettings.q.brand != 'virtual'
             query = AND(basequery, q2)
             settings = DeviceSettings.select(query, connection=conn)
-            if settings.count():
+            if settings:
                 self.station.set_invalid(
                     _(u"A %s already exists for station \"%s\""
                       % (self.model.get_device_type_name(),
@@ -352,7 +352,7 @@ class DeviceSettingsEditor(BaseEditor):
                      == DeviceSettings.FISCAL_PRINTER_DEVICE),
                     DeviceSettings.q.brand == "virtual")
         result = DeviceSettings.select(query, connection=self.conn)
-        if result.count():
+        if result:
             if result[0].constants:
                 DeviceConstants.delete(result[0].constants.id,
                                        connection=self.conn)

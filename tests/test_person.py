@@ -73,7 +73,7 @@ FAX_DATA_VALUES = ('1681359875', '1633760125')
 
 def get_existing_city_location(conn):
     items = CityLocation.select(connection=conn)
-    assert items.count() > 0
+    assert items
     return items[0]
 
 def get_empty_city_location(conn):
@@ -123,7 +123,7 @@ class TestPerson(BaseDomainTest):
         self.create_instance()
         assert not self._instance.get_main_address()
         ctlocs = CityLocation.select(connection=self.trans)
-        assert ctlocs.count() > 0
+        assert ctlocs
         ctloc = ctlocs[0]
         address = Address(connection=self.trans, person=self._instance,
                           city_location=ctloc, is_main_address=True)
@@ -369,7 +369,7 @@ class TestAddress(BaseDomainTest):
 
     def test_ensure_address(self):
         addresses = Address.select(connection=self.trans)
-        assert addresses.count() > 0
+        assert addresses
         address = addresses[0]
         original_cityloc = address.city_location
         cloned_cityloc = original_cityloc.clone()
@@ -494,16 +494,16 @@ class TestClient(BaseDomainTest):
 
     def test_get_client_sales(self):
         client = PersonAdaptToClient.select(connection=self.trans)
-        assert client.count() > 0
+        assert client
         client = client[0]
         cfop = CfopData(code='123', description='bla', connection=self.trans)
         branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches.count() > 0
+        assert branches
         branch = branches[0]
         till = Till(connection=self.trans,
                     station=get_current_station(self.trans))
         people = PersonAdaptToSalesPerson.select(connection=self.trans)
-        assert people.count() > 0
+        assert people
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
         date=datetime(2006,11,11)
@@ -513,7 +513,7 @@ class TestClient(BaseDomainTest):
                         open_date=date)
         new_sale.set_valid()
         products = Product.select(connection=self.trans)
-        assert products.count() > 0
+        assert products
         product = products[0]
         sellable_product = ISellable(product)
         sellable_product.add_sellable_item(sale=new_sale)
@@ -621,7 +621,7 @@ class TestUser(BaseDomainTest):
 
     def test_inactivate(self):
         users = PersonAdaptToUser.select(connection=self.trans)
-        assert users.count() > 0
+        assert users
         user = users[0]
         user.is_active = True
         user.inactivate()
@@ -629,7 +629,7 @@ class TestUser(BaseDomainTest):
 
     def test_activate(self):
         users = PersonAdaptToUser.select(connection=self.trans)
-        assert users.count() > 0
+        assert users
         user = users[0]
         user.is_active = False
         user.activate()
@@ -637,7 +637,7 @@ class TestUser(BaseDomainTest):
 
     def test_get_status_str(self):
         users = PersonAdaptToUser.select(connection=self.trans)
-        assert users.count() > 0
+        assert users
         user = users[0]
         user.is_active = False
         string = user.get_status_str()
@@ -658,7 +658,7 @@ class TestBranch(BaseDomainTest):
 
     def test_inactivate(self):
         branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches.count() > 0
+        assert branches
         branch = branches[0]
         branch.is_active = True
         branch.inactivate()
@@ -666,7 +666,7 @@ class TestBranch(BaseDomainTest):
 
     def test_activate(self):
         branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches.count() > 0
+        assert branches
         branch = branches[0]
         branch.is_active = False
         branch.activate()
@@ -674,7 +674,7 @@ class TestBranch(BaseDomainTest):
 
     def test_get_status_str(self):
         branches = PersonAdaptToBranch.select(connection=self.trans)
-        assert branches.count() > 0
+        assert branches
         branch = branches[0]
         branch.is_active = False
         string = branch.get_status_str()
@@ -715,7 +715,7 @@ class TestBankBranch(BaseDomainTest):
 
     def test_inactivate(self):
         bankbranches = PersonAdaptToBankBranch.select(connection=self.trans)
-        assert bankbranches.count() > 0
+        assert bankbranches
         bankbranch = bankbranches[0]
         bankbranch.is_active = True
         bankbranch.inactivate()
@@ -723,7 +723,7 @@ class TestBankBranch(BaseDomainTest):
 
     def test_activate(self):
         bankbranches = PersonAdaptToBankBranch.select(connection=self.trans)
-        assert bankbranches.count() > 0
+        assert bankbranches
         bankbranch = bankbranches[0]
         bankbranch.is_active = False
         bankbranch.activate()
@@ -767,7 +767,7 @@ class TestCreditProvider(BaseDomainTest):
 
     def test_inactivate(self):
         cproviders = PersonAdaptToCreditProvider.select(connection=self.trans)
-        assert cproviders.count() > 0
+        assert cproviders
         cprovider = cproviders[0]
         cprovider.is_active = True
         cprovider.inactivate()
@@ -776,7 +776,7 @@ class TestCreditProvider(BaseDomainTest):
     def test_activate(self):
         table = PersonAdaptToCreditProvider
         credit_providers = table.select(connection=self.trans)
-        assert credit_providers.count() > 0
+        assert credit_providers
         credit_provider = credit_providers[0]
         credit_provider.is_active = False
         credit_provider.activate()
@@ -818,7 +818,7 @@ class TestSalesPerson(BaseDomainTest):
 
     def test_inactivate(self):
         people = PersonAdaptToSalesPerson.select(connection=self.trans)
-        assert people.count() > 0
+        assert people
         salesperson = people[0]
         salesperson.is_active = True
         salesperson.inactivate()
@@ -826,7 +826,7 @@ class TestSalesPerson(BaseDomainTest):
 
     def test_activate(self):
         people = PersonAdaptToSalesPerson.select(connection=self.trans)
-        assert people.count() > 0
+        assert people
         salesperson = people[0]
         salesperson.is_active = False
         salesperson.activate()
@@ -858,7 +858,7 @@ class TestTransporter(BaseDomainTest):
 
     def test_inactivate(self):
         transporters = PersonAdaptToTransporter.select(connection=self.trans)
-        assert transporters.count() > 0
+        assert transporters
         transporter = transporters[0]
         transporter.is_active = True
         transporter.inactivate()
@@ -866,7 +866,7 @@ class TestTransporter(BaseDomainTest):
 
     def test_activate(self):
         transporters = PersonAdaptToTransporter.select(connection=self.trans)
-        assert transporters.count() > 0
+        assert transporters
         transporter = transporters[0]
         transporter.is_active = False
         transporter.activate()

@@ -376,7 +376,7 @@ class ParameterAccess(ClassInittableObject):
     def _get_parameter_by_name(self, param_name):
         res = ParameterData.select(ParameterData.q.field_name == param_name,
                                    connection=self.conn)
-        if not res.count():
+        if not res:
             raise DatabaseInconsistency("Can't find a ParameterData"
                                         "object for the key %s"
                                         % param_name)
@@ -434,7 +434,7 @@ class ParameterAccess(ClassInittableObject):
             msg = ('There is no unique correspondent parameter for this field '
                    'name. Found %s items.' % values.count())
             DatabaseInconsistency(msg)
-        elif not values.count():
+        elif not values:
             return None
         value = values[0]
         if issubclass(field_type, AbstractModel):
@@ -636,7 +636,7 @@ def get_parameter_by_field(field_name, conn):
         msg = ('There is no unique correspondent parameter for this field '
                'name. Found %s items.' % values.count())
         DatabaseInconsistency(msg)
-    elif not values.count():
+    elif not values:
         return None
     return values[0]
 
