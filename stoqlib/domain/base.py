@@ -162,21 +162,14 @@ class AbstractModel(object):
 
     @classmethod
     def selectOneBy(cls, clause=None, connection=None, **kw):
+        kw['_is_valid_model'] = True
         cls._check_connection(connection)
-        if clause and not isinstance(clause, SQLExpression):
-            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
-        query = cls.q._is_valid_model == True
-        if clause:
-            # This make queries in stoqlib applications consistent
-            clause = AND(query, clause)
-        else:
-            clause = query
-        clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
-        if isinstance(clause_repr, unicode):
-            clause = clause_repr.encode(DATABASE_ENCODING)
-        return super(AbstractModel, cls).selectOne(clause=clause,
-                                                   connection=connection,
-                                                   **kw)
+        for field_name, search_str in kw.items():
+            if not isinstance(search_str, unicode):
+                continue
+            kw[field_name] = search_str.encode(DATABASE_ENCODING)
+        return super(AbstractModel, cls).selectOneBy(connection=connection,
+                                                     **kw)
 
 
     #

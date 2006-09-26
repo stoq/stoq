@@ -119,14 +119,14 @@ class FacetTests(DomainTest):
         Ding(connection=self.trans)
 
         self.assertEquals(
-            None, Ding.selectOneBy(Ding.q.field == 1, connection=self.trans))
+            None, Ding.selectOneBy(field=1, connection=self.trans))
         ding1 = Ding(connection=self.trans, field=1)
         self.assertEquals(
-            ding1, Ding.selectOneBy(Ding.q.field == 1, connection=self.trans))
+            ding1, Ding.selectOneBy(field=1, connection=self.trans))
         ding2 = Ding(connection=self.trans, field=1)
         self.assertRaises(
             SQLObjectMoreThanOneResultError,
-            Ding.selectOneBy, Ding.q.field == 1, connection=self.trans)
+            Ding.selectOneBy, field=1, connection=self.trans)
 
     def testSelectOneByWithInvalid(self):
         obj = Ding(connection=self.trans)
