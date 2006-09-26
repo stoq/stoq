@@ -23,6 +23,7 @@
 ##
 
 from sqlobject import SQLObjectMoreThanOneResultError
+from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
 from stoqlib.database.runtime import new_transaction
@@ -35,8 +36,9 @@ class IDong(Interface):
     pass
 
 class Ding(Domain):
-    def __init__(self, connection):
-        Domain.__init__(self, connection=connection)
+    field = IntCol(default=0)
+    def __init__(self, connection, field=None):
+        Domain.__init__(self, connection=connection, field=field)
         self.called = False
 
     def facet_IDong_add(self, **kwargs):
@@ -51,6 +53,8 @@ Ding.registerFacet(DingAdaptToDong, IDong)
 
 trans = new_transaction()
 try:
+    trans.dropTable(DingAdaptToDong.sqlmeta.table)
+    trans.dropTable(Ding.sqlmeta.table)
     Ding.createTable(connection=trans)
     DingAdaptToDong.createTable(connection=trans)
 except ProgrammingError:
@@ -102,6 +106,29 @@ class FacetTests(DomainTest):
         self.assertEquals(Ding.selectOne(connection=self.trans), None)
         ding1 = Ding(connection=self.trans)
         self.assertEquals(Ding.selectOne(connection=self.trans), ding1)
-        ding1 = Ding(connection=self.trans)
+        ding2 = Ding(connection=self.trans)
         self.assertRaises(SQLObjectMoreThanOneResultError,
                           Ding.selectOne, connection=self.trans)
+
+    def testSelectOneWithInvalid(self):
+        obj = Ding(connection=self.trans)
+        obj._is_valid_model = False
+        self.testSelectOne()
+
+    def testSelectOneBy(self):
+        Ding(connection=self.trans)
+
+        self.assertEquals(
+            None, Ding.selectOneBy(Ding.q.field == 1, connection=self.trans))
+        ding1 = Ding(connection=self.trans, field=1)
+        self.assertEquals(
+            ding1, Ding.selectOneBy(Ding.q.field == 1, connection=self.trans))
+        ding2 = Ding(connection=self.trans, field=1)
+        self.assertRaises(
+            SQLObjectMoreThanOneResultError,
+            Ding.selectOneBy, Ding.q.field == 1, connection=self.trans)
+
+    def testSelectOneByWithInvalid(self):
+        obj = Ding(connection=self.trans)
+        obj._is_valid_model = False
+        self.testSelectOneBy()

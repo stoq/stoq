@@ -160,6 +160,25 @@ class AbstractModel(object):
             lazyColumns=lazyColumns,
             connection=connection)
 
+    @classmethod
+    def selectOneBy(cls, clause=None, connection=None, **kw):
+        cls._check_connection(connection)
+        if clause and not isinstance(clause, SQLExpression):
+            raise TypeError("Stoqlib doesn't support non sqlbuilder queries")
+        query = cls.q._is_valid_model == True
+        if clause:
+            # This make queries in stoqlib applications consistent
+            clause = AND(query, clause)
+        else:
+            clause = query
+        clause_repr = sqlrepr(clause, get_utility(IDatabaseSettings).rdbms)
+        if isinstance(clause_repr, unicode):
+            clause = clause_repr.encode(DATABASE_ENCODING)
+        return super(AbstractModel, cls).selectOne(clause=clause,
+                                                   connection=connection,
+                                                   **kw)
+
+
     #
     # Classmethods
     #
