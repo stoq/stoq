@@ -68,8 +68,7 @@ class BranchStation(Domain):
         @returns: a BranchStation instance
         """
 
-        station = cls.get_station(conn, branch, name)
-        if station:
+        if cls.get_station(conn, branch, name):
             raise StoqlibError(
                 "There is already a station registered as `%s'." % name)
         return cls(name=name, is_active=True, branch=branch,
