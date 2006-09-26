@@ -47,7 +47,6 @@ import classregistry
 import declarative
 import events
 from sresults import SelectResults
-from formencode import schema, compound
 
 import sys
 if sys.version_info[:3] < (2, 2, 0):
@@ -1347,7 +1346,7 @@ class SQLObject(object):
         it returns it.  If it finds more than one result, it raises a
         SQLObjectMoreThanOneResultError.
         """
-        results = list(cls.SelectResults(
+        results = list(cls.SelectResultsClass(
             cls, clause,
             clauseTables=clauseTables,
             lazyColumns=lazyColumns,
@@ -1370,6 +1369,7 @@ class SQLObject(object):
         it returns it.  If it finds more than one result, it raises a
         SQLObjectMoreThanOneResultError.
         """
+        conn = connection or cls._connection
         results = list(cls.SelectResultsClass(
             cls,
             clause=conn._SO_columnClause(cls, kw),
