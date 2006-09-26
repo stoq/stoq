@@ -19,3 +19,7 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
+
+# This sets up sys.path for us so we can import the right sqlobject
+import stoqlib
+stoqlib # pyflakes
