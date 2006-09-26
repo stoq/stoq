@@ -1350,7 +1350,7 @@ class SQLObject(object):
             cls, clause,
             clauseTables=clauseTables,
             lazyColumns=lazyColumns,
-            connection=connection))
+            connection=connection).limit(2))
 
         if len(results) == 0:
             return None
@@ -1373,7 +1373,7 @@ class SQLObject(object):
         results = list(cls.SelectResultsClass(
             cls,
             clause=conn._SO_columnClause(cls, kw),
-            connection=conn))
+            connection=conn).limit(2))
 
         if len(results) == 0:
             return None
