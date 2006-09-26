@@ -102,6 +102,7 @@ class FacetTests(DomainTest):
         self.failUnless(len(Ding.getFacetTypes()), 2)
         self.failUnless(DingAdaptToDang in Ding.getFacetTypes())
 
+class TestSelect(DomainTest):
     def testSelectOne(self):
         self.assertEquals(Ding.selectOne(connection=self.trans), None)
         ding1 = Ding(connection=self.trans)
