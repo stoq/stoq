@@ -129,7 +129,7 @@ class FacetTests(DomainTest):
             Ding.selectOneBy, field=1, connection=self.trans)
 
     def testSelectOneByWithInvalid(self):
-        obj = Ding(connection=self.trans)
+        obj = Ding(connection=self.trans, field=1)
         obj._is_valid_model = False
         self.testSelectOneBy()
 
