@@ -132,3 +132,11 @@ class FacetTests(DomainTest):
         obj = Ding(connection=self.trans)
         obj._is_valid_model = False
         self.testSelectOneBy()
+
+    def testISelect(self):
+        ding = Ding(connection=self.trans)
+        self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 0)
+        ding.addFacet(IDong, connection=self.trans)
+        self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 1)
+
+
