@@ -299,6 +299,18 @@ class Domain(BaseDomain, AdaptableSQLObject):
         return adapter.select(*args, **kwargs)
 
     @classmethod
+    def iselectOne(cls, iface, *args, **kwargs):
+        """
+        Like selectOne, but search on the adapter implementing the interface iface
+        associated with the domain class cls.
+
+        @param iface: interface
+        @returns: None, object or raises SQLObjectMoreThanOneResultError
+        """
+        adapter = cls.getAdapterClass(iface)
+        return adapter.selectOne(*args, **kwargs)
+
+    @classmethod
     def iget(cls, iface, object_id, **kwargs):
         """
         Like get, but gets on the adapter implementing the interface iface

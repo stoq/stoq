@@ -134,9 +134,33 @@ class FacetTests(DomainTest):
         self.testSelectOneBy()
 
     def testISelect(self):
-        ding = Ding(connection=self.trans)
         self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 0)
+        ding = Ding(connection=self.trans)
         ding.addFacet(IDong, connection=self.trans)
         self.assertEqual(Ding.iselect(IDong, connection=self.trans).count(), 1)
 
+    def testISelectWithInvalid(self):
+        ding = Ding(connection=self.trans)
+        dong = ding.addFacet(IDong, connection=self.trans)
+        dong._is_valid_model = False
+        self.testISelect()
 
+    def testISelectOne(self):
+        self.assertEqual(Ding.iselectOne(IDong, connection=self.trans), None)
+        ding = Ding(connection=self.trans)
+        dong = ding.addFacet(IDong, connection=self.trans)
+
+        self.assertEqual(Ding.iselectOne(IDong, connection=self.trans), dong)
+
+        ding2 = Ding(connection=self.trans)
+        ding2.addFacet(IDong, connection=self.trans)
+
+        self.assertRaises(
+            SQLObjectMoreThanOneResultError,
+            Ding.iselectOne, IDong, connection=self.trans)
+
+    def testISelectOneWithInvalid(self):
+        ding = Ding(connection=self.trans)
+        dong = ding.addFacet(IDong, connection=self.trans)
+        dong._is_valid_model = False
+        self.testISelectOne()
