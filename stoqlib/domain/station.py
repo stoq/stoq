@@ -25,7 +25,6 @@
 """ Station, a branch station per computer """
 
 from sqlobject import UnicodeCol, ForeignKey, BoolCol
-from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
@@ -54,7 +53,7 @@ class BranchStation(Domain):
         @param conn: a database connection
         @returns: a sequence of currently active stations
         """
-        return cls.select(cls.q.is_active == True, connection=conn)
+        return cls.selectBy(is_active=True, connection=conn)
 
     @classmethod
     def create(cls, conn, branch, name):
@@ -88,16 +87,8 @@ class BranchStation(Domain):
 
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
-        result = cls.select(
-            AND(cls.q.name == name,
-                cls.q.branchID == branch.id), connection=conn)
-        if result.count() > 1:
-            raise AssertionError("You should have only one station with "
-                                 "name `%s' for branch `%s'"
-                                 % (name, branch.get_description()))
-        elif result.count() == 1:
-            return result[0]
-        return None
+        return cls.selectOneBy(name=name, branchID=branch.id,
+                               connection=conn)
 
     #
     # IActive implementation
