@@ -30,7 +30,8 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
-from stoqlib.domain.person import Address, Person, CityLocation
+from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.person import Person
 
 
 class AddressSlave(BaseEditorSlave):

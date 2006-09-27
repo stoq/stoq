@@ -31,18 +31,16 @@ import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol, SQLObject)
-from sqlobject.sqlbuilder import AND, func
+from sqlobject.sqlbuilder import AND
 from zope.interface import implements
-from kiwi.argcheck import argcheck
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
-from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
+from stoqlib.domain.address import Address
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -101,95 +99,6 @@ class VoterData(Domain):
     number = UnicodeCol(default=None)
     section = UnicodeCol(default=None)
     zone = UnicodeCol(default=None)
-
-class CityLocation(Domain):
-    """Base class to store the locations. Used to store a person's address
-    or birth location.
-    """
-
-    country = UnicodeCol(default=u"")
-    city = UnicodeCol(default=u"")
-    state = UnicodeCol(default=u"")
-
-    @classmethod
-    @argcheck(StoqlibTransaction)
-    def get_default(cls, trans):
-        city = sysparam(trans).CITY_SUGGESTED
-        state = sysparam(trans).STATE_SUGGESTED
-        country = sysparam(trans).COUNTRY_SUGGESTED
-
-        location = CityLocation.selectOneBy(city=city, state=state,
-                                            country=country,
-                                            connection=trans)
-
-        # FIXME: Move this to database initialization ?
-        if location is None:
-            location = CityLocation(city=city, state=state, country=country,
-                                    connection=trans)
-        return location
-
-    def is_valid_model(self):
-        return bool(self.country and self.city and self.state)
-
-    def get_similar(self):
-        """
-        Returns a list of CityLocations which are similar to the current one
-        """
-        return CityLocation.select(
-            AND(func.UPPER(CityLocation.q.city) == self.city.upper(),
-                func.UPPER(CityLocation.q.state) == self.state.upper(),
-                func.UPPER(CityLocation.q.country) == self.country.upper(),
-                CityLocation.q.id != self.id),
-            connection=self.get_connection())
-
-class Address(Domain):
-    """Class to store person's addresses.
-
-    B{Important Attributes}:
-       - I{is_main_address}: defines if this object stores information
-                             for the main address
-    """
-
-    street = UnicodeCol(default='')
-    number = IntCol(default=None)
-    district = UnicodeCol(default='')
-    postal_code = UnicodeCol(default='')
-    complement = UnicodeCol(default='')
-    is_main_address = BoolCol(default=False)
-    person = ForeignKey('Person')
-    city_location = ForeignKey('CityLocation')
-
-    def is_valid_model(self):
-        return (self.street and self.number and self.district
-                and self.city_location.is_valid_model())
-
-    def ensure_address(self):
-        """
-        Verify that the current CityLocation instance is unique.
-        If it's not unique replace it with the one which is similar/identical
-        """
-        similar = self.city_location.get_similar()
-        if similar:
-            location = self.city_location
-            self.city_location = similar.getOne()
-            CityLocation.delete(location.id, connection=self.get_connection())
-
-    def get_city(self):
-        return self.city_location.city
-
-    def get_country(self):
-        return self.city_location.country
-
-    def get_state(self):
-        return self.city_location.state
-
-    def get_address_string(self):
-        if self.street and self.number and self.district:
-            return u'%s %s, %s' % (self.street, self.number,
-                                   self.district)
-
-        # TODO: Try to return a better string if all fields aren't set
-        return u''
 
 class Liaison(Domain):
     """Base class to store the person's contact informations."""

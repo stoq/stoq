@@ -37,14 +37,15 @@ from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples import log
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.person import (Person, EmployeeRole, Address,
-                                   CityLocation, EmployeeRoleHistory,
-                                   BranchStation)
+from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.person import (Person, EmployeeRole,
+                                   EmployeeRoleHistory)
 from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        IClient, IIndividual,
                                        IEmployee, ISalesPerson,
                                        IUser, ICreditProvider,
                                        ITransporter)
+from stoqlib.domain.station import BranchStation
 
 _ = gettext.gettext
 

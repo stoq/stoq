@@ -31,7 +31,8 @@ from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.gui.slaves.address import AddressSlave
-from stoqlib.domain.person import Address, Person, CityLocation
+from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.person import Person
 
 _ = stoqlib_gettext
 

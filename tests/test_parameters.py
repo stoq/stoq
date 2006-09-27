@@ -34,7 +34,8 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
                                        IUser, IPaymentGroup, IEmployee,
                                        IIndividual, IMoneyPM, IBillPM)
-from stoqlib.domain.person import Person, EmployeeRole, CityLocation
+from stoqlib.domain.address import CityLocation
+from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.sellable import BaseSellableCategory, ASellable
 from stoqlib.domain.payment.methods import PaymentMethod

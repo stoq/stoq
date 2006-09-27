@@ -28,7 +28,7 @@
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
-from stoqlib.domain.person import CityLocation
+from stoqlib.domain.address import CityLocation
 from stoqlib.domain.interfaces import IIndividual
 
 
