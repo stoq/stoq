@@ -263,8 +263,19 @@ class Person(Domain):
     #
 
     def get_main_address(self):
-        return Address.selectOneBy(personID=self.id, is_main_address=True,
-                                   connection=self.get_connection())
+        if not self.addresses:
+            return
+        address = [address for address in self.addresses
+                              if address.is_main_address]
+        if not address:
+            msg = ('This person have addresses but none of them is a '
+                   'main address')
+            raise DatabaseInconsistency(msg)
+
+        if len(address) > 1:
+            msg = 'This person has more than 1 main address'
+            raise DatabaseInconsistency, msg
+        return address[0]
 
     def get_address_string(self):
         address = self.get_main_address()
@@ -493,9 +504,10 @@ class PersonAdaptToClient(_PersonAdapter):
         current client
         """
         from stoqlib.domain.sale import SaleView
-        return SaleView.selectBy(
-            client_id=self.id,
-            connection=self.get_connection()).orderBy('open_date')
+        conn = self.get_connection()
+        query = SaleView.q.client_id == self.id
+        return SaleView.select(query, connection=conn,
+                               orderBy=SaleView.q.open_date)
 
     def get_last_purchase_date(self):
         sales = self.get_client_sales()
@@ -532,7 +544,8 @@ class PersonAdaptToSupplier(_PersonAdapter):
 
     @classmethod
     def get_active_suppliers(cls, conn):
-        return cls.selectBy(status=cls.STATUS_ACTIVE, connection=conn)
+        query = cls.q.status == cls.STATUS_ACTIVE
+        return cls.select(query, connection=conn)
 
     #
     # IDescribable implementation
@@ -633,11 +646,13 @@ class PersonAdaptToUser(_PersonAdapter):
 
     @classmethod
     def check_password_for(cls, username, password, conn):
-        user = cls.selectOneBy(username=username, password=password,
-                               connection=conn)
-        if user is None:
-            return True
-        return user.password == password
+        result = cls.select(cls.q.username == username, connection=conn)
+        if result.count() > 1:
+            raise DatabaseInconsistency("It is not possible have more than "
+                                        "one user with the same username.")
+        if result.count():
+            return result[0].password == password
+        return True
 
 Person.registerFacet(PersonAdaptToUser, IUser)
 
@@ -684,12 +699,14 @@ class PersonAdaptToBranch(_PersonAdapter):
     #
 
     def get_active_stations(self):
-        return BranchStation.selectBy(is_active=True, branchID=self.id,
-                                      connection=self.get_connection())
+        return self.select(
+            AND(BranchStation.q.is_active == True,
+                BranchStation.q.branchID == self.id),
+            connection=self.get_connection())
 
     @classmethod
     def get_active_branches(cls, conn):
-        return cls.selectBy(is_active=True, connection=conn)
+        return cls.select(cls.q.is_active == True, connection=conn)
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
@@ -845,7 +862,8 @@ class PersonAdaptToSalesPerson(_PersonAdapter):
     @classmethod
     def get_active_salespersons(cls, conn):
         """Get a list of all active salespersons"""
-        return cls.selectBy(is_active=True, connection=conn)
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
 
     def get_status_string(self):
         if self.is_active:
@@ -893,7 +911,8 @@ class PersonAdaptToTransporter(_PersonAdapter):
     @classmethod
     def get_active_transporters(cls, conn):
         """Get a list of all available transporters"""
-        return cls.selectBy(is_active=True, connection=conn)
+        query = cls.q.is_active == True
+        return cls.select(query, connection=conn)
 
 Person.registerFacet(PersonAdaptToTransporter, ITransporter)
 
