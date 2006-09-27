@@ -111,10 +111,6 @@ class SQLError(Exception):
     """Bad syntax for sql scripts"""
 
 
-class CityLocationError(Exception):
-    """Bad values for CityLocation instances"""
-
-
 class GiftCertificateError(Exception):
     """Errors for gift certificates"""
 
