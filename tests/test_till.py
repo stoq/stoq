@@ -31,7 +31,7 @@ from stoqlib.domain.till import Till
 
 from tests.base import DomainTest
 
-class TestStation(DomainTest):
+class TestTill(DomainTest):
     def testGetCurrentTillOpen(self):
         self.assertEqual(Till.get_current(self.trans), None)
 
@@ -117,3 +117,12 @@ class TestStation(DomainTest):
         till.create_credit(currency(5), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
 
+    def testGetInitialCashAmount(self):
+        till = Till(connection=self.trans,
+                    station=get_current_station(self.trans))
+        till.open_till()
+
+        till.create_debit(currency(10), u"")
+        till.create_credit(currency(5), u"")
+        till.close_till()
+        print till.get_initial_cash_amount()
