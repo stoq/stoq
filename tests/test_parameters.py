@@ -34,8 +34,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IBranch,
                                        ISalesPerson, IClient,
                                        IUser, IPaymentGroup, IEmployee,
                                        IIndividual, IMoneyPM, IBillPM)
-from stoqlib.domain.person import (Person, EmployeeRole,
-                                   get_city_location_template)
+from stoqlib.domain.person import Person, EmployeeRole, CityLocation
 from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.sellable import BaseSellableCategory, ASellable
 from stoqlib.domain.payment.methods import PaymentMethod
@@ -159,7 +158,7 @@ class TestParameter(DomainTest):
         assert isinstance(param, int)
 
     def test_LocationSuggested(self):
-        location = get_city_location_template(self.trans)
+        location = CityLocation.get_default(self.trans)
         self.assertEqual(location.city, self.sparam.CITY_SUGGESTED)
         self.assertEqual(location.state, self.sparam.STATE_SUGGESTED)
         self.assertEqual(location.country, self.sparam.COUNTRY_SUGGESTED)

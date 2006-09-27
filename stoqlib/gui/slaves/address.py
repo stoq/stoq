@@ -30,7 +30,7 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
-from stoqlib.domain.person import Address, Person, get_city_location_template
+from stoqlib.domain.person import Address, Person, CityLocation
 
 
 class AddressSlave(BaseEditorSlave):
@@ -72,7 +72,7 @@ class AddressSlave(BaseEditorSlave):
                                  AddressSlave.left_widgets)]
 
     def create_model(self, conn):
-        city_loc = get_city_location_template(conn)
+        city_loc = CityLocation.get_default(conn)
         return Address(person=self.person, city_location=city_loc,
                        is_main_address=self.is_main_address,
                        connection=conn)

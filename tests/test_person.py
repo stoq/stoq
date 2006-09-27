@@ -50,8 +50,7 @@ from stoqlib.domain.person import (Person, CityLocation, Address,
                                    EmployeeRoleHistory,
                                    PersonAdaptToBankBranch,
                                    PersonAdaptToCreditProvider,
-                                   PersonAdaptToTransporter,
-                                   get_city_location_template)
+                                   PersonAdaptToTransporter)
 from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
@@ -301,26 +300,37 @@ class TestVoterData(BaseDomainTest):
 
 
 class TestCityLocation(DomainTest):
-    def setUp(self):
-        DomainTest.setUp(self)
-        self.location = CityLocation(country='Groenlandia',
-                                     city='Acapulco',
-                                     state='Wisconsin',
-                                     connection=self.trans)
+    def create_city_location(self):
+        return CityLocation(country='Groenlandia',
+                            city='Acapulco',
+                            state='Wisconsin',
+                            connection=self.trans)
 
-    def test_is_valid_model(self):
-        self.failUnless(self.location.is_valid_model())
+    def testIsValidModel(self):
+        location = self.create_city_location()
+        self.failUnless(location.is_valid_model())
         invalid_location = CityLocation(connection=self.trans)
         self.failIf(invalid_location.is_valid_model())
 
     def testGetSimilar(self):
-        self.assertEquals(self.location.get_similar().count(), 0)
+        location = self.create_city_location()
+        self.assertEquals(location.get_similar().count(), 0)
 
-        clone = self.location.clone()
-        self.assertEquals(self.location.get_similar().count(), 1)
+        clone = location.clone()
+        self.assertEquals(location.get_similar().count(), 1)
 
         clone.city = "Chicago"
-        self.assertEquals(self.location.get_similar().count(), 0)
+        self.assertEquals(location.get_similar().count(), 0)
+
+    def testGetDefault(self):
+        location = CityLocation.get_default(self.trans)
+        self.failUnless(isinstance(location, CityLocation))
+        self.assertEquals(location.city,
+                          sysparam(self.trans).CITY_SUGGESTED)
+        self.assertEquals(location.state,
+                          sysparam(self.trans).STATE_SUGGESTED)
+        self.assertEquals(location.country,
+                          sysparam(self.trans).COUNTRY_SUGGESTED)
 
 class TestAddress(BaseDomainTest):
     """
@@ -876,13 +886,3 @@ class TestEmployeeRoleHistory(BaseDomainTest):
         role = EmployeeRole(connection=self.trans, name='ajudante')
         employee = get_employee(self.trans, 'escrivao')
         return role, employee
-
-    def test_get_city_location_template(self):
-        location = get_city_location_template(self.trans)
-        self.failUnless(isinstance(location, CityLocation))
-        self.assertEquals(location.city,
-                          sysparam(self.trans).CITY_SUGGESTED)
-        self.assertEquals(location.state,
-                          sysparam(self.trans).STATE_SUGGESTED)
-        self.assertEquals(location.country,
-                          sysparam(self.trans).COUNTRY_SUGGESTED)

@@ -31,7 +31,7 @@ from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
 from stoqlib.gui.slaves.address import AddressSlave
-from stoqlib.domain.person import Address, Person, get_city_location_template
+from stoqlib.domain.person import Address, Person, CityLocation
 
 _ = stoqlib_gettext
 
@@ -84,7 +84,7 @@ class AddressEditor(BaseEditor):
     #
 
     def create_model(self, conn):
-        ct_location = get_city_location_template(conn)
+        ct_location = CityLocation.get_default(conn)
         return Address(connection=self.conn, person=self.person,
                        city_location=ct_location)
 
