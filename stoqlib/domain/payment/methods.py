@@ -29,7 +29,6 @@ from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck, percent
 from kiwi.datatypes import currency
-from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
 from zope.interface import implements, implementedBy
 from zope.interface.interface import InterfaceClass
@@ -360,11 +359,10 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                 'for payment method %r' % (max, self))
 
     def get_payment_number_by_group(self, payment_group):
-        q1 = Payment.q.groupID == payment_group.id
-        q2 = Payment.q.methodID == self.id
-        query = AND(q1, q2)
-        conn = self.get_connection()
-        return Payment.select(query, connection=conn).count()
+        return Payment.selectBy(
+            groupID=payment_group.id,
+            methodID=self.id,
+            connection=self.get_connection()).count()
 
     @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
               PaymentMethodDetails, basestring, InterfaceClass,
@@ -688,19 +686,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         return self.max_installments_number
 
     def get_check_group_data(self, payment_group):
-        conn = self.get_connection()
-        check_group = BillCheckGroupData.selectBy(groupID=payment_group.id,
-                                                  connection=conn)
-        count = check_group.count()
-        if count == 1:
-            return check_group[0]
-        elif count > 1:
-            raise DatabaseInconsistency('You should have only one check '
-                                        'group item, found %d items' %
-                                        count)
-        else:
-            # No check group found
-            return
+        return BillCheckGroupData.selectOneBy(
+            groupID=payment_group.id,
+            connection=self.get_connection())
 
 
 class PMAdaptToCheckPM(AbstractCheckBillAdapter):
@@ -714,16 +702,8 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
 
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
-        conn = self.get_connection()
-        data = CheckData.selectBy(payment=payment,
-                                  connection=conn)
-        count = data.count()
-        if count == 1:
-            return data[0]
-        elif count > 1:
-            msg = ('You should have only one CheckData object per payment, '
-                   'got %d' % count)
-            raise DatabaseInconsistency(msg)
+        return CheckData.selectOneBy(payment=payment,
+                                     connection=self.get_connection())
 
     #
     # Auxiliar methods
