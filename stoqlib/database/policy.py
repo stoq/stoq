@@ -39,22 +39,19 @@ class Shop(SynchronizationPolicy):
     name = 'shop'
     tables = [
         ('TransactionEntry', SyncPolicy.BOTH),
-
+        ('UserProfile', SyncPolicy.BOTH),
         ('ProfileSettings', SyncPolicy.INITIAL),
-
-        ('Person', SyncPolicy.BOTH),
-        ('Address', SyncPolicy.BOTH),
-        ('Liason', SyncPolicy.BOTH),
-        ('Calls', SyncPolicy.BOTH),
         ('EmployeeRole', SyncPolicy.BOTH),
-        ('WorkpermitData', SyncPolicy.BOTH),
+        ('WorkPermitData', SyncPolicy.BOTH),
         ('MilitaryData', SyncPolicy.BOTH),
         ('VoterData', SyncPolicy.BOTH),
-        ('BankAcount', SyncPolicy.BOTH),
-        ('UserProfile', SyncPolicy.BOTH),
-
+        ('Person', SyncPolicy.BOTH),
+        ('CityLocation', SyncPolicy.BOTH),
+        ('Address', SyncPolicy.BOTH),
+        ('Liaison', SyncPolicy.BOTH),
+        ('Calls', SyncPolicy.BOTH),
+        ('BankAccount', SyncPolicy.BOTH),
         ('BranchStation', SyncPolicy.FROM_SOURCE),
-
         ('BaseSellableInfo', SyncPolicy.FROM_SOURCE),
         ('OnSaleInfo', SyncPolicy.FROM_SOURCE),
         ('SellableUnit', SyncPolicy.FROM_SOURCE),
