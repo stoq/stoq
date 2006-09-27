@@ -349,14 +349,6 @@ class SynchronizationClient(object):
         if error:
             raise SystemExit('sql_finish returned an error:\n %s' % error)
 
-    # Public API
-
-    def clean(self):
-        self.proxy.clean()
-
-    def get_station_name(self):
-        return self.proxy.get_station_name()
-
     def _get_last_timestamp(self, trans, station_name):
         station = self._get_station(trans, station_name)
         sync = self._get_synchronization(trans, station.branch)
@@ -366,6 +358,14 @@ class SynchronizationClient(object):
                 "not have an entry in the BranchSynchronization table")
 
         return sync.timestamp
+
+    # Public API
+
+    def clean(self):
+        self.proxy.clean()
+
+    def get_station_name(self):
+        return self.proxy.get_station_name()
 
     def update(self, station_name):
         """
