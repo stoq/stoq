@@ -103,3 +103,7 @@ class TestAddress(DomainTest):
         string = address.get_address_string()
         self.assertEquals(string, u'%s %s, %s' % (street, number, district))
 
+        address.street = ""
+        string = address.get_address_string()
+        self.assertEquals(string, u'')
+
