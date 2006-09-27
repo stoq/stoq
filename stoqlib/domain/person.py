@@ -263,19 +263,8 @@ class Person(Domain):
     #
 
     def get_main_address(self):
-        if not self.addresses:
-            return
-        address = [address for address in self.addresses
-                              if address.is_main_address]
-        if not address:
-            msg = ('This person have addresses but none of them is a '
-                   'main address')
-            raise DatabaseInconsistency(msg)
-
-        if len(address) > 1:
-            msg = 'This person has more than 1 main address'
-            raise DatabaseInconsistency, msg
-        return address[0]
+        return Address.selectOneBy(personID=self.id, is_main_address=True,
+                                   connection=self.get_connection())
 
     def get_address_string(self):
         address = self.get_main_address()
