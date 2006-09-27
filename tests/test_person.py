@@ -56,12 +56,12 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
-from stoqlib.exceptions import CityLocationError, DatabaseInconsistency
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from tests.base import BaseDomainTest
+from tests.base import BaseDomainTest, DomainTest
 
 
 _ = stoqlib_gettext
@@ -300,51 +300,27 @@ class TestVoterData(BaseDomainTest):
     _table = VoterData
 
 
-class TestCityLocation(BaseDomainTest):
-    """
-    C{CityLocation} TestCase
-    """
-    _table = CityLocation
+class TestCityLocation(DomainTest):
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.location = CityLocation(country='Groenlandia',
+                                     city='Acapulco',
+                                     state='Wisconsin',
+                                     connection=self.trans)
 
     def test_is_valid_model(self):
-        country = 'Groenlandia'
-        city = 'Acapulco'
-        state = 'Wisconsin'
-        self.create_instance()
-        self._instance.country = country
-        self._instance.city = city
-        self._instance.state = state
-        is_valid_model = self._instance.is_valid_model()
-        assert is_valid_model
+        self.failUnless(self.location.is_valid_model())
         invalid_location = CityLocation(connection=self.trans)
-        is_valid_model = invalid_location.is_valid_model()
-        assert not is_valid_model
+        self.failIf(invalid_location.is_valid_model())
 
-    def test_check_existing_citylocation(self):
-        location = CityLocation(country='BERMUDAS', city='BAHIN',
-                                state='BAHOUT', connection=self.trans)
-        chk_ext_lct = location.check_existing_citylocation(self.trans)
-        assert chk_ext_lct[0] is location
+    def testGetSimilar(self):
+        self.assertEquals(self.location.get_similar().count(), 0)
 
-    def test_get_validated(self):
-        #First test case, the instance will be reused
-        location = get_existing_city_location(self.trans)
-        clone = location.clone()
-        assert clone.get_validated() is location
+        clone = self.location.clone()
+        self.assertEquals(self.location.get_similar().count(), 1)
 
-        #Second test case, the instance is invalid
-        empty_location = get_empty_city_location(self.trans)
-        city_loc_validated = False
-        try:
-            empty_location.get_validated()
-        except CityLocationError, e:
-            city_loc_validated = True
-        assert city_loc_validated
-
-        #Third test case, there is no existing city location matching all
-        #atribute values
-        new_location = get_new_city_location(self.trans)
-        assert new_location.get_validated() is False
+        clone.city = "Chicago"
+        self.assertEquals(self.location.get_similar().count(), 0)
 
 class TestAddress(BaseDomainTest):
     """
@@ -369,13 +345,14 @@ class TestAddress(BaseDomainTest):
 
     def test_ensure_address(self):
         addresses = Address.select(connection=self.trans)
-        assert addresses
+        self.failUnless(addresses)
         address = addresses[0]
-        original_cityloc = address.city_location
-        cloned_cityloc = original_cityloc.clone()
-        address.city_location = cloned_cityloc
+
+        old_location = address.city_location
+        address.city_location = old_location.clone()
+
         address.ensure_address()
-        assert  address.city_location is original_cityloc
+        self.assertEqual(address.city_location, old_location)
 
     def test_get_city_location_attributes(self):
         city = 'Acapulco'

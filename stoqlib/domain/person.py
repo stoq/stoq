@@ -36,12 +36,12 @@ from zope.interface import implements
 from kiwi.argcheck import argcheck
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
-from stoqlib.database.runtime import get_connection, StoqlibTransaction
+from stoqlib.database.runtime import StoqlibTransaction
 from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import raw_phone_number
-from stoqlib.exceptions import DatabaseInconsistency, CityLocationError
+from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
@@ -114,37 +114,16 @@ class CityLocation(Domain):
     def is_valid_model(self):
         return bool(self.country and self.city and self.state)
 
-    def check_existing_citylocation(self, conn):
-        q1 = func.UPPER(CityLocation.q.city) == self.city.upper()
-        q2 = func.UPPER(CityLocation.q.state) == self.state.upper()
-        q3 = func.UPPER(CityLocation.q.country) == self.country.upper()
-        query = AND(q1, q2, q3)
-        return CityLocation.select(query, connection=conn)
-
-    def get_validated(self):
-        """For a given CityLocation instance checks if there is an existing
-        instance with the same attribute values and reuse it.
-        If there is no existing city location matching all attribute values of
-        the given cityloc argument, returns False.
+    def get_similar(self):
         """
-        if not self.is_valid_model():
-            raise CityLocationError("You should have a valid city "
-                                    "location defined at this point")
-
-        obj_conn = self.get_connection()
-        conn = get_connection()
-        result = self.check_existing_citylocation(conn)
-        if result.count() > 1:
-            raise CityLocationError("You should have only one "
-                                    "city_location instance with "
-                                    "the same attribute values "
-                                    "at this point")
-        elif result.count() == 1:
-            if result[0].id == self.id:
-                return False
-            return CityLocation.get(result[0].id, connection=obj_conn)
-        return False
-
+        Returns a list of CityLocations which are similar to the current one
+        """
+        return CityLocation.select(
+            AND(func.UPPER(CityLocation.q.city) == self.city.upper(),
+                func.UPPER(CityLocation.q.state) == self.state.upper(),
+                func.UPPER(CityLocation.q.country) == self.country.upper(),
+                CityLocation.q.id != self.id),
+            connection=self.get_connection())
 
 class Address(Domain):
     """Class to store person's addresses.
@@ -168,12 +147,15 @@ class Address(Domain):
                 and self.city_location.is_valid_model())
 
     def ensure_address(self):
-        cityloc = self.city_location
-        new_cityloc = cityloc.get_validated()
-        if new_cityloc:
-            self.city_location = new_cityloc
-            conn = self.get_connection()
-            CityLocation.delete(cityloc.id, connection=conn)
+        """
+        Verify that the current CityLocation instance is unique.
+        If it's not unique replace it with the one which is similar/identical
+        """
+        similar = self.city_location.get_similar()
+        if similar:
+            location = self.city_location
+            self.city_location = similar.getOne()
+            CityLocation.delete(location.id, connection=self.get_connection())
 
     def get_city(self):
         return self.city_location.city
@@ -936,5 +918,13 @@ def get_city_location_template(conn):
     city = sysparam(conn).CITY_SUGGESTED
     state = sysparam(conn).STATE_SUGGESTED
     country = sysparam(conn).COUNTRY_SUGGESTED
-    return CityLocation(city=city, state=state, country=country,
-                        connection=conn)
+
+    location = CityLocation.selectOneBy(city=city, state=state,
+                                        country=country,
+                                        connection=conn)
+
+    # FIXME: Move this to database initialization ?
+    if location is None:
+        location = CityLocation(city=city, state=state, country=country,
+                                connection=conn)
+    return location
