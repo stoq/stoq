@@ -515,7 +515,8 @@ class ParameterAccess(ClassInittableObject):
         self._set_schema(key, role.id, is_editable=False)
 
     def ensure_main_company(self):
-        from stoqlib.domain.person import Person, Address, CityLocation
+        from stoqlib.domain.address import Address, CityLocation
+        from stoqlib.domain.person import Person
         key = "MAIN_COMPANY"
         table = Person.getAdapterClass(IBranch)
         if self.get_parameter_by_field(key, table):

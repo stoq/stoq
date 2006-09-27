@@ -36,7 +36,8 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IClient,
                                        ICreditProvider, IEmployee,
                                        IUser, IBranch, ISalesPerson,
                                        ISellable, IBankBranch)
-from stoqlib.domain.person import (Person, CityLocation, Address,
+from stoqlib.domain.address import Address, CityLocation
+from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData, Liaison, Calls,
                                    PersonAdaptToClient,
@@ -57,10 +58,9 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.component import CannotAdapt
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 
-from tests.base import BaseDomainTest, DomainTest
+from tests.base import BaseDomainTest
 
 
 _ = stoqlib_gettext
@@ -297,97 +297,6 @@ class TestVoterData(BaseDomainTest):
     C{VoterData} TestCase
     """
     _table = VoterData
-
-
-class TestCityLocation(DomainTest):
-    def create_city_location(self):
-        return CityLocation(country='Groenlandia',
-                            city='Acapulco',
-                            state='Wisconsin',
-                            connection=self.trans)
-
-    def testIsValidModel(self):
-        location = self.create_city_location()
-        self.failUnless(location.is_valid_model())
-        invalid_location = CityLocation(connection=self.trans)
-        self.failIf(invalid_location.is_valid_model())
-
-    def testGetSimilar(self):
-        location = self.create_city_location()
-        self.assertEquals(location.get_similar().count(), 0)
-
-        clone = location.clone()
-        self.assertEquals(location.get_similar().count(), 1)
-
-        clone.city = "Chicago"
-        self.assertEquals(location.get_similar().count(), 0)
-
-    def testGetDefault(self):
-        location = CityLocation.get_default(self.trans)
-        self.failUnless(isinstance(location, CityLocation))
-        self.assertEquals(location.city,
-                          sysparam(self.trans).CITY_SUGGESTED)
-        self.assertEquals(location.state,
-                          sysparam(self.trans).STATE_SUGGESTED)
-        self.assertEquals(location.country,
-                          sysparam(self.trans).COUNTRY_SUGGESTED)
-
-class TestAddress(BaseDomainTest):
-    """
-    C{Address} TestCase
-    """
-    _table = Address
-
-    def get_foreign_key_data(self):
-        person = get_person(self.trans)
-        city_location = CityLocation(city='A', state='B', country='C',
-                                     connection=self.trans)
-        return person, city_location
-
-    def test_is_valid_model(self):
-        person = get_person(self.trans)
-        empty_location = CityLocation(connection=self.trans)
-        empty_address = Address(connection=self.trans,
-                                person=person,
-                                city_location=empty_location)
-        is_valid_model = empty_address.is_valid_model()
-        assert bool(is_valid_model) is False
-
-    def test_ensure_address(self):
-        addresses = Address.select(connection=self.trans)
-        self.failUnless(addresses)
-        address = addresses[0]
-
-        old_location = address.city_location
-        address.city_location = old_location.clone()
-
-        address.ensure_address()
-        self.assertEqual(address.city_location, old_location)
-
-    def test_get_city_location_attributes(self):
-        city = 'Acapulco'
-        country = 'Brazil'
-        state = 'Cracovia'
-        person = get_person(self.trans)
-        location = CityLocation(city=city, state=state, country=country,
-                                connection=self.trans)
-        address = Address(person=person, city_location=location,
-                          connection=self.trans)
-        self.assertEquals(address.get_city(), 'Acapulco')
-        self.assertEquals(address.get_country(), 'Brazil')
-        self.assertEquals(address.get_state(), 'Cracovia')
-
-    def test_get_address_string(self):
-        street = 'Rua das Couves'
-        number = 283
-        district = 'Federal'
-        location = get_existing_city_location(self.trans)
-        person = get_person(self.trans)
-        address = Address(person=person, city_location=location,
-                          street=street, number=number, district=district,
-                          connection=self.trans)
-        string = address.get_address_string()
-        self.assertEquals(string, u'%s %s, %s' % (street, number, district))
 
 class TestLiaison(BaseDomainTest):
     """

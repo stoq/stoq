@@ -149,6 +149,18 @@ class DomainTest(unittest.TestCase):
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     connection=self.trans)
 
+    def create_person(self):
+        from stoqlib.domain.person import Person
+        return Person(name='John', connection=self.trans)
+
+    def create_city_location(self):
+        from stoqlib.domain.address import CityLocation
+        return CityLocation(country='Groenlandia',
+                            city='Acapulco',
+                            state='Wisconsin',
+                            connection=self.trans)
+
+
 class BaseDomainTest(unittest.TestCase):
     """Base class to be used by all domain test classes.
     This class has some basic infrastructure:
