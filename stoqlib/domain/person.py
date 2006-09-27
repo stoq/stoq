@@ -48,6 +48,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ISalesPerson, IBankBranch, IActive,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet)
+from stoqlib.domain.station import BranchStation
 
 _ = stoqlib_gettext
 
@@ -683,8 +684,8 @@ class PersonAdaptToBranch(_PersonAdapter):
     #
 
     def get_active_stations(self):
-        return self.selectBy(is_active=True, branchID=self.id,
-                             connection=self.get_connection())
+        return BranchStation.selectBy(is_active=True, branchID=self.id,
+                                      connection=self.get_connection())
 
     @classmethod
     def get_active_branches(cls, conn):
