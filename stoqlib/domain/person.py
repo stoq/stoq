@@ -111,6 +111,23 @@ class CityLocation(Domain):
     city = UnicodeCol(default=u"")
     state = UnicodeCol(default=u"")
 
+    @classmethod
+    @argcheck(StoqlibTransaction)
+    def get_default(cls, trans):
+        city = sysparam(trans).CITY_SUGGESTED
+        state = sysparam(trans).STATE_SUGGESTED
+        country = sysparam(trans).COUNTRY_SUGGESTED
+
+        location = CityLocation.selectOneBy(city=city, state=state,
+                                            country=country,
+                                            connection=trans)
+
+        # FIXME: Move this to database initialization ?
+        if location is None:
+            location = CityLocation(city=city, state=state, country=country,
+                                    connection=trans)
+        return location
+
     def is_valid_model(self):
         return bool(self.country and self.city and self.state)
 
@@ -908,23 +925,3 @@ class ClientView(SQLObject, BaseSQLView):
     cpf = UnicodeCol()
     rg_number = UnicodeCol()
     phone_number = UnicodeCol()
-
-#
-# General routines
-#
-
-@argcheck(StoqlibTransaction)
-def get_city_location_template(conn):
-    city = sysparam(conn).CITY_SUGGESTED
-    state = sysparam(conn).STATE_SUGGESTED
-    country = sysparam(conn).COUNTRY_SUGGESTED
-
-    location = CityLocation.selectOneBy(city=city, state=state,
-                                        country=country,
-                                        connection=conn)
-
-    # FIXME: Move this to database initialization ?
-    if location is None:
-        location = CityLocation(city=city, state=state, country=country,
-                                connection=conn)
-    return location
