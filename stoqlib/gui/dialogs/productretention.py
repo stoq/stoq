@@ -50,6 +50,12 @@ class ProductRetentionDialog(BaseEditor):
                      'supplier')
 
     def __init__(self, conn, product):
+        # FIXME: BaseEditor should provide support for this
+        if IStorable(product, None) is None:
+            raise TypeError("Product must provide a IStorable facet")
+        if ISellable(product, None) is None:
+            raise TypeError("Product must provide a ISellable facet")
+
         self.product = product
         model = self._get_model(conn, product)
         BaseEditor.__init__(self, conn, model)
@@ -68,7 +74,7 @@ class ProductRetentionDialog(BaseEditor):
                                 self.storable.get_full_balance(self.branch))
 
     def setup_proxies(self):
-        self.storable = IStorable(self.product, self.conn)
+        self.storable = IStorable(self.product)
         sellable = ISellable(self.product)
         self.model.product_description = sellable.get_description()
         self.model.available = self.storable.get_full_balance_for_current_branch()
