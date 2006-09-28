@@ -25,7 +25,7 @@
 """ Base module to be used by all domain test modules"""
 
 import datetime
-import decimal
+from decimal import Decimal
 try:
     from twisted.trial import unittest
     unittest # pyflakes
@@ -51,10 +51,10 @@ from bootstrap import bootstrap_testsuite
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')
-DECIMAL_TEST_VALUES = (decimal.Decimal("24.38"),
-                       decimal.Decimal("445.67"))
-CURRENCY_TEST_VALUES = (currency(decimal.Decimal("98.42")),
-                        currency(decimal.Decimal("876.98")))
+DECIMAL_TEST_VALUES = (Decimal("24.38"),
+                       Decimal("445.67"))
+CURRENCY_TEST_VALUES = (currency(Decimal("98.42")),
+                        currency(Decimal("876.98")))
 INT_TEST_VALUES = (20, 55)
 DATE_TEST_VALUES = (datetime.date.today(),
                     datetime.date.today() + datetime.timedelta(1))

@@ -23,7 +23,7 @@
 ##
 """ Payment method implementations. """
 
-import decimal
+from decimal import Decimal
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -152,7 +152,7 @@ class PaymentMethodDetails(InheritableModel):
                                                value, self, description,
                                                base_value=base_value)
 
-    @argcheck(AbstractPaymentGroup, int, datetime, decimal.Decimal)
+    @argcheck(AbstractPaymentGroup, int, datetime, Decimal)
     def setup_inpayments(self, payment_group, installments_number,
                          first_duedate, total_value):
         """Return a list of newly created inpayments and its total
@@ -364,9 +364,9 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
             methodID=self.id,
             connection=self.get_connection()).count()
 
-    @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
+    @argcheck(AbstractPaymentGroup, datetime, Decimal,
               PaymentMethodDetails, basestring, InterfaceClass,
-              decimal.Decimal)
+              Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
                     iface=IInPayment, base_value=None):
@@ -579,8 +579,8 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     #
 
     def _check_interest_value(self, monthly_interest):
-        monthly_interest = monthly_interest or decimal.Decimal(0)
-        if not isinstance(monthly_interest, (int, decimal.Decimal)):
+        monthly_interest = monthly_interest or Decimal(0)
+        if not isinstance(monthly_interest, (int, Decimal)):
             raise TypeError('monthly_interest argument must be integer '
                             'or Decimal, got %s instead'
                             % type(monthly_interest))
@@ -596,7 +596,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
                              "between 0 and 100, got %s"
                              % monthly_interest)
 
-    @argcheck(decimal.Decimal, int, decimal.Decimal)
+    @argcheck(Decimal, int, Decimal)
     def calculate_payment_value(self, total_value, installments_number,
                                 monthly_interest=None):
         if not installments_number:
@@ -612,7 +612,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         return (total_value / installments_number) * interest_rate
 
     @argcheck(AbstractPaymentGroup, int, datetime, int, int,
-              decimal.Decimal, decimal.Decimal, InterfaceClass)
+              Decimal, Decimal, InterfaceClass)
     def _setup_payments(self, payment_group, installments_number,
                         first_duedate, interval_type, intervals,
                         total_value, monthly_interest=None,
@@ -643,7 +643,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         if monthly_interest:
             interest_total = value * installments_number - total_value
         else:
-            interest_total = decimal.Decimal(0)
+            interest_total = Decimal(0)
         payments = []
         calc_interval = calculate_interval(interval_type, intervals)
         group_desc = payment_group.get_group_description()
@@ -709,9 +709,9 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
     # Auxiliar methods
     #
 
-    @argcheck(AbstractPaymentGroup, datetime, decimal.Decimal,
+    @argcheck(AbstractPaymentGroup, datetime, Decimal,
               PaymentMethodDetails, basestring, InterfaceClass,
-              decimal.Decimal)
+              Decimal)
     def add_payment(self, payment_group, due_date, value,
                     method_details=None, description=None,
                     iface=IInPayment, base_value=None):

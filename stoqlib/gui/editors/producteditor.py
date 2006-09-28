@@ -25,7 +25,7 @@
 ##
 """ Editors definitions for products"""
 
-import decimal
+from decimal import Decimal
 
 from kiwi.datatypes import ValidationError, currency
 from kiwi.ui.widgets.list import Column
@@ -246,7 +246,7 @@ class ProductEditor(SellableEditor):
             return
         cost = self.sellable_proxy.model.cost or currency(0)
         markup = (self.sellable_proxy.model.get_suggested_markup()
-                  or decimal.Decimal(0))
+                  or Decimal(0))
         price = cost + ((markup / 100) * cost)
         self.sellable_proxy.model.base_sellable_info.price = price
         self.sellable_proxy.update('base_sellable_info.price')

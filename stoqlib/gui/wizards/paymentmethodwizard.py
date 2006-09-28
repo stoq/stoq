@@ -24,7 +24,7 @@
 ##
 """Payment method management wizards"""
 
-import decimal
+from decimal import Decimal
 
 from kiwi.python import Settable
 from kiwi.argcheck import argcheck
@@ -188,7 +188,7 @@ class PaymentMethodDetailsWizard(BaseWizard):
         return Settable(destination=None, provider=None,
                         payment_type=None, installment_settings=settings,
                         max_installments_number=1, receive_days=0,
-                        commission=decimal.Decimal(0))
+                        commission=Decimal(0))
 
     def get_method_details_type(self):
         if self.edit_mode:

@@ -24,7 +24,7 @@
 ##
 """ Slaves for payment management """
 
-import decimal
+from decimal import Decimal
 import datetime
 
 from kiwi.utils import gsignal
@@ -108,7 +108,7 @@ class PaymentListSlave(BaseEditorSlave):
         values = [s.get_payment_value() for s in slaves
                         if s.get_payment_value() is not None]
         total = sum(values, currency(0))
-        slaves_total = decimal.Decimal(str(total))
+        slaves_total = Decimal(str(total))
         slaves_total -= self.parent.get_interest_total()
         if slaves_total == self.sale_total:
             return currency(0)

@@ -25,7 +25,7 @@
 ##
 """ SQLObject columns and helpers """
 
-import decimal
+from decimal import Decimal
 
 from formencode.validators import Validator
 from kiwi.datatypes import currency
@@ -49,8 +49,8 @@ class _DecimalValidator(Validator):
     def to_python(self, value, state):
         # Do not allow empty strings or None Values
         value = value or 0
-        if not isinstance(value, decimal.Decimal):
-            value = decimal.Decimal(str(value))
+        if not isinstance(value, Decimal):
+            value = Decimal(str(value))
         return value
 
     def from_python(self, value, state):
@@ -77,8 +77,8 @@ class _PriceValidator(Validator):
     def to_python(self, value, state):
         # Do not allow empty strings or None Values
         value = value or currency(0)
-        if not isinstance(value, decimal.Decimal):
-            value = decimal.Decimal(str(value))
+        if not isinstance(value, Decimal):
+            value = Decimal(str(value))
         return currency(value)
 
     def from_python(self, value, state):

@@ -25,7 +25,7 @@
 ##
 """ Implementation of sellable search """
 
-import decimal
+from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
@@ -94,7 +94,7 @@ class SellableSearch(SearchEditor):
         if self.has_stock_mode:
             column = Column('stock', title=_('Stock'),
                             format_func=format_quantity,
-                            data_type=decimal.Decimal,
+                            data_type=Decimal,
                             width=80)
             columns.append(column)
         return columns

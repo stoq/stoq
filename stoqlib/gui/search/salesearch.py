@@ -25,7 +25,7 @@
 """ Search dialogs for sale objects """
 
 
-import decimal
+from decimal import Decimal
 from datetime import date
 
 import gtk
@@ -80,7 +80,7 @@ class SaleSearch(SearchDialog):
                 Column('salesperson_name', title=_('Salesperson'),
                        data_type=str, width=190, expand=True),
                 Column('total_quantity', title=_('Items Quantity'),
-                       data_type=decimal.Decimal, width=140,
+                       data_type=Decimal, width=140,
                        format_func=format_quantity),
                 Column('total', title=_('Total'), data_type=currency)]
 

@@ -25,7 +25,7 @@
 ##
 """ Products report implementation """
 
-import decimal
+from decimal import Decimal
 
 from stoqlib.reporting.template import SearchResultsReport
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
@@ -68,7 +68,7 @@ class ProductReport(SearchResultsReport):
 
     def _setup_items_table(self):
         total_qty = sum([item.stock for item in self._products],
-                        decimal.Decimal(0))
+                        Decimal(0))
         summary_row = ["", "", _("Total:"), format_quantity(total_qty), ""]
         self.add_object_table(self._products, self._get_columns(),
                               summary_row=summary_row)
