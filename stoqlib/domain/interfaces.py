@@ -312,6 +312,9 @@ class IBranch(IPersonFacet):
 
     manager = Attribute('An employee which is in charge of this branch')
 
+    def get_active_stations():
+        """FIXME"""
+
 class ISalesPerson(IPersonFacet):
     """An employee in charge of make sales"""
 
