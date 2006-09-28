@@ -59,9 +59,7 @@ class AbstractModel(object):
     def __eq__(self, other):
         if type(self) is not type(other):
             return False
-        if not isinstance(self, Adapter):
-            return self.id == other.id
-        return self.get_adapted_id() == other.get_adapted_id()
+        return self.id == other.id
 
     #
     # Overwriting some SQLObject methods
@@ -234,30 +232,8 @@ class AbstractModel(object):
             kwargs[column.origName] = getattr(self, column.origName)
         return klass(**kwargs)
 
-    def get_adapted(self):
-        assert isinstance(self, Adapter)
-        return self._original
-
     def get_connection(self):
         return self._connection
-
-    def get_adapted_id(self):
-        assert isinstance(self, Adapter)
-        return self._original.id
-
-    #
-    # Inheritable object methods
-    #
-
-    def _set_original_references(self, _original, kwargs):
-        if not isinstance(self, Adapter):
-            raise TypeError("Invalid Adapter class, it should be inherited "
-                            "from adapter, got %r"  % self)
-        if _original:
-            kwargs['_originalID'] = getattr(_original, 'id', None)
-            kwargs['_original'] = _original
-        # HMMM!
-        self.__dict__['_original'] = _original
 
 class BaseDomain(AbstractModel, SQLObject):
     """An abstract mixin class for domain classes"""
@@ -337,14 +313,14 @@ class BaseSQLView:
 class ModelAdapter(BaseDomain, Adapter):
 
     def __init__(self, _original=None, *args, **kwargs):
-        self._set_original_references(_original, kwargs)
+        Adapter.__init__(self, _original, kwargs) # Modifies kwargs
         BaseDomain.__init__(self, *args, **kwargs)
 
 
 class InheritableModelAdapter(AbstractModel, InheritableSQLObject, Adapter):
 
     def __init__(self, _original=None, *args, **kwargs):
-        self._set_original_references(_original, kwargs)
+        Adapter.__init__(self, _original, kwargs) # Modifies kwargs
         InheritableSQLObject.__init__(self, *args, **kwargs)
 
 

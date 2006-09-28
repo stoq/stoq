@@ -130,12 +130,3 @@ method.
 Then you can check if the returned instance is of a correct adapter type:
 
     >>> assert isinstance(adapter, adapter_class)
-
-When you have an adapter instance and need to discover the base component
-wich it's pluged, you can call get_adapted method, or get_adapted_id to get
-the id of your base class.
-
-    >>> base = adapter.get_adapted()
-    >>> assert base is test_product
-    >>> base_id = adapter.get_adapted_id()
-    >>> assert base_id == test_product.id
