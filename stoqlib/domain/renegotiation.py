@@ -96,14 +96,14 @@ class AbstractRenegotiationAdapter(InheritableModelAdapter):
     def get_description(self):
         return self.type_description
 
-    def get_return_value_description(self):
-        adapted = self.get_adapted()
-        if not adapted.get_return_total():
-            return u""
-        if adapted.new_order is None:
-            return _(u"Paid by Money")
-        return _(u"Paid on sale order %s"
-                 % adapted.new_order.get_order_number_str())
+#     def get_return_value_description(self):
+#         adapted = self.get_adapted()
+#         if not adapted.get_return_total():
+#             return u""
+#         if adapted.new_order is None:
+#             return _(u"Paid by Money")
+#         return _(u"Paid on sale order %s"
+#                  % adapted.new_order.get_order_number_str())
 
 
 class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):

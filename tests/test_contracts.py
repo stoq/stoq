@@ -50,7 +50,6 @@ def _create_adapter_test():
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
         'AbstractPaymentMethodAdapter': ' ',
-        'AbstractRenegotiationAdapter': ' ',
         'GiftCertificateAdaptToSellable': ' ',
         'PMAdaptToCardPM': ' ',
         'PMAdaptToCheckPM': ' ',
