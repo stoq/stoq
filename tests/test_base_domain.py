@@ -27,7 +27,6 @@ from sqlobject.col import IntCol
 from zope.interface import implements, Interface
 
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.exceptions import ProgrammingError
 from stoqlib.domain.base import Domain, ModelAdapter
 
 from tests.base import DomainTest
@@ -52,15 +51,9 @@ class DingAdaptToDong(ModelAdapter):
 Ding.registerFacet(DingAdaptToDong, IDong)
 
 trans = new_transaction()
-try:
-    trans.dropTable(DingAdaptToDong.sqlmeta.table)
-    trans.dropTable(Ding.sqlmeta.table)
-    Ding.createTable(connection=trans)
-    DingAdaptToDong.createTable(connection=trans)
-except ProgrammingError:
-    pass
-else:
-    trans.commit()
+Ding.createTable(ifNotExists=True, connection=trans)
+DingAdaptToDong.createTable(ifNotExists=True, connection=trans)
+trans.commit()
 
 class FacetTests(DomainTest):
     def testAdd(self):
@@ -89,11 +82,6 @@ class FacetTests(DomainTest):
 
         class DingAdaptToDang(ModelAdapter):
             implements(IDang)
-
-        try:
-            DingAdaptToDang.createTable(connection=self.trans)
-        except ProgrammingError:
-            pass
 
         self.assertEqual(Ding.getFacetTypes(), [DingAdaptToDong])
 
