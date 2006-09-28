@@ -62,9 +62,6 @@ def _test_slave(self, slave):
             value = self.trans
         elif arg == 'model':
             if slave.model_type is None:
-                if slave.model_iface is None:
-                    raise SkipTest('%s model_type or model_iface required' % (
-                        slave.__name__,))
                 model_type = slave.model_iface
             else:
                 model_type = slave.model_type
