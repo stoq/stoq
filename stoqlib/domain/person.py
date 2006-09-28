@@ -681,17 +681,6 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
             return _('Active')
         return _('Inactive')
 
-    #
-    # Auxiliar methods
-    #
-
-    def get_provider_type_str(self):
-        try:
-            return self.provider_types[self.provider_type]
-        except KeyError:
-            raise DatabaseInconsistency('Invalid provider_type, got %s' %
-                                        self.provider_type)
-
     @classmethod
     def _get_providers(cls, conn, provider_type=None):
         """Get a list of all credit providers.
