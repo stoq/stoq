@@ -169,6 +169,18 @@ class IStorable(NoneInterface):
         StockReference object)
         """
 
+    def get_stocks():
+        """
+        Returns the stock items which belongs to this Storable
+        @returns: a list of ProductStockItems
+        """
+
+    def has_stock_by_branch(branch):
+        """Returns True if there is at least one item on stock for the
+        given branch or False if not.
+        This method also considers the logic stock
+        """
+
 class IPersonFacet(NoneInterface):
     """
     A facet on a Person, the only thing it has is a named reference

@@ -336,17 +336,56 @@ class ProductAdaptToStorable(ModelAdapter):
     retention = MultipleJoin('ProductRetentionHistory')
 
     #
+    # Private
+    #
+
+    def _check_logic_quantity(self):
+        if sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
+            return
+        raise StockError(
+            "This company doesn't allow logic quantity operations")
+
+    def _check_rejected_stocks(self, stocks, quantity, check_logic=False):
+        for stock_item in stocks:
+            if check_logic:
+                base_qty = stock_item.logic_quantity
+            else:
+                base_qty = stock_item.quantity
+            if base_qty < quantity:
+                msg = ('Quantity to decrease is greater than available '
+                       'stock.')
+                raise StockError(msg)
+
+    def _has_qty_available(self, quantity, branch):
+        logic_qty = self.get_logic_balance(branch)
+        balance = self.get_full_balance(branch) - logic_qty
+        qty_ok = quantity <= balance
+        logic_qty_ok = quantity <= self.get_full_balance(branch)
+        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
+        if not qty_ok and not (has_logic_qty and logic_qty_ok):
+            msg = ('Quantity to sell is greater than the available '
+                   'stock.')
+            raise StockError(msg)
+        return qty_ok
+
+    def _add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
+                        logic_quantity=0.0):
+        conn = self.get_connection()
+        return ProductStockItem(connection=conn, branch=branch,
+                                stock_cost=stock_cost, quantity=quantity,
+                                logic_quantity=logic_quantity,
+                                storable=self)
+
+    #
     # IContainer implementation
     #
 
     def add_item(self, item):
-        raise NotImplementedError('This method should be replaced '
-                                  'by add_stock_item')
-
+        raise NotImplementedError
 
     def get_items(self):
-        raise NotImplementedError('This method should be replaced '
-                                  'by get_stocks')
+        raise NotImplementedError(
+            'This method should be replaced by get_stocks')
 
     def remove_item(self, item):
         conn = self.get_connection()
@@ -354,6 +393,7 @@ class ProductAdaptToStorable(ModelAdapter):
             raise TypeError("Item should be of type ProductStockItem, got "
                             % type(item))
         ProductStockItem.delete(item.id, connection=conn)
+
 
     #
     # IStorable implementation
@@ -363,7 +403,7 @@ class ProductAdaptToStorable(ModelAdapter):
         conn = self.get_connection()
         branch_companies = PersonAdaptToBranch.select(connection=conn)
         for branch in branch_companies:
-            self.add_stock_item(branch)
+            self._add_stock_item(branch)
 
     def increase_stock(self, quantity, branch=None):
         stocks = self.get_stocks(branch)
@@ -381,29 +421,18 @@ class ProductAdaptToStorable(ModelAdapter):
         for stock_item in stocks:
             stock_item.logic_quantity += quantity
 
-    def check_rejected_stocks(self, stocks, quantity, check_logic=False):
-        for stock_item in stocks:
-            if check_logic:
-                base_qty = stock_item.logic_quantity
-            else:
-                base_qty = stock_item.quantity
-            if base_qty < quantity:
-                msg = ('Quantity to decrease is greater than available '
-                       'stock.')
-                raise StockError(msg)
-
     def decrease_stock(self, quantity, branch=None):
         if not self._has_qty_available(quantity, branch):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
             logic_qty = self.get_logic_balance(branch)
-            balance = self.get_full_balance(branch) - logic_qty
+            balance = self._get_full_balance(branch) - logic_qty
             logic_sold_qty = quantity - balance
             quantity -= logic_sold_qty
             self.decrease_logic_stock(logic_sold_qty, branch)
 
         stocks = self.get_stocks(branch)
-        self.check_rejected_stocks(stocks, quantity)
+        self._check_rejected_stocks(stocks, quantity)
 
         for stock_item in stocks:
             stock_item.quantity -= quantity
@@ -412,7 +441,7 @@ class ProductAdaptToStorable(ModelAdapter):
         self._check_logic_quantity()
 
         stocks = self.get_stocks(branch)
-        self.check_rejected_stocks(stocks, quantity, check_logic=True)
+        self._check_rejected_stocks(stocks, quantity, check_logic=True)
 
         for stock_item in stocks:
             stock_item.logic_quantity -= quantity
@@ -451,50 +480,7 @@ class ProductAdaptToStorable(ModelAdapter):
             return currency(0)
         return currency(total_cost / total_qty)
 
-    def _has_qty_available(self, quantity, branch):
-        logic_qty = self.get_logic_balance(branch)
-        balance = self.get_full_balance(branch) - logic_qty
-        qty_ok = quantity <= balance
-        logic_qty_ok = quantity <= self.get_full_balance(branch)
-        has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
-        if not qty_ok and not (has_logic_qty and logic_qty_ok):
-            msg = ('Quantity to sell is greater than the available '
-                   'stock.')
-            raise StockError(msg)
-        return qty_ok
-
-    #
-    # Accessors
-    #
-
-    def get_full_balance_string(self, branch=None, full_balance=None):
-        full_balance = full_balance or self.get_full_balance(branch)
-        # FIXME: We cannot assume that the object we adapt implements ISellable
-        adapted = self.get_adapted()
-        sellable = ISellable(adapted)
-        return u"%s %s" % (full_balance, sellable.get_unit_description())
-
-    def get_full_balance_for_current_branch(self):
-        conn = self.get_connection()
-        branch = get_current_branch(conn)
-        return self.get_full_balance(branch)
-
-    #
-    # General methods
-    #
-
-
-    def _check_logic_quantity(self):
-        if not sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
-            msg = ("This company doesn't allow logic quantity "
-                   "operations.")
-            raise StockError(msg)
-
     def has_stock_by_branch(self, branch):
-        """Returns True if there is at least one item on stock for the
-        given branch or False if not.
-        This method also considers the logic stock
-        """
         stock = self.get_stocks(branch)
         qty = stock.count()
         if not qty == 1:
@@ -503,14 +489,6 @@ class ProductAdaptToStorable(ModelAdapter):
                                         % qty)
         stock = stock[0]
         return stock.quantity + stock.logic_quantity > 0
-
-    def add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
-                       logic_quantity=0.0):
-        conn = self.get_connection()
-        return ProductStockItem(connection=conn, branch=branch,
-                                stock_cost=stock_cost, quantity=quantity,
-                                logic_quantity=logic_quantity,
-                                storable=self)
 
     @argcheck(Person.getAdapterClass(IBranch))
     def get_stocks(self, branch=None):
@@ -535,7 +513,7 @@ Product.registerFacet(ProductAdaptToStorable, IStorable)
 
 class ProductFullStockView(SellableView):
     """Stores general informations about products and the stock total in
-    all branch companies"
+    all branch companies
     """
 
 #
@@ -548,4 +526,4 @@ def storables_set_branch(conn, branch):
     created. It creates a new stock reference for all the products.
     """
     for storable in ProductAdaptToStorable.select(connection=conn):
-        storable.add_stock_item(branch)
+        storable._add_stock_item(branch)

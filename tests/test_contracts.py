@@ -49,7 +49,6 @@ def _create_adapter_test():
         'PersonAdaptToSalesPerson': ' ',
         'PersonAdaptToTransporter': ' ',
         'PersonAdaptToUser': ' ',
-
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
         'AbstractPaymentMethodAdapter': ' ',
@@ -63,7 +62,6 @@ def _create_adapter_test():
         'PersonAdaptToClient': ' ',
         'PersonAdaptToCreditProvider': ' ',
         'PersonAdaptToIndividual': ' ',
-        'ProductAdaptToStorable': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
         'SaleAdaptToPaymentGroup': ' ',
         }
