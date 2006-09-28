@@ -40,7 +40,6 @@ from stoqlib.lib.component import Adapter, AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)
-from stoqlib.exceptions import StoqlibError
 
 
 DATABASE_ENCODING = 'UTF-8'
@@ -91,14 +90,16 @@ class AbstractModel(object):
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
 
-    def _SO_setValue(self, *args, **kwargs):
+    def _init(self, *args, **kwargs):
+        # _init is called when an object is created OR fetched from the
+        # database.
+        # We're overriding here because we want to keep track of all objects
+        # inside a transaction
+        super(AbstractModel, self)._init(*args, **kwargs)
+
         conn = self.get_connection()
-        if not isinstance(conn, StoqlibTransaction):
-            raise StoqlibError("Only StoqlibTransactions can edit data")
-
-        conn.add_object(self)
-
-        super(AbstractModel, self)._SO_setValue(*args, **kwargs)
+        if isinstance(conn, StoqlibTransaction):
+            conn.add_object(self)
 
     @classmethod
     def select(cls, clause=None, connection=None, **kwargs):
