@@ -45,6 +45,7 @@ from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.base import (Payment, PaymentAdaptToInPayment,
                                          AbstractPaymentGroup)
+from stoqlib.domain.purchase import PurchaseOrderAdaptToPaymentGroup
 from stoqlib.domain.base import (Domain, InheritableModel,
                                  InheritableModelAdapter)
 from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
@@ -471,12 +472,16 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
             till = group.get_adapted().till
         elif isinstance(group, TillAdaptToPaymentGroup):
             till = group.get_adapted()
+        elif isinstance(group, PurchaseOrderAdaptToPaymentGroup):
+            # Johan 2006-09-28: HACK: No idea if this is correct
+            return
         else:
             raise StoqlibError(
                 "Invalid Payment group, got %s" % group)
 
         description = _(u'1/1 %s for %s') % (
             self.description, group.get_group_description())
+
         TillEntry(description=description,
                   value=total,
                   till=till,

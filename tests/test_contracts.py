@@ -59,7 +59,6 @@ def _create_adapter_test():
         'PersonAdaptToClient': ' ',
         'PersonAdaptToCreditProvider': ' ',
         'PersonAdaptToIndividual': ' ',
-        'PurchaseOrderAdaptToPaymentGroup': ' ',
         }
 
     def _test_adapter(self, adapter):
