@@ -18,11 +18,13 @@ So, in summary: Col objects are what you define, but SOCol objects
 are what gets used.
 """
 
-import re, time
+import time
 try:
     import cPickle as pickle
 except ImportError:
+    pickle # pyflakes in the try
     import pickle
+
 import sqlbuilder
 # Sadly the name "constraints" conflicts with many of the function
 # arguments in this module, so we rename it:
@@ -47,6 +49,7 @@ try:
     from mx import DateTime
 except ImportError:
     try:
+        DateTime # pyflakes in the try
         import DateTime # old version of mxDateTime
     except ImportError:
         mxdatetime_available = False
@@ -360,7 +363,7 @@ class SOCol(object):
             if columns is None:
                 obj.sqlmeta.loadValues()
             try:
-                return columns[name]
+                return columns[self.name]
             except KeyError:
                 return obj.sqlmeta.loadColumn(self)
         else:
@@ -1165,6 +1168,7 @@ class TimeCol(Col):
 try:
     from decimal import Decimal
 except ImportError:
+    Decimal # pyflakes in the try
     Decimal = float
 
 class DecimalValidator(validators.Validator):
