@@ -86,8 +86,7 @@ class BranchStation(Domain):
 
         if IBranch(branch, None) is None:
             raise TypeError("%r must implemented IBranch" % (branch,))
-        return cls.selectOneBy(name=name, branchID=branch.id,
-                               connection=conn)
+        return cls.selectOneBy(name=name, branch=branch, connection=conn)
 
     #
     # IActive implementation
