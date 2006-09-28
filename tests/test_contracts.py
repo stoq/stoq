@@ -60,7 +60,6 @@ def _create_adapter_test():
         'PersonAdaptToCreditProvider': ' ',
         'PersonAdaptToIndividual': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
-        'SaleAdaptToPaymentGroup': ' ',
         }
 
     def _test_adapter(self, adapter):

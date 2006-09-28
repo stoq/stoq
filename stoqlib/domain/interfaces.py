@@ -388,6 +388,18 @@ class IPaymentGroup(NoneInterface):
                     due_date=None):
         """Add a new payment for this group"""
 
+    def get_total_received():
+        """Return the total amount paid by the client (sale total)
+        deducted of payment method commissions"""
+
+    def get_default_payment_method():
+        """FIXME"""
+
+    def confirm(self, gift_certificate_settings=None):
+        """Validate the current payment group, create payments and setup the
+        associated gift certificates properly.
+        """
+
 class IDelivery(NoneInterface):
     """ Specification of a Delivery interface for a sellable. """
 

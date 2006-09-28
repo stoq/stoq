@@ -493,54 +493,13 @@ class Sale(Domain):
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
-    #
-    # IPaymentGroup implementation
-    #
-
-    def get_thirdparty(self):
-        sale = self.get_adapted()
-        client = sale.client
-        return client and client.person or None
-
-    def set_thirdparty(self, person):
-        raise NotImplementedError
-
-    def get_group_description(self):
-        sale = self.get_adapted()
-        return _(u'sale %s') % sale.get_order_number_str()
-
-    #
-    # Auxiliar methods
-    #
-
-    def get_gift_certificates(self):
-        conn = self.get_connection()
-        table = GiftCertificateAdaptToSellable
-        return table.selectBy(groupID=self.id, connection=conn)
-
-    def confirm_gift_certificates(self):
-        """Update gift certificates of the current sale, setting their
-        status properly.
-        """
-        if not self.default_method == METHOD_GIFT_CERTIFICATE:
-            return
-        for item in self.get_gift_certificates():
-            item.apply_as_payment_method()
-
-    def get_pm_commission_total(self):
+    def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
         card payment method is the most common method which uses
         commission
         """
         return currency(0)
 
-    def get_total_received(self):
-        """Return the total amount paid by the client (sale total)
-        deducted of payment method commissions"""
-        sale = self.get_adapted()
-        return sale.get_total_sale_amount() - self.get_pm_commission_total()
-
-    @argcheck(Decimal)
     def _get_icms_total(self, av_difference):
         """A Brazil-specific method
         Calculates the icms total value
@@ -606,7 +565,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         # sale amount, we must share it between all the item values
         # otherwise the icms and iss won't be calculated properly
         total = (sale.get_total_sale_amount() -
-                 self.get_pm_commission_total())
+                 self._get_pm_commission_total())
         subtotal = sale.get_sale_subtotal()
         return (total - subtotal) / total_quantity
 
@@ -614,31 +573,44 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         return IssBookEntry.get_entry_by_payment_group(
                                         self.get_connection(), self)
 
-    def update_iss_entries(self):
-        """Update iss entries after printing a service invoice"""
-        av_difference = self._get_average_difference()
-        sale = self.get_adapted()
-        if not self._has_iss_entry():
-            iss_total = self._get_iss_total(av_difference)
-            self.create_iss_book_entry(sale.cfop,
-                                       sale.service_invoice_number,
-                                       iss_total)
-            return
+    @argcheck(GiftCertificateOverpaidSettings)
+    def _setup_gift_certificate_overpaid_value(self,
+                                               gift_certificate_settings):
+        regtype = gift_certificate_settings.renegotiation_type
+        overpaid_value = gift_certificate_settings.renegotiation_value
+        number = gift_certificate_settings.gift_certificate_number
 
+        order = self.get_adapted()
+        if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
+            order_number = order.order_number
+            reason = _(u'1/1 Money returned for gift certificate '
+                        'acquittance on sale %04d' % order_number)
+            self.create_debit(overpaid_value, reason, order.till)
+
+        elif (regtype ==
+              GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
+            sellable_cert = order.add_custom_gift_certificate(overpaid_value,
+                                                              number)
+            sellable_cert.sell()
+
+        else:
+            raise StoqlibError("Invalid type for "
+                               "GiftCertificateOverpaidSettings instance "
+                               "got %s" % regtype)
+
+    def _get_gift_certificates(self):
         conn = self.get_connection()
-        iss_entry = IssBookEntry.get_entry_by_payment_group(conn, self)
-        if iss_entry.invoice_number == sale.service_invoice_number:
+        table = GiftCertificateAdaptToSellable
+        return table.selectBy(groupID=self.id, connection=conn)
+
+    def _confirm_gift_certificates(self):
+        """Update gift certificates of the current sale, setting their
+        status properly.
+        """
+        if not self.default_method == METHOD_GIFT_CERTIFICATE:
             return
-
-        # User just cancelled the old invoice and would like to print a
-        # new one -> reverse old entry and create a new one
-        iss_entry.reverse_entry(iss_entry.invoice_number)
-
-        # create the new iss entry
-        iss_total = self._get_iss_total(av_difference)
-        self.create_iss_book_entry(sale.cfop,
-                                   sale.service_invoice_number,
-                                   iss_total)
+        for item in self._get_gift_certificates():
+            item.apply_as_payment_method()
 
     def _create_fiscal_entries(self):
         """A Brazil-specific method
@@ -667,41 +639,62 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                        sale.service_invoice_number,
                                        iss_total)
 
-    @argcheck(GiftCertificateOverpaidSettings)
-    def _setup_gift_certificate_overpaid_value(self,
-                                               gift_certificate_settings):
-        regtype = gift_certificate_settings.renegotiation_type
-        overpaid_value = gift_certificate_settings.renegotiation_value
-        number = gift_certificate_settings.gift_certificate_number
+#     def update_iss_entries(self):
+#         """Update iss entries after printing a service invoice"""
+#         av_difference = self._get_average_difference()
+#         sale = self.get_adapted()
+#         if not self._has_iss_entry():
+#             iss_total = self._get_iss_total(av_difference)
+#             self.create_iss_book_entry(sale.cfop,
+#                                        sale.service_invoice_number,
+#                                        iss_total)
+#             return
 
-        order = self.get_adapted()
-        if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
-            order_number = order.order_number
-            reason = _(u'1/1 Money returned for gift certificate '
-                        'acquittance on sale %04d' % order_number)
-            self.create_debit(overpaid_value, reason, order.till)
+#         conn = self.get_connection()
+#         iss_entry = IssBookEntry.get_entry_by_payment_group(conn, self)
+#         if iss_entry.invoice_number == sale.service_invoice_number:
+#             return
 
-        elif (regtype ==
-              GiftCertificateOverpaidSettings.TYPE_GIFT_CERTIFICATE):
-            sellable_cert = order.add_custom_gift_certificate(overpaid_value,
-                                                              number)
-            sellable_cert.sell()
+#         # User just cancelled the old invoice and would like to print a
+#         # new one -> reverse old entry and create a new one
+#         iss_entry.reverse_entry(iss_entry.invoice_number)
 
-        else:
-            raise StoqlibError("Invalid type for "
-                               "GiftCertificateOverpaidSettings instance "
-                               "got %s" % regtype)
+#         # create the new iss entry
+#         iss_total = self._get_iss_total(av_difference)
+#         self.create_iss_book_entry(sale.cfop,
+#                                    sale.service_invoice_number,
+#                                    iss_total)
+
+    #
+    # IPaymentGroup implementation
+    #
+
+    def get_thirdparty(self):
+        sale = self.get_adapted()
+        client = sale.client
+        return client and client.person or None
+
+    def set_thirdparty(self, person):
+        raise NotImplementedError
+
+    def get_group_description(self):
+        sale = self.get_adapted()
+        return _(u'sale %s') % sale.get_order_number_str()
+
+    def get_total_received(self):
+        sale = self.get_adapted()
+        return sale.get_total_sale_amount() - self._get_pm_commission_total()
+
+    def get_default_payment_method(self):
+        return self.default_method
 
     @argcheck(GiftCertificateOverpaidSettings)
     def confirm(self, gift_certificate_settings=None):
-        """Validate the current payment group, create payments and setup the
-        associated gift certificates properly.
-        """
         has_overpaid = gift_certificate_settings is not None
         if not has_overpaid:
             self.setup_inpayments()
             self.confirm_money_payments()
-        self.confirm_gift_certificates()
+        self._confirm_gift_certificates()
         self._create_fiscal_entries()
         if gift_certificate_settings is None:
             return
@@ -709,12 +702,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         # is an overpaid value to deal with.
         self._setup_gift_certificate_overpaid_value(gift_certificate_settings)
 
-    #
-    # AbstractPaymentGroup hooks
-    #
-
-    def get_default_payment_method(self):
-        return self.default_method
 
 Sale.registerFacet(SaleAdaptToPaymentGroup, IPaymentGroup)
 
