@@ -56,7 +56,6 @@ def _create_adapter_test():
         'PMAdaptToGiftCertificatePM': ' ',
         'PMAdaptToMoneyPM': ' ',
         'PersonAdaptToClient': ' ',
-        'PersonAdaptToCreditProvider': ' ',
         }
 
     def _test_adapter(self, adapter):

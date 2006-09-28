@@ -678,31 +678,6 @@ class TestCreditProvider(BaseDomainTest):
         credit_provider.activate()
         assert credit_provider.is_active is True
 
-    def test_get_provider_type_str(self):
-        table = PersonAdaptToCreditProvider
-        card_providers = table.get_card_providers(self.trans)
-        assert card_providers > 0
-        card_providers = card_providers[0]
-        self.assertEquals(card_providers.get_provider_type_str(),
-                          _(u'Card Provider'))
-
-    def test__get_providers(self):
-        table = PersonAdaptToCreditProvider
-        count = table._get_providers(self.trans).count()
-        person = get_person(self.trans)
-        person.addFacet(ICompany, connection=self.trans)
-        cprovider = person.addFacet(ICreditProvider,
-                                    connection=self.trans,
-                                    short_name='maestro',
-                                    open_contract_date=datetime(2005,02,03))
-        assert cprovider._get_providers(self.trans).count() == count + 1
-        count = table.get_finance_companies(self.trans).count()
-        FProvider = table._get_providers(self.trans,
-                                         provider_type=table.PROVIDER_FINANCE)
-        count_fprovider = FProvider.count()
-        self.assertEquals(count, count_fprovider)
-
-
 class TestSalesPerson(BaseDomainTest):
     """
     C{PersonAdaptToSalesPerson} TestCase
