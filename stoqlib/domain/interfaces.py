@@ -236,6 +236,9 @@ class IIndividual(IPersonFacet):
     rg_expedition_local = Attribute('The local which the Brazilian was made')
     gender = Attribute('gender_male, gender_female')
 
+    def get_marital_statuses():
+        """FIXME"""
+
 class ICompany(IPersonFacet):
     """An institution created to conduct business"""
 
