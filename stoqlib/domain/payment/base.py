@@ -283,6 +283,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         # FIXME: Move sum to SQL statement
         return sum([s.value for s in self.get_items()])
 
+    def get_total_received(self):
+        # FIXME: Proper implementation
+        return currency(0)
+
     # FIXME: Use None instead of datetime.now() as a default argument
     def add_payment(self, value, description, method, destination=None,
                     due_date=datetime.now()):
@@ -294,6 +298,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         return Payment(due_date=due_date, value=value, till=till,
                        description=description, group=self, method=method,
                        destination=destination, connection=conn)
+
+    def confirm(self, gift_certificate_settings=None):
+        """This can be implemented in a subclass, but it's not required"""
 
     #
     # IContainer implementation

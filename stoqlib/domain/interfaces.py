@@ -395,7 +395,7 @@ class IPaymentGroup(NoneInterface):
     def get_default_payment_method():
         """FIXME"""
 
-    def confirm(self, gift_certificate_settings=None):
+    def confirm(gift_certificate_settings=None):
         """Validate the current payment group, create payments and setup the
         associated gift certificates properly.
         """
