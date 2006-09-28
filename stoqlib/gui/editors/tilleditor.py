@@ -158,8 +158,8 @@ class BaseCashSlave(BaseEditorSlave):
 
     def validate_confirm(self):
         if self.model.value <= 0:
-           self.cash_amount.set_invalid( _("Value Must be greater than zero"))
-           return False
+            self.cash_amount.set_invalid( _("Value Must be greater than zero"))
+            return False
         return True
 
 

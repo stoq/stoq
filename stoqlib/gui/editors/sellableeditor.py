@@ -80,7 +80,8 @@ class SellablePriceEditor(BaseEditor):
 
     def setup_proxies(self):
         self.set_widget_formats()
-        self.main_proxy = self.add_proxy(self.model, SellablePriceEditor.proxy_widgets)
+        self.main_proxy = self.add_proxy(self.model,
+                                         SellablePriceEditor.proxy_widgets)
         if self.model.markup is not None:
             return
         sellable = ISellable(self.model.get_adapted())
@@ -113,9 +114,9 @@ class SellablePriceEditor(BaseEditor):
 
 
 class SellableEditor(BaseEditor):
-    """This is a base class for ProductEditor and ServiceEditor and should be used
-    when editing sellable objects. Note that sellable objects are instances
-    inherited by ASellable."""
+    """This is a base class for ProductEditor and ServiceEditor and should
+    be used when editing sellable objects. Note that sellable objects
+    are instances inherited by ASellable."""
 
     # This must be be properly defined in the child classes
     model_name = None
@@ -291,7 +292,6 @@ class SellableItemEditor(BaseEditor):
         self.value_attr = value_attr
         BaseEditor.__init__(self, conn, model)
         if restrict_increase_qty:
-            quantity = self.model.quantity
             self.quantity.set_range(1, self.model.quantity)
         if not editable_price:
             self.disable_price_fields()

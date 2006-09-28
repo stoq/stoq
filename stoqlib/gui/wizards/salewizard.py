@@ -181,7 +181,6 @@ class SaleRenegotiationOutstandingStep(WizardEditorStep):
         self.header_label.set_text(text)
         self.header_label.set_size('large')
         self.header_label.set_bold(True)
-        group = self.wizard.payment_group
 
     #
     # WizardStep hooks
@@ -194,6 +193,9 @@ class SaleRenegotiationOutstandingStep(WizardEditorStep):
         else:
             method = METHOD_MONEY
             self.wizard.setup_cash_payment(self.outstanding_value)
+
+        # FIXME: Use method for something
+        method
 
         if self._is_last:
             # finish the wizard
@@ -336,8 +338,9 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.header_label.set_size('large')
         self.header_label.set_bold(True)
         adapter_class = GiftCertificate.getAdapterClass(ISellable)
+        sellables = adapter_class.get_sold_sellables(self.conn)
         items = [(sellable.get_short_description(), sellable)
-                     for sellable in adapter_class.get_sold_sellables(self.conn)]
+                     for sellable in sellables]
         self.certificate_number.prefill(items)
 
     def _get_columns(self):

@@ -33,6 +33,7 @@ MSGS="$TODO,$DISABLE"
 DIRECTORY="stoqlib"
 
 pylint \
+  --dummy-variables=unused,_ \
   --disable-all \
   --include-ids=y \
   --enable-variables=y \

@@ -44,9 +44,9 @@ class DeviceSettingsDialog(AdditionListDialog):
             if item.constants:
                 DeviceConstants.delete(item.constants.id,
                                        connection=self.conn)
-        result = DeviceSettings.select((DeviceSettings.q.type
-                                        == DeviceSettings.FISCAL_PRINTER_DEVICE),
-                                       connection=self.conn)
+        result = DeviceSettings.select(
+            DeviceSettings.q.type == DeviceSettings.FISCAL_PRINTER_DEVICE,
+            connection=self.conn)
         if result:
             return
         create_virtual_printer_for_current_station()

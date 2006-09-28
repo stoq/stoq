@@ -61,10 +61,10 @@ class Method(object):
             exc_name, msg = e.faultString.split(":", 1)
             try:
                 exc = namedAny(exc_name)
-            except:
+                raise exc(msg)
+            except Exception, unused:
                 # In case server/client side is out of sync
-                exc = Exception
-            raise exc(msg)
+                raise Exception(msg)
 
 # This is only done so we can do a try/except around a method call
 class ServerProxy(xmlrpclib.ServerProxy):
@@ -108,6 +108,7 @@ if has_twisted:
         """
         implements(IXMLRPCService)
         def __init__(self, hostname, port):
+            xmlrpc.XMLRPC.__init__(self)
             self._hostname = hostname
             self._port = port
             self._service = server.Site(self)

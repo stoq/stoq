@@ -135,7 +135,6 @@ class PurchasePaymentStep(WizardEditorStep):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
 
     def _setup_widgets(self):
-        table = self.model_type
         items = [(_('Bill'), METHOD_BILL),
                  (_('Check'), METHOD_CHECK),
                  (_('Money'), METHOD_MONEY)]
@@ -187,8 +186,9 @@ class PurchasePaymentStep(WizardEditorStep):
             return
         if not self.wizard.edit_mode:
             self.order.reset_discount_and_surcharge()
-        self.discount_surcharge_slave = DiscountSurchargeSlave(self.conn, self.order,
-                                                         PurchaseOrder)
+        self.discount_surcharge_slave = DiscountSurchargeSlave(self.conn,
+                                                               self.order,
+                                                               PurchaseOrder)
         self.attach_slave(slave_holder, self.discount_surcharge_slave)
         self.discount_surcharge_slave.connect('discount-changed',
                                            self._update_totals)
