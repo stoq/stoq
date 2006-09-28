@@ -229,7 +229,7 @@ class SimpleEntryEditor(BaseEditor):
     def setup_proxies(self):
         assert self.model
         self.name_entry.set_property('model-attribute', self.attr_name)
-        proxy = self.add_proxy(model=self.model, widgets=['name_entry'])
+        self.add_proxy(model=self.model, widgets=['name_entry'])
 
 class NoteEditor(BaseEditor):
     """ Simple editor that offers a label and a textview. """
@@ -260,7 +260,7 @@ class NoteEditor(BaseEditor):
 
     def setup_proxies(self):
         self.notes.set_property('model-attribute', self.attr_name)
-        proxy = self.add_proxy(self.model, NoteEditor.proxy_widgets)
+        self.add_proxy(self.model, NoteEditor.proxy_widgets)
 
 
     def get_title(self, *args):

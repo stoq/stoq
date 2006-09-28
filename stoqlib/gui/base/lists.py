@@ -252,7 +252,8 @@ class AdditionListDialog(BasicPluggableDialog):
                                  visual_mode=self.visual_mode)
 
     def _initialize(self, editor_class, columns, klist_objects):
-        self.addition_list = self.get_slave(editor_class, columns, klist_objects)
+        self.addition_list = self.get_slave(editor_class, columns,
+                                            klist_objects)
         self.addition_list.on_confirm = self.on_confirm
         self.addition_list.on_cancel = self.on_cancel
         self.addition_list.validate_confirm = self.validate_confirm
