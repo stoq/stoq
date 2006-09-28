@@ -100,13 +100,13 @@ class ISellable(NoneInterface):
     on_sale_end_date = Attribute('datetime')
 
     def can_be_sold():
-        pass
+        """FIXME"""
 
     def is_sold():
-        pass
+        """FIXME"""
 
     def set_available():
-        pass
+        """FIXME"""
 
     def add_sellable_item(sale, quantity, price):
         """Adds a new SellableItem instance for this sellable object"""
