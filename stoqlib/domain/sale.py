@@ -74,7 +74,7 @@ class GiftCertificateOverpaidSettings:
      TYPE_GIFT_CERTIFICATE) = range(2)
 
     renegotiation_type = TYPE_GIFT_CERTIFICATE
-    renegotiation_value = Decimal("0.0")
+    renegotiation_value = Decimal(0)
     gift_certificate_number = None
 
 
@@ -140,8 +140,9 @@ class Sale(Domain):
         if not percentage:
             return currency(0)
         subtotal = self.get_sale_subtotal()
+        # FIXME: percentage can't be float
         percentage = Decimal(str(percentage))
-        perc_value = subtotal * (percentage / Decimal('100.0'))
+        perc_value = subtotal * (percentage / Decimal(100))
         return currency(perc_value)
 
     def _set_discount_by_percentage(self, value):
@@ -154,7 +155,7 @@ class Sale(Domain):
     def _get_discount_by_percentage(self):
         discount_value = self.discount_value
         if not discount_value:
-            return Decimal('0.0')
+            return Decimal(0)
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
@@ -175,7 +176,7 @@ class Sale(Domain):
     def _get_surcharge_by_percentage(self):
         surcharge_value = self.surcharge_value
         if not surcharge_value:
-            return Decimal('0.0')
+            return Decimal(0)
         subtotal = self.get_sale_subtotal()
         assert subtotal > 0, ('the sale subtotal should not be zero '
                               'at this point')
@@ -407,16 +408,16 @@ class Sale(Domain):
             raise DatabaseInconsistency("The sale %r have a client but no "
                                         "client_role defined." % self)
         elif self.client_role == Sale.CLIENT_INDIVIDUAL:
-            individual = IIndividual(person)
-            if not individual:
+            individual = IIndividual(person, None)
+            if individual is None:
                 raise DatabaseInconsistency(
                     "The client_role for sale %r says that the client "
                     "is an individual, but it doesn't have an Individual"
                     " facet" % self)
             return individual
         elif self.client_role == Sale.CLIENT_COMPANY:
-            company = ICompany(person)
-            if not company:
+            company = ICompany(person, None)
+            if company is None:
                 raise DatabaseInconsistency(
                     "The client_role for sale %r says that the client is "
                     "a company but it doesn't have a Company facet" % self)
@@ -438,8 +439,8 @@ class Sale(Domain):
         calculated by:.
         Sale total = Sum(product and service prices) + surcharge +
                      interest - discount"""
-        surcharge_value = self.surcharge_value or Decimal('0.0')
-        discount_value = self.discount_value or Decimal('0.0')
+        surcharge_value = self.surcharge_value or Decimal(0)
+        discount_value = self.discount_value or Decimal(0)
         subtotal = self.get_sale_subtotal()
         total_amount = subtotal + surcharge_value - discount_value
         return currency(total_amount)
@@ -477,7 +478,7 @@ class Sale(Domain):
 
     def get_items_total_quantity(self):
         return sum([item.quantity for item in self.get_items()],
-                   Decimal("0.0"))
+                   Decimal(0))
 
     def get_items_total_value(self):
         total = sum([item.get_total() for item in self.get_items()],
@@ -548,9 +549,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                               it means the average discount or surcharge
                               applied over all sale items
         """
-        icms_total = Decimal("0.0")
+        icms_total = Decimal(0)
         conn = self.get_connection()
-        icms_tax = sysparam(conn).ICMS_TAX / Decimal("100.0")
+        icms_tax = sysparam(conn).ICMS_TAX / Decimal(100)
         sale = self.get_adapted()
         for item in sale.get_products():
             price = item.price + av_difference
@@ -574,9 +575,9 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                               it means the average discount or surcharge
                               applied over all sale items
         """
-        iss_total = Decimal('0.0')
+        iss_total = Decimal(0)
         conn = self.get_connection()
-        iss_tax = sysparam(conn).ISS_TAX / Decimal("100.0")
+        iss_tax = sysparam(conn).ISS_TAX / Decimal(100)
         sale = self.get_adapted()
         for item in sale.get_services():
             price = item.price + av_difference
