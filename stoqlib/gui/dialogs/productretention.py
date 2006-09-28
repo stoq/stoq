@@ -77,7 +77,7 @@ class ProductRetentionDialog(BaseEditor):
         self.storable = IStorable(self.product)
         sellable = ISellable(self.product)
         self.model.product_description = sellable.get_description()
-        self.model.available = self.storable.get_full_balance_for_current_branch()
+        self.model.available = self.storable.get_full_balance(self.branch)
         self.add_proxy(self.model, self.proxy_widgets)
 
     def validate_confirm(self):
