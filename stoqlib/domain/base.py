@@ -98,16 +98,7 @@ class AbstractModel(object):
 
         conn.add_object(self)
 
-        # FIXME: Move this into subclasses
-        cls = self.__class__
-        if issubclass(cls, InheritableSQLObject):
-            InheritableSQLObject._SO_setValue(self, *args, **kwargs)
-        elif issubclass(cls, SQLObject):
-            SQLObject._SO_setValue(self, *args, **kwargs)
-        else:
-            raise StoqlibError("Invalid domain class type, it should be "
-                               "a subclass of SQLObject or "
-                               "InheritableSQLObject, got %s" % cls)
+        super(AbstractModel, self)._SO_setValue(*args, **kwargs)
 
     @classmethod
     def select(cls, clause=None, connection=None, **kwargs):
