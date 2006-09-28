@@ -324,7 +324,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                      date=datetime.now(), payment_group=self, **kwargs)
 
     def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
-                                  ipi_value=Decimal("0.0")):
+                                  ipi_value=Decimal(0)):
         self._create_fiscal_entry(IcmsIpiBookEntry, cfop, invoice_number,
                                   icms_value=icms_value, ipi_value=ipi_value)
 

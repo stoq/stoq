@@ -86,8 +86,8 @@ class PurchaseReport(SearchResultsReport):
                    purchase.total)
                       for purchase in self._purchases]
         ordered, received , total = zip(*totals)
-        total_ordered, total_received, total = (sum(ordered, Decimal('0')),
-                                                sum(received, Decimal('0')),
+        total_ordered, total_received, total = (sum(ordered, Decimal(0)),
+                                                sum(received, Decimal(0)),
                                                 sum(total, currency(0)))
         summary_row = ["", "", _("Totals:"), format_quantity(total_ordered),
                        format_quantity(total_received),
@@ -127,8 +127,8 @@ class PurchaseOrderReport(BaseStoqReport):
             ]
 
     def _add_items_table(self, items):
-        total_cost = Decimal("0.0")
-        total_value = Decimal("0.0")
+        total_cost = Decimal(0)
+        total_value = Decimal(0)
         for item in items:
             total_value += item.quantity * item.cost
             total_cost += item.cost

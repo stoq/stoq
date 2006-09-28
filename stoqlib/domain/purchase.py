@@ -97,7 +97,7 @@ class PurchaseItem(Domain):
 
     def get_pending_quantity(self):
         if not self.has_been_received:
-            return decimal.Decimal('0.0')
+            return decimal.Decimal(0)
         return self.quantity - self.quantity_received
 
     def get_quantity_as_string(self):
@@ -167,7 +167,7 @@ class PurchaseOrder(Domain):
                              'associated with the current purchase instance')
         PurchaseItem.delete(item.id, connection=conn)
 
-    def add_item(self, sellable, quantity=decimal.Decimal("1")):
+    def add_item(self, sellable, quantity=decimal.Decimal(1)):
         conn = self.get_connection()
         return PurchaseItem(connection=conn, order=self,
                             sellable=sellable, quantity=quantity)
