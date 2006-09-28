@@ -23,7 +23,6 @@
 ##
 """ Implementation of basic dialogs for searching data """
 
-import string
 import datetime
 
 import gtk
@@ -339,7 +338,7 @@ class SearchBar(GladeSlaveDelegate):
 
     @argcheck(str, list)
     def _set_query_str(self, search_str, query):
-        search_str = '%%%s%%' % string.upper(search_str)
+        search_str = '%%%s%%' % search_str.upper()
         for field_name, table_type in self.str_fields:
             table_field = getattr(table_type.q, field_name)
             q = LIKE(func.UPPER(table_field), search_str)
