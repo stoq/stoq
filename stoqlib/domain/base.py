@@ -214,23 +214,22 @@ class AbstractModel(object):
         methods which allow creating persitent objects. We also always
         need a new id for each copied object.
         """
-        if not isinstance(self, SQLObject):
-            raise TypeError('Invalid type for parent class, got %s' %
-                            type(self))
-        klass = type(self)
-        kwargs = {'connection': self._connection}
         columns = self.sqlmeta.columnList
 
-        if issubclass(klass, InheritableSQLObject):
+        if isinstance(self, InheritableSQLObject):
             # This is an InheritableSQLObject object and we also
             # need to copy data from the parent.
             # XXX SQLObject should provide a get_parent method.
             columns += self.sqlmeta.parentClass.sqlmeta.columnList
+
+        kwargs = {}
         for column in columns:
             if column.origName == 'childName':
                 continue
             kwargs[column.origName] = getattr(self, column.origName)
-        return klass(**kwargs)
+
+        klass = type(self)
+        return klass(connection=self._connection, **kwargs)
 
     def get_connection(self):
         return self._connection
