@@ -291,6 +291,12 @@ class IEmployee(IPersonFacet):
                               'BankAccount')
     role = Attribute('A reference to an employee role object')
 
+    def get_role_history():
+        """FIXME"""
+
+    def get_active_role_history():
+        """FIXME"""
+
 class IUser(IPersonFacet):
     """An employee which have access to one or more Stoq applications"""
 
