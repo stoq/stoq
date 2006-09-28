@@ -95,10 +95,10 @@ class TestStation(DomainTest):
         station = BranchStation.create(self.trans, branch=self.branch,
                                        name=self.name)
         station.inactivate()
-        self.assertEqual(station.get_status_str(), _(u'Inactive'))
+        self.assertEqual(station.get_status_string(), _(u'Inactive'))
 
         station.activate()
-        self.assertEqual(station.get_status_str(), _(u'Active'))
+        self.assertEqual(station.get_status_string(), _(u'Active'))
 
     def test_get_branch_name(self):
         station = BranchStation.create(self.trans, branch=self.branch,

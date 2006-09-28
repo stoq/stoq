@@ -40,6 +40,9 @@ class IActive(Interface):
     def activate():
         """Activate an inactive object"""
 
+    def get_status_string():
+        """Active or Inactive in the specific locale"""
+
 class IContainer(Interface):
     """An objects that holds other objects or items"""
 
@@ -294,9 +297,6 @@ class IUser(IPersonFacet):
                         'system')
     password = Attribute('Password')
 
-    def get_status_str():
-        """Describes the user using a string"""
-
 class IBranch(IPersonFacet):
     """An administrative division of some larger or more complex
     organization"""
@@ -311,9 +311,6 @@ class ISalesPerson(IPersonFacet):
     commission_type = Attribute('A rule used to calculate the amount of '
                                'commission. This is a reference to another '
                                'object')
-
-    def get_status_string():
-        """Describe the salesperson using a string"""
 
 class IBankBranch(IPersonFacet):
     branch = Attribute('A bank branch definition')

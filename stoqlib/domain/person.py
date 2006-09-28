@@ -529,7 +529,7 @@ class PersonAdaptToUser(_PersonAdapter):
         assert not self.is_active, ('This user is already active')
         self.is_active = True
 
-    def get_status_str(self):
+    def get_status_string(self):
         if self.is_active:
             return _('Active')
         return _('Inactive')
@@ -577,7 +577,7 @@ class PersonAdaptToBranch(_PersonAdapter):
         assert not self.is_active, ('This user is already active')
         self.is_active = True
 
-    def get_status_str(self):
+    def get_status_string(self):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
@@ -623,6 +623,11 @@ class PersonAdaptToBankBranch(_PersonAdapter):
     def activate(self):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
 
     # IDescribable
 
@@ -670,6 +675,11 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
     def activate(self):
         assert not self.is_active, ('This bank branch is already active')
         self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _('Active')
+        return _('Inactive')
 
     #
     # Auxiliar methods

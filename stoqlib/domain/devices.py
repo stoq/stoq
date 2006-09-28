@@ -200,3 +200,9 @@ class DeviceSettings(Domain):
 
     def activate(self):
         self.is_active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _(u'Active')
+        return _(u'Inactive')
+
