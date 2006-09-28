@@ -46,9 +46,7 @@ def _create_adapter_test():
         # Add get_status_string to IActive
         'PersonAdaptToEmployee': ' ',
         'PersonAdaptToBranch': ' ',
-        'PersonAdaptToSalesPerson': ' ',
         'PersonAdaptToTransporter': ' ',
-        'PersonAdaptToUser': ' ',
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
         'AbstractPaymentMethodAdapter': ' ',
