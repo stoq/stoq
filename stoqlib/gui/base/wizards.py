@@ -27,7 +27,7 @@ from kiwi.ui.wizard import PluggableWizard, WizardStep
 from kiwi.ui.delegates import GladeSlaveDelegate
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.gui.base.dialogs import AbstractDialog
+from stoqlib.gui.base.dialogs import RunnableView
 
 
 class BaseWizardStep(WizardStep, GladeSlaveDelegate):
@@ -51,7 +51,7 @@ class WizardEditorStep(BaseEditorSlave, WizardStep):
         BaseEditorSlave.__init__(self, conn, model)
 
 
-class BaseWizard(PluggableWizard, AbstractDialog):
+class BaseWizard(PluggableWizard, RunnableView):
     """A wizard base class definition"""
     title = None
     size = ()

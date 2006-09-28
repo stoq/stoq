@@ -96,6 +96,7 @@ class ProductSupplierEditor(BaseEditor):
                      'notes')
 
     def __init__(self, conn, model=None):
+        self._last_supplier = None
         BaseEditor.__init__(self, conn, model)
         # XXX: Waiting fix for bug #2043
         self.new_supplier_button.set_sensitive(False)
@@ -226,10 +227,10 @@ class ProductEditor(SellableEditor):
                        connection=conn)
         model.addFacet(IStorable, connection=conn)
         supplier = sysparam(conn).SUGGESTED_SUPPLIER
-        supplier_info = ProductSupplierInfo(connection=conn,
-                                            is_main_supplier=True,
-                                            supplier=supplier,
-                                            product=model)
+        ProductSupplierInfo(connection=conn,
+                            is_main_supplier=True,
+                            supplier=supplier,
+                            product=model)
         return model
 
     #

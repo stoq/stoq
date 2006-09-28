@@ -145,13 +145,13 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=currency, justify=gtk.JUSTIFY_RIGHT,)]
 
     def _get_services_columns(self):
-       return [Column("sellable.code", title=_("Code"), data_type=int,
-                      justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
-               Column("sellable.base_sellable_info.description",
-                      title=_("Description"), data_type=str, expand=True,
-                      searchable=True),
-               Column("estimated_fix_date", title=_("Estimated Fix Date"),
-                      width=130,data_type=date)]
+        return [Column("sellable.code", title=_("Code"), data_type=int,
+                       justify=gtk.JUSTIFY_RIGHT, width=120, sorted=True),
+                Column("sellable.base_sellable_info.description",
+                       title=_("Description"), data_type=str, expand=True,
+                       searchable=True),
+                Column("estimated_fix_date", title=_("Estimated Fix Date"),
+                       width=130,data_type=date)]
 
     def _get_payments_columns(self):
         return [Column("identifier", title=_("#"),

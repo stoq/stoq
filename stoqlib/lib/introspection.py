@@ -51,7 +51,7 @@ def get_all_classes(package):
             # stoqlib/domain/base.py -> stoqlib.domain.base
             modulename = filename[:-3].replace(os.path.sep, '.')
             module = namedAny(modulename)
-            for name, klass in inspect.getmembers(module, inspect.isclass):
+            for unused, klass in inspect.getmembers(module, inspect.isclass):
                 yield klass
 
 def get_interfaces_for_package(package):

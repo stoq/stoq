@@ -241,7 +241,6 @@ class DeviceSettingsEditor(BaseEditor):
         if self.model.type is None:
             return
         items = [(_("Choose..."), None)]
-        brand_list = self._get_supported_brands()
         supported_brands = self._get_supported_brands()
         items.extend([(brand.capitalize(), brand)
                           for brand in supported_brands])

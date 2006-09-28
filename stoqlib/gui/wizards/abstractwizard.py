@@ -198,8 +198,8 @@ class AbstractSalesPersonStep(WizardEditorStep):
 
         group = IPaymentGroup(self.model)
         if not group:
-            raise StoqlibError("You should have a IPaymentGroup facet defined at "
-                               "this point")
+            raise StoqlibError(
+                "You should have a IPaymentGroup facet defined at this point")
         self.pm_slave = SelectPaymentMethodSlave(
             method_iface=get_all_methods_dict()[group.default_method])
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)

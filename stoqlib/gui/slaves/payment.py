@@ -146,11 +146,11 @@ class PaymentListSlave(BaseEditorSlave):
         if not difference:
             return
         if difference > 0:
-            for i in range(difference):
+            for unused in range(difference):
                 self.add_slave()
         else:
             difference *= -1
-            for i in range(difference):
+            for unused in range(difference):
                 self.remove_last_payment_slave()
 
     def add_slave(self, slave=None):
