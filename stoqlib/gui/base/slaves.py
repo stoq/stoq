@@ -153,6 +153,6 @@ class PrintDialogSlave(BaseEditorSlave):
 
     def on_print_preview_button__clicked(self, *args):
         if self._preview_callback is not None:
-            return self._preview_callback(self._report_class, *self._report_args,
-                                          **self._report_kwargs)
+            return self._preview_callback(
+                self._report_class, *self._report_args, **self._report_kwargs)
         return print_preview(self.get_report_file())

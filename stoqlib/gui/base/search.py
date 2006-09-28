@@ -39,7 +39,6 @@ from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import SOUnicodeCol, SOIntCol, SODateTimeCol, SODateCol
 
-import stoqlib
 from stoqlib.common import is_integer, is_float
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
@@ -192,7 +191,6 @@ class _SearchBarEntry(GladeSlaveDelegate):
     #
 
     def _animate_search_icon(self):
-        dir = stoqlib.__path__[0] + '/gui/pixmaps'
         stocklist = ["stoq-searchtool-icon2",
                      "stoq-searchtool-icon3",
                      "stoq-searchtool-icon4",
@@ -708,7 +706,7 @@ class SearchDialog(BasicDialog):
                                 main_label_text=self.main_label_text,
                                 title=title, size=self.size)
         self.set_ok_label(_('Se_lect Items'))
-        self.table = table or self.table or self.search_table
+        self.table = table or self.table or search_table
         if not self.table:
             raise ValueError("Child must define a table attribute")
         self.search_table = search_table or self.table
@@ -774,7 +772,8 @@ class SearchDialog(BasicDialog):
         self._details_slave = SearchDialogDetailsSlave()
         self.attach_slave('details_holder', self._details_slave)
         if has_details_btn:
-            self._details_slave.connect("details", self.on_details_button_clicked)
+            self._details_slave.connect("details",
+                                        self.on_details_button_clicked)
         else:
             self._details_slave.details_button.hide()
         if has_print_btn:
