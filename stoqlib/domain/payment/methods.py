@@ -98,6 +98,11 @@ class PaymentMethodDetails(InheritableModel):
         assert not self.is_active, ('This provider is already active')
         self.active = True
 
+    def get_status_string(self):
+        if self.is_active:
+            return _(u'Active')
+        return _(u'Inactive')
+
     #
     # IDescribable implementation
     #
@@ -320,6 +325,11 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     def activate(self):
         assert not self.is_active, ('This provider is already active')
         self.active = True
+
+    def get_status_string(self):
+        if self.is_active:
+            return _(u'Active')
+        return _(u'Inactive')
 
     #
     # IDescribable implementation

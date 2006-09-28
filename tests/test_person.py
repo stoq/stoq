@@ -536,7 +536,7 @@ class TestUser(BaseDomainTest):
         assert users
         user = users[0]
         user.is_active = False
-        string = user.get_status_str()
+        string = user.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
 
@@ -573,7 +573,7 @@ class TestBranch(BaseDomainTest):
         assert branches
         branch = branches[0]
         branch.is_active = False
-        string = branch.get_status_str()
+        string = branch.get_status_string()
         self.assertEquals(string, _(u'Inactive'))
 
     def test_get_description(self):

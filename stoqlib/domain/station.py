@@ -101,7 +101,7 @@ class BranchStation(Domain):
         assert not self.is_active, ('This station is already active')
         self.is_active = True
 
-    def get_status_str(self):
+    def get_status_string(self):
         if self.is_active:
             return _(u'Active')
         return _(u'Inactive')
