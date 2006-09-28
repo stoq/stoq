@@ -55,7 +55,7 @@ Ding.createTable(ifNotExists=True, connection=trans)
 DingAdaptToDong.createTable(ifNotExists=True, connection=trans)
 trans.commit()
 
-class FacetTests(DomainTest):
+class TestFacet(DomainTest):
     def testAdd(self):
         ding = Ding(connection=self.trans)
         self.assertEqual(IDong(ding, None), None)
