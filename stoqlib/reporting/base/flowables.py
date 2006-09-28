@@ -56,6 +56,7 @@ class PageNumberChanger(ActionFlowable):
         """ This flowable is used in cases where we need reset the current
         page number (see add_document_break method on BaseReportTemplate).
         """
+        ActionFlowable.__init__(self)
         self.page_number = page_number
 
     def apply(self, doc):
