@@ -495,13 +495,6 @@ class TestEmployee(BaseDomainTest):
         history2.is_active = False
         assert employee.get_role_history()
 
-    def test_get_status_string(self):
-        employee = PersonAdaptToEmployee.select(connection=self.trans)[0]
-        status = employee.status
-        status = employee.statuses[status]
-        self.assertEquals(employee.get_status_string(), status)
-
-
 class TestUser(BaseDomainTest):
     """
     C{PersonAdaptToUser} TestCase

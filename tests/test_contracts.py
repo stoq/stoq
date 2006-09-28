@@ -43,8 +43,6 @@ def _create_adapter_test():
     #    class methods
     #
     TODO = {
-        # Add get_status_string to IActive
-        'PersonAdaptToEmployee': ' ',
         'PersonAdaptToBranch': ' ',
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',

@@ -495,12 +495,6 @@ class PersonAdaptToEmployee(_PersonAdapter):
                                         'role history, got %d' % qty)
         return active[0]
 
-    def get_status_string(self):
-        if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Invalid status for employee, '
-                                        'got %d' % self.status)
-        return self.statuses[self.status]
-
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
 class PersonAdaptToUser(_PersonAdapter):
