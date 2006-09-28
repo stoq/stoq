@@ -373,7 +373,7 @@ class ProductAdaptToStorable(ModelAdapter):
         adapted = self.get_adapted()
         sellable = ISellable(adapted)
         if sellable.is_sold():
-            sellable.set_available()
+            sellable.cancel()
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()

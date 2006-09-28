@@ -105,11 +105,26 @@ class ISellable(NoneInterface):
     def is_sold():
         """FIXME"""
 
-    def set_available():
-        """FIXME"""
+    def sell():
+        """Sell the sellable"""
+
+    def cancel():
+        """Cancel the sellable"""
 
     def add_sellable_item(sale, quantity, price):
         """Adds a new SellableItem instance for this sellable object"""
+
+    def get_code_str():
+        """FIXME"""
+
+    def get_short_description():
+        """FIXME"""
+
+    def get_suggested_markup():
+        """FIXME"""
+
+    def get_unit_description():
+        """FIXME"""
 
 class IStorable(NoneInterface):
     """Storable documentation for a certain product or a sellable item.
