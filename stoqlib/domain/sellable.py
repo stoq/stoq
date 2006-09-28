@@ -36,7 +36,7 @@ from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseInconsistency, SellableError
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import is_date_in_interval, get_formatted_price
+from stoqlib.lib.validators import is_date_in_interval
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
@@ -135,9 +135,6 @@ class ASellableItem(InheritableModel):
     def get_total(self):
         return currency(self.price * self.quantity)
 
-    def get_price_string(self):
-        return get_formatted_price(self.price)
-
     def get_quantity_unit_string(self):
         return "%s %s" % (self.quantity, self.sellable.get_unit_description())
 
@@ -234,8 +231,14 @@ class ASellable(InheritableModelAdapter):
     # Helper methods
     #
 
-    def get_price_by_markup(self, markup):
+    def _get_price_by_markup(self, markup):
         return self.cost + (self.cost * (markup / currency(100)))
+
+    def _get_status_string(self):
+        if not self.statuses.has_key(self.status):
+            raise DatabaseInconsistency('Invalid status for product got '
+                                        '%d' % self.status)
+        return self.statuses[self.status]
 
     #
     # Properties
@@ -247,7 +250,7 @@ class ASellable(InheritableModelAdapter):
         return ((self.price / self.cost) - 1) * currency(100)
 
     def _set_markup(self, markup):
-        self.price = self.get_price_by_markup(markup)
+        self.price = self._get_price_by_markup(markup)
 
     markup = property(_get_markup, _set_markup)
 
@@ -304,12 +307,6 @@ class ASellable(InheritableModelAdapter):
     # ISellable methods
     #
 
-    def set_available(self):
-        if not self.is_sold():
-            raise ValueError("Invalid status for sellable, it should be "
-                             "sold, got %s" % self.get_status_string())
-        self.status = self.STATUS_AVAILABLE
-
     def can_be_sold(self):
         return self.status == self.STATUS_AVAILABLE
 
@@ -317,15 +314,13 @@ class ASellable(InheritableModelAdapter):
         return self.status == self.STATUS_SOLD
 
     def sell(self):
-        if not self.can_be_sold():
-            raise ValueError('This sellable is not available '
-                             'to be sold')
+        if self.is_sold():
+            raise ValueError('This sellable is already sold')
         self.status = self.STATUS_SOLD
 
     def cancel(self):
         if self.can_be_sold():
-            raise ValueError('This sellable is already available '
-                             'to be sold')
+            raise ValueError('This sellable is already available')
         self.status = self.STATUS_AVAILABLE
 
     def add_sellable_item(self, sale, quantity=1, price=None, **kwargs):
@@ -340,37 +335,24 @@ class ASellable(InheritableModelAdapter):
         return self.sellableitem_table(connection=conn, quantity=quantity,
                                        sale=sale, sellable=self,
                                        price=price, **kwargs)
+    def get_code_str(self):
+        return u"%05d" % self.code
+
+    def get_short_description(self):
+        return u'%s %s' % (self.code, self.base_sellable_info.description)
+
+    def get_suggested_markup(self):
+        return self.category and self.category.get_markup()
+
+    def get_unit_description(self):
+        return self.unit and self.unit.description or u""
+
     #
     # IDescribable implementation
     #
 
     def get_description(self):
         return self.base_sellable_info.get_description()
-
-    #
-    # Accessors
-    #
-
-    def get_code_str(self):
-        return u"%05d" % self.code
-
-    def get_price_string(self):
-        return get_formatted_price(self.price)
-
-    def get_short_description(self):
-        return u'%s %s' % (self.code, self.base_sellable_info.description)
-
-    def get_unit_description(self):
-        return self.unit and self.unit.description or u""
-
-    def get_status_string(self):
-        if not self.statuses.has_key(self.status):
-            raise DatabaseInconsistency('Invalid status for product got '
-                                        '%d' % self.status)
-        return self.statuses[self.status]
-
-    def get_suggested_markup(self):
-        return self.category and self.category.get_markup()
 
     #
     # Classmethods

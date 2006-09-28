@@ -40,11 +40,11 @@ from stoqlib.exceptions import DatabaseInconsistency, TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.validators import get_formatted_price
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.domain.payment.base import Payment
-from stoqlib.domain.sellable import get_formatted_price
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
