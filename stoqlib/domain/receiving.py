@@ -24,7 +24,7 @@
 """ Receiving management """
 
 from datetime import datetime
-import decimal
+from decimal import Decimal
 
 from sqlobject import ForeignKey, IntCol, DateTimeCol, UnicodeCol
 from kiwi.argcheck import argcheck
@@ -220,7 +220,7 @@ class ReceivingOrder(Domain):
         if not percentage:
             return currency(0)
         subtotal = self.get_products_total()
-        percentage = decimal.Decimal(str(percentage))
+        percentage = Decimal(str(percentage))
         return subtotal * (percentage / 100)
 
     def _set_discount_by_percentage(self, value):

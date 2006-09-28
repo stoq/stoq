@@ -27,7 +27,7 @@
 """ Person editors definition """
 
 import datetime
-import decimal
+from decimal import Decimal
 
 from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
@@ -225,7 +225,7 @@ class CardProviderEditor(CreditProviderEditor):
                 Column('destination_name', _('Destination'),
                        data_type=unicode, width=90),
                 Column('commission', _('Commission (%)'),
-                       data_type=decimal.Decimal, width=120),
+                       data_type=Decimal, width=120),
                 Column('is_active', _('Active'), data_type=bool,
                        editable=True)]
 

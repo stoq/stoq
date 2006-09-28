@@ -24,7 +24,7 @@
 ##
 """ Search dialogs for product objects """
 
-import decimal
+from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
@@ -123,7 +123,7 @@ class ProductSearch(SellableSearch):
                        width=70),
                 Column('stock', title=_('Stock Total'),
                        format_func=format_quantity,
-                       data_type=decimal.Decimal, width=100)]
+                       data_type=Decimal, width=100)]
 
     def get_extra_query(self):
         branch = self.filter_slave.get_selected_branch()

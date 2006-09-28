@@ -27,7 +27,7 @@
 
 import datetime
 import gettext
-import decimal
+from decimal import Decimal
 
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
@@ -105,13 +105,13 @@ def create_people():
 
     now = datetime.datetime.now()
     transporter_data = [dict(open_contract_date=now, is_active=False,
-                             freight_percentage=decimal.Decimal('2.5')),
+                             freight_percentage=Decimal('2.5')),
                         dict(open_contract_date=now + datetime.timedelta(5),
                              freight_percentage=7),
                         dict(open_contract_date=now + datetime.timedelta(10),
-                             freight_percentage=decimal.Decimal('10.5')),
+                             freight_percentage=Decimal('10.5')),
                         dict(open_contract_date=now + datetime.timedelta(15),
-                             freight_percentage=decimal.Decimal('12.3'))]
+                             freight_percentage=Decimal('12.3'))]
 
     user_data = [dict(username='regi',
                       password='regi243'),
