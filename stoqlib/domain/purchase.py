@@ -201,16 +201,39 @@ class PurchaseOrder(Domain):
         if self.status != self.ORDER_PENDING:
             raise ValueError('Invalid order status, it should be '
                              'ORDER_PENDING, got %s'
-                             % PurchaseOrder.get_status_str(self.status))
+                             % self.get_status_str())
         conn = self.get_connection()
         if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
             group = IPaymentGroup(self)
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
-            group.create_preview_outpayments()
+            base_method = sysparam(conn).BASE_PAYMENT_METHOD
+            total = self.get_purchase_total()
+            self._create_preview_outpayments(conn, group, base_method, total)
         self.status = self.ORDER_CONFIRMED
         self.confirm_date = confirm_date
+
+    def _create_preview_outpayments(self, conn, group, base_method, total):
+
+        # FIXME: Move this special cased logic to the specific
+        #        implementation of each payment method
+        if group.default_method == METHOD_MONEY:
+            method = IMoneyPM(base_method)
+            method.setup_outpayments(total, group,
+                                     group.installments_number)
+            return
+        elif group.default_method == METHOD_CHECK:
+            method = ICheckPM(base_method)
+        elif group.default_method == METHOD_BILL:
+            method = IBillPM(base_method)
+        else:
+            raise ValueError('Invalid payment method, got %d' %
+                             group.default_method)
+
+        method.setup_outpayments(group, group.installments_number,
+                                 self.expected_receival_date, group.interval_type,
+                                 group.intervals, total)
 
     def _get_percentage_value(self, percentage):
         if not percentage:
@@ -381,32 +404,6 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
     def get_group_description(self):
         order = self.get_adapted()
         return _(u'order %s') % order.order_number
-
-    #
-    # Auxiliar methods
-    #
-
-    def create_preview_outpayments(self):
-        conn = self.get_connection()
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        order = self.get_adapted()
-        total = order.get_purchase_total()
-        first_due_date = order.expected_receival_date
-        if self.default_method == METHOD_MONEY:
-            method = IMoneyPM(base_method)
-            method.setup_outpayments(total, self,
-                                     self.installments_number)
-            return
-        elif self.default_method == METHOD_CHECK:
-            method = ICheckPM(base_method)
-        elif self.default_method == METHOD_BILL:
-            method = IBillPM(base_method)
-        else:
-            raise ValueError('Invalid payment method, got %d' %
-                             self.default_method)
-        method.setup_outpayments(self, self.installments_number,
-                                 first_due_date, self.interval_type,
-                                 self.intervals, total)
 
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
 
