@@ -23,51 +23,15 @@
 ##              Johan Dahlin  <jdahlin@async.com.br>
 ##
 
-import os
-import glob
 import inspect
 
-from kiwi.dist import listpackages
-from kiwi.python import namedAny
 from twisted.trial import unittest
 from zope.interface import implementedBy
-from zope.interface.interface import InterfaceClass
 from zope.interface.verify import verifyClass
 from zope.interface.exceptions import Invalid
 
-from stoqlib.domain.base import InheritableModelAdapter, ModelAdapter
-from stoqlib.lib.component import Adapter
-
-def _test_class(self, klass):
-    for iface in implementedBy(klass):
-        try:
-            verifyClass(iface, klass)
-        except Invalid, message:
-            self.fail("%s(%s): %s" % (
-                klass.__name__, iface.__name__, message))
-
-def get_all_classes(package):
-    for package in listpackages(package):
-        # stoqlib.domain -> stoqlib/domain
-        package = package.replace('.', os.path.sep)
-
-        # List all python files in stoqlib/domain
-        for filename in glob.glob(os.path.join(package, '*.py')):
-            # stoqlib/domain/base.py -> stoqlib.domain.base
-            modulename = filename[:-3].replace(os.path.sep, '.')
-            module = namedAny(modulename)
-            for name, klass in inspect.getmembers(module, inspect.isclass):
-                yield klass
-
-def get_interfaces_for_package(package):
-    for klass in get_all_classes(package):
-        if not implementedBy(klass):
-            continue
-        if not klass.__module__.startswith(package + '.'):
-            continue
-        if issubclass(klass, InterfaceClass):
-            continue
-        yield klass
+from stoqlib.lib.introspection import (get_all_adapters,
+                                       get_interfaces_for_package)
 
 def _create_adapter_test():
     # Create a dynamic test class which verifies that methods in all adapters
@@ -141,13 +105,7 @@ def _create_adapter_test():
                 "interface" % (adapter.__name__, ', '.join(methods)))
     namespace = dict(_test_adapter=_test_adapter)
 
-    for klass in get_all_classes('stoqlib'):
-        if not issubclass(klass, Adapter):
-            continue
-
-        # Skip bases classes
-        if klass in (Adapter, InheritableModelAdapter, ModelAdapter):
-            continue
+    for klass in get_all_adapters():
 
         tname = klass.__name__
         name = 'test_' + tname
@@ -160,6 +118,14 @@ def _create_adapter_test():
     return type('TestAdapters', (unittest.TestCase, ), namespace)
 
 def _create_iface_test():
+    def _test_class(self, klass):
+        for iface in implementedBy(klass):
+            try:
+                verifyClass(iface, klass)
+            except Invalid, message:
+                self.fail("%s(%s): %s" % (
+                    klass.__name__, iface.__name__, message))
+
     TODO = {}
     namespace = dict(_test_class=_test_class)
     for iface in get_interfaces_for_package('stoqlib'):
