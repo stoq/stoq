@@ -693,6 +693,7 @@ class FloatCol(Col):
 
 
 class SOKeyCol(SOCol):
+    # Henrique 2006-09-28: use BIGINT for 64-bit ids
     key_type = {int: "BIGINT", str: "TEXT"}
 
     # 3-03 @@: this should have a simplified constructor
