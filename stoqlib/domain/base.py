@@ -53,6 +53,9 @@ DATABASE_ENCODING = 'UTF-8'
 class AbstractModel(object):
     """Generic methods for any domain classes."""
 
+    # For pylint
+    _is_valid_model = False
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
@@ -296,6 +299,7 @@ class InheritableModel(AbstractModel, InheritableSQLObject, AdaptableSQLObject):
     classes in a database level. Adapters are also allowed for these classes
     """
     def __init__(self, *args, **kwargs):
+        AbstractModel.__init__(self)
         InheritableSQLObject.__init__(self, *args, **kwargs)
         AdaptableSQLObject.__init__(self)
 
@@ -319,9 +323,9 @@ class ModelAdapter(BaseDomain, Adapter):
 class InheritableModelAdapter(AbstractModel, InheritableSQLObject, Adapter):
 
     def __init__(self, _original=None, *args, **kwargs):
+        AbstractModel.__init__(self)
         Adapter.__init__(self, _original, kwargs) # Modifies kwargs
         InheritableSQLObject.__init__(self, *args, **kwargs)
-
 
 for klass in (InheritableModel, Domain, ModelAdapter, InheritableModelAdapter):
     sqlmeta = klass.sqlmeta
