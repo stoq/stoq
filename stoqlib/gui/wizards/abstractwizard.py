@@ -298,7 +298,7 @@ class AbstractItemStep(WizardEditorStep):
         else:
             cost = item.cost
         quantity = (self.proxy.model and self.proxy.model.quantity or
-                    decimal.Decimal('1.0'))
+                    decimal.Decimal(1))
         order_item = self.get_order_item(item, cost, quantity)
         self.slave.klist.append(order_item)
         self._update_total()
@@ -341,7 +341,7 @@ class AbstractItemStep(WizardEditorStep):
         self.setup_item_entry()
         widgets = AbstractItemStep.item_widgets
         self.proxy = self.add_proxy(None, widgets)
-        model = Settable(quantity=decimal.Decimal('1.0'), price=currency(0),
+        model = Settable(quantity=decimal.Decimal(1), price=currency(0),
                          item=None)
         self.item_proxy = self.add_proxy(model, widgets)
 
@@ -391,7 +391,7 @@ class AbstractItemStep(WizardEditorStep):
             self.proxy.set_model(None, relax_type=True)
             return
         cost = item.cost
-        model = Settable(quantity=decimal.Decimal('1.0'), cost=cost,
+        model = Settable(quantity=decimal.Decimal(1), cost=cost,
                          item=item)
         self.proxy.set_model(model)
 

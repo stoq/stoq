@@ -579,7 +579,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     #
 
     def _check_interest_value(self, monthly_interest):
-        monthly_interest = monthly_interest or decimal.Decimal('0.0')
+        monthly_interest = monthly_interest or decimal.Decimal(0)
         if not isinstance(monthly_interest, (int, decimal.Decimal)):
             raise TypeError('monthly_interest argument must be integer '
                             'or Decimal, got %s instead'
@@ -643,7 +643,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         if monthly_interest:
             interest_total = value * installments_number - total_value
         else:
-            interest_total = decimal.Decimal('0.0')
+            interest_total = decimal.Decimal(0)
         payments = []
         calc_interval = calculate_interval(interval_type, intervals)
         group_desc = payment_group.get_group_description()

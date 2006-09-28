@@ -59,7 +59,7 @@ class PurchaseReceivalReport(SearchResultsReport):
 
     def _setup_table(self):
         total_value = sum([item.invoice_total for item in self._data],
-                          decimal.Decimal("0.0"))
+                          decimal.Decimal(0))
         summary_row = ["", "", "", "", _("Total:"),
                        get_formatted_price(total_value)]
         self.add_object_table(self._data, self.get_columns(), width=745,

@@ -284,9 +284,9 @@ class SaleInvoice(ClassInittableObject):
 
     def _setup_products(self, products):
         trans = new_transaction()
-        icms_total = Decimal("0.0")
-        subst_total = Decimal("0.0")
-        prod_total = Decimal("0.0")
+        icms_total = Decimal(0)
+        subst_total = Decimal(0)
+        prod_total = Decimal(0)
         icms_tax = sysparam(trans).ICMS_TAX
         subst_tax = sysparam(trans).SUBSTITUTION_TAX
 
@@ -332,10 +332,10 @@ class SaleInvoice(ClassInittableObject):
         self.total_products_value = "%.2f" % prod_total
         self.invoice_total_value = "%.2f" % prod_total
         self.subst_icms_value = "%.2f" % ((Decimal(str(subst_tax))
-                                           / Decimal("100.0"))
+                                           / Decimal(100))
                                           * subst_total)
         self.icms_value = "%.2f" % ((Decimal(str(icms_tax))
-                                     / Decimal("100.0"))
+                                     / Decimal(100))
                                     * icms_total)
 
     def build(self):

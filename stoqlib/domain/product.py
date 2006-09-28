@@ -266,8 +266,8 @@ class ProductSellableItem(ASellableItem):
         query = AND(q1, q2)
         services = ASellableItem.select(query, connection=conn)
         if not services:
-            return decimal.Decimal('0.0')
-        delivered_qty = decimal.Decimal('0.0')
+            return decimal.Decimal(0)
+        delivered_qty = decimal.Decimal(0)
         for service in services:
             delivery = IDelivery(service)
             if not delivery:
@@ -451,7 +451,7 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         if not stocks:
             raise StockError, 'Invalid stock references for %s' % self
-        value = decimal.Decimal('0.0')
+        value = decimal.Decimal(0)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         for stock_item in stocks:
             value += stock_item.quantity
@@ -463,11 +463,11 @@ class ProductAdaptToStorable(ModelAdapter):
         stocks = self.get_stocks(branch)
         assert stocks.count() >= 1
         values = [stock_item.logic_quantity for stock_item in stocks]
-        return sum(values, decimal.Decimal('0.0'))
+        return sum(values, decimal.Decimal(0))
 
     def get_average_stock_price(self):
-        total_cost = decimal.Decimal('0.0')
-        total_qty = decimal.Decimal('0.0')
+        total_cost = decimal.Decimal(0)
+        total_qty = decimal.Decimal(0)
         for stock_item in self.get_stocks():
             total_cost += stock_item.stock_cost
             total_qty += stock_item.quantity
