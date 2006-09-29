@@ -333,9 +333,6 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
         branch = self.get_adapted().branch
         return branch.person
 
-    def set_thirdparty(self, person):
-        raise NotImplementedError
-
     def get_group_description(self):
         till = self.get_adapted()
         date_format = _(u'%d of %B')

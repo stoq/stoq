@@ -674,9 +674,6 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         client = sale.client
         return client and client.person or None
 
-    def set_thirdparty(self, person):
-        raise NotImplementedError
-
     def get_group_description(self):
         sale = self.get_adapted()
         return _(u'sale %s') % sale.get_order_number_str()
