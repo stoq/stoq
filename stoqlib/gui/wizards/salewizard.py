@@ -46,7 +46,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.wizards.abstractwizard import (AbstractSaleWizard,
                                                 AbstractSalesPersonStep)
-from stoqlib.gui.slaves.payment import (CheckMethodSlave, BillMethodSlave,
+from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                         CardMethodSlave,
                                         FinanceMethodSlave)
 from stoqlib.domain.payment.methods import get_active_pm_ifaces

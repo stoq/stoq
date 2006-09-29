@@ -41,8 +41,8 @@ from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.purchase import PurchaseItem
 from stoqlib.domain.service import DeliveryItem
-from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
-from stoqlib.gui.slaves.imageslave import ImageSlave
+from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
+from stoqlib.gui.slaves.imageslaveslave import ImageSlave
 from stoqlib.lib.validators import get_price_format_str
 
 _ = stoqlib_gettext

@@ -37,8 +37,8 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.domain.sale import Sale, SaleView
-from stoqlib.gui.slaves.filter import FilterSlave
-from stoqlib.gui.slaves.sale import SaleListToolbar
+from stoqlib.gui.slaves.filterslave import FilterSlave
+from stoqlib.gui.slaves.saleslave import SaleListToolbar
 
 _ = stoqlib_gettext
 

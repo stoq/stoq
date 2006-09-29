@@ -31,7 +31,7 @@ from stoqlib.domain.person import Person
 from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.stationeditor import StationEditor
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 

@@ -33,7 +33,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificateType,
                                             GiftCertificateView)
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.editors.giftcertificateeditor import (

@@ -36,10 +36,10 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave, BaseEditor
 from stoqlib.gui.base.slaves import NoteSlave
 from stoqlib.gui.editors.addresseditor import AddressAdditionDialog
-from stoqlib.gui.slaves.liaison import LiaisonListDialog
-from stoqlib.gui.slaves.address import AddressSlave
-from stoqlib.gui.slaves.company import CompanyDocumentsSlave
-from stoqlib.gui.slaves.individual import (IndividualDetailsSlave,
+from stoqlib.gui.slaves.liaisonslave import LiaisonListDialog
+from stoqlib.gui.slaves.addressslave import AddressSlave
+from stoqlib.gui.slaves.companyslave import CompanyDocumentsSlave
+from stoqlib.gui.slaves.individualslave import (IndividualDetailsSlave,
                                            IndividualDocuments)
 
 _ = stoqlib_gettext

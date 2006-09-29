@@ -40,18 +40,18 @@ from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
 from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
-from stoqlib.gui.slaves.paymentmethod import FinanceDetailsSlave
-from stoqlib.gui.slaves.client import ClientStatusSlave
-from stoqlib.gui.slaves.credprovider import CreditProviderDetailsSlave
-from stoqlib.gui.slaves.employee import (EmployeeDetailsSlave,
+from stoqlib.gui.slaves.paymentmethodslave import FinanceDetailsSlave
+from stoqlib.gui.slaves.clientslave import ClientStatusSlave
+from stoqlib.gui.slaves.credproviderslave import CreditProviderDetailsSlave
+from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave,
                                       EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
-from stoqlib.gui.slaves.user import (UserDetailsSlave, UserStatusSlave,
+from stoqlib.gui.slaves.userslave import (UserDetailsSlave, UserStatusSlave,
                                      PasswordEditorSlave, LoginInfo)
-from stoqlib.gui.slaves.supplier import SupplierDetailsSlave
-from stoqlib.gui.slaves.transporter import TransporterDataSlave
-from stoqlib.gui.slaves.branch import BranchDetailsSlave
+from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
+from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
+from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             FinanceDetails)
 from stoqlib.domain.person import EmployeeRole, Person

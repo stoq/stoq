@@ -35,8 +35,8 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.gui.base.search import SearchDialog
-from stoqlib.gui.slaves.filter import FilterSlave
-from stoqlib.gui.slaves.till import TillFiscalOperationsToolbar
+from stoqlib.gui.slaves.filterslave import FilterSlave
+from stoqlib.gui.slaves.tillslave import TillFiscalOperationsToolbar
 from stoqlib.domain.till import TillFiscalOperationsView, Till
 
 

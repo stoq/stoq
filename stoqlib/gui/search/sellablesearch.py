@@ -34,7 +34,7 @@ from sqlobject.sqlbuilder import AND, OR
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX

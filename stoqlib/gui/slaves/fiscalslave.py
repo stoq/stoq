@@ -31,7 +31,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.domain.person import PersonAdaptToBranch
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, fiscal_book_entries,
                                   ALL_BRANCHES, ALL_ITEMS_INDEX)

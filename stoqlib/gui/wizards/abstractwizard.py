@@ -45,8 +45,8 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.slaves.paymentmethod import SelectPaymentMethodSlave
-from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
+from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
+from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup
 from stoqlib.domain.person import Person

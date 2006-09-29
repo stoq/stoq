@@ -84,7 +84,7 @@ class SaleReturnStep(WizardEditorStep):
     #
 
     def setup_slaves(self):
-        from stoqlib.gui.slaves.sale import SaleReturnSlave
+        from stoqlib.gui.slaves.saleslave import SaleReturnSlave
         self.order = Sale.get(self.model.id, connection=self.conn)
         self.adapter = self.order.create_sale_return_adapter()
         self.renegotiation_data = self.adapter.get_adapted()

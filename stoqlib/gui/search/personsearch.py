@@ -43,7 +43,7 @@ from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
                                        IClient, ICreditProvider,
                                        ITransporter, IBranch)
