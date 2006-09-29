@@ -350,6 +350,17 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             return
         entries[0].reverse_entry(invoice_number)
 
+    def _get_paid_payments(self):
+        # FIXME: Logic in SQL
+        statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
+                    Payment.STATUS_CONFIRMED)
+        return [p for p in self.get_items() if p.status in statuses]
+
+    def _get_unpaid_payments(self):
+        # FIXME: Logic in SQL
+        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_PENDING
+        return [p for p in self.get_items() if p.status in statuses]
+
     #
     # Public API
     #
@@ -357,7 +368,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def cancel(self, invoice_number):
         if self.status == AbstractPaymentGroup.STATUS_CANCELLED:
             raise StoqlibError("This payment group is already cancelled")
-        for payment in self.get_unpaid_payments():
+        for payment in self._get_unpaid_payments():
             payment.cancel()
         self.status = AbstractPaymentGroup.STATUS_CANCELLED
         self.cancel_date = datetime.now()
@@ -373,21 +384,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         value = abs(value)
         return self._create_till_entry(value, description, till)
 
-    def get_paid_payments(self):
-        # FIXME: Logic in SQL
-        statuses = (Payment.STATUS_PAID, Payment.STATUS_REVIEWING,
-                    Payment.STATUS_CONFIRMED)
-        return [p for p in self.get_items() if p.status in statuses]
-
-    def get_unpaid_payments(self):
-        # FIXME: Logic in SQL
-        statuses = Payment.STATUS_PREVIEW, Payment.STATUS_PENDING
-        return [p for p in self.get_items() if p.status in statuses]
-
     def get_total_paid(self):
         # FIXME: Move sum to SQL statement
         paid_values = [payment.paid_value
-                            for payment in self.get_paid_payments()]
+                            for payment in self._get_paid_payments()]
         return sum(paid_values, currency(0))
 
     def set_method(self, method_iface):
@@ -487,17 +487,6 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                                         % self.default_method)
         return method_names[self.default_method]
 
-    def get_method_id_by_iface(self, iface):
-        methods = get_all_methods_dict()
-        if not iface in methods.values():
-            raise ValueError('Invalid interface, got %s' % iface)
-        method_data = [method_id for method_id, m_iface in methods.items()
-                            if m_iface is iface]
-        qty = len(method_data)
-        if not qty == 1:
-            raise ValueError('It should have only one item on method_data '
-                             'list, got %d instead' % qty)
-        return method_data[0]
 
 
 #
