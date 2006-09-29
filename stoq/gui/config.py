@@ -48,7 +48,7 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
 from stoqlib.domain.interfaces import IUser
 from stoqlib.exceptions import DatabaseError
-from stoqlib.gui.slaves.user import PasswordEditorSlave
+from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
                                       BaseWizardStep)
 from stoqlib.lib.message import warning, yesno
@@ -79,7 +79,7 @@ class DeviceSettingsStep(BaseWizardStep):
         self.title_label.set_bold(True)
 
     def _setup_slaves(self, station):
-        from stoqlib.gui.slaves.devices import DeviceSettingsDialogSlave
+        from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
         slave = DeviceSettingsDialogSlave(self.conn, station=self.wizard.station)
         self.attach_slave("devices_holder", slave)
 
@@ -168,7 +168,7 @@ class BranchSettingsStep(WizardEditorStep):
         self.tax_proxy = self.add_proxy(model, widgets)
 
     def setup_slaves(self):
-        from stoqlib.gui.slaves.address import AddressSlave
+        from stoqlib.gui.slaves.addressslave import AddressSlave
         address = self.model.get_main_address()
         slave = AddressSlave(self.conn, self.model, address)
         self.attach_slave("address_holder", slave)

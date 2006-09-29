@@ -38,7 +38,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.interfaces import ICookieFile
 
 import stoq
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 
 
 _ = gettext.gettext
