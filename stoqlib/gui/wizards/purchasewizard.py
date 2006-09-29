@@ -41,8 +41,8 @@ from stoqlib.gui.wizards.abstractwizard import AbstractItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
-from stoqlib.gui.slaves.purchase import PurchasePaymentSlave
-from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
+from stoqlib.gui.slaves.purchaseslave import PurchasePaymentSlave
+from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,

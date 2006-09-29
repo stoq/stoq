@@ -161,7 +161,7 @@ class SaleCancellationDetailsDialog(BaseEditor):
     hide_footer = True
 
     def setup_slaves(self):
-        from stoqlib.gui.slaves.sale import SaleReturnSlave
+        from stoqlib.gui.slaves.saleslave import SaleReturnSlave
         if self.model.status != Sale.STATUS_CANCELLED:
             raise StoqlibError("Invalid status for sale order, it should be "
                                "cancelled")

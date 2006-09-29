@@ -26,7 +26,7 @@
 
 from stoqlib.domain.payment.methods import AbstractPaymentMethodAdapter
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.gui.slaves.paymentmethod import CheckBillSettingsSlave
+from stoqlib.gui.slaves.paymentmethodslave import CheckBillSettingsSlave
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 

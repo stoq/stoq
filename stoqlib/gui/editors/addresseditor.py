@@ -30,7 +30,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListDialog
 from stoqlib.gui.base.editors import BaseEditor
 
-from stoqlib.gui.slaves.address import AddressSlave
+from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 

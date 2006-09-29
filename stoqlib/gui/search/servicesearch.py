@@ -34,7 +34,7 @@ from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.service import Service, ServiceView
 from stoqlib.gui.base.columns import Column
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.gui.search.sellablesearch import SellableSearch
 
 _ = stoqlib_gettext

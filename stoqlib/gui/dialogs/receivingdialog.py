@@ -35,7 +35,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.slaves.receiving import ReceivingInvoiceSlave
+from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.domain.receiving import (ReceivingOrderItem,
                                       ReceivingOrder)
 

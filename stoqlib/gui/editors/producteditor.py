@@ -34,7 +34,7 @@ from kiwi.utils import gsignal
 from stoqlib.gui.base.lists import SimpleListDialog
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.slaves.product import TributarySituationSlave
+from stoqlib.gui.slaves.productslave import TributarySituationSlave
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.domain.product import ProductSupplierInfo, Product

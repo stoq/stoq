@@ -28,7 +28,7 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.gui.slaves.filter import FilterSlave
+from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.domain.product import ProductAdaptToSellable
 from stoqdrivers.constants import TAX_NONE
 from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX

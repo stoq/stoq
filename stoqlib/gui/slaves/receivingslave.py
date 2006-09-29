@@ -27,7 +27,7 @@
 
 from stoqlib.gui.base.editors import BaseEditorSlave, NoteEditor
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.slaves.sale import DiscountSurchargeSlave
+from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder

@@ -28,7 +28,7 @@ from kiwi.datatypes import currency
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
-from stoqlib.gui.slaves.sellable import OnSaleInfoSlave
+from stoqlib.gui.slaves.sellableslave import OnSaleInfoSlave
 from stoqlib.domain.interfaces import ISellable
 from stoqlib.domain.sellable import BaseSellableInfo, ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
