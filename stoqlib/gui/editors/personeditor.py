@@ -29,11 +29,9 @@
 import datetime
 from decimal import Decimal
 
-from sqlobject.sqlbuilder import func, AND
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
@@ -361,11 +359,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
     #
 
     def on_name_entry__validate(self, widget, value):
-        conn = get_connection()
-        q1 = func.UPPER(EmployeeRole.q.name) == value.upper()
-        q2 = EmployeeRole.q.id != self.model.id
-        query = AND(q1, q2)
-        if EmployeeRole.select(query, connection=conn):
+        if self.model.has_other_role(value):
             return ValidationError('This role already exists!')
 
 

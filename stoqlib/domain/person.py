@@ -31,7 +31,7 @@ import datetime
 
 from sqlobject import (DateTimeCol, UnicodeCol, IntCol,
                        ForeignKey, MultipleJoin, BoolCol, SQLObject)
-from sqlobject.sqlbuilder import AND
+from sqlobject.sqlbuilder import func, AND
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
@@ -68,6 +68,23 @@ class EmployeeRole(Domain):
 
     def get_description(self):
         return self.name
+
+    #
+    # Public API
+    #
+
+    def has_other_role(self, name):
+        """
+        Check if there is another role with the same name
+        @param name: name of the role to check
+        @returns: True if it exists, otherwise False
+        """
+        conn = self.get_connection()
+        results = EmployeeRole.select(
+            AND(func.UPPER(EmployeeRole.q.name) == name.upper(),
+                EmployeeRole.q.id != self.id),
+            connection=conn)
+        return results.count() > 0
 
 # WorkPermitData, MilitaryData, and VoterData are Brazil-specific information.
 class WorkPermitData(Domain):
