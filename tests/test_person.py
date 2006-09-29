@@ -60,7 +60,7 @@ from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
 
-from tests.base import BaseDomainTest
+from tests.base import BaseDomainTest, DomainTest
 
 
 _ = stoqlib_gettext
@@ -753,13 +753,12 @@ class TestTransporter(BaseDomainTest):
         assert count + 1 == one_more
 
 
-class TestEmployeeRoleHistory(BaseDomainTest):
-    """
-    C{EmployeeRoleHistory} TestCase
-    """
-    _table = EmployeeRoleHistory
+class TestEmployeeRoleHistory(DomainTest):
+     def testCreate(self):
+          EmployeeRole(connection=self.trans, name='ajudante')
 
-    def get_foreign_key_data(self):
-        role = EmployeeRole(connection=self.trans, name='ajudante')
-        employee = get_employee(self.trans, 'escrivao')
-        return role, employee
+     def testHasRole(self):
+          role = EmployeeRole(connection=self.trans, name='role')
+          self.failIf(role.has_other_role('Role'))
+          role = EmployeeRole(connection=self.trans, name='Role')
+          self.failUnless(role.has_other_role('role'))
