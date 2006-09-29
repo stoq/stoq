@@ -612,7 +612,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
                              % monthly_interest)
 
     @argcheck(Decimal, int, Decimal)
-    def calculate_payment_value(self, total_value, installments_number,
+    def _calculate_payment_value(self, total_value, installments_number,
                                 monthly_interest=None):
         if not installments_number:
             raise ValueError('The payment_qty argument must be greater '
@@ -651,9 +651,9 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
         monthly_interest            = a Decimal instance in the format
                               0 <= monthly_interest <= 100
         """
-        value = self.calculate_payment_value(total_value,
-                                             installments_number,
-                                             monthly_interest)
+        value = self._calculate_payment_value(total_value,
+                                              installments_number,
+                                              monthly_interest)
 
         if monthly_interest:
             interest_total = value * installments_number - total_value
