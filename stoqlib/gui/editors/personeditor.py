@@ -375,8 +375,10 @@ class SupplierEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        supplier = ISupplier(person)
-        return supplier or person.addFacet(ISupplier, connection=conn)
+        supplier = ISupplier(person, None)
+        if supplier is None:
+            supplier = person.addFacet(ISupplier, connection=conn)
+        return supplier
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
@@ -397,10 +399,10 @@ class TransporterEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        transporter = ITransporter(person)
-        if transporter:
-            return transporter
-        return person.addFacet(ITransporter, connection=conn)
+        transporter = ITransporter(person, None)
+        if transporter is None:
+            transporter = person.addFacet(ITransporter, connection=conn)
+        return transporter
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
