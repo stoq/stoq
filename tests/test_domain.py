@@ -73,13 +73,13 @@ def _create_domain_test():
         kwargs = {}
         args = []
         for column in _get_columns(klass):
-            if column.origName in ('te_created', 'te_modified'):
-                continue
             value = None
             if column.default is not NoDefault:
                 value = column.default
             else:
                 if isinstance(column, SOForeignKey):
+                    if column.origName in ('te_created', 'te_modified'):
+                        continue
                     value = self.create_by_type(column.foreignKey)
                     if value is None:
                         raise SkipTest("No example for %s" % column.foreignKey)
