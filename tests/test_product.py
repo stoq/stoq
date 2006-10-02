@@ -37,7 +37,7 @@ from stoqlib.domain.interfaces import (ISupplier, ICompany, IStorable,
                                        IBranch, ISellable, ISalesPerson,
                                        IEmployee, IIndividual)
 
-from tests.base import BaseDomainTest
+from tests.base import BaseDomainTest, DomainTest
 
 def get_supplier(conn):
     person = Person(name='Gilberto', connection=conn)
@@ -53,16 +53,15 @@ def get_sellable(conn):
                             connection=conn)
 
 
-class TestProductSupplierInfo(BaseDomainTest):
-    _table = ProductSupplierInfo
+class TestProductSupplierInfo(DomainTest):
 
-    def get_foreign_key_data(self):
-        return (Product(connection=self.trans), get_supplier(self.trans))
-
-    def test_get_name(self):
-        self.create_instance()
-        assert (self._instance.get_name()
-                == self._instance.supplier.person.name)
+    def testGetName(self):
+        product = self.create_product()
+        supplier = self.create_supplier()
+        info = ProductSupplierInfo(connection=self.trans,
+                                   product=product,
+                                   supplier=supplier)
+        self.assertEqual(info.get_name(), supplier.get_description())
 
 class TestProduct(BaseDomainTest):
     _table = Product

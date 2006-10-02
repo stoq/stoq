@@ -82,7 +82,7 @@ class ProductSupplierInfo(Domain):
     is_main_supplier = BoolCol(default=False)
     # This is Brazil-specific information
     icms = DecimalCol(default=0)
-    supplier =  ForeignKey('PersonAdaptToSupplier')
+    supplier =  ForeignKey('PersonAdaptToSupplier', notNone=True)
     product =  ForeignKey('Product')
 
 
@@ -91,9 +91,6 @@ class ProductSupplierInfo(Domain):
     #
 
     def get_name(self):
-        if not self.supplier:
-            raise ValueError('This object must have a valid supplier '
-                             'attribute')
         return self.supplier.get_description()
 
 class ProductRetentionHistory(Domain):
