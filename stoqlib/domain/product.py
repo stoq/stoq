@@ -51,7 +51,6 @@ _ = stoqlib_gettext
 # pyflakes
 #
 Person
-IBranch
 
 #
 # Base Domain Classes
