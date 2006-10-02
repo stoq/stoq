@@ -500,17 +500,15 @@ class PersonAdaptToEmployee(_PersonAdapter):
     bank_account = ForeignKey('BankAccount', default=None)
 
     def get_role_history(self):
-        conn = self.get_connection()
-        return EmployeeRoleHistory.selectBy(employee=self, connection=conn)
+        return EmployeeRoleHistory.selectBy(
+            employee=self,
+            connection=self.get_connection())
 
     def get_active_role_history(self):
-        active = [history for history in self.get_role_history()
-                    if history.is_active]
-        qty = len(active)
-        if qty != 1:
-            raise DatabaseInconsistency('You should have only one active '
-                                        'role history, got %d' % qty)
-        return active[0]
+        return EmployeeRoleHistory.selectOneBy(
+            employee=self,
+            is_active=True,
+            connection=self.get_connection())
 
 Person.registerFacet(PersonAdaptToEmployee, IEmployee)
 
@@ -831,7 +829,6 @@ class EmployeeRoleHistory(Domain):
     role = ForeignKey('EmployeeRole')
     employee = ForeignKey('PersonAdaptToEmployee')
     is_active = BoolCol(default=True)
-
 
 #
 # Views
