@@ -230,10 +230,15 @@ class DomainTest(unittest.TestCase):
     def get_station(self):
         return get_current_station(self.trans)
 
+    def get_location(self):
+        from stoqlib.domain.address import CityLocation
+        return CityLocation.get_default(self.trans)
+
     def create_by_type(self, model_type):
         known_types = {
             'ASellable': self.create_sellable,
             'BranchStation': self.get_station,
+            'CityLocation': self.get_location,
             'IClient': self.create_client,
             'IBranch': self.create_branch,
             'IEmployee': self.create_employee,
@@ -242,8 +247,10 @@ class DomainTest(unittest.TestCase):
             'IUser': self.create_user,
             'ParameterData': self.create_parameter_data,
             'Person': self.create_person,
+            'PersonAdaptToBranch': self.create_branch,
             'PersonAdaptToCompany': self.create_company,
             'PersonAdaptToClient': self.create_client,
+            'PersonAdaptToUser': self.create_user,
             'Product': self.create_product,
             'ProductAdaptToSellable' : self.create_sellable,
             'Sale': self.create_sale,
@@ -251,8 +258,10 @@ class DomainTest(unittest.TestCase):
             'Till': self.create_till,
             'UserProfile': self.create_user_profile,
             }
-
-        model_name = model_type.__name__
+        if isinstance(model_type, basestring):
+            model_name = model_type
+        else:
+            model_name = model_type.__name__
         if model_name in known_types:
             return known_types[model_name]()
 
