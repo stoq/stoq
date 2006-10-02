@@ -251,7 +251,7 @@ class EmployeeRoleHistorySlave(GladeSlaveDelegate):
 
     def _get_objects(self):
         return [result for result in self.employee.get_role_history()
-                if not result.is_active]
+                           if not result.is_active]
 
     def _get_columns(self):
         return [Column('began', _('Began'), data_type=datetime.date,
