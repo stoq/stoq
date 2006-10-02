@@ -33,17 +33,10 @@ from stoqlib.domain.till import Till
 from stoqlib.domain.product import (ProductSupplierInfo, Product,
                                     ProductStockReference,
                                     ProductSellableItem)
-from stoqlib.domain.interfaces import (ISupplier, ICompany, IStorable,
-                                       IBranch, ISellable, ISalesPerson,
-                                       IEmployee, IIndividual)
+from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
+                                       ISalesPerson, IEmployee, IIndividual)
 
 from tests.base import BaseDomainTest, DomainTest
-
-def get_supplier(conn):
-    person = Person(name='Gilberto', connection=conn)
-    person.addFacet(ICompany, fancy_name='Lojas ABC', connection=conn)
-    return person.addFacet(ISupplier, connection=conn)
-
 
 def get_sellable(conn):
     product = Product(connection=conn)
@@ -63,25 +56,23 @@ class TestProductSupplierInfo(DomainTest):
                                    supplier=supplier)
         self.assertEqual(info.get_name(), supplier.get_description())
 
-class TestProduct(BaseDomainTest):
-    _table = Product
+class TestProduct(DomainTest):
+    def setUp(self):
+        DomainTest.setUp(self)
+        self.product = Product(connection=self.trans)
 
-    def test_facet_IStorable_add (self):
-        self.create_instance()
-        assert not IStorable(self._instance)
-        storable = self._instance.addFacet(IStorable, connection=self.trans)
-        table = Person.getAdapterClass(IBranch)
-        branches_count = table.select(connection=self.trans).count()
-        assert storable.get_stocks().count() == branches_count
+    def test_facet_IStorable_add(self):
+        self.failIf(IStorable(self.product, None))
+        storable = self.product.addFacet(IStorable, connection=self.trans)
+        branches_count = Person.iselect(IBranch, connection=self.trans).count()
+        self.assertEqual(storable.get_stocks().count(), branches_count)
 
-    def test_get_main_supplier_info (self):
-        self.create_instance()
-        assert not self._instance.get_main_supplier_info()
-        supplier = get_supplier(self.trans)
+    def test_get_main_supplier_info(self):
+        self.failIf(self.product.get_main_supplier_info())
+        supplier = self.create_supplier()
         ProductSupplierInfo(connection=self.trans, supplier=supplier,
-                            product=self._instance, is_main_supplier=True)
-        assert self._instance.get_main_supplier_info() is not None
-
+                            product=self.product, is_main_supplier=True)
+        self.failUnless(self.product.get_main_supplier_info())
 
 class TestProductStockReference(BaseDomainTest):
     _table = ProductStockReference
