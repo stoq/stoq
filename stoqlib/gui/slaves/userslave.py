@@ -29,7 +29,6 @@ from sqlobject.sqlbuilder import func
 from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import validate_password
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -135,7 +134,6 @@ class UserDetailsSlave(BaseEditorSlave):
     def __init__(self, conn, model, show_password_fields=True,
                  visual_mode=False):
         self.show_password_fields = show_password_fields
-        self.max_results = sysparam(conn).MAX_SEARCH_RESULTS
         BaseEditorSlave.__init__(self, conn, model, visual_mode=visual_mode)
 
     def _setup_widgets(self):
@@ -144,9 +142,10 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
-        profiles = UserProfile.select(connection=self.conn)
-        self.profile.prefill([(p.name, p)
-                              for p in profiles.limit(self.max_results)])
+        profiles = UserProfile.select(connection=self.conn, orderBy='name')
+        self.profile.prefill([(p.name, p) for p in profiles])
+        # FIXME: Make the SalesPerson profile the default one (instead of the
+        #        first one alphabetically
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)
@@ -174,15 +173,6 @@ class UserDetailsSlave(BaseEditorSlave):
     # Kiwi handlers
     #
 
-    def after_profile__content_changed(self, widget):
-        # This could be wrriten in this way:
-        # sensitive = bool(widget.get_text()) and widget.is_valid()
-        # but if widget.get_text() returns "" sensitive will be False
-        sensitive = True
-        if widget.get_text():
-            sensitive = widget.is_valid()
-        self.profile_button.set_sensitive(sensitive)
-
     def on_username__validate(self, widget, value):
         user_table = Person.getAdapterClass(IUser)
         query = func.UPPER(user_table.q.username) == value.upper()
@@ -197,8 +187,6 @@ class UserDetailsSlave(BaseEditorSlave):
             return ValidationError('Username already exist')
 
     def on_profile_button__clicked(self, button):
-        if not self.profile.get_text():
-            self.model.profile = None
         user_profile = self.model.profile
         if run_dialog(UserProfileEditor, self, self.conn, user_profile):
             self._setup_entry_completion()

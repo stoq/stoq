@@ -83,9 +83,8 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyComboEntry" id="profile">
+                    <widget class="ProxyComboBox" id="profile">
                         <property name="data_type">object</property>
-                        <property name="mandatory">True</property>
                         <property name="model_attribute">profile</property>
                         <property name="sizegroup">userdetails_size_group</property>
                         <property name="visible">True</property>
