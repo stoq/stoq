@@ -32,7 +32,6 @@ from decimal import Decimal
 from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -261,19 +260,13 @@ class FinanceProviderEditor(CreditProviderEditor):
 
     def setup_slaves(self):
         CreditProviderEditor.setup_slaves(self)
-        query = PaymentMethodDetails.q.providerID == self.model.id
-        items = FinanceDetails.select(query, connection=self.conn)
-        qty = items.count()
-        if not qty:
+
+        item = FinanceDetails.selectOne(
+            PaymentMethodDetails.q.providerID == self.model.id,
+            connection=self.conn)
+        if item is None:
             item = FinanceDetails(connection=self.conn,
                                   provider=self.model, destination=None)
-        elif qty == 1:
-            item = items[0]
-        else:
-            raise DatabaseInconsistency("You should have only one "
-                                        "FinanceDetails  instance for "
-                                        "this provider, got %d instead"
-                                        % qty)
         finance_slave = FinanceDetailsSlave(self.conn, item)
         slave = self.main_slave.get_person_slave()
         slave.attach_custom_slave(finance_slave, _("Finance Details"))
