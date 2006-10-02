@@ -135,10 +135,9 @@ class EmployeeRoleSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn, visual_mode=visual_mode)
 
     def _setup_entry_completion(self):
-        roles = [role for role in
-                 EmployeeRole.select(connection=self.conn)]
-        roles = roles[:self.max_results]
-        items = [(role.name, role) for role in roles]
+        roles = EmployeeRole.select(connection=self.conn)
+        items = [(role.name, role)
+                 for role in roles.limit(self.max_results)]
         self.role.prefill(items)
 
     def _setup_widgets(self):
