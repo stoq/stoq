@@ -72,8 +72,10 @@ class ClientEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        client = IClient(person)
-        return client or person.addFacet(IClient, connection=conn)
+        client = IClient(person, None)
+        if client is None:
+            client = person.addFacet(IClient, connection=conn)
+        return client
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
@@ -289,7 +291,7 @@ class EmployeeEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        if ICompany(person):
+        if ICompany(person, None):
             person.addFacet(IIndividual, connection=self.conn)
         employee = IEmployee(person)
         return employee or person.addFacet(IEmployee, connection=conn,
@@ -423,10 +425,12 @@ class BranchEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        branch = IBranch(person)
-        model =  branch or person.addFacet(IBranch, connection=conn)
-        model.manager = Person(connection=self.conn, name="")
-        return model
+        branch = IBranch(person, None)
+        if branch is None:
+            branch = person.addFacet(IBranch, connection=conn)
+
+        branch.manager = Person(connection=self.conn, name="")
+        return branch
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)
