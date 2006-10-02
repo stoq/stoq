@@ -89,10 +89,6 @@ def _create_domain_test():
                     except ValueError:
                         raise SkipTest("No default for %r" % column)
 
-            if column.name == '_originalID':
-                name = '_original'
-            else:
-                name = column.name
             kwargs[column.origName] = value
 
             if not isinstance(column, SOForeignKey):
