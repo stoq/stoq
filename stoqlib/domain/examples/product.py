@@ -70,8 +70,7 @@ def create_products():
     markups = [44, 43, 78, 32] # (30, 80]
     markups2 = [36, 33, 67, 52] # (30, 80]
 
-    supplier_table = Person.getAdapterClass(ISupplier)
-    suppliers = supplier_table.select(connection=trans)
+    suppliers = Person.iselect(ISupplier, connection=trans)
     if suppliers.count() < MAX_PRODUCT_NUMBER:
         raise ValueError('You must have at least four suppliers on your '
                          'database at this point.')
