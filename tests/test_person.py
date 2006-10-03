@@ -44,7 +44,6 @@ from stoqlib.domain.person import (Person,
                                    PersonAdaptToClient,
                                    PersonAdaptToCompany,
                                    PersonAdaptToBranch,
-                                   PersonAdaptToIndividual,
                                    PersonAdaptToSalesPerson,
                                    PersonAdaptToSupplier,
                                    PersonAdaptToEmployee,
@@ -312,19 +311,17 @@ class TestCalls(BaseDomainTest):
     _table = Calls
 
 
-class TestIndividual(BaseDomainTest):
-    """
-    C{PersonAdaptToIndividual} TestCase
-    """
-    _table = PersonAdaptToIndividual
+class TestIndividual(DomainTest):
+    def testIndividual(self):
+        person = self.create_person()
+        individual = person.addFacet(IIndividual, connection=self.trans)
 
-    def _get_foreign_key_data(self):
-        return get_new_city_location(self.trans)
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        return person.addFacet(IIndividual, connection=self.trans)
-
+        statuses = individual.get_marital_statuses()
+        self.assertEqual(type(statuses), list)
+        self.failUnless(len(statuses) > 0)
+        self.assertEqual(type(statuses[0]), tuple)
+        self.assertEqual(type(statuses[0][0]), unicode)
+        self.assertEqual(type(statuses[0][1]), int)
 
 class TestCompany(BaseDomainTest):
     """

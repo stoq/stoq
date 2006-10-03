@@ -277,7 +277,7 @@ class _PersonAdapter(ModelAdapter):
     def person(self):
         return self.get_adapted()
 
-class PersonAdaptToIndividual(_PersonAdapter):
+class _PersonAdaptToIndividual(_PersonAdapter):
     """An individual facet of a person.
 
     B{Important attributes}:
@@ -287,6 +287,8 @@ class PersonAdaptToIndividual(_PersonAdapter):
                   information.
     """
 
+    class sqlmeta:
+        table = 'person_adapt_to_individual'
     implements(IIndividual)
 
     (STATUS_SINGLE,
@@ -330,7 +332,7 @@ class PersonAdaptToIndividual(_PersonAdapter):
         return [(self.marital_statuses[i], i)
                 for i in self.marital_statuses.keys()]
 
-Person.registerFacet(PersonAdaptToIndividual, IIndividual)
+Person.registerFacet(_PersonAdaptToIndividual, IIndividual)
 
 class PersonAdaptToCompany(_PersonAdapter):
     """A company facet of a person.
