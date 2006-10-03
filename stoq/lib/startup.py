@@ -34,8 +34,11 @@ from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
 from sqlobject import sqlhub
 from stoqlib.database.admin import ensure_admin_user, initialize_system
+from stoqlib.database.database import finish_transaction
 from stoqlib.database.migration import schema_migration
-from stoqlib.database.runtime import get_connection, set_current_branch_station
+from stoqlib.database.runtime import get_connection, set_current_branch_station, new_transaction
+from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.profile import ProfileSettings
 from stoqlib.exceptions import DatabaseError
 from stoqlib.lib.interfaces import  IApplicationDescriptions
 from stoqlib.lib.message import error
@@ -106,7 +109,14 @@ def clean_database(config, options=None):
 
     password = password or config.get_password()
     initialize_system(verbose=verbose)
+    _set_default_profile_settings()
     ensure_admin_user(password)
+
+def _set_default_profile_settings():
+    trans = new_transaction()
+    profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
+    ProfileSettings.set_permission(trans, profile, 'pos', True)
+    finish_transaction(trans, 1)
 
 def get_option_parser():
     """
