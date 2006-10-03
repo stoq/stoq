@@ -34,7 +34,6 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
@@ -372,17 +371,12 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.difference_value_label.set_text(value)
 
     def _get_certificate_by_code(self, code):
-        adapter_class = GiftCertificate.getAdapterClass(ISellable)
-        result = adapter_class.selectBy(code=code, connection=self.conn)
-        qty = result.count()
-        if not qty:
+        certificate = GiftCertificate.iselectOneBy(ISellable, code=code,
+                                                   connection=self.conn)
+        if certificate is None:
             self.certificate_number.set_invalid(
                 _("The gift certificate with code '%s' doesn't exists.") % code)
-            return
-        if qty != 1:
-            raise DatabaseInconsistency(
-                "You should have only one gift certificate with code %s" % code)
-        return result[0]
+        return certificate
 
     def _update_widgets(self):
         has_gift_certificate = self.certificate_number.get_text() != ''
