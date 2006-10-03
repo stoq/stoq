@@ -30,7 +30,6 @@
 import sys
 
 from kiwi.log import Logger
-from sqlobject.styles import mixedToUnder
 
 from stoqlib.exceptions import SQLError
 from stoqlib.lib.translation import stoqlib_gettext
@@ -118,5 +117,4 @@ def db_table_name(cls):
     @returns: the table name
     @rtype: string
     """
-    className = cls.__name__
-    return (className[0].lower() + mixedToUnder(className[1:]))
+    return cls.sqlmeta.table
