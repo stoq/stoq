@@ -42,7 +42,6 @@ from stoqlib.domain.person import (Person,
                                    EmployeeRole, WorkPermitData,
                                    MilitaryData, VoterData, Liaison, Calls,
                                    PersonAdaptToClient,
-                                   PersonAdaptToCompany,
                                    PersonAdaptToBranch,
                                    PersonAdaptToSalesPerson,
                                    PersonAdaptToSupplier,
@@ -323,21 +322,11 @@ class TestIndividual(DomainTest):
         self.assertEqual(type(statuses[0][0]), unicode)
         self.assertEqual(type(statuses[0][1]), int)
 
-class TestCompany(BaseDomainTest):
-    """
-    C{PersonAdaptToCompany} TestCase
-    """
-    _table = PersonAdaptToCompany
-
-    def get_adapter(self):
-        person = get_person(self.trans)
-        return person.addFacet(ICompany, connection=self.trans)
-
-    def test_get_description(self):
-        person = get_person(self.trans)
-        self._instance = person.addFacet(ICompany, connection=self.trans)
-        self.assertEquals(self._instance.get_description(), person.name)
-
+class TestCompany(DomainTest):
+    def testCompany(self):
+        person = self.create_person()
+        company = person.addFacet(ICompany, connection=self.trans)
+        self.assertEqual(company.get_description(), person.name)
 
 class TestClient(BaseDomainTest):
     """

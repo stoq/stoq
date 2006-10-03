@@ -62,7 +62,7 @@ _tables = [
                  "PersonAdaptToUser",
                  "Calls",
                  "_PersonAdaptToIndividual",
-                 "PersonAdaptToCompany",
+                 "_PersonAdaptToCompany",
                  "PersonAdaptToClient",
                  "PersonAdaptToSupplier",
                  "PersonAdaptToEmployee",
