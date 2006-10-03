@@ -29,7 +29,6 @@ from sqlobject.sqlbuilder import LEFTJOINOn, AND, OR
 from kiwi.ui.widgets.list import Column
 from kiwi.argcheck import argcheck
 
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.validators import format_phone_number
@@ -246,9 +245,9 @@ class ClientSearch(BasePersonSearch):
                                   self.search_bar.search_items)
 
     @argcheck(ClientView)
-    def get_editor_model(self, model):
-        return PersonAdaptToClient.get(model.client_id,
-                                       connection=self.conn)
+    def get_editor_model(self, client_view):
+        return Person.iget(IClient, client_view.client_id,
+                           connection=self.conn)
 
     def get_columns(self):
         return [Column('name', _('Name'), str,
@@ -360,14 +359,8 @@ class BranchSearch(BasePersonSearch):
         return OR(Person.q.id == self.table.q.managerID,
                   Person.q.id == self.table.q._originalID)
 
-    def get_searchlist_model(self, model):
-        items = Person.getAdapterClass(IBranch).selectBy(
-                    _originalID=model.id, connection=self.conn)
-        if items.count() != 1:
-            raise DatabaseInconsistency("There should be one item for "
-                                        "instance %r, got %d" % (model,
-                                        items.count()))
-        return items[0]
+    def get_searchlist_model(self, person):
+        return IBranch(person)
 
     #
     # SearchDialog Hooks
