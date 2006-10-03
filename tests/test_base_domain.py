@@ -52,8 +52,11 @@ class DingAdaptToDong(ModelAdapter):
 Ding.registerFacet(DingAdaptToDong, IDong)
 
 trans = new_transaction()
-Ding.createTable(ifNotExists=True, connection=trans)
-DingAdaptToDong.createTable(ifNotExists=True, connection=trans)
+for table in (Ding, DingAdaptToDong):
+    table_name = table.sqlmeta.table
+    if trans.tableExists(table_name):
+        trans.dropTable(table_name, cascade=True)
+    table.createTable(connection=trans)
 trans.commit()
 
 class TestFacet(DomainTest):
