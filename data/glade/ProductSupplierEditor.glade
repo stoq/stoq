@@ -67,7 +67,7 @@ Information:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyComboBoxEntry" id="supplier_combo">
+                    <widget class="ProxyComboEntry" id="supplier_combo">
                         <property name="data_type">object</property>
                         <property name="model_attribute">supplier</property>
                         <property name="visible">True</property>
@@ -83,7 +83,7 @@ Information:</property>
                         <property name="spacing">6</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="base_cost">
+                            <widget class="ProxyEntry" id="base_cost">
                                 <property name="data_type">Decimal</property>
                                 <property name="mandatory">True</property>
                                 <property name="model_attribute">base_cost</property>
@@ -96,7 +96,7 @@ Information:</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="label10">
+                            <widget class="ProxyLabel" id="label10">
                                 <property name="label" context="yes" translatable="yes">ICMS:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
@@ -107,7 +107,7 @@ Information:</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="icms">
+                            <widget class="ProxyEntry" id="icms">
                                 <property name="data_type">Decimal</property>
                                 <property name="model_attribute">icms</property>
                                 <property name="visible">True</property>
@@ -120,7 +120,7 @@ Information:</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="label" context="yes" translatable="yes">%</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0.0</property>
@@ -147,7 +147,7 @@ Information:</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <property name="window_placement">bottom-left</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+textview+TextView" id="notes">
+                            <widget class="ProxyTextView" id="notes">
                                 <property name="data_type">unicode</property>
                                 <property name="left_margin">5</property>
                                 <property name="model_attribute">notes</property>

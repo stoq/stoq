@@ -119,6 +119,10 @@ class ProductSupplierEditor(BaseEditor):
         run_dialog(SimpleListDialog, self, cols, self.model.suppliers)
 
     def update_model(self):
+        # Don't update the model if the proxy is not created,
+        # since content-changed is potentially called very early
+        if not self.prod_supplier_proxy:
+            return;
         selected_supplier = self.supplier_combo.get_selected_data()
 
         # Kiwi proxy already sets the supplier attribute to new selected
@@ -151,6 +155,7 @@ class ProductSupplierEditor(BaseEditor):
         return _('Add supplier information')
 
     def setup_proxies(self):
+        self.prod_supplier_proxy = None
         self.setup_combos()
         model = self.model.get_main_supplier_info()
         if not model:
