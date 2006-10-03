@@ -16,4 +16,10 @@ deb: sdist
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
 
-.PHONY: sdist deb
+tags:
+	find -name \*.py|xargs ctags
+
+TAGS:
+	find -name \*.py|xargs etags
+
+.PHONY: sdist deb tags TAGS
