@@ -229,15 +229,14 @@ class AdminPasswordStep(BaseWizardStep):
     def validate_step(self):
         good_pass =  self.password_slave.validate_confirm()
         if good_pass:
-            table = Person.getAdapterClass(IUser)
-            results = table.select(
-                table.q.username == USER_ADMIN_DEFAULT_NAME,
-                connection=self.conn)
-            if results.count() != 1:
+            adminuser = Person.iselectOneBy(IUser,
+                                            username=USER_ADMIN_DEFAULT_NAME,
+                                            connection=self.conn)
+            if adminuser is None:
                 raise DatabaseInconsistency(
-                    ("You should have only one user with username: %s"
+                    ("You should have a user with username: %s"
                      % USER_ADMIN_DEFAULT_NAME))
-            results[0].password = self.password_slave.model.new_password
+            adminuser.password = self.password_slave.model.new_password
         return good_pass
 
     def next_step(self):
