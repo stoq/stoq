@@ -43,7 +43,6 @@ from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import StoqlibError
@@ -175,7 +174,6 @@ def create_default_profiles():
     UserProfile.create_profile_template(trans, 'Administrator', True)
     UserProfile.create_profile_template(trans, 'Manager', True)
     profile = UserProfile.create_profile_template(trans, 'Salesperson', False)
-    ProfileSettings.set_permission(trans, profile, 'pos', True)
 
     finish_transaction(trans, 1)
 
