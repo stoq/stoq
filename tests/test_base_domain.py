@@ -47,6 +47,7 @@ class Ding(Domain):
 
 class DingAdaptToDong(ModelAdapter):
     implements(IDong)
+    facetfield = IntCol(default=0)
 
 Ding.registerFacet(DingAdaptToDong, IDong)
 
@@ -153,3 +154,46 @@ class TestSelect(DomainTest):
         dong = ding.addFacet(IDong, connection=self.trans)
         dong._is_valid_model = False
         self.testISelectOne()
+
+    def testISelectBy(self):
+        ding = Ding(connection=self.trans)
+        ding.addFacet(IDong, connection=self.trans)
+
+        results = Ding.iselectBy(IDong, facetfield=1, connection=self.trans)
+        self.assertEquals(results.count(), 0)
+
+        ding = Ding(connection=self.trans)
+        ding.addFacet(IDong, facetfield=1, connection=self.trans)
+
+        results = Ding.iselectBy(IDong, facetfield=1, connection=self.trans)
+        self.assertEquals(results.count(), 1)
+
+    def testISelectByWithInvalid(self):
+        ding = Ding(connection=self.trans)
+        dong = ding.addFacet(IDong, facetfield=1, connection=self.trans)
+        dong._is_valid_model = False
+        self.testISelectBy()
+
+    def testISelectOneBy(self):
+        ding = Ding(connection=self.trans)
+        ding.addFacet(IDong, connection=self.trans)
+
+        self.assertEquals(
+            None, Ding.iselectOneBy(IDong, facetfield=1,
+                                    connection=self.trans))
+        ding1 = Ding(connection=self.trans)
+        dong1 = ding1.addFacet(IDong, facetfield=1, connection=self.trans)
+        self.assertEquals(
+            dong1, Ding.iselectOneBy(IDong, facetfield=1,
+                                     connection=self.trans))
+        ding2 = Ding(connection=self.trans)
+        ding2.addFacet(IDong, facetfield=1, connection=self.trans)
+        self.assertRaises(
+            SQLObjectMoreThanOneResultError,
+            Ding.iselectOneBy, IDong, facetfield=1, connection=self.trans)
+
+    def testISelectOneByWithInvalid(self):
+        ding = Ding(connection=self.trans)
+        dong = ding.addFacet(IDong, facetfield=1, connection=self.trans)
+        dong._is_valid_model = False
+        self.testISelectOneBy()
