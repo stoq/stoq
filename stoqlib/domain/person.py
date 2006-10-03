@@ -334,7 +334,7 @@ class _PersonAdaptToIndividual(_PersonAdapter):
 
 Person.registerFacet(_PersonAdaptToIndividual, IIndividual)
 
-class PersonAdaptToCompany(_PersonAdapter):
+class _PersonAdaptToCompany(_PersonAdapter):
     """A company facet of a person.
 
     B{Important attributes}:
@@ -343,6 +343,9 @@ class PersonAdaptToCompany(_PersonAdapter):
         - I{fancy_name}: Represents the fancy name of a company.
     """
     implements(ICompany, IDescribable)
+
+    class sqlmeta:
+        table = 'person_adapt_to_company'
 
     # Cnpj and state_registry are
     # Brazil-specific information.
@@ -357,7 +360,7 @@ class PersonAdaptToCompany(_PersonAdapter):
     def get_description(self):
         return self.person.name
 
-Person.registerFacet(PersonAdaptToCompany, ICompany)
+Person.registerFacet(_PersonAdaptToCompany, ICompany)
 
 class PersonAdaptToClient(_PersonAdapter):
     """A client facet of a person."""
