@@ -34,9 +34,8 @@ from kiwi.ui.objectlist import Column, ColoredColumn
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import SummaryLabel
 
-from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.interfaces import IClient, IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.person import PersonAdaptToClient
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
@@ -56,7 +55,7 @@ class ClientDetailsDialog(BaseEditor):
     title = _(u"Client Details")
     hide_footer = True
     size = (780, 400)
-    model_type = PersonAdaptToClient
+    model_iface = IClient
     gladefile = "ClientDetailsDialog"
     proxy_widgets = ('client',
                      'last_purchase_date',

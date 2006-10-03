@@ -38,8 +38,8 @@ from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.domain.person import PersonAdaptToClient
-from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.interfaces import IClient, IPaymentGroup
+from stoqlib.domain.person import Person
 from stoqlib.domain.sale import SaleView, Sale
 from stoqlib.reporting.sale import SaleOrderReport
 
@@ -144,8 +144,8 @@ class SaleDetailsDialog(BaseEditor):
         if not self.model.client_id:
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
-        client = PersonAdaptToClient.get(self.model.client_id,
-                                         connection=self.conn)
+        client = Person.iget(IClient, self.model.client_id,
+                             connection=self.conn)
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def on_cancel_details_button__clicked(self, *args):

@@ -47,7 +47,6 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier, IEmployee,
                                        IClient, ICreditProvider,
                                        ITransporter, IBranch)
 from stoqlib.domain.person import (Person, EmployeeRole, ClientView,
-                                   PersonAdaptToClient,
                                    PersonAdaptToEmployee)
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 
@@ -264,7 +263,7 @@ class ClientSearch(BasePersonSearch):
 
     def on_details_button_clicked(self, *args):
         items = self.klist.get_selected()
-        client = PersonAdaptToClient.get(items.client_id, connection=self.conn)
+        client = Person.get(IClient, items.client_id, connection=self.conn)
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def update_widgets(self, *args):
