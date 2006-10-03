@@ -124,7 +124,7 @@ def create_sales():
     product_list = get_all_products(trans)
     if not len(product_list) >= DEFAULT_SALE_NUMBER:
         raise SellError("You don't have products to create all the sales.")
-    salespersons = Person.getAdapterClass(ISalesPerson).select(connection=trans)
+    salespersons = Person.iselect(ISalesPerson, connection=trans)
     if salespersons.count() < DEFAULT_SALE_NUMBER:
         raise ValueError('You should have at last %d salespersons defined '
                          'in database at this point, got %d instead' %
