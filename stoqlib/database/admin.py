@@ -43,6 +43,7 @@ from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import StoqlibError
@@ -80,10 +81,7 @@ def ensure_admin_user(administrator_password):
     # must have all the facets.
     person_obj.addFacet(ISalesPerson, connection=trans)
 
-    log.info("Creating user profile for administrator")
-    profile = UserProfile.create_profile_template(trans, _('Administrator'),
-                                                  has_full_permission=True)
-
+    profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
 
     username = USER_ADMIN_DEFAULT_NAME
     log.info("Attaching IUser facet (%s)" % (username,))
@@ -170,6 +168,17 @@ def create_base_schema():
 
     finish_transaction(trans, 1)
 
+def create_default_profiles():
+    trans = new_transaction()
+
+    log.info("Creating user default profiles")
+    UserProfile.create_profile_template(trans, 'Administrator', True)
+    UserProfile.create_profile_template(trans, 'Manager', True)
+    profile = UserProfile.create_profile_template(trans, 'Salesperson', False)
+    ProfileSettings.set_permission(trans, profile, 'pos', True)
+
+    finish_transaction(trans, 1)
+
 @argcheck(bool, bool)
 def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
@@ -179,6 +188,7 @@ def initialize_system(delete_only=False, verbose=False):
     create_base_schema()
     ensure_system_parameters()
     ensure_sellable_units()
+    create_default_profiles()
 
     trans = new_transaction()
     SystemTable.update(trans, check_new_db=True)

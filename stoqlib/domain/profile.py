@@ -38,6 +38,19 @@ class ProfileSettings(Domain):
     has_permission = BoolCol(default=False)
     user_profile = ForeignKey('UserProfile')
 
+    @classmethod
+    def set_permission(cls, conn, profile, app, permission):
+        """
+        Set the permission for a user profile to use a application
+        @param conn: a database connection
+        @param profile: a UserProfile
+        @param app: name of the application
+        @param permission: a boolean of the permission
+        """
+        setting = cls.selectOneBy(user_profile=profile,
+                                  app_dir_name=app,
+                                  connection=conn)
+        setting.has_permission = permission
 
 class UserProfile(Domain):
     """User profile definition."""
@@ -55,6 +68,10 @@ class UserProfile(Domain):
                             has_permission=has_full_permission,
                             app_dir_name=app_dir, user_profile=profile)
         return profile
+
+    @classmethod
+    def get_default(cls, conn):
+        return cls.selectOneBy(name='Salesperson', connection=conn)
 
     def add_application_reference(self, app_name, has_permission=False):
         conn = self.get_connection()

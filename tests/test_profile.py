@@ -24,6 +24,7 @@
 """ This module tests all classes in stoq/domain/profile.py"""
 
 from stoqlib.domain.profile import UserProfile
+from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.profile import update_profile_applications
 
 from tests.base import DomainTest
@@ -39,6 +40,11 @@ class TestUserProfile(DomainTest):
             'my_app', has_permission=True)
         assert len(profile.profile_settings) == 1
         assert profile.check_app_permission('my_app')
+
+    def test_get_default(self):
+        profile = UserProfile.get_default(self.trans)
+        self.failUnless(isinstance(profile, UserProfile))
+        self.assertEquals(profile.name, 'Salesperson')
 
 
 class TestProfileSettings(DomainTest):
@@ -73,3 +79,15 @@ class TestProfileSettings(DomainTest):
         profile = UserProfile(connection=self.trans, name='boss')
         profile.add_application_reference('test_application', True)
         assert profile.check_app_permission('test_application') == True
+
+    def test_set_permission(self):
+        profile = UserProfile(connection=self.trans, name='boss')
+        profile.add_application_reference('app', False)
+        setting = ProfileSettings.selectOneBy(user_profile=profile,
+                                             app_dir_name='app',
+                                             connection=self.trans)
+        self.failIf(setting.has_permission)
+        ProfileSettings.set_permission(self.trans, profile, 'app', True)
+        self.failUnless(setting.has_permission)
+        ProfileSettings.set_permission(self.trans, profile, 'app', False)
+        self.failIf(setting.has_permission)

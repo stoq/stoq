@@ -142,10 +142,10 @@ class UserDetailsSlave(BaseEditorSlave):
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
+        if self.model.profile is None:
+            self.model.profile = UserProfile.get_default(conn=self.conn)
         profiles = UserProfile.select(connection=self.conn, orderBy='name')
         self.profile.prefill([(p.name, p) for p in profiles])
-        # FIXME: Make the SalesPerson profile the default one (instead of the
-        #        first one alphabetically
 
     def _attach_slaves(self):
         self.password_slave = PasswordEditorSlave(self.conn)

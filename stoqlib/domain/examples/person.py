@@ -156,7 +156,7 @@ def create_people():
                          dict(began=now + datetime.timedelta(15), salary=400,
                               ended=now + datetime.timedelta(20))]
 
-    profile_names = ['Salesperson', 'Manager', 'Secretary', 'Trainee']
+    profile_names = ['Salesperson'] * 3 + ['Manager']
 
     # Creating persons and facets
     for index, person_args in enumerate(person_data):
@@ -206,8 +206,8 @@ def create_people():
         prof_name = profile_names[index]
         # The True argument here means full permition for this profile.
         # This is useful when testing all the fetuares of Stoq applications
-        profile = UserProfile.create_profile_template(trans, prof_name,
-                                                      True)
+        profile = UserProfile.selectOneBy(name=prof_name, connection=trans)
+
         user_args = user_data[index]
         person_obj.addFacet(IUser, connection=trans, profile=profile,
                             **user_args)
