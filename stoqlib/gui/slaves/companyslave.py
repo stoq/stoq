@@ -23,11 +23,11 @@
 
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.domain.person import PersonAdaptToCompany
+from stoqlib.domain.interfaces import ICompany
 
 
 class CompanyDocumentsSlave(BaseEditorSlave):
-    model_type = PersonAdaptToCompany
+    model_iface = ICompany
     gladefile = 'CompanyDocumentsSlave'
     proxy_widgets = ('cnpj',
                      'fancy_name',
