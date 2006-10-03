@@ -61,7 +61,7 @@ _tables = [
                  "Liaison",
                  "PersonAdaptToUser",
                  "Calls",
-                 "PersonAdaptToIndividual",
+                 "_PersonAdaptToIndividual",
                  "PersonAdaptToCompany",
                  "PersonAdaptToClient",
                  "PersonAdaptToSupplier",
