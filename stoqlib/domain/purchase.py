@@ -406,6 +406,16 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         order = self.get_adapted()
         return _(u'order %s') % order.order_number
 
+    def create_preview_outpayments(self):
+        conn = self.get_connection()
+        base_method = sysparam(conn).BASE_PAYMENT_METHOD
+        order = self.get_adapted()
+        total = order.get_purchase_total()
+        first_due_date = order.expected_receival_date
+        order._create_preview_outpayments(conn=conn, group=self,
+                                          base_method=base_method,
+                                          total=total)
+
 PurchaseOrder.registerFacet(PurchaseOrderAdaptToPaymentGroup, IPaymentGroup)
 
 
