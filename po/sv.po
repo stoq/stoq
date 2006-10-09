@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-25 16:05-0300\n"
+"POT-Creation-Date: 2006-10-09 16:06-0300\n"
 "PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoq/main.py:120 ../stoq/lib/startup.py:100
+#: ../stoq/main.py:120 ../stoq/lib/startup.py:89
 msgid "Database schema error"
 msgstr "Databasschemafel"
 
@@ -41,54 +41,33 @@ msgstr ""
 msgid "Could not connect to database"
 msgstr "Kunde inte ansluta till databasen"
 
-#: ../stoq/lib/startup.py:53
-#, python-format
-msgid "The computer <u>%s</u> is not registered in Stoq"
-msgstr ""
-
-#: ../stoq/lib/startup.py:54
-msgid ""
-"To solve this, open the administrator application and register this computer."
-msgstr ""
-
-#: ../stoq/lib/startup.py:59
-#, python-format
-msgid "The computer <u>%s</u> is not active in Stoq"
-msgstr ""
-
-#: ../stoq/lib/startup.py:60
-msgid ""
-"To solve this, open the administrator application and re-activate this "
-"computer."
-msgstr ""
-
-#: ../stoq/lib/startup.py:101
+#: ../stoq/lib/startup.py:90
 msgid ""
 "The database schema has changed, but the database has not been updated. Run "
 "'stoqdbadmin updateschema` toupdate the schema  to the latest available "
 "version."
 msgstr ""
 
-#: ../stoq/gui/login.py:116
+#: ../stoq/gui/login.py:117 ../stoq/gui/login.py:129
 msgid "Invalid user or password"
 msgstr ""
 
-#: ../stoq/gui/login.py:127
+#: ../stoq/gui/login.py:126
 msgid "This user is inactive"
 msgstr "Den här användaren är inaktiv"
 
-#: ../stoq/gui/login.py:133
+#: ../stoq/gui/login.py:132
 #, python-format
 msgid ""
 "This user lacks credentials \n"
 "for application %s"
 msgstr ""
 
-#: ../stoq/gui/login.py:170
+#: ../stoq/gui/login.py:169
 msgid "Access Control"
 msgstr ""
 
-#: ../stoq/gui/login.py:189
+#: ../stoq/gui/login.py:188
 msgid "specify an username"
 msgstr ""
 
@@ -122,55 +101,91 @@ msgstr "Byt användare"
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/config.py:196
+#: ../stoq/gui/config.py:204 ../data/glade/AdminPasswordStep.glade.h:1
+msgid "<b>Administrator Account Creation</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:207
+#, python-format
+msgid ""
+"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+
+#: ../stoq/gui/config.py:266
+#, python-format
+msgid ""
+"This machine which has the name <b>%s</b> will be registered so it can be "
+"used to access the system."
+msgstr ""
+
+#: ../stoq/gui/config.py:287
+#, python-format
+msgid ""
+"There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
+"the password for the user <b>%s</b> to continue the installation: "
+msgstr ""
+
+#: ../stoq/gui/config.py:294
+msgid "<b>Administrator Account</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:305
+msgid "The password supplied is not valid."
+msgstr ""
+
+#: ../stoq/gui/config.py:325
 msgid "Trust"
 msgstr "Lita"
 
-#: ../stoq/gui/config.py:197
+#: ../stoq/gui/config.py:326
 msgid "Needs Password"
 msgstr "Kräv lösenord"
 
-#: ../stoq/gui/config.py:233
+#: ../stoq/gui/config.py:350
+#, python-format
+msgid ""
+"The specifed database `%s' does not exist.\n"
+"Do you want to create it?"
+msgstr ""
+
+#: ../stoq/gui/config.py:353
+msgid "Don't create"
+msgstr ""
+
+#: ../stoq/gui/config.py:353
+#, fuzzy
+msgid "Create"
+msgstr "Kod"
+
+#: ../stoq/gui/config.py:360
+#, python-format
+msgid "User <u>%s</u> has insufficient permissions"
+msgstr ""
+
+#: ../stoq/gui/config.py:361
+#, python-format
+msgid ""
+"The specified user `%s' does not have the required permissions to install "
+"Stoq.\n"
+"The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
+"more information on how to solve this problem."
+msgstr ""
+
+#: ../stoq/gui/config.py:393
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:236 ../stoq/gui/config.py:237
+#: ../stoq/gui/config.py:396 ../stoq/gui/config.py:397
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:243
-msgid "Invalid database settings"
-msgstr ""
-
-#: ../stoq/gui/config.py:254
-msgid "Set administrator password"
-msgstr ""
-
-#: ../stoq/gui/config.py:255
-msgid ""
-"You need to set an administrator password to continue, an empty password can "
-"be set by just pressing Enter"
-msgstr ""
-
-#: ../stoq/gui/config.py:264
-msgid "Administrator password"
-msgstr ""
-
-#: ../stoq/gui/config.py:265
-#, python-format
-msgid ""
-"To be able to continue the wizard you need to enter the administrator "
-"password for the database on host %s"
-msgstr ""
-
-#: ../stoq/gui/config.py:273
-msgid "The supplied administrator password does not match"
-msgstr ""
-
-#: ../stoq/gui/config.py:359
+#: ../stoq/gui/config.py:479
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -221,7 +236,7 @@ msgid ""
 "not be included"
 msgstr ""
 
-#: ../stoq/gui/purchase/purchase.py:177 ../stoq/gui/pos/pos.py:452
+#: ../stoq/gui/purchase/purchase.py:177 ../stoq/gui/pos/pos.py:461
 #, fuzzy
 msgid "Cancel"
 msgstr "_Nollställ order"
@@ -357,7 +372,7 @@ msgid "Items Quantity"
 msgstr "Antal"
 
 #: ../stoq/gui/sales/sales.py:173 ../stoq/gui/till/till.py:209
-#: ../stoq/gui/pos/pos.py:508
+#: ../stoq/gui/pos/pos.py:520
 msgid "Total"
 msgstr "Totalt"
 
@@ -421,15 +436,15 @@ msgid "Code"
 msgstr "Kod"
 
 #: ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:499
+#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:511
 msgid "Description"
 msgstr "Beskrivning"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:503
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:515
 msgid "Quantity"
 msgstr "Antal"
 
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:506
+#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:518
 msgid "Unit"
 msgstr ""
 
@@ -474,55 +489,59 @@ msgstr ""
 msgid "Point of Sales"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:293
+#: ../stoq/gui/pos/pos.py:294
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:295
+#: ../stoq/gui/pos/pos.py:296
 msgid "Can not sell this product"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:345
+#: ../stoq/gui/pos/pos.py:347
 msgid "You need open the till before start doing sales."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:366
+#: ../stoq/gui/pos/pos.py:350
+msgid "You can't start a new sale, since you are not a salesperson."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:372
 msgid "The current order will be canceled, Confirm?"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:367
-msgid "Go Back"
-msgstr ""
-
-#: ../stoq/gui/pos/pos.py:367 ../data/glade/pos.glade.h:8
+#: ../stoq/gui/pos/pos.py:373 ../data/glade/pos.glade.h:8
 #, fuzzy
 msgid "Cancel Order"
 msgstr "_Nollställ order"
 
-#: ../stoq/gui/pos/pos.py:376
+#: ../stoq/gui/pos/pos.py:373
+msgid "Go Back"
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:383
 msgid "You don't have products to delivery."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:382
+#: ../stoq/gui/pos/pos.py:389
 msgid "All the products already have delivery instructions"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:450
+#: ../stoq/gui/pos/pos.py:459
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:452
+#: ../stoq/gui/pos/pos.py:461
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:495
+#: ../stoq/gui/pos/pos.py:507
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:501
+#: ../stoq/gui/pos/pos.py:513
 msgid "Price"
 msgstr "Pris"
 
@@ -1229,6 +1248,14 @@ msgstr ""
 
 #: ../data/glade/warehouse.glade.h:29
 msgid "_Warehouse"
+msgstr ""
+
+#: ../data/glade/AdminPasswordStep.glade.h:2
+msgid ""
+"I'm adding a user called `admin' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
 msgstr ""
 
 #, fuzzy
