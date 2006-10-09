@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-25 16:05-0300\n"
+"POT-Creation-Date: 2006-10-09 16:06-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../stoq/main.py:120 ../stoq/lib/startup.py:100
+#: ../stoq/main.py:120 ../stoq/lib/startup.py:89
 msgid "Database schema error"
 msgstr "Erro na base de dados"
 
@@ -58,30 +58,7 @@ msgstr ""
 msgid "Could not connect to database"
 msgstr "Não foi possível conectar ao banco de dados"
 
-#: ../stoq/lib/startup.py:53
-#, python-format
-msgid "The computer <u>%s</u> is not registered in Stoq"
-msgstr "O computador <u>%s</u> não está registrado no Stoq"
-
-#: ../stoq/lib/startup.py:54
-msgid ""
-"To solve this, open the administrator application and register this computer."
-msgstr ""
-"Para resolver isto, abra a aplicação administrador e registre o computador"
-
-#: ../stoq/lib/startup.py:59
-#, python-format
-msgid "The computer <u>%s</u> is not active in Stoq"
-msgstr "O computador <u>%s</u> não está ativo no Stoq"
-
-#: ../stoq/lib/startup.py:60
-msgid ""
-"To solve this, open the administrator application and re-activate this "
-"computer."
-msgstr ""
-"Para resolver, abra a aplicação administrador e reative este computador."
-
-#: ../stoq/lib/startup.py:101
+#: ../stoq/lib/startup.py:90
 msgid ""
 "The database schema has changed, but the database has not been updated. Run "
 "'stoqdbadmin updateschema` toupdate the schema  to the latest available "
@@ -91,15 +68,15 @@ msgstr ""
 "'stoqdbadmin updateschema` para atualizar o esquema para a última versão "
 "disponível."
 
-#: ../stoq/gui/login.py:116
+#: ../stoq/gui/login.py:117 ../stoq/gui/login.py:129
 msgid "Invalid user or password"
 msgstr "Usuário ou senha inválidos"
 
-#: ../stoq/gui/login.py:127
+#: ../stoq/gui/login.py:126
 msgid "This user is inactive"
 msgstr "Este usuário está inativo"
 
-#: ../stoq/gui/login.py:133
+#: ../stoq/gui/login.py:132
 #, python-format
 msgid ""
 "This user lacks credentials \n"
@@ -108,11 +85,11 @@ msgstr ""
 "Este usuário não tem credencial \n"
 "para a aplicação %s"
 
-#: ../stoq/gui/login.py:170
+#: ../stoq/gui/login.py:169
 msgid "Access Control"
 msgstr "Controle de acesso"
 
-#: ../stoq/gui/login.py:189
+#: ../stoq/gui/login.py:188
 msgid "specify an username"
 msgstr "especifique um usuário"
 
@@ -146,15 +123,81 @@ msgstr "Trocar de Usuário"
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/config.py:196
+#: ../stoq/gui/config.py:204 ../data/glade/AdminPasswordStep.glade.h:1
+msgid "<b>Administrator Account Creation</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:207
+#, python-format
+msgid ""
+"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+
+#: ../stoq/gui/config.py:266
+#, python-format
+msgid ""
+"This machine which has the name <b>%s</b> will be registered so it can be "
+"used to access the system."
+msgstr ""
+
+#: ../stoq/gui/config.py:287
+#, python-format
+msgid ""
+"There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
+"the password for the user <b>%s</b> to continue the installation: "
+msgstr ""
+
+#: ../stoq/gui/config.py:294
+#, fuzzy
+msgid "<b>Administrator Account</b>"
+msgstr "Senha do administrador"
+
+#: ../stoq/gui/config.py:305
+msgid "The password supplied is not valid."
+msgstr ""
+
+#: ../stoq/gui/config.py:325
 msgid "Trust"
 msgstr "Confiavel"
 
-#: ../stoq/gui/config.py:197
+#: ../stoq/gui/config.py:326
 msgid "Needs Password"
 msgstr "Necessita de senha:"
 
-#: ../stoq/gui/config.py:233
+#: ../stoq/gui/config.py:350
+#, python-format
+msgid ""
+"The specifed database `%s' does not exist.\n"
+"Do you want to create it?"
+msgstr ""
+
+#: ../stoq/gui/config.py:353
+msgid "Don't create"
+msgstr ""
+
+#: ../stoq/gui/config.py:353
+#, fuzzy
+msgid "Create"
+msgstr "Data de Fechamento:"
+
+#: ../stoq/gui/config.py:360
+#, python-format
+msgid "User <u>%s</u> has insufficient permissions"
+msgstr ""
+
+#: ../stoq/gui/config.py:361
+#, python-format
+msgid ""
+"The specified user `%s' does not have the required permissions to install "
+"Stoq.\n"
+"The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
+"more information on how to solve this problem."
+msgstr ""
+
+#: ../stoq/gui/config.py:393
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
@@ -163,44 +206,11 @@ msgstr ""
 "O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
 "que você definiu:"
 
-#: ../stoq/gui/config.py:236 ../stoq/gui/config.py:237
+#: ../stoq/gui/config.py:396 ../stoq/gui/config.py:397
 msgid "Invalid database address"
 msgstr "Endereço do banco de dados inválido"
 
-#: ../stoq/gui/config.py:243
-msgid "Invalid database settings"
-msgstr "Configuração do banco de dados inválida"
-
-#: ../stoq/gui/config.py:254
-msgid "Set administrator password"
-msgstr "Insira a senha do administrador"
-
-#: ../stoq/gui/config.py:255
-msgid ""
-"You need to set an administrator password to continue, an empty password can "
-"be set by just pressing Enter"
-msgstr ""
-"Você precisa escolher uma senha para o administrador, uma senha em branco "
-"pode ser escolhida pressionando Enter"
-
-#: ../stoq/gui/config.py:264
-msgid "Administrator password"
-msgstr "Senha do administrador"
-
-#: ../stoq/gui/config.py:265
-#, python-format
-msgid ""
-"To be able to continue the wizard you need to enter the administrator "
-"password for the database on host %s"
-msgstr ""
-"Para continuar o wizard você deve entrar com a senha de administrador para o "
-"banco de dados no host %s"
-
-#: ../stoq/gui/config.py:273
-msgid "The supplied administrator password does not match"
-msgstr "A senha fornecida para administrador não confere "
-
-#: ../stoq/gui/config.py:359
+#: ../stoq/gui/config.py:479
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
@@ -252,7 +262,7 @@ msgstr ""
 "Aviso: há %d pedido(s) com situação diferente de 'pendente' que não será(ão) "
 "incluso(s)"
 
-#: ../stoq/gui/purchase/purchase.py:177 ../stoq/gui/pos/pos.py:452
+#: ../stoq/gui/purchase/purchase.py:177 ../stoq/gui/pos/pos.py:461
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -372,7 +382,7 @@ msgid "Items Quantity"
 msgstr "Quantidade de Itens"
 
 #: ../stoq/gui/sales/sales.py:173 ../stoq/gui/till/till.py:209
-#: ../stoq/gui/pos/pos.py:508
+#: ../stoq/gui/pos/pos.py:520
 msgid "Total"
 msgstr "Total"
 
@@ -434,15 +444,15 @@ msgid "Code"
 msgstr "Código"
 
 #: ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:499
+#: ../stoq/gui/receivable/receivable.py:97 ../stoq/gui/pos/pos.py:511
 msgid "Description"
 msgstr "Descrição"
 
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:503
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:515
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:506
+#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:518
 msgid "Unit"
 msgstr "Unidade"
 
@@ -486,7 +496,7 @@ msgstr "Você precisa abrir o caixa antes de começar as vendas."
 msgid "Point of Sales"
 msgstr "Ponto de Vendas"
 
-#: ../stoq/gui/pos/pos.py:293
+#: ../stoq/gui/pos/pos.py:294
 msgid ""
 "There is no stock of this product in this branch, please, select another "
 "item."
@@ -494,50 +504,54 @@ msgstr ""
 "Não existe estoque deste produto nesta unidade da empresa. por favor "
 "selecione outro item."
 
-#: ../stoq/gui/pos/pos.py:295
+#: ../stoq/gui/pos/pos.py:296
 msgid "Can not sell this product"
 msgstr "Não é possivel vender este produto"
 
-#: ../stoq/gui/pos/pos.py:345
+#: ../stoq/gui/pos/pos.py:347
 msgid "You need open the till before start doing sales."
 msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
-#: ../stoq/gui/pos/pos.py:366
+#: ../stoq/gui/pos/pos.py:350
+msgid "You can't start a new sale, since you are not a salesperson."
+msgstr ""
+
+#: ../stoq/gui/pos/pos.py:372
 msgid "The current order will be canceled, Confirm?"
 msgstr "O pedido atual será cancelado, confirmar?"
 
-#: ../stoq/gui/pos/pos.py:367
-msgid "Go Back"
-msgstr "Voltar"
-
-#: ../stoq/gui/pos/pos.py:367 ../data/glade/pos.glade.h:8
+#: ../stoq/gui/pos/pos.py:373 ../data/glade/pos.glade.h:8
 msgid "Cancel Order"
 msgstr "Cancelar Pedido"
 
-#: ../stoq/gui/pos/pos.py:376
+#: ../stoq/gui/pos/pos.py:373
+msgid "Go Back"
+msgstr "Voltar"
+
+#: ../stoq/gui/pos/pos.py:383
 msgid "You don't have products to delivery."
 msgstr "Não há produtos para entrega."
 
-#: ../stoq/gui/pos/pos.py:382
+#: ../stoq/gui/pos/pos.py:389
 msgid "All the products already have delivery instructions"
 msgstr "Todos os produtos já tem instruções de entrega"
 
-#: ../stoq/gui/pos/pos.py:450
+#: ../stoq/gui/pos/pos.py:459
 msgid ""
 "It is not possible to start a new sale if the fiscal coupon cannot be opened."
 msgstr ""
 "Não é possível iniciar uma nova venda se o coupon fiscal não puder ser "
 "aberto."
 
-#: ../stoq/gui/pos/pos.py:452
+#: ../stoq/gui/pos/pos.py:461
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:495
+#: ../stoq/gui/pos/pos.py:507
 msgid "Reference"
 msgstr "Referência"
 
-#: ../stoq/gui/pos/pos.py:501
+#: ../stoq/gui/pos/pos.py:513
 msgid "Price"
 msgstr "Preço"
 
@@ -1220,6 +1234,55 @@ msgstr "Retenção..."
 #: ../data/glade/warehouse.glade.h:29
 msgid "_Warehouse"
 msgstr "Almoxarifado"
+
+#: ../data/glade/AdminPasswordStep.glade.h:2
+msgid ""
+"I'm adding a user called `admin' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+
+#~ msgid "The computer <u>%s</u> is not registered in Stoq"
+#~ msgstr "O computador <u>%s</u> não está registrado no Stoq"
+
+#~ msgid ""
+#~ "To solve this, open the administrator application and register this "
+#~ "computer."
+#~ msgstr ""
+#~ "Para resolver isto, abra a aplicação administrador e registre o computador"
+
+#~ msgid "The computer <u>%s</u> is not active in Stoq"
+#~ msgstr "O computador <u>%s</u> não está ativo no Stoq"
+
+#~ msgid ""
+#~ "To solve this, open the administrator application and re-activate this "
+#~ "computer."
+#~ msgstr ""
+#~ "Para resolver, abra a aplicação administrador e reative este computador."
+
+#~ msgid "Invalid database settings"
+#~ msgstr "Configuração do banco de dados inválida"
+
+#~ msgid "Set administrator password"
+#~ msgstr "Insira a senha do administrador"
+
+#~ msgid ""
+#~ "You need to set an administrator password to continue, an empty password "
+#~ "can be set by just pressing Enter"
+#~ msgstr ""
+#~ "Você precisa escolher uma senha para o administrador, uma senha em branco "
+#~ "pode ser escolhida pressionando Enter"
+
+#~ msgid ""
+#~ "To be able to continue the wizard you need to enter the administrator "
+#~ "password for the database on host %s"
+#~ msgstr ""
+#~ "Para continuar o wizard você deve entrar com a senha de administrador "
+#~ "para o banco de dados no host %s"
+
+#~ msgid "The supplied administrator password does not match"
+#~ msgstr "A senha fornecida para administrador não confere "
 
 #~ msgid "Hint: this is the first user to start Stoq applications"
 #~ msgstr ""
