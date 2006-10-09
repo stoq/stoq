@@ -30,7 +30,8 @@ import socket
 from kiwi.component import provide_utility
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
-from stoqlib.database.database import create_database_if_missing
+from stoqlib.database.database import (create_database_if_missing,
+                                       finish_transaction)
 from stoqlib.database.exceptions import DatabaseDoesNotExistError
 from stoqlib.database.runtime import new_transaction, get_connection
 from stoqlib.database.runtime import get_current_station
@@ -110,6 +111,7 @@ def _provide_current_station():
     assert station.is_active
 
     provide_utility(ICurrentBranchStation, station)
+    finish_transaction(trans, 1)
 
 def _provide_devices():
     conn = get_connection()
