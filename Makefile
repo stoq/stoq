@@ -4,7 +4,7 @@ PACKAGE=stoqlib
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 
 sdist:
-	kiwi-i18n -c
+	kiwi-i18n -p $(PACKAGE) -c
 	python setup.py -q sdist
 
 deb: sdist
