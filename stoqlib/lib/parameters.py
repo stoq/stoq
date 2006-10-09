@@ -419,6 +419,10 @@ class ParameterAccess(ClassInittableObject):
     def rebuild_cache(self):
         map(self.rebuild_cache_for, self._cache.keys())
 
+    def clear_cache(self):
+        log.info("Clearing cache")
+        ParameterAccess._cache = {}
+
     def get_parameter_by_field(self, field_name, field_type):
         from stoqlib.domain.base import AbstractModel
         if isinstance(field_type, unicode):
