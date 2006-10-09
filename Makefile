@@ -11,7 +11,7 @@ deb: sdist
 	rm -fr $(BUILDDIR)
 	mkdir $(BUILDDIR)
 	cd $(BUILDDIR) && tar xfz ../dist/$(TARBALL)
-	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION); debuild -uc -us
+	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION); debuild
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
