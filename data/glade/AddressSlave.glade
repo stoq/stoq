@@ -9,15 +9,14 @@
         <property name="title" context="yes" translatable="yes"></property>
         <child>
             <widget class="GtkTable" id="table2">
-                <property name="column_spacing">5</property>
+                <property name="column_spacing">6</property>
                 <property name="n_columns">4</property>
                 <property name="n_rows">4</property>
-                <property name="row_spacing">5</property>
+                <property name="row_spacing">6</property>
                 <property name="visible">True</property>
                 <child>
                     <widget class="GtkLabel" id="address_lbl">
                         <property name="label" context="yes" translatable="yes">Street:</property>
-                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -26,12 +25,11 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="complement_lbl">
-                        <property name="label" context="yes" translatable="yes">Complement:</property>
+                    <widget class="GtkLabel" id="number_lbl">
+                        <property name="label" context="yes" translatable="yes">Number:</property>
                         <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
-                        <property name="xpad">2</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -40,8 +38,8 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="postal_code_lbl">
-                        <property name="label" context="yes" translatable="yes">Postal Code:</property>
+                    <widget class="GtkLabel" id="complement_lbl">
+                        <property name="label" context="yes" translatable="yes">Complement:</property>
                         <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -58,7 +56,6 @@
                         <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
-                        <property name="xpad">2</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">4</property>
@@ -72,20 +69,56 @@
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">street</property>
-                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
                         <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
+                        <property name="right_attach">4</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="complement">
-                        <property name="data_type">unicode</property>
-                        <property name="model_attribute">complement</property>
-                        <property name="sizegroup">left_group</property>
+                    <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
+                        <child>
+                            <widget class="ProxyEntry" id="number">
+                                <property name="data_type">int</property>
+                                <property name="is_focus">True</property>
+                                <property name="mandatory">True</property>
+                                <property name="max_length">9</property>
+                                <property name="model_attribute">number</property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">6</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="postal_code_lbl">
+                                <property name="label" context="yes" translatable="yes">Postal Code:</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                                <property name="xpad">6</property>
+                            </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="postal_code">
+                                <property name="data_type">unicode</property>
+                                <property name="mask" context="yes" translatable="yes">00000-000</property>
+                                <property name="model_attribute">postal_code</property>
+                                <property name="text" context="yes" translatable="yes">     -   </property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">9</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="position">2</property>
+                            </packing>
+                        </child>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -95,10 +128,9 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="postal_code">
+                    <widget class="ProxyEntry" id="complement">
                         <property name="data_type">unicode</property>
-                        <property name="model_attribute">postal_code</property>
-                        <property name="sizegroup">left_group</property>
+                        <property name="model_attribute">complement</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -116,7 +148,6 @@
                         <property name="mandatory">True</property>
                         <property name="max_length">2</property>
                         <property name="model_attribute">city_location.state</property>
-                        <property name="sizegroup">left_group</property>
                         <property name="visible">True</property>
                     </widget>
                     <packing>
@@ -127,24 +158,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="number_lbl">
-                        <property name="label" context="yes" translatable="yes">Number:</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                        <property name="xpad">2</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">2</property>
-                        <property name="right_attach">3</property>
-                        <property name="x_options">fill</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkLabel" id="district_lbl">
                         <property name="label" context="yes" translatable="yes">District:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
-                        <property name="xpad">2</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">2</property>
@@ -159,7 +176,6 @@
                         <property name="label" context="yes" translatable="yes">City:</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
-                        <property name="xpad">2</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -181,20 +197,6 @@
                         <property name="right_attach">3</property>
                         <property name="top_attach">3</property>
                         <property name="x_options">fill</property>
-                    </packing>
-                </child>
-                <child>
-                    <widget class="ProxyEntry" id="number">
-                        <property name="data_type">int</property>
-                        <property name="mandatory">True</property>
-                        <property name="max_length">9</property>
-                        <property name="model_attribute">number</property>
-                        <property name="visible">True</property>
-                        <property name="xalign">1.0</property>
-                    </widget>
-                    <packing>
-                        <property name="left_attach">3</property>
-                        <property name="right_attach">4</property>
                     </packing>
                 </child>
                 <child>
@@ -230,6 +232,7 @@
                     <widget class="ProxyEntry" id="country">
                         <property name="completion">True</property>
                         <property name="data_type">unicode</property>
+                        <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.country</property>
                         <property name="visible">True</property>
