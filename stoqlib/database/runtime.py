@@ -26,6 +26,7 @@
 
 import datetime
 import sets
+import sys
 
 from kiwi.component import get_utility, provide_utility
 from kiwi.log import Logger
@@ -135,9 +136,9 @@ def get_connection():
         initialize_connection()
     return _connection
 
-
 def new_transaction():
-    log.info('Creating a new transaction')
+    log.info('Creating a new transaction in %s()'
+             % sys._getframe(1).f_code.co_name)
     _transaction = StoqlibTransaction(get_connection())
     assert _transaction is not None
     return _transaction
