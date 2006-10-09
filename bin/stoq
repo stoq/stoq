@@ -64,6 +64,7 @@ else:
 
 sys.path.insert(0, pythondir)
 
+import stoqlib
 from stoq import main
 
 try:
