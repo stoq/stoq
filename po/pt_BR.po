@@ -2902,22 +2902,24 @@ msgstr "O item '%s' não existe"
 
 #: ../stoqlib/database/settings.py:102
 msgid "Password authentication failed"
-msgstr ""
+msgstr "Falha na autenticação da senha"
 
 #: ../stoqlib/database/settings.py:103
 #, python-format
 msgid "The provided password for user %s was not correct"
-msgstr ""
+msgstr "A senha fornecida para o usuário %s não é correta"
 
 #: ../stoqlib/database/settings.py:107
 msgid "Invalid authentication mechanism"
-msgstr ""
+msgstr "Modo de autenticação inválido"
 
 #: ../stoqlib/database/settings.py:108
 msgid ""
 "Trust was selected but the database does only support password "
 "authentication."
 msgstr ""
+"Modo de autenticação confiável foi selecionado mas a base de "
+"dados suporta somente autenticação baseada em senha"
 
 #: ../stoqlib/database/settings.py:117
 #, python-format
@@ -2931,23 +2933,26 @@ msgstr ""
 #: ../stoqlib/database/runtime.py:161
 #, python-format
 msgid "The computer <u>%s</u> is not registered in Stoq"
-msgstr ""
+msgstr "O computador <u>%s</u> não está registrado no Stoq"
 
 #: ../stoqlib/database/runtime.py:163
 msgid ""
 "To solve this, open the administrator application and register this computer."
 msgstr ""
+"Para resolver isso, abra a aplicação 'administração' e registre esse computador."
 
 #: ../stoqlib/database/runtime.py:168
 #, python-format
 msgid "The computer <u>%s</u> is not active in Stoq"
-msgstr ""
+msgstr "O computador <u>%s</u> não está ativo no Stoq"
 
 #: ../stoqlib/database/runtime.py:170
 msgid ""
 "To solve this, open the administrator application and re-activate this "
 "computer."
 msgstr ""
+"Para resolver isso, abra a aplicação 'administração' e reative esse "
+"computador."
 
 #: ../data/glade/GiftCertificateTypeEditor.glade.h:2
 #: ../data/glade/ProductSupplierEditor.glade.h:2
