@@ -125,7 +125,7 @@ msgstr "Stoq - %s"
 
 #: ../stoq/gui/config.py:204 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
-msgstr ""
+msgstr "<b>Criação da Conta do Administrador</b>"
 
 #: ../stoq/gui/config.py:207
 #, python-format
@@ -142,6 +142,8 @@ msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
 "used to access the system."
 msgstr ""
+"Essa maquina, que possui o nome <b>%s</b>, será registrada, logo, ela "
+"poderá ser utilizada para acessar o sistema."
 
 #: ../stoq/gui/config.py:287
 #, python-format
@@ -149,6 +151,8 @@ msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
 "the password for the user <b>%s</b> to continue the installation: "
 msgstr ""
+"Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve "
+"entrar com o password para o usuário <b>%s</b> para continuar a instalação:"
 
 #: ../stoq/gui/config.py:294
 #, fuzzy
@@ -157,7 +161,7 @@ msgstr "Senha do administrador"
 
 #: ../stoq/gui/config.py:305
 msgid "The password supplied is not valid."
-msgstr ""
+msgstr "O password fornecido não é válido."
 
 #: ../stoq/gui/config.py:325
 msgid "Trust"
@@ -173,10 +177,12 @@ msgid ""
 "The specifed database `%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
+"A base de dados especificada `%s' não existe.\n"
+"Você deseja cria-la?"
 
 #: ../stoq/gui/config.py:353
 msgid "Don't create"
-msgstr ""
+msgstr "Não criar"
 
 #: ../stoq/gui/config.py:353
 #, fuzzy
@@ -186,7 +192,7 @@ msgstr "Data de Fechamento:"
 #: ../stoq/gui/config.py:360
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
-msgstr ""
+msgstr "Usuário <u>%s</u> possui permissões insuficientes"
 
 #: ../stoq/gui/config.py:361
 #, python-format
@@ -196,6 +202,10 @@ msgid ""
 "The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
 "more information on how to solve this problem."
 msgstr ""
+"O usuário especificado `%s' não tem as permissões requeridas para instalar "
+"o Stoq.\n"
+"O usuário PostgreSQL deve ser um super-usuário. Consulte a documentação do "
+"Stoq para maiores informações sobre como resolver esse problema."
 
 #: ../stoq/gui/config.py:393
 #, python-format
@@ -515,6 +525,8 @@ msgstr "Você precisa abrir o caixa antes de começar as vendas."
 #: ../stoq/gui/pos/pos.py:350
 msgid "You can't start a new sale, since you are not a salesperson."
 msgstr ""
+"Você não pode iniciar uma nova venda, desde que você não é "
+"um vendedor"
 
 #: ../stoq/gui/pos/pos.py:372
 msgid "The current order will be canceled, Confirm?"
@@ -1242,6 +1254,11 @@ msgid ""
 "To be able to create other users you need to login with this user in the "
 "admin application and create them."
 msgstr ""
+"Está sendo adicionado um usuário nomeado `admin' que irá ter privilégios de "
+"de administrador.\n"
+"\n"
+"Para ser capaz de criar outros usuários, você precisa autenticar-se com esse "
+"usuário na aplicação 'admin' e criá-los."
 
 #~ msgid "The computer <u>%s</u> is not registered in Stoq"
 #~ msgstr "O computador <u>%s</u> não está registrado no Stoq"
