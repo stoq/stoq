@@ -1,10 +1,16 @@
-stoqdrivers (0.8.1-2) dapper; urgency=low
+stoqdrivers (0.4.0-3) dapper; urgency=low
+
+   * Correct version, 0.4.0, not 0.8.1
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Mon, 09 Oct 2006 15:53:34 -0300
+
+stoqdrivers (0.4.0-2) dapper; urgency=low
 
    * Update dependencies
 
  -- Johan Dahlin <jdahlin@async.com.br>  Mon, 28 Aug 2006 12:42:53 -0300
 
-stoqdrivers (0.8.1-1) dapper; urgency=low
+stoqdrivers (0.4.0-1) dapper; urgency=low
 
   * Initial release.
 
