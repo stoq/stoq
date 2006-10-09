@@ -39,6 +39,7 @@ from stoqdrivers.constants import (TAX_SUBSTITUTION,
                                    MONEY_PM,)
 def example():
     printer = FiscalPrinter()
+    printer.cancel()
     printer.identify_customer('Henrique Romano', 'Async', '1234567890')
     while True:
         try:
