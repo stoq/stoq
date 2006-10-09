@@ -23,7 +23,13 @@ upload:
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
 	cd $(DLDIR) && \
-	  dpkg-scanpackages . /dev/null | gzip -c > $(DLDIR)/Packages.gz \
+	  dpkg-scanpackages . /dev/null | gzip -c > $(DLDIR)/Packages.gz && \
 	  dpkg-scansources . /dev/null | gzip -c > $(DLDIR)/Sources.gz
 
-.PHONY: sdist deb
+tags:
+	find -name \*.py|xargs ctags
+
+TAGS:
+	find -name \*.py|xargs etags
+
+.PHONY: sdist deb upload tags TAGS
