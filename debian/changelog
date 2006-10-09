@@ -1,6 +1,7 @@
-stoqdrivers (0.4.0-3) dapper; urgency=low
+stoqdrivers (1:0.4.0-3) dapper; urgency=low
 
-   * Correct version, 0.4.0, not 0.8.1
+   * Correct version, 0.4.0, not 0.8.1, bump Epoch as Sebastians suggestion
+	
 
  -- Johan Dahlin <jdahlin@async.com.br>  Mon, 09 Oct 2006 15:53:34 -0300
 

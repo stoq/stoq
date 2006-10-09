@@ -2,6 +2,8 @@ VERSION=$(shell egrep ^__version__ stoqdrivers/__init__.py|perl -pe 's/[\(\)]/\"
 BUILDDIR=tmp
 PACKAGE=stoqdrivers
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
+DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog |grep Version|cut -d: -f3)
+DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 
 sdist:
 	kiwi-i18n -c
@@ -15,5 +17,13 @@ deb: sdist
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
+
+upload:
+	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
+	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
+	done
+	cd $(DLDIR) && \
+	  dpkg-scanpackages . /dev/null | gzip -c > $(DLDIR)/Packages.gz \
+	  dpkg-scansources . /dev/null | gzip -c > $(DLDIR)/Sources.gz
 
 .PHONY: sdist deb
