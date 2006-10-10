@@ -30,6 +30,7 @@ from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
+from stoqlib.lib.countries import get_countries
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.person import Person
 
@@ -95,6 +96,7 @@ class AddressSlave(BaseEditorSlave):
     def setup_proxies(self):
         states = get_country_states()
         self.state.prefill(states)
+        self.country.prefill(get_countries())
         self.proxy = self.add_proxy(self.model,
                                     AddressSlave.proxy_widgets)
 

@@ -307,7 +307,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
         ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
-        ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brasil'),
+        ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brazil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
         ParameterAttr('MANDATORY_INTEREST_CHARGE', bool, initial=False),
         ParameterAttr('USE_PURCHASE_PREVIEW_PAYMENTS', bool,
@@ -509,7 +509,7 @@ class ParameterAccess(ClassInittableObject):
             return
 
         person_obj = Person(name=None, connection=self.conn)
-        city_location = CityLocation(country=u"Brasil", connection=self.conn)
+        city_location = CityLocation(country=u"Brazil", connection=self.conn)
         Address(is_main_address=True,
                 person=person_obj, city_location=city_location,
                 connection=self.conn)

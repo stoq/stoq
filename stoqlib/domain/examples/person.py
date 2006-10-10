@@ -121,10 +121,10 @@ def create_people():
                  dict(username='gigi',
                       password='gigipink')]
 
-    cityloc_data = [dict(city='Sao Paulo', country='Brasil', state='SP'),
-                    dict(city='Curitiba', country='Brasil', state='PR'),
-                    dict(city='Rio de Janeiro', country='Brasil', state='RJ'),
-                    dict(city='Salvador', country='Brasil', state='BA')]
+    cityloc_data = [dict(city='Sao Paulo', country='Brazil', state='SP'),
+                    dict(city='Curitiba', country='Brazil', state='PR'),
+                    dict(city='Rio de Janeiro', country='Brazil', state='RJ'),
+                    dict(city='Salvador', country='Brazil', state='BA')]
 
     address_data = [dict(street='Rua das flores', number=77,
                          district='Vila Matilde'),
@@ -228,7 +228,7 @@ def create_people():
     city_loc = address.city_location
     city_loc.city = u"Sao Carlos"
     city_loc.state = u"SP"
-    city_loc.country = u"Brasil"
+    city_loc.country = u"Brazil"
 
     address.street = u"Orlando Damiano"
     address.number = 2212
