@@ -38,7 +38,6 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.database')
 
-
 def check_installed_database(conn):
     """Checks if Stoqlib database is properly installed"""
     from stoqlib.domain.system import SystemTable
@@ -49,6 +48,24 @@ def check_installed_database(conn):
 
     return bool(SystemTable.select(connection=conn))
 
+def database_exists(conn, dbname):
+    """ Given a database name, returns True if it exists, False otherwise
+    """
+    results = conn.queryOne(
+        "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
+    return results[0] == 1
+
+def drop_database(conn, dbname):
+    """ Try to drop the specified database, also check if the database
+    exists before apply the drop command. """
+    if not database_exists(conn, dbname):
+        return
+    pgconn = conn.getConnection()
+    curs = pgconn.cursor()
+    curs.execute('commit')
+    log.info('Dropping SQL database: %s' % dbname)
+    curs.execute('DROP DATABASE %s' % dbname)
+
 def create_database_if_missing(conn, dbname):
     """
     Checks if there's a database present and creates a new one if it's not
@@ -56,12 +73,7 @@ def create_database_if_missing(conn, dbname):
     @param dbname: the name of the database
     @returns: True if a database was created, False otherwise
     """
-
-    results = conn.queryOne(
-        "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
-
-    # If it's already present, quit
-    if results[0] == 1:
+    if database_exists(conn, dbname):
         return False
 
     # We need to close the current transaction, which is probably created
