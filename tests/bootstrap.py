@@ -33,8 +33,8 @@ from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.database import (create_database_if_missing,
                                        finish_transaction)
 from stoqlib.database.exceptions import DatabaseDoesNotExistError
-from stoqlib.database.runtime import new_transaction, get_connection
-from stoqlib.database.runtime import get_current_station
+from stoqlib.database.runtime import (new_transaction, get_connection,
+                                      get_current_station)
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.examples.createall import create
 from stoqlib.domain.person import Person
@@ -47,6 +47,7 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ICurrentBranchStation,
                                     ICurrentUser,
                                     IDatabaseSettings)
+from stoqlib.database import runtime
 
 # Provide a fake description utility, the ProfileSettings class depends on it
 class FakeApplicationDescriptions:
@@ -80,7 +81,7 @@ def _provide_database_settings():
         print 'Database %s missing, creating it' % dbname
         conn = db_settings.get_default_connection()
         create_database_if_missing(conn, dbname)
-
+        runtime._connection = db_settings.get_connection()
         return True
 
     return False
