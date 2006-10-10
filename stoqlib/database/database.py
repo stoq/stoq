@@ -39,7 +39,10 @@ _ = stoqlib_gettext
 log = Logger('stoqlib.database')
 
 def check_installed_database(conn):
-    """Checks if Stoqlib database is properly installed"""
+    """
+    Checks if Stoqlib database is properly installed
+    @param conn: a database connection
+    """
     from stoqlib.domain.system import SystemTable
     table_name = SystemTable.get_db_table_name()
     if not conn.tableExists(table_name):
@@ -49,20 +52,26 @@ def check_installed_database(conn):
     return bool(SystemTable.select(connection=conn))
 
 def database_exists(conn, dbname):
-    """ Given a database name, returns True if it exists, False otherwise
+    """
+    Given a database name, returns True if it exists, False otherwise
+    @param conn: a database connection
+    @param dbname: name of the database
+    @returns: if the database exists
     """
     results = conn.queryOne(
         "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
     return results[0] == 1
 
 def drop_database(conn, dbname):
-    """ Try to drop the specified database, also check if the database
-    exists before apply the drop command. """
-    if not database_exists(conn, dbname):
-        return
+    """
+    Drop the specified database
+    @param conn: a database connection
+    @param dbname: name of the database
+    """
     pgconn = conn.getConnection()
     curs = pgconn.cursor()
     curs.execute('commit')
+
     log.info('Dropping SQL database: %s' % dbname)
     curs.execute('DROP DATABASE %s' % dbname)
 
