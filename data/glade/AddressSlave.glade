@@ -229,11 +229,8 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="country">
-                        <property name="completion">True</property>
+                    <widget class="ProxyComboEntry" id="country">
                         <property name="data_type">unicode</property>
-                        <property name="is_focus">True</property>
-                        <property name="mandatory">True</property>
                         <property name="model_attribute">city_location.country</property>
                         <property name="visible">True</property>
                     </widget>
