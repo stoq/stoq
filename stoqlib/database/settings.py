@@ -33,8 +33,8 @@ from kiwi.log import Logger
 from sqlobject import connectionForURI
 from zope.interface import implements
 
-from stoqlib.database.exceptions import (DatabaseDoesNotExistError,
-                                         OperationalError)
+from stoqlib.database.database import database_exists
+from stoqlib.database.exceptions import OperationalError
 from stoqlib.exceptions import ConfigError, DatabaseError
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
@@ -89,15 +89,10 @@ class DatabaseSettings(object):
         try:
             conn = connectionForURI(conn_uri)
             conn.makeConnection()
+        # FIXME: Remove and display the messages to the user.
         except OperationalError, e:
             log.info('OperationalError: %s' % e)
-
-            # FIXME: Use error codes
-            if 'does not exist' in e.args[0]:
-                raise DatabaseDoesNotExistError(
-                    _("Database Error"),
-                    _("A database called %s does not exist") % dbname)
-            elif 'password authentication failed for user' in e.args[0]:
+            if 'password authentication failed for user' in e.args[0]:
                 raise DatabaseError(
                     _("Password authentication failed"),
                     _("The provided password for user %s was not correct") %
@@ -153,3 +148,11 @@ class DatabaseSettings(object):
         except socket.gaierror:
             return False
         return True
+
+    def has_database(self):
+        """
+        Checks if the database specified in the settings exists
+        @return: if the database exists
+        """
+        conn = self.get_default_connection()
+        return database_exists(conn, self.dbname)

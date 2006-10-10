@@ -25,12 +25,7 @@
 
 import psycopg2
 
-from stoqlib.exceptions import DatabaseError
-
 PostgreSQLError = psycopg2.Error
 IntegrityError = psycopg2.IntegrityError
 ProgrammingError = psycopg2.ProgrammingError
 OperationalError = psycopg2.OperationalError
-
-class DatabaseDoesNotExistError(DatabaseError):
-    pass
