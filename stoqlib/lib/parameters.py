@@ -373,26 +373,13 @@ class ParameterAccess(ClassInittableObject):
         ParameterData(connection=self.conn, field_name=field_name,
                       field_value=unicode(field_value), is_editable=is_editable)
 
-    def _get_parameter_by_name(self, param_name):
-        res = ParameterData.select(ParameterData.q.field_name == param_name,
-                                   connection=self.conn)
-        if not res:
-            raise DatabaseInconsistency("Can't find a ParameterData"
-                                        "object for the key %s"
-                                        % param_name)
-        elif res.count() > 1:
-            raise DatabaseInconsistency("It is not possible have more than "
-                                        "one ParameterData for the same "
-                                        "key (%s)" % param_name)
-        return res[0]
-
     #
     # Public API
     #
 
     @argcheck(str, unicode)
     def update_parameter(self, parameter_name, value):
-        param = self._get_parameter_by_name(parameter_name)
+        param = get_parameter_by_field(parameter_name, self.conn)
         param.field_value = unicode(value)
         self.rebuild_cache_for(parameter_name)
 
@@ -403,7 +390,7 @@ class ParameterAccess(ClassInittableObject):
         except KeyError:
             return
 
-        param = self._get_parameter_by_name(param_name)
+        param = get_parameter_by_field(param_name, self.conn)
         value_type = type(value)
         if not issubclass(value_type, AbstractModel):
             # XXX: workaround to works with boolean types:
@@ -432,15 +419,7 @@ class ParameterAccess(ClassInittableObject):
             if issubclass(field_type, AbstractModel):
                 return field_type.get(param.id, connection=self.conn)
             return field_type(param)
-        values = ParameterData.select(ParameterData.q.field_name == field_name,
-                                      connection=self.conn)
-        if values.count() > 1:
-            msg = ('There is no unique correspondent parameter for this field '
-                   'name. Found %s items.' % values.count())
-            DatabaseInconsistency(msg)
-        elif not values:
-            return None
-        value = values[0]
+        value = get_parameter_by_field(field_name, self.conn)
         if issubclass(field_type, AbstractModel):
             param = field_type.get(value.field_value, connection=self.conn)
         else:
@@ -634,16 +613,15 @@ def sysparam(conn):
     return ParameterAccess(conn)
 
 
+# FIXME: Move to a classmethod on ParameterData
 def get_parameter_by_field(field_name, conn):
-    values = ParameterData.select(ParameterData.q.field_name == field_name,
-                                  connection=conn)
-    if values.count() > 1:
-        msg = ('There is no unique correspondent parameter for this field '
-               'name. Found %s items.' % values.count())
-        DatabaseInconsistency(msg)
-    elif not values:
-        return None
-    return values[0]
+    data = ParameterData.selectOneBy(field_name=field_name,
+                                     connection=conn)
+    if data is None:
+        raise DatabaseInconsistency(
+            "Can't find a ParameterData object for the key %s" %
+            field_name)
+    return data
 
 
 def get_foreign_key_parameter(field_name, conn):
