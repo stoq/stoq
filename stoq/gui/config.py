@@ -39,7 +39,6 @@ from stoqlib.database.database import (finish_transaction,
                                        check_installed_database,
                                        create_database_if_missing,
                                        rollback_and_begin)
-from stoqlib.database.exceptions import DatabaseDoesNotExistError
 from stoqlib.database.runtime import (new_transaction,
                                       set_current_branch_station)
 from stoqlib.database.settings import DatabaseSettings
@@ -399,21 +398,19 @@ class DatabaseSettingsStep(WizardEditorStep):
             return False
 
         db_settings = self.wizard_model.db_settings
-        try:
-            conn = db_settings.get_connection()
-        except DatabaseDoesNotExistError:
-            conn = None
-        except DatabaseError, e:
-            warning(e.short, e.msg)
-            return False
+        if db_settings.has_database():
+            try:
+                conn = db_settings.get_connection()
+            except DatabaseError, e:
+                warning(e.short, e.msg)
+                return False
 
-        # conn is None when the actual database is missing
-        if conn is None:
+            self.has_installed_db = check_installed_database(conn)
+        else:
             if not self._create_database(db_settings):
                 return False
             self.has_installed_db = False
-        else:
-            self.has_installed_db = check_installed_database(conn)
+
         return True
 
     def next_step(self):
