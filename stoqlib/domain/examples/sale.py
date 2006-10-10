@@ -54,20 +54,15 @@ DEFAULT_SALE_NUMBER = 4
 DEFAULT_PAYMENT_INTERVAL_TYPE = INTERVALTYPE_MONTH
 DEFAULT_PAYMENT_INTERVALS = 1
 
-_till_operation = None
-
 def get_till(trans):
-    global _till_operation
-    _till_operation = _till_operation or Till.get_current(trans)
-    if _till_operation is None:
+    till = Till.get_current(trans)
+    if till is None:
         log.info('Creating a new till')
-        _till_operation = Till(connection=trans,
-                               station=get_current_station(trans))
-        _till_operation.open_till()
+        till = Till(connection=trans, station=get_current_station(trans))
+        till.open_till()
     else:
         log.info('Returning existing till')
-
-    return _till_operation
+    return till
 
 def get_clients(trans):
     client_table = Person.getAdapterClass(IClient)
@@ -157,4 +152,3 @@ def create_sales():
 
 if __name__ == '__main__':
     create_sales()
-
