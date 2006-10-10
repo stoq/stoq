@@ -57,7 +57,7 @@ def create_people():
                         phone_number='5143-2587',
                         mobile_number='9112-5487',
                         email='regi@stoq.com'),
-                   dict(name='Ronaldo Nazário de Lima',
+                   dict(name='Ronaldo Nazario de Lima',
                         phone_number='8722-9822',
                         mobile_number='0987-5432',
                         email='r9@stoq.com'),
@@ -80,13 +80,13 @@ def create_people():
                             rg_number='323458382')]
 
     company_data = [dict(cnpj='66782278129',
-                         fancy_name='RJA Imóveis',
+                         fancy_name='RJA',
                          state_registry='0098'),
                     dict(cnpj='4444',
-                         fancy_name='PlugLine Soluções em Informática',
+                         fancy_name='PlugLine',
                          state_registry='1111'),
                     dict(cnpj='777',
-                         fancy_name='Buffet Itália',
+                         fancy_name='Buffet Italia',
                          state_registry='555'),
                     dict(cnpj='1110',
                          fancy_name='Pizzaria Donnatello',
@@ -121,8 +121,7 @@ def create_people():
                  dict(username='gigi',
                       password='gigipink')]
 
-    cityloc_data = [dict(city='Belo Horizonte', country='Brasil',
-                         state='MG'),
+    cityloc_data = [dict(city='Sao Paulo', country='Brasil', state='SP'),
                     dict(city='Curitiba', country='Brasil', state='PR'),
                     dict(city='Rio de Janeiro', country='Brasil', state='RJ'),
                     dict(city='Salvador', country='Brasil', state='BA')]
@@ -227,7 +226,7 @@ def create_people():
 
     address = person.get_main_address()
     city_loc = address.city_location
-    city_loc.city = u"São Carlos"
+    city_loc.city = u"Sao Carlos"
     city_loc.state = u"SP"
     city_loc.country = u"Brasil"
 
