@@ -419,7 +419,10 @@ class ParameterAccess(ClassInittableObject):
             if issubclass(field_type, AbstractModel):
                 return field_type.get(param.id, connection=self.conn)
             return field_type(param)
-        value = get_parameter_by_field(field_name, self.conn)
+        value = ParameterData.selectOneBy(field_name=field_name,
+                                          connection=self.conn)
+        if value is None:
+            return
         if issubclass(field_type, AbstractModel):
             param = field_type.get(value.field_value, connection=self.conn)
         else:
