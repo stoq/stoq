@@ -212,28 +212,26 @@ def create_tables(delete_only=False):
         table_name = db_table_name(table)
         if trans.tableExists(table_name):
             trans.dropTable(table_name, cascade=True)
-
     log.info('Dropping sequences')
     for seq_name in get_sequence_names():
         if trans.sequenceExists(seq_name):
             trans.dropSequence(seq_name)
-
-    if not delete_only:
-        log.info('Creating tables')
-        for table in table_types:
-            table_name = db_table_name(table)
-            if delete_only:
-                continue
-            try:
-                table.createTable(connection=trans)
-            except ProgrammingError, e:
-                raise StoqlibError(
-                    "An error occurred when creating %s table:\n"
-                    "=========\n"
-                    "%s\n" % (table_name, e))
-
-        log.info('Creating sequences')
-        for seq_name in get_sequence_names():
-            trans.createSequence(seq_name)
-
+    log.info("Done.")
+    if delete_only:
+        trans.commit()
+        return
+    log.info('Creating tables')
+    for table in table_types:
+        table_name = db_table_name(table)
+        try:
+            table.createTable(connection=trans)
+        except ProgrammingError, e:
+            raise StoqlibError(
+                "An error occurred when creating %s table:\n"
+                "=========\n"
+                "%s\n" % (table_name, e))
+    log.info('Creating sequences')
+    for seq_name in get_sequence_names():
+        trans.createSequence(seq_name)
+    log.info("Done.")
     trans.commit()
