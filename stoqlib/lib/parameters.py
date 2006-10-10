@@ -305,7 +305,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ACCEPT_ORDER_PRODUCTS', bool, initial=False),
         ParameterAttr('ACCEPT_CHANGE_SALESPERSON', bool, initial=False),
         ParameterAttr('MAX_SEARCH_RESULTS', int, initial=600),
-        ParameterAttr('CITY_SUGGESTED', unicode, initial=u'São Carlos'),
+        ParameterAttr('CITY_SUGGESTED', unicode, initial=u'Sao Carlos'),
         ParameterAttr('STATE_SUGGESTED', unicode, initial=u'SP'),
         ParameterAttr('COUNTRY_SUGGESTED', unicode, initial=u'Brasil'),
         ParameterAttr('CONFIRM_SALES_ON_TILL', bool, initial=False),
