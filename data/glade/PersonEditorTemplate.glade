@@ -30,7 +30,7 @@
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkLabel" id="name_lbl">
-                                        <property name="label" context="yes" translatable="yes">Nome:</property>
+                                        <property name="label" context="yes" translatable="yes">Name:</property>
                                         <property name="sizegroup">left_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
@@ -41,7 +41,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="phone_number_lbl">
-                                        <property name="label" context="yes" translatable="yes">Telefone:</property>
+                                        <property name="label" context="yes" translatable="yes">Phone Number:</property>
                                         <property name="sizegroup">left_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
@@ -126,7 +126,7 @@
                                 </child>
                                 <child>
                                     <widget class="GtkLabel" id="mobile_lbl">
-                                        <property name="label" context="yes" translatable="yes">Celular:</property>
+                                        <property name="label" context="yes" translatable="yes">Mobile:</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -186,7 +186,7 @@
                                 <child>
                                     <widget class="GtkButton" id="contacts_button">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Contatos...</property>
+                                        <property name="label" context="yes" translatable="yes">Co_ntacts...</property>
                                         <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -209,7 +209,7 @@
                         </child>
                         <child>
                             <widget class="GtkFrame" id="address_frame">
-                                <property name="label" context="yes" translatable="yes">Endereço Principal</property>
+                                <property name="label" context="yes" translatable="yes">Main Address</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkVBox" id="vbox3">
@@ -244,7 +244,7 @@
                                 <child>
                                     <widget class="GtkButton" id="address_button">
                                         <property name="is_focus">True</property>
-                                        <property name="label" context="yes" translatable="yes">Mais Endereços...</property>
+                                        <property name="label" context="yes" translatable="yes">More _Addresses...</property>
                                         <property name="use_underline">True</property>
                                         <property name="visible">True</property>
                                     </widget>
@@ -273,7 +273,7 @@
                     </widget>
                     <packing>
                         <property name="menu_label" context="yes" translatable="yes"></property>
-                        <property name="tab_label" context="yes" translatable="yes">Identificação</property>
+                        <property name="tab_label" context="yes" translatable="yes">Identification</property>
                     </packing>
                 </child>
                 <child>
@@ -284,7 +284,7 @@
                         <child>
                             <widget class="GtkFrame" id="individual_frame">
                                 <property name="border_width">5</property>
-                                <property name="label" context="yes" translatable="yes">Dados de Pessoa Física</property>
+                                <property name="label" context="yes" translatable="yes">Individual Data</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkEventBox" id="individual_holder">
@@ -303,7 +303,7 @@
                         <child>
                             <widget class="GtkFrame" id="company_frame">
                                 <property name="border_width">5</property>
-                                <property name="label" context="yes" translatable="yes">Dados de Pessoa Jurídica</property>
+                                <property name="label" context="yes" translatable="yes">Company Data</property>
                                 <property name="visible">True</property>
                                 <child>
                                     <widget class="GtkEventBox" id="company_holder">
@@ -323,7 +323,7 @@
                     </widget>
                     <packing>
                         <property name="position">1</property>
-                        <property name="tab_label" context="yes" translatable="yes">Dados de Pessoa Física/Pessoa Jurídica</property>
+                        <property name="tab_label" context="yes" translatable="yes">Individual/Company Data</property>
                     </packing>
                 </child>
                 <child>
@@ -369,7 +369,7 @@
                     <packing>
                         <property name="menu_label" context="yes" translatable="yes"></property>
                         <property name="position">2</property>
-                        <property name="tab_label" context="yes" translatable="yes">Detalhes Gerais</property>
+                        <property name="tab_label" context="yes" translatable="yes">General Details</property>
                     </packing>
                 </child>
                 <child>
@@ -388,7 +388,7 @@
                     <packing>
                         <property name="menu_label" context="yes" translatable="yes"></property>
                         <property name="position">3</property>
-                        <property name="tab_label" context="yes" translatable="yes">Tab Customizável</property>
+                        <property name="tab_label" context="yes" translatable="yes">Custom Tab</property>
                     </packing>
                 </child>
                 <child>
@@ -406,7 +406,7 @@
                     </widget>
                     <packing>
                         <property name="position">4</property>
-                        <property name="tab_label" context="yes" translatable="yes">Tab Extra</property>
+                        <property name="tab_label" context="yes" translatable="yes">Extra Tab</property>
                     </packing>
                 </child>
             </widget>
