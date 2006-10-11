@@ -263,7 +263,7 @@ class ClientSearch(BasePersonSearch):
 
     def on_details_button_clicked(self, *args):
         items = self.klist.get_selected()
-        client = Person.get(IClient, items.client_id, connection=self.conn)
+        client = Person.iget(IClient, items.client_id, connection=self.conn)
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
     def update_widgets(self, *args):
