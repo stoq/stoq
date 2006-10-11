@@ -217,6 +217,8 @@ class DeviceSettingsEditor(BaseEditor):
         self.setup_device_types_combo()
         self.setup_device_port_combo()
         self.setup_station_combo()
+        if not self.edit_mode:
+            self.is_active_button.set_sensitive(False)
 
     def _get_supported_types(self):
         if self.model.type == DeviceSettings.SCALE_DEVICE:
