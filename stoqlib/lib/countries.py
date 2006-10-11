@@ -280,5 +280,7 @@ def get_countries():
     @returns: a list of tuples
     """
 
-    return sorted([(_(c), c) for c in countries])
+    # We store translated country names in a dictionary to ensure
+    # there are no dupes because the combo expects that.
+    return sorted(dict((_(c), c) for c in countries).items())
 
