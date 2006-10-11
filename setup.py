@@ -37,7 +37,7 @@ def psycopg_check(mod):
 dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  'http://www.zope.org/Products/ZopeInterface',
                  None),
-                ('kiwi', 'kiwi', (1, 9, 9),
+                ('kiwi', 'kiwi', (1, 9, 11),
                  'http://www.async.com.br/projects/kiwi/',
                  lambda x: x.kiwi_version),
                 ('Gazpacho', 'gazpacho', '0.6.6',
