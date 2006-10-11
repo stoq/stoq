@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-09 16:06-0300\n"
+"POT-Creation-Date: 2006-10-11 14:31-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -123,11 +123,11 @@ msgstr "Trocar de Usuário"
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/config.py:204 ../data/glade/AdminPasswordStep.glade.h:1
+#: ../stoq/gui/config.py:203 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr "<b>Criação da Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:207
+#: ../stoq/gui/config.py:206
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -136,42 +136,42 @@ msgid ""
 "admin application and create them."
 msgstr ""
 
-#: ../stoq/gui/config.py:266
+#: ../stoq/gui/config.py:265
 #, python-format
 msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
 "used to access the system."
 msgstr ""
-"Essa maquina, que possui o nome <b>%s</b>, será registrada, logo, ela "
-"poderá ser utilizada para acessar o sistema."
+"Essa maquina, que possui o nome <b>%s</b>, será registrada, logo, ela poderá "
+"ser utilizada para acessar o sistema."
 
-#: ../stoq/gui/config.py:287
+#: ../stoq/gui/config.py:286
 #, python-format
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
 "the password for the user <b>%s</b> to continue the installation: "
 msgstr ""
-"Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve "
-"entrar com o password para o usuário <b>%s</b> para continuar a instalação:"
+"Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve entrar "
+"com o password para o usuário <b>%s</b> para continuar a instalação:"
 
-#: ../stoq/gui/config.py:294
+#: ../stoq/gui/config.py:293
 #, fuzzy
 msgid "<b>Administrator Account</b>"
 msgstr "Senha do administrador"
 
-#: ../stoq/gui/config.py:305
+#: ../stoq/gui/config.py:304
 msgid "The password supplied is not valid."
 msgstr "O password fornecido não é válido."
 
-#: ../stoq/gui/config.py:325
+#: ../stoq/gui/config.py:324
 msgid "Trust"
 msgstr "Confiavel"
 
-#: ../stoq/gui/config.py:326
+#: ../stoq/gui/config.py:325
 msgid "Needs Password"
 msgstr "Necessita de senha:"
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:349
 #, python-format
 msgid ""
 "The specifed database `%s' does not exist.\n"
@@ -180,21 +180,21 @@ msgstr ""
 "A base de dados especificada `%s' não existe.\n"
 "Você deseja cria-la?"
 
-#: ../stoq/gui/config.py:353
+#: ../stoq/gui/config.py:352
 msgid "Don't create"
 msgstr "Não criar"
 
-#: ../stoq/gui/config.py:353
+#: ../stoq/gui/config.py:352
 #, fuzzy
 msgid "Create"
 msgstr "Data de Fechamento:"
 
-#: ../stoq/gui/config.py:360
+#: ../stoq/gui/config.py:359
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
 msgstr "Usuário <u>%s</u> possui permissões insuficientes"
 
-#: ../stoq/gui/config.py:361
+#: ../stoq/gui/config.py:360
 #, python-format
 msgid ""
 "The specified user `%s' does not have the required permissions to install "
@@ -202,12 +202,12 @@ msgid ""
 "The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
 "more information on how to solve this problem."
 msgstr ""
-"O usuário especificado `%s' não tem as permissões requeridas para instalar "
-"o Stoq.\n"
+"O usuário especificado `%s' não tem as permissões requeridas para instalar o "
+"Stoq.\n"
 "O usuário PostgreSQL deve ser um super-usuário. Consulte a documentação do "
 "Stoq para maiores informações sobre como resolver esse problema."
 
-#: ../stoq/gui/config.py:393
+#: ../stoq/gui/config.py:392
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
@@ -216,11 +216,11 @@ msgstr ""
 "O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
 "que você definiu:"
 
-#: ../stoq/gui/config.py:396 ../stoq/gui/config.py:397
+#: ../stoq/gui/config.py:395 ../stoq/gui/config.py:396
 msgid "Invalid database address"
 msgstr "Endereço do banco de dados inválido"
 
-#: ../stoq/gui/config.py:479
+#: ../stoq/gui/config.py:476
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
@@ -524,9 +524,7 @@ msgstr "Você precisa abrir o caixa antes de começar as vendas."
 
 #: ../stoq/gui/pos/pos.py:350
 msgid "You can't start a new sale, since you are not a salesperson."
-msgstr ""
-"Você não pode iniciar uma nova venda, desde que você não é "
-"um vendedor"
+msgstr "Você não pode iniciar uma nova venda, desde que você não é um vendedor"
 
 #: ../stoq/gui/pos/pos.py:372
 msgid "The current order will be canceled, Confirm?"
@@ -570,6 +568,51 @@ msgstr "Preço"
 #: ../stoq/gui/pos/neworder.py:111
 msgid "New Order"
 msgstr "Novo Pedido"
+
+#: ../data/glade/NewOrderEditor.glade.h:1
+msgid "Add/Edit..."
+msgstr "Adicionar/Editar..."
+
+#: ../data/glade/NewOrderEditor.glade.h:2
+msgid "CFOP:"
+msgstr "CFOP:"
+
+#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
+msgid "Client:"
+msgstr "Cliente:"
+
+#: ../data/glade/NewOrderEditor.glade.h:4
+msgid "Company"
+msgstr "Pessoa Jurídica"
+
+#: ../data/glade/NewOrderEditor.glade.h:5 ../data/glade/till.glade.h:11
+#: ../data/glade/purchase.glade.h:12 ../data/glade/receivable.glade.h:8
+msgid "Details"
+msgstr "Detalhes"
+
+#: ../data/glade/NewOrderEditor.glade.h:6
+msgid "Individual"
+msgstr "Pessoa Física"
+
+#: ../data/glade/NewOrderEditor.glade.h:7
+msgid "Not Specified"
+msgstr "Não Especificado"
+
+#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:28
+msgid "Order Number:"
+msgstr "Número do Pedido:"
+
+#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:42
+msgid "Salesperson:"
+msgstr "Vendedor:"
+
+#: ../data/glade/NewOrderEditor.glade.h:10
+msgid "Select the client role:"
+msgstr "Selecione o Papel do Cliente:"
+
+#: ../data/glade/NewOrderEditor.glade.h:11
+msgid "Select:"
+msgstr "Selecione:"
 
 #: ../data/glade/sales_app.glade.h:1 ../data/glade/till.glade.h:1
 #: ../data/glade/purchase.glade.h:1 ../data/glade/admin.glade.h:1
@@ -735,11 +778,6 @@ msgstr "Confirmar"
 #: ../data/glade/till.glade.h:9
 msgid "Current Till"
 msgstr "Caixa Atual"
-
-#: ../data/glade/till.glade.h:11 ../data/glade/purchase.glade.h:12
-#: ../data/glade/NewOrderEditor.glade.h:5 ../data/glade/receivable.glade.h:8
-msgid "Details"
-msgstr "Detalhes"
 
 #: ../data/glade/till.glade.h:12
 msgid "Fiscal Till Operations..."
@@ -943,130 +981,6 @@ msgstr "Admin"
 msgid "admin"
 msgstr "administrador"
 
-#: ../data/glade/DatabaseSettingsStep.glade.h:1
-msgid "Address:"
-msgstr "Endereço:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:2
-msgid "Authentication Type:"
-msgstr "Tipo de Autenticação:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:3
-msgid "Database Name:"
-msgstr "Nome da base de dados:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:4
-msgid "Password:"
-msgstr "Senha:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:5
-msgid ""
-"Please, fill some important informations before start using the applications"
-msgstr ""
-"Por favor, preencha algumas informações importantes antes de iniciar o "
-"sistema"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:6
-msgid "Port:"
-msgstr "Porta:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:7
-msgid "PostgreSQL Database Settings"
-msgstr "Configurações do banco de dados Postgres"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:8
-msgid "Username:"
-msgstr "Usuário:"
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:9
-msgid "Welcome to Stoq"
-msgstr "Bem vindo ao Stoq"
-
-#: ../data/glade/BranchSettingsStep.glade.h:2
-#, no-c-format
-msgid "%"
-msgstr "%"
-
-#: ../data/glade/BranchSettingsStep.glade.h:3
-msgid "Company Details"
-msgstr "Detalhes da Pessoa Jurídica"
-
-#: ../data/glade/BranchSettingsStep.glade.h:4
-msgid "Company Name:"
-msgstr "Nome Fantasia:"
-
-#: ../data/glade/BranchSettingsStep.glade.h:5
-msgid "Fax:"
-msgstr "Fax:"
-
-#: ../data/glade/BranchSettingsStep.glade.h:6
-msgid "ICMS:"
-msgstr "ICMS"
-
-#: ../data/glade/BranchSettingsStep.glade.h:7
-msgid "ISS:"
-msgstr "ISS"
-
-#: ../data/glade/BranchSettingsStep.glade.h:8
-msgid "Main Address"
-msgstr "Endereço Principal"
-
-#: ../data/glade/BranchSettingsStep.glade.h:9
-msgid "Phone Number:"
-msgstr "Telefone:"
-
-#: ../data/glade/BranchSettingsStep.glade.h:10
-msgid "Substitution ICMS:"
-msgstr "ICMS por Substituição:"
-
-#: ../data/glade/DeviceSettingsStep.glade.h:1
-msgid ""
-"If you have devices connected to your\n"
-"computer, please add them here"
-msgstr ""
-"Se você tem dispositivos conectados ao\n"
-"computador, por favor adicione-os aqui"
-
-#: ../data/glade/NewOrderEditor.glade.h:1
-msgid "Add/Edit..."
-msgstr "Adicionar/Editar..."
-
-#: ../data/glade/NewOrderEditor.glade.h:2
-msgid "CFOP:"
-msgstr "CFOP:"
-
-#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
-msgid "Client:"
-msgstr "Cliente:"
-
-#: ../data/glade/NewOrderEditor.glade.h:4
-msgid "Company"
-msgstr "Pessoa Jurídica"
-
-#: ../data/glade/NewOrderEditor.glade.h:6
-msgid "Individual"
-msgstr "Pessoa Física"
-
-#: ../data/glade/NewOrderEditor.glade.h:7
-msgid "Not Specified"
-msgstr "Não Especificado"
-
-#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:28
-msgid "Order Number:"
-msgstr "Número do Pedido:"
-
-#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:42
-msgid "Salesperson:"
-msgstr "Vendedor:"
-
-#: ../data/glade/NewOrderEditor.glade.h:10
-msgid "Select the client role:"
-msgstr "Selecione o Papel do Cliente:"
-
-#: ../data/glade/NewOrderEditor.glade.h:11
-msgid "Select:"
-msgstr "Selecione:"
-
 #: ../data/glade/receivable.glade.h:2
 msgid "Bills"
 msgstr "Boletos"
@@ -1246,6 +1160,90 @@ msgstr "Retenção..."
 #: ../data/glade/warehouse.glade.h:29
 msgid "_Warehouse"
 msgstr "Almoxarifado"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:1
+msgid "Address:"
+msgstr "Endereço:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:2
+msgid "Authentication Type:"
+msgstr "Tipo de Autenticação:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:3
+msgid "Database Name:"
+msgstr "Nome da base de dados:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:4
+msgid "Password:"
+msgstr "Senha:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:5
+msgid ""
+"Please, fill some important informations before start using the applications"
+msgstr ""
+"Por favor, preencha algumas informações importantes antes de iniciar o "
+"sistema"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:6
+msgid "Port:"
+msgstr "Porta:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:7
+msgid "PostgreSQL Database Settings"
+msgstr "Configurações do banco de dados Postgres"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:8
+msgid "Username:"
+msgstr "Usuário:"
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:9
+msgid "Welcome to Stoq"
+msgstr "Bem vindo ao Stoq"
+
+#: ../data/glade/BranchSettingsStep.glade.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: ../data/glade/BranchSettingsStep.glade.h:3
+msgid "Company Details"
+msgstr "Detalhes da Pessoa Jurídica"
+
+#: ../data/glade/BranchSettingsStep.glade.h:4
+msgid "Company Name:"
+msgstr "Nome Fantasia:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:5
+msgid "Fax:"
+msgstr "Fax:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:6
+msgid "ICMS:"
+msgstr "ICMS"
+
+#: ../data/glade/BranchSettingsStep.glade.h:7
+msgid "ISS:"
+msgstr "ISS"
+
+#: ../data/glade/BranchSettingsStep.glade.h:8
+msgid "Main Address"
+msgstr "Endereço Principal"
+
+#: ../data/glade/BranchSettingsStep.glade.h:9
+msgid "Phone Number:"
+msgstr "Telefone:"
+
+#: ../data/glade/BranchSettingsStep.glade.h:10
+msgid "Substitution ICMS:"
+msgstr "ICMS por Substituição:"
+
+#: ../data/glade/DeviceSettingsStep.glade.h:1
+msgid ""
+"If you have devices connected to your\n"
+"computer, please add them here"
+msgstr ""
+"Se você tem dispositivos conectados ao\n"
+"computador, por favor adicione-os aqui"
 
 #: ../data/glade/AdminPasswordStep.glade.h:2
 msgid ""
