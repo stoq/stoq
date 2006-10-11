@@ -24,7 +24,10 @@ upload:
 	done
 	cd $(DLDIR) && \
 	  dpkg-scanpackages . /dev/null | gzip -c > $(DLDIR)/Packages.gz && \
-	  dpkg-scansources . /dev/null | gzip -c > $(DLDIR)/Sources.gz
+	  dpkg-scansources . /dev/null | gzip -c > $(DLDIR)/Sources.gz && \
+	  rm -f Release Release.gpg && \
+	  apt-ftparchive release . > $(DLDIR)/Release && \
+	  gpg -abs -o Release.gpg Release
 
 tags:
 	find -name \*.py|xargs ctags
