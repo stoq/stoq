@@ -1,3 +1,9 @@
+stoqlib (0.8.2-1) dapper; urgency=low
+
+  * New release
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Wed, 11 Oct 2006 18:43:13 +0000
+
 stoqlib (0.8.1-3) dapper; urgency=low
 
   * Include library.get_root() fix, depend on 1:0.4.0 of stoqdrivers
