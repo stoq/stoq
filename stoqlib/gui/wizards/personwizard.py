@@ -90,12 +90,11 @@ class ExistingPersonStep(BaseWizardStep):
 
     def _setup_widgets(self, person_list):
         role_name = self.wizard.get_role_name().lower()
-        label = _("Does the %s already exists?") % role_name
-        self.question_label.set_text(label)
-        label = _("Yes")
-        self.existing_person_check.set_label(label)
-        label = _("No, it's a new %s") % role_name
-        self.new_person_check.set_label(label)
+        self.question_label.set_text(
+            _("Does the %s already exist?") % role_name)
+        self.existing_person_check.set_label(_("Yes"))
+        self.new_person_check.set_label(
+            _("No, it's a new %s") % role_name)
         self.question_label.set_size('large')
         self.question_label.set_bold(True)
         self.person_list.set_columns(self._get_columns())
