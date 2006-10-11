@@ -1,3 +1,9 @@
+stoqlib (0.8.2-2) dapper; urgency=low
+
+  * New package with salesperson fix
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Wed, 11 Oct 2006 19:33:00 +0000
+
 stoqlib (0.8.2-1) dapper; urgency=low
 
   * New release
