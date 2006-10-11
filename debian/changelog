@@ -1,3 +1,9 @@
+stoqlib (0.8.2-3) dapper; urgency=low
+
+  * Update swedish translation so the comboentry works
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Wed, 11 Oct 2006 18:54:41 -0300
+
 stoqlib (0.8.2-2) dapper; urgency=low
 
   * New package with salesperson fix
