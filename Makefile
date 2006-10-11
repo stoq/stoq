@@ -4,6 +4,7 @@ PACKAGE=stoq
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog |grep Version|cut -d: -f3)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
+TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -18,7 +19,8 @@ deb: sdist
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
 
-upload:
+upload:	
+	cp dist/$(TARBALL) $(TARBALL_DIR)
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
