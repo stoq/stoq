@@ -139,6 +139,7 @@ class UserDetailsSlave(BaseEditorSlave):
     def _setup_widgets(self):
         if self.show_password_fields:
             self._attach_slaves()
+            self.change_password_button.hide()
         self._setup_entry_completion()
 
     def _setup_entry_completion(self):
@@ -203,3 +204,10 @@ class UserDetailsSlave(BaseEditorSlave):
         if run_dialog(UserProfileEditor, self, self.conn, user_profile):
             self._setup_entry_completion()
             self.proxy.update('profile')
+
+
+    def on_change_password_button__clicked(self, *args):
+        from stoqlib.gui.editors.personeditor import PasswordEditor
+        # This avoid circular import
+        model = run_dialog(PasswordEditor, self, self.conn, self.model)
+
