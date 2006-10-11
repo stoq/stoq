@@ -42,3 +42,6 @@ def dgettext(domain, message):
 
 def gettext(message):
     return unicode(gettext_.gettext(message), 'utf-8')
+
+def N_(message):
+    return message
