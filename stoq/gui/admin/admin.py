@@ -78,7 +78,6 @@ class AdminApp(SearchableAppWindow):
     def _update_view(self, *args):
         has_selected = self.users.get_selected() is not None
         self.edit_button.set_sensitive(has_selected)
-        self.change_password_button.set_sensitive(has_selected)
 
     def get_columns(self):
         return [Column('username', title=_('Login Name'), sorted=True,
@@ -166,13 +165,6 @@ class AdminApp(SearchableAppWindow):
 
     def on_edit_button__clicked(self, *args):
         self._edit_user()
-
-    def on_change_password_button__clicked(self, *args):
-        from stoqlib.gui.editors.personeditor import PasswordEditor
-        # This avoid circular import
-        user = self.users.get_selected()
-        model = self.run_dialog(PasswordEditor, self.conn, user)
-        finish_transaction(self.conn, model, keep_transaction=True)
 
     def on_devices_setup_activate(self, *args):
         self.run_dialog(DeviceSettingsDialog, self.conn)
