@@ -35,8 +35,8 @@ from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IUser
+from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.interfaces import IEmployee, ISalesPerson, IUser
 
 
 _ = stoqlib_gettext
@@ -168,6 +168,18 @@ class UserDetailsSlave(BaseEditorSlave):
     def on_confirm(self):
         if self.show_password_fields:
             self.model.password = self.password_slave.model.new_password
+
+        # FIXME:
+        # 1) Move this hook into each instance of ProfileSettings
+        # 2) Show some additional information in the user interface, which
+        #    are related to the facets the current profile will add
+        profile = self.profile.get_selected()
+        if profile.name == 'Salesperson':
+            role = EmployeeRole.selectOneBy(name=profile.name,
+                                            connection=self.conn)
+            person = self.model.person
+            person.addFacet(IEmployee, role=role, connection=self.conn)
+            person.addFacet(ISalesPerson, connection=self.conn)
 
     #
     # Kiwi handlers
