@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-10-11 14:49-0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2006-10-11 18:51-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2017,7 +2017,7 @@ msgstr "Nicaragua"
 
 #: ../stoqlib/lib/countries.py:187
 msgid "Niger"
-msgstr "Nigeria"
+msgstr "Niger"
 
 #: ../stoqlib/lib/countries.py:188
 msgid "Nigeria"
