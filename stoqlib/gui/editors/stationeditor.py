@@ -66,6 +66,8 @@ class StationEditor(BaseEditor):
         self.branch.prefill(statuses)
 
         self.add_proxy(self.model, StationEditor.proxy_widgets)
+        if not self.edit_mode:
+            self.is_active.set_sensitive(False)
 
     def on_confirm(self):
         # FIXME: This is a hack, figure out why it's not set by the proxy
