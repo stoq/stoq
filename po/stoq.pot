@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-11 14:31-0300\n"
+"POT-Creation-Date: 2006-10-11 15:37-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -526,54 +526,9 @@ msgstr ""
 msgid "New Order"
 msgstr ""
 
-#: ../data/glade/NewOrderEditor.glade.h:1
-msgid "Add/Edit..."
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:2
-msgid "CFOP:"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
-msgid "Client:"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:4
-msgid "Company"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:5 ../data/glade/till.glade.h:11
-#: ../data/glade/purchase.glade.h:12 ../data/glade/receivable.glade.h:8
-msgid "Details"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:6
-msgid "Individual"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:7
-msgid "Not Specified"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:28
-msgid "Order Number:"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:42
-msgid "Salesperson:"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:10
-msgid "Select the client role:"
-msgstr ""
-
-#: ../data/glade/NewOrderEditor.glade.h:11
-msgid "Select:"
-msgstr ""
-
 #: ../data/glade/sales_app.glade.h:1 ../data/glade/till.glade.h:1
-#: ../data/glade/purchase.glade.h:1 ../data/glade/admin.glade.h:1
-#: ../data/glade/receivable.glade.h:1 ../data/glade/pos.glade.h:2
+#: ../data/glade/admin.glade.h:1 ../data/glade/purchase.glade.h:1
+#: ../data/glade/pos.glade.h:2 ../data/glade/receivable.glade.h:1
 #: ../data/glade/warehouse.glade.h:1
 msgid "About"
 msgstr ""
@@ -584,7 +539,7 @@ msgid "Change User"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:3 ../data/glade/till.glade.h:3
-#: ../data/glade/purchase.glade.h:8 ../data/glade/admin.glade.h:8
+#: ../data/glade/admin.glade.h:8 ../data/glade/purchase.glade.h:8
 #: ../data/glade/receivable.glade.h:4 ../data/glade/warehouse.glade.h:4
 msgid "Clear Cookie"
 msgstr ""
@@ -599,22 +554,22 @@ msgid "Clients..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:6 ../data/glade/till.glade.h:7
-#: ../data/glade/purchase.glade.h:9 ../data/glade/admin.glade.h:9
-#: ../data/glade/receivable.glade.h:5 ../data/glade/pos.glade.h:14
+#: ../data/glade/admin.glade.h:9 ../data/glade/purchase.glade.h:9
+#: ../data/glade/pos.glade.h:14 ../data/glade/receivable.glade.h:5
 #: ../data/glade/warehouse.glade.h:5
 msgid "Copy selected object into the clipboard"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:7 ../data/glade/till.glade.h:8
-#: ../data/glade/purchase.glade.h:10 ../data/glade/admin.glade.h:10
-#: ../data/glade/receivable.glade.h:6 ../data/glade/pos.glade.h:15
+#: ../data/glade/admin.glade.h:10 ../data/glade/purchase.glade.h:10
+#: ../data/glade/pos.glade.h:15 ../data/glade/receivable.glade.h:6
 #: ../data/glade/warehouse.glade.h:6
 msgid "Create a new file"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:8 ../data/glade/till.glade.h:10
-#: ../data/glade/purchase.glade.h:11 ../data/glade/admin.glade.h:11
-#: ../data/glade/receivable.glade.h:7 ../data/glade/pos.glade.h:17
+#: ../data/glade/admin.glade.h:11 ../data/glade/purchase.glade.h:11
+#: ../data/glade/pos.glade.h:17 ../data/glade/receivable.glade.h:7
 #: ../data/glade/warehouse.glade.h:7
 msgid "Cut selected object into the clipboard"
 msgstr ""
@@ -624,15 +579,15 @@ msgid "Gift Certificates..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:10 ../data/glade/till.glade.h:14
-#: ../data/glade/purchase.glade.h:13 ../data/glade/admin.glade.h:20
-#: ../data/glade/receivable.glade.h:9 ../data/glade/pos.glade.h:26
+#: ../data/glade/admin.glade.h:20 ../data/glade/purchase.glade.h:13
+#: ../data/glade/pos.glade.h:26 ../data/glade/receivable.glade.h:9
 #: ../data/glade/warehouse.glade.h:9
 msgid "Open a file"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:11 ../data/glade/till.glade.h:15
-#: ../data/glade/purchase.glade.h:14 ../data/glade/admin.glade.h:21
-#: ../data/glade/receivable.glade.h:10 ../data/glade/pos.glade.h:29
+#: ../data/glade/admin.glade.h:21 ../data/glade/purchase.glade.h:14
+#: ../data/glade/pos.glade.h:29 ../data/glade/receivable.glade.h:10
 #: ../data/glade/warehouse.glade.h:10
 msgid "Paste object from the Clipboard"
 msgstr ""
@@ -647,15 +602,15 @@ msgid "Products..."
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:14 ../data/glade/till.glade.h:16
-#: ../data/glade/purchase.glade.h:17 ../data/glade/admin.glade.h:23
-#: ../data/glade/receivable.glade.h:11 ../data/glade/pos.glade.h:34
+#: ../data/glade/admin.glade.h:23 ../data/glade/purchase.glade.h:17
+#: ../data/glade/pos.glade.h:34 ../data/glade/receivable.glade.h:11
 #: ../data/glade/warehouse.glade.h:12
 msgid "Quit"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:15 ../data/glade/till.glade.h:17
-#: ../data/glade/purchase.glade.h:18 ../data/glade/admin.glade.h:24
-#: ../data/glade/receivable.glade.h:12 ../data/glade/pos.glade.h:35
+#: ../data/glade/admin.glade.h:24 ../data/glade/purchase.glade.h:18
+#: ../data/glade/pos.glade.h:35 ../data/glade/receivable.glade.h:12
 #: ../data/glade/warehouse.glade.h:13
 msgid "Quit the program"
 msgstr ""
@@ -665,8 +620,8 @@ msgid "S_ales"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:17 ../data/glade/till.glade.h:22
-#: ../data/glade/purchase.glade.h:20 ../data/glade/admin.glade.h:27
-#: ../data/glade/receivable.glade.h:13 ../data/glade/pos.glade.h:44
+#: ../data/glade/admin.glade.h:27 ../data/glade/purchase.glade.h:20
+#: ../data/glade/pos.glade.h:44 ../data/glade/receivable.glade.h:13
 #: ../data/glade/warehouse.glade.h:19
 msgid "Save a file"
 msgstr ""
@@ -695,21 +650,21 @@ msgid "Store Cookie"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:23 ../data/glade/till.glade.h:27
-#: ../data/glade/purchase.glade.h:28 ../data/glade/admin.glade.h:35
-#: ../data/glade/receivable.glade.h:19 ../data/glade/pos.glade.h:51
+#: ../data/glade/admin.glade.h:35 ../data/glade/purchase.glade.h:28
+#: ../data/glade/pos.glade.h:51 ../data/glade/receivable.glade.h:19
 #: ../data/glade/warehouse.glade.h:23
 msgid "_Edit"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:24 ../data/glade/till.glade.h:28
-#: ../data/glade/purchase.glade.h:30 ../data/glade/receivable.glade.h:21
-#: ../data/glade/pos.glade.h:52 ../data/glade/warehouse.glade.h:24
+#: ../data/glade/purchase.glade.h:30 ../data/glade/pos.glade.h:52
+#: ../data/glade/receivable.glade.h:21 ../data/glade/warehouse.glade.h:24
 msgid "_File"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:25 ../data/glade/till.glade.h:29
-#: ../data/glade/purchase.glade.h:31 ../data/glade/receivable.glade.h:22
-#: ../data/glade/pos.glade.h:53 ../data/glade/warehouse.glade.h:25
+#: ../data/glade/purchase.glade.h:31 ../data/glade/pos.glade.h:53
+#: ../data/glade/receivable.glade.h:22 ../data/glade/warehouse.glade.h:25
 msgid "_Help"
 msgstr ""
 
@@ -718,8 +673,8 @@ msgid "_Print Invoice"
 msgstr ""
 
 #: ../data/glade/sales_app.glade.h:27 ../data/glade/till.glade.h:31
-#: ../data/glade/purchase.glade.h:35 ../data/glade/admin.glade.h:39
-#: ../data/glade/receivable.glade.h:24 ../data/glade/pos.glade.h:56
+#: ../data/glade/admin.glade.h:39 ../data/glade/purchase.glade.h:35
+#: ../data/glade/pos.glade.h:56 ../data/glade/receivable.glade.h:24
 #: ../data/glade/warehouse.glade.h:28
 msgid "_User"
 msgstr ""
@@ -734,6 +689,11 @@ msgstr ""
 
 #: ../data/glade/till.glade.h:9
 msgid "Current Till"
+msgstr ""
+
+#: ../data/glade/till.glade.h:11 ../data/glade/purchase.glade.h:12
+#: ../data/glade/NewOrderEditor.glade.h:5 ../data/glade/receivable.glade.h:8
+msgid "Details"
 msgstr ""
 
 #: ../data/glade/till.glade.h:12
@@ -772,82 +732,32 @@ msgstr ""
 msgid "_Till"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:2
-msgid "Add Order"
+#: ../data/glade/ExampleDatabaseStep.glade.h:1
+msgid "<b>Database initialization</b>"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:3
-msgid "Add Order..."
+#: ../data/glade/ExampleDatabaseStep.glade.h:2
+msgid "Create an empty database"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:4
-msgid "Base Categories..."
+#: ../data/glade/ExampleDatabaseStep.glade.h:3
+msgid "Create an example database"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:5 ../data/glade/pos.glade.h:7
-#: ../data/glade/warehouse.glade.h:2
-msgid "C_ut"
+#: ../data/glade/ExampleDatabaseStep.glade.h:4
+msgid ""
+"You can choose to initialize the system with an empty database or with a "
+"simple examples database.\n"
+"\n"
+"Would you like to:\n"
 msgstr ""
 
-#: ../data/glade/purchase.glade.h:6
-msgid "Categories..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:7 ../data/glade/admin.glade.h:7
-#: ../data/glade/warehouse.glade.h:3
-msgid "Change User..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:19 ../data/glade/admin.glade.h:26
-#: ../data/glade/pos.glade.h:43 ../data/glade/warehouse.glade.h:18
-msgid "Save _as"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:21 ../data/glade/admin.glade.h:28
-#: ../data/glade/pos.glade.h:45 ../data/glade/warehouse.glade.h:20
-msgid "Save with a differente name"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:22 ../data/glade/pos.glade.h:46
-msgid "Se_arch"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:23
-msgid "Send to Supplier..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:25
-msgid "Suppliers"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:26
-msgid "Suppliers..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:27
-msgid "Transporters..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:29 ../data/glade/admin.glade.h:36
-#: ../data/glade/receivable.glade.h:20
-msgid "_Edit..."
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:32
-msgid "_Order"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:33 ../data/glade/admin.glade.h:37
-msgid "_Receive"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:34 ../data/glade/admin.glade.h:38
-#: ../data/glade/warehouse.glade.h:27
-msgid "_Store Cookie"
-msgstr ""
-
-#: ../data/glade/purchase.glade.h:36
-msgid "purchase"
+#: ../data/glade/AdminPasswordStep.glade.h:2
+msgid ""
+"I'm adding a user called `admin' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:2 ../data/glade/pos.glade.h:4
@@ -868,6 +778,11 @@ msgstr ""
 
 #: ../data/glade/admin.glade.h:6
 msgid "Change Password..."
+msgstr ""
+
+#: ../data/glade/admin.glade.h:7 ../data/glade/purchase.glade.h:7
+#: ../data/glade/warehouse.glade.h:3
+msgid "Change User..."
 msgstr ""
 
 #: ../data/glade/admin.glade.h:12
@@ -910,6 +825,16 @@ msgstr ""
 msgid "Recortar"
 msgstr ""
 
+#: ../data/glade/admin.glade.h:26 ../data/glade/purchase.glade.h:19
+#: ../data/glade/pos.glade.h:43 ../data/glade/warehouse.glade.h:18
+msgid "Save _as"
+msgstr ""
+
+#: ../data/glade/admin.glade.h:28 ../data/glade/purchase.glade.h:21
+#: ../data/glade/pos.glade.h:45 ../data/glade/warehouse.glade.h:20
+msgid "Save with a differente name"
+msgstr ""
+
 #: ../data/glade/admin.glade.h:29
 msgid "Sear_ch"
 msgstr ""
@@ -934,32 +859,195 @@ msgstr ""
 msgid "_Admin"
 msgstr ""
 
+#: ../data/glade/admin.glade.h:36 ../data/glade/purchase.glade.h:29
+#: ../data/glade/receivable.glade.h:20
+msgid "_Edit..."
+msgstr ""
+
+#: ../data/glade/admin.glade.h:37 ../data/glade/purchase.glade.h:33
+msgid "_Receive"
+msgstr ""
+
+#: ../data/glade/admin.glade.h:38 ../data/glade/purchase.glade.h:34
+#: ../data/glade/warehouse.glade.h:27
+msgid "_Store Cookie"
+msgstr ""
+
 #: ../data/glade/admin.glade.h:40
 msgid "admin"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:2
-msgid "Bills"
+#: ../data/glade/BranchSettingsStep.glade.h:2
+#, no-c-format
+msgid "%"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:16
-msgid "_Add..."
+#: ../data/glade/BranchSettingsStep.glade.h:3
+msgid "Company Details"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:17
-msgid "_Cancel"
+#: ../data/glade/BranchSettingsStep.glade.h:4
+msgid "Company Name:"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:18
-msgid "_Conference"
+#: ../data/glade/BranchSettingsStep.glade.h:5
+msgid "Fax:"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:23
-msgid "_Receivable"
+#: ../data/glade/BranchSettingsStep.glade.h:6
+msgid "ICMS:"
 msgstr ""
 
-#: ../data/glade/receivable.glade.h:25
-msgid "receivable"
+#: ../data/glade/BranchSettingsStep.glade.h:7
+msgid "ISS:"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:8
+msgid "Main Address"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:9
+msgid "Phone Number:"
+msgstr ""
+
+#: ../data/glade/BranchSettingsStep.glade.h:10
+msgid "Substitution ICMS:"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:2
+msgid "Add Order"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:3
+msgid "Add Order..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:4
+msgid "Base Categories..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:5 ../data/glade/pos.glade.h:7
+#: ../data/glade/warehouse.glade.h:2
+msgid "C_ut"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:6
+msgid "Categories..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:22 ../data/glade/pos.glade.h:46
+msgid "Se_arch"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:23
+msgid "Send to Supplier..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:25
+msgid "Suppliers"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:26
+msgid "Suppliers..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:27
+msgid "Transporters..."
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:32
+msgid "_Order"
+msgstr ""
+
+#: ../data/glade/purchase.glade.h:36
+msgid "purchase"
+msgstr ""
+
+#: ../data/glade/DeviceSettingsStep.glade.h:1
+msgid ""
+"If you have devices connected to your\n"
+"computer, please add them here"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:1
+msgid "Add/Edit..."
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:2
+msgid "CFOP:"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:3 ../data/glade/pos.glade.h:11
+msgid "Client:"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:4
+msgid "Company"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:6
+msgid "Individual"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:7
+msgid "Not Specified"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:8 ../data/glade/pos.glade.h:28
+msgid "Order Number:"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:9 ../data/glade/pos.glade.h:42
+msgid "Salesperson:"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:10
+msgid "Select the client role:"
+msgstr ""
+
+#: ../data/glade/NewOrderEditor.glade.h:11
+msgid "Select:"
+msgstr ""
+
+#: ../data/glade/SelectApplicationsSlave.glade.h:1
+msgid "Select an Application:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:1
+msgid "Address:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:2
+msgid "Authentication Type:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:3
+msgid "Database Name:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:4
+msgid "Password:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:5
+msgid ""
+"Please, fill some important informations before start using the applications"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:6
+msgid "Port:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:7
+msgid "PostgreSQL Database Settings"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:8
+msgid "Username:"
+msgstr ""
+
+#: ../data/glade/DatabaseSettingsStep.glade.h:9
+msgid "Welcome to Stoq"
 msgstr ""
 
 #: ../data/glade/pos.glade.h:1
@@ -1054,28 +1142,28 @@ msgstr ""
 msgid "_Search"
 msgstr ""
 
-#: ../data/glade/ExampleDatabaseStep.glade.h:1
-msgid "<b>Database initialization</b>"
+#: ../data/glade/receivable.glade.h:2
+msgid "Bills"
 msgstr ""
 
-#: ../data/glade/ExampleDatabaseStep.glade.h:2
-msgid "Create an empty database"
+#: ../data/glade/receivable.glade.h:16
+msgid "_Add..."
 msgstr ""
 
-#: ../data/glade/ExampleDatabaseStep.glade.h:3
-msgid "Create an example database"
+#: ../data/glade/receivable.glade.h:17
+msgid "_Cancel"
 msgstr ""
 
-#: ../data/glade/ExampleDatabaseStep.glade.h:4
-msgid ""
-"You can choose to initialize the system with an empty database or with a "
-"simple examples database.\n"
-"\n"
-"Would you like to:\n"
+#: ../data/glade/receivable.glade.h:18
+msgid "_Conference"
 msgstr ""
 
-#: ../data/glade/SelectApplicationsSlave.glade.h:1
-msgid "Select an Application:"
+#: ../data/glade/receivable.glade.h:23
+msgid "_Receivable"
+msgstr ""
+
+#: ../data/glade/receivable.glade.h:25
+msgid "receivable"
 msgstr ""
 
 #: ../data/glade/warehouse.glade.h:8
@@ -1112,92 +1200,4 @@ msgstr ""
 
 #: ../data/glade/warehouse.glade.h:29
 msgid "_Warehouse"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:1
-msgid "Address:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:2
-msgid "Authentication Type:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:3
-msgid "Database Name:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:4
-msgid "Password:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:5
-msgid ""
-"Please, fill some important informations before start using the applications"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:6
-msgid "Port:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:7
-msgid "PostgreSQL Database Settings"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:8
-msgid "Username:"
-msgstr ""
-
-#: ../data/glade/DatabaseSettingsStep.glade.h:9
-msgid "Welcome to Stoq"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:2
-#, no-c-format
-msgid "%"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:3
-msgid "Company Details"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:4
-msgid "Company Name:"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:5
-msgid "Fax:"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:6
-msgid "ICMS:"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:7
-msgid "ISS:"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:8
-msgid "Main Address"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:9
-msgid "Phone Number:"
-msgstr ""
-
-#: ../data/glade/BranchSettingsStep.glade.h:10
-msgid "Substitution ICMS:"
-msgstr ""
-
-#: ../data/glade/DeviceSettingsStep.glade.h:1
-msgid ""
-"If you have devices connected to your\n"
-"computer, please add them here"
-msgstr ""
-
-#: ../data/glade/AdminPasswordStep.glade.h:2
-msgid ""
-"I'm adding a user called `admin' which will have administrator privilegies.\n"
-"\n"
-"To be able to create other users you need to login with this user in the "
-"admin application and create them."
 msgstr ""
