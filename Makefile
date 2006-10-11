@@ -23,8 +23,11 @@ upload:
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
 	cd $(DLDIR) && \
-	  dpkg-scanpackages . /dev/null | gzip -c > $(DLDIR)/Packages.gz && \
-	  dpkg-scansources . /dev/null | gzip -c > $(DLDIR)/Sources.gz
+	  rm -f Release Release.gpg && \
+	  dpkg-scanpackages . /dev/null > $(DLDIR)/Packages && \
+	  dpkg-scansources . /dev/null > $(DLDIR)/Sources && \
+	  apt-ftparchive release . > $(DLDIR)/Release && \
+	  gpg -abs -o Release.gpg Release
 
 tags:
 	find -name \*.py|xargs ctags
