@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-10 18:20-0300\n"
+"POT-Creation-Date: 2006-10-11 14:49-0300\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -1275,7 +1275,6 @@ msgid "Use Purchase Preview Payments"
 msgstr "Usar Pagamentos previstos para Compras"
 
 #: ../stoqlib/lib/parameters.py:203
-#, fuzzy
 msgid ""
 "Generate preview payments for new purchases which are not received yet. Once "
 "the order is received the preview payments will be also confirmed as valid "
@@ -1479,971 +1478,973 @@ msgstr "ISS"
 msgid "All branches"
 msgstr "Todas as Unidades"
 
-#: ../stoqlib/lib/countries.py:27
+#. The country list is part of the evolution source code:
+#. evolution/addressbook/gui/contact-editor/e-contact-editor-address.c
+#: ../stoqlib/lib/countries.py:30
 msgid "Afghanistan"
 msgstr "Afeganistão"
 
-#: ../stoqlib/lib/countries.py:28
+#: ../stoqlib/lib/countries.py:31
 msgid "Albania"
 msgstr "Albânia"
 
-#: ../stoqlib/lib/countries.py:29
+#: ../stoqlib/lib/countries.py:32
 msgid "Algeria"
 msgstr "Argélia"
 
-#: ../stoqlib/lib/countries.py:30
+#: ../stoqlib/lib/countries.py:33
 msgid "American Samoa"
 msgstr "Samoa Americana"
 
-#: ../stoqlib/lib/countries.py:31
+#: ../stoqlib/lib/countries.py:34
 msgid "Andorra"
 msgstr "Andorra"
 
-#: ../stoqlib/lib/countries.py:32
+#: ../stoqlib/lib/countries.py:35
 msgid "Angola"
 msgstr "Angola"
 
-#: ../stoqlib/lib/countries.py:33
+#: ../stoqlib/lib/countries.py:36
 msgid "Anguilla"
 msgstr "Anguilla"
 
-#: ../stoqlib/lib/countries.py:34
+#: ../stoqlib/lib/countries.py:37
 msgid "Antarctica"
 msgstr "Antártica"
 
-#: ../stoqlib/lib/countries.py:35
+#: ../stoqlib/lib/countries.py:38
 msgid "Antigua And Barbuda"
 msgstr "Antígua e Barbuda"
 
-#: ../stoqlib/lib/countries.py:36
+#: ../stoqlib/lib/countries.py:39
 msgid "Argentina"
 msgstr "Argentina"
 
-#: ../stoqlib/lib/countries.py:37
+#: ../stoqlib/lib/countries.py:40
 msgid "Armenia"
 msgstr "Armênia"
 
-#: ../stoqlib/lib/countries.py:38
+#: ../stoqlib/lib/countries.py:41
 msgid "Aruba"
 msgstr "Aruba"
 
-#: ../stoqlib/lib/countries.py:39
+#: ../stoqlib/lib/countries.py:42
 msgid "Australia"
 msgstr "Austrália"
 
-#: ../stoqlib/lib/countries.py:40
+#: ../stoqlib/lib/countries.py:43
 msgid "Austria"
 msgstr "Áustria"
 
-#: ../stoqlib/lib/countries.py:41
+#: ../stoqlib/lib/countries.py:44
 msgid "Azerbaijan"
 msgstr "Azerbaijão"
 
-#: ../stoqlib/lib/countries.py:42
+#: ../stoqlib/lib/countries.py:45
 msgid "Bahamas"
 msgstr "Bahamas"
 
-#: ../stoqlib/lib/countries.py:43
+#: ../stoqlib/lib/countries.py:46
 msgid "Bahrain"
 msgstr "Bahrain"
 
-#: ../stoqlib/lib/countries.py:44
+#: ../stoqlib/lib/countries.py:47
 msgid "Bangladesh"
 msgstr "Bangladesh"
 
-#: ../stoqlib/lib/countries.py:45
+#: ../stoqlib/lib/countries.py:48
 msgid "Barbados"
 msgstr "Barbados"
 
-#: ../stoqlib/lib/countries.py:46
+#: ../stoqlib/lib/countries.py:49
 msgid "Belarus"
 msgstr "Beielorússia"
 
-#: ../stoqlib/lib/countries.py:47
+#: ../stoqlib/lib/countries.py:50
 msgid "Belgium"
 msgstr "Bélgica"
 
-#: ../stoqlib/lib/countries.py:48
+#: ../stoqlib/lib/countries.py:51
 msgid "Belize"
 msgstr "Belize"
 
-#: ../stoqlib/lib/countries.py:49
+#: ../stoqlib/lib/countries.py:52
 msgid "Benin"
 msgstr "Benin"
 
-#: ../stoqlib/lib/countries.py:50
+#: ../stoqlib/lib/countries.py:53
 msgid "Bermuda"
 msgstr "Bermudas"
 
-#: ../stoqlib/lib/countries.py:51
+#: ../stoqlib/lib/countries.py:54
 msgid "Bhutan"
 msgstr "Butão"
 
-#: ../stoqlib/lib/countries.py:52
+#: ../stoqlib/lib/countries.py:55
 msgid "Bolivia"
 msgstr "Bolívia"
 
-#: ../stoqlib/lib/countries.py:53
+#: ../stoqlib/lib/countries.py:56
 msgid "Bosnia And Herzegowina"
 msgstr "Bósnia e Herzegovina"
 
-#: ../stoqlib/lib/countries.py:54
+#: ../stoqlib/lib/countries.py:57
 msgid "Botswana"
 msgstr "Botswana"
 
-#: ../stoqlib/lib/countries.py:55
+#: ../stoqlib/lib/countries.py:58
 msgid "Bouvet Island"
 msgstr "Ilhas Bouvet"
 
-#: ../stoqlib/lib/countries.py:56
+#: ../stoqlib/lib/countries.py:59
 msgid "Brazil"
 msgstr "Brasil"
 
-#: ../stoqlib/lib/countries.py:57
+#: ../stoqlib/lib/countries.py:60
 msgid "British Indian Ocean Territory"
 msgstr "Território do Oceano Índico Britânico"
 
-#: ../stoqlib/lib/countries.py:58
+#: ../stoqlib/lib/countries.py:61
 msgid "Brunei Darussalam"
 msgstr "Brunei Darussalam"
 
-#: ../stoqlib/lib/countries.py:59
+#: ../stoqlib/lib/countries.py:62
 msgid "Bulgaria"
 msgstr "Bulgária"
 
-#: ../stoqlib/lib/countries.py:60
+#: ../stoqlib/lib/countries.py:63
 msgid "Burkina Faso"
 msgstr "Burkina Faso"
 
-#: ../stoqlib/lib/countries.py:61
+#: ../stoqlib/lib/countries.py:64
 msgid "Burundi"
 msgstr "Burundi"
 
-#: ../stoqlib/lib/countries.py:62
+#: ../stoqlib/lib/countries.py:65
 msgid "Cambodia"
 msgstr "Camboja"
 
-#: ../stoqlib/lib/countries.py:63
+#: ../stoqlib/lib/countries.py:66
 msgid "Cameroon"
 msgstr "Camarões"
 
-#: ../stoqlib/lib/countries.py:64
+#: ../stoqlib/lib/countries.py:67
 msgid "Canada"
 msgstr "Canadá"
 
-#: ../stoqlib/lib/countries.py:65
+#: ../stoqlib/lib/countries.py:68
 msgid "Cape Verde"
 msgstr "Cabo Verde"
 
-#: ../stoqlib/lib/countries.py:66
+#: ../stoqlib/lib/countries.py:69
 msgid "Cayman Islands"
 msgstr "Ilhas Cayman"
 
-#: ../stoqlib/lib/countries.py:67
+#: ../stoqlib/lib/countries.py:70
 msgid "Central African Republic"
 msgstr "República Centro-Africana"
 
-#: ../stoqlib/lib/countries.py:68
+#: ../stoqlib/lib/countries.py:71
 msgid "Chad"
 msgstr "Chade"
 
-#: ../stoqlib/lib/countries.py:69
+#: ../stoqlib/lib/countries.py:72
 msgid "Chile"
 msgstr "Chile"
 
-#: ../stoqlib/lib/countries.py:70
+#: ../stoqlib/lib/countries.py:73
 msgid "China"
 msgstr "China"
 
-#: ../stoqlib/lib/countries.py:71
+#: ../stoqlib/lib/countries.py:74
 msgid "Christmas Island"
 msgstr "Ilhas Christmas"
 
-#: ../stoqlib/lib/countries.py:72
-msgid "Cocos (Keeling) Islands"
-msgstr "Ilhas dos Cocos"
+#: ../stoqlib/lib/countries.py:75
+msgid "Cocos (Keeling Islands)"
+msgstr "Ilhas Keeling (Cocos)"
 
-#: ../stoqlib/lib/countries.py:73
+#: ../stoqlib/lib/countries.py:76
 msgid "Colombia"
 msgstr "Colômbia"
 
-#: ../stoqlib/lib/countries.py:74
+#: ../stoqlib/lib/countries.py:77
 msgid "Comoros"
 msgstr "Comores"
 
-#: ../stoqlib/lib/countries.py:75
+#: ../stoqlib/lib/countries.py:78
 msgid "Congo"
 msgstr "Congo"
 
-#: ../stoqlib/lib/countries.py:76
+#: ../stoqlib/lib/countries.py:79
 msgid "Congo, The Democratic Republic Of The"
 msgstr "Congo, República Democrática do "
 
-#: ../stoqlib/lib/countries.py:77
+#: ../stoqlib/lib/countries.py:80
 msgid "Cook Islands"
 msgstr "Ilhas Cook"
 
-#: ../stoqlib/lib/countries.py:78
+#: ../stoqlib/lib/countries.py:81
 msgid "Costa Rica"
 msgstr "Costa Rica"
 
-#: ../stoqlib/lib/countries.py:79
+#: ../stoqlib/lib/countries.py:82
 msgid "Cote d'Ivoire"
 msgstr "Costa do Marfim"
 
-#: ../stoqlib/lib/countries.py:80
+#: ../stoqlib/lib/countries.py:83
 msgid "Croatia"
 msgstr "Croácia"
 
-#: ../stoqlib/lib/countries.py:81
+#: ../stoqlib/lib/countries.py:84
 msgid "Cuba"
 msgstr "Cuba"
 
-#: ../stoqlib/lib/countries.py:82
+#: ../stoqlib/lib/countries.py:85
 msgid "Cyprus"
 msgstr "Chipre"
 
-#: ../stoqlib/lib/countries.py:83
+#: ../stoqlib/lib/countries.py:86
 msgid "Czech Republic"
 msgstr "República Checa"
 
-#: ../stoqlib/lib/countries.py:84
+#: ../stoqlib/lib/countries.py:87
 msgid "Denmark"
 msgstr "Dinamarca"
 
-#: ../stoqlib/lib/countries.py:85
+#: ../stoqlib/lib/countries.py:88
 msgid "Djibouti"
 msgstr "Djibouti"
 
-#: ../stoqlib/lib/countries.py:86
+#: ../stoqlib/lib/countries.py:89
 msgid "Dominica"
 msgstr "Dominica"
 
-#: ../stoqlib/lib/countries.py:87
+#: ../stoqlib/lib/countries.py:90
 msgid "Dominican Republic"
 msgstr "República Dominicana"
 
-#: ../stoqlib/lib/countries.py:88
+#: ../stoqlib/lib/countries.py:91
 msgid "Ecuador"
 msgstr "Equador"
 
-#: ../stoqlib/lib/countries.py:89
+#: ../stoqlib/lib/countries.py:92
 msgid "Egypt"
 msgstr "Egito"
 
-#: ../stoqlib/lib/countries.py:90
+#: ../stoqlib/lib/countries.py:93
 msgid "El Salvador"
 msgstr "El Salvador"
 
-#: ../stoqlib/lib/countries.py:91
+#: ../stoqlib/lib/countries.py:94
 msgid "Equatorial Guinea"
 msgstr "Guiné Equatorial"
 
-#: ../stoqlib/lib/countries.py:92
+#: ../stoqlib/lib/countries.py:95
 msgid "Eritrea"
 msgstr "Eritrea"
 
-#: ../stoqlib/lib/countries.py:93
+#: ../stoqlib/lib/countries.py:96
 msgid "Estonia"
 msgstr "Estônia"
 
-#: ../stoqlib/lib/countries.py:94
+#: ../stoqlib/lib/countries.py:97
 msgid "Ethiopia"
 msgstr "Etiópia"
 
-#: ../stoqlib/lib/countries.py:95
+#: ../stoqlib/lib/countries.py:98
 msgid "Falkland Islands"
 msgstr "Ilhas Falkland (Malvinas)"
 
-#: ../stoqlib/lib/countries.py:96
+#: ../stoqlib/lib/countries.py:99
 msgid "Faroe Islands"
 msgstr "Ilhas Faroe"
 
-#: ../stoqlib/lib/countries.py:97
+#: ../stoqlib/lib/countries.py:100
 msgid "Fiji"
 msgstr "Fiji"
 
-#: ../stoqlib/lib/countries.py:98
+#: ../stoqlib/lib/countries.py:101
 msgid "Finland"
 msgstr "Finlândia"
 
-#: ../stoqlib/lib/countries.py:99
+#: ../stoqlib/lib/countries.py:102
 msgid "France"
 msgstr "França"
 
-#: ../stoqlib/lib/countries.py:100
+#: ../stoqlib/lib/countries.py:103
 msgid "French Guiana"
 msgstr "Guiana Francesa"
 
-#: ../stoqlib/lib/countries.py:101
+#: ../stoqlib/lib/countries.py:104
 msgid "French Polynesia"
 msgstr "Polinésia Francesa"
 
-#: ../stoqlib/lib/countries.py:102
+#: ../stoqlib/lib/countries.py:105
 msgid "French Southern Territories"
 msgstr "Territórios Franceses do Sul"
 
-#: ../stoqlib/lib/countries.py:103
+#: ../stoqlib/lib/countries.py:106
 msgid "Gabon"
 msgstr "Gabão"
 
-#: ../stoqlib/lib/countries.py:104
+#: ../stoqlib/lib/countries.py:107
 msgid "Gambia"
 msgstr "Gâmbia"
 
-#: ../stoqlib/lib/countries.py:105
+#: ../stoqlib/lib/countries.py:108
 msgid "Georgia"
 msgstr "Geórgia"
 
-#: ../stoqlib/lib/countries.py:106
+#: ../stoqlib/lib/countries.py:109
 msgid "Germany"
 msgstr "Alemanha"
 
-#: ../stoqlib/lib/countries.py:107
+#: ../stoqlib/lib/countries.py:110
 msgid "Ghana"
 msgstr "Gana"
 
-#: ../stoqlib/lib/countries.py:108
+#: ../stoqlib/lib/countries.py:111
 msgid "Gibraltar"
 msgstr "Gibraltar"
 
-#: ../stoqlib/lib/countries.py:109
+#: ../stoqlib/lib/countries.py:112
 msgid "Greece"
 msgstr "Grécia"
 
-#: ../stoqlib/lib/countries.py:110
+#: ../stoqlib/lib/countries.py:113
 msgid "Greenland"
 msgstr "Groenlândia"
 
-#: ../stoqlib/lib/countries.py:111
+#: ../stoqlib/lib/countries.py:114
 msgid "Grenada"
 msgstr "Granada"
 
-#: ../stoqlib/lib/countries.py:112
+#: ../stoqlib/lib/countries.py:115
 msgid "Guadeloupe"
 msgstr "Guadalupe"
 
-#: ../stoqlib/lib/countries.py:113
+#: ../stoqlib/lib/countries.py:116
 msgid "Guam"
 msgstr "Guam"
 
-#: ../stoqlib/lib/countries.py:114
+#: ../stoqlib/lib/countries.py:117
 msgid "Guatemala"
 msgstr "Guatemala"
 
-#: ../stoqlib/lib/countries.py:115
+#: ../stoqlib/lib/countries.py:118
 msgid "Guernsey"
 msgstr "Guernsey"
 
-#: ../stoqlib/lib/countries.py:116
+#: ../stoqlib/lib/countries.py:119
 msgid "Guinea"
 msgstr "Guiné"
 
-#: ../stoqlib/lib/countries.py:117
+#: ../stoqlib/lib/countries.py:120
 msgid "Guinea-bissau"
 msgstr "Guiné-Bissau"
 
-#: ../stoqlib/lib/countries.py:118
+#: ../stoqlib/lib/countries.py:121
 msgid "Guyana"
 msgstr "Guiana"
 
-#: ../stoqlib/lib/countries.py:119
+#: ../stoqlib/lib/countries.py:122
 msgid "Haiti"
 msgstr "Haiti"
 
-#: ../stoqlib/lib/countries.py:120
+#: ../stoqlib/lib/countries.py:123
 msgid "Heard And McDonald Islands"
 msgstr "Ilhas Heard e McDonald"
 
-#: ../stoqlib/lib/countries.py:121
+#: ../stoqlib/lib/countries.py:124
 msgid "Holy See"
 msgstr "Santa Sé"
 
-#: ../stoqlib/lib/countries.py:122
+#: ../stoqlib/lib/countries.py:125
 msgid "Honduras"
 msgstr "Honduras"
 
-#: ../stoqlib/lib/countries.py:123
+#: ../stoqlib/lib/countries.py:126
 msgid "Hong Kong"
 msgstr "Hong Kong"
 
-#: ../stoqlib/lib/countries.py:124
+#: ../stoqlib/lib/countries.py:127
 msgid "Hungary"
 msgstr "Hungria"
 
-#: ../stoqlib/lib/countries.py:125
+#: ../stoqlib/lib/countries.py:128
 msgid "Iceland"
 msgstr "Islândia"
 
-#: ../stoqlib/lib/countries.py:126
+#: ../stoqlib/lib/countries.py:129
 msgid "India"
 msgstr "Índia"
 
-#: ../stoqlib/lib/countries.py:127
+#: ../stoqlib/lib/countries.py:130
 msgid "Indonesia"
 msgstr "Indonésia"
 
-#: ../stoqlib/lib/countries.py:128
+#: ../stoqlib/lib/countries.py:131
 msgid "Iran"
 msgstr "Irã"
 
-#: ../stoqlib/lib/countries.py:129
+#: ../stoqlib/lib/countries.py:132
 msgid "Iraq"
 msgstr "Iraque"
 
-#: ../stoqlib/lib/countries.py:130
+#: ../stoqlib/lib/countries.py:133
 msgid "Ireland"
 msgstr "Irlanda"
 
-#: ../stoqlib/lib/countries.py:131
+#: ../stoqlib/lib/countries.py:134
 msgid "Isle of Man"
 msgstr "Ilha de Man"
 
-#: ../stoqlib/lib/countries.py:132
+#: ../stoqlib/lib/countries.py:135
 msgid "Israel"
 msgstr "Israel"
 
-#: ../stoqlib/lib/countries.py:133
+#: ../stoqlib/lib/countries.py:136
 msgid "Italy"
 msgstr "Itália"
 
-#: ../stoqlib/lib/countries.py:134
+#: ../stoqlib/lib/countries.py:137
 msgid "Jamaica"
 msgstr "Jamaica"
 
-#: ../stoqlib/lib/countries.py:135
+#: ../stoqlib/lib/countries.py:138
 msgid "Japan"
 msgstr "Japão"
 
-#: ../stoqlib/lib/countries.py:136
+#: ../stoqlib/lib/countries.py:139
 msgid "Jersey"
 msgstr "Jersey"
 
-#: ../stoqlib/lib/countries.py:137
+#: ../stoqlib/lib/countries.py:140
 msgid "Jordan"
 msgstr "Jordânia"
 
-#: ../stoqlib/lib/countries.py:138
+#: ../stoqlib/lib/countries.py:141
 msgid "Kazakhstan"
 msgstr "Cazaquistão"
 
-#: ../stoqlib/lib/countries.py:139
+#: ../stoqlib/lib/countries.py:142
 msgid "Kenya"
 msgstr "Quênia"
 
-#: ../stoqlib/lib/countries.py:140
+#: ../stoqlib/lib/countries.py:143
 msgid "Kiribati"
 msgstr "Kiribati"
 
-#: ../stoqlib/lib/countries.py:141
+#: ../stoqlib/lib/countries.py:144
 msgid "Korea, Democratic People's Republic Of"
 msgstr "Coréia do Norte"
 
-#: ../stoqlib/lib/countries.py:142
+#: ../stoqlib/lib/countries.py:145
 msgid "Korea, Republic Of"
 msgstr "Coréia do Sul"
 
-#: ../stoqlib/lib/countries.py:143
+#: ../stoqlib/lib/countries.py:146
 msgid "Kuwait"
 msgstr "Kuwait"
 
-#: ../stoqlib/lib/countries.py:144
+#: ../stoqlib/lib/countries.py:147
 msgid "Kyrgyzstan"
 msgstr "Quirguistão"
 
-#: ../stoqlib/lib/countries.py:145
+#: ../stoqlib/lib/countries.py:148
 msgid "Laos"
 msgstr "Laos"
 
-#: ../stoqlib/lib/countries.py:146
+#: ../stoqlib/lib/countries.py:149
 msgid "Latvia"
 msgstr "Letônia"
 
-#: ../stoqlib/lib/countries.py:147
+#: ../stoqlib/lib/countries.py:150
 msgid "Lebanon"
 msgstr "Líbano"
 
-#: ../stoqlib/lib/countries.py:148
+#: ../stoqlib/lib/countries.py:151
 msgid "Lesotho"
 msgstr "Lesoto"
 
-#: ../stoqlib/lib/countries.py:149
+#: ../stoqlib/lib/countries.py:152
 msgid "Liberia"
 msgstr "Libéria"
 
-#: ../stoqlib/lib/countries.py:150
+#: ../stoqlib/lib/countries.py:153
 msgid "Libya"
 msgstr "Líbia"
 
-#: ../stoqlib/lib/countries.py:151
+#: ../stoqlib/lib/countries.py:154
 msgid "Liechtenstein"
 msgstr "Liechtenstein"
 
-#: ../stoqlib/lib/countries.py:152
+#: ../stoqlib/lib/countries.py:155
 msgid "Lithuania"
 msgstr "Lituânia"
 
-#: ../stoqlib/lib/countries.py:153
+#: ../stoqlib/lib/countries.py:156
 msgid "Luxembourg"
 msgstr "Luxemburgo"
 
-#: ../stoqlib/lib/countries.py:154
+#: ../stoqlib/lib/countries.py:157
 msgid "Macao"
 msgstr "Macau"
 
-#: ../stoqlib/lib/countries.py:155
+#: ../stoqlib/lib/countries.py:158
 msgid "Macedonia"
 msgstr "Macedônia"
 
-#: ../stoqlib/lib/countries.py:156
+#: ../stoqlib/lib/countries.py:159
 msgid "Madagascar"
 msgstr "Madagascar"
 
-#: ../stoqlib/lib/countries.py:157
+#: ../stoqlib/lib/countries.py:160
 msgid "Malawi"
 msgstr "Malawi"
 
-#: ../stoqlib/lib/countries.py:158
+#: ../stoqlib/lib/countries.py:161
 msgid "Malaysia"
 msgstr "Malásia"
 
-#: ../stoqlib/lib/countries.py:159
+#: ../stoqlib/lib/countries.py:162
 msgid "Maldives"
 msgstr "Maldivas"
 
-#: ../stoqlib/lib/countries.py:160
+#: ../stoqlib/lib/countries.py:163
 msgid "Mali"
 msgstr "Mali"
 
-#: ../stoqlib/lib/countries.py:161
+#: ../stoqlib/lib/countries.py:164
 msgid "Malta"
 msgstr "Malta"
 
-#: ../stoqlib/lib/countries.py:162
+#: ../stoqlib/lib/countries.py:165
 msgid "Marshall Islands"
 msgstr "Ilhas Marshall"
 
-#: ../stoqlib/lib/countries.py:163
+#: ../stoqlib/lib/countries.py:166
 msgid "Martinique"
 msgstr "Martinica"
 
-#: ../stoqlib/lib/countries.py:164
+#: ../stoqlib/lib/countries.py:167
 msgid "Mauritania"
 msgstr "Mauritânia"
 
-#: ../stoqlib/lib/countries.py:165
+#: ../stoqlib/lib/countries.py:168
 msgid "Mauritius"
 msgstr "Maurício"
 
-#: ../stoqlib/lib/countries.py:166
+#: ../stoqlib/lib/countries.py:169
 msgid "Mayotte"
 msgstr "Mayotte"
 
-#: ../stoqlib/lib/countries.py:167
+#: ../stoqlib/lib/countries.py:170
 msgid "Mexico"
 msgstr "México"
 
-#: ../stoqlib/lib/countries.py:168
+#: ../stoqlib/lib/countries.py:171
 msgid "Micronesia"
 msgstr "Micronésia"
 
-#: ../stoqlib/lib/countries.py:169
+#: ../stoqlib/lib/countries.py:172
 msgid "Moldova, Republic Of"
 msgstr "Moldova, República da"
 
-#: ../stoqlib/lib/countries.py:170
+#: ../stoqlib/lib/countries.py:173
 msgid "Monaco"
 msgstr "Mônaco"
 
-#: ../stoqlib/lib/countries.py:171
+#: ../stoqlib/lib/countries.py:174
 msgid "Mongolia"
 msgstr "Mongólia"
 
-#: ../stoqlib/lib/countries.py:172
+#: ../stoqlib/lib/countries.py:175
 msgid "Montserrat"
 msgstr "Montserrat"
 
-#: ../stoqlib/lib/countries.py:173
+#: ../stoqlib/lib/countries.py:176
 msgid "Morocco"
 msgstr "Marrocos"
 
-#: ../stoqlib/lib/countries.py:174
+#: ../stoqlib/lib/countries.py:177
 msgid "Mozambique"
 msgstr "Moçambique"
 
-#: ../stoqlib/lib/countries.py:175
+#: ../stoqlib/lib/countries.py:178
 msgid "Myanmar"
 msgstr "Myanmar"
 
-#: ../stoqlib/lib/countries.py:176
+#: ../stoqlib/lib/countries.py:179
 msgid "Namibia"
 msgstr "Namíbia"
 
-#: ../stoqlib/lib/countries.py:177
+#: ../stoqlib/lib/countries.py:180
 msgid "Nauru"
 msgstr "Nauru"
 
-#: ../stoqlib/lib/countries.py:178
+#: ../stoqlib/lib/countries.py:181
 msgid "Nepal"
 msgstr "Nepal"
 
-#: ../stoqlib/lib/countries.py:179
+#: ../stoqlib/lib/countries.py:182
 msgid "Netherlands"
 msgstr "Holanda"
 
-#: ../stoqlib/lib/countries.py:180
+#: ../stoqlib/lib/countries.py:183
 msgid "Netherlands Antilles"
 msgstr "Antilhas Holandesas"
 
-#: ../stoqlib/lib/countries.py:181
+#: ../stoqlib/lib/countries.py:184
 msgid "New Caledonia"
 msgstr "Nova Caledônia"
 
-#: ../stoqlib/lib/countries.py:182
+#: ../stoqlib/lib/countries.py:185
 msgid "New Zealand"
 msgstr "Nova Zelândia"
 
-#: ../stoqlib/lib/countries.py:183
+#: ../stoqlib/lib/countries.py:186
 msgid "Nicaragua"
 msgstr "Nicarágua"
 
-#: ../stoqlib/lib/countries.py:184
+#: ../stoqlib/lib/countries.py:187
 msgid "Niger"
 msgstr "Niger"
 
-#: ../stoqlib/lib/countries.py:185
+#: ../stoqlib/lib/countries.py:188
 msgid "Nigeria"
 msgstr "Nigéria"
 
-#: ../stoqlib/lib/countries.py:186
+#: ../stoqlib/lib/countries.py:189
 msgid "Niue"
 msgstr "Niue"
 
-#: ../stoqlib/lib/countries.py:187
+#: ../stoqlib/lib/countries.py:190
 msgid "Norfolk Island"
 msgstr "Ilhas Norfolk"
 
-#: ../stoqlib/lib/countries.py:188
+#: ../stoqlib/lib/countries.py:191
 msgid "Northern Mariana Islands"
 msgstr "Ilhas Marianas do Norte"
 
-#: ../stoqlib/lib/countries.py:189
+#: ../stoqlib/lib/countries.py:192
 msgid "Norway"
 msgstr "Noruega"
 
-#: ../stoqlib/lib/countries.py:190
+#: ../stoqlib/lib/countries.py:193
 msgid "Oman"
 msgstr "Omã"
 
-#: ../stoqlib/lib/countries.py:191
+#: ../stoqlib/lib/countries.py:194
 msgid "Pakistan"
 msgstr "Paquistão"
 
-#: ../stoqlib/lib/countries.py:192
+#: ../stoqlib/lib/countries.py:195
 msgid "Palau"
 msgstr "Palau"
 
-#: ../stoqlib/lib/countries.py:193
+#: ../stoqlib/lib/countries.py:196
 msgid "Palestinian Territory"
 msgstr "Território Palestino"
 
-#: ../stoqlib/lib/countries.py:194
+#: ../stoqlib/lib/countries.py:197
 msgid "Panama"
 msgstr "Panamá"
 
-#: ../stoqlib/lib/countries.py:195
+#: ../stoqlib/lib/countries.py:198
 msgid "Papua New Guinea"
 msgstr "Papua Nova Guiné"
 
-#: ../stoqlib/lib/countries.py:196
+#: ../stoqlib/lib/countries.py:199
 msgid "Paraguay"
 msgstr "Paraguai"
 
-#: ../stoqlib/lib/countries.py:197
+#: ../stoqlib/lib/countries.py:200
 msgid "Peru"
 msgstr "Peru"
 
-#: ../stoqlib/lib/countries.py:198
+#: ../stoqlib/lib/countries.py:201
 msgid "Philippines"
 msgstr "Filipinas"
 
-#: ../stoqlib/lib/countries.py:199
+#: ../stoqlib/lib/countries.py:202
 msgid "Pitcairn"
 msgstr "Pitcairn"
 
-#: ../stoqlib/lib/countries.py:200
+#: ../stoqlib/lib/countries.py:203
 msgid "Poland"
 msgstr "Polônia"
 
-#: ../stoqlib/lib/countries.py:201
+#: ../stoqlib/lib/countries.py:204
 msgid "Portugal"
 msgstr "Portugal"
 
-#: ../stoqlib/lib/countries.py:202
+#: ../stoqlib/lib/countries.py:205
 msgid "Puerto Rico"
 msgstr "Porto Rico"
 
-#: ../stoqlib/lib/countries.py:203
+#: ../stoqlib/lib/countries.py:206
 msgid "Qatar"
 msgstr "Qatar"
 
-#: ../stoqlib/lib/countries.py:204
+#: ../stoqlib/lib/countries.py:207
 msgid "Reunion"
 msgstr "Reunião"
 
-#: ../stoqlib/lib/countries.py:205
+#: ../stoqlib/lib/countries.py:208
 msgid "Romania"
 msgstr "Romênia"
 
-#: ../stoqlib/lib/countries.py:206
+#: ../stoqlib/lib/countries.py:209
 msgid "Russian Federation"
 msgstr "Federação Russa"
 
-#: ../stoqlib/lib/countries.py:207
+#: ../stoqlib/lib/countries.py:210
 msgid "Rwanda"
 msgstr "Ruanda"
 
-#: ../stoqlib/lib/countries.py:208
+#: ../stoqlib/lib/countries.py:211
 msgid "Saint Kitts And Nevis"
 msgstr "Saint Kitts e Nevis"
 
-#: ../stoqlib/lib/countries.py:209
+#: ../stoqlib/lib/countries.py:212
 msgid "Saint Lucia"
 msgstr "Santa Lúcia"
 
-#: ../stoqlib/lib/countries.py:210
+#: ../stoqlib/lib/countries.py:213
 msgid "Saint Vincent And The Grenadines"
 msgstr "São Vicente e Granadinas"
 
-#: ../stoqlib/lib/countries.py:211
+#: ../stoqlib/lib/countries.py:214
 msgid "Samoa"
 msgstr "Samoa"
 
-#: ../stoqlib/lib/countries.py:212
+#: ../stoqlib/lib/countries.py:215
 msgid "San Marino"
 msgstr "San Marino"
 
-#: ../stoqlib/lib/countries.py:213
+#: ../stoqlib/lib/countries.py:216
 msgid "Sao Tome And Principe"
 msgstr "São Tome e Príncipe"
 
-#: ../stoqlib/lib/countries.py:214
+#: ../stoqlib/lib/countries.py:217
 msgid "Saudi Arabia"
 msgstr "Arábia Saudita"
 
-#: ../stoqlib/lib/countries.py:215
+#: ../stoqlib/lib/countries.py:218
 msgid "Senegal"
 msgstr "Senegal"
 
-#: ../stoqlib/lib/countries.py:216
+#: ../stoqlib/lib/countries.py:219
 msgid "Serbia And Montenegro"
 msgstr "Sérvia e Montenegro"
 
-#: ../stoqlib/lib/countries.py:217
+#: ../stoqlib/lib/countries.py:220
 msgid "Seychelles"
 msgstr "Seychelles"
 
-#: ../stoqlib/lib/countries.py:218
+#: ../stoqlib/lib/countries.py:221
 msgid "Sierra Leone"
 msgstr "Serra Leoa"
 
-#: ../stoqlib/lib/countries.py:219
+#: ../stoqlib/lib/countries.py:222
 msgid "Singapore"
 msgstr "Singapura"
 
-#: ../stoqlib/lib/countries.py:220
+#: ../stoqlib/lib/countries.py:223
 msgid "Slovakia"
 msgstr "Eslováquia"
 
-#: ../stoqlib/lib/countries.py:221
+#: ../stoqlib/lib/countries.py:224
 msgid "Slovenia"
 msgstr "Eslovênia"
 
-#: ../stoqlib/lib/countries.py:222
+#: ../stoqlib/lib/countries.py:225
 msgid "Solomon Islands"
 msgstr "Ilhas Salomão"
 
-#: ../stoqlib/lib/countries.py:223
+#: ../stoqlib/lib/countries.py:226
 msgid "Somalia"
 msgstr "Somália"
 
-#: ../stoqlib/lib/countries.py:224
+#: ../stoqlib/lib/countries.py:227
 msgid "South Africa"
 msgstr "África do Sul"
 
-#: ../stoqlib/lib/countries.py:225
+#: ../stoqlib/lib/countries.py:228
 msgid "South Georgia And The South Sandwich Islands"
 msgstr "Ilhas Georgia do Sul e Sandwich do Sul"
 
-#: ../stoqlib/lib/countries.py:226
+#: ../stoqlib/lib/countries.py:229
 msgid "Spain"
 msgstr "Espanha"
 
-#: ../stoqlib/lib/countries.py:227
+#: ../stoqlib/lib/countries.py:230
 msgid "Sri Lanka"
 msgstr "Sri Lanka"
 
-#: ../stoqlib/lib/countries.py:228
+#: ../stoqlib/lib/countries.py:231
 msgid "St. Helena"
 msgstr "St. Helena"
 
-#: ../stoqlib/lib/countries.py:229
+#: ../stoqlib/lib/countries.py:232
 msgid "St. Pierre And Miquelon"
 msgstr "St. Pierre e Miquelon"
 
-#: ../stoqlib/lib/countries.py:230
+#: ../stoqlib/lib/countries.py:233
 msgid "Sudan"
 msgstr "Sudão"
 
-#: ../stoqlib/lib/countries.py:231
+#: ../stoqlib/lib/countries.py:234
 msgid "Suriname"
 msgstr "Suriname"
 
-#: ../stoqlib/lib/countries.py:232
+#: ../stoqlib/lib/countries.py:235
 msgid "Svalbard And Jan Mayen Islands"
 msgstr "Ilhas Svalbard e Jan Mayen"
 
-#: ../stoqlib/lib/countries.py:233
+#: ../stoqlib/lib/countries.py:236
 msgid "Swaziland"
 msgstr "Suazilândia"
 
-#: ../stoqlib/lib/countries.py:234
+#: ../stoqlib/lib/countries.py:237
 msgid "Sweden"
 msgstr "Suécia"
 
-#: ../stoqlib/lib/countries.py:235
+#: ../stoqlib/lib/countries.py:238
 msgid "Switzerland"
 msgstr "Suíça"
 
-#: ../stoqlib/lib/countries.py:236
+#: ../stoqlib/lib/countries.py:239
 msgid "Syria"
 msgstr "Síria"
 
-#: ../stoqlib/lib/countries.py:237
+#: ../stoqlib/lib/countries.py:240
 msgid "Taiwan"
 msgstr "Formosa"
 
-#: ../stoqlib/lib/countries.py:238
+#: ../stoqlib/lib/countries.py:241
 msgid "Tajikistan"
 msgstr "Tajiquistão"
 
-#: ../stoqlib/lib/countries.py:239
+#: ../stoqlib/lib/countries.py:242
 msgid "Tanzania, United Republic Of"
 msgstr "Tanzânia, República Unida da"
 
-#: ../stoqlib/lib/countries.py:240
+#: ../stoqlib/lib/countries.py:243
 msgid "Thailand"
 msgstr "Tailândia"
 
-#: ../stoqlib/lib/countries.py:241
+#: ../stoqlib/lib/countries.py:244
 msgid "Timor-Leste"
 msgstr "Timor Leste"
 
-#: ../stoqlib/lib/countries.py:242
+#: ../stoqlib/lib/countries.py:245
 msgid "Togo"
 msgstr "Togo"
 
-#: ../stoqlib/lib/countries.py:243
+#: ../stoqlib/lib/countries.py:246
 msgid "Tokelau"
 msgstr "Tokelau"
 
-#: ../stoqlib/lib/countries.py:244
+#: ../stoqlib/lib/countries.py:247
 msgid "Tonga"
 msgstr "Tonga"
 
-#: ../stoqlib/lib/countries.py:245
+#: ../stoqlib/lib/countries.py:248
 msgid "Trinidad And Tobago"
 msgstr "Trinidad e Tobago"
 
-#: ../stoqlib/lib/countries.py:246
+#: ../stoqlib/lib/countries.py:249
 msgid "Tunisia"
 msgstr "Tunísia"
 
-#: ../stoqlib/lib/countries.py:247
+#: ../stoqlib/lib/countries.py:250
 msgid "Turkey"
 msgstr "Turquia"
 
-#: ../stoqlib/lib/countries.py:248
+#: ../stoqlib/lib/countries.py:251
 msgid "Turkmenistan"
 msgstr "Turcomenistão"
 
-#: ../stoqlib/lib/countries.py:249
+#: ../stoqlib/lib/countries.py:252
 msgid "Turks And Caicos Islands"
 msgstr "Ilhas Turks e Caicos"
 
-#: ../stoqlib/lib/countries.py:250
+#: ../stoqlib/lib/countries.py:253
 msgid "Tuvalu"
 msgstr "Tuvalu"
 
-#: ../stoqlib/lib/countries.py:251
+#: ../stoqlib/lib/countries.py:254
 msgid "Uganda"
 msgstr "Uganda"
 
-#: ../stoqlib/lib/countries.py:252
+#: ../stoqlib/lib/countries.py:255
 msgid "Ukraine"
 msgstr "Ucrânia"
 
-#: ../stoqlib/lib/countries.py:253
+#: ../stoqlib/lib/countries.py:256
 msgid "United Arab Emirates"
 msgstr "Emirados Árabes Unidos"
 
-#: ../stoqlib/lib/countries.py:254
+#: ../stoqlib/lib/countries.py:257
 msgid "United Kingdom"
 msgstr "Reino Unido"
 
-#: ../stoqlib/lib/countries.py:255
+#: ../stoqlib/lib/countries.py:258
 msgid "United States"
 msgstr "Estados Unidos"
 
-#: ../stoqlib/lib/countries.py:256
+#: ../stoqlib/lib/countries.py:259
 msgid "United States Minor Outlying Islands"
 msgstr "Ilhas ao Largo dos Estados Unidos"
 
-#: ../stoqlib/lib/countries.py:257
+#: ../stoqlib/lib/countries.py:260
 msgid "Uruguay"
 msgstr "Uruguai"
 
-#: ../stoqlib/lib/countries.py:258
+#: ../stoqlib/lib/countries.py:261
 msgid "Uzbekistan"
 msgstr "Uzbequistão"
 
-#: ../stoqlib/lib/countries.py:259
+#: ../stoqlib/lib/countries.py:262
 msgid "Vanuatu"
 msgstr "Vanuatu"
 
-#: ../stoqlib/lib/countries.py:260
+#: ../stoqlib/lib/countries.py:263
 msgid "Venezuela"
 msgstr "Venezuela"
 
-#: ../stoqlib/lib/countries.py:261
+#: ../stoqlib/lib/countries.py:264
 msgid "Viet Nam"
 msgstr "Vietnã"
 
-#: ../stoqlib/lib/countries.py:262
+#: ../stoqlib/lib/countries.py:265
 msgid "Virgin Islands, British"
 msgstr "Ilhas Virgens, Inglaterra"
 
-#: ../stoqlib/lib/countries.py:263
+#: ../stoqlib/lib/countries.py:266
 msgid "Virgin Islands, U.S."
 msgstr "Ilhas Virgens, EUA"
 
-#: ../stoqlib/lib/countries.py:264
+#: ../stoqlib/lib/countries.py:267
 msgid "Wallis And Futuna Islands"
 msgstr "Ilhas Wallis e Futuna"
 
-#: ../stoqlib/lib/countries.py:265
+#: ../stoqlib/lib/countries.py:268
 msgid "Western Sahara"
 msgstr "Sahara Ocidental"
 
-#: ../stoqlib/lib/countries.py:266
+#: ../stoqlib/lib/countries.py:269
 msgid "Yemen"
 msgstr "Yemen"
 
-#: ../stoqlib/lib/countries.py:267
+#: ../stoqlib/lib/countries.py:270
 msgid "Zambia"
 msgstr "Zâmbia"
 
-#: ../stoqlib/lib/countries.py:268
+#: ../stoqlib/lib/countries.py:271
 msgid "Zimbabwe"
 msgstr "Zimbábue"
 
@@ -3652,7 +3653,7 @@ msgid "There is %s overpaid"
 msgstr "Há pago %s"
 
 #: ../stoqlib/gui/wizards/salewizard.py:378
-#, fuzzy, python-format
+#, python-format
 msgid "The gift certificate with code '%s' doesn't exists."
 msgstr "O vale compra com o código '%s' não existe"
 
@@ -4124,13 +4125,12 @@ msgid "True"
 msgstr "Verdadeiro"
 
 #: ../data/glade/AddressSlave.glade.h:1
-#, fuzzy
 msgid "     -   "
-msgstr "  -  -    "
+msgstr "     -    "
 
 #: ../data/glade/AddressSlave.glade.h:2
 msgid "00000-000"
-msgstr ""
+msgstr "00000-000"
 
 #: ../data/glade/AddressSlave.glade.h:3
 msgid "City:"
@@ -4580,9 +4580,8 @@ msgid "Add"
 msgstr "Adicionar"
 
 #: ../data/glade/AbstractItemStep.glade.h:3
-#, fuzzy
 msgid "Add/Edit Item..."
-msgstr "Adicionar/Editar Cargo..."
+msgstr "Adicionar/Editar Item..."
 
 #: ../data/glade/AbstractItemStep.glade.h:5
 msgid "Item:"
@@ -4900,9 +4899,8 @@ msgid "Credit Provider:"
 msgstr "Fornecedor de Crédito:"
 
 #: ../data/glade/SellableTypeStep.glade.h:1
-#, fuzzy
 msgid "<b>What kind of item do you want to add?</b>"
-msgstr "Que tipo de cliente você está adicionado ?"
+msgstr "<b>Que tipo de cliente você deseja adicionar?</b>"
 
 #: ../data/glade/AdditionListSlave.glade.h:1
 msgid "Delete"
@@ -5242,9 +5240,8 @@ msgstr "Devolução"
 #~ msgid "Database Error"
 #~ msgstr "Erro na base de dados"
 
-#, fuzzy
 #~ msgid "A database called %s does not exist"
-#~ msgstr "O item '%s' não existe"
+#~ msgstr "O banco de dados chamado '%s' não existe"
 
 #~ msgid "Paid by Money"
 #~ msgstr "Pago em Dinheiro"
