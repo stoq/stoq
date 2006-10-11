@@ -1,3 +1,62 @@
+Release 0.8.2,  11-October-2006
+
+    - More robust First Time Configuration Wizard, many crashes has been fixed
+    - ProfileEditor looks better and uses icons
+    - Includes a copy of SQLObject, Formencode and dateutil
+    - Till works properly on multiple machines
+    - Sizegroups are moved to Glade files
+    - Administration menu is no longer duplicated among all applications
+    - PersonEditor looks better
+    - ProfileEditor selects SalesPerson as default
+    - Use Psycopg2 instead of 1, fixes a couple of crashes
+    - Much improved testing coverage
+    - Basic support for cloning a database
+    - Many bugs fixed
+
+    - Bugs fixed:
+
+    #2195: Excessões enviadas durante a inicialização do sistema dev...
+    #2268: Tradução para o idioma português
+    #2407: Melhorar a forma de autenticação do usuário com o PostgreSQL
+    #2414: Remove administration menu from application glade files
+    #2470: Erro de arquivo de configuração
+    #2688: Inconsistências no wizard de pedido de compra
+    #2696: Documentar e testar suporte à vale-compras
+    #2734: Stoq sempre referencia o Caixa da estacao local
+    #2756: Problemas ao cancelar uma venda e tentar começar outra
+    #2779: Wizard doesn't make it clear what to do if I /don't/ have...
+    #2780: A crash in the first-time installation wizard took me bac...
+    #2781: Don't suggest empty passwords -- or allow them.
+    #2782: Clicking on New device in first-time wizard crashes.
+    #2785: Multiple small fixes to Person creation dialog
+    #2791: Add support for cloning a database
+    #2792: Add a clone command to stoqdbadmin
+    #2794: Stoq don't run at python version "2.4.4c0" as a string
+    #2796: Use Psycopg2
+    #2798: Não é possível receber Vale Compras
+    #2799: Impossível remover entrega durante uma venda
+    #2809: Creating a delivery service using psycopg2 fails
+    #2810: Tradução errada para títulos de editores...
+    #2812: Desconto de venda não é aplicado corretamente
+    #2816: Evitar a abertura de vendas para usuários sem a faceta IS...
+    #2818: Incluir botão para impressão de venda em SaleDetailsDialog
+    #2820: Johans ProfileEditor improvments
+    #2821: Relatório de Pesquisa de Produtos quebrado
+    #2826: Problema ao tentar vendas somente de serviços
+    #2830: Não exibir opção para criação de base de dados de exemplo...
+    #2831: Do complex Till operations in SQL
+    #2833: Remove sizegroups from tilleditor.py
+    #2835: First time wizard do not persist the administrator password.
+    #2836: Remove sizegroups from python code
+    #2850: Add ASalesPerson
+    #2864: Use SelectResults.__nonzero__
+    #2869: ProductSlave breaks when selecting a supplier
+    #2870: A new user isn't created if not previous select a profile
+    #2871: I can't send to supplier a purchase without money payment...
+    #2876: Error when trying to create a new database
+    #2877: Criar lista de paises em um combo.
+
+Release 0.8.1,  28-August-2006
 
 Release 0.8.0,  02-June-2006
     - Bug Fixes: 1879 2092 2189 2214 2281 2319 2334 2339 2347 2360 2427
