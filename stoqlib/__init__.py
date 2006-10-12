@@ -33,7 +33,7 @@ FIRST_DB_VERSION = 5
 
 program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br/'
-version         = "0.8.2"
+version         = "0.8.2.1"
 db_version      = 9
 release_date    = (2006, 10, 11)
 
