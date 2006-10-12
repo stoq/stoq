@@ -25,7 +25,7 @@
 from stoqlib.lib.translation import stoqlib_gettext as _, N_
 
 
-# The country list is part of the evolution source code: 
+# The country list is part of the evolution source code:
 # evolution/addressbook/gui/contact-editor/e-contact-editor-address.c
 countries = [N_("Afghanistan"),
              N_("Albania"),
