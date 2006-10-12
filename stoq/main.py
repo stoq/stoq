@@ -32,7 +32,7 @@ import os
 import sys
 
 from kiwi.component import provide_utility
-from kiwi.log import Logger
+from kiwi.log import Logger, set_log_file
 from stoqlib.database.database import db_table_name
 from stoqlib.database.exceptions import PostgreSQLError
 from stoqlib.exceptions import StoqlibError
@@ -123,6 +123,12 @@ def _check_tables():
                 % classname)
 
 def _initialize(options):
+    # Do this as early as possible to get as much as possible into the
+    # log file itself, which means we cannot depend on the config or
+    # anything else
+    set_log_file(os.path.join(os.environ['HOME'], '.stoq', 'stoq.log'),
+                 'stoq*')
+
     _check_dependencies()
     _setup_dialogs()
     log.info('reading configuration')
