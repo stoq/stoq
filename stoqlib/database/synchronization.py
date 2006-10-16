@@ -33,7 +33,7 @@ from stoqlib.database.admin import create_base_schema
 from stoqlib.database.database import db_table_name
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.database.tables import create_tables, get_table_type_by_name
+from stoqlib.database.tables import get_table_type_by_name
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.transaction import TransactionEntry
@@ -171,7 +171,6 @@ class SynchronizationService(XMLRPCService):
         Cleans the database
         """
         log.info('service.clean()')
-        create_tables()
         create_base_schema()
 
     def get_station_name(self):

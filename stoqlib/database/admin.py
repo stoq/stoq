@@ -35,9 +35,8 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database.database import finish_transaction, run_sql_file
+from stoqlib.database.database import finish_transaction, execute_sql
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.tables import create_tables
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
 from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
@@ -135,8 +134,10 @@ def user_has_usesuper(trans):
         'SELECT usesuper FROM pg_user WHERE usename=CURRENT_USER')
     return results[0] == 1
 
-def _create_procedural_languages(trans):
+def _create_procedural_languages():
     "Creates procedural SQL languages we're going to use in scripts"
+
+    trans = new_transaction()
 
     log.info('Creating procedural SQL languages')
     results = trans.queryAll('SELECT lanname FROM pg_language')
@@ -150,22 +151,14 @@ def _create_procedural_languages(trans):
 
     # Create the plpgsql language
     trans.query('CREATE LANGUAGE plpgsql')
+    trans.commit()
 
 def create_base_schema():
     log.info('Creating base schema')
 
-    trans = new_transaction()
-
-    # Create the procedural languages here instead of depending
-    # on the user running the `createlang' utility manually.
-    _create_procedural_languages(trans)
-
-    log.info('Creating views')
-    filename = '%s-schema.sql' % get_utility(IDatabaseSettings).rdbms
-    sql_file = environ.find_resource('sql', filename)
-    run_sql_file(sql_file, trans)
-
-    finish_transaction(trans, 1)
+    settings = get_utility(IDatabaseSettings)
+    schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
+    execute_sql(schema)
 
 def create_default_profiles():
     trans = new_transaction()
@@ -182,7 +175,6 @@ def initialize_system(delete_only=False, verbose=False):
     """Call all the necessary methods to startup Stoq applications for
     every purpose: production usage, testing or demonstration
     """
-    create_tables(delete_only=delete_only)
     create_base_schema()
     ensure_system_parameters()
     ensure_sellable_units()
