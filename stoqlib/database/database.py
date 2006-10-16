@@ -27,12 +27,14 @@
 
 # FIXME: Refactor this to other files
 
-import sys
+import subprocess
 
+from kiwi.component import get_utility
 from kiwi.log import Logger
 
-from stoqlib.exceptions import SQLError
 from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.interfaces import IDatabaseSettings
+from stoqlib.lib.message import error
 
 _ = stoqlib_gettext
 
@@ -119,17 +121,26 @@ def finish_transaction(conn, model=None, keep_transaction=False):
     return model
 
 
-def run_sql_file(sql_file, conn):
-    """This method takes a full sql_file name and run it in a given
-    connection
+def execute_sql(filename):
     """
-    file_data = open(sql_file).read()
-    try:
-        conn.query(file_data)
-    except:
-        type, value = sys.exc_info()[:2]
-        raise SQLError("Bad sql script, got error %s, of type %s"
-                       % (value, type))
+    Inserts Raw SQL commands into the database read from a file.
+    @param filename: filename with SQL commands
+    """
+    settings = get_utility(IDatabaseSettings)
+    cmd = ("psql -n -h %(address)s -p %(port)s %(dbname)s -q "
+           "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
+        address=settings.address,
+        port=settings.port,
+        dbname=settings.dbname,
+        schema=filename)
+
+    log.debug('sql_prepare: executing %s' % cmd)
+    proc = subprocess.Popen(cmd, shell=True,
+                            stdin=subprocess.PIPE,
+                            stdout=subprocess.PIPE)
+    returncode = proc.wait()
+    if returncode != 0:
+        error('psql returned error code %d' % returncode)
 
 def db_table_name(cls):
     """

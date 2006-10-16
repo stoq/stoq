@@ -28,8 +28,8 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 
 import stoqlib
-from stoqlib.database.database import finish_transaction, run_sql_file, \
-     db_table_name
+from stoqlib.database.database import (finish_transaction, db_table_name,
+                                       execute_sql)
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.tables import get_table_types
@@ -112,7 +112,7 @@ class SchemaMigration:
         sql_files = self._get_migration_files(self.current_db_version,
                                               self.db_version)
         for sql_file in sql_files:
-            run_sql_file(sql_file, trans)
+            execute_sql(sql_file, trans)
             parts = sql_file.replace('.sql', '').split('-')
             version = parts[-1]
             try:
