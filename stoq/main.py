@@ -126,8 +126,10 @@ def _initialize(options):
     # Do this as early as possible to get as much as possible into the
     # log file itself, which means we cannot depend on the config or
     # anything else
-    set_log_file(os.path.join(os.environ['HOME'], '.stoq', 'stoq.log'),
-                 'stoq*')
+    stoqdir = os.path.join(os.environ['HOME'], '.stoq')
+    if not os.path.exists(stoqdir):
+        os.mkdir(stoqdir)
+    set_log_file(os.path.join(stoqdir, 'stoq.log'), 'stoq*')
 
     _check_dependencies()
     _setup_dialogs()
