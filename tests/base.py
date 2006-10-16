@@ -110,13 +110,15 @@ class DomainTest(unittest.TestCase):
     def create_branch(self):
         from stoqlib.domain.person import Person
         person = Person(name='Dummy', connection=self.trans)
-        person.addFacet(ICompany, fancy_name='Dummy shop', connection=self.trans)
+        person.addFacet(ICompany, fancy_name='Dummy shop',
+                        connection=self.trans)
         return person.addFacet(IBranch, connection=self.trans)
 
     def create_supplier(self):
         from stoqlib.domain.person import Person
         person = Person(name='Supplier', connection=self.trans)
-        person.addFacet(ICompany, fancy_name='Company Name', connection=self.trans)
+        person.addFacet(ICompany, fancy_name='Company Name',
+                        connection=self.trans)
         return person.addFacet(ISupplier, connection=self.trans)
 
 
@@ -216,7 +218,8 @@ class DomainTest(unittest.TestCase):
     def create_company(self):
         from stoqlib.domain.person import Person
         person = Person(name='Dummy', connection=self.trans)
-        return person.addFacet(ICompany, fancy_name='Dummy shop', connection=self.trans)
+        return person.addFacet(ICompany, fancy_name='Dummy shop',
+                               connection=self.trans)
 
     def create_till(self):
         from stoqlib.domain.till import Till
