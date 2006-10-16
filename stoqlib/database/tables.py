@@ -34,10 +34,6 @@
 from kiwi.log import Logger
 from kiwi.python import namedAny
 
-from stoqlib.database.exceptions import ProgrammingError
-from stoqlib.database.runtime import new_transaction
-from stoqlib.database.database import db_table_name
-from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -150,18 +146,6 @@ _tables = [
                   "DeviceSettings"]),
 ]
 
-# Format stoqlib_%s_seq, see get_sequences()
-_sequences = [
-    'abstract_bookentry',
-    'branch_identifier',
-    'branch_station',
-    'payment_identifier',
-    'purchase_ordernumber',
-    'purchasereceiving_number',
-    'sale_ordernumber',
-    'sellable_code',
-    ]
-
 # fullname (eg "stoqlib.domain.person.Person") -> class
 _table_cache = {}
 # list of classes, used by get_table_types where order is important
@@ -195,43 +179,3 @@ def get_table_types():
         _import()
 
     return _table_list
-
-def get_sequence_names():
-    """
-    @returns: a list of sequence names
-    """
-    global _sequences
-    return ['stoqlib_%s_seq' % seq for seq in _sequences]
-
-def create_tables(delete_only=False):
-    trans = new_transaction()
-
-    log.info('Dropping tables')
-    table_types = get_table_types()
-    for table in table_types:
-        table_name = db_table_name(table)
-        if trans.tableExists(table_name):
-            trans.dropTable(table_name, cascade=True)
-    log.info('Dropping sequences')
-    for seq_name in get_sequence_names():
-        if trans.sequenceExists(seq_name):
-            trans.dropSequence(seq_name)
-    log.info("Done.")
-    if delete_only:
-        trans.commit()
-        return
-    log.info('Creating tables')
-    for table in table_types:
-        table_name = db_table_name(table)
-        try:
-            table.createTable(connection=trans)
-        except ProgrammingError, e:
-            raise StoqlibError(
-                "An error occurred when creating %s table:\n"
-                "=========\n"
-                "%s\n" % (table_name, e))
-    log.info('Creating sequences')
-    for seq_name in get_sequence_names():
-        trans.createSequence(seq_name)
-    log.info("Done.")
-    trans.commit()
