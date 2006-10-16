@@ -28,6 +28,7 @@ import pwd
 import socket
 
 from kiwi.component import provide_utility
+from kiwi.log import Logger
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.database import (create_database_if_missing,
@@ -46,6 +47,9 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ICurrentBranchStation,
                                     ICurrentUser,
                                     IDatabaseSettings)
+from stoqlib.lib.message import DefaultSystemNotifier, ISystemNotifier
+
+log = Logger('stoqlib.tests')
 
 # Provide a fake description utility, the ProfileSettings class depends on it
 class FakeApplicationDescriptions:
@@ -55,6 +59,16 @@ class FakeApplicationDescriptions:
     def get_descriptions(self):
         return []
 provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
+
+# This test is here to workaround trial; which refuses to quit
+# if SystemExit is raises or if sys.exit() is called.
+# For now it is assumed that errors() are fatal, that might change in
+# the near future
+class TestsuiteNotifier(DefaultSystemNotifier):
+    def error(self, short, description):
+        DefaultSystemNotifier.error(self, short, description)
+        os._exit(1)
+provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
 
 def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
@@ -73,7 +87,7 @@ def _provide_database_settings():
     provide_utility(IDatabaseSettings, db_settings)
 
     if not db_settings.has_database():
-        print 'Database %s missing, creating it' % dbname
+        log.warning('Database %s missing, creating it' % dbname)
         conn = db_settings.get_default_connection()
         create_database_if_missing(conn, dbname)
         return True
