@@ -28,11 +28,9 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 
 import stoqlib
-from stoqlib.database.database import (finish_transaction, db_table_name,
-                                       execute_sql)
+from stoqlib.database.database import finish_transaction, execute_sql
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.runtime import new_transaction
-from stoqlib.database.tables import get_table_types
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
@@ -79,13 +77,6 @@ class SchemaMigration:
                                            self.db_version))
         return True
 
-    def _create_tables(self, conn):
-        table_types = get_table_types()
-        for table in table_types:
-            if not conn.tableExists(db_table_name(table)):
-                table.createTable(connection=conn)
-        conn.commit()
-
     def check_updated(self, conn):
         if not self._check_up_to_date(conn):
             return True
@@ -100,8 +91,6 @@ class SchemaMigration:
         it's needed
         """
         trans = new_transaction()
-
-        self._create_tables(trans)
 
         if not self._check_up_to_date(trans):
             finish_transaction(trans, 1)
