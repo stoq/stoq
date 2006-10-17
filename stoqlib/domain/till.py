@@ -234,16 +234,14 @@ class Till(Domain):
             till_id=self.id, connection=self.get_connection())
 
     def get_initial_cash_amount(self):
-        view = TillFiscalOperationsView
-        entries = view.select(
-            AND(view.q.till_id == self.id,
-                view.q.is_initial_cash_amount == True),
+        entry = TillFiscalOperationsView.selectOneBy(
+            till_id=self.id,
+            is_initial_cash_amount=True,
             connection=self.get_connection())
-        count = entries.count()
-        if count > 1 or not count:
+        if not entry:
             raise DatabaseInconsistency("You should have only one initial "
                                         "cash amount entry at this point")
-        return entries[0].value
+        return entry.value
 
     def get_credits_total(self):
         view = TillFiscalOperationsView
