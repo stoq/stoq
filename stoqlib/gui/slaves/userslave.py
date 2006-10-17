@@ -21,8 +21,11 @@
 ##
 ##  Author(s):      Bruno Rafael Garcia     <brg@async.com.br>
 ##                  Evandro Vale Miquelito  <evandro@async.com.br>
+##                  Johan Dahlin            <jdahlin@async.com.br>
 ##
-##
+
+# TODO: Rename/Move parts to stoqlib/gui/editors/usereditor.py ?
+
 """ User editor slaves implementation.  """
 
 from sqlobject.sqlbuilder import func
@@ -30,7 +33,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_password
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile
@@ -124,6 +127,55 @@ class PasswordEditorSlave(BaseEditorSlave):
         return True
 
 
+class PasswordEditor(BaseEditor):
+    gladefile = 'PasswordEditor'
+    model_type = LoginInfo
+    proxy_widgets = ('current_password',)
+
+    def __init__(self, conn, user, visual_mode=False):
+        self.user = user
+        self.old_password = self.user.password
+        BaseEditor.__init__(self, conn, visual_mode=visual_mode)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.password_slave.set_password_labels(_('New Password:'),
+                                                _('Retype New Password:'))
+
+    #
+    # BaseEditorSlave Hooks
+    #
+
+    def get_title(self, model):
+        title = _('Change "%s" Password') % self.user.username
+        return title
+
+    def create_model(self, conn):
+        return LoginInfo()
+
+    def setup_slaves(self):
+        self.password_slave = PasswordEditorSlave(self.conn, self.model,
+                                                  visual_mode=self.visual_mode)
+        self.attach_slave('password_holder', self.password_slave)
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model,
+                                    PasswordEditor.proxy_widgets)
+
+    def validate_confirm(self):
+        if self.model.current_password != self.old_password:
+            msg = _(u"Password doesn't match with the stored one")
+            self.current_password.set_invalid(msg)
+            return False
+        if not self.password_slave.validate_confirm():
+            return False
+        return True
+
+    def on_confirm(self):
+        self.password_slave.on_confirm()
+        self.user.password = self.model.new_password
+        return self.user
+
 class UserDetailsSlave(BaseEditorSlave):
     gladefile = 'UserDetailsSlave'
     model_iface = IUser
@@ -201,7 +253,5 @@ class UserDetailsSlave(BaseEditorSlave):
 
 
     def on_change_password_button__clicked(self, *args):
-        from stoqlib.gui.editors.personeditor import PasswordEditor
-        # This avoid circular import
         model = run_dialog(PasswordEditor, self, self.conn, self.model)
 

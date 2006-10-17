@@ -35,7 +35,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.base.editors import SimpleEntryEditor, BaseEditor
+from stoqlib.gui.base.editors import SimpleEntryEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.slaves.paymentmethodslave import FinanceDetailsSlave
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave
@@ -44,8 +44,8 @@ from stoqlib.gui.slaves.employeeslave import (EmployeeDetailsSlave,
                                       EmployeeStatusSlave,
                                       EmployeeRoleSlave,
                                       EmployeeRoleHistorySlave)
-from stoqlib.gui.slaves.userslave import (UserDetailsSlave, UserStatusSlave,
-                                     PasswordEditorSlave, LoginInfo)
+from stoqlib.gui.slaves.userslave import UserDetailsSlave, UserStatusSlave
+
 from stoqlib.gui.slaves.supplierslave import SupplierDetailsSlave
 from stoqlib.gui.slaves.transporterslave import TransporterDataSlave
 from stoqlib.gui.slaves.branchslave import BranchDetailsSlave
@@ -129,56 +129,6 @@ class UserEditor(BasePersonRoleEditor):
         self.main_slave.on_confirm()
         self.user_details.on_confirm()
         return self.model
-
-
-class PasswordEditor(BaseEditor):
-    gladefile = 'PasswordEditor'
-    model_type = LoginInfo
-    proxy_widgets = ('current_password',)
-
-    def __init__(self, conn, user, visual_mode=False):
-        self.user = user
-        self.old_password = self.user.password
-        BaseEditor.__init__(self, conn, visual_mode=visual_mode)
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.password_slave.set_password_labels(_('New Password:'),
-                                                _('Retype New Password:'))
-
-    #
-    # BaseEditorSlave Hooks
-    #
-
-    def get_title(self, model):
-        title = _('Change "%s" Password') % self.user.username
-        return title
-
-    def create_model(self, conn):
-        return LoginInfo()
-
-    def setup_slaves(self):
-        self.password_slave = PasswordEditorSlave(self.conn, self.model,
-                                                  visual_mode=self.visual_mode)
-        self.attach_slave('password_holder', self.password_slave)
-
-    def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    PasswordEditor.proxy_widgets)
-
-    def validate_confirm(self):
-        if self.model.current_password != self.old_password:
-            msg = _(u"Password doesn't match with the stored one")
-            self.current_password.set_invalid(msg)
-            return False
-        if not self.password_slave.validate_confirm():
-            return False
-        return True
-
-    def on_confirm(self):
-        self.password_slave.on_confirm()
-        self.user.password = self.model.new_password
-        return self.user
 
 
 class CreditProviderEditor(BasePersonRoleEditor):
