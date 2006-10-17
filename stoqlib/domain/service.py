@@ -134,6 +134,7 @@ class ServiceSellableItemAdaptToDelivery(ModelAdapter):
 
     @argcheck(ASellable)
     def get_item_by_sellable(self, sellable):
+        # FIXME: Use SQL query
         items = [item for item in self.get_items()
                            if item.sellable.id == sellable.id]
         qty = len(items)
