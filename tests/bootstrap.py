@@ -130,11 +130,17 @@ def bootstrap_testsuite():
 
     empty = _provide_database_settings()
 
-    if quick and not empty:
-        _provide_current_user()
-        _provide_current_station()
-        _provide_devices()
-    else:
-        initialize_system()
-        ensure_admin_user("")
-        create(utilities=True)
+    try:
+        if quick and not empty:
+            _provide_current_user()
+            _provide_current_station()
+            _provide_devices()
+        else:
+            initialize_system()
+            ensure_admin_user("")
+            create(utilities=True)
+    except Exception, e:
+        # Work around trial
+        import traceback
+        traceback.print_exc()
+        os._exit(1)
