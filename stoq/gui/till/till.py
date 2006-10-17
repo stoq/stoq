@@ -73,7 +73,7 @@ class TillApp(SearchableAppWindow):
         self.searchbar.search_items()
         self._update_widgets()
 
-    def _update_total(self, *args):
+    def _update_total(self):
         if len(self.sales):
             totals = [sale.total for sale in self.sales]
             subtotal = currency(sum(totals, currency(0)))
@@ -100,7 +100,7 @@ class TillApp(SearchableAppWindow):
         accept_confirm = status == Sale.STATUS_OPENED
         self.confirm_order_button.set_sensitive(accept_confirm)
 
-    def _update_widgets(self, *args):
+    def _update_widgets(self):
         has_till = Till.get_current(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
