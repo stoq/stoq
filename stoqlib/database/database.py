@@ -77,15 +77,12 @@ def drop_database(conn, dbname):
     log.info('Dropping SQL database: %s' % dbname)
     curs.execute('DROP DATABASE %s' % dbname)
 
-def create_database_if_missing(conn, dbname):
+def create_database(conn, dbname):
     """
-    Checks if there's a database present and creates a new one if it's not
-    @param conn: a connection
-    @param dbname: the name of the database
-    @returns: True if a database was created, False otherwise
+    Create the specified database
+    @param conn: a database connection
+    @param dbname: name of the database
     """
-    if database_exists(conn, dbname):
-        return False
 
     # We need to close the current transaction, which is probably created
     # by SQLObject somehow, the only way to do that is to fetch the psycopg
@@ -97,7 +94,33 @@ def create_database_if_missing(conn, dbname):
     log.info('Creating SQL database: %s' % dbname)
     curs.execute('CREATE DATABASE %s' % dbname)
 
+def create_database_if_missing(conn, dbname):
+    """
+    Checks if there's a database present and creates a new one if it's not
+    @param conn: a connection
+    @param dbname: the name of the database
+    @returns: True if a database was created, False otherwise
+    """
+    if database_exists(conn, dbname):
+        return False
+
+    create_database(conn, dbname)
+
     return True
+
+def clean_database(dbname):
+    """
+    Cleans a database
+    @param dbname: name of the database
+    """
+
+    settings = get_utility(IDatabaseSettings)
+    conn = settings.get_default_connection()
+    if database_exists(conn, dbname):
+        drop_database(conn, dbname)
+
+    create_database(conn, dbname)
+    conn.close()
 
 #
 # General routines
