@@ -22,6 +22,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Main interface definition for pos application.  """
 
@@ -33,9 +34,8 @@ from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
-from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import UNIT_WEIGHT
-from stoqlib.exceptions import (StoqlibError, DatabaseInconsistency)
+from stoqlib.exceptions import StoqlibError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
 from stoqlib.lib.message import warning, yesno
@@ -195,18 +195,9 @@ class POSApp(AppWindow):
         if not barcode:
             raise StoqlibError("_get_sellable needs a barcode")
 
-        table = ASellable
-        q1 = table.q.barcode == barcode
-        q2 = table.q.status == table.STATUS_AVAILABLE
-        query = AND(q1, q2)
-        sellables = table.select(query, connection=self.conn)
-        qty = sellables.count()
-        if qty > 1:
-            raise DatabaseInconsistency("You should never have two sellables "
-                                        "with the same barcode")
-        if not qty:
-            return
-        return sellables[0]
+        return ASellable.selectOneBy(barcode=barcode,
+                                     status=ASellable.STATUS_AVAILABLE,
+                                     connection=self.conn)
 
     def _select_first_item(self):
         if len(self.sellables):
@@ -320,7 +311,7 @@ class POSApp(AppWindow):
     def _delete_sellable_item(self, item):
         self.sellables.remove(item)
         if isinstance(item, ServiceSellableItem):
-            delivery = IDelivery(item)
+            delivery = IDelivery(item, None)
             if delivery:
                 for item in delivery.get_items():
                     delivery.remove_item(item)
@@ -346,7 +337,7 @@ class POSApp(AppWindow):
         if not Till.get_current(self.conn):
             warning(_(u"You need open the till before start doing sales."))
             return
-        if not ISalesPerson(get_current_user(self.conn).person):
+        if not ISalesPerson(get_current_user(self.conn).person, None):
             warning(_(u"You can't start a new sale, since you are not a "
                       "salesperson."))
             return
@@ -382,6 +373,8 @@ class POSApp(AppWindow):
         if not self.sellables:
             warning(_("You don't have products to delivery."))
             return
+
+        # FIXME: Use an SQL query
         products = [obj for obj in self.sellables
                         if isinstance(obj, ProductSellableItem)
                            and not obj.has_been_totally_delivered()]
