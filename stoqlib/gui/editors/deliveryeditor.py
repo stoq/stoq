@@ -24,8 +24,6 @@
 ##
 """ Product delivery editor implementation """
 
-import gtk
-
 from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListSlave, SimpleListDialog
@@ -127,7 +125,7 @@ class DeliveryEditor(BaseEditor):
         addresses = self.model.sale.client.person.addresses
         result = run_dialog(SimpleListDialog, self, cols,
                             addresses, title=_('Client Addresses'),
-                            selection_mode=gtk.SELECTION_BROWSE)
+                            multiple=False)
         if result:
             assert isinstance(result, list) and len(result) == 1
             result = result[0]
