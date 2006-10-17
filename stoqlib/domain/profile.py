@@ -79,6 +79,7 @@ class UserProfile(Domain):
                         has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
+        # FIXME: Use SQL query
         settings = [s for s in self.profile_settings
                             if s.app_dir_name == app_name
                                     and s.has_permission]
