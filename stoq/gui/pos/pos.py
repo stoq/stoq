@@ -32,6 +32,7 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.argcheck import argcheck
+from kiwi.log import Logger
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqdrivers.constants import UNIT_WEIGHT
@@ -71,7 +72,7 @@ from stoq.gui.application import AppWindow
 from stoq.gui.pos.neworder import NewOrderEditor
 
 _ = gettext.gettext
-
+log = Logger('stoq.pos')
 
 class POSApp(AppWindow):
 
@@ -346,6 +347,7 @@ class POSApp(AppWindow):
         rollback_and_begin(self.conn)
         self.sale = self.run_dialog(NewOrderEditor, self.conn)
         if self.sale:
+            log.info("Creating a new order")
             self.sellables.clear()
             self.order_proxy.set_model(self.sale)
             self._update_widgets()
@@ -363,6 +365,7 @@ class POSApp(AppWindow):
             if not yesno(_(u'The current order will be canceled, Confirm?'),
                          gtk.RESPONSE_YES,_(u"Cancel Order"), _(u"Go Back")):
                 return
+        log.info("Cancelling order")
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
             if self._coupon:
@@ -410,6 +413,7 @@ class POSApp(AppWindow):
             if can_confirm:
                 if not self._finish_coupon():
                     return
+            log.info("Checking out")
             self._coupon = self.sale = None
             self.conn.commit()
             self._clear_order()
@@ -422,12 +426,14 @@ class POSApp(AppWindow):
     #
 
     def _open_till(self):
+        log.info("Opening till")
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
             return
         rollback_and_begin(self.conn)
 
     def _close_till(self):
+        log.info("Closing till")
         if verify_and_close_till(self, self.conn):
             return
         self.conn.commit()
@@ -520,6 +526,7 @@ class POSApp(AppWindow):
     def on_EditClient__activate(self, action):
         if not (self.sale and self.sale.client):
             raise ValueError('You must have a client defined at this point')
+        log.info("Editing client")
         if run_person_role_dialog(ClientEditor, self, self.conn,
                                   self.sale.client):
             self.conn.commit()
