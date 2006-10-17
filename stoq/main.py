@@ -46,7 +46,7 @@ _ = gettext.gettext
 log = Logger('stoq.main')
 
 def _check_dependencies():
-    log.info('checking dependencies')
+    log.debug('checking dependencies')
     try:
         import reportlab
     except ImportError:
@@ -55,7 +55,7 @@ def _check_dependencies():
     if map(int, reportlab.Version.split('.')) < [1, 20]:
         raise SystemExit("Reportlab 1.20 is required but %s found" %
                          reportlab.Version)
-    log.info('reportlab okay')
+    log.debug('reportlab okay')
 
     try:
         import gazpacho
@@ -66,7 +66,7 @@ def _check_dependencies():
     if map(int, gazpacho.__version__.split('.')) < [0, 6, 6]:
         raise SystemExit("Gazpacho 0.6.6 is required but %s found" %
                          gazpacho.__version__)
-    log.info('gazpacho okay')
+    log.debug('gazpacho okay')
 
 def _run_first_time_wizard(config):
     from stoqlib.gui.base.dialogs import run_dialog
@@ -79,13 +79,13 @@ def _setup_dialogs():
     # This needs to be here otherwise we can't install the dialog
     if 'STOQ_TEST_MODE' in os.environ:
         return
-    log.info('providing graphical notification dialogs')
+    log.debug('providing graphical notification dialogs')
     from stoqlib.gui.base.dialogs import DialogSystemNotifier
     from stoqlib.lib.message import ISystemNotifier
     provide_utility(ISystemNotifier, DialogSystemNotifier(), replace=True)
 
 def _setup_printers():
-    log.info('setting up printers')
+    log.debug('setting up printers')
     from stoqlib.database.runtime import get_connection, get_current_station
     from stoqlib.lib.drivers import (
         get_fiscal_printer_settings_by_station,
@@ -98,7 +98,7 @@ def _setup_printers():
         create_virtual_printer_for_current_station()
 
 def _setup_cookiefile(config_dir):
-    log.info('setting up cookie file')
+    log.debug('setting up cookie file')
     from stoqlib.lib.cookie import Base64CookieFile
     from stoqlib.lib.interfaces import ICookieFile
     cookiefile = os.path.join(config_dir, "cookie")
@@ -108,7 +108,7 @@ def _check_tables():
     from stoqlib.database.tables import get_table_types
     from stoqlib.database.runtime import get_connection
 
-    log.info('checking tables')
+    log.debug('checking tables')
 
     # We must check if all the tables are already in the database.
     conn = get_connection()
@@ -133,7 +133,7 @@ def _initialize(options):
 
     _check_dependencies()
     _setup_dialogs()
-    log.info('reading configuration')
+    log.debug('reading configuration')
     config = StoqConfig(filename=options.filename)
     config_dir = config.get_config_directory()
 
@@ -160,7 +160,7 @@ def _initialize(options):
               _("Invalid config file settings, got error '%s', "
                 "of type '%s'" % (value, type)))
 
-    log.info('calling setup()')
+    log.debug('calling setup()')
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
     try:
@@ -177,7 +177,7 @@ def _show_splash():
     from stoqlib.gui.splash import SplashScreen
     from kiwi.environ import environ
 
-    log.info('displaying splash screen')
+    log.debug('displaying splash screen')
     splash = SplashScreen(environ.find_resource("pixmaps", "splash.jpg"))
     splash.show()
 
@@ -187,10 +187,10 @@ def _run_app(appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
     from stoq.gui.login import LoginHelper
 
-    log.info('register stock icons')
+    log.debug('register stock icons')
     register_iconsets()
 
-    log.info('loading application')
+    log.debug('loading application')
     appconf = LoginHelper(appname)
     # Get the selected application if nothing was selected
     if not appname:
@@ -203,16 +203,16 @@ def _run_app(appname):
         raise RuntimeError(
             "Application %s must have a app.main() function")
 
-    log.info('running application')
+    log.info('Starting %s application' % appname)
     module.main(appconf)
 
     splash.hide()
 
-    log.info("Entering main loop")
+    log.debug("Entering main loop")
     import gtk
     gtk.main()
 
-    log.info("Shutting down application")
+    log.info("Shutting down %s application" % appname)
 
 def _parse_command_line(args):
     log.info('parsing command line arguments: %s ' % (args,))
