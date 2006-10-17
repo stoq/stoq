@@ -43,7 +43,7 @@ DEFAULT_RDBMS = 'postgres'
 
 _ = stoqlib_gettext
 
-log = Logger('stoqlib.database')
+log = Logger('stoqlib.database.settings')
 
 class DatabaseSettings(object):
     """
@@ -67,14 +67,19 @@ class DatabaseSettings(object):
         self.username = username
         self.password = password
 
-    def _get_connection_uri_internal(self, dbname):
+    def _build_uri(self, dbname, filter_password=False):
         # Here we construct a uri for database access like:
         # 'postgresql://username@localhost/dbname'
         if self.rdbms != DEFAULT_RDBMS:
             raise ConfigError("Unsupported database type: %s" % self.rdbms)
 
+        if filter_password:
+            password = '*****'
+        else:
+            password = self.password
+
         authority = '%s:%s@%s:%s' % (
-            self.username, self.password, self.address, self.port)
+            self.username, password, self.address, self.port)
         if dbname is None:
             # template1 is a special database which is always present in 7.4
             # and later which we current depend on. When we upgrade the
@@ -84,8 +89,12 @@ class DatabaseSettings(object):
         return '%s://%s/%s' % (self.rdbms, authority, dbname)
 
     def _get_connection_internal(self, dbname):
-        conn_uri = self._get_connection_uri_internal(dbname)
-        log.info('connecting to %s' % conn_uri)
+        conn_uri = self._build_uri(dbname)
+
+        # Do not output the password in the logs
+        log.info('connecting to %s' % self._build_uri(
+            dbname, filter_password=True))
+
         try:
             conn = connectionForURI(conn_uri)
             conn.makeConnection()
@@ -122,7 +131,7 @@ class DatabaseSettings(object):
         It's used by SQLObject to connect to a database.
         @returns: a string like postgresql://username@localhost/dbname
         """
-        return self._get_connection_uri_internal(self.dbname)
+        return self._build_uri(self.dbname)
 
     def get_connection(self):
         """
