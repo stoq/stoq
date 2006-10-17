@@ -30,7 +30,6 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_password
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
@@ -187,16 +186,11 @@ class UserDetailsSlave(BaseEditorSlave):
     #
 
     def on_username__validate(self, widget, value):
+        # FIXME: Move to Person/IUser
         user_table = Person.getAdapterClass(IUser)
         query = func.UPPER(user_table.q.username) == value.upper()
-        users = Person.iselect(IUser, query, connection=self.conn)
-        users_count = users.count()
-        if not users_count:
-            return
-        if users_count > 1:
-            raise DatabaseInconsistency('Duplicated value. You cannot have '
-                                        'users with the same username')
-        if self.model.username != value:
+        user = Person.iselectOne(IUser, query, connection=self.conn)
+        if user and self.model.username != value:
             return ValidationError('Username already exist')
 
     def on_profile_button__clicked(self, button):
