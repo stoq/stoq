@@ -292,11 +292,25 @@ class SimpleListDialog(BasicDialog):
     size = (500, 400)
 
     def __init__(self, columns, objects, hide_cancel_btn=True,
-                 title='', selection_mode=gtk.SELECTION_MULTIPLE):
+                 title='', multiple=True):
+        """
+        @param columns:
+        @param objects:
+        @param hide_cancel_btn:
+        @param title:
+        @param multiple: if we're allowed to select multiple items
+        @type multiple: boolean
+        """
+
         BasicDialog.__init__(self)
         BasicDialog._initialize(self, size=self.size, title=title)
         if hide_cancel_btn:
             self.cancel_button.hide()
+
+        if multiple:
+            selection_mode = gtk.SELECTION_MULTIPLE
+        else:
+            selection_mode = gtk.SELECTION_BROWSE
         self.setup_slave(columns, objects, selection_mode)
 
     def setup_slave(self, columns, objects, selection_mode):
