@@ -75,7 +75,7 @@ class AdminApp(SearchableAppWindow):
         SearchableAppWindow.on_searchbar_activate(self, slave, objs)
         self._update_view()
 
-    def _update_view(self, *args):
+    def _update_view(self):
         has_selected = self.users.get_selected() is not None
         self.edit_button.set_sensitive(has_selected)
 
@@ -130,47 +130,47 @@ class AdminApp(SearchableAppWindow):
     # Callbacks
     #
 
-    def _on_fiscalbook_action_clicked(self, *args):
+    def _on_fiscalbook_action_clicked(self, button):
         self.run_dialog(FiscalBookEntrySearch, self.conn, hide_footer=True)
 
-    def _on_new_user_action_clicked(self, *args):
+    def _on_new_user_action_clicked(self, button):
         self._add_user()
 
-    def on_users__double_click(self, *args):
+    def on_users__double_click(self, users, user):
         self._edit_user()
 
-    def on_users__selection_changed(self, *args):
+    def on_users__selection_changed(self, users, user):
         self._update_view()
 
-    def _on_cfop_action_clicked(self, *args):
+    def _on_cfop_action_clicked(self, button):
         self.run_dialog(CfopSearch, self.conn, hide_footer=True)
 
-    def _on_employees_action_clicked(self, *args):
+    def _on_employees_action_clicked(self, button):
         self.run_dialog(EmployeeSearch, self.conn, hide_footer=True)
 
-    def _on_user_profiles_action_clicked(self, *args):
+    def _on_user_profiles_action_clicked(self, button):
         self.run_dialog(UserProfileSearch, self.conn)
 
-    def _on_employee_role__action_clicked(self, *args):
+    def _on_employee_role__action_clicked(self, button):
         self.run_dialog(EmployeeRoleSearch, self.conn)
 
-    def _on_branch_action_clicked(self, *args):
+    def _on_branch_action_clicked(self, button):
         self.run_dialog(BranchSearch, self.conn, hide_footer=True)
 
-    def _on_branchstation_action_clicked(self, *args):
+    def _on_branchstation_action_clicked(self, button):
         self.run_dialog(StationSearch, self.conn, hide_footer=True)
 
-    def on_add_button__clicked(self, *args):
+    def on_add_button__clicked(self, button):
         self._add_user()
 
-    def on_edit_button__clicked(self, *args):
+    def on_edit_button__clicked(self, button):
         self._edit_user()
 
-    def on_devices_setup_activate(self, *args):
+    def on_devices_setup_activate(self, button):
         self.run_dialog(DeviceSettingsDialog, self.conn)
 
-    def on_system_parameters_activate(self, *args):
+    def on_system_parameters_activate(self, button):
         self.run_dialog(ParametersListingDialog, self.conn)
 
-    def on_payment_methods_activate(self, *args):
+    def on_payment_methods_activate(self, button):
         self.run_dialog(PaymentMethodsDialog, self.conn)
