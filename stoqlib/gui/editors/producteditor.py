@@ -173,6 +173,7 @@ class ProductSupplierEditor(BaseEditor):
         # selected.
         self._last_supplier = model.supplier
 
+    # Move this to Product domain class see #2400
     def update_main_supplier_references(self, main_supplier):
         if not self.model.suppliers:
             return
