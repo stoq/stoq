@@ -147,7 +147,7 @@ class TillApp(SearchableAppWindow):
             return
         rollback_and_begin(self.conn)
 
-    def close_till(self, *args):
+    def close_till(self):
         if not verify_and_close_till(self, self.conn):
             return
         self.conn.commit()
@@ -217,29 +217,34 @@ class TillApp(SearchableAppWindow):
     # Actions
     #
 
-    def _on_close_till_action__clicked(self, *args):
+    def _on_close_till_action__clicked(self, button):
         parent = self.get_toplevel()
         if check_emit_reduce_Z(self.conn, parent):
             self.close_till()
 
-    def _on_open_till_action__clicked(self, *args):
+    def _on_open_till_action__clicked(self, button):
         parent = self.get_toplevel()
         if check_emit_read_X(self.conn, parent):
             self.open_till()
 
-    def _on_client_search_action__clicked(self, *args):
+    def _on_client_search_action__clicked(self, button):
         self._run_search_dialog(ClientSearch, hide_footer=True)
 
-    def _on_sale_search_action__clicked(self, *args):
+    def _on_sale_search_action__clicked(self, button):
         self._run_search_dialog(SaleSearch)
 
-    def _on_fiscal_till_operations__action_clicked(self, *args):
+    def _on_fiscal_till_operations__action_clicked(self, button):
         self._run_search_dialog(TillFiscalOperationsSearch)
 
-    def _on_treasury_action__clicked(self, *args):
+    def _on_till_operation_close_till(self, till_operation):
+        self.close_till()
+
+    def _on_treasury_action__clicked(self, button):
         dialog = TillOperationDialog(self.conn)
-        dialog.connect('close-till', self.close_till)
+        signal_id = dialog.connect('close-till',
+                                   self._on_till_operation_close_till)
         self.run_dialog(dialog, self.conn)
+        dialog.disconnect(signal_id)
 
     #
     # Callbacks
@@ -254,19 +259,19 @@ class TillApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
-    def on_confirm_order_button__clicked(self, *args):
+    def on_confirm_order_button__clicked(self, button):
         self._confirm_order()
 
-    def on_sales__double_click(self, *args):
+    def on_sales__double_click(self, sales, sale):
         self._run_details_dialog()
 
-    def on_sales__selection_changed(self, klist, data):
+    def on_sales__selection_changed(self, sales, sale):
         self._update_toolbar_buttons()
 
-    def on_details_button__clicked(self, *args):
+    def on_details_button__clicked(self, button):
         self._run_details_dialog()
 
-    def on_return_button__clicked(self, *args):
+    def on_return_button__clicked(self, button):
         sale_view = self._check_selected()
         retval = run_dialog(SaleReturnWizard, self, self.conn, sale_view)
         finish_transaction(self.conn, retval, keep_transaction=True)

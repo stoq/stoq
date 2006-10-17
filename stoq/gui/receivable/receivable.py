@@ -67,7 +67,7 @@ class ReceivableApp(SearchableAppWindow):
         self.summary_label.show()
         self.list_vbox.pack_start(self.summary_label, False)
 
-    def _update_widgets(self, *args):
+    def _update_widgets(self):
         has_sales = len(self.receivables) > 0
         widgets = [self.cancel_button, self.details_button,
                    self.edit_button, self.add_button]
@@ -115,8 +115,8 @@ class ReceivableApp(SearchableAppWindow):
     # Kiwi callbacks
     #
 
-    def _on_conference_action_clicked(self, *args):
+    def _on_conference_action_clicked(self, button):
         pass
 
-    def _on_bills_action_clicked(self, *args):
+    def _on_bills_action_clicked(self, button):
         pass
