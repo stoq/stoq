@@ -142,7 +142,7 @@ class PurchaseApp(SearchableAppWindow):
         order.status = PurchaseOrder.ORDER_CONFIRMED
         order.confirm_date = datetime.datetime.now()
 
-    def _run_details_dialog(self, *args):
+    def _run_details_dialog(self):
         orders = self.orders.get_selected_rows()
         qty = len(orders)
         if qty != 1:
@@ -234,7 +234,7 @@ class PurchaseApp(SearchableAppWindow):
         # FIXME Remove this method after gazpacho bug fix.
         self._open_order()
 
-    def on_details_button__clicked(self, *args):
+    def on_details_button__clicked(self, button):
         self._run_details_dialog()
 
     def on_orders__selection_changed(self, orders, selection):
