@@ -255,11 +255,17 @@ class BasicPluggableDialog(BasicDialog):
         self.retval = self.slave.on_confirm()
         self.close()
 
+        log.info("%s: Closed (confirmed), retval=%r" % (
+            self.slave.__class__.__name__, self.retval))
+
     def cancel(self, *args):
         # self.slave.on_cancel() should return a considered failure
         # value
         self.retval = self.slave.on_cancel()
         self.close()
+
+        log.info("%s: Closed (cancelled), retval=%r" % (
+            self.slave.__class__.__name__, self.retval))
 
 #
 # Wrapping variants, which take a slave as a parameter and set it up to
@@ -420,12 +426,17 @@ def run_dialog(dialog, parent, *args, **kwargs):
     instantiated before runing the dialog.
     """
     parent = parent or get_current_toplevel()
+    orig_dialog = dialog
     dialog = get_dialog(parent, dialog, *args, **kwargs)
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
 
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
+
+    dialog_name = orig_dialog.__name__
+
+    log.info("%s: Opening" % dialog_name)
     toplevel.run()
 
     retval = dialog.retval
