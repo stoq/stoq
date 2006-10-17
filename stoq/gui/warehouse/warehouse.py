@@ -85,7 +85,7 @@ class WarehouseApp(SearchableAppWindow):
         items.append(ALL_BRANCHES)
         return items
 
-    def _update_widgets(self, *args):
+    def _update_widgets(self):
         has_stock = len(self.products) > 0
         self.retention_button.set_sensitive(has_stock)
         one_selected = len(self.products.get_selected_rows()) == 1
@@ -138,15 +138,15 @@ class WarehouseApp(SearchableAppWindow):
     # Callbacks
     #
 
-    def on_products__selection_changed(self, *args):
+    def on_products__selection_changed(self, products, product):
         self._update_widgets()
 
-    def _on_receive_action_clicked(self, *args):
+    def _on_receive_action_clicked(self, button):
         trans = new_transaction()
         model = self.run_dialog(ReceivingOrderWizard, trans)
         finish_transaction(trans, model)
 
-    def on_stock_transfer_action_clicked(self, *args):
+    def on_stock_transfer_action_clicked(self, button):
         # TODO To be implemented
         pass
 
@@ -167,7 +167,7 @@ class WarehouseApp(SearchableAppWindow):
         sellable_view.sync()
         self.products.update(sellable_view)
 
-    def on_receiving_search_action_clicked(self, *args):
+    def on_receiving_search_action_clicked(self, button):
         self.run_dialog(PurchaseReceivingSearch, self.conn)
 
     def on_print_button__clicked(self, button):
