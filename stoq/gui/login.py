@@ -33,9 +33,9 @@ from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import get_connection
-from stoqlib.exceptions import (DatabaseError, UserProfileError,
-                                LoginError, DatabaseInconsistency)
-from stoqlib.domain.person import PersonAdaptToUser
+from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
+from stoqlib.domain.interfaces import IUser
+from stoqlib.domain.person import Person
 from stoqlib.gui.login import LoginDialog
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     CookieError, ICookieFile, ICurrentUser)
@@ -108,20 +108,12 @@ class LoginHelper:
 
     def _check_user(self, username, password):
         # This function is really just a post-validation item.
-        table = PersonAdaptToUser
-        conn = get_connection()
-        res = table.select(table.q.username == '%s' % username,
-                           connection=conn)
+        user = Person.iselectOneBy(IUser, username=username,
+                                   connection=get_connection())
 
-        if not res:
+        if not user:
             raise LoginError(_("Invalid user or password"))
 
-        count = res.count()
-        if count != 1:
-            raise DatabaseInconsistency("It should exists only one instance "
-                                        "in database for this username, got "
-                                        "%d instead" % count)
-        user = res[0]
         if not user.is_active:
             raise LoginError(_('This user is inactive'))
 
