@@ -337,15 +337,11 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                                   iss_value=iss_value)
 
     def revert_fiscal_entry(self, invoice_number):
-        conn = self.get_connection()
-        entries = AbstractFiscalBookEntry.selectBy(payment_groupID=self.id,
-                                                   connection=conn)
-        if entries.count() > 1:
-            raise DatabaseInconsistency("You should have only one fiscal "
-                                        "entry per payment group")
-        if not entries:
-            return
-        entries[0].reverse_entry(invoice_number)
+        entry = AbstractFiscalBookEntry.selectOneBy(
+            payment_groupID=self.id,
+            connection=self.get_connection())
+        if entry:
+            entry.reverse_entry(invoice_number)
 
     def _get_paid_payments(self):
         # FIXME: Logic in SQL
