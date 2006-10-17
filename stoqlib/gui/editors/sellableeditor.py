@@ -31,7 +31,6 @@ from kiwi.python import Settable
 
 from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.domain.sellable import (SellableCategory, ASellable,
@@ -177,17 +176,11 @@ class SellableEditor(BaseEditor):
             else:
                 query = SellableUnit.q.index == unit.index
             trans = new_transaction()
-            result = SellableUnit.select(query, connection=trans)
-            count = result.count()
-            if not count:
+            sellable = SellableUnit.selectOne(query, connection=trans)
+            if not sellable:
                 return
-            elif count > 1:
-                raise DatabaseInconsistency(
-                    "It is not possible to have more than one SellableUnit "
-                    "object representing the same unit."
-                    "found %d: %r" % (count, list(result)))
-            self._sellable.unit = SellableUnit.get(result[0].id,
-                                                   connection=self.trans)
+            self._sellable.unit = trans.get(sellable)
+
         SellableUnit.delete(unit.id, connection=self.trans)
 
     def update_unit_entry(self):
