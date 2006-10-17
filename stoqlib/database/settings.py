@@ -155,4 +155,6 @@ class DatabaseSettings(object):
         @return: if the database exists
         """
         conn = self.get_default_connection()
-        return database_exists(conn, self.dbname)
+        retval = database_exists(conn, self.dbname)
+        conn.close()
+        return retval

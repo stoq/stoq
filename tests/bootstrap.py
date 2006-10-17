@@ -90,6 +90,7 @@ def _provide_database_settings():
         log.warning('Database %s missing, creating it' % dbname)
         conn = db_settings.get_default_connection()
         create_database_if_missing(conn, dbname)
+        conn.close()
         return True
 
     return False
