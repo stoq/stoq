@@ -28,6 +28,7 @@ import shutil
 import os
 
 import gtk
+from gtk import keysyms
 from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate, GladeDelegate
 from kiwi.ui.views import BaseView
@@ -111,8 +112,8 @@ class AbstractDialog(GladeDelegate, RunnableView):
 
         self.setup_keyactions()
         GladeDelegate.__init__(self, gladefile=self.gladefile,
-                          delete_handler=delete_handler,
-                          keyactions=self.keyactions)
+                               delete_handler=delete_handler,
+                               keyactions=self.keyactions)
 
     def setup_keyactions(self):
         self.keyactions = {}
@@ -158,7 +159,7 @@ class BasicDialog(AbstractDialog):
         self.ok_button.set_use_underline(True)
 
     def setup_keyactions(self):
-        self.keyactions = {gtk.keysyms.Escape: self.cancel}
+        self.keyactions = {keysyms.Escape: self.cancel}
 
     def confirm(self, *args):
         self.retval = True
@@ -296,9 +297,9 @@ class ConfirmDialog(BasicDialog):
             self.set_ok_label(ok_label)
 
     def setup_keyactions(self):
-        self.keyactions = { gtk.keysyms.Escape: self.cancel,
-                            gtk.keysyms.Return: self.confirm,
-                            gtk.keysyms.KP_Enter: self.confirm}
+        self.keyactions = {keysyms.Escape: self.cancel,
+                           keysyms.Return: self.confirm,
+                           keysyms.KP_Enter: self.confirm}
 
 class NotifyDialog(ConfirmDialog):
     """Dialog that notifies an event. It prints text in a label and offers a
@@ -425,8 +426,8 @@ def run_dialog(dialog, parent, *args, **kwargs):
 
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
-
     toplevel.run()
+
     retval = dialog.retval
     dialog.destroy()
 
