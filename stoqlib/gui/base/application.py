@@ -75,6 +75,19 @@ class BaseAppWindow(GladeDelegate):
             toplevel.set_size_request(*self.size)
         toplevel.set_title(self.get_title())
 
+        # As of Gtk+ 2.8, the proper way to track this is using
+        # window-state-event, we skip that and assume the window
+        # is not made fullscreen by any other means
+        self._is_fullscreen = False
+
+    def key_control_F11(self):
+        window = self.get_toplevel()
+        if self._is_fullscreen:
+            window.unfullscreen()
+        else:
+            window.fullscreen()
+        self._is_fullscreen = not self._is_fullscreen
+
     def get_title(self):
         """This method must be overwritten on child when it's needed"""
         return self.title
