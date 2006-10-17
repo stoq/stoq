@@ -252,7 +252,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_print_button__clicked(self, button):
         self._print_selected_items()
 
-    # FIXME: Kiwi autoconnection OR rename
+    # FIXME: Kiwi autoconnection OR rename, see #2323
 
     def _on_suppliers_action_clicked(self, action):
         self.run_dialog(SupplierSearch, self.conn, hide_footer=True)
