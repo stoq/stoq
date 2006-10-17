@@ -137,8 +137,8 @@ def get_connection():
     return _connection
 
 def new_transaction():
-    log.info('Creating a new transaction in %s()'
-             % sys._getframe(1).f_code.co_name)
+    log.debug('Creating a new transaction in %s()'
+              % sys._getframe(1).f_code.co_name)
     _transaction = StoqlibTransaction(get_connection())
     assert _transaction is not None
     return _transaction
