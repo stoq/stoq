@@ -95,13 +95,9 @@ def _provide_database_settings():
     return False
 
 def _provide_current_user():
-    conn = get_connection()
-    table = Person.getAdapterClass(IUser)
-    results = table.select(
-        table.q.username == 'admin',
-        connection=conn)
-
-    provide_utility(ICurrentUser, results[0])
+    user = Person.iselectOneBy(IUser, username='admin',
+                               connection=get_connection())
+    provide_utility(ICurrentUser, user)
 
 def _provide_current_station():
     trans = new_transaction()
