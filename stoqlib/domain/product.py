@@ -389,6 +389,13 @@ class ProductAdaptToStorable(ModelAdapter):
                             % type(item))
         ProductStockItem.delete(item.id, connection=conn)
 
+    #
+    # Properties
+    #
+
+    @property
+    def product(self):
+        return self.get_adapted()
 
     #
     # IStorable implementation
@@ -410,7 +417,7 @@ class ProductAdaptToStorable(ModelAdapter):
             stock_item.quantity += quantity
 
         # FIXME: This should only be done when going from quantity 0 to n > 1
-        sellable = ISellable(self.get_adapted(), None)
+        sellable = ISellable(self.product, None)
         sellable.can_sell()
 
     def increase_logic_stock(self, quantity, branch=None):
