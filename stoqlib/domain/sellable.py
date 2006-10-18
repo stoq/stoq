@@ -323,6 +323,11 @@ class ASellable(InheritableModelAdapter):
             raise ValueError('This sellable is already available')
         self.status = self.STATUS_AVAILABLE
 
+    def can_sell(self):
+        # Identical implementation to cancel(), but it has a very different
+        # use case, so we keep another method
+        self.status = self.STATUS_AVAILABLE
+
     def add_sellable_item(self, sale, quantity=1, price=None, **kwargs):
         """Add a new sellable item instance tied to the current
         sellable object

@@ -371,7 +371,6 @@ class ProductAdaptToStorable(ModelAdapter):
                                 stock_cost=stock_cost, quantity=quantity,
                                 logic_quantity=logic_quantity,
                                 storable=self)
-
     #
     # IContainer implementation
     #
@@ -402,14 +401,17 @@ class ProductAdaptToStorable(ModelAdapter):
             self._add_stock_item(branch)
 
     def increase_stock(self, quantity, branch=None):
-        stocks = self.get_stocks(branch)
-        for stock_item in stocks:
+        if quantity <= 0:
+            raise ValueError("quantity must be a positive number")
+
+        # FIXME: There should only be one stock_item per branch,
+        #        no need to iterate!
+        for stock_item in self.get_stocks(branch):
             stock_item.quantity += quantity
-        # FIXME: We cannot assume that the object we adapt implements ISellable
-        adapted = self.get_adapted()
-        sellable = ISellable(adapted)
-        if sellable.is_sold():
-            sellable.cancel()
+
+        # FIXME: This should only be done when going from quantity 0 to n > 1
+        sellable = ISellable(self.get_adapted(), None)
+        sellable.can_sell()
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
