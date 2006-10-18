@@ -252,5 +252,5 @@ class UserDetailsSlave(BaseEditorSlave):
             self.proxy.update('profile')
 
     def on_change_password_button__clicked(self, button):
-        model = run_dialog(PasswordEditor, self, self.conn, self.model)
+        run_dialog(PasswordEditor, self, self.conn, self.model)
 

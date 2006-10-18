@@ -169,7 +169,7 @@ def create_default_profiles():
     log.info("Creating user default profiles")
     UserProfile.create_profile_template(trans, 'Administrator', True)
     UserProfile.create_profile_template(trans, 'Manager', True)
-    profile = UserProfile.create_profile_template(trans, 'Salesperson', False)
+    UserProfile.create_profile_template(trans, 'Salesperson', False)
 
     finish_transaction(trans, 1)
 
