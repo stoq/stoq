@@ -103,10 +103,18 @@ class ISellable(NoneInterface):
     on_sale_end_date = Attribute('datetime')
 
     def can_be_sold():
-        """FIXME"""
+        """
+        Whether the sellable is available and can be sold.
+        @returns: if the item can be sold
+        @rtype: boolean
+        """
 
     def is_sold():
-        """FIXME"""
+        """
+        Whether the sellable is sold.
+        @returns: if the item is sold
+        @rtype: boolean
+        """
 
     def sell():
         """Sell the sellable"""
@@ -118,16 +126,29 @@ class ISellable(NoneInterface):
         """Adds a new SellableItem instance for this sellable object"""
 
     def get_code_str():
-        """FIXME"""
+        """
+        Fetches the current code represented as a string.
+        @returns: code
+        @rtype: string
+        """
 
     def get_short_description():
-        """FIXME"""
+        """
+        Returns a short description of the current sale
+        @returns: description
+        @rtype: string
+        """
 
     def get_suggested_markup():
-        """FIXME"""
+        """
+        Returns the suggested markup for the sellable
+        @returns: suggested markup
+        @rtype: decimal
+        """
 
+    # FIXME: This should be moved to Product as part of #2729
     def get_unit_description():
-        """FIXME"""
+        """Undocumented"""
 
 class IStorable(NoneInterface):
     """Storable documentation for a certain product or a sellable item.
