@@ -31,7 +31,8 @@ from kiwi.argcheck import argcheck
 from sqlobject.dbconnection import Transaction
 
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.slaves.paymentmethodslave import InstallmentsNumberSettingsSlave
+from stoqlib.gui.slaves.paymentmethodslave import (
+    InstallmentsNumberSettingsSlave)
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ICreditProvider
 from stoqlib.domain.payment.destination import PaymentDestination

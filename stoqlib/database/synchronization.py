@@ -86,7 +86,8 @@ class TableSerializer:
         values = []
         for column in obj.sqlmeta.columnList:
             value = getattr(obj, column.name)
-            values.append("%s = %s" % (column.dbName, self._conn.sqlrepr(value)))
+            values.append("%s = %s" % (column.dbName,
+                                       self._conn.sqlrepr(value)))
 
         return ("UPDATE %s SET %s WHERE %s = %s;" %
                 (obj.sqlmeta.table,
@@ -249,6 +250,8 @@ class SynchronizationService(XMLRPCService):
     xmlrpc_sql_insert = sql_insert
     xmlrpc_sql_finish = sql_finish
 
+DUMP = "pg_dump -E UTF-8 -a -d -h %(address)s -p %(port)s -t %%s %(dbname)s"
+
 class SynchronizationClient(object):
     def __init__(self, hostname, port):
         self._commit = True
@@ -256,11 +259,9 @@ class SynchronizationClient(object):
         self.proxy = ServerProxy("http://%s:%d" % (hostname, port))
 
         settings = get_utility(IDatabaseSettings)
-        self._pgdump_cmd = (
-            "pg_dump -E UTF-8 -a -d -h %(address)s -p %(port)s -t %%s %(dbname)s"
-            % dict(address=settings.address,
-                   port=settings.port,
-                   dbname=settings.dbname))
+        self._pgdump_cmd = DUMP % dict(address=settings.address,
+                                       port=settings.port,
+                                       dbname=settings.dbname)
 
     def _pg_dump_table(self, table):
         cmd = self._pgdump_cmd % db_table_name(table)

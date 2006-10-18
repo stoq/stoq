@@ -231,7 +231,8 @@ class PurchaseOrder(Domain):
                              group.default_method)
 
         method.setup_outpayments(group, group.installments_number,
-                                 self.expected_receival_date, group.interval_type,
+                                 self.expected_receival_date,
+                                 group.interval_type,
                                  group.intervals, total)
 
     def _get_percentage_value(self, percentage):
@@ -411,7 +412,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
         order = self.get_adapted()
         total = order.get_purchase_total()
-        first_due_date = order.expected_receival_date
+        #first_due_date = order.expected_receival_date
         order._create_preview_outpayments(conn=conn, group=self,
                                           base_method=base_method,
                                           total=total)
