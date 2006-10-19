@@ -25,7 +25,6 @@
 """ Runtime routines for applications"""
 
 import datetime
-import sets
 import sys
 
 from kiwi.component import get_utility, provide_utility, implements
@@ -52,26 +51,15 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._objects = sets.Set()
+        self._objects = set()
         Transaction.__init__(self, *args, **kwargs)
 
     def add_object(self, obj):
         self._objects.add(obj)
 
     def commit(self, close=False):
-        # NotImplementedError means that there are no utility for ICurrentUser,
-        # which in turn only happens during startup, for example when
-        # we're creating a new database or running the migration script,
-        # at that point no users are logged in
-        try:
-            user_id = get_current_user(self).id
-        except NotImplementedError:
-            user_id = None
-
-        try:
-            station_id = get_current_station(self).id
-        except NotImplementedError:
-            station_id = None
+        user = get_current_user(self)
+        station = get_current_station(self)
 
         for obj in self._objects:
             # FIXME: Figure out when this is needed
@@ -79,8 +67,10 @@ class StoqlibTransaction(Transaction):
                 continue
 
             obj.te_modified.timestamp = datetime.datetime.now()
-            obj.te_modified.user_id = user_id
-            obj.te_modified.station_id = station_id
+            if user is not None:
+                obj.te_modified.user_id = user.id
+            if station is not None:
+                obj.te_modified.station_id = station.id
         self._objects.clear()
 
         Transaction.commit(self, close=close)
@@ -115,12 +105,12 @@ def get_connection():
     @returns: a database connection
     """
     conn = get_utility(IConnection, None)
-    if not conn:
+    if conn is None:
         try:
             settings = get_utility(IDatabaseSettings)
         except NotImplementedError:
             raise StoqlibError(
-                'You need to provide a IDatabaseSettings utility before'
+                'You need to provide a IDatabaseSettings utility before '
                 'calling get_connection')
         conn = settings.get_connection()
         assert conn is not None
@@ -150,14 +140,12 @@ def set_current_branch_station(conn, station_name):
     @param station_name: name of the station to register
     """
     from stoqlib.domain.station import BranchStation
-    stations = BranchStation.select(
-        BranchStation.q.name == station_name, connection=conn)
-    if not stations:
+    station = BranchStation.selectOneBy(name=station_name, connection=conn)
+    if station is None:
         error(_("The computer <u>%s</u> is not registered in Stoq") %
               station_name,
               _("To solve this, open the administrator application "
                 "and register this computer."))
-    station = stations[0]
 
     if not station.is_active:
         error(_("The computer <u>%s</u> is not active in Stoq") %
@@ -169,23 +157,40 @@ def set_current_branch_station(conn, station_name):
     provide_utility(ICurrentBranch, station.branch)
 
 def get_current_user(conn):
-    """Returns a PersonAdaptToUser instance which represents the current
-    logged user on the system
     """
-    user = get_utility(ICurrentUser)
-    return user.get(user.id, connection=conn)
+    Fetch the user which is currently logged into the system or None
+    None means that there are no utilities available which in turn
+    should only happens during startup, for example when creating
+    a new database or running the migration script,
+    at that point no users are logged in
+
+    @returns: currently logged in user or None
+    @rtype: an object implementing IUser
+    """
+    user = get_utility(ICurrentUser, None)
+    if user is not None:
+        return user.get(user.id, connection=conn)
 
 def get_current_branch(conn):
-    """Returns the current branch company logged in the stoqlib applications
+    """
+    Fetches the current branch company.
+
+    @returns: the current branch
+    @rtype: an object
+    @rtype: an object implementing IBranch
     """
 
-    branch = get_utility(ICurrentBranch)
-    return branch.get(branch.id, connection=conn)
+    branch = get_utility(ICurrentBranch, None)
+    if branch is not None:
+        return branch.get(branch.id, connection=conn)
 
 def get_current_station(conn):
-    """Returns the current station (computer) where the stoqlib applications
-    are running on
     """
-    station = get_utility(ICurrentBranchStation)
-    return station.get(station.id, connection=conn)
+    Fetches the current station (computer) which we are running on
+    @param: current station
+    @rtype: BranchStation
+    """
+    station = get_utility(ICurrentBranchStation, None)
+    if station is not None:
+        return station.get(station.id, connection=conn)
 
