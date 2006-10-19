@@ -69,23 +69,16 @@ class AbstractModel(object):
 
     def _create(self, *args, **kwargs):
         conn = kwargs.get('connection', self._connection)
-        try:
-            user_id = get_current_user(conn).id
-        except NotImplementedError:
-            user_id = None
-
-        try:
-            station_id = get_current_station(conn).id
-        except NotImplementedError:
-            station_id = None
+        user = get_current_user(conn)
+        station = get_current_station(conn)
 
         timestamp = datetime.datetime.now()
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
             kwargs[entry] = TransactionEntry(
                 timestamp=timestamp,
-                user_id=user_id,
-                station_id=station_id,
+                user_id=user and user.id,
+                station_id=station and station.id,
                 type=entry_type,
                 connection=conn)
         super(AbstractModel, self)._create(*args, **kwargs)
