@@ -28,7 +28,7 @@ import datetime
 import sets
 import sys
 
-from kiwi.component import get_utility, provide_utility
+from kiwi.component import get_utility, provide_utility, implements
 from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
 from sqlobject.inheritance import InheritableSQLObject
@@ -37,7 +37,7 @@ from sqlobject.main import SQLObject
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
                                     ICurrentUser, IDatabaseSettings,
-                                    IConnection)
+                                    IConnection, ITransaction)
 from stoqlib.lib.message import error
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -49,6 +49,7 @@ log = Logger('stoqlib.runtime')
 #
 
 class StoqlibTransaction(Transaction):
+    implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
         self._objects = sets.Set()
@@ -96,11 +97,6 @@ class StoqlibTransaction(Transaction):
         self._obsolete = True
 
     def get(self, obj):
-        """
-        Fetches an object in the current transaction
-        @param obj: a SQLObject
-        @returns: the same object in our transaction
-        """
         if not isinstance(obj, (SQLObject, InheritableSQLObject)):
             raise TypeError("obj must be a SQLObject")
 
