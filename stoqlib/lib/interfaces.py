@@ -106,6 +106,14 @@ class IDatabaseSettings(Interface):
     def get_connection_uri():
         """@returns: a SQLObject connection URI"""
 
+class IConnection(Interface):
+    """
+    This is an interface that describes a database connection
+    """
+
+    def close():
+        """Drops the connection to the database"""
+
 class IXMLRPCService(Interface):
     def __init__(hostname, port):
         """
