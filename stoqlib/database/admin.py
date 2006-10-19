@@ -159,7 +159,6 @@ def create_base_schema():
 
     settings = get_utility(IDatabaseSettings)
 
-    clean_database(settings.dbname)
     schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
     execute_sql(schema)
 
@@ -179,6 +178,8 @@ def initialize_system(delete_only=False, verbose=False):
     every purpose: production usage, testing or demonstration
     """
 
+    settings = get_utility(IDatabaseSettings)
+    clean_database(settings.dbname)
     create_base_schema()
     ensure_system_parameters()
     ensure_sellable_units()
