@@ -74,8 +74,38 @@ def test_inheritance_select():
     person = Employee.byLastName("Leader")
     assert person.firstName == "Project"
 
-    InheritablePerson.sqlmeta.addColumn(IntCol('runtime', default=None))
+def test_addDelColumn():
+    setup()
 
-    assert hasattr(InheritablePerson.q, 'runtime')
+    assert hasattr(InheritablePerson, "firstName")
+    assert hasattr(Employee, "firstName")
+    assert hasattr(InheritablePerson.q, "firstName")
+    assert hasattr(Employee.q, "firstName")
+
+    Employee.sqlmeta.addColumn(IntCol('runtime', default=None))
+
+    assert not hasattr(InheritablePerson, 'runtime')
+    assert hasattr(Employee, 'runtime')
+    assert not hasattr(InheritablePerson.q, 'runtime')
     assert hasattr(Employee.q, 'runtime')
 
+    InheritablePerson.sqlmeta.addColumn(IntCol('runtime2', default=None))
+
+    assert hasattr(InheritablePerson, 'runtime2')
+    assert hasattr(Employee, 'runtime2')
+    assert hasattr(InheritablePerson.q, 'runtime2')
+    assert hasattr(Employee.q, 'runtime2')
+
+    Employee.sqlmeta.delColumn('runtime')
+
+    assert not hasattr(InheritablePerson, 'runtime')
+    assert not hasattr(Employee, 'runtime')
+    assert not hasattr(InheritablePerson.q, 'runtime')
+    assert not hasattr(Employee.q, 'runtime')
+
+    InheritablePerson.sqlmeta.delColumn('runtime2')
+
+    assert not hasattr(InheritablePerson, 'runtime2')
+    assert not hasattr(Employee, 'runtime2')
+    assert not hasattr(InheritablePerson.q, 'runtime2')
+    assert not hasattr(Employee.q, 'runtime2')

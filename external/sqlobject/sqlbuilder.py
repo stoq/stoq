@@ -76,7 +76,6 @@ import types
 
 from converters import sqlrepr, registerConverter, TRUE, FALSE
 
-TRUE, FALSE # pyflakes
 safeSQLRE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_\.]*$')
 def sqlIdentifier(obj):
     # some db drivers return unicode column names 
@@ -270,11 +269,11 @@ class SQLPrefix(SQLExpression):
         return [self.expr]
     def execute(self, executor):
         expr = execute(self.expr, executor)
-        if self.prefix == "+":
+        if prefix == "+":
             return expr
-        elif self.prefix == "-":
+        elif prefix == "-":
             return -expr
-        elif self.prefix.upper() == "NOT":
+        elif prefix.upper() == "NOT":
             return not expr
 
 registerConverter(SQLPrefix, SQLExprConverter)
@@ -351,25 +350,11 @@ class SQLObjectTable(Table):
         if attr == 'id':
             return self.FieldClass(self.tableName, self.soClass.sqlmeta.idName, attr)
         elif attr not in self.soClass.sqlmeta.columns:
-            # 2006-09-21: Johans hack to be able to do table.q.attribute where attribute
-            #             is defined in a parent class
-            from sqlobject.inheritance import InheritableSQLObject
-            if issubclass(self.soClass, InheritableSQLObject):
-                parent = self.soClass.sqlmeta.parentClass.sqlmeta
-                while parent:
-                    if attr in parent.columns:
-                        name = parent.columns[attr].dbName
-                        table = parent.table
-                        break
-                    parent = parent.parentClass.sqlmeta
-                else:
-                    raise AttributeError("%s instance has no attribute '%s'" % (self.soClass.__name__, attr))
-            else:
-                raise AttributeError("%s instance has no attribute '%s'" % (self.soClass.__name__, attr))
+            raise AttributeError("%s instance has no attribute '%s'" % (self.soClass.__name__, attr))
         else:
-            name = self.soClass.sqlmeta.columns[attr].dbName
-            table = self.tableName
-        return self.FieldClass(table, name, attr)
+            return self.FieldClass(self.tableName,
+                                   self.soClass.sqlmeta.columns[attr].dbName,
+                                   attr)
 
 class TableSpace:
     TableClass = Table
