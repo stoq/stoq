@@ -155,6 +155,3 @@ class NewOrderEditor(BaseEditor):
         self.model.client = None
         self.proxy.update('client')
         self._update_client_role_box()
-
-    def on_cancel(self):
-        return None
