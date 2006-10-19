@@ -33,12 +33,6 @@ Create a new instance of Product class:
 
     >>> test_product = Product(connection=trans)
 
-To discover what is the name of database table mapped to this domain class
-you call the AbstractModel get_db_table_name which is a class method.
-
-    >>> Product.get_db_table_name()
-    'product'
-
 All domain classes has an protected attribute to lead with objects that are
 created inside a transaction: _is_valid_model.
 We have three methods do set valid, set invalid and get this state.
