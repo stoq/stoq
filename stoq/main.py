@@ -33,7 +33,6 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger, set_log_file
-from stoqlib.database.database import db_table_name
 from stoqlib.database.exceptions import PostgreSQLError
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error
@@ -114,7 +113,7 @@ def _check_tables():
     conn = get_connection()
 
     for table_type in get_table_types():
-        classname = db_table_name(table_type)
+        classname = table_type.sqlmeta.table
         if not conn.tableExists(classname):
             error(
                 _("Database schema error"),
