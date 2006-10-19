@@ -25,6 +25,7 @@
 """ Runtime routines for applications"""
 
 import datetime
+import sets
 import sys
 
 from kiwi.component import get_utility, provide_utility, implements
@@ -51,19 +52,26 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._objects = set()
+        self._objects = sets.Set()
         Transaction.__init__(self, *args, **kwargs)
 
     def add_object(self, obj):
         self._objects.add(obj)
 
     def commit(self, close=False):
-        # None means that there are no utilities available which in turn
-        # should only happens during startup, for example when
+        # NotImplementedError means that there are no utility for ICurrentUser,
+        # which in turn only happens during startup, for example when
         # we're creating a new database or running the migration script,
         # at that point no users are logged in
-        user = get_current_user(self)
-        station = get_current_station(self)
+        try:
+            user_id = get_current_user(self).id
+        except NotImplementedError:
+            user_id = None
+
+        try:
+            station_id = get_current_station(self).id
+        except NotImplementedError:
+            station_id = None
 
         for obj in self._objects:
             # FIXME: Figure out when this is needed
@@ -71,10 +79,8 @@ class StoqlibTransaction(Transaction):
                 continue
 
             obj.te_modified.timestamp = datetime.datetime.now()
-            if user is not None:
-                obj.te_modified.user_id = user.id
-            if station is not None: 
-                obj.te_modified.station_id = station.id
+            obj.te_modified.user_id = user_id
+            obj.te_modified.station_id = station_id
         self._objects.clear()
 
         Transaction.commit(self, close=close)
@@ -109,12 +115,12 @@ def get_connection():
     @returns: a database connection
     """
     conn = get_utility(IConnection, None)
-    if conn is None:
+    if not conn:
         try:
             settings = get_utility(IDatabaseSettings)
         except NotImplementedError:
             raise StoqlibError(
-                'You need to provide a IDatabaseSettings utility before '
+                'You need to provide a IDatabaseSettings utility before'
                 'calling get_connection')
         conn = settings.get_connection()
         assert conn is not None
@@ -166,23 +172,20 @@ def get_current_user(conn):
     """Returns a PersonAdaptToUser instance which represents the current
     logged user on the system
     """
-    user = get_utility(ICurrentUser, None)
-    if user is not None:
-        return user.get(user.id, connection=conn)
+    user = get_utility(ICurrentUser)
+    return user.get(user.id, connection=conn)
 
 def get_current_branch(conn):
     """Returns the current branch company logged in the stoqlib applications
     """
 
-    branch = get_utility(ICurrentBranch, None)
-    if branch is not None:
-        return branch.get(branch.id, connection=conn)
+    branch = get_utility(ICurrentBranch)
+    return branch.get(branch.id, connection=conn)
 
 def get_current_station(conn):
     """Returns the current station (computer) where the stoqlib applications
     are running on
     """
-    station = get_utility(ICurrentBranchStation, None)
-    if station is not None:
-        return station.get(station.id, connection=conn)
+    station = get_utility(ICurrentBranchStation)
+    return station.get(station.id, connection=conn)
 
