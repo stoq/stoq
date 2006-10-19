@@ -27,6 +27,10 @@ import os
 import sys
 import unittest
 
+# So we can use database connections in doctests.
+import tests.base
+tests.base # pyflakes
+
 def _test_one(self, filename):
     failures, tries = doctest.testfile(filename, verbose=False,
                                        module_relative=False,
