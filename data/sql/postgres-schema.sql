@@ -93,8 +93,8 @@ CREATE TABLE transaction_entry (
 CREATE TABLE person (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text,
     phone_number text,
     mobile_number text,
@@ -106,8 +106,8 @@ CREATE TABLE person (
 CREATE TABLE bank (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text,
     short_name text,
     compensation_code text
@@ -116,63 +116,63 @@ CREATE TABLE bank (
 CREATE TABLE person_adapt_to_bank_branch (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
     bank_id bigint REFERENCES bank(id),
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_branch (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier integer NOT NULL UNIQUE,
     manager_id bigint REFERENCES person(id),
     is_active boolean,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_client (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     days_late integer,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_company (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     cnpj text,
     fancy_name text,
     state_registry text,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_credit_provider (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
     provider_type integer,
     short_name text,
     provider_id text,
     open_contract_date timestamp without time zone,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE city_location (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     country text,
     city text,
     state text
@@ -181,8 +181,8 @@ CREATE TABLE city_location (
 CREATE TABLE person_adapt_to_individual (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     cpf text,
     rg_number text,
     birth_date timestamp without time zone,
@@ -195,22 +195,22 @@ CREATE TABLE person_adapt_to_individual (
     gender integer,
     spouse_name text,
     birth_location_id bigint REFERENCES city_location(id),
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE employee_role (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text NOT NULL UNIQUE
 );
 
 CREATE TABLE work_permit_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     number text,
     series_number text,
     pis_number text,
@@ -221,8 +221,8 @@ CREATE TABLE work_permit_data (
 CREATE TABLE military_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     number text,
     series_number text,
     category text
@@ -231,8 +231,8 @@ CREATE TABLE military_data (
 CREATE TABLE voter_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     number text,
     section text,
     "zone" text
@@ -241,8 +241,8 @@ CREATE TABLE voter_data (
 CREATE TABLE bank_account (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     bank_id integer,
     branch text,
     account text
@@ -251,8 +251,8 @@ CREATE TABLE bank_account (
 CREATE TABLE person_adapt_to_employee (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     admission_date timestamp without time zone,
     expire_vacation timestamp without time zone,
     salary numeric(10,2),
@@ -265,66 +265,66 @@ CREATE TABLE person_adapt_to_employee (
     military_data_id bigint REFERENCES military_data(id),
     voter_data_id bigint REFERENCES voter_data(id),
     bank_account_id bigint REFERENCES bank_account(id),
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_sales_person (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     comission numeric(10,2),
     comission_type integer,
     is_active boolean,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_supplier (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     product_desc text,
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE person_adapt_to_transporter (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
     open_contract_date timestamp without time zone,
     freight_percentage numeric(10,2),
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE user_profile (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text
 );
 
 CREATE TABLE person_adapt_to_user (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    te_created_id bigint REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     username text NOT NULL UNIQUE,
     "password" text,
     is_active boolean,
     profile_id bigint REFERENCES user_profile(id),
-    original_id bigint REFERENCES person(id)
+    original_id bigint UNIQUE REFERENCES person(id)
 );
 
 CREATE TABLE product (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     image bytea
 );
 
@@ -333,22 +333,24 @@ CREATE TABLE product_adapt_to_sellable (
     tax_type integer,
     tax_value numeric(10,2),
     child_name character varying(255),
-    original_id bigint REFERENCES product(id)
+    original_id bigint UNIQUE REFERENCES product(id)
 );
+
+-- FIXME: original_id should be marked as UNIQUE
 
 CREATE TABLE product_adapt_to_storable (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     original_id bigint REFERENCES product(id)
 );
 
 CREATE TABLE product_supplier_info (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     base_cost numeric(10,2),
     notes text,
     is_main_supplier boolean,
@@ -360,22 +362,22 @@ CREATE TABLE product_supplier_info (
 CREATE TABLE service (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     image bytea
 );
 
 CREATE TABLE service_adapt_to_sellable (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES service(id)
+    original_id bigint UNIQUE REFERENCES service(id)
 );
 
 CREATE TABLE base_sellable_info (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     price numeric(10,2),
     description text,
     max_discount numeric(10,2),
@@ -385,8 +387,8 @@ CREATE TABLE base_sellable_info (
 CREATE TABLE on_sale_info (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     on_sale_price numeric(10,2),
     on_sale_start_date timestamp without time zone,
     on_sale_end_date timestamp without time zone
@@ -414,8 +416,8 @@ CREATE TABLE sellable_category (
 CREATE TABLE sellable_unit (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     description text,
     "index" integer
 );
@@ -438,8 +440,8 @@ CREATE TABLE asellable (
 CREATE TABLE purchase_order (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     order_number integer NOT NULL UNIQUE,
     open_date timestamp without time zone,
@@ -462,8 +464,8 @@ CREATE TABLE purchase_order (
 CREATE TABLE purchase_item (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2),
     quantity_received numeric(10,2),
     base_cost numeric(10,2),
@@ -480,8 +482,8 @@ CREATE TABLE abstract_renegotiation_adapter (
 CREATE TABLE branch_station (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text UNIQUE,
     is_active boolean,
     branch_id bigint REFERENCES person_adapt_to_branch(id)
@@ -490,8 +492,8 @@ CREATE TABLE branch_station (
 CREATE TABLE till (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     balance_sent numeric(10,2),
     final_cash_amount numeric(10,2),
@@ -503,8 +505,8 @@ CREATE TABLE till (
 CREATE TABLE cfop_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     code text,
     description text
 );
@@ -512,8 +514,8 @@ CREATE TABLE cfop_data (
 CREATE TABLE sale (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     order_number integer NOT NULL UNIQUE,
     coupon_id integer,
     service_invoice_number integer,
@@ -536,7 +538,7 @@ CREATE TABLE sale (
 CREATE TABLE sale_adapt_to_payment_group (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES sale(id)
+    original_id bigint UNIQUE REFERENCES sale(id)
 );
 
 CREATE TABLE asellable_item (
@@ -567,8 +569,8 @@ CREATE TABLE product_stock_item (
 CREATE TABLE address (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     street text,
     number integer,
     district text,
@@ -595,8 +597,8 @@ CREATE TABLE abstract_payment_group (
 CREATE TABLE bill_check_group_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     installments_number integer,
     first_duedate timestamp without time zone,
     monthly_interest numeric(10,2),
@@ -615,8 +617,8 @@ CREATE TABLE branch_synchronization (
 CREATE TABLE calls (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     date timestamp without time zone,
     message text,
     person_id bigint REFERENCES person(id),
@@ -626,8 +628,8 @@ CREATE TABLE calls (
 CREATE TABLE card_installment_settings (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     payment_day integer,
     closing_day integer
 );
@@ -680,8 +682,8 @@ CREATE TABLE abstract_payment_method_adapter (
 CREATE TABLE payment (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier integer NOT NULL UNIQUE,
     status integer,
     open_date timestamp without time zone,
@@ -705,8 +707,8 @@ CREATE TABLE payment (
 CREATE TABLE cash_advance_info (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     employee_id bigint REFERENCES payment(id),
     payment_id bigint REFERENCES person_adapt_to_employee(id),
     open_date timestamp without time zone
@@ -715,8 +717,8 @@ CREATE TABLE cash_advance_info (
 CREATE TABLE check_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     payment_id bigint REFERENCES payment(id),
     bank_data_id bigint REFERENCES bank_account(id)
 );
@@ -730,8 +732,8 @@ CREATE TABLE credit_card_details (
 CREATE TABLE credit_provider_group_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     installments_number integer,
     payment_type_id bigint REFERENCES payment_method_details(id),
     provider_id bigint REFERENCES person_adapt_to_credit_provider(id),
@@ -747,16 +749,16 @@ CREATE TABLE debit_card_details (
 CREATE TABLE device_constants (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     constants bytea
 );
 
 CREATE TABLE device_settings (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     "type" integer,
     brand text,
     model text,
@@ -770,8 +772,8 @@ CREATE TABLE device_settings (
 CREATE TABLE employee_role_history (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     began timestamp without time zone,
     ended timestamp without time zone,
     salary numeric(10,2),
@@ -789,15 +791,15 @@ CREATE TABLE finance_details (
 CREATE TABLE gift_certificate (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
 );
 
 CREATE TABLE gift_certificate_adapt_to_sellable (
     id bigserial NOT NULL PRIMARY KEY,
     group_id bigint REFERENCES abstract_payment_group(id),
     child_name character varying(255),
-    original_id bigint REFERENCES gift_certificate(id)
+    original_id bigint UNIQUE REFERENCES gift_certificate(id)
 );
 
 CREATE TABLE gift_certificate_item (
@@ -808,8 +810,8 @@ CREATE TABLE gift_certificate_item (
 CREATE TABLE gift_certificate_type (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
     base_sellable_info_id bigint REFERENCES base_sellable_info(id),
     on_sale_info_id bigint REFERENCES on_sale_info(id)
@@ -825,16 +827,16 @@ CREATE TABLE icms_ipi_book_entry (
 CREATE TABLE inheritable_model (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_valid_model boolean
 );
 
 CREATE TABLE inheritable_model_adapter (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_valid_model boolean
 );
 
@@ -847,8 +849,8 @@ CREATE TABLE iss_book_entry (
 CREATE TABLE liaison (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     name text,
     phone_number text,
     person_id bigint REFERENCES person(id)
@@ -857,8 +859,8 @@ CREATE TABLE liaison (
 CREATE TABLE parameter_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     field_name text NOT NULL UNIQUE,
     field_value text,
     is_editable boolean
@@ -867,93 +869,93 @@ CREATE TABLE parameter_data (
 CREATE TABLE payment_adapt_to_in_payment (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    original_id bigint REFERENCES payment(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    original_id bigint UNIQUE REFERENCES payment(id)
 );
 
 CREATE TABLE payment_adapt_to_out_payment (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    original_id bigint REFERENCES payment(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    original_id bigint UNIQUE REFERENCES payment(id)
 );
 
 CREATE TABLE payment_method (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
 );
 
 CREATE TABLE payment_operation (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     operation_date timestamp without time zone
 );
 
 CREATE TABLE pm_adapt_to_bill_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_card_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_check_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_finance_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_gift_certificate_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_money_p_m (
     id bigserial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     child_name character varying(255),
-    original_id bigint REFERENCES payment_method(id)
+    original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE po_adapt_to_payment_deposit (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
-    original_id bigint REFERENCES payment_operation(id)
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
+    original_id bigint UNIQUE REFERENCES payment_operation(id)
 );
 
 CREATE TABLE po_adapt_to_payment_devolution (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     reason text,
-    original_id bigint REFERENCES payment_operation(id)
+    original_id bigint UNIQUE REFERENCES payment_operation(id)
 );
 
 CREATE TABLE product_retention_history (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2),
     reason text,
     product_id bigint REFERENCES product(id)
@@ -967,8 +969,8 @@ CREATE TABLE product_sellable_item (
 CREATE TABLE product_stock_reference (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2),
     logic_quantity numeric(10,2),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
@@ -978,8 +980,8 @@ CREATE TABLE product_stock_reference (
 CREATE TABLE profile_settings (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     app_dir_name text,
     has_permission boolean,
     user_profile_id bigint REFERENCES user_profile(id)
@@ -988,14 +990,14 @@ CREATE TABLE profile_settings (
 CREATE TABLE purchase_order_adapt_to_payment_group (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES purchase_order(id)
+    original_id bigint UNIQUE REFERENCES purchase_order(id)
 );
 
 CREATE TABLE receiving_order (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     receiving_number integer NOT NULL UNIQUE,
     status integer,
     receival_date timestamp without time zone,
@@ -1019,14 +1021,14 @@ CREATE TABLE receiving_order (
 CREATE TABLE receiving_order_adapt_to_payment_group (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES receiving_order(id)
+    original_id bigint UNIQUE REFERENCES receiving_order(id)
 );
 
 CREATE TABLE receiving_order_item (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity_received numeric(10,2),
     cost numeric(10,2),
     sellable_id bigint REFERENCES asellable(id),
@@ -1036,8 +1038,8 @@ CREATE TABLE receiving_order_item (
 CREATE TABLE renegotiation_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     reason text,
     paid_total numeric(10,2),
     invoice_number integer,
@@ -1049,19 +1051,19 @@ CREATE TABLE renegotiation_data (
 CREATE TABLE renegotiation_adapt_to_change_installments (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES renegotiation_data(id)
+    original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_exchange (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES renegotiation_data(id)
+    original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_return_sale (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES renegotiation_data(id)
+    original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE service_sellable_item (
@@ -1075,17 +1077,17 @@ CREATE TABLE service_sellable_item (
 CREATE TABLE service_sellable_item_adapt_to_delivery (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     address text,
-    original_id bigint REFERENCES service_sellable_item(id)
+    original_id bigint UNIQUE REFERENCES service_sellable_item(id)
 );
 
 CREATE TABLE delivery_item (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     quantity numeric(10,2),
     sellable_id bigint REFERENCES asellable(id),
     delivery_id bigint REFERENCES service_sellable_item_adapt_to_delivery(id)
@@ -1100,14 +1102,14 @@ CREATE TABLE store_destination (
 CREATE TABLE till_adapt_to_payment_group (
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
-    original_id bigint REFERENCES till(id)
+    original_id bigint UNIQUE REFERENCES till(id)
 );
 
 CREATE TABLE till_entry (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
-    te_created_id bigint REFERENCES transaction_entry(id),
-    te_modified_id bigint REFERENCES transaction_entry(id),
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier integer NOT NULL UNIQUE,
     date timestamp without time zone,
     description text,
