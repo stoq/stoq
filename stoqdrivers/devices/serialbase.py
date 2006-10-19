@@ -60,9 +60,9 @@ class SerialPort(Serial):
         self.flushOutput()
         self.set_options()
 
-    # XXX: Never change these default options, some drivers is based on this
-    # to work. Maybe we should change this and do all the driver specify its
-    # options, but right now I think that's ok, since these options are
+    # WARNING: Never change these default options, some drivers is based on
+    # this to work. Maybe we should change this and do all the driver specify
+    # its options, but right now I think that's ok, since these options are
     # common to most of the drivers.
     def set_options(self, baudrate=9600, bytesize=EIGHTBITS, parity=PARITY_NONE,
                     stopbits=STOPBITS_ONE, read_timeout=3, write_timeout=0):
