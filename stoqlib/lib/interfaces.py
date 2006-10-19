@@ -114,6 +114,36 @@ class IConnection(Interface):
     def close():
         """Drops the connection to the database"""
 
+class ITransaction(IConnection):
+    """
+    This is an interface that describes a database transaction.
+    It extends the IConnection interface.
+    """
+
+    def commit(close=False):
+        """
+        Commits the objects to the database.
+        Sends all the modifications of the current objects to the database,
+        @param close: Optional, if True also closes the database
+        """
+
+    def rollback():
+        """Undos all the changes made within the current transaction"""
+
+    def get(object):
+        """
+        Fetches an object within the transaction
+        @param obj: a SQLObject
+        @returns: a reference to the same object within the transaction
+        """
+
+    def add_object(object):
+        """
+        Adds an object to the transaction.
+        It's used by TransactionEntry to keep a log of all modified object
+        @param object: A SQLObject subclass which should be marked as modified
+        """
+
 class IXMLRPCService(Interface):
     def __init__(hostname, port):
         """
