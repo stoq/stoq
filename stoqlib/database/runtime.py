@@ -36,12 +36,12 @@ from sqlobject.main import SQLObject
 
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
-                                    ICurrentUser, IDatabaseSettings)
+                                    ICurrentUser, IDatabaseSettings,
+                                    IConnection)
 from stoqlib.lib.message import error
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
-_connection = None
 log = Logger('stoqlib.runtime')
 
 #
@@ -107,34 +107,33 @@ class StoqlibTransaction(Transaction):
         table = type(obj)
         return table.get(obj.id, connection=self)
 
-def initialize_connection():
-    # Avoiding circular imports
-    global _connection
-    assert not _connection, (
-        'The connection for this application was already set.')
-
-    try:
-        db_settings = get_utility(IDatabaseSettings)
-    except NotImplementedError:
-        raise StoqlibError('You need to register db settings before calling '
-                           'initialize_connection')
-    conn = db_settings.get_connection()
-    assert conn is not None
-
-    # Stoq applications always use transactions explicitly
-    conn.autoCommit = False
-    _connection = conn
-
-
 def get_connection():
-    """This function return the main connection with the database. If users
-    would like to get another connection they should use new_transaction
-    instead
     """
-    global _connection
-    if not _connection:
-        initialize_connection()
-    return _connection
+    This function returns a connection to the current database.
+    Notice that connections are considered read-only inside Stoqlib
+    applications. Only transactions can modify objects and should be
+    created using new_transaction().
+    This function depends on the IDatabaseSettings utility which must be
+    provided before it can be used.
+
+    @returns: a database connection
+    """
+    conn = get_utility(IConnection, None)
+    if not conn:
+        try:
+            settings = get_utility(IDatabaseSettings)
+        except NotImplementedError:
+            raise StoqlibError(
+                'You need to provide a IDatabaseSettings utility before'
+                'calling get_connection')
+        conn = settings.get_connection()
+        assert conn is not None
+
+        # Stoq applications always use transactions explicitly
+        conn.autoCommit = False
+
+        provide_utility(IConnection, conn)
+    return conn
 
 def new_transaction():
     log.debug('Creating a new transaction in %s()'
