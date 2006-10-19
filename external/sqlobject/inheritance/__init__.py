@@ -1,6 +1,6 @@
 from sqlobject import sqlbuilder
 from sqlobject import classregistry
-from sqlobject import col
+from sqlobject.col import StringCol, ForeignKey, popKey
 from sqlobject.main import sqlmeta, SQLObject, SelectResults, True, False, \
    makeProperties, getterName, setterName
 import iteration
@@ -69,6 +69,7 @@ class InheritableSelectResults(SelectResults):
 class InheritableSQLMeta(sqlmeta):
     def addColumn(sqlmeta, columnDef, changeSchema=False, connection=None, childUpdate=False):
         soClass = sqlmeta.soClass
+
         #DSM: Try to add parent properties to the current class
         #DSM: Only do this once if possible at object creation and once for
         #DSM: each new dynamic column to refresh the current class
@@ -83,14 +84,22 @@ class InheritableSQLMeta(sqlmeta):
                     setattr(soClass, setterName(cname), eval(
                         'lambda self, val: setattr(self._parent, %s, val)'
                         % repr(cname)))
+            if childUpdate:
+                makeProperties(soClass)
+                return
 
         if columnDef:
             super(InheritableSQLMeta, sqlmeta).addColumn(columnDef, changeSchema, connection)
 
         #DSM: Update each child class if needed and existing (only for new
         #DSM: dynamic column as no child classes exists at object creation)
+        if columnDef and hasattr(soClass, "q"):
+            q = getattr(soClass.q, columnDef.name, None)
+        else:
+            q = None
         for c in sqlmeta.childClasses.values():
-            c.sqlmeta.addColumn(columnDef, connection=connection)
+            c.sqlmeta.addColumn(columnDef, connection=connection, childUpdate=True)
+            if q: setattr(c.q, columnDef.name, q)
 
     addColumn = classmethod(addColumn)
 
@@ -98,10 +107,15 @@ class InheritableSQLMeta(sqlmeta):
         soClass = sqlmeta.soClass
         super(InheritableSQLMeta, sqlmeta).delColumn(column, changeSchema, connection)
 
+        if isinstance(column, str):
+            name = column
+        else:
+            name = column.name
+
         #DSM: Update each child class if needed
         #DSM: and delete properties for this column
         for c in sqlmeta.childClasses.values():
-            delattr(c, name)
+            delattr(c.q, name)
 
     delColumn = classmethod(delColumn)
 
@@ -144,7 +158,8 @@ class InheritableSQLMeta(sqlmeta):
         #DSM: and delete properties for this join
         for c in sqlmeta.childClasses.values():
             # FIXME: what is ``meth``?
-            delattr(c, meth)
+            #delattr(c, meth)
+            continue
 
     delJoin = classmethod(delJoin)
 
@@ -163,7 +178,7 @@ class InheritableSQLObject(SQLObject):
             for column in currentClass.sqlmeta.columnDefinitions.values():
                 if column.name == 'childName':
                     continue
-                if type(column) == col.ForeignKey:
+                if type(column) == ForeignKey:
                     continue
                 setattr(cls.q, column.name,
                     getattr(currentClass.q, column.name))
@@ -256,7 +271,7 @@ class InheritableSQLObject(SQLObject):
                         % column.name)
         # if this class is inheritable, add column for children distinction
         if cls._inheritable and (cls.__name__ != 'InheritableSQLObject'):
-            sqlmeta.addColumn(col.StringCol(name='childName',
+            sqlmeta.addColumn(StringCol(name='childName',
                 # limit string length to get VARCHAR and not CLOB
                 length=255, default=None))
         if not sqlmeta.columnList:
@@ -369,14 +384,72 @@ class InheritableSQLObject(SQLObject):
                 clause, *args, **kwargs)
     select = classmethod(select)
 
-    def selectBy(cls, connection=None, **kw):
-        clause = []
-        for name, value in kw.items():
-            clause.append(getattr(cls.q, name) == value)
-        clause = reduce(sqlbuilder.AND, clause)
-        conn = connection or cls._connection
-        return cls.SelectResultsClass(cls, clause, connection=conn)
+    def _SO_prepareSelectBy(cls, conn, kw):
+        ops = {None: "IS"}
+        data = {}
+        clauses = []
+        tables = []
 
+        # Inherited attributes
+        currentClass = cls.sqlmeta.parentClass
+        while currentClass:
+            tableName = currentClass.sqlmeta.table
+            for c in currentClass.sqlmeta.columns.values():
+                name = c.name
+                if name == 'childName':
+                    continue
+                if not currentClass in tables:
+                    tables.append(currentClass)
+                dbName = tableName + '.' + c.dbName
+                if name in kw:
+                    data[dbName] = popKey(kw, name)
+                elif c.foreignName in kw:
+                    obj = popKey(kw, c.foreignName)
+                    if isinstance(obj, SQLObject):
+                        data[dbName] = obj.id
+                    else:
+                        data[dbName] = obj
+            currentClass = currentClass.sqlmeta.parentClass
+
+        clauses.extend(['%s %s %s' %
+                        (dbName, ops.get(value, "="), conn.sqlrepr(value))
+                        for dbName, value in data.items()])
+
+        # join in parent tables
+        # This is rather tricky, we need to tie the ids and the child names
+        # together, but it needs to be done in the right order:
+        # current -> parent
+        # parent -> parent of parent
+        # etc
+        tableName = cls.__name__
+        for table in tables:
+            for c in [table.q.childName == tableName,
+                      table.q.id == cls.q.id]:
+                clauses.append(conn.sqlrepr(c))
+            tableName = table.__name__
+
+        # columns in the same class, reuse _SO_columnClause
+        normal = conn._SO_columnClause(cls, kw)
+        if normal:
+            clauses.extend(normal.split(' AND '))
+
+        if kw:
+            # pick the first key from kw to use to raise the error,
+            raise TypeError(
+                "got an unexpected keyword argument(s): %r" % kw.keys())
+
+        table_names = [table.sqlmeta.table for table in tables]
+        clause = ' AND '.join(clauses)
+        return clause, table_names
+    _SO_prepareSelectBy = classmethod(_SO_prepareSelectBy)
+
+    def selectBy(cls, connection=None, **kw):
+        conn = connection or cls._connection
+        clause, table_names = cls._SO_prepareSelectBy(conn, kw)
+        return cls.SelectResultsClass(cls,
+                                      clauseTables=table_names,
+                                      clause=clause,
+                                      connection=conn)
     selectBy = classmethod(selectBy)
 
     def destroySelf(self):
