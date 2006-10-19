@@ -34,7 +34,6 @@ from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
 
-from stoqlib.database.database import db_table_name
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.component import Adapter, AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
@@ -168,11 +167,6 @@ class AbstractModel(object):
     #
     # Classmethods
     #
-
-    @classmethod
-    def get_db_table_name(cls):
-        assert issubclass(cls, SQLObject)
-        return db_table_name(cls)
 
     @classmethod
     def _check_connection(cls, connection):

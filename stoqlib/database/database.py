@@ -46,7 +46,7 @@ def check_installed_database(conn):
     @param conn: a database connection
     """
     from stoqlib.domain.system import SystemTable
-    table_name = SystemTable.get_db_table_name()
+    table_name = SystemTable.sqlmeta.table
     if not conn.tableExists(table_name):
         log.info('There is no table called %s' % table_name)
         return False
@@ -165,11 +165,3 @@ def execute_sql(filename):
     if returncode != 0:
         error('psql returned error code %d' % returncode)
 
-def db_table_name(cls):
-    """
-    Returns a table name for a specific class, eg SystemTable -> system_table
-    @param cls: a SQLObject class
-    @returns: the table name
-    @rtype: string
-    """
-    return cls.sqlmeta.table

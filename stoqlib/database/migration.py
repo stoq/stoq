@@ -59,7 +59,7 @@ class SchemaMigration:
 
     def _check_up_to_date(self, conn):
         """Checks if the current database schema is up to date"""
-        if not conn.tableExists(SystemTable.get_db_table_name()):
+        if not conn.tableExists(SystemTable.sqlmeta.table):
             SystemTable.createTable(connection=conn)
             self.current_db_version = stoqlib.FIRST_DB_VERSION
             SystemTable.update(conn, check_new_db=True,

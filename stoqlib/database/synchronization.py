@@ -30,7 +30,6 @@ from kiwi.component import get_utility
 from kiwi.log import Logger
 
 from stoqlib.database.admin import create_base_schema
-from stoqlib.database.database import db_table_name
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import get_table_type_by_name
@@ -264,7 +263,7 @@ class SynchronizationClient(object):
                                        dbname=settings.dbname)
 
     def _pg_dump_table(self, table):
-        cmd = self._pgdump_cmd % db_table_name(table)
+        cmd = self._pgdump_cmd % table.sqlmeta.table
         log.info('executing %s' % cmd)
         return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE,
                                 env=dict(LANG='C'))
