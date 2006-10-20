@@ -49,9 +49,6 @@ NoneInterface = NoneMetaInterface('NoneInterface',
 # Adaptors
 #
 
-class CannotAdapt(TypeError):
-    pass
-
 class Adapter(object):
     def __init__(self, _original, kwargs):
         if _original:
@@ -258,6 +255,7 @@ def _adaptable_sqlobject_adapter_hook(iface, obj):
         # see InterfaceClass.__call__ in zope/interface/interface.py
         return None
 
+    # FIXME: Use selectOneBy
     if facetType:
         results = facetType.selectBy(
             _originalID=obj.id, connection=obj.get_connection())

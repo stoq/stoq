@@ -55,7 +55,6 @@ from stoqlib.domain.product import Product
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
-from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
 
 from tests.base import BaseDomainTest, DomainTest
@@ -139,7 +138,8 @@ class TestPerson(BaseDomainTest):
     def _check_has_individual_or_company_facets(self, person):
         try:
             person._check_individual_or_company_facets()
-        except CannotAdapt, e:
+        # yuck.
+        except TypeError, e:
             return False
         else:
             return True
@@ -168,7 +168,8 @@ class TestPerson(BaseDomainTest):
     def _check_create_facet_fails(self, person, iface, **kwargs):
         try:
             person.addFacet(iface, connection=self.trans, **kwargs)
-        except (CannotAdapt, ValueError), e:
+        # yuck.
+        except (TypeError, ValueError), e:
             # Ok, it should actually fail since we did not create an
             # individual or company facets
             return True
