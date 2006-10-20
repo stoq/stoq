@@ -33,11 +33,11 @@ from stoqlib.database.admin import create_base_schema
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import get_table_type_by_name
-from stoqlib.domain.base import AdaptableSQLObject
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.synchronization import BranchSynchronization
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.enums import SyncPolicy
+from stoqlib.lib.component import AdaptableSQLObject
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.xmlrpc import ServerProxy, XMLRPCService
 from sqlobject.sqlbuilder import AND

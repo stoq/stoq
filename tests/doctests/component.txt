@@ -1,0 +1,76 @@
+-*- Mode: doctest -*-
+
+`````````````````
+lib/component.py
+`````````````````
+
+Stoqlib uses the adapter pattern <http://en.wikipedia.org/wiki/Adapter_pattern> 
+to solve a specific set of problems, most noticeable roles for Persons.
+
+First we need an object that we can adapt into something else.
+It needs to be a subclass of AdaptableSQLObject:
+
+    >>> from stoqlib.lib.component import Adaptable
+    >>> class Bike(Adaptable):
+    ...     pass
+
+Let's define an interface for something we can adapt
+
+    >>> from zope.interface.interface import Interface
+    >>> class ISuspension(Interface):
+    ...    def lockout():
+    ...        pass
+    ...    def is_locked():
+    ...        pass
+
+To be able to adapt our object into the interface we need to create an
+adapter which needs to be a subclass of Adapter
+
+    >>> from stoqlib.lib.component import Adapter
+    >>> class BikeAdaptToSuspension(Adapter):
+    ...     def __init__(self, original):
+    ...         Adapter.__init__(self, original)
+    ...         self.locked = False
+    ...     def lockout(self):
+    ...         self.locked = True
+    ...     def is_locked(self):
+    ...         return self.locked
+
+We need to register the adapter, to attach the adapter to the
+adaptable object, which will return the 
+
+    >>> Bike.registerFacet(BikeAdaptToSuspension, ISuspension)
+
+    >>> bike = Bike()
+    >>> ISuspension(bike)
+    Traceback (most recent call last):
+        ...
+    TypeError: ('Could not adapt', ...)
+
+TypeError should never be caught in user code, so if we want to check
+if a certain object implements an adapter or not we should pass in a
+default object as the second argument to the interface "casting":
+
+    >>> ISuspension(bike, False)
+    False
+
+To attach an adapter to an object, we use addFacet, which will return
+the adapted object, which will return the adapter.
+
+    >>> bike.addFacet(ISuspension)
+    <BikeAdaptToSuspension object at ...>
+
+We can now adapt the object:
+
+    >>> suspension = ISuspension(bike)
+    >>> suspension
+    <BikeAdaptToSuspension object at ...>
+
+And we can call methods on the object, which are part of the interface:
+
+    >>> suspension.is_locked()
+    False
+    >>> suspension.lockout()
+    >>> suspension.is_locked()
+    True
+    
