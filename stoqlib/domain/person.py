@@ -155,11 +155,14 @@ class Person(Domain):
     addresses = MultipleJoin('Address')
     calls = MultipleJoin('Calls')
 
+    # FIXME: This can be removed after we have killed NoneInterface:
+    #        Then we can just do the IClient(self), IEmployee(self
+    #        calls a TypeError will automatically be issued
     def _check_individual_or_company_facets(self):
         if not self.has_individual_or_company_facets():
-            msg = ('The person you want to adapt must have at '
-                   'least an individual or a company facet')
-            raise CannotAdapt(msg)
+            raise CannotAdapt(
+                'The person you want to adapt must have at '
+                'least an individual or a company facet')
 
     #
     # SQLObject setters
@@ -202,8 +205,7 @@ class Person(Domain):
     #
 
     def has_individual_or_company_facets(self):
-        return (IIndividual(self) or
-                ICompany(self))
+        return (IIndividual(self, None) or ICompany(self, None))
 
     #
     # Facet hooks
@@ -230,11 +232,11 @@ class Person(Domain):
         return adapter_klass(self, **kwargs)
 
     def facet_IEmployee_add(self, **kwargs):
-        individual = IIndividual(self)
+        individual = IIndividual(self, None)
         if not individual:
-            msg = ('The person you want to adapt must have '
-                   'an individual facet')
-            raise CannotAdapt(msg)
+            raise CannotAdapt(
+                'The person you want to adapt must have '
+                'an individual facet')
         adapter_klass = self.getAdapterClass(IEmployee)
         return adapter_klass(self, **kwargs)
 
@@ -245,11 +247,11 @@ class Person(Domain):
 
     def facet_IBranch_add(self, **kwargs):
         from stoqlib.domain.product import storables_set_branch
-        company = ICompany(self)
+        company = ICompany(self, None)
         if not company:
-            msg = ('The person you want to adapt must have '
-                   'a company facet')
-            raise CannotAdapt(msg)
+            raise CannotAdapt(
+                'The person you want to adapt must have '
+                'a company facet')
         adapter_klass = self.getAdapterClass(IBranch)
         branch = adapter_klass(self, **kwargs)
         # XXX I'm not sure yet if this is the right place to update stocks
@@ -258,11 +260,11 @@ class Person(Domain):
         return branch
 
     def facet_ISalesPerson_add(self, **kwargs):
-        employee = IEmployee(self)
+        employee = IEmployee(self, None)
         if not employee:
-            msg = ('The person you want to adapt must have '
-                   'an employee facet')
-            raise CannotAdapt(msg)
+            raise CannotAdapt(
+                'The person you want to adapt must have '
+                'an employee facet')
         adapter_klass = self.getAdapterClass(ISalesPerson)
         return adapter_klass(self, **kwargs)
 
