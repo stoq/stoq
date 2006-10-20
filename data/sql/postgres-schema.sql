@@ -395,6 +395,9 @@ CREATE TABLE on_sale_info (
 );
 
 CREATE TABLE asellable_category (
+    -- Subclasses:
+    --    base_sellable_category
+    --    sellable_category
     id bigserial NOT NULL PRIMARY KEY,
     description text,
     suggested_markup numeric(10,2),
@@ -423,6 +426,10 @@ CREATE TABLE sellable_unit (
 );
 
 CREATE TABLE asellable (
+    -- Subclasses:
+    --    product_adapt_to_sellable
+    --    service_adapt_to_sellable
+    --    gift_certificate_adapt_to_sellable
     id bigserial NOT NULL PRIMARY KEY,
     code integer NOT NULL UNIQUE,
     barcode text,
@@ -475,6 +482,10 @@ CREATE TABLE purchase_item (
 );
 
 CREATE TABLE abstract_renegotiation_adapter (
+    -- Subclasses:
+    --    renegotiation_adapt_to_return_sale
+    --    renegotiation_adapt_to_exchange
+    --    renegotiation_adapt_to_change_installments
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255)
 );
@@ -542,6 +553,10 @@ CREATE TABLE sale_adapt_to_payment_group (
 );
 
 CREATE TABLE asellable_item (
+    -- Subclasses:
+    --    product_sellable_item
+    --    service_sellable_item
+    --    gift_certificate_item
     id bigserial NOT NULL PRIMARY KEY,
     quantity numeric(10,2),
     base_price numeric(10,2),
@@ -552,6 +567,8 @@ CREATE TABLE asellable_item (
 );
 
 CREATE TABLE abstract_stock_item (
+    -- Subclasses:
+    --    product_stock_item
     id bigserial NOT NULL PRIMARY KEY,
     stock_cost numeric(10,2),
     quantity numeric(10,2),
@@ -582,6 +599,11 @@ CREATE TABLE address (
 );
 
 CREATE TABLE abstract_payment_group (
+    -- Subclasses:
+    --    sale_adapt_to_payment_group
+    --    till_adapt_to_payment_group
+    --    purchase_order_adapt_to_payment_group
+    --    receiving_order_adapt_to_payment_group
     id bigserial NOT NULL PRIMARY KEY,
     status integer,
     open_date timestamp without time zone,
@@ -648,6 +670,9 @@ CREATE TABLE card_installments_store_details (
 );
 
 CREATE TABLE payment_destination (
+    -- Subclasses:
+    --    store_destination
+    --    bank_destination
     id bigserial NOT NULL PRIMARY KEY,
     description text,
     account_id bigint REFERENCES bank_account(id),
@@ -656,6 +681,9 @@ CREATE TABLE payment_destination (
 );
 
 CREATE TABLE abstract_check_bill_adapter (
+    -- Subclasses:
+    --   pm_adapt_to_bill_p_m
+    --   pm_adapt_to_check_p_m
     id bigserial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
@@ -665,6 +693,12 @@ CREATE TABLE abstract_check_bill_adapter (
 );
 
 CREATE TABLE payment_method_details (
+    -- Subclasses:
+    --    debit_card_details
+    --    credit_card_details
+    --    card_installments_store_details
+    --    card_installments_provider_details
+    --    finance_details
     id bigserial NOT NULL PRIMARY KEY,
     is_active boolean,
     commission numeric(10,2),
@@ -674,6 +708,12 @@ CREATE TABLE payment_method_details (
 );
 
 CREATE TABLE abstract_payment_method_adapter (
+    -- Subclasses:
+    --    abstract_check_bill_adapter
+    --    pm_adapt_to_money_p_m
+    --    pm_adapt_to_gift_certificate_p_m
+    --    pm_adapt_to_card_p_m
+    --    pm_adapt_to_finance_p_m
     id bigserial NOT NULL PRIMARY KEY,
     is_active boolean,
     child_name character varying(255)
@@ -825,6 +865,13 @@ CREATE TABLE icms_ipi_book_entry (
 );
 
 CREATE TABLE inheritable_model (
+    -- Subclasses:
+    --   asellable_category
+    --   asellable_item
+    --   abstract_fiscal_book_entry
+    --   abstract_stock_item
+    --   payment_destination
+    --   payment_method_details
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -833,6 +880,11 @@ CREATE TABLE inheritable_model (
 );
 
 CREATE TABLE inheritable_model_adapter (
+    -- Subclasses:
+    --   asellable
+    --   abstract_renegotiation_adapter
+    --   abstract_payment_group
+    --   abstract_payment_method_adapter
     id bigserial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1126,6 +1178,9 @@ CREATE TABLE bank_destination (
 );
 
 CREATE TABLE abstract_fiscal_book_entry (
+    -- Subclasses:
+    --    icms_ipi_book_entry
+    --    iss_book_entry
     id bigserial NOT NULL PRIMARY KEY,
     identifier integer NOT NULL UNIQUE,
     date timestamp without time zone,

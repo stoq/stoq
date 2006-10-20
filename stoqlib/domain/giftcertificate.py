@@ -127,7 +127,6 @@ class GiftCertificateItem(ASellableItem):
     property: it can be used as a payment method for another sale.
     """
 
-
 class GiftCertificate(Domain):
     """This is the base class for gift certificates representation. A gift
     certificate is a paper which will be used in the future as a payment
