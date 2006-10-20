@@ -30,6 +30,7 @@ from zope.interface.interface import InterfaceClass, adapter_hooks
 
 from stoqlib.exceptions import AdapterError
 
+# FIXME: Remove these two, see #2819
 class MetaInterface(InterfaceClass):
     pass
 
