@@ -27,6 +27,10 @@
 from zope.interface import Attribute
 from zope.interface.interface import Interface
 
+# FIXME: Remove, update callsites
+from stoqlib.database.interfaces import IDatabaseSettings
+IDatabaseSettings
+
 class CookieError(Exception):
     pass
 
@@ -90,58 +94,6 @@ class IApplicationDescriptions(Interface):
         * Application name
         * Application full name
         * Application icon name
-        """
-
-
-class IDatabaseSettings(Interface):
-    """
-    This is an interface to describe all important database settings
-    """
-
-    rdbms = Attribute('name identifying the database type')
-    dbname = Attribute('name identifying the database name')
-    address = Attribute('database address')
-    port = Attribute('database port')
-
-    def get_connection_uri():
-        """@returns: a SQLObject connection URI"""
-
-class IConnection(Interface):
-    """
-    This is an interface that describes a database connection
-    """
-
-    def close():
-        """Drops the connection to the database"""
-
-class ITransaction(IConnection):
-    """
-    This is an interface that describes a database transaction.
-    It extends the IConnection interface.
-    """
-
-    def commit(close=False):
-        """
-        Commits the objects to the database.
-        Sends all the modifications of the current objects to the database,
-        @param close: Optional, if True also closes the database
-        """
-
-    def rollback():
-        """Undos all the changes made within the current transaction"""
-
-    def get(object):
-        """
-        Fetches an object within the transaction
-        @param obj: a SQLObject
-        @returns: a reference to the same object within the transaction
-        """
-
-    def add_object(object):
-        """
-        Adds an object to the transaction.
-        It's used by TransactionEntry to keep a log of all modified object
-        @param object: A SQLObject subclass which should be marked as modified
         """
 
 class IXMLRPCService(Interface):
