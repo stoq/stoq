@@ -31,10 +31,13 @@ import unittest
 import tests.base
 tests.base # pyflakes
 
+flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
+
 def _test_one(self, filename):
     failures, tries = doctest.testfile(filename, verbose=False,
                                        module_relative=False,
-                                       raise_on_error=False)
+                                       raise_on_error=False,
+                                       optionflags=flags)
     if failures:
         raise AssertionError('%d test(s) failed in doctest %s, see above' % (
             failures, os.path.basename(filename)))
