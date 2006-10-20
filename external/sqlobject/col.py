@@ -49,8 +49,8 @@ try:
     from mx import DateTime
 except ImportError:
     try:
-        DateTime # pyflakes in the try
         import DateTime # old version of mxDateTime
+        DateTime # pyflakes in the try
     except ImportError:
         mxdatetime_available = False
     else:
@@ -1169,8 +1169,8 @@ class TimeCol(Col):
 try:
     from decimal import Decimal
 except ImportError:
-    Decimal # pyflakes in the try
     Decimal = float
+    Decimal # pyflakes in the try
 
 class DecimalValidator(validators.Validator):
     def to_python(self, value, state):
