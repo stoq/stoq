@@ -35,7 +35,6 @@ from sqlobject.sqlbuilder import func, AND
 from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
-from stoqlib.lib.component import CannotAdapt
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
@@ -160,7 +159,7 @@ class Person(Domain):
     #        calls a TypeError will automatically be issued
     def _check_individual_or_company_facets(self):
         if not self.has_individual_or_company_facets():
-            raise CannotAdapt(
+            raise TypeError(
                 'The person you want to adapt must have at '
                 'least an individual or a company facet')
 
@@ -234,7 +233,7 @@ class Person(Domain):
     def facet_IEmployee_add(self, **kwargs):
         individual = IIndividual(self, None)
         if not individual:
-            raise CannotAdapt(
+            raise TypeError(
                 'The person you want to adapt must have '
                 'an individual facet')
         adapter_klass = self.getAdapterClass(IEmployee)
@@ -249,7 +248,7 @@ class Person(Domain):
         from stoqlib.domain.product import storables_set_branch
         company = ICompany(self, None)
         if not company:
-            raise CannotAdapt(
+            raise TypeError(
                 'The person you want to adapt must have '
                 'a company facet')
         adapter_klass = self.getAdapterClass(IBranch)
@@ -262,7 +261,7 @@ class Person(Domain):
     def facet_ISalesPerson_add(self, **kwargs):
         employee = IEmployee(self, None)
         if not employee:
-            raise CannotAdapt(
+            raise TypeError(
                 'The person you want to adapt must have '
                 'an employee facet')
         adapter_klass = self.getAdapterClass(ISalesPerson)
