@@ -25,7 +25,7 @@
 """Component infrastructure for Stoqlib"""
 
 from kiwi.python import qual, namedAny
-from zope.interface.interface import InterfaceClass
+from zope.interface.interface import InterfaceClass, adapter_hooks
 
 from stoqlib.exceptions import AdapterError
 
@@ -218,3 +218,12 @@ class Adaptable(object):
                 continue
             facets.append(facet)
         return facets
+
+# This is a simple in memory register of all adapters, which
+# depends on the state of the object itself [_adapterCache], it's
+# also a cache which can be used by persisted adapters so we don't
+# need to refetch.
+def _adapter_hook(iface, obj):
+    if isinstance(obj, Adaptable):
+        return obj._adapterCache.get(qual(iface))
+adapter_hooks.append(_adapter_hook)

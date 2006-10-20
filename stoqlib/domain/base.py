@@ -69,8 +69,6 @@ class AdaptableSQLObject(Adaptable):
                                     forceDBName=True))
 
 
-# XXX: Cache the adapter so we don't need to refetch the object
-
 def _adaptable_sqlobject_adapter_hook(iface, obj):
     """
     A zope.interface hook used to fetch an adapter when calling
