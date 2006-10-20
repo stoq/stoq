@@ -33,9 +33,10 @@ from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.dbconnection import DBAPI, Transaction
 from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
+from zope.interface.interface import adapter_hooks
 
 from stoqlib.domain.transaction import TransactionEntry
-from stoqlib.lib.component import Adapter, AdaptableSQLObject
+from stoqlib.lib.component import Adapter, Adaptable
 from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)
@@ -43,6 +44,74 @@ from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
 
 DATABASE_ENCODING = 'UTF-8'
 
+#
+# SQLObject provides for our adapter infrastructure
+#
+
+class SQLObjectAdapter(Adapter):
+    def __init__(self, _original, kwargs):
+        if _original:
+            kwargs['_originalID'] = getattr(_original, 'id', None)
+            kwargs['_original'] = _original
+        # HMMM!
+        self.__dict__['_original'] = _original
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+        return self._original.id == other._original.id
+
+    def get_adapted(self):
+        return self._original
+
+class AdaptableSQLObject(Adaptable):
+    @classmethod
+    def registerFacet(cls, facet, *ifaces):
+        super(AdaptableSQLObject, cls).registerFacet(facet, *ifaces)
+
+        if not hasattr(facet, '_original'):
+            facet.sqlmeta.addColumn(ForeignKey(cls.__name__,
+                                    name='_original',
+                                    forceDBName=True))
+
+
+# XXX: Cache the adapter so we don't need to refetch the object
+
+def _adaptable_sqlobject_adapter_hook(iface, obj):
+    """
+    A zope.interface hook used to fetch an adapter when calling
+    iface(adaptable).
+    It fetches the facet type and does a select in the database to
+    see if the object is present.
+
+    @param iface: the interface to adapt to
+    @param obj: object we want to adapt
+    """
+
+    # We're only interested in Adaptable subclasses which defines
+    # the getFacetType method
+    if not isinstance(obj, AdaptableSQLObject):
+        return
+
+    try:
+        facetType = obj.getFacetType(iface)
+    except LookupError:
+        # zope.interface will handle this and raise TypeError,
+        # see InterfaceClass.__call__ in zope/interface/interface.py
+        return None
+
+    # FIXME: Use selectOneBy
+    if facetType:
+        results = facetType.selectBy(
+            _originalID=obj.id, connection=obj.get_connection())
+
+    if results.count() == 1:
+        return results[0]
+
+adapter_hooks.append(_adaptable_sqlobject_adapter_hook)
 
 #
 # Abstract classes
@@ -324,18 +393,18 @@ class BaseSQLView:
 #
 
 
-class ModelAdapter(BaseDomain, Adapter):
+class ModelAdapter(BaseDomain, SQLObjectAdapter):
 
     def __init__(self, _original=None, *args, **kwargs):
-        Adapter.__init__(self, _original, kwargs) # Modifies kwargs
+        SQLObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
         BaseDomain.__init__(self, *args, **kwargs)
 
 
-class InheritableModelAdapter(AbstractModel, InheritableSQLObject, Adapter):
+class InheritableModelAdapter(AbstractModel, InheritableSQLObject, SQLObjectAdapter):
 
     def __init__(self, _original=None, *args, **kwargs):
         AbstractModel.__init__(self)
-        Adapter.__init__(self, _original, kwargs) # Modifies kwargs
+        SQLObjectAdapter.__init__(self, _original, kwargs) # Modifies kwargs
         InheritableSQLObject.__init__(self, *args, **kwargs)
 
 for klass in (InheritableModel, Domain, ModelAdapter, InheritableModelAdapter):
