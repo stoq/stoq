@@ -34,13 +34,13 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.columns import PriceCol, DecimalCol, AutoIncCol
 from stoqlib.database.runtime import get_connection
-from stoqlib.exceptions import DatabaseInconsistency, SellableError
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.validators import is_date_in_interval
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel, BaseSQLView)
+from stoqlib.exceptions import DatabaseInconsistency, SellableError
+from stoqlib.lib.parameters import sysparam
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.validators import is_date_in_interval
 
 _ = stoqlib_gettext
 
