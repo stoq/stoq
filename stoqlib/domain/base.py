@@ -50,22 +50,13 @@ DATABASE_ENCODING = 'UTF-8'
 
 class SQLObjectAdapter(Adapter):
     def __init__(self, _original, kwargs):
+        Adapter.__init__(self, _original)
+
         if _original:
             kwargs['_originalID'] = getattr(_original, 'id', None)
             kwargs['_original'] = _original
         # HMMM!
         self.__dict__['_original'] = _original
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __eq__(self, other):
-        if type(self) is not type(other):
-            return False
-        return self._original.id == other._original.id
-
-    def get_adapted(self):
-        return self._original
 
 class AdaptableSQLObject(Adaptable):
     @classmethod

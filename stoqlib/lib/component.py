@@ -50,8 +50,19 @@ NoneInterface = NoneMetaInterface('NoneInterface',
 #
 
 class Adapter(object):
+    def __init__(self, adaptable):
+        self._adaptable = adaptable
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __eq__(self, other):
+        if type(self) is not type(other):
+            return False
+        return self._adaptable.id == other._adaptable.id
+
     def get_adapted(self):
-        raise NotImplementedError
+        return self._adaptable
 
 class Adaptable(object):
 
@@ -103,8 +114,6 @@ class Adaptable(object):
 
         The 'facet' argument is an adapter class which will be registered
         using its interfaces specified in __implements__ argument.
-        Unless it already exists in the facet, a foreign key with the name
-        '_original' will be assigned.
 
         Notes: the assigned key will have the name of the class cls.
 
