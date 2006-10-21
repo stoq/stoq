@@ -1,6 +1,6 @@
-`````````````````
-domain/base.py
-`````````````````
+.. -*- Mode: doctest -*-
+
+Doctest for domain/base.txt
 
 The `base
 <http://www.async.com.br/projects/stoq/docs/package/public/stoqlib.domain.base-module.html>`_

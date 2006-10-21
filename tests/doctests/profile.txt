@@ -1,6 +1,6 @@
-`````````````````
-domain/profile.py
-`````````````````
+.. -*- Mode: doctest -*-
+
+Doctest for domain/profile.py
 
 The **Users profile management module** was built to make easier to manage
 application users. A user profile consists of two objects types: `UserProfile

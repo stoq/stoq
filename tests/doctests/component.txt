@@ -1,8 +1,6 @@
--*- Mode: doctest -*-
+.. -*- Mode: doctest -*-
 
-`````````````````
-lib/component.py
-`````````````````
+Doctest for lib/component.txt
 
 Stoqlib uses the adapter pattern <http://en.wikipedia.org/wiki/Adapter_pattern> 
 to solve a specific set of problems, most noticeable roles for Persons.
