@@ -121,7 +121,8 @@ class ISystemNotifier(Interface):
     def info(short, description):
         pass
 
-    def warning(short, description):
+    # FIXME: Remove *args/**kwargs
+    def warning(short, description, *args, **kwargs):
         pass
 
     def error(short, description):
