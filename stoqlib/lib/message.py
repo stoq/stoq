@@ -26,22 +26,9 @@
 
 import sys
 
-from zope.interface import Interface, implements
+from zope.interface import implements
 from kiwi.component import get_utility, provide_utility
-
-class ISystemNotifier(Interface):
-
-    def info(short, description):
-        pass
-
-    def warning(short, description, *args, **kwargs):
-        pass
-
-    def error(short, description):
-        pass
-
-    def yesno(text, default, *verbs):
-        pass
+from stoqlib.lib.interfaces import ISystemNotifier
 
 class DefaultSystemNotifier:
     implements(ISystemNotifier)
