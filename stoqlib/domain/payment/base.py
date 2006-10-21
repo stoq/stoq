@@ -284,9 +284,10 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         # FIXME: Proper implementation
         return currency(0)
 
-    # FIXME: Use None instead of datetime.now() as a default argument
     def add_payment(self, value, description, method, destination=None,
-                    due_date=datetime.now()):
+                    due_date=None):
+        if due_date is None:
+            due_date = datetime.now()
         """Create a new payment and add it to the group"""
         from stoqlib.domain.till import Till
         conn = self.get_connection()
