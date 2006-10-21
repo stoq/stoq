@@ -46,8 +46,9 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ICurrentBranch,
                                     ICurrentBranchStation,
                                     ICurrentUser,
-                                    IDatabaseSettings)
-from stoqlib.lib.message import DefaultSystemNotifier, ISystemNotifier
+                                    IDatabaseSettings,
+                                    ISystemNotifier)
+from stoqlib.lib.message import DefaultSystemNotifier
 
 log = Logger('stoqlib.tests')
 

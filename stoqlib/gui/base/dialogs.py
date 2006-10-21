@@ -38,7 +38,7 @@ from zope.interface import implements
 
 from stoqlib.exceptions import ModelDataError
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.message import ISystemNotifier
+from stoqlib.lib.interfaces import ISystemNotifier
 from stoqlib.gui.base.gtkadds import change_button_appearance
 from stoqlib.reporting.base.utils import print_file
 

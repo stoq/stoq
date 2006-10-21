@@ -115,3 +115,18 @@ class IXMLRPCService(Interface):
         """
         Stops the service, eg break out of serve
         """
+
+class ISystemNotifier(Interface):
+
+    def info(short, description):
+        pass
+
+    def warning(short, description):
+        pass
+
+    def error(short, description):
+        pass
+
+    def yesno(text, default, *verbs):
+        pass
+
