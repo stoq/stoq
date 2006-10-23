@@ -155,8 +155,6 @@ class BaseSellableInfo(Domain):
     commission = DecimalCol(default=0)
 
     def get_commission(self):
-        if self.commission is None:
-            return currency(0)
         return self.commission
 
     #
