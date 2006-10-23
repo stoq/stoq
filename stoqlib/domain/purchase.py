@@ -203,7 +203,7 @@ class PurchaseOrder(Domain):
                              % self.get_status_str())
         conn = self.get_connection()
         if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(self)
+            group = IPaymentGroup(self, None)
             base_method = sysparam(conn).BASE_PAYMENT_METHOD
             total = self.get_purchase_total()
             self._create_preview_outpayments(conn, group, base_method, total)
