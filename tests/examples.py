@@ -123,6 +123,7 @@ class ExampleCreator(object):
             'PersonAdaptToUser': self._create_user,
             'Product': self._create_product,
             'ProductAdaptToSellable' : self._create_sellable,
+            'ProductAdaptToStorable' : self._create_storable,
             'Sale': self._create_sale,
             'ServiceSellableItem': self._create_service_sellable_item,
             'Till': self._create_till,
