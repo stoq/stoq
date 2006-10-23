@@ -37,7 +37,7 @@ from kiwi.python import Settable
 from kiwi.argcheck import argcheck
 
 from stoqlib.database.runtime import StoqlibTransaction
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import StoqlibError, BarcodeDoesNotExists
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import get_all_methods_dict
@@ -263,9 +263,6 @@ class AbstractItemStep(WizardEditorStep):
         has_item_str = self.item.get_text() != ''
         self.add_item_button.set_sensitive(has_item_str)
 
-    def _item_notify(self, msg):
-        self.item.set_invalid(msg)
-
     def _get_sellable(self):
         if self.proxy.model:
             sellable = self.item_proxy.model.item
@@ -273,8 +270,12 @@ class AbstractItemStep(WizardEditorStep):
             sellable = None
         if not sellable:
             barcode = self.item.get_text()
-            sellable = ASellable.get_availables_and_sold_by_barcode(
-                self.conn, barcode, self._item_notify)
+            try:
+                sellable = ASellable.get_availables_and_sold_by_barcode(
+                    self.conn, barcode)
+            except BarcodeDoesNotExists, e:
+                self.item.set_invalid(str(e))
+
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
                 # completions

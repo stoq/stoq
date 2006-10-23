@@ -124,3 +124,6 @@ class StoqlibError(Exception):
 
 class InvalidStatus(Exception):
     """Invalid status for the object which the operation was requested"""
+
+class BarcodeDoesNotExists(Exception):
+    """There are no products with the specified barcode"""

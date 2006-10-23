@@ -38,7 +38,8 @@ from stoqlib.database.runtime import get_connection
 from stoqlib.domain.interfaces import ISellable, IContainer, IDescribable
 from stoqlib.domain.base import (Domain, InheritableModelAdapter,
                                  InheritableModel, BaseSQLView)
-from stoqlib.exceptions import DatabaseInconsistency, SellableError
+from stoqlib.exceptions import (DatabaseInconsistency, SellableError,
+                                BarcodeDoesNotExists)
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import is_date_in_interval
@@ -409,17 +410,15 @@ class ASellable(InheritableModelAdapter):
     #        or something similar
 
     @classmethod
-    def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
-                                  notify_callback):
+    def _get_sellables_by_barcode(cls, conn, barcode, extra_query):
         q1 = ASellable.q.barcode == barcode
         query = AND(q1, extra_query)
         sellables = cls.select(query, connection=conn)
         qty = sellables.count()
         if not qty:
-            msg = _("The sellable with barcode '%s' doesn't exists or is "
-                    "not available to be sold" % barcode)
-            notify_callback(msg)
-            return
+            raise BarcodeDoesNotExists(
+                _("The sellable with barcode '%s' doesn't exists or is "
+                  "not available to be sold" % barcode))
         if qty != 1:
             raise DatabaseInconsistency('You should have only one '
                                         'sellable with barcode %s'
@@ -427,38 +426,30 @@ class ASellable(InheritableModelAdapter):
         return sellables[0]
 
     @classmethod
-    def get_availables_by_barcode(cls, conn, barcode, notify_callback):
+    def get_availables_by_barcode(cls, conn, barcode):
         """Returns a list of avaliable sellables that can be sold.
         A sellable that can be sold can have only one possible
         status: STATUS_AVAILABLE
 
         @param conn: a sqlobject Transaction instance
         @param barcode: a string representing a sellable barcode
-        @notify_callback: a function which is a callback that will be called
-                          if the sellable barcode doesn't exists
-
         """
         return cls._get_sellables_by_barcode(
             conn, barcode,
-            ASellable.q.status == ASellable.STATUS_AVAILABLE,
-            notify_callback)
+            ASellable.q.status == ASellable.STATUS_AVAILABLE)
 
     @classmethod
-    def get_availables_and_sold_by_barcode(cls, conn, barcode, notify_callback):
+    def get_availables_and_sold_by_barcode(cls, conn, barcode):
         """Returns a list of avaliable sellables and also sellables that
         can be sold.  Here we will get sellables with the following
         statuses: STATUS_AVAILABLE, STATUS_SOLD
 
         @param conn: a sqlobject Transaction instance
         @param barcode: a string representing a sellable barcode
-        @notify_callback: a function which is a callback that will be called
-                          if the sellable barcode doesn't exists
-
         """
         statuses = [cls.STATUS_AVAILABLE, cls.STATUS_SOLD]
         extra_query = IN(cls.q.status, statuses)
-        return cls._get_sellables_by_barcode(conn, barcode, extra_query,
-                                             notify_callback)
+        return cls._get_sellables_by_barcode(conn, barcode, extra_query)
 
 #
 # Views
