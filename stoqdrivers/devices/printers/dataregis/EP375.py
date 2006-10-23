@@ -508,7 +508,7 @@ class EP375(SerialBase, BaseChequePrinter):
         # tied to ICMS, otherwise the printer will not recognizes the command.
         # Sooooo, what can I do? Right now, if the product code has not only
         # numbers, i'll prefix with 0s to avoid more problems to the callsite,
-        # but my XXX remains *HERE*
+        # but my warning remains *HERE*
         #
         code_num = 0
         try:
