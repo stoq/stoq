@@ -204,6 +204,9 @@ class PurchaseOrder(Domain):
         conn = self.get_connection()
         if sysparam(conn).USE_PURCHASE_PREVIEW_PAYMENTS:
             group = IPaymentGroup(self, None)
+            if not group:
+                raise ValueError('You must have a IPaymentGroup facet '
+                                 'defined at this point')
             base_method = sysparam(conn).BASE_PAYMENT_METHOD
             total = self.get_purchase_total()
             self._create_preview_outpayments(conn, group, base_method, total)
