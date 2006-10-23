@@ -32,94 +32,75 @@ from stoqlib.domain.interfaces import (IBranch, ICompany, IEmployee,
 from stoqlib.lib.parameters import sysparam
 
 def create_person(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('Person')
+    return ExampleCreator.create(trans, 'Person')
 
 def create_branch(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('IBranch')
+    return ExampleCreator.create(trans, 'IBranch')
 
 def create_supplier(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ISupplier')
+    return ExampleCreator.create(trans, 'ISupplier')
 
 def create_employee(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('IEmployee')
+    return ExampleCreator.create(trans, 'IEmployee')
 
 def create_salesperson(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ISalesPerson')
+    return ExampleCreator.create(trans, 'ISalesPerson')
 
 def create_client(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('IClient')
+    return ExampleCreator.create(trans, 'IClient')
 
 def create_individual(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('IIndividual')
+    return ExampleCreator.create(trans, 'IIndividual')
 
 def create_user(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('IUser')
+    return ExampleCreator.create(trans, 'IUser')
 
 def create_storable(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ProductAdaptToStorable')
+    return ExampleCreator.create(trans, 'ProductAdaptToStorable')
 
 def create_product(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('Product')
+    return ExampleCreator.create(trans, 'Product')
 
 def create_sellable(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ProductAdaptToSellable')
+    return ExampleCreator.create(trans, 'ProductAdaptToSellable')
 
 def create_sale(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('Sale')
+    return ExampleCreator.create(trans, 'Sale')
 
 def create_city_location(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('CityLocation')
+    return ExampleCreator.create(trans, 'CityLocation')
 
 def create_parameter_data(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ParameterData')
+    return ExampleCreator.create(trans, 'ParameterData')
 
 def create_service_sellable_item(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ServiceSellableItem')
+    return ExampleCreator.create(trans, 'ServiceSellableItem')
 
 def create_device_settings(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('DeviceSettings')
+    return ExampleCreator.create(trans, 'DeviceSettings')
 
 def create_company(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('ICompany')
+    return ExampleCreator.create(trans, 'ICompany')
 
 def create_till(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('Till')
+    return ExampleCreator.create(trans, 'Till')
 
 def create_user_profile(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('UserProfile')
+    return ExampleCreator.create(trans, 'UserProfile')
 
 def get_station(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('BranchStation')
+    return ExampleCreator.create(trans, 'BranchStation')
 
 def get_location(trans):
-    ex = ExampleCreator(trans)
-    return ex.create_by_type('CityLocation')
-
-
+    return ExampleCreator.create(trans, 'CityLocation')
 
 class ExampleCreator(object):
     def __init__(self, trans):
         self.trans = trans
+
+    @classmethod
+    def create(cls, name, trans):
+        return cls(trans).create_by_type(name)
 
     def create_by_type(self, model_type):
         known_types = {
