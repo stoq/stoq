@@ -17,7 +17,7 @@ Create a new transaction
 BaseSellableInfo
 ================
 
-.. TODO
+.. TODO:
 ..     def get_commission(self):
 ..     def get_description(self):
 
@@ -135,7 +135,7 @@ And it will also be gone in get_items():
 Querying sellable status
 ========================
 
-.. TODO
+.. TODO:
 ..     def is_sold(self):
 ..     def sell(self):
 ..     def cancel(self):
@@ -163,6 +163,7 @@ And the it's possible to sell it:
 Accessors
 =========
 
+.. TODO
 ..     def get_code_str(self):
 ..     def get_short_description(self):
 ..     def get_suggested_markup(self):
