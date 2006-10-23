@@ -275,6 +275,7 @@ class AbstractItemStep(WizardEditorStep):
                     self.conn, barcode)
             except BarcodeDoesNotExists, e:
                 self.item.set_invalid(str(e))
+                sellable = None
 
             if sellable:
                 # Waiting for a select method on kiwi entry using entry
