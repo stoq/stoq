@@ -76,7 +76,17 @@ But the cost will stay the same:
     >>> sellable.cost
     <currency R$ 10>
 
-.. XXX: Commission
+The default commission is 0
+
+    >>> sellable.commission
+    Decimal("0")
+
+It can be modified:
+
+    >>> sellable.commission = 10
+
+    >>> sellable.commission
+    Decimal("10.00")
 
 IContainer
 ==========
