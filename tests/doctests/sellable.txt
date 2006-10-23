@@ -21,8 +21,15 @@ BaseSellableInfo
 ..     def get_commission(self):
 ..     def get_description(self):
 
-    >>> info = BaseSellableInfo(connection=trans)
+    >>> info = BaseSellableInfo(connection=trans, description="Sellable")
 
+Commission is initially set to 0:
+
+    >>> info.get_commission()
+    Decimal("0")
+
+    >>> info.get_description()
+    u'Sellable'
 
 SellableCategory
 ================
