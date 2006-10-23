@@ -378,9 +378,8 @@ class ASellable(InheritableModelAdapter):
     @classmethod
     def get_available_sellables_query(cls, conn):
         service = sysparam(conn).DELIVERY_SERVICE
-        q1 = cls.q.id != service.id
-        q2 = cls.q.status == cls.STATUS_AVAILABLE
-        return AND(q1, q2)
+        return AND(cls.q.id != service.id,
+                   cls.q.status == cls.STATUS_AVAILABLE)
 
     @classmethod
     def get_available_sellables(cls, conn):
