@@ -76,12 +76,12 @@ If we modify markup directly, the price will be updated:
 
     >>> sellable.markup = 200
     >>> sellable.price
-    <currency R$ 30>
+    <currency ...30...>
 
 But the cost will stay the same:
 
     >>> sellable.cost
-    <currency R$ 10>
+    <currency ...10...>
 
 The default commission is 0
 
@@ -121,7 +121,7 @@ If we add an item:
 We'll get it when we call get_items() again:
 
     >>> list(sellable.get_items())
-    [<ProductSellableItem ...price=<currency R$ 5>...>]
+    [<ProductSellableItem ...price=<currency ...5...>...>]
 
 We can remove it using remove_item():
 
