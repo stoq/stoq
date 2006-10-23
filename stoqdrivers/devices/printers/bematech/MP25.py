@@ -303,7 +303,8 @@ class MP25(SerialBase):
         subtotal = reply[1:8]
         if subtotal:
             return Decimal(bcd2dec(subtotal)) / Decimal("1e2")
-        return Decimal("0.0") # XXX: "**** BUSTED SUBTOTAL ****"
+        # Busted subtotal
+        return Decimal("0.0")
 
     def get_last_item_id(self):
         self._send_packed("%c%c" % (CMD_GET_VARIABLES, VAR_LAST_ITEM_ID))
