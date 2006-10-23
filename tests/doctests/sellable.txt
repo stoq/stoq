@@ -212,27 +212,28 @@ We can query using a specific barcode:
     >>> sellable.barcode == '1138'
     True
     
-    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138',
-    ...                                                 lambda x: None)
-    False
+    >>> ASellable.get_availables_by_barcode(trans, '1138')
+    Traceback (most recent call last):
+        ...
+    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
 
     >>> sellable.cancel()
 
-    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138',
-    ...                                                 lambda x: None)
+    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138')
     True
 
 And for sold sellables using a specific barcode:
 
-    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138',
-    ...                                                          lambda x: None)
+    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138')
     True
 
     >>> sellable.status = ASellable.STATUS_BLOCKED
 
-    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138',
-    ...                                                          lambda x: None)
-    False
+    >>> ASellable.get_availables_and_sold_by_barcode(trans, '1138')
+    Traceback (most recent call last):
+        ...
+    BarcodeDoesNotExists: The sellable with barcode '1138' doesn't exists or is not available to be sold
+
     
 SellableItem
 ============
