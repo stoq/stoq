@@ -51,7 +51,7 @@ Sellable
     ...                             barcode='1138', connection=trans)
 
     >>> sellable
-    <ProductAdaptToSellable ...L code=... barcode=u'1138' status=1 cost=<currency R$ 0> notes=u'' unitID=None base_sellable_infoID=...L on_sale_infoID=...L categoryID=None te_createdID=...L te_modifiedID=...L _is_valid_model=True>
+    <ProductAdaptToSellable ...>
 
 
 Properties: Markup, Price and Commission
@@ -121,7 +121,7 @@ If we add an item:
 We'll get it when we call get_items() again:
 
     >>> list(sellable.get_items())
-    [<ProductSellableItem ...L quantity=Decimal("1.00") base_price=<currency R$ 30> price=<currency R$ 5> saleID=None sellableID=...L te_createdID=...L te_modifiedID=...L _is_valid_model=True>]
+    [<ProductSellableItem ...price=<currency R$ 5>...>]
 
 We can remove it using remove_item():
 
