@@ -33,6 +33,8 @@ from kiwi.log import Logger
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.database import (create_database_if_missing,
                                        finish_transaction)
+from stoqlib.database.interfaces import (
+    ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
 from stoqlib.database.runtime import (new_transaction, get_connection,
                                       get_current_station)
 from stoqlib.database.settings import DatabaseSettings
@@ -43,10 +45,6 @@ from stoqlib.domain.station import BranchStation
 from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
                                  create_virtual_printer_for_current_station)
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
-                                    ICurrentBranch,
-                                    ICurrentBranchStation,
-                                    ICurrentUser,
-                                    IDatabaseSettings,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
 

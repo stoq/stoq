@@ -37,6 +37,7 @@ from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
 from stoqlib.database.database import (finish_transaction, execute_sql,
                                        clean_database)
+from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
@@ -46,7 +47,6 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableUnit
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.lib.parameters import sysparam, ensure_system_parameters
 from stoqlib.lib.translation import stoqlib_gettext
 

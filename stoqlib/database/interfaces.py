@@ -76,3 +76,28 @@ class ITransaction(IConnection):
         @param object: A SQLObject subclass which should be marked as modified
         """
 
+class ICurrentBranch(Interface):
+    """
+    This is a mainly a marker for the current branch which is expected
+    to implement L{stoqlib.domain.interfaces.IBranch}
+    It's mainly used by get_current_branch()
+    """
+
+class ICurrentBranchStation(Interface):
+    """
+    This is a mainly a marker for the current branch station.
+    It's mainly used by get_current_station()
+    """
+
+class ICurrentUser(Interface):
+    """
+    This is a mainly a marker for the current user.
+    It's mainly used by get_current_user()
+    """
+
+    username = Attribute('Username')
+    password = Attribute('Password')
+    profile = Attribute('A profile represents a colection of information '
+                        'which represents what this user can do in the '
+                        'system')
+

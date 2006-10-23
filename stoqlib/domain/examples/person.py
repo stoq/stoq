@@ -31,9 +31,8 @@ from decimal import Decimal
 from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 
+from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
-from stoqlib.lib.interfaces import ICurrentBranch, ICurrentBranchStation
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples import log
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.address import Address, CityLocation
@@ -45,6 +44,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        IUser, ICreditProvider,
                                        ITransporter)
 from stoqlib.domain.station import BranchStation
+from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
 
