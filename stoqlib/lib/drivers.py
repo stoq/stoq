@@ -459,10 +459,6 @@ class FiscalCoupon:
             return True
         sale = self.sale
         group = IPaymentGroup(sale)
-        if not group:
-            raise ValueError(
-                "The sale object must have a PaymentGroup facet at "
-                "this point.")
         if group.default_method == METHOD_GIFT_CERTIFICATE:
             self.printer.add_payment(MONEY_PM, sale.get_total_sale_amount())
             return True

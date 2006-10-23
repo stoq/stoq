@@ -81,8 +81,8 @@ class _PersonEditorTemplate(BaseEditorSlave):
         return slave
 
     def _setup_widgets(self):
-        facet_individual = IIndividual(self.model)
-        facet_company = ICompany(self.model)
+        facet_individual = IIndividual(self.model, None)
+        facet_company = ICompany(self.model, None)
         if not (facet_individual or facet_company):
             raise DatabaseInconsistency('A person must have at least a '
                                         'company or an individual facet.')

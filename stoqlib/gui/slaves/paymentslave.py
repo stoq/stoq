@@ -391,7 +391,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         payments = Payment.select(query, connection=self.conn)
         inpayments = []
         for payment in payments:
-            inpayment = IInPayment(payment)
+            inpayment = IInPayment(payment, None)
             if inpayment:
                 inpayments.append(inpayment)
         return inpayments
@@ -450,8 +450,6 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         else:
             payment = slave.model
         inpayment = IInPayment(payment)
-        assert inpayment, ('This payment should have a IInPayment facet '
-                           'at this point')
         self.method.delete_inpayment(inpayment)
 
     #

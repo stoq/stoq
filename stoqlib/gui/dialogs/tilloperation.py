@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import Column, ColoredColumn
 from sqlobject.sqlbuilder import IN
 
 from stoqlib.database.database import finish_transaction, rollback_and_begin
-from stoqlib.exceptions import DatabaseInconsistency, TillError
+from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.lib.message import warning, yesno
@@ -243,15 +243,9 @@ class TillOperationDialog(GladeSlaveDelegate):
     def get_extra_query(self):
         current_till = Till.get_current(self.conn)
         group = IPaymentGroup(current_till)
-        if not group:
-            raise DatabaseInconsistency("Till instance must have a"
-                                        "IPaymentGroup facet")
         group_ids = [group.id]
         for sale in Sale.get_available_sales(self.conn, current_till):
             group = IPaymentGroup(sale)
-            if not group:
-                raise DatabaseInconsistency("Sale instance must have a"
-                                            "IPaymentGroup facet")
             group_ids.append(group.id)
         return IN(Payment.q.groupID, group_ids)
 

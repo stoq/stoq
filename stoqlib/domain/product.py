@@ -265,7 +265,7 @@ class ProductSellableItem(ASellableItem):
             return Decimal(0)
         delivered_qty = Decimal(0)
         for service in services:
-            delivery = IDelivery(service)
+            delivery = IDelivery(service, None)
             if not delivery:
                 continue
             item = delivery.get_item_by_sellable(self.sellable)

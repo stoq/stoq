@@ -32,7 +32,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 
-from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
 from stoqlib.gui.base.editors import BaseEditor
@@ -91,9 +91,6 @@ class SaleDetailsDialog(BaseEditor):
 
         self.items_list.add_list(self.sale_order.get_items())
         group = IPaymentGroup(self.sale_order)
-        if not group:
-            raise DatabaseInconsistency("Sale order must have a payment "
-                                        "group set at this point")
         self.payments_list.add_list(group.get_items())
         self._setup_summary_labels()
 

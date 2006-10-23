@@ -23,8 +23,6 @@
 
 from zope.interface import Attribute, Interface
 
-from stoqlib.lib.component import NoneInterface
-
 #
 # Interfaces
 #
@@ -66,11 +64,7 @@ class IDescribable(Interface):
     def get_description():
         """ Returns a description that identifies the object """
 
-#
-# NoneInterfaces
-#
-
-class ISellable(NoneInterface):
+class ISellable(Interface):
     """ Represents the sellable information of a certain item such a product
     or a service. Note that sellable is not actually a concrete item but
     only its reference as a sellable. Concrete items are created by
@@ -153,7 +147,7 @@ class ISellable(NoneInterface):
     def get_unit_description():
         """Undocumented"""
 
-class IStorable(NoneInterface):
+class IStorable(Interface):
     """Storable documentation for a certain product or a sellable item.
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
@@ -208,21 +202,21 @@ class IStorable(NoneInterface):
         This method also considers the logic stock
         """
 
-class IPersonFacet(NoneInterface):
+class IPersonFacet(Interface):
     """
     A facet on a Person, the only thing it has is a named reference
     back to the person itself.
     """
     person = Attribute("a Person")
 
-class IPaymentFacet(NoneInterface):
+class IPaymentFacet(Interface):
     """
     A facet on a Payment, the only thing it has is a named reference
     back to the payment itself.
     """
     payment = Attribute("a Payment")
 
-class IPaymentMethodFacet(NoneInterface):
+class IPaymentMethodFacet(Interface):
     """
     A facet on a PaymentMethod, the only thing it has is a named reference
     back to the payment method itself.
@@ -375,19 +369,19 @@ class ITransporter(IPersonFacet):
                                    'charged by this transporter')
 
 class IInPayment(IPaymentFacet):
-    """ NoneInterface specification for InPayments. """
+    """ Interface specification for InPayments. """
 
     def receive():
         """ Confirm the payment. """
 
 class IOutPayment(IPaymentFacet):
-    """ NoneInterface specification for OutPayments. """
+    """ Interface specification for OutPayments. """
 
     def pay():
         """ Confirm the payment."""
 
-class IPaymentGroup(NoneInterface):
-    """ NoneInterface specification for PaymentGroups. """
+class IPaymentGroup(Interface):
+    """ Interface specification for PaymentGroups. """
 
     status = Attribute('The status of the payment group. ')
     open_date = Attribute('The open date of the payment group.')
@@ -430,7 +424,7 @@ class IPaymentGroup(NoneInterface):
         associated gift certificates properly.
         """
 
-class IDelivery(NoneInterface):
+class IDelivery(Interface):
     """ Specification of a Delivery interface for a sellable. """
 
     address = Attribute('The delivery address.')
@@ -483,7 +477,7 @@ class IGiftCertificatePM(IPaymentMethodFacet):
 class IMultiplePM(IPaymentMethodFacet):
     """A marker interface for multiple payment method"""
 
-class ITillOperation(NoneInterface):
+class ITillOperation(Interface):
     """Basic payment operation like adding a credit and a debit"""
 
     def add_debit(value, reason, category, date=None):
@@ -502,36 +496,36 @@ class ITillOperation(NoneInterface):
         """Cancel a payment in the current till"""
 
 
-class IRenegotiationReturnSale(NoneInterface):
+class IRenegotiationReturnSale(Interface):
     """A definition of a return (or cancellation) of a sale order."""
 
     def confirm(payment_group):
         """Confirm the sale return process."""
 
 
-class IRenegotiationExchange(NoneInterface):
+class IRenegotiationExchange(Interface):
     def confirm():
         """Confirm the exchange operation """
 
 
-class IRenegotiationInstallments(NoneInterface):
+class IRenegotiationInstallments(Interface):
     def confirm():
         """Confirm the operation """
 
 
-class IPaymentDevolution(NoneInterface):
+class IPaymentDevolution(Interface):
     """A devolution payment operation"""
 
     def get_devolution_date():
         """Get the day when the payment was returned"""
 
-class IPaymentDeposit(NoneInterface):
+class IPaymentDeposit(Interface):
     """A deposit payment operation"""
 
     def get_deposit_date():
         """Get the day when the payment was paid"""
 
-class IReversal(NoneInterface):
+class IReversal(Interface):
     """A financial entry which support reversal operations"""
 
     def reverse_entry(invoice_number):

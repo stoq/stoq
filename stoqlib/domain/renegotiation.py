@@ -30,7 +30,7 @@ from kiwi.datatypes import currency
 from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
+from stoqlib.exceptions import StoqlibError
 from stoqlib.domain.base import Domain, InheritableModelAdapter
 from stoqlib.domain.interfaces import (IRenegotiationReturnSale,
                                        IDescribable, IPaymentGroup,
@@ -123,10 +123,6 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
         # in the old sale order. So, create a reversal one
         till = Till.get_current(conn)
         till_group = IPaymentGroup(till)
-        if not till_group:
-            raise DatabaseInconsistency("You should have a IPaymentGroup "
-                                        "facet for the current till at "
-                                        "this point")
         till_group.create_debit(-overpaid_value, reason)
         return clone
 

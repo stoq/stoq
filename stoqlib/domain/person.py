@@ -231,11 +231,7 @@ class Person(Domain):
         return adapter_klass(self, **kwargs)
 
     def facet_IEmployee_add(self, **kwargs):
-        individual = IIndividual(self, None)
-        if not individual:
-            raise TypeError(
-                'The person you want to adapt must have '
-                'an individual facet')
+        IIndividual(self)
         adapter_klass = self.getAdapterClass(IEmployee)
         return adapter_klass(self, **kwargs)
 
@@ -246,11 +242,7 @@ class Person(Domain):
 
     def facet_IBranch_add(self, **kwargs):
         from stoqlib.domain.product import storables_set_branch
-        company = ICompany(self, None)
-        if not company:
-            raise TypeError(
-                'The person you want to adapt must have '
-                'a company facet')
+        ICompany(self)
         adapter_klass = self.getAdapterClass(IBranch)
         branch = adapter_klass(self, **kwargs)
         # XXX I'm not sure yet if this is the right place to update stocks
@@ -259,11 +251,7 @@ class Person(Domain):
         return branch
 
     def facet_ISalesPerson_add(self, **kwargs):
-        employee = IEmployee(self, None)
-        if not employee:
-            raise TypeError(
-                'The person you want to adapt must have '
-                'an employee facet')
+        IEmployee(self)
         adapter_klass = self.getAdapterClass(ISalesPerson)
         return adapter_klass(self, **kwargs)
 
