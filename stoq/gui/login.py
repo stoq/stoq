@@ -32,13 +32,14 @@ from kiwi.log import Logger
 from kiwi.python import Settable
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.list import Column
+from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_connection
 from stoqlib.exceptions import DatabaseError, LoginError, UserProfileError
 from stoqlib.domain.interfaces import IUser
 from stoqlib.domain.person import Person
 from stoqlib.gui.login import LoginDialog
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
-                                    CookieError, ICookieFile, ICurrentUser)
+                                    CookieError, ICookieFile)
 from stoqlib.lib.message import warning
 
 
