@@ -496,6 +496,16 @@ class ProductAdaptToStorable(ModelAdapter):
         stock = stock[0]
         return stock.quantity + stock.logic_quantity > 0
 
+    def get_stock_items(self):
+        return ProductStockItem.selectBy(storable=self,
+                                         connection=self.get_connection())
+
+
+    def get_stock_item(self, branch):
+        return ProductStockItem.selectOneBy(branch=branch,
+                                            storable=self,
+                                            connection=self.get_connection())
+
     @argcheck(Person.getAdapterClass(IBranch))
     def get_stocks(self, branch=None):
         conn = self.get_connection()
