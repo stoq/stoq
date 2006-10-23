@@ -157,7 +157,7 @@ class Adaptable(object):
 
         k = qual(iface)
         if k in self._adapterCache:
-            raise AdapterError('%s already  have a facet for interface %s' %
+            raise AdapterError('%s already has a facet for interface %s' %
                                (self.__class__.__name__, iface.__name__))
 
         facets = self.__class__._facets
