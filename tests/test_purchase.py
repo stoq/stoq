@@ -36,6 +36,7 @@ class TestPurchaseOrder(DomainTest):
 
     def testConfirmOrder(self):
         order = self.create_purchase_order()
+        # FIXME: Use a better exception?
         self.assertRaises(ValueError, order.confirm_order)
         order.status = PurchaseOrder.ORDER_PENDING
         self.assertRaises(ValueError, order.confirm_order)
