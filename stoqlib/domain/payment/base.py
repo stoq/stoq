@@ -29,7 +29,6 @@ from decimal import Decimal
 
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
-from sqlobject.sqlbuilder import AND
 from sqlobject import IntCol, DateTimeCol, UnicodeCol, ForeignKey
 from zope.interface import implements
 
@@ -445,20 +444,16 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             ignore_method_iface = a payment method interface which is
                                   ignored in the search for payments
         """
+        query = dict(status=Payment.STATUS_PREVIEW,
+                     group=self)
+
         conn = self.get_connection()
-        q1 = Payment.q.status == Payment.STATUS_PREVIEW
-        q2 = Payment.q.groupID == self.id
         if ignore_method_iface:
             base_method = sysparam(conn).BASE_PAYMENT_METHOD
-            method = ignore_method_iface(base_method)
-            q3 = Payment.q.methodID != method.id
-            query = AND(q1, q2, q3)
-        else:
-            query = AND(q1, q2)
-        payments = Payment.select(query, connection=conn)
-        conn = self.get_connection()
-        for payment in payments:
-            inpayment = IInPayment(payment)
+            query['method'] = ignore_method_iface(base_method)
+
+        for payment in Payment.selectBy(connection=conn, **query):
+            inpayment = IInPayment(payment, None)
             if not inpayment:
                 continue
             payment.method.delete_inpayment(inpayment)
