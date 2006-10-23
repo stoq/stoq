@@ -502,13 +502,12 @@ class EP375(SerialBase, BaseChequePrinter):
             D = discount
 
         #
-        # FIXME:
-        # A little problem here: the product code can only contain alphanumeric
-        # characters if the taxcode is between 90-99, i.e, if the product isn't
-        # tied to ICMS, otherwise the printer will not recognizes the command.
-        # Sooooo, what can I do? Right now, if the product code has not only
-        # numbers, i'll prefix with 0s to avoid more problems to the callsite,
-        # but my warning remains *HERE*
+        # FIXME: The product code can only contain alphanumeric characters if
+        # the taxcode is between 90-99, i.e, if the product isn't tied to ICMS,
+        # otherwise the printer will not recognizes the command. Sooooo, what
+        # can I do? Right now, if the product code has not only numbers, i'll
+        # prefix with 0s to avoid more problems to the callsite, but my warning
+        # remains *HERE*
         #
         code_num = 0
         try:
