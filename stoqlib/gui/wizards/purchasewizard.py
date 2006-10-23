@@ -120,7 +120,7 @@ class PurchasePaymentStep(WizardEditorStep):
 
     def __init__(self, wizard, previous, conn, model):
         self.order = model
-        pg = IPaymentGroup(model)
+        pg = IPaymentGroup(model, None)
         if pg:
             model = pg
         else:

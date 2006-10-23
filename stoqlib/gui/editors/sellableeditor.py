@@ -84,7 +84,6 @@ class SellablePriceEditor(BaseEditor):
         if self.model.markup is not None:
             return
         sellable = ISellable(self.model.get_adapted())
-        assert sellable
         self.model.markup = sellable.get_suggested_markup()
         self.main_proxy.update('markup')
 

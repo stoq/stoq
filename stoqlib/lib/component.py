@@ -29,22 +29,6 @@ from zope.interface.interface import InterfaceClass, adapter_hooks
 
 from stoqlib.exceptions import AdapterError
 
-# FIXME: Remove these two, see #2819
-class MetaInterface(InterfaceClass):
-    pass
-
-class NoneMetaInterface(MetaInterface):
-    """
-    Meta class for NoneInterface
-    It's identical to a normal zope.interface.Interface type except
-    that the default second argument is None
-    """
-    def __call__(self, adaptable, alternate=None):
-        return MetaInterface.__call__(self, adaptable, alternate)
-
-NoneInterface = NoneMetaInterface('NoneInterface',
-                                  __module__='stoqlib.lib.component')
-
 #
 # Adaptors
 #

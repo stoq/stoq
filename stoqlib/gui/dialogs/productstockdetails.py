@@ -33,7 +33,6 @@ import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.domain.product import (ProductAdaptToSellable,
@@ -132,7 +131,4 @@ class ProductStockHistoryDialog(BaseEditor):
 
         adaptable = self.model.get_adapted()
         storable = IStorable(adaptable)
-        if not storable:
-            raise DatabaseInconsistency("You must have a storable set at "
-                                        "this point")
         self.add_proxy(storable, ['full_balance'])

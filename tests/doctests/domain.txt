@@ -81,7 +81,7 @@ Import ISellable interface and verify if this Product instance has a
 component that implement this interface:
 
     >>> from stoqlib.domain.interfaces import ISellable
-    >>> ISellable(test_product)
+    >>> ISellable(test_product, None)
 
 To get the correct Adapter class that implements a given interface you have
 to call getAdapterClass method, and never import directly an Adapter class.

@@ -289,19 +289,12 @@ class Sale(Domain):
                     salesperson=self.salesperson, connection=conn)
 
     def check_payment_group(self):
-        group = IPaymentGroup(self)
-        if not group:
-            raise ValueError("Sale %s doesn't have an IPaymentGroup "
-                             "facet at this point" % self)
-        return group
+        return IPaymentGroup(self)
 
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
         # callback in SQLObject
-        client = IClient(person)
-        if not client:
-            raise TypeError("%s cannot be adapted to IClient." % person)
-        self.client = client
+        self.client = IClient(person)
 
     def reset_discount_and_surcharge(self):
         self.discount_value = self.surcharge_value = currency(0)
@@ -419,20 +412,9 @@ class Sale(Domain):
             raise DatabaseInconsistency("The sale %r have a client but no "
                                         "client_role defined." % self)
         elif self.client_role == Sale.CLIENT_INDIVIDUAL:
-            individual = IIndividual(person, None)
-            if individual is None:
-                raise DatabaseInconsistency(
-                    "The client_role for sale %r says that the client "
-                    "is an individual, but it doesn't have an Individual"
-                    " facet" % self)
-            return individual
+            return IIndividual(person)
         elif self.client_role == Sale.CLIENT_COMPANY:
-            company = ICompany(person, None)
-            if company is None:
-                raise DatabaseInconsistency(
-                    "The client_role for sale %r says that the client is "
-                    "a company but it doesn't have a Company facet" % self)
-            return company
+            return ICompany(person)
         else:
             raise DatabaseInconsistency("Invalid client_role for sale %r, "
                                         "got %r" % (self, self.client_role))

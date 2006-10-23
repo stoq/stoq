@@ -144,7 +144,7 @@ class CreditProviderEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        credprovider = ICreditProvider(person)
+        credprovider = ICreditProvider(person, None)
         if credprovider:
             return credprovider
         if self.provtype is None:
@@ -236,9 +236,10 @@ class EmployeeEditor(BasePersonRoleEditor):
         person = BasePersonRoleEditor.create_model(self, conn)
         if ICompany(person, None):
             person.addFacet(IIndividual, connection=self.conn)
-        employee = IEmployee(person)
-        return employee or person.addFacet(IEmployee, connection=conn,
-                                           role=None)
+        employee = IEmployee(person, None)
+        if not employee:
+            employee = person.addFacet(IEmployee, connection=conn, role=None)
+        return employee
 
     def setup_slaves(self):
         BasePersonRoleEditor.setup_slaves(self)

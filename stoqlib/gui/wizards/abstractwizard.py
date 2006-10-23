@@ -79,7 +79,7 @@ class AbstractSaleWizard(BaseWizard):
         if not isinstance(model, Sale):
             raise StoqlibError("Invalid datatype for model, it should be "
                                "of type Sale, got %s instead" % model)
-        group = IPaymentGroup(model)
+        group = IPaymentGroup(model, None)
         if not group:
             group = model.addFacet(IPaymentGroup, connection=conn)
         self.payment_group = group
@@ -196,7 +196,7 @@ class AbstractSalesPersonStep(WizardEditorStep):
             self.detach_slave(slave_holder)
         self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
 
-        group = IPaymentGroup(self.model)
+        group = IPaymentGroup(self.model, None)
         if not group:
             raise StoqlibError(
                 "You should have a IPaymentGroup facet defined at this point")

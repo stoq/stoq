@@ -157,10 +157,7 @@ class Till(Domain):
                                "before close it.")
 
         for sale in self.get_unconfirmed_sales():
-            group = IPaymentGroup(sale, None)
-            if group is None:
-                raise DatabaseInconsistency(
-                    "Sale must have a IPaymentGroup facet")
+            group = IPaymentGroup(sale)
 
             # FIXME: Move this to payment itself
             for payment in group.get_items():
