@@ -154,7 +154,7 @@ class WarehouseApp(SearchableAppWindow):
         sellable_view = self.products.get_selected_rows()[0]
         product = Product.get(sellable_view.product_id,
                               connection=self.conn)
-        storable = IStorable(product)
+        storable = IStorable(product, None)
         warehouse_branch = get_current_branch(self.conn)
         if (not storable
             or not storable.get_full_balance(warehouse_branch)):
