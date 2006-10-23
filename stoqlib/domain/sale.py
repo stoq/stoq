@@ -190,6 +190,13 @@ class Sale(Domain):
     surcharge_percentage = property(_get_surcharge_by_percentage,
                                     _set_surcharge_by_percentage)
 
+    def _set_client_role(self, value):
+        if value not in (Sale.CLIENT_INDIVIDUAL,
+                         Sale.CLIENT_COMPANY):
+            raise TypeError("The client role should be one of constantes "
+                            "CLIENT_INDIVIDUAL or CLIENT_COMPANY")
+        self._SO_set_client_role(value)
+
     #
     # SQLObject hooks
     #
