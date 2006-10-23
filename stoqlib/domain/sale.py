@@ -126,6 +126,9 @@ class Sale(Domain):
     discount_value = PriceCol(default=0)
     surcharge_value = PriceCol(default=0)
     notes = UnicodeCol(default='')
+    # It should be one of ClIENT_INDIVIDUAL or CLIENT_COMPANY and it is
+    # used to build properly the sale's invoice for a client which have
+    # both Individual and Company facets.
     client_role = IntCol(default=None)
 
     client = ForeignKey('PersonAdaptToClient', default=None)
