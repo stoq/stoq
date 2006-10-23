@@ -51,7 +51,9 @@ for filename in os.listdir(doctest_dir):
         continue
     full = os.path.join(doctest_dir, filename)
     name = 'test_' + filename[:-4]
-    namespace[name] = lambda self, f=full: self._test_one(f)
+    func = lambda self, f=full: self._test_one(f)
+    namespace[name] = func
+    func.__name__ = name
 
 # FIXME: Trials coverage does not like this test; figure out why
 if not '--coverage' in sys.argv:
