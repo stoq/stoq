@@ -12,6 +12,11 @@ It needs to be a subclass of AdaptableSQLObject:
     >>> class Bike(Adaptable):
     ...     pass
 
+We have no facets, yet so getFacetTypes() will return an empty list:
+
+    >>> Bike.getFacetTypes()
+    []
+
 Let's define an interface for something we can adapt
 
     >>> from zope.interface.interface import Interface
@@ -39,8 +44,15 @@ adaptable object, which will return the
 
     >>> Bike.registerFacet(BikeAdaptToSuspension, ISuspension)
 
-Now, if you want to listen the adapter types for a specific interface
-you can call getFacetTypes():
+If we try to register the same facet twice we'll receive an exception:
+
+    >>> Bike.registerFacet(BikeAdaptToSuspension, ISuspension)
+    Traceback (most recent call last):
+        ...
+    TypeError: Bike does already have a facet for interface ISuspension
+
+Now, if you want to listen the adapter types for a specific interface you
+can call getFacetTypes():
 
     >>> Bike.getFacetTypes()
     [<class 'BikeAdaptToSuspension'>]
@@ -63,6 +75,13 @@ the adapted object, which will return the adapter.
 
     >>> bike.addFacet(ISuspension)
     <BikeAdaptToSuspension object at ...>
+
+Call addFacet with the same interface again raises a
+
+    >>> bike.addFacet(ISuspension)
+    Traceback (most recent call last):
+        ...
+    AdapterError: Bike already has a facet for interface ISuspension
 
 We can now adapt the object:
 
