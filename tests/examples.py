@@ -98,33 +98,35 @@ class ExampleCreator(object):
     def __init__(self, trans):
         self.trans = trans
 
+    # Public API
+
     @classmethod
-    def create(cls, name, trans):
+    def create(cls, trans, name):
         return cls(trans).create_by_type(name)
 
     def create_by_type(self, model_type):
         known_types = {
-            'ASellable': self.create_sellable,
+            'ASellable': self._create_sellable,
             'BranchStation': self.get_station,
             'CityLocation': self.get_location,
-            'IClient': self.create_client,
-            'IBranch': self.create_branch,
-            'IEmployee': self.create_employee,
-            'IIndividual': self.create_individual,
-            'ISupplier': self.create_supplier,
-            'IUser': self.create_user,
-            'ParameterData': self.create_parameter_data,
-            'Person': self.create_person,
-            'PersonAdaptToBranch': self.create_branch,
-            'PersonAdaptToCompany': self.create_company,
-            'PersonAdaptToClient': self.create_client,
-            'PersonAdaptToUser': self.create_user,
-            'Product': self.create_product,
-            'ProductAdaptToSellable' : self.create_sellable,
-            'Sale': self.create_sale,
-            'ServiceSellableItem': self.create_service_sellable_item,
-            'Till': self.create_till,
-            'UserProfile': self.create_user_profile,
+            'IClient': self._create_client,
+            'IBranch': self._create_branch,
+            'IEmployee': self._create_employee,
+            'IIndividual': self._create_individual,
+            'ISupplier': self._create_supplier,
+            'IUser': self._create_user,
+            'ParameterData': self._create_parameter_data,
+            'Person': self._create_person,
+            'PersonAdaptToBranch': self._create_branch,
+            'PersonAdaptToCompany': self._create_company,
+            'PersonAdaptToClient': self._create_client,
+            'PersonAdaptToUser': self._create_user,
+            'Product': self._create_product,
+            'ProductAdaptToSellable' : self._create_sellable,
+            'Sale': self._create_sale,
+            'ServiceSellableItem': self._create_service_sellable_item,
+            'Till': self._create_till,
+            'UserProfile': self._create_user_profile,
             }
         if isinstance(model_type, basestring):
             model_name = model_type
@@ -133,18 +135,20 @@ class ExampleCreator(object):
         if model_name in known_types:
             return known_types[model_name]()
 
-    def create_person(self):
+    # Private
+
+    def _create_person(self):
         from stoqlib.domain.person import Person
         return Person(name='John', connection=self.trans)
 
-    def create_branch(self):
+    def _create_branch(self):
         from stoqlib.domain.person import Person
         person = Person(name='Dummy', connection=self.trans)
         person.addFacet(ICompany, fancy_name='Dummy shop',
                         connection=self.trans)
         return person.addFacet(IBranch, connection=self.trans)
 
-    def create_supplier(self):
+    def _create_supplier(self):
         from stoqlib.domain.person import Person
         person = Person(name='Supplier', connection=self.trans)
         person.addFacet(ICompany, fancy_name='Company Name',
@@ -152,52 +156,52 @@ class ExampleCreator(object):
         return person.addFacet(ISupplier, connection=self.trans)
 
 
-    def create_employee(self):
+    def _create_employee(self):
         from stoqlib.domain.person import Person, EmployeeRole
         person = Person(name='SalesPerson', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         role = EmployeeRole(name='Role', connection=self.trans)
         return person.addFacet(IEmployee, role=role, connection=self.trans)
 
-    def create_salesperson(self):
-        employee = self.create_employee()
+    def _create_salesperson(self):
+        employee = self._create_employee()
         return employee.person.addFacet(ISalesPerson, connection=self.trans)
 
-    def create_client(self):
+    def _create_client(self):
         from stoqlib.domain.person import Person
         person = Person(name='Client', connection=self.trans)
         person.addFacet(IIndividual, connection=self.trans)
         return person.addFacet(IClient, connection=self.trans)
 
-    def create_individual(self):
+    def _create_individual(self):
         from stoqlib.domain.person import Person
         person = Person(name='individual', connection=self.trans)
         return person.addFacet(IIndividual, connection=self.trans)
 
-    def create_user(self):
-        individual = self.create_individual()
-        profile = self.create_user_profile()
+    def _create_user(self):
+        individual = self._create_individual()
+        profile = self._create_user_profile()
         return individual.person.addFacet(IUser, username='username',
                                           password='password',
                                           profile=profile,
                                           connection=self.trans)
 
-    def create_storable(self):
+    def _create_storable(self):
         from stoqlib.domain.product import Product
         product = Product(connection=self.trans)
         return product.addFacet(IStorable, connection=self.trans)
 
-    def create_product(self):
+    def _create_product(self):
         from stoqlib.domain.product import ProductSupplierInfo
-        sellable = self.create_sellable()
+        sellable = self._create_sellable()
         product = sellable.get_adapted()
         product.addFacet(IStorable, connection=self.trans)
         ProductSupplierInfo(connection=self.trans,
-                            supplier=self.create_supplier(),
+                            supplier=self._create_supplier(),
                             product=product, is_main_supplier=True)
         return product
 
-    def create_sellable(self):
+    def _create_sellable(self):
         from stoqlib.domain.product import Product
         from stoqlib.domain.sellable import BaseSellableInfo
         product = Product(connection=self.trans)
@@ -207,11 +211,11 @@ class ExampleCreator(object):
         return product.addFacet(ISellable,
                                 base_sellable_info=sellable_info,
                                 connection=self.trans)
-    def create_sale(self):
+    def _create_sale(self):
         from stoqlib.domain.sale import Sale
         from stoqlib.domain.till import Till
         till = Till.get_current(self.trans)
-        salesperson = self.create_salesperson()
+        salesperson = self._create_salesperson()
         return Sale(till=till,
                     coupon_id=0,
                     open_date=datetime.datetime.now(),
@@ -219,44 +223,44 @@ class ExampleCreator(object):
                     cfop=sysparam(self.trans).DEFAULT_SALES_CFOP,
                     connection=self.trans)
 
-    def create_city_location(self):
+    def _create_city_location(self):
         from stoqlib.domain.address import CityLocation
         return CityLocation(country='Groenlandia',
                             city='Acapulco',
                             state='Wisconsin',
                             connection=self.trans)
 
-    def create_parameter_data(self):
+    def _create_parameter_data(self):
         from stoqlib.domain.parameter import ParameterData
         return ParameterData.select(connection=self.trans)[0]
 
-    def create_service_sellable_item(self):
+    def _create_service_sellable_item(self):
         from stoqlib.domain.service import ServiceSellableItem
-        sale = self.create_sale()
-        sellable = self.create_sellable()
+        sale = self._create_sale()
+        sellable = self._create_sellable()
         return ServiceSellableItem(
             sellable=sellable,
             quantity=1, price=10,
             sale=sale, connection=self.trans)
 
-    def create_device_settings(self):
+    def _create_device_settings(self):
         from stoqlib.lib.drivers import get_fiscal_printer_settings_by_station
 
         station = get_current_station(self.trans)
         return get_fiscal_printer_settings_by_station(self.trans, station)
 
-    def create_company(self):
+    def _create_company(self):
         from stoqlib.domain.person import Person
         person = Person(name='Dummy', connection=self.trans)
         return person.addFacet(ICompany, fancy_name='Dummy shop',
                                connection=self.trans)
 
-    def create_till(self):
+    def _create_till(self):
         from stoqlib.domain.till import Till
         station = get_current_station(self.trans)
         return Till(connection=self.trans, station=station)
 
-    def create_user_profile(self):
+    def _create_user_profile(self):
         from stoqlib.domain.profile import UserProfile
         return UserProfile(connection=self.trans, name='assistant')
 
