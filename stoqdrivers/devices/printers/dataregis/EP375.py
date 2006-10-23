@@ -617,7 +617,7 @@ class EP375(SerialBase, BaseChequePrinter):
         # FIXME: As always, we have a problem here with Dataregis printer:
         # only one of the last 100 items can be cancelled, so the 'item_id'
         # capability must have what value? Probably we never will have
-        # more than 100 items right now, so I just mark a FIXME here, this
+        # more than 100 items right now, so I just put a mark here, this
         # must be fixed in the future.
         return dict(item_code=Capability(min_len=3, max_len=6),
                     item_id=Capability(digits=3),
