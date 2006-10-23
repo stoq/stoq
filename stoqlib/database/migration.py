@@ -28,13 +28,13 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 
 import stoqlib
-from stoqlib.database.database import finish_transaction, execute_sql
 from stoqlib.database.admin import create_base_schema
+from stoqlib.database.database import finish_transaction, execute_sql
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.profile import update_profile_applications
 from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseInconsistency
-from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.parameters import (check_parameter_presence,
                                     ensure_system_parameters)
 

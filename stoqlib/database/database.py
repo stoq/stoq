@@ -32,8 +32,8 @@ import subprocess
 from kiwi.component import get_utility
 from kiwi.log import Logger
 
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.message import error
 
 _ = stoqlib_gettext
