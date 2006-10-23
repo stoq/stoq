@@ -1094,6 +1094,7 @@ CREATE TABLE renegotiation_data (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     reason text,
     paid_total numeric(10,2),
+    CHECK (paid_total >= 0),
     invoice_number integer,
     penalty_value numeric(10,2),
     responsible_id bigint REFERENCES person(id),

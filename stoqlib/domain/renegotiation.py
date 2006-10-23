@@ -61,16 +61,6 @@ class RenegotiationData(Domain):
     new_order = ForeignKey("Sale", default=None)
 
     #
-    # SQLObject setters
-    #
-
-    def _set_paid_total(self, value):
-        if value < 0:
-            raise StoqlibError("The paid value should never be "
-                               "lesser then zero")
-        self._SO_set_paid_total(value)
-
-    #
     # Accessors
     #
 
