@@ -35,9 +35,9 @@ from sqlobject.converters import sqlrepr
 from sqlobject.sqlbuilder import SQLExpression, AND
 from zope.interface.interface import adapter_hooks
 
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.lib.component import Adapter, Adaptable
-from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import (StoqlibTransaction, get_current_user,
                                       get_current_station)
 

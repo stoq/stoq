@@ -33,11 +33,10 @@ from sqlobject.dbconnection import Transaction
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.main import SQLObject
 
-from stoqlib.database.interfaces import (IDatabaseSettings,
-                                         IConnection, ITransaction)
+from stoqlib.database.interfaces import (
+    IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
+    ICurrentBranchStation, ICurrentUser)
 from stoqlib.exceptions import StoqlibError
-from stoqlib.lib.interfaces import (ICurrentBranch, ICurrentBranchStation,
-                                    ICurrentUser)
 from stoqlib.lib.message import error
 from stoqlib.lib.translation import stoqlib_gettext
 
