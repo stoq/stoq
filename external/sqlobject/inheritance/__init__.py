@@ -2,7 +2,7 @@ from sqlobject import sqlbuilder
 from sqlobject import classregistry
 from sqlobject.col import StringCol, ForeignKey, popKey
 from sqlobject.main import sqlmeta, SQLObject, SelectResults, True, False, \
-   makeProperties, getterName, setterName
+   makeProperties, getterName, setterName, SQLObjectMoreThanOneResultError
 import iteration
 
 
@@ -384,6 +384,23 @@ class InheritableSQLObject(SQLObject):
                 clause, *args, **kwargs)
     select = classmethod(select)
 
+    # Johan: 2006-10-23: selectOne/selectOneBy for inheritable tables
+    def selectOne(cls, clause=None, clauseTables=None, lazyColumns=False,
+                  connection=None):
+        results = list(cls.select(clause,
+                                  clauseTables=clauseTables,
+                                  lazyColumns=lazyColumns,
+                                  connection=connection).limit(2))
+
+        if len(results) == 0:
+            return None
+        elif len(results) == 1:
+            return results[0]
+        else:
+            raise SQLObjectMoreThanOneResultError(
+                "%d rows retrieved by selectOne" % len(results))
+    selectOne = classmethod(selectOne)
+
     def _SO_prepareSelectBy(cls, conn, kw):
         ops = {None: "IS"}
         data = {}
@@ -451,6 +468,23 @@ class InheritableSQLObject(SQLObject):
                                       clause=clause,
                                       connection=conn)
     selectBy = classmethod(selectBy)
+
+    # Johan: 2006-10-23: selectOne/selectOneBy for inheritable tables
+    def selectOneBy(cls, connection=None, **kw):
+        conn = connection or cls._connection
+        clause, table_names = cls._SO_prepareSelectBy(conn, kw)
+        results = list(cls.SelectResultsClass(cls,
+                                              clauseTables=table_names,
+                                              clause=clause,
+                                              connection=conn))
+        if len(results) == 0:
+            return None
+        elif len(results) == 1:
+            return results[0]
+        else:
+            raise SQLObjectMoreThanOneResultError(
+                "%d rows retrieved by selectOne" % len(results))
+    selectOneBy = classmethod(selectOneBy)
 
     def destroySelf(self):
         #DSM: If this object has parents, recursivly kill them
