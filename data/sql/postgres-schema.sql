@@ -653,7 +653,9 @@ CREATE TABLE card_installment_settings (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     payment_day integer,
-    closing_day integer
+    CHECK (payment_day <= 28),
+    closing_day integer,
+    CHECK (closing_day <= 28)
 );
 
 CREATE TABLE card_installments_provider_details (

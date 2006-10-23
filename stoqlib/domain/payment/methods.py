@@ -260,30 +260,8 @@ class CardInstallmentSettings(Domain):
     """
     # Note that payment_day and closing_day can not have a value greater
     # than 28.
-    MAX_DAY_NUMBER = 28
     payment_day = IntCol()
     closing_day = IntCol()
-
-    #
-    # SQLObject callbacks
-    #
-
-    def _set_payment_day(self, value):
-        self._check_max_day_number(value)
-        self._SO_set_payment_day(value)
-
-    def _set_closing_day(self, value):
-        self._check_max_day_number(value)
-        self._SO_set_closing_day(value)
-
-    #
-    # Auxiliar methods
-    #
-
-    def _check_max_day_number(self, value):
-        if value > self.MAX_DAY_NUMBER:
-            raise ValueError('This attribute can not be greater '
-                             'then %d' % self.MAX_DAY_NUMBER)
 
     def calculate_payment_duedate(self, first_duedate):
         if first_duedate.day > self.closing_day:
