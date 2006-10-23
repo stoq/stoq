@@ -27,7 +27,7 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
-from kiwi.argcheck import argcheck, percent
+from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
 from zope.interface import implements, implementedBy
@@ -554,18 +554,6 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
     monthly_interest = DecimalCol(default=0)
     daily_penalty = DecimalCol(default=0)
 
-
-    #
-    # SQLObject callbacks
-    #
-
-    def _set_daily_penalty(self, value):
-        percent.value_check("daily_penalty", value)
-        self._SO_set_daily_penalty(value)
-
-    def _set_monthly_interest(self, value):
-        percent.value_check("monthly_interest", value)
-        self._SO_set_monthly_interest(value)
 
     #
     # General methods
