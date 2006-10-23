@@ -35,8 +35,8 @@ from zope.interface import implements
 
 from stoqlib.database.database import database_exists
 from stoqlib.database.exceptions import OperationalError
+from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.exceptions import ConfigError, DatabaseError
-from stoqlib.lib.interfaces import IDatabaseSettings
 from stoqlib.lib.translation import stoqlib_gettext
 
 DEFAULT_RDBMS = 'postgres'
