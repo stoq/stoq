@@ -177,14 +177,29 @@ Class methods:
 
 This will return a list of available sellables:
 
-    >>> ASellable.get_available_sellables(trans).count()
-    7L
+    >>> sellable.status == ASellable.STATUS_AVAILABLE
+    True
+    
+    >>> sellable in ASellable.get_available_sellables(trans)
+    True
+
+Selling the sellable, removes it from the list of available sellables:
+
+    >>> sellable.sell()
+    >>> sellable in ASellable.get_available_sellables(trans)
+    False
 
 Unblocked means available or sold:
 
-    >>> ASellable.get_unblocked_sellables(trans).count()
-    11L
+    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    True
 
+Blocking the sellable removes from the return value:
+    
+    >>> sellable.status = ASellable.STATUS_BLOCKED
+    >>> sellable in ASellable.get_unblocked_sellables(trans)
+    False
+    
 Sold means, are the ones which are in the state sold:
 
     >>> ASellable.get_sold_sellables(trans).count()
@@ -193,20 +208,31 @@ Sold means, are the ones which are in the state sold:
 
 We can query using a specific barcode:
 
-    >>> sellable = ASellable.get_availables_by_barcode(trans, '1138', None)
-    >>> sellable != None
+    >>> sellable.barcode == '1138'
     True
-    >>> sellable.barcode
-    u'1138'
+    
+    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138',
+    ...                                                 lambda x: None)
+    False
+
+    >>> sellable.cancel()
+
+    >>> sellable == ASellable.get_availables_by_barcode(trans, '1138',
+    ...                                                 lambda x: None)
+    True
 
 And for sold sellables using a specific barcode:
 
-    >>> sellable = ASellable.get_availables_and_sold_by_barcode(trans, '1138', None)
-    >>> sellable != None
+    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138',
+    ...                                                          lambda x: None)
     True
-    >>> sellable.barcode
-    u'1138'
 
+    >>> sellable.status = ASellable.STATUS_BLOCKED
+
+    >>> sellable == ASellable.get_availables_and_sold_by_barcode(trans, '1138',
+    ...                                                          lambda x: None)
+    False
+    
 SellableItem
 ============
 
