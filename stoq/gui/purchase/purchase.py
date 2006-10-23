@@ -125,7 +125,7 @@ class PurchaseApp(SearchableAppWindow):
                              'ORDER_PENDING, got %s'
                              % PurchaseOrder.get_status_str(order.status))
         if sysparam(self.conn).USE_PURCHASE_PREVIEW_PAYMENTS:
-            group = IPaymentGroup(order)
+            group = IPaymentGroup(order, None)
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
