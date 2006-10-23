@@ -152,10 +152,6 @@ class IStorable(Interface):
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
 
-    def fill_stocks():
-        """Fill the stock references of the current product to point to
-        stock correct information in all the branches"""
-
     def increase_stock(quantity, branch=None):
         """When receiving a product, update the stock reference for this new
         item. If no branch company is supplied, update all branches."""

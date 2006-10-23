@@ -37,7 +37,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import (StockError, SellError, DatabaseInconsistency,
                                 StoqlibError)
-from stoqlib.domain.person import PersonAdaptToBranch, Person
+from stoqlib.domain.person import Person
 from stoqlib.domain.stock import AbstractStockItem
 from stoqlib.domain.base import Domain, ModelAdapter
 from stoqlib.domain.sellable import (ASellable, ASellableItem,
@@ -111,9 +111,7 @@ class Product(Domain):
     #
 
     def facet_IStorable_add(self, **kwargs):
-        storable = ProductAdaptToStorable(self, **kwargs)
-        storable.fill_stocks()
-        return storable
+        return ProductAdaptToStorable(self, **kwargs)
 
     #
     # General Methods
@@ -331,9 +329,18 @@ class ProductAdaptToStorable(ModelAdapter):
 
     retention = MultipleJoin('ProductRetentionHistory')
 
+    def _init(self, *args, **kwargs):
+        super(ProductAdaptToStorable, self)._init(*args, **kwargs)
+        self._fill_stocks()
+
     #
     # Private
     #
+
+    def _fill_stocks(self):
+        for branch in Person.iselect(IBranch,
+                                     connection=self.get_connection()):
+            self._add_stock_item(branch)
 
     def _check_logic_quantity(self):
         if sysparam(self.get_connection()).USE_LOGIC_QUANTITY:
@@ -371,6 +378,7 @@ class ProductAdaptToStorable(ModelAdapter):
                                 stock_cost=stock_cost, quantity=quantity,
                                 logic_quantity=logic_quantity,
                                 storable=self)
+
     #
     # IContainer implementation
     #
@@ -400,12 +408,6 @@ class ProductAdaptToStorable(ModelAdapter):
     #
     # IStorable implementation
     #
-
-    def fill_stocks(self):
-        conn = self.get_connection()
-        branch_companies = PersonAdaptToBranch.select(connection=conn)
-        for branch in branch_companies:
-            self._add_stock_item(branch)
 
     def increase_stock(self, quantity, branch=None):
         if quantity <= 0:
@@ -447,7 +449,6 @@ class ProductAdaptToStorable(ModelAdapter):
 
         stocks = self.get_stocks(branch)
         self._check_rejected_stocks(stocks, quantity, check_logic=True)
-
         for stock_item in stocks:
             stock_item.logic_quantity -= quantity
 
