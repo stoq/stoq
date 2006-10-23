@@ -1,0 +1,202 @@
+.. -*- Mode: doctest -*-
+
+Doctest for domain/sellable.txt
+
+Imports that will be used in this doctest:
+
+    >>> from stoqlib.database.runtime import new_transaction
+    >>> from stoqlib.domain.product import Product, ProductSellableItem
+    >>> from stoqlib.domain.interfaces import ISellable
+    >>> from stoqlib.domain.sellable import ASellable
+    >>> from stoqlib.domain.sellable import BaseSellableInfo
+
+Create a new transaction
+
+    >>> trans = new_transaction()
+
+BaseSellableInfo
+================
+
+.. TODO
+..     def get_commission(self):
+..     def get_description(self):
+
+    >>> info = BaseSellableInfo(connection=trans)
+
+
+SellableCategory
+================
+
+.. TODO:
+..     def get_commission(self):
+..     def get_description(self):
+..     def get_commission(self):
+..     def get_markup(self):
+..     def get_full_description(self):
+
+
+Sellable
+========
+
+    >>> product = Product(connection=trans)
+    >>> sellable = product.addFacet(ISellable,
+    ...                             base_sellable_info=info,
+    ...                             barcode='1138', connection=trans)
+
+    >>> sellable
+    <ProductAdaptToSellable ...L code=... barcode=u'1138' status=1 cost=<currency R$ 0> notes=u'' unitID=None base_sellable_infoID=...L on_sale_infoID=...L categoryID=None te_createdID=...L te_modifiedID=...L _is_valid_model=True>
+
+
+Properties: Markup, Price and Commission
+========================================
+
+Markup is initially set to 0, since we haven't defined price or cost:
+
+    >>> sellable.markup
+    Decimal("0")
+
+Let's say that the initial price is 20 and the cost to 10
+
+    >>> sellable.price = 20
+    >>> sellable.cost = 10
+
+Then we will have a markup of 100%:
+
+    >>> sellable.markup
+    Decimal("100")
+
+If we modify markup directly, the price will be updated:
+
+    >>> sellable.markup = 200
+    >>> sellable.price
+    <currency R$ 30>
+
+But the cost will stay the same:
+
+    >>> sellable.cost
+    <currency R$ 10>
+
+.. XXX: Commission
+
+IContainer
+==========
+
+add_item is yet not implemented
+
+    >>> sellable.add_item(None)
+    Traceback (most recent call last):
+        ...
+    NotImplementedError: ...
+
+
+get_items, returns all the SellableItems for our table, which initially
+returns an empty list:
+
+    >>> list(sellable.get_items())
+    []
+
+If we add an item:
+
+    >>> item = ProductSellableItem(sellable=sellable, quantity=1,
+    ...                            price=5, sale=None, connection=trans)
+
+
+We'll get it when we call get_items() again:
+
+    >>> list(sellable.get_items())
+    [<ProductSellableItem ...L quantity=Decimal("1.00") base_price=<currency R$ 30> price=<currency R$ 5> saleID=None sellableID=...L te_createdID=...L te_modifiedID=...L _is_valid_model=True>]
+
+We can remove it using remove_item():
+
+    >>> sellable.remove_item(item)
+
+And it will also be gone in get_items():
+
+    >>> list(sellable.get_items())
+    []
+
+Querying sellable status
+========================
+
+.. TODO
+..     def is_sold(self):
+..     def sell(self):
+..     def cancel(self):
+
+A newly created sellable is in the status sold, because there are no available
+items to sell:
+
+    >>> sellable.status == ASellable.STATUS_SOLD
+    True
+
+Since there's no stock, then it cannot be sold:
+
+    >>> sellable.can_be_sold()
+    False
+
+At some point we get stocks, then we make it possible to sell it:
+
+    >>> sellable.can_sell()
+
+And the it's possible to sell it:
+
+    >>> sellable.can_be_sold()
+    True
+
+Accessors
+=========
+
+..     def get_code_str(self):
+..     def get_short_description(self):
+..     def get_suggested_markup(self):
+..     def get_unit_description(self):
+..     def get_description(self):
+
+Class methods:
+=============
+
+.. TODO:
+..     def check_barcode_exists(cls, barcode):
+
+This will return a list of available sellables:
+
+    >>> ASellable.get_available_sellables(trans).count()
+    7L
+
+Unblocked means available or sold:
+
+    >>> ASellable.get_unblocked_sellables(trans).count()
+    11L
+
+Sold means, are the ones which are in the state sold:
+
+    >>> ASellable.get_sold_sellables(trans).count()
+    4L
+
+
+We can query using a specific barcode:
+
+    >>> sellable = ASellable.get_availables_by_barcode(trans, '1138', None)
+    >>> sellable != None
+    True
+    >>> sellable.barcode
+    u'1138'
+
+And for sold sellables using a specific barcode:
+
+    >>> sellable = ASellable.get_availables_and_sold_by_barcode(trans, '1138', None)
+    >>> sellable != None
+    True
+    >>> sellable.barcode
+    u'1138'
+
+SellableItem
+============
+
+.. TODO:
+..   def sell(self):
+..   def cancel(self):
+..   def get_total(self):
+..   def get_quantity_unit_string(self):
+
+

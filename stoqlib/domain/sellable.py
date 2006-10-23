@@ -26,6 +26,7 @@ or a service, implemented in your own modules.
 """
 
 import datetime
+from decimal import Decimal
 
 from sqlobject import DateTimeCol, UnicodeCol, IntCol, ForeignKey, SQLObject
 from sqlobject.sqlbuilder import AND, IN, OR
@@ -246,8 +247,8 @@ class ASellable(InheritableModelAdapter):
 
     def _get_markup(self):
         if self.cost == 0:
-            return currency(0)
-        return ((self.price / self.cost) - 1) * currency(100)
+            return Decimal(0)
+        return ((self.price / self.cost) - 1) * 100
 
     def _set_markup(self, markup):
         self.price = self._get_price_by_markup(markup)
@@ -288,10 +289,9 @@ class ASellable(InheritableModelAdapter):
         if not self.sellableitem_table:
             raise TypeError("Subclasses must provide a sellableitem_table"
                             " attribute")
-        conn = self.get_connection()
-        table, parent = self.sellableitem_table, ASellableItem
-        query = table.q.id == parent.q.sellableID
-        return self.sellableitem_table.select(query, connection=conn)
+
+        return self.sellableitem_table.selectBy(
+            sellable=self, connection=self.get_connection())
 
     def remove_item(self, item):
         if not self.sellableitem_table:
@@ -406,6 +406,9 @@ class ASellable(InheritableModelAdapter):
         """
         query = cls.q.status == cls.STATUS_SOLD
         return cls.select(query, connection=conn)
+
+    # FIXME: replace notify_callback with an exception BarcodeDoesNotExists
+    #        or something similar
 
     @classmethod
     def _get_sellables_by_barcode(cls, conn, barcode, extra_query,
