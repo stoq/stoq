@@ -192,6 +192,18 @@ class IStorable(Interface):
         @returns: a list of ProductStockItems
         """
 
+    def get_stock_item(branch):
+        """
+        Fetch a stock item for a specific branch
+        @returns: a stock item
+        """
+
+    def get_stock_items():
+        """
+        Fetches the stock items available for all branches.
+        @returns: a sequence of stock items
+        """
+
     def has_stock_by_branch(branch):
         """Returns True if there is at least one item on stock for the
         given branch or False if not.

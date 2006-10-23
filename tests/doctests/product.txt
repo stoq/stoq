@@ -1,0 +1,48 @@
+.. -*- Mode: doctest -*-
+
+Doctest for domain/product.txt
+
+Imports that will be used in this doctest:
+
+    >>> from stoqlib.database.runtime import new_transaction, get_current_branch
+    >>> from stoqlib.domain.interfaces import IStorable
+    >>> from stoqlib.domain.product import Product, ProductStockItem
+
+Create a new transaction
+
+    >>> trans = new_transaction()
+
+Create a branch we can use:
+
+    >>> from tests.examples import ExampleCreator
+    >>> branch = ExampleCreator.create(trans, 'IBranch')
+
+Create a new Product and attach a storable facet.
+
+    >>> product = Product(connection=trans)
+    >>> storable = product.addFacet(IStorable, connection=trans)
+
+A stock item should now be available for the storable:
+
+    >>> stock_item = storable.get_stock_item(branch)
+    >>> stock_item
+    <ProductStockItem ...>
+
+The branch and storable should be set properly
+
+    >>> stock_item.branch == branch
+    True
+
+    >>> stock_item.storable == storable
+    True
+
+Fetch the stock item for the current branch and verify that the
+stock_items are unique:
+
+    >>> current_branch = get_current_branch(trans)
+    >>> stock_item2 = storable.get_stock_item(current_branch)
+    >>> stock_item != stock_item2
+    True
+
+    >>> list(storable.get_stock_items())
+    [<ProductStockItem ...>, <ProductStockItem ...>]
