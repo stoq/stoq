@@ -28,7 +28,7 @@ from sqlobject import UnicodeCol, ForeignKey, BoolCol
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
-from stoqlib.domain.interfaces import IActive, IBranch
+from stoqlib.domain.interfaces import IActive
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -40,7 +40,7 @@ class BranchStation(Domain):
     """
     implements(IActive)
 
-    name = UnicodeCol(unique=True)
+    name = UnicodeCol()
     is_active = BoolCol(default=False)
     branch = ForeignKey("PersonAdaptToBranch")
 
@@ -83,9 +83,6 @@ class BranchStation(Domain):
         @param branch: the branch
         @param name: name of the station
         """
-
-        if IBranch(branch, None) is None:
-            raise TypeError("%r must implemented IBranch" % (branch,))
         return cls.selectOneBy(name=name, branch=branch, connection=conn)
 
     #
