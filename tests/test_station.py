@@ -39,16 +39,14 @@ class TestStation(DomainTest):
         self.branch = self.create_branch()
 
     def test_create(self):
-        results = BranchStation.select(
-            BranchStation.q.branchID == self.branch.id,
-            connection=self.trans)
+        results = BranchStation.selectBy(branch=self.branch,
+                                         connection=self.trans)
         self.assertEquals(results.count(), 0)
 
         station = BranchStation.create(self.trans, self.branch, name=self.name)
 
-        results = BranchStation.select(
-            BranchStation.q.branchID == self.branch.id,
-            connection=self.trans)
+        results = BranchStation.selectBy(branch=self.branch,
+                                         connection=self.trans)
         self.assertEquals(results.count(), 1)
         self.assertEquals(results[0].name, self.name)
         self.assertEquals(results[0].branch, self.branch)
