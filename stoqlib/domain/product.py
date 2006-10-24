@@ -409,26 +409,22 @@ class ProductAdaptToStorable(ModelAdapter):
     # IStorable implementation
     #
 
-    def increase_stock(self, quantity, branch=None):
+    def increase_stock(self, quantity, branch):
         if quantity <= 0:
             raise ValueError("quantity must be a positive number")
 
-        # FIXME: There should only be one stock_item per branch,
-        #        no need to iterate!
-        for stock_item in self.get_stocks(branch):
-            stock_item.quantity += quantity
+        stock_item = self.get_stock_item(branch)
 
-        # FIXME: This should only be done when going from quantity 0 to n > 1
-        sellable = ISellable(self.product, None)
-        sellable.can_sell()
+        # We only need to mark the sellable facet as sellable when
+        # going from 0 -> n
+        if stock_item.quantity == 0:
+            sellable = ISellable(self.product, None)
+            if sellable:
+                sellable.can_sell()
 
-    def increase_logic_stock(self, quantity, branch=None):
-        self._check_logic_quantity()
-        stocks = self.get_stocks(branch)
-        for stock_item in stocks:
-            stock_item.logic_quantity += quantity
+        stock_item.quantity += quantity
 
-    def decrease_stock(self, quantity, branch=None):
+    def decrease_stock(self, quantity, branch):
         if not self._has_qty_available(quantity, branch):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
@@ -438,11 +434,16 @@ class ProductAdaptToStorable(ModelAdapter):
             quantity -= logic_sold_qty
             self.decrease_logic_stock(logic_sold_qty, branch)
 
-        stocks = self.get_stocks(branch)
-        self._check_rejected_stocks(stocks, quantity)
+        stock_item = self.get_stock_item(branch)
+        self._check_rejected_stocks([stock_item], quantity)
 
+        stock_item.quantity -= quantity
+
+    def increase_logic_stock(self, quantity, branch=None):
+        self._check_logic_quantity()
+        stocks = self.get_stocks(branch)
         for stock_item in stocks:
-            stock_item.quantity -= quantity
+            stock_item.logic_quantity += quantity
 
     def decrease_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
@@ -474,7 +475,7 @@ class ProductAdaptToStorable(ModelAdapter):
     def get_average_stock_price(self):
         total_cost = Decimal(0)
         total_qty = Decimal(0)
-        for stock_item in self.get_stocks():
+        for stock_item in self.get_stock_items():
             total_cost += stock_item.stock_cost
             total_qty += stock_item.quantity
 

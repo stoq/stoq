@@ -152,18 +152,26 @@ class IStorable(Interface):
     Each storable can have references to many concrete items which will
     be defined by IContainer routines."""
 
-    def increase_stock(quantity, branch=None):
-        """When receiving a product, update the stock reference for this new
-        item. If no branch company is supplied, update all branches."""
+    def increase_stock(quantity, branch):
+        """
+        When receiving a product, update the stock reference for this new
+        item on a specific branch company.
+        @param quantity: amount to increase
+        @param branch: an object implement IBranch
+        """
+
+    def decrease_stock(quantity, branch):
+        """
+        When receiving a product, update the stock reference for the sold item
+        this on a specific branch company.
+        @param quantity: amount to decrease
+        @param branch: an object implement IBranch
+        """
 
     def increase_logic_stock(quantity, branch=None):
         """When receiving a product, update the stock logic quantity
         reference for this new item. If no branch company is supplied,
         update all branches."""
-
-    def decrease_stock(quantity, branch=None):
-        """When selling a product, update the stock reference for the sold
-        item. If no branch company is supplied, update all branches."""
 
     def decrease_logic_stock(quantity, branch=None):
         """When selling a product, update the stock logic reference for the sold
