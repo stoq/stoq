@@ -46,3 +46,5 @@ stock_items are unique:
 
     >>> list(storable.get_stock_items())
     [<ProductStockItem ...>, <ProductStockItem ...>]
+
+    >>> trans.close()
