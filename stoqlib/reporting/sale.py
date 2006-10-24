@@ -27,6 +27,7 @@
 
 from kiwi.datatypes import currency
 
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.sale import SaleView
 from stoqlib.reporting.base.tables import ObjectTableColumn as OTC
 from stoqlib.reporting.base.flowables import RIGHT
@@ -95,7 +96,7 @@ class SaleOrderReport(BaseStoqReport):
     def get_title(self):
         return (_("Sale Order on %s, with due date of %d days")
                 % (self.order.open_date.strftime("%x"),
-                   sysparam(self.conn).MAX_SALE_ORDER_VALIDITY))
+                   sysparam(get_connection()).MAX_SALE_ORDER_VALIDITY))
 
 class SalesReport(SearchResultsReport):
     # This should be properly verified on BaseStoqReport. Waiting for
