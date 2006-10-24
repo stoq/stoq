@@ -329,8 +329,8 @@ class ProductAdaptToStorable(ModelAdapter):
 
     retention = MultipleJoin('ProductRetentionHistory')
 
-    def _init(self, *args, **kwargs):
-        super(ProductAdaptToStorable, self)._init(*args, **kwargs)
+    def _create(self, id, **kwargs):
+        super(ProductAdaptToStorable, self)._create(id, **kwargs)
         self._fill_stocks()
 
     #
