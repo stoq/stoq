@@ -1,0 +1,109 @@
+.. -*- Mode: doctest -*-
+
+Doctest for domain/station.txt
+
+Create a new transaction used in this doctest
+
+    >>> from stoqlib.lib.translation import stoqlib_gettext as _
+
+    >>> from stoqlib.database.runtime import new_transaction
+    >>> trans = new_transaction()
+
+A BranchStation represents a computer Stoq is ran on.
+
+We'll need a branch to operate on in this test, so let's create one:
+
+    >>> from tests.examples import create_branch
+    >>> branch = create_branch(trans)
+
+
+Creating a new branch station
+=============================
+
+    >>> from stoqlib.domain.station import BranchStation
+
+When we start out, there are no stations registered in our branch:
+
+    >>> list(BranchStation.selectBy(branch=branch, connection=trans))
+    []
+
+    To create a new branch station, use the classmethod create to which you
+need to send in a branch and a name:
+
+    >>> station = BranchStation.create(trans, branch=branch, name="comp")
+
+    >>> station
+    <BranchStation ...name=u'comp'...>
+
+We can now query for the station:
+
+    >>> results = BranchStation.selectBy(branch=branch, connection=trans)
+    >>> list(results)
+    [<BranchStation ...]
+
+    >>> station = results[0]
+    >>> station.name
+    u'comp'
+    >>> station.branch == branch
+    True
+
+We cannot create a new branch with the same name in the same branch:
+
+    >>> BranchStation.create(trans, branch=branch, name="comp")
+    Traceback (most recent call last):
+        ...
+    StoqlibError: There is already a station registered as `comp'.
+
+Fetching a station
+==================
+
+You can fetch a previously created station using get_station:
+
+    >>> stations = BranchStation.get_active_stations(trans)
+
+    >>> list(stations)
+    [<BranchStation...>, ...]
+
+If we inactivate the status, it will of not be included in the list
+of active stations:
+
+    >>> station.inactivate()
+    >>> station in BranchStation.get_active_stations(trans)
+    False
+
+If we activate it, it will show up:
+
+    >>> station.activate()
+    >>> station in BranchStation.get_active_stations(trans)
+    True
+
+
+Status
+======
+
+The station is at this point inactive, so get_status_string() will
+say so:
+
+    >>> station.get_status_string() == _('Active')
+    True
+
+Inactivating the station will change the status string:
+
+    >>> station.inactivate()
+    >>> station.get_status_string() == _('Inactive')
+    True
+
+
+Branch name
+===========
+
+We can get the name of the branch from the station by calling get_branch_name():
+
+    >>> station.get_branch_name()
+    u'Dummy'
+
+
+    Finally close the transaction we used in the test
+
+    >>> trans.close()
+
