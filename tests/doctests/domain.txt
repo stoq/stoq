@@ -124,3 +124,5 @@ method.
 Then you can check if the returned instance is of a correct adapter type:
 
     >>> assert isinstance(adapter, adapter_class)
+
+    >>> trans.close()

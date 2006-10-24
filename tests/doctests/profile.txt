@@ -113,3 +113,5 @@ does our boss_profile have permission for application 'test_application'?
     >>> boss_profile.add_application_reference('test_application', True)
     >>> boss_profile.check_app_permission('test_application')
     True
+
+    >>> trans.close()

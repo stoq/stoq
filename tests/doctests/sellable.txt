@@ -245,3 +245,4 @@ SellableItem
 ..   def get_quantity_unit_string(self):
 
 
+    >>> trans.close()
