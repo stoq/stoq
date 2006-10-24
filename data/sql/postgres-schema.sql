@@ -495,10 +495,9 @@ CREATE TABLE branch_station (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    name text,
+    name text UNIQUE,
     is_active boolean,
-    branch_id bigint NOT NULL REFERENCES person_adapt_to_branch(id),
-    UNIQUE (name, branch_id)
+    branch_id bigint REFERENCES person_adapt_to_branch(id)
 );
 
 CREATE TABLE till (
