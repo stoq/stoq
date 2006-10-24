@@ -30,10 +30,10 @@ import sys
 
 from kiwi.component import provide_utility
 from stoqlib.database.admin import get_admin_user
+from stoqlib.database.interfaces import ICurrentUser
 from stoqlib.database.runtime import get_connection, new_transaction
 from stoqlib.database.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.interfaces import ICurrentUser
 
 from stoq.lib.configparser import StoqConfig
 from stoq.lib.startup import setup, get_option_parser
