@@ -61,10 +61,6 @@ class TestStation(DomainTest):
 
     def test_get_station(self):
         name = 'test-station'
-        self.assertRaises(TypeError, BranchStation.get_station,
-                          self.trans, branch=None, name=name)
-
-        # Creating a station
         station = BranchStation.create(self.trans, self.branch, name)
 
         self.failUnless(isinstance(station, BranchStation),
