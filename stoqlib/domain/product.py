@@ -414,15 +414,14 @@ class ProductAdaptToStorable(ModelAdapter):
             raise ValueError("quantity must be a positive number")
 
         stock_item = self.get_stock_item(branch)
-
-        # We only need to mark the sellable facet as sellable when
-        # going from 0 -> n
-        if stock_item.quantity == 0:
-            sellable = ISellable(self.product, None)
-            if sellable:
-                sellable.can_sell()
-
         stock_item.quantity += quantity
+
+        # FIXME: We should only need to mark the sellable facet as sellable when
+        #        going from 0 -> n, but for some reasons this is not enough,
+        #        perhaps when the storable is initialized with a non-zero quantity
+        sellable = ISellable(self.product, None)
+        if sellable:
+            sellable.can_sell()
 
     def decrease_stock(self, quantity, branch):
         if not self._has_qty_available(quantity, branch):
