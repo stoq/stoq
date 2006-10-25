@@ -50,7 +50,7 @@ class SystemTable(SQLObject, AbstractModel):
         if result and check_new_db:
             raise ValueError(
                 'SystemTable should be empty at this point got %d results' %
-                result)
+                result.count())
         elif not result and not check_new_db:
             raise ValueError(
                 'SystemTable should have at least one item at this point, '
