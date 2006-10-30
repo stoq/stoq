@@ -28,8 +28,10 @@ import datetime
 import gettext
 from decimal import Decimal
 
+from kiwi.component import provide_utility
 from kiwi.datatypes import currency
 
+from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
 from stoqlib.domain.profile import UserProfile
@@ -41,6 +43,7 @@ from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        IEmployee, ISalesPerson,
                                        IUser, ICreditProvider,
                                        ITransporter)
+from stoqlib.domain.station import BranchStation
 from stoqlib.lib.parameters import sysparam
 
 _ = gettext.gettext
@@ -241,6 +244,16 @@ def create_people():
     #                        connection=trans, is_active=True)
     #provide_utility(ICurrentBranchStation, station)
 
+    trans.commit()
+
+def set_person_utilities():
+    trans = new_transaction()
+    branch = sysparam(trans).MAIN_COMPANY
+    provide_utility(ICurrentBranch, branch)
+
+    station = BranchStation(name=u"Stoqlib station", branch=branch,
+                            connection=trans, is_active=True)
+    provide_utility(ICurrentBranchStation, station)
     trans.commit()
 
 if __name__ == "__main__":
