@@ -107,7 +107,7 @@ class PaymentMethodsDialog(BasicDialog):
             dialog, model = dialog
             dialog_args.append(model)
         res = run_dialog(dialog, *dialog_args)
-        finish_transaction(self.conn, res, keep_transaction=True)
+        finish_transaction(self.conn, res)
 
     #
     # Callbacks

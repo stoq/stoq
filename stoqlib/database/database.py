@@ -132,15 +132,11 @@ def rollback_and_begin(conn):
     conn.begin()
 
 
-def finish_transaction(conn, model=None, keep_transaction=False):
+def finish_transaction(conn, model):
     if model:
         conn.commit()
     else:
         rollback_and_begin(conn)
-    if not keep_transaction:
-        # XXX Waiting for SQLObject improvements. We need there a
-        # simple method do this in a simple way.
-        conn.close()
     return model
 
 

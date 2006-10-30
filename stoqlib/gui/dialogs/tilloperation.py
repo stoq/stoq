@@ -162,7 +162,7 @@ class TillOperationDialog(GladeSlaveDelegate):
 
     def _run_editor(self, editor_class):
         model = run_dialog(editor_class, self, self.conn)
-        if finish_transaction(self.conn, model, keep_transaction=True):
+        if finish_transaction(self.conn, model):
             self.search_bar.search_items()
             self.payments.unselect_all()
             self._select_last_item()
