@@ -395,8 +395,11 @@ class POSApp(AppWindow):
         products = (trans.get(product) for product in products)
         service = self.run_dialog(DeliveryEditor, trans,
                                   sale=sale, products=products)
-        if not finish_transaction(trans, service):
+        rv = finish_transaction(trans, service)
+        trans.close()
+        if not rv:
             return
+
         # Synchronize self.conn and bring the new delivery instances to it
         self.conn.commit()
         service = type(service).get(service.id, connection=self.conn)

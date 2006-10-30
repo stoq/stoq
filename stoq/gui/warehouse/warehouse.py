@@ -145,6 +145,7 @@ class WarehouseApp(SearchableAppWindow):
         trans = new_transaction()
         model = self.run_dialog(ReceivingOrderWizard, trans)
         finish_transaction(trans, model)
+        trans.close()
 
     def on_stock_transfer_action_clicked(self, button):
         # TODO To be implemented
@@ -162,7 +163,7 @@ class WarehouseApp(SearchableAppWindow):
                       "in stock to perfom this action."))
             return
         model = self.run_dialog(ProductRetentionDialog, self.conn, product)
-        if not finish_transaction(self.conn, model, keep_transaction=True):
+        if not finish_transaction(self.conn, model):
             return
         sellable_view.sync()
         self.products.update(sellable_view)

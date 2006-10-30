@@ -158,7 +158,7 @@ class TillApp(SearchableAppWindow):
         sale = Sale.get(selected.id, connection=self.conn)
         title = _('Confirm Sale')
         model = self.run_dialog(ConfirmSaleWizard, self.conn, sale)
-        if not finish_transaction(self.conn, model, keep_transaction=True):
+        if not finish_transaction(self.conn, model):
             return
         if not emit_coupon(sale, self.conn):
             return
@@ -274,4 +274,4 @@ class TillApp(SearchableAppWindow):
     def on_return_button__clicked(self, button):
         sale_view = self._check_selected()
         retval = run_dialog(SaleReturnWizard, self, self.conn, sale_view)
-        finish_transaction(self.conn, retval, keep_transaction=True)
+        finish_transaction(self.conn, retval)
