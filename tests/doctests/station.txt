@@ -13,7 +13,7 @@ A BranchStation represents a computer Stoq is ran on.
 
 We'll need a branch to operate on in this test, so let's create one:
 
-    >>> from tests.examples import create_branch
+    >>> from stoqlib.domain.exampledata import create_branch
     >>> branch = create_branch(trans)
 
 
