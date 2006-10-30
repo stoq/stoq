@@ -132,11 +132,17 @@ def rollback_and_begin(conn):
     conn.begin()
 
 
-def finish_transaction(conn, model):
-    if model:
-        conn.commit()
+def finish_transaction(trans, model):
+    """
+    Encapsulated method for committing/aborting changes in models.
+    @param trans: a transaction
+    @param model: abort if None else commit
+    """
+    if model is None:
+        trans.commit()
     else:
-        rollback_and_begin(conn)
+        rollback_and_begin(trans)
+
     return model
 
 
