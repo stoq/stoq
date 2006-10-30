@@ -35,8 +35,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
-from stoqlib.database.database import (finish_transaction,
-                                       check_installed_database,
+from stoqlib.database.database import (check_installed_database,
                                        create_database_if_missing,
                                        rollback_and_begin)
 from stoqlib.database.runtime import (new_transaction,
@@ -500,14 +499,14 @@ class FirstTimeConfigWizard(BaseWizard):
     #
 
     def finish(self):
-        finish_transaction(self._conn, 1)
+        self._conn.commit(close=True)
 
         self.retval = self.model
         self.close()
 
     def cancel(self):
         if self._conn:
-            finish_transaction(self._conn)
+            self._conn.close()
 
         # XXX: Find out when the file was installed and only try to
         #      remove it if it really was.
