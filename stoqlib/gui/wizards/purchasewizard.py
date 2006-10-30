@@ -245,7 +245,7 @@ class PurchaseItemStep(AbstractItemStep):
         else:
             editor = run_dialog(SellableSelectionEditor, None, self.conn)
             model = run_dialog(editor, self, self.conn)
-        if not finish_transaction(self.conn, model, keep_transaction=True):
+        if not finish_transaction(self.conn, model):
             return
         self.setup_item_entry()
         item = self.item_proxy.model.item

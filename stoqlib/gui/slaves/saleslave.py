@@ -217,7 +217,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         selected = self._get_selected()
         sale = self._lookup_sale_order(selected)
         retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
-        finish_transaction(self.conn, retval, keep_transaction=True)
+        finish_transaction(self.conn, retval)
 
     def on_edit_button__clicked(self, *args):
         # TODO: this method will be implemented on bug #2189
