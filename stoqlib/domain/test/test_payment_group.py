@@ -28,7 +28,7 @@ from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.payment.base import Payment
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
-from base import DomainTest
+from tests.base import DomainTest
 
 class TestPaymentGroup(DomainTest):
     def testConfirm(self):
