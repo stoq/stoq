@@ -50,6 +50,10 @@ def get_all_classes(package):
 
         # List all python files in stoqlib/domain
         for filename in glob.glob(os.path.join(package, '*.py')):
+            # Avoid tests.
+            if 'test/' in filename:
+                continue
+
             # stoqlib/domain/base.py -> stoqlib.domain.base
             modulename = filename[:-3].replace(os.path.sep, '.')
             module = namedAny(modulename)
