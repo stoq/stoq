@@ -137,7 +137,7 @@ def bootstrap_testsuite():
         else:
             initialize_system()
             ensure_admin_user("")
-            create(utilities=True)
+            create()
     except Exception, e:
         # Work around trial
         import traceback
