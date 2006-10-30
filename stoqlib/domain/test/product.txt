@@ -14,7 +14,7 @@ Create a new transaction
 
 Create a branch we can use:
 
-    >>> from tests.examples import ExampleCreator
+    >>> from stoqlib.domain.exampledata import ExampleCreator
     >>> branch = ExampleCreator.create(trans, 'IBranch')
 
 Create a new Product and attach a storable facet.
