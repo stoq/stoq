@@ -66,7 +66,7 @@ def test_gui(config, options, tests=None):
     if 'gtk' in sys.modules:
         raise AssertionError("Gtk cannot be loaded at this point")
 
-    create_examples(config, utilities=True)
+    create_examples(config)
     from stoqlib.doman.station import create_station
     from stoqlib.exceptions import StoqlibError
     from stoqlib.database.database import get_connection
