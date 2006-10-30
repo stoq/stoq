@@ -29,7 +29,7 @@ from kiwi.environ import environ
 
 import stoqlib
 from stoqlib.database.admin import create_base_schema
-from stoqlib.database.database import finish_transaction, execute_sql
+from stoqlib.database.database import execute_sql
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.profile import update_profile_applications
@@ -93,7 +93,7 @@ class SchemaMigration:
         trans = new_transaction()
 
         if not self._check_up_to_date(trans):
-            finish_transaction(trans, 1)
+            trans.commit(close=True)
             return
 
         # Updating the schema for all the versions from the current database
@@ -116,6 +116,6 @@ class SchemaMigration:
         ensure_system_parameters(update=True)
         # Update the base schema
         create_base_schema()
-        finish_transaction(trans, 1)
+        trans.commit(close=True)
 
 schema_migration = SchemaMigration()

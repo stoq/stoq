@@ -35,8 +35,7 @@ from kiwi.log import Logger
 
 from stoqdrivers.constants import UNIT_WEIGHT, UNIT_LITERS, UNIT_METERS
 
-from stoqlib.database.database import (finish_transaction, execute_sql,
-                                       clean_database)
+from stoqlib.database.database import execute_sql, clean_database
 from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
@@ -92,11 +91,11 @@ def ensure_admin_user(administrator_password):
     user = get_admin_user(trans)
     assert user.password == administrator_password
 
-    finish_transaction(trans, 1)
-
     # We can't provide the utility until it's actually in the database
     log.info('providing utility ICurrentUser')
     provide_utility(ICurrentUser, user)
+
+    trans.commit(close=True)
 
 def get_admin_user(conn):
     """
@@ -121,7 +120,7 @@ def ensure_sellable_units():
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
         SellableUnit(description=desc, index=index, connection=trans)
-    finish_transaction(trans, 1)
+    trans.commit(close=True)
 
 def user_has_usesuper(trans):
     """
@@ -171,7 +170,7 @@ def create_default_profiles():
     UserProfile.create_profile_template(trans, 'Manager', True)
     UserProfile.create_profile_template(trans, 'Salesperson', False)
 
-    finish_transaction(trans, 1)
+    trans.commit(close=True)
 
 @argcheck(bool, bool)
 def initialize_system(delete_only=False, verbose=False):
@@ -188,4 +187,4 @@ def initialize_system(delete_only=False, verbose=False):
 
     trans = new_transaction()
     SystemTable.update(trans, check_new_db=True)
-    finish_transaction(trans, 1)
+    trans.commit(close=True)

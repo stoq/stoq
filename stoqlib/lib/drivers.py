@@ -42,7 +42,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
-from stoqlib.database.database import finish_transaction
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
@@ -161,7 +160,7 @@ def create_virtual_printer_for_current_station():
     trans = new_transaction()
     station = get_current_station(trans)
     if get_fiscal_printer_settings_by_station(trans, station):
-        finish_transaction(trans)
+        trans.close()
         return
     settings = DeviceSettings(station=station,
                               device=DeviceSettings.DEVICE_SERIAL1,
@@ -175,7 +174,7 @@ def create_virtual_printer_for_current_station():
     for method in settings.pm_constants.get_items():
         new_constants[method] = '00'
     settings.pm_constants.set_constants(new_constants)
-    finish_transaction(trans, 1)
+    trans.commit(close=True)
 
 def check_virtual_printer_for_current_station(conn):
     """Returns True if the fiscal printer for the current station is
