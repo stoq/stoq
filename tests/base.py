@@ -38,11 +38,11 @@ from sqlobject.col import (SOUnicodeCol, SOIntCol, SODecimalCol, SODateTimeCol,
 
 from stoqlib.database.columns import SOPriceCol
 from stoqlib.database.runtime import new_transaction
+from stoqlib.domain.exampledata import ExampleCreator
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.component import Adapter
 
 from bootstrap import bootstrap_testsuite
-from examples import ExampleCreator
 
 # Default values for automatic instance creation and set value tests.
 STRING_TEST_VALUES = ('Instance Creation String','Set Test String')
