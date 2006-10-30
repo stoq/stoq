@@ -131,7 +131,7 @@ class TillApp(SearchableAppWindow):
     def _run_search_dialog(self, dialog_type, **kwargs):
         trans = new_transaction()
         self.run_dialog(dialog_type, trans, **kwargs)
-        finish_transaction(trans)
+        trans.close()
 
     def _run_details_dialog(self):
         sale_view = self._check_selected()
