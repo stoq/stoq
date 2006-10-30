@@ -22,39 +22,14 @@
 ## Author(s):   Johan Dahlin  <jdahlin@async.com.br>
 ##
 
-import doctest
-import os
 import sys
-import unittest
+
+from stoqlib.lib.doctestloader import create_doctest
 
 # So we can use database connections in doctests.
 import tests.base
 tests.base # pyflakes
 
-flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
-
-def _test_one(self, filename):
-    failures, tries = doctest.testfile(filename, verbose=False,
-                                       module_relative=False,
-                                       raise_on_error=False,
-                                       optionflags=flags)
-    if failures:
-        raise AssertionError('%d test(s) failed in doctest %s, see above' % (
-            failures, os.path.basename(filename)))
-
-test_dir = os.path.dirname(__file__)
-doctest_dir = os.path.join(test_dir, 'doctests')
-namespace = {}
-namespace['_test_one'] = _test_one
-for filename in os.listdir(doctest_dir):
-    if not filename.endswith('.txt'):
-        continue
-    full = os.path.join(doctest_dir, filename)
-    name = 'test_' + filename[:-4]
-    func = lambda self, f=full: self._test_one(f)
-    namespace[name] = func
-    func.__name__ = name
-
 # FIXME: Trials coverage does not like this test; figure out why
 if not '--coverage' in sys.argv:
-    DocTest = type('DocTest', (unittest.TestCase,), namespace)
+    DocTest = create_doctest('doctests/*.txt')
