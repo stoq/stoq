@@ -31,8 +31,7 @@ from kiwi.component import provide_utility
 from kiwi.log import Logger
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
-from stoqlib.database.database import (create_database_if_missing,
-                                       finish_transaction)
+from stoqlib.database.database import create_database_if_missing
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
 from stoqlib.database.runtime import (new_transaction, get_connection,
@@ -116,7 +115,7 @@ def _provide_current_station():
     assert station.is_active
 
     provide_utility(ICurrentBranchStation, station)
-    finish_transaction(trans, 1)
+    trans.commit(close=True)
 
 def _provide_devices():
     conn = get_connection()

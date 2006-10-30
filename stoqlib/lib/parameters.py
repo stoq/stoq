@@ -29,7 +29,6 @@ from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from kiwi.python import namedAny, ClassInittableObject
 
-from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
@@ -669,4 +668,4 @@ def ensure_system_parameters(update=False):
     trans = new_transaction()
     param = sysparam(trans)
     param.set_defaults(update)
-    finish_transaction(trans, 1)
+    trans.commit(close=True)
