@@ -1221,11 +1221,15 @@ CREATE VIEW abstract_stock_view AS
   --     product_id      - the id of product table
   --
   SELECT DISTINCT
-  asellable.id, asellable.code, asellable.barcode,
-  asellable.status,
-  abstract_stock_item.quantity + abstract_stock_item.logic_quantity as stock,
-  abstract_stock_item.branch_id, abstract_stock_item.stock_cost,
-  product.id as product_id
+  asellable.id AS id, 
+  asellable.code AS code, 
+  asellable.barcode AS barcode,
+  asellable.status AS status,
+  abstract_stock_item.quantity + abstract_stock_item.logic_quantity AS stock,
+  abstract_stock_item.branch_id AS branch_id, 
+  abstract_stock_item.stock_cost AS stock_cost,
+  product.id AS product_id
+
      FROM abstract_stock_item, asellable, product,
      product_adapt_to_sellable, product_stock_item
 
@@ -1246,7 +1250,7 @@ CREATE VIEW abstract_product_supplier_view AS
   --     id                 - the id of the product table
   --     supplier_name      - the name of the supplier
   --
-  SELECT DISTINCT (product.id), person.name as supplier_name
+  SELECT DISTINCT product.id AS id, person.name AS supplier_name
     FROM product
 
       LEFT JOIN product_supplier_info
@@ -1272,7 +1276,7 @@ CREATE VIEW abstract_sales_client_view AS
   --     client_name        - the name of the client
   --
   SELECT DISTINCT
-  sale.id, sale.client_id, person.name as client_name
+  sale.id AS id, sale.client_id AS client_id, person.name AS client_name
     FROM sale
 
       LEFT JOIN person_adapt_to_client
@@ -1292,7 +1296,7 @@ CREATE VIEW abstract_product_item_view AS
   --     subtotal           - the subtotal for a sellable item
   --
   SELECT
-  sale_id, quantity, quantity * price as subtotal
+  sale_id, quantity, quantity * price AS subtotal
     FROM asellable_item;
 
 
@@ -1308,9 +1312,9 @@ CREATE VIEW abstract_sales_product_view AS
   --                          and charge
   --
   SELECT
-  sum(quantity) as total_quantity,
-  sum(subtotal) as subtotal,
-  sum(subtotal) - sale.discount_value + sale.surcharge_value as total,
+  sum(quantity) AS total_quantity,
+  sum(subtotal) AS subtotal,
+  sum(subtotal) - sale.discount_value + sale.surcharge_value AS total,
   sale_id
     FROM abstract_product_item_view, sale
       GROUP BY
@@ -1332,10 +1336,10 @@ CREATE VIEW abstract_purchase_product_view AS
   --     order_id           - the id of purchase_order table
   --
   SELECT
-  sum(quantity) as ordered_quantity,
-  sum(quantity_received) as received_quantity,
-  sum(cost*quantity) as subtotal,
-  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value as total,
+  sum(quantity) AS ordered_quantity,
+  sum(quantity_received) AS received_quantity,
+  sum(cost*quantity) AS subtotal,
+  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total,
   order_id
     FROM purchase_item, purchase_order
       GROUP BY
@@ -1355,7 +1359,9 @@ CREATE VIEW abstract_purchase_transporter_view AS
   --     transporter_name   - the name of the transporter
   --
   SELECT DISTINCT
-  purchase_order.id, transporter_id, person.name as transporter_name
+  purchase_order.id AS id, 
+  transporter_id AS transporter_id, 
+  person.name AS transporter_name
     FROM purchase_order
 
       LEFT JOIN person_adapt_to_transporter
@@ -1375,7 +1381,7 @@ CREATE VIEW abstract_purchase_branch_view AS
   --     branch_name   - the name of the branch
   --
   SELECT DISTINCT
-  purchase_order.id, branch_id, person.name as branch_name
+  purchase_order.id AS id, branch_id, person.name AS branch_name
     FROM purchase_order
 
       INNER JOIN person_adapt_to_branch
@@ -1415,16 +1421,23 @@ CREATE VIEW abstract_purchase_branch_view AS
 --                          product
 --     product_id         - the id of the product table
 --
+
 CREATE VIEW sellable_view AS
 
   SELECT DISTINCT
-  asellable.id, asellable.code, asellable.barcode,
-  asellable.status,
-  sum(abstract_stock_view.stock) as stock, abstract_stock_view.branch_id,
-  asellable.cost, base_sellable_info.price,
-  base_sellable_info.is_valid_model,
-  base_sellable_info.description, sellable_unit.description as unit,
-  abstract_product_supplier_view.supplier_name, abstract_stock_view.product_id
+  asellable.id AS id, 
+  asellable.code AS code, 
+  asellable.barcode AS barcode,
+  asellable.status AS status,
+  sum(abstract_stock_view.stock) AS stock, 
+  abstract_stock_view.branch_id AS branch_id,
+  asellable.cost AS cost, 
+  base_sellable_info.price AS price,
+  base_sellable_info.is_valid_model AS is_valid_model,
+  base_sellable_info.description AS description, 
+  sellable_unit.description AS unit,
+  abstract_product_supplier_view.supplier_name AS supplier_name, 
+  abstract_stock_view.product_id AS product_id		
 
     FROM base_sellable_info, asellable
 
@@ -1459,8 +1472,18 @@ CREATE VIEW sellable_view AS
 CREATE VIEW sellable_full_stock_view AS
 
   SELECT DISTINCT
-  sum(stock) as stock, id, code, barcode, status, 0 as branch_id, cost,
-  price, is_valid_model, description, unit, supplier_name, product_id
+  sum(stock) AS stock, 
+  id, 
+  code, 
+  barcode, 
+  status, 
+  0 AS branch_id, cost,
+  price, 
+  is_valid_model, 
+  description, 
+  unit, 
+  supplier_name, 
+  product_id
 
   FROM sellable_view
 
@@ -1497,11 +1520,15 @@ CREATE VIEW product_full_stock_view AS
 CREATE VIEW service_view AS
 
   SELECT DISTINCT
-  asellable.id, asellable.code, asellable.barcode,
-  asellable.status,
-  asellable.cost, base_sellable_info.price,
-  base_sellable_info.description, sellable_unit.description as unit,
-  service.id as service_id
+  asellable.id AS id, 
+  asellable.code AS code, 
+  asellable.barcode AS barcode,
+  asellable.status AS status,
+  asellable.cost AS cost, 
+  base_sellable_info.price AS price,
+  base_sellable_info.description AS description, 
+  sellable_unit.description AS unit,
+  service.id AS service_id
     FROM asellable
 
       INNER JOIN base_sellable_info
@@ -1540,7 +1567,7 @@ CREATE VIEW gift_certificate_view AS
   asellable.status,
   asellable.cost, base_sellable_info.price,
   on_sale_info.on_sale_price,
-  base_sellable_info.description, gift_certificate.id as giftcertificate_id
+  base_sellable_info.description, gift_certificate.id AS giftcertificate_id
     FROM asellable
 
       INNER JOIN base_sellable_info
@@ -1583,7 +1610,7 @@ CREATE VIEW sale_view AS
 
   SELECT DISTINCT
   sale.id, sale.coupon_id, sale.order_number, sale.open_date,
-  sale.close_date, sale.status, person.name as salesperson_name,
+  sale.close_date, sale.status, person.name AS salesperson_name,
   sale.surcharge_value, sale.discount_value, sale.confirm_date,
   sale.cancel_date, sale.notes,
   abstract_sales_client_view.client_name,
@@ -1622,7 +1649,7 @@ CREATE VIEW client_view AS
   SELECT DISTINCT
   person.id, person.name, person_adapt_to_client.status,
   person_adapt_to_individual.cpf, person_adapt_to_individual.rg_number,
-  person.phone_number, person_adapt_to_client.id as client_id
+  person.phone_number, person_adapt_to_client.id AS client_id
     FROM person
 
       LEFT JOIN person_adapt_to_individual
@@ -1667,7 +1694,7 @@ CREATE VIEW purchase_order_view AS
   purchase_order.expected_pay_date, purchase_order.receival_date,
   purchase_order.confirm_date, purchase_order.salesperson_name,
   purchase_order.freight, purchase_order.surcharge_value,
-  purchase_order.discount_value, person.name as supplier_name,
+  purchase_order.discount_value, person.name AS supplier_name,
   abstract_purchase_transporter_view.transporter_name,
   abstract_purchase_branch_view.branch_name,
   abstract_purchase_product_view.ordered_quantity,
@@ -1719,13 +1746,13 @@ CREATE VIEW icms_ipi_view AS
   abstract_fiscal_book_entry.identifier,
   abstract_fiscal_book_entry.date,
   abstract_fiscal_book_entry.invoice_number,
-  abstract_fiscal_book_entry.cfop_id as cfop_data_id,
+  abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
   abstract_fiscal_book_entry.branch_id,
   abstract_fiscal_book_entry.drawee_id,
   abstract_fiscal_book_entry.payment_group_id,
 
-  cfop_data.code as cfop_code,
-  person.name as drawee_name
+  cfop_data.code AS cfop_code,
+  person.name AS drawee_name
 
     FROM icms_ipi_book_entry
 
@@ -1756,19 +1783,19 @@ CREATE VIEW icms_ipi_view AS
 CREATE VIEW iss_view AS
 
   SELECT DISTINCT
-  iss_book_entry.id,
-  iss_book_entry.iss_value,
+  iss_book_entry.id AS id,
+  iss_book_entry.iss_value AS iss_value,
 
-  abstract_fiscal_book_entry.identifier,
-  abstract_fiscal_book_entry.date,
-  abstract_fiscal_book_entry.invoice_number,
-  abstract_fiscal_book_entry.cfop_id as cfop_data_id,
-  abstract_fiscal_book_entry.branch_id,
-  abstract_fiscal_book_entry.drawee_id,
-  abstract_fiscal_book_entry.payment_group_id,
+  abstract_fiscal_book_entry.identifier AS identifier,
+  abstract_fiscal_book_entry.date AS date,
+  abstract_fiscal_book_entry.invoice_number AS invoice_number,
+  abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
+  abstract_fiscal_book_entry.branch_id AS branch_id,
+  abstract_fiscal_book_entry.drawee_id AS drawee_id,
+  abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
 
-  cfop_data.code as cfop_code,
-  person.name as drawee_name
+  cfop_data.code AS cfop_code,
+  person.name AS drawee_name
 
     FROM iss_book_entry
 
@@ -1802,17 +1829,17 @@ CREATE VIEW iss_view AS
 CREATE VIEW till_fiscal_operations_view AS
 
   SELECT DISTINCT
-  till_entry.identifier as id,
-  till_entry.identifier,
-  till_entry.date,
-  till_entry.description,
-  till_entry.value,
-  till_entry.is_initial_cash_amount,
-  till_entry.till_id,
-  till.status,
-  till.closing_date,
-  branch_station.name as station_name,
-  person_adapt_to_branch.id as branch_id
+  till_entry.identifier AS id,
+  till_entry.identifier AS identifier,
+  till_entry.date AS date,
+  till_entry.description AS description,
+  till_entry.value AS value,
+  till_entry.is_initial_cash_amount AS is_initial_cash_amount,
+  till_entry.till_id AS till_id,
+  till.status AS status,
+  till.closing_date AS closing_date,
+  branch_station.name AS station_name,
+  person_adapt_to_branch.id AS branch_id
 
   FROM till_entry
 
@@ -1828,17 +1855,17 @@ CREATE VIEW till_fiscal_operations_view AS
   UNION ALL
 
     SELECT DISTINCT
-      payment.identifier as id,
-      payment.identifier,
-      payment.open_date as date,
-      payment.description,
-      payment.value,
-      false as is_initial_cash_amount,
-      payment.till_id,
-      till.status,
-      till.closing_date,
-      branch_station.name as station_name,
-      person_adapt_to_branch.id as branch_id
+      payment.identifier AS id,
+      payment.identifier AS identifier,
+      payment.open_date AS date,
+      payment.description AS description,
+      payment.value AS value,
+      FALSE AS is_initial_cash_amount,
+      payment.till_id AS till_id,
+      till.status AS status,
+      till.closing_date AS date,
+      branch_station.name AS station_name,
+      person_adapt_to_branch.id AS branch_id
 
       FROM payment
 
