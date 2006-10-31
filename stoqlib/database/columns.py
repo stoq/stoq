@@ -100,6 +100,8 @@ class SOAutoIncCol(SOIntCol):
         kw['alternateID'] = True
         SOIntCol.__init__(self, **kw)
 
+    def _sqlType(self):
+        return 'BIGINT'
 
 class AutoIncCol(Col):
     """This column defines an auto increment integer column. Domain classes

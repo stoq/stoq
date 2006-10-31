@@ -27,8 +27,9 @@ import os
 import pwd
 import socket
 
-from kiwi.component import provide_utility
+from kiwi.component import provide_utility, utilities
 from kiwi.log import Logger
+from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
 from stoqlib.database.database import create_database_if_missing
@@ -38,7 +39,7 @@ from stoqlib.database.runtime import (new_transaction, get_connection,
                                       get_current_station)
 from stoqlib.database.settings import DatabaseSettings
 from stoqlib.domain.examples.createall import create
-from stoqlib.domain.person import Person
+from stoqlib.domain.person import Person, PersonAdaptToBranch
 from stoqlib.domain.interfaces import IBranch, IUser
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
@@ -46,6 +47,7 @@ from stoqlib.lib.drivers import (get_fiscal_printer_settings_by_station,
 from stoqlib.lib.interfaces import (IApplicationDescriptions,
                                     ISystemNotifier)
 from stoqlib.lib.message import DefaultSystemNotifier
+from stoqlib.lib.parameters import sysparam
 
 log = Logger('stoqlib.tests')
 
@@ -56,7 +58,6 @@ class FakeApplicationDescriptions:
 
     def get_descriptions(self):
         return []
-provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
 
 # This test is here to workaround trial; which refuses to quit
 # if SystemExit is raised or if sys.exit() is called.
@@ -66,7 +67,6 @@ class TestsuiteNotifier(DefaultSystemNotifier):
     def error(self, short, description):
         DefaultSystemNotifier.error(self, short, description)
         os._exit(1)
-provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
 
 def _provide_database_settings():
     username = os.environ.get('STOQLIB_TEST_USERNAME',
@@ -84,31 +84,63 @@ def _provide_database_settings():
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
 
+def provide_database_settings(dbname=None, address=None, port=None, username=None,
+                              password=None):
+    if not username:
+        username = pwd.getpwuid(os.getuid())[0]
+    if not dbname:
+        dbname = username + '_test'
+    if not address:
+        address = "localhost"
+    if not port:
+        port = "5432"
+    if not password:
+        password = ""
+
+    # Remove all old utilities pointing to the previous database
+    utilities.clean()
+    provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
+    provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
+
+    db_settings = DatabaseSettings(
+        address=address, port=port, dbname=dbname, username=username,
+        password=password)
+    provide_utility(IDatabaseSettings, db_settings)
+
+    rv = False
     if not db_settings.has_database():
         log.warning('Database %s missing, creating it' % dbname)
         conn = db_settings.get_default_connection()
         create_database_if_missing(conn, dbname)
         conn.close()
-        return True
-
-    return False
+        rv = True
+    return rv
 
 def _provide_current_user():
     user = Person.iselectOneBy(IUser, username='admin',
                                connection=get_connection())
-    provide_utility(ICurrentUser, user)
+    provide_utility(ICurrentUser, user, replace=True)
 
-def _provide_current_station():
+def _provide_current_station(station_name=None, branch_name=None):
+    if not station_name:
+        station_name = socket.gethostname()
     trans = new_transaction()
-    branches = Person.iselect(IBranch, connection=trans)
-    assert branches
-    branch = branches[0]
+    if branch_name:
+        branch = Person.selectOne(
+            AND(Person.q.name == branch_name,
+                PersonAdaptToBranch.q._originalID == Person.q.id),
+            connection=trans)
+    else:
+        branches = Person.iselect(IBranch, connection=trans)
+        assert branches
+        branch = branches[0]
+
+    branch = IBranch(branch)
     provide_utility(ICurrentBranch, branch)
 
-    name = socket.gethostname()
-    station = BranchStation.get_station(trans, branch, name)
+    station = BranchStation.get_station(trans, branch, station_name)
     if not station:
-        station = BranchStation.create(trans, branch, name)
+        station = BranchStation.create(trans, branch, station_name)
         trans.commit()
 
     assert station
@@ -124,17 +156,22 @@ def _provide_devices():
     if not get_fiscal_printer_settings_by_station(conn, station):
         create_virtual_printer_for_current_station()
 
-def bootstrap_testsuite():
-    quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
+def provide_utilities(station_name, branch_name=None):
+    _provide_current_user()
+    _provide_current_station(station_name, branch_name)
+    _provide_devices()
+
+def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
+                        password="", station_name=None, quick=False):
 
     try:
-        empty = _provide_database_settings()
+        empty = provide_database_settings(
+            dbname, address, port, username, password)
 
         if quick and not empty:
-            _provide_current_user()
-            _provide_current_station()
-            _provide_devices()
+            provide_utilities(station_name)
         else:
+            sysparam(get_connection()).clear_cache()
             initialize_system()
             ensure_admin_user("")
             create(utilities=True)

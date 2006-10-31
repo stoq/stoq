@@ -605,6 +605,8 @@ CREATE TABLE abstract_payment_group (
     --    purchase_order_adapt_to_payment_group
     --    receiving_order_adapt_to_payment_group
     id bigserial NOT NULL PRIMARY KEY,
+    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
+    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     open_date timestamp without time zone,
     close_date timestamp without time zone,
