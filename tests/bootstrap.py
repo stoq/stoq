@@ -59,7 +59,7 @@ class FakeApplicationDescriptions:
 provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
 
 # This test is here to workaround trial; which refuses to quit
-# if SystemExit is raises or if sys.exit() is called.
+# if SystemExit is raised or if sys.exit() is called.
 # For now it is assumed that errors() are fatal, that might change in
 # the near future
 class TestsuiteNotifier(DefaultSystemNotifier):
