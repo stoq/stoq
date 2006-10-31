@@ -59,3 +59,16 @@ class SystemTable(SQLObject, AbstractModel):
         return cls(version=version or db_version,
                    update_date=datetime.datetime.now(),
                    connection=trans)
+
+    @classmethod
+    def is_available(cls, conn):
+        """
+        Checks if Stoqlib database is properly installed
+        @param conn: a database connection
+        """
+        table_name = cls.sqlmeta.table
+        if not conn.tableExists(table_name):
+            return False
+
+        return bool(cls.select(connection=conn))
+
