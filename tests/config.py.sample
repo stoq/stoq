@@ -1,0 +1,15 @@
+# hostname
+hostname = "localhost"
+
+# Postgres authentication
+username = None
+password = None
+
+# Postgres databasename, defaults to the username
+dbname = username
+
+# Port to postgres
+port = 5432
+
+# Do not clean the database before each run
+quick = True

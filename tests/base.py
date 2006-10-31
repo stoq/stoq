@@ -26,6 +26,7 @@
 
 import datetime
 from decimal import Decimal
+import os
 try:
     from twisted.trial import unittest
     unittest # pyflakes
@@ -339,4 +340,20 @@ class BaseDomainTest(unittest.TestCase):
             db_value = getattr(self._instance, key)
             self._check_set_and_get(value, db_value, key)
 
-bootstrap_testsuite()
+hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
+dbname =  os.environ.get('STOQLIB_TEST_DBNAME')
+username = os.environ.get('STOQLIB_TEST_USERNAME')
+password = os.environ.get('STOQLIB_TEST_PASSWORD')
+port = int(os.environ.get('STOQLIB_TEST_PORT') or 0)
+quick = os.environ.get('STOQLIB_TEST_QUICK', None) is not None
+
+config = os.path.join(os.path.dirname(__file__), 'config.py')
+if os.path.exists(config):
+    execfile(config, globals(), locals())
+
+bootstrap_testsuite(address=hostname,
+                    dbname=dbname,
+                    port=port,
+                    username=username,
+                    password=password,
+                    quick=quick)
