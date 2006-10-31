@@ -35,8 +35,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
-from stoqlib.database.database import (check_installed_database,
-                                       create_database_if_missing,
+from stoqlib.database.database import (create_database_if_missing,
                                        rollback_and_begin)
 from stoqlib.database.runtime import (new_transaction,
                                       set_current_branch_station)
@@ -45,6 +44,7 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.examples import createall as examples
 from stoqlib.domain.interfaces import IUser
+from stoqlib.domain.system import SystemTable
 from stoqlib.exceptions import DatabaseError
 from stoqlib.gui.slaves.userslave import PasswordEditorSlave
 from stoqlib.gui.base.wizards import (WizardEditorStep, BaseWizard,
@@ -404,7 +404,7 @@ class DatabaseSettingsStep(WizardEditorStep):
                 warning(e.short, e.msg)
                 return False
 
-            self.has_installed_db = check_installed_database(conn)
+            self.has_installed_db = SystemTable.is_available(conn)
         else:
             if not self._create_database(db_settings):
                 return False
