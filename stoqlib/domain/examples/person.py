@@ -239,11 +239,6 @@ def create_people():
     company.cnpj = '03.852.995/0001-07'
     company.fancy_name = u"Async Open Source"
 
-    # Creating the current station
-    #station = BranchStation(name=u"Stoqlib station", branch=branch,
-    #                        connection=trans, is_active=True)
-    #provide_utility(ICurrentBranchStation, station)
-
     trans.commit()
 
 def set_person_utilities():
