@@ -1563,11 +1563,15 @@ CREATE VIEW service_view AS
 CREATE VIEW gift_certificate_view AS
 
   SELECT DISTINCT
-  asellable.id, asellable.code, asellable.barcode,
-  asellable.status,
-  asellable.cost, base_sellable_info.price,
-  on_sale_info.on_sale_price,
-  base_sellable_info.description, gift_certificate.id AS giftcertificate_id
+  asellable.id AS id, 
+  asellable.code AS code, 
+  asellable.barcode AS barcode,
+  asellable.status AS status,
+  asellable.cost AS cost, 
+  base_sellable_info.price AS price,
+  on_sale_info.on_sale_price AS on_sale_price,
+  base_sellable_info.description AS description, 
+  gift_certificate.id AS giftcertificate_id
     FROM asellable
 
       INNER JOIN base_sellable_info
@@ -1609,14 +1613,22 @@ CREATE VIEW gift_certificate_view AS
 CREATE VIEW sale_view AS
 
   SELECT DISTINCT
-  sale.id, sale.coupon_id, sale.order_number, sale.open_date,
-  sale.close_date, sale.status, person.name AS salesperson_name,
-  sale.surcharge_value, sale.discount_value, sale.confirm_date,
-  sale.cancel_date, sale.notes,
-  abstract_sales_client_view.client_name,
-  abstract_sales_client_view.client_id,
-  abstract_sales_product_view.total,
-  abstract_sales_product_view.subtotal,
+  sale.id AS id, 
+  sale.coupon_id AS coupon_id, 
+  sale.order_number AS order_number, 
+  sale.open_date AS open_date,
+  sale.close_date AS close_date, 
+  sale.status AS status, 
+  person.name AS salesperson_name,
+  sale.surcharge_value AS surcharge_value, 
+  sale.discount_value AS discount_value, 
+  sale.confirm_date AS confirm_date,
+  sale.cancel_date AS cancel_date, 
+  sale.notes AS notes,
+  abstract_sales_client_view.client_name AS client_name,
+  abstract_sales_client_view.client_id AS client_id,
+  abstract_sales_product_view.total AS total,
+  abstract_sales_product_view.subtotal AS subtotal,
   abstract_sales_product_view.total_quantity
     FROM sale
 
@@ -1647,9 +1659,13 @@ CREATE VIEW sale_view AS
 CREATE VIEW client_view AS
 
   SELECT DISTINCT
-  person.id, person.name, person_adapt_to_client.status,
-  person_adapt_to_individual.cpf, person_adapt_to_individual.rg_number,
-  person.phone_number, person_adapt_to_client.id AS client_id
+  person.id AS id, 
+  person.name AS name, 
+  person_adapt_to_client.status AS status,
+  person_adapt_to_individual.cpf AS cpf, 
+  person_adapt_to_individual.rg_number As rg_number,
+  person.phone_number AS phone_number, 
+  person_adapt_to_client.id AS client_id
     FROM person
 
       LEFT JOIN person_adapt_to_individual
@@ -1688,19 +1704,26 @@ CREATE VIEW client_view AS
 CREATE VIEW purchase_order_view AS
 
   SELECT DISTINCT
-  purchase_order.id, purchase_order.status, purchase_order.order_number,
-  purchase_order.open_date, purchase_order.quote_deadline,
-  purchase_order.expected_receival_date,
-  purchase_order.expected_pay_date, purchase_order.receival_date,
-  purchase_order.confirm_date, purchase_order.salesperson_name,
-  purchase_order.freight, purchase_order.surcharge_value,
-  purchase_order.discount_value, person.name AS supplier_name,
-  abstract_purchase_transporter_view.transporter_name,
-  abstract_purchase_branch_view.branch_name,
-  abstract_purchase_product_view.ordered_quantity,
-  abstract_purchase_product_view.received_quantity,
-  abstract_purchase_product_view.subtotal,
-  abstract_purchase_product_view.total
+  purchase_order.id AS id, 
+  purchase_order.status AS status, 
+  purchase_order.order_number AS order_number,
+  purchase_order.open_date AS open_date, 
+  purchase_order.quote_deadline AS quote_deadline,
+  purchase_order.expected_receival_date AS expected_receival_date,
+  purchase_order.expected_pay_date AS expected_pay_date, 
+  purchase_order.receival_date AS receival_date,
+  purchase_order.confirm_date AS confirm_date, 
+  purchase_order.salesperson_name AS salesperson_name,
+  purchase_order.freight AS freight, 
+  purchase_order.surcharge_value AS surcharge_value,
+  purchase_order.discount_value AS discount_value, 
+  person.name AS supplier_name,
+  abstract_purchase_transporter_view.transporter_name AS transporter_name,
+  abstract_purchase_branch_view.branch_name AS branch_name,
+  abstract_purchase_product_view.ordered_quantity AS ordered_quantity,
+  abstract_purchase_product_view.received_quantity AS received_quantity,
+  abstract_purchase_product_view.subtotal AS subtotal,
+  abstract_purchase_product_view.total AS total
     FROM purchase_order
 
       INNER JOIN person_adapt_to_supplier
@@ -1739,17 +1762,17 @@ CREATE VIEW purchase_order_view AS
 CREATE VIEW icms_ipi_view AS
 
   SELECT DISTINCT
-  icms_ipi_book_entry.id,
-  icms_ipi_book_entry.icms_value,
-  icms_ipi_book_entry.ipi_value,
+  icms_ipi_book_entry.id AS id,
+  icms_ipi_book_entry.icms_value AS icms_value,
+  icms_ipi_book_entry.ipi_value AS ipi_value,
 
-  abstract_fiscal_book_entry.identifier,
-  abstract_fiscal_book_entry.date,
-  abstract_fiscal_book_entry.invoice_number,
+  abstract_fiscal_book_entry.identifier AS identifier,
+  abstract_fiscal_book_entry.date AS date,
+  abstract_fiscal_book_entry.invoice_number AS invoice_number,
   abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
-  abstract_fiscal_book_entry.branch_id,
-  abstract_fiscal_book_entry.drawee_id,
-  abstract_fiscal_book_entry.payment_group_id,
+  abstract_fiscal_book_entry.branch_id AS branch_id,
+  abstract_fiscal_book_entry.drawee_id AS drawee_id,
+  abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
 
   cfop_data.code AS cfop_code,
   person.name AS drawee_name
