@@ -40,19 +40,6 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.database')
 
-def check_installed_database(conn):
-    """
-    Checks if Stoqlib database is properly installed
-    @param conn: a database connection
-    """
-    from stoqlib.domain.system import SystemTable
-    table_name = SystemTable.sqlmeta.table
-    if not conn.tableExists(table_name):
-        log.info('There is no table called %s' % table_name)
-        return False
-
-    return bool(SystemTable.select(connection=conn))
-
 def database_exists(conn, dbname):
     """
     Given a database name, returns True if it exists, False otherwise
