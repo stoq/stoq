@@ -65,15 +65,6 @@ def create_database(conn, dbname):
     """
     return conn.createDatabase(dbname)
 
-def create_database_if_missing(conn, dbname):
-    """
-    Checks if there's a database present and creates a new one if it's not
-    @param conn: a connection
-    @param dbname: the name of the database
-    @returns: True if a database was created, False otherwise
-    """
-    return conn.createDatabase(dbname, ifNotExists=True)
-
 def clean_database(dbname):
     """
     Cleans a database
