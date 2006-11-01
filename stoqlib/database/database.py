@@ -40,15 +40,6 @@ _ = stoqlib_gettext
 
 log = Logger('stoqlib.database')
 
-def database_exists(conn, dbname):
-    """
-    Given a database name, returns True if it exists, False otherwise
-    @param conn: a database connection
-    @param dbname: name of the database
-    @returns: if the database exists
-    """
-    return conn.databaseExists(dbname)
-
 def clean_database(dbname):
     """
     Cleans a database

@@ -33,7 +33,6 @@ from kiwi.log import Logger
 from sqlobject import connectionForURI
 from zope.interface import implements
 
-from stoqlib.database.database import database_exists
 from stoqlib.database.exceptions import OperationalError
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.exceptions import ConfigError, DatabaseError
@@ -164,6 +163,6 @@ class DatabaseSettings(object):
         @return: if the database exists
         """
         conn = self.get_default_connection()
-        retval = database_exists(conn, self.dbname)
+        retval = conn.databaseExists(self.dbname)
         conn.close()
         return retval
