@@ -31,7 +31,7 @@ from stoqlib.domain.fiscal import (CfopData,
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.database.runtime import get_current_branch
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 def get_cfopdata(conn):
     return CfopData(code=u"2365", description=u"blabla", connection=conn)

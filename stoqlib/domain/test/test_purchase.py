@@ -26,7 +26,7 @@
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPurchaseOrder(DomainTest):
     def create_purchase_order(self):

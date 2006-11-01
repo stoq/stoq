@@ -41,7 +41,7 @@ from stoqlib.domain.payment.base import Payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestPayment(DomainTest):
     def test_status(self):

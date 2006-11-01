@@ -46,7 +46,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceAdaptToSellable
 from stoqlib.domain.till import Till
 from stoqlib.exceptions import PaymentError, StockError
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestParameter(DomainTest):
 

@@ -30,7 +30,7 @@ from stoqlib.domain.interfaces import ISellable, IPaymentGroup
 from stoqlib.domain.sellable import BaseSellableInfo, OnSaleInfo, ASellable
 from stoqlib.exceptions import InvalidStatus
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestGiftCertificateType(DomainTest):
 

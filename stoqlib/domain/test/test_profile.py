@@ -27,7 +27,7 @@ from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.profile import ProfileSettings
 from stoqlib.domain.profile import update_profile_applications
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestUserProfile(DomainTest):
     """

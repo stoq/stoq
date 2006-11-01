@@ -29,7 +29,7 @@ from stoqlib.domain.sellable import (SellableCategory,
                                      BaseSellableInfo)
 from stoqlib.domain.product import Product
 from stoqlib.domain.interfaces import ISellable
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestSellableCategory(DomainTest):
     def setUp(self):

@@ -57,7 +57,7 @@ from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import Till
 from stoqlib.lib.translation import stoqlib_gettext
 
-from tests.base import BaseDomainTest, DomainTest
+from stoqlib.domain.test.domaintest import BaseDomainTest, DomainTest
 
 
 _ = stoqlib_gettext
