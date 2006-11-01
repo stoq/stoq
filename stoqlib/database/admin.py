@@ -104,7 +104,7 @@ def get_admin_user(conn):
     @param conn: a database connection
     @returns: the admin user for the system
     """
-    user = Person.iselectBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
+    user = Person.iselectOneBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
                             connection=conn)
     if user is None:
         raise AssertionError
