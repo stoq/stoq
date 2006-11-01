@@ -32,7 +32,6 @@ from kiwi.log import Logger
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.admin import initialize_system, ensure_admin_user
-from stoqlib.database.database import create_database_if_missing
 from stoqlib.database.interfaces import (
     ICurrentBranch, ICurrentBranchStation, ICurrentUser, IDatabaseSettings)
 from stoqlib.database.runtime import (new_transaction, get_connection,
@@ -160,7 +159,7 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     if not db_settings.has_database():
         log.warning('Database %s missing, creating it' % dbname)
         conn = db_settings.get_default_connection()
-        create_database_if_missing(conn, dbname)
+        conn.createDatabase(dbname, ifNotExists=True)
         conn.close()
         rv = True
     return rv
