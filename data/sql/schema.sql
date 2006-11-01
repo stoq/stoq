@@ -598,8 +598,8 @@ CREATE TABLE card_installment_settings (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    payment_day integer,
-    closing_day integer
+    payment_day integer CHECK (payment_day <= 28),
+    closing_day integer CHECK (closing_day <= 28)
 );
 
 CREATE TABLE card_installments_provider_details (
@@ -633,8 +633,8 @@ CREATE TABLE abstract_check_bill_adapter (
     id bigserial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
-    monthly_interest numeric(10,2),
-    daily_penalty numeric(10,2),
+    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
+    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
     child_name character varying(255)
 );
 
@@ -1039,7 +1039,7 @@ CREATE TABLE renegotiation_data (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     reason text,
-    paid_total numeric(10,2),
+    paid_total numeric(10,2) CHECK (paid_total >= 0),
     invoice_number integer,
     penalty_value numeric(10,2),
     responsible_id bigint REFERENCES person(id),
