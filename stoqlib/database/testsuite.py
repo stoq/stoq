@@ -21,7 +21,7 @@
 ##
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
-"""Bootstrap the database"""
+"""Database routines which are used by the testsuite"""
 
 import os
 import pwd
@@ -49,7 +49,7 @@ from stoqlib.lib.interfaces import (IApplicationDescriptions,
 from stoqlib.lib.message import DefaultSystemNotifier
 from stoqlib.lib.parameters import sysparam
 
-log = Logger('stoqlib.tests')
+log = Logger('stoqlib.database.testsuite')
 
 # Provide a fake description utility, the ProfileSettings class depends on it
 class FakeApplicationDescriptions:
@@ -59,8 +59,8 @@ class FakeApplicationDescriptions:
     def get_descriptions(self):
         return []
 
-# This test is here to workaround trial; which refuses to quit
-# if SystemExit is raised or if sys.exit() is called.
+# This notifier implementation is here to workaround trial; which
+# refuses to quit if SystemExit is raised or if sys.exit() is called.
 # For now it is assumed that errors() are fatal, that might change in
 # the near future
 class TestsuiteNotifier(DefaultSystemNotifier):
@@ -83,38 +83,6 @@ def _provide_database_settings():
                                    username=username,
                                    password=password)
     provide_utility(IDatabaseSettings, db_settings)
-
-def provide_database_settings(dbname=None, address=None, port=None, username=None,
-                              password=None):
-    if not username:
-        username = pwd.getpwuid(os.getuid())[0]
-    if not dbname:
-        dbname = username + '_test'
-    if not address:
-        address = "localhost"
-    if not port:
-        port = "5432"
-    if not password:
-        password = ""
-
-    # Remove all old utilities pointing to the previous database
-    utilities.clean()
-    provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
-    provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
-
-    db_settings = DatabaseSettings(
-        address=address, port=port, dbname=dbname, username=username,
-        password=password)
-    provide_utility(IDatabaseSettings, db_settings)
-
-    rv = False
-    if not db_settings.has_database():
-        log.warning('Database %s missing, creating it' % dbname)
-        conn = db_settings.get_default_connection()
-        create_database_if_missing(conn, dbname)
-        conn.close()
-        rv = True
-    return rv
 
 def _provide_current_user():
     user = Person.iselectOneBy(IUser, username='admin',
@@ -156,7 +124,52 @@ def _provide_devices():
     if not get_fiscal_printer_settings_by_station(conn, station):
         create_virtual_printer_for_current_station()
 
+# Public API
+
+def provide_database_settings(dbname=None, address=None, port=None, username=None,
+                              password=None):
+    """
+    @param dbname:
+    @param address:
+    @param port:
+    @param username:
+    @param password:
+    """
+    if not username:
+        username = pwd.getpwuid(os.getuid())[0]
+    if not dbname:
+        dbname = username + '_test'
+    if not address:
+        address = "localhost"
+    if not port:
+        port = "5432"
+    if not password:
+        password = ""
+
+    # Remove all old utilities pointing to the previous database
+    utilities.clean()
+    provide_utility(ISystemNotifier, TestsuiteNotifier(), replace=True)
+    provide_utility(IApplicationDescriptions, FakeApplicationDescriptions())
+
+    db_settings = DatabaseSettings(
+        address=address, port=port, dbname=dbname, username=username,
+        password=password)
+    provide_utility(IDatabaseSettings, db_settings)
+
+    rv = False
+    if not db_settings.has_database():
+        log.warning('Database %s missing, creating it' % dbname)
+        conn = db_settings.get_default_connection()
+        create_database_if_missing(conn, dbname)
+        conn.close()
+        rv = True
+    return rv
+
 def provide_utilities(station_name, branch_name=None):
+    """
+    @param station_name:
+    @param branch_name:
+    """
     _provide_current_user()
     _provide_current_station(station_name, branch_name)
     _provide_devices()
@@ -164,6 +177,15 @@ def provide_utilities(station_name, branch_name=None):
 def bootstrap_testsuite(address=None, dbname=None, port=5432, username=None,
                         password="", station_name=None, quick=False):
 
+    """
+    @param address:
+    @param dbname:
+    @param port:
+    @param username:
+    @param password:
+    @param station_name:
+    @param quick:
+    """
     try:
         empty = provide_database_settings(
             dbname, address, port, username, password)
