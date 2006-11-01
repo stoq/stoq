@@ -31,7 +31,7 @@ from stoqlib.database.runtime import (get_current_user,
 from stoqlib.domain.person import Person
 from stoqlib.domain.transaction import TransactionEntry
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestTransaction(DomainTest):
     def test_timestamp(self):

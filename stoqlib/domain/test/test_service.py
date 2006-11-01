@@ -27,7 +27,7 @@ from stoqlib.domain.interfaces import IDelivery
 from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.service import DeliveryItem, ServiceSellableItem
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestServiceSellableItem(DomainTest):
     def test_addItem(self):

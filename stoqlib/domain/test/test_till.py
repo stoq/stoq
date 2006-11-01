@@ -29,7 +29,7 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestStation(DomainTest):
     def testGetCurrentTillOpen(self):

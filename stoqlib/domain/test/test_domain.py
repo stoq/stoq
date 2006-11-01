@@ -33,7 +33,7 @@ from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.database.tables import get_table_types
 from twisted.trial.unittest import SkipTest
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 def _get_columns(table):
     columns = table.sqlmeta.columnList[:]

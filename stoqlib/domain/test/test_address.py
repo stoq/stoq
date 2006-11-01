@@ -27,7 +27,7 @@
 from stoqlib.domain.address import Address, CityLocation
 from stoqlib.lib.parameters import sysparam
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestCityLocation(DomainTest):
     def testIsValidModel(self):

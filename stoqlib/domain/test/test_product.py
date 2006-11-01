@@ -36,7 +36,7 @@ from stoqlib.domain.product import (ProductSupplierInfo, Product,
 from stoqlib.domain.interfaces import (IStorable, IBranch, ISellable,
                                        ISalesPerson, IEmployee, IIndividual)
 
-from tests.base import BaseDomainTest, DomainTest
+from stoqlib.domain.test.domaintest import BaseDomainTest, DomainTest
 
 def get_sellable(conn):
     product = Product(connection=conn)

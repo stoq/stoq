@@ -33,7 +33,7 @@ from stoqlib.lib.introspection import get_all_classes
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.domain.person import Person
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 def get_all_slaves():
     slaves = []

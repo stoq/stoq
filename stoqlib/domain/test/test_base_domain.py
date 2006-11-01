@@ -29,7 +29,7 @@ from zope.interface import implements, Interface
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.base import Domain, ModelAdapter
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class IDong(Interface):
     pass

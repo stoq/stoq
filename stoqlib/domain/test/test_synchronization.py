@@ -27,7 +27,7 @@ import datetime
 
 from stoqlib.domain.synchronization import BranchSynchronization
 
-from tests.base import DomainTest
+from stoqlib.domain.test.domaintest import DomainTest
 
 class TestBranchSynchronization(DomainTest):
     def setUp(self):
