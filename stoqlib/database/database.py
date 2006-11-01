@@ -81,18 +81,31 @@ def execute_sql(filename):
     @param filename: filename with SQL commands
     """
     settings = get_utility(IDatabaseSettings)
-    cmd = ("psql -n -h %(address)s -p %(port)s %(dbname)s -q "
-           "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
-        address=settings.address,
-        port=settings.port,
-        dbname=settings.dbname,
-        schema=filename)
 
-    log.debug('sql_prepare: executing %s' % cmd)
-    proc = subprocess.Popen(cmd, shell=True,
-                            stdin=subprocess.PIPE,
-                            stdout=subprocess.PIPE)
-    returncode = proc.wait()
-    if returncode != 0:
-        error('psql returned error code %d' % returncode)
+    log.info("Executing SQL script %s" % filename)
 
+    if settings.rdbms == 'postgres':
+        cmd = ("psql -n -h %(address)s -p %(port)s %(dbname)s -q "
+               "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
+            address=settings.address,
+            port=settings.port,
+            dbname=settings.dbname,
+            schema='-')
+
+        log.debug('sql_prepare: executing %s' % cmd)
+        proc = subprocess.Popen(cmd, shell=True,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE)
+
+        # We don't want to see notices on the output, skip them
+        proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
+
+        data = open(filename).read()
+        proc.stdin.write(data)
+        proc.stdin.close()
+
+        returncode = proc.wait()
+        if returncode != 0:
+            error('psql returned error code %d' % returncode)
+    else:
+        raise NotImplementedError(settings.rdbms)
