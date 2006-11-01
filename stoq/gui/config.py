@@ -35,8 +35,7 @@ from kiwi.python import Settable
 from kiwi.ui.dialogs import info
 from stoqlib.exceptions import StoqlibError, DatabaseInconsistency
 from stoqlib.database.admin import USER_ADMIN_DEFAULT_NAME, user_has_usesuper
-from stoqlib.database.database import (create_database_if_missing,
-                                       rollback_and_begin)
+from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import (new_transaction,
                                       set_current_branch_station)
 from stoqlib.database.settings import DatabaseSettings
@@ -364,7 +363,7 @@ class DatabaseSettingsStep(WizardEditorStep):
             return False
 
         # Finally create it, nothing should go wrong at this point
-        create_database_if_missing(conn, dbname)
+        conn.createDatabase(dbname, ifNotExists=True)
         return True
 
     def _create_station(self, conn, branch, station_name):
