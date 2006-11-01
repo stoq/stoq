@@ -47,9 +47,7 @@ def database_exists(conn, dbname):
     @param dbname: name of the database
     @returns: if the database exists
     """
-    results = conn.queryOne(
-        "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" % dbname)
-    return results[0] == 1
+    return conn.databaseExists(dbname)
 
 def drop_database(conn, dbname):
     """
@@ -57,12 +55,7 @@ def drop_database(conn, dbname):
     @param conn: a database connection
     @param dbname: name of the database
     """
-    pgconn = conn.getConnection()
-    curs = pgconn.cursor()
-    curs.execute('commit')
-
-    log.info('Dropping SQL database: %s' % dbname)
-    curs.execute('DROP DATABASE %s' % dbname)
+    return conn.dropDatabase(dbname)
 
 def create_database(conn, dbname):
     """
@@ -70,16 +63,7 @@ def create_database(conn, dbname):
     @param conn: a database connection
     @param dbname: name of the database
     """
-
-    # We need to close the current transaction, which is probably created
-    # by SQLObject somehow, the only way to do that is to fetch the psycopg
-    # connection, get the cursor and run the 'commit' statement
-    pgconn = conn.getConnection()
-    curs = pgconn.cursor()
-    curs.execute('commit')
-
-    log.info('Creating SQL database: %s' % dbname)
-    curs.execute('CREATE DATABASE %s' % dbname)
+    return conn.createDatabase(dbname)
 
 def create_database_if_missing(conn, dbname):
     """
@@ -88,25 +72,17 @@ def create_database_if_missing(conn, dbname):
     @param dbname: the name of the database
     @returns: True if a database was created, False otherwise
     """
-    if database_exists(conn, dbname):
-        return False
-
-    create_database(conn, dbname)
-
-    return True
+    return conn.createDatabase(dbname, ifNotExists=True)
 
 def clean_database(dbname):
     """
     Cleans a database
     @param dbname: name of the database
     """
-
     settings = get_utility(IDatabaseSettings)
     conn = settings.get_default_connection()
-    if database_exists(conn, dbname):
-        drop_database(conn, dbname)
-
-    create_database(conn, dbname)
+    conn.dropDatabase(dbname, ifExists=True)
+    conn.createDatabase(dbname)
     conn.close()
 
 #

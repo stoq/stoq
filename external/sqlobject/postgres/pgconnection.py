@@ -181,6 +181,41 @@ class PostgresConnection(DBAPI):
         self.query("ALTER SEQUENCE %s START %d MINVALUE %d MAXVALUE %d" % (
             sequence, start, minvalue, maxvalue))
 
+    # Johan 2006-10-27: Add Database methods
+    def createDatabase(self, name, ifNotExists=False):
+        if ifNotExists and self.databaseExists(name):
+            return False
+
+        # We must close the transaction with a commit so that
+        # the CREATE DATABASE can work (which can't be in a transaction):
+        conn = self.getConnection()
+        cur = conn.cursor()
+        cur.execute('COMMIT')
+        cur.execute('CREATE DATABASE %s' % name)
+        cur.close()
+
+        return True
+
+    def dropDatabase(self, name, ifExists=False):
+        if ifExists and not self.databaseExists(name):
+            return False
+
+        # We must close the transaction with a commit so that
+        # the CREATE DATABASE can work (which can't be in a transaction):
+        conn = self.getConnection()
+        cur = conn.cursor()
+        cur.execute('COMMIT')
+        cur.execute('DROP DATABASE %s' % name)
+        cur.close()
+
+        return False
+
+    def databaseExists(self, name):
+        res = self.queryOne(
+            "SELECT COUNT(*) FROM pg_database WHERE datname='%s'" %
+            name)
+        return res[0] == 1
+
     def addColumn(self, tableName, column):
         self.query('ALTER TABLE %s ADD COLUMN %s' %
                    (tableName,
@@ -330,12 +365,7 @@ class PostgresConnection(DBAPI):
             if self.host:
                 dsn += ' host=%s' % self.host
         conn = self.module.connect(dsn)
-        cur = conn.cursor()
-        # We must close the transaction with a commit so that
-        # the CREATE DATABASE can work (which can't be in a transaction):
-        cur.execute('COMMIT')
-        cur.execute('CREATE DATABASE %s' % self.db)
-        cur.close()
+        conn.createDatabase(self.db)
         conn.close()
 
 
