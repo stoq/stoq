@@ -49,14 +49,6 @@ def database_exists(conn, dbname):
     """
     return conn.databaseExists(dbname)
 
-def drop_database(conn, dbname):
-    """
-    Drop the specified database
-    @param conn: a database connection
-    @param dbname: name of the database
-    """
-    return conn.dropDatabase(dbname)
-
 def create_database(conn, dbname):
     """
     Create the specified database
