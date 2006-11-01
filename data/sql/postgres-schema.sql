@@ -74,18 +74,3 @@ CREATE SEQUENCE stoqlib_sellable_code_seq
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
-
---
--- Table constraints
---
-
-ALTER TABLE card_installment_settings ADD CONSTRAINT payment_day_check
-      CHECK (payment_day <= 28);
-ALTER TABLE card_installment_settings ADD CONSTRAINT closing_day_check
-      CHECK (closing_day <= 28);
-ALTER TABLE abstract_check_bill_adapter ADD CONSTRAINT monthly_interest_check
-      CHECK (monthly_interest >= 0 AND monthly_interest <= 100);
-ALTER TABLE abstract_check_bill_adapter ADD CONSTRAINT daily_penalty_check
-      CHECK (daily_penalty >= 0 AND daily_penalty <= 100);
-ALTER TABLE renegotiation_data ADD CONSTRAINT paid_check
-      CHECK (paid_total >= 0);
