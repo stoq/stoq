@@ -49,14 +49,6 @@ def database_exists(conn, dbname):
     """
     return conn.databaseExists(dbname)
 
-def create_database(conn, dbname):
-    """
-    Create the specified database
-    @param conn: a database connection
-    @param dbname: name of the database
-    """
-    return conn.createDatabase(dbname)
-
 def clean_database(dbname):
     """
     Cleans a database
