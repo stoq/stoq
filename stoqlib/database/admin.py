@@ -40,7 +40,7 @@ from stoqlib.database.interfaces import ICurrentUser, IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.interfaces import (IIndividual, IEmployee, IUser,
                                        ISalesPerson)
-from stoqlib.domain.person import EmployeeRole, PersonAdaptToUser
+from stoqlib.domain.person import EmployeeRole, Person
 from stoqlib.domain.person import EmployeeRoleHistory
 from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.sellable import SellableUnit
@@ -104,12 +104,11 @@ def get_admin_user(conn):
     @param conn: a database connection
     @returns: the admin user for the system
     """
-    table = PersonAdaptToUser
-    results = table.select(table.q.username == USER_ADMIN_DEFAULT_NAME,
-                           connection=conn)
-    if results.count() != 1:
+    user = Person.iselectBy(IUser, username=USER_ADMIN_DEFAULT_NAME,
+                            connection=conn)
+    if user is None:
         raise AssertionError
-    return results[0]
+    return user
 
 def ensure_sellable_units():
     """ Create native sellable units. """
