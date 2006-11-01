@@ -25,7 +25,7 @@
 
 import os
 
-from bootstrap import bootstrap_testsuite
+from stoqlib.database.testsuite import bootstrap_testsuite
 
 hostname = os.environ.get('STOQLIB_TEST_HOSTNAME')
 dbname =  os.environ.get('STOQLIB_TEST_DBNAME')

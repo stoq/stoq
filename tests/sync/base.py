@@ -38,12 +38,12 @@ from stoqlib.database.database import drop_database, database_exists
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.synchronization import SynchronizationClient
+from stoqlib.database.testsuite import (provide_database_settings,
+                                        provide_utilities, bootstrap_testsuite)
 from stoqlib.domain.interfaces import ICompany, IBranch
 from stoqlib.domain.person import Person
 from stoqlib.domain.station import BranchStation
 
-from tests.bootstrap import provide_database_settings, provide_utilities
-from tests.bootstrap import bootstrap_testsuite
 from tests import base
 base #pyflakes
 
