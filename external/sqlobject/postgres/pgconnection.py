@@ -201,14 +201,14 @@ class PostgresConnection(DBAPI):
             return False
 
         # We must close the transaction with a commit so that
-        # the CREATE DATABASE can work (which can't be in a transaction):
+        # the DROP DATABASE can work (which can't be in a transaction):
         conn = self.getConnection()
         cur = conn.cursor()
         cur.execute('COMMIT')
         cur.execute('DROP DATABASE %s' % name)
         cur.close()
 
-        return False
+        return True
 
     def databaseExists(self, name):
         res = self.queryOne(
