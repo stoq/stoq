@@ -34,7 +34,7 @@ except:
 from kiwi.component import get_utility
 from kiwi.log import Logger
 
-from stoqlib.database.database import drop_database, database_exists
+from stoqlib.database.database import database_exists
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.runtime import new_transaction
 from stoqlib.database.synchronization import SynchronizationClient
@@ -117,7 +117,7 @@ def _provide_original_settings():
 def _create_office_database(conn):
     log.info("Creating office database.")
     if database_exists(conn, SyncTestData.office_dbname):
-        drop_database(conn, SyncTestData.office_dbname)
+        conn.dropDatabase(SyncTestData.office_dbname)
     bootstrap_testsuite(SyncTestData.db_address,
                         SyncTestData.office_dbname,
                         SyncTestData.db_port,
@@ -127,7 +127,7 @@ def _create_office_database(conn):
 def _create_shop_database(conn):
     log.info("Creating shop database")
     if database_exists(conn, SyncTestData.shop_dbname):
-        drop_database(conn, SyncTestData.shop_dbname)
+        conn.dropDatabase(SyncTestData.shop_dbname)
     provide_database_settings(SyncTestData.shop_dbname,
                               SyncTestData.db_address,
                               SyncTestData.db_port,
