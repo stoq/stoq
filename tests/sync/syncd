@@ -31,7 +31,7 @@ sys.path.append(
     os.path.join(os.path.dirname(__file__), "..", ".."))
 
 from stoqlib.database.synchronization import SynchronizationService
-from tests.bootstrap import provide_database_settings
+from stoqlib.database.testsuite import provide_database_settings
 
 def get_option_parser():
     """
