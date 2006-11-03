@@ -695,11 +695,12 @@ class SearchDialog(BasicDialog):
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None):
         self.conn = conn
-        self.table = table or self.table or search_table
-        if not self.table:
+        search_table = search_table or self.search_table
+        table = table or self.table
+        if not (table or search_table):
             raise ValueError(
                 "%r must define a table or search_table attribute" % self)
-        self.search_table = search_table or self.table
+        self.search_table = search_table or table
         if (selection_mode != gtk.SELECTION_BROWSE and
             selection_mode != gtk.SELECTION_MULTIPLE):
             raise ValueError('Invalid selection mode %d' % self.selection_mode)
