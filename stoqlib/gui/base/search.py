@@ -694,25 +694,24 @@ class SearchDialog(BasicDialog):
     @argcheck(Transaction, object, object, bool, basestring, int)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None):
+        self.conn = conn
+        self.table = table or self.table or search_table
+        if not self.table:
+            raise ValueError(
+                "%r must define a table or search_table attribute" % self)
+        self.search_table = search_table or self.table
+        if (selection_mode != gtk.SELECTION_BROWSE and
+            selection_mode != gtk.SELECTION_MULTIPLE):
+            raise ValueError('Invalid selection mode %d' % self.selection_mode)
+        self.selection_mode = selection_mode or self.selection_mode
+
         BasicDialog.__init__(self)
         title = title or self.title
-        self.selection_mode = selection_mode or self.selection_mode
         self.summary_label = None
-        avaliable_modes = [gtk.SELECTION_BROWSE, gtk.SELECTION_MULTIPLE]
-        if self.selection_mode not in avaliable_modes:
-            raise ValueError('Invalid selection mode %d' % self.selection_mode)
         BasicDialog._initialize(self, hide_footer=hide_footer,
                                 main_label_text=self.main_label_text,
                                 title=title, size=self.size)
         self.set_ok_label(_('Se_lect Items'))
-        self.table = table or self.table or search_table
-        if not self.table:
-            raise ValueError("Child must define a table attribute")
-        self.search_table = search_table or self.table
-        self.conn = conn
-        if not isinstance(conn, Transaction):
-            raise TypeError('Invalid type for connection argument, got %s'
-                            % type(conn))
         self.setup_slaves()
 
     def _sync(self, *args):
