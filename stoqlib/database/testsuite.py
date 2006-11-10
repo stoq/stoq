@@ -126,13 +126,14 @@ def _provide_devices():
 # Public API
 
 def provide_database_settings(dbname=None, address=None, port=None, username=None,
-                              password=None):
+                              password=None, create=True):
     """
     @param dbname:
     @param address:
     @param port:
     @param username:
     @param password:
+    @param create: Create a new empty database if one is missing
     """
     if not username:
         username = pwd.getpwuid(os.getuid())[0]
@@ -156,12 +157,14 @@ def provide_database_settings(dbname=None, address=None, port=None, username=Non
     provide_utility(IDatabaseSettings, db_settings)
 
     rv = False
-    if not db_settings.has_database():
-        log.warning('Database %s missing, creating it' % dbname)
+    if create:
         conn = db_settings.get_default_connection()
-        conn.createDatabase(dbname, ifNotExists=True)
+        if not conn.databaseExists(dbname):
+            log.warning('Database %s missing, creating it' % dbname)
+            conn.createDatabase(dbname, ifNotExists=True)
+            rv = True
         conn.close()
-        rv = True
+
     return rv
 
 def provide_utilities(station_name, branch_name=None):

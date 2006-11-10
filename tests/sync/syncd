@@ -71,7 +71,8 @@ parser = get_option_parser()
 options, dummy = parser.parse_args(sys.argv[1:])
 
 provide_database_settings(address=options.address, dbname=options.dbname,
-                          port=options.port, username=options.username)
+                          port=options.port, username=options.username,
+                          create=False)
 
 service = SynchronizationService("", 9000)
 service.serve()
