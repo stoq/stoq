@@ -23,12 +23,23 @@
 ##
 
 from stoqlib.database.runtime import get_connection, new_transaction
-from stoqlib.domain.interfaces import IIndividual
-from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import (IEmployee, ISalesPerson, IUser,
+                                       IIndividual)
+from stoqlib.domain.person import EmployeeRole, Person
+from stoqlib.domain.profile import UserProfile
 
 from tests.sync.base import SyncTest
 
 class TestUpdate(SyncTest):
+    #
+    # Synchronization tests.
+    #
+    # You are allowed to commit here
+    #
+    # What you cannot depend on is the order the tests will
+    # be executed in, so you cannot use objects defined outside
+    # of the current test function
+    #
     def testSimple(self):
         self.switch_to_office()
         trans = new_transaction()
@@ -99,3 +110,53 @@ class TestUpdate(SyncTest):
                                            connection=conn))
         self.failUnless(Person.iselectOneBy(IIndividual, occupation="Working",
                                             connection=conn))
+
+    def testDifferentFacets(self):
+        # Create a person with an employee facet in the shop
+        # Sync with office
+        # Make him a salesperson in the office
+        # Make him a user in the store
+
+        # Shop
+        self.switch_to_shop()
+        trans = new_transaction()
+        person = Person(name="Employee", connection=trans)
+        person.addFacet(IIndividual, connection=trans)
+        role = EmployeeRole.selectOneBy(name="Clerk", connection=trans)
+        person.addFacet(IEmployee, role=role, connection=trans)
+        trans.commit()
+
+        # Office
+        self.switch_to_office()
+        self.update("shop-computer")
+
+        trans = new_transaction()
+        person = Person.selectOneBy(name="Employee", connection=trans)
+        person.addFacet(ISalesPerson, comission=10, connection=trans)
+        trans.commit()
+
+        # Shop
+        self.switch_to_shop()
+        trans = new_transaction()
+        person = Person.selectOneBy(name="Employee", connection=trans)
+        profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
+        person.addFacet(IUser, username="username", password="password",
+                        profile=profile, connection=trans)
+        trans.commit()
+
+        # Office
+        self.switch_to_office()
+        self.update("shop-computer")
+
+        person = Person.selectOneBy(name="Employee", connection=trans)
+        user = IUser(person, None)
+        self.failUnless(user)
+        self.assertEquals(user.username, "username")
+
+        # Shop
+        self.switch_to_shop()
+        person = Person.selectOneBy(name="Employee", connection=trans)
+        salesperson = ISalesPerson(person, None)
+        self.failUnless(salesperson)
+        self.assertEquals(salesperson.comission, 10)
+
