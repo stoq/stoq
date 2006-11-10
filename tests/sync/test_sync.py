@@ -23,7 +23,9 @@
 ##
 
 from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.domain.interfaces import IIndividual
 from stoqlib.domain.person import Person
+
 from tests.sync.base import SyncTest
 
 class TestUpdate(SyncTest):
@@ -63,3 +65,37 @@ class TestUpdate(SyncTest):
         self.switch_to_shop()
         self.failUnless(Person.selectOneBy(name="Person 2",
                                            connection=get_connection()))
+
+    def testFacet(self):
+        # Create a person in the shop which is "sleeping"
+        # Create a person in the office which is "working"
+
+        # Shop
+        self.switch_to_shop()
+        trans = new_transaction()
+        person = Person(name="Person 3", connection=trans)
+        person.addFacet(IIndividual, occupation="Sleeping",
+                        connection=trans)
+        trans.commit()
+
+        # Office
+        self.switch_to_office()
+        trans = new_transaction()
+        person = Person(name="Person 4", connection=trans)
+        person.addFacet(IIndividual, occupation="Working",
+                        connection=trans)
+        trans.commit()
+
+        self.update("shop-computer")
+        conn = get_connection()
+        self.failUnless(Person.selectOneBy(name="Person 3", connection=conn))
+        self.failUnless(Person.iselectOneBy(IIndividual, occupation="Sleeping",
+                                            connection=conn))
+
+        # Shop
+        conn = get_connection()
+        self.switch_to_shop()
+        self.failUnless(Person.selectOneBy(name="Person 4",
+                                           connection=conn))
+        self.failUnless(Person.iselectOneBy(IIndividual, occupation="Working",
+                                            connection=conn))
