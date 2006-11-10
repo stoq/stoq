@@ -93,8 +93,8 @@ class TestUpdate(SyncTest):
                                             connection=conn))
 
         # Shop
-        conn = get_connection()
         self.switch_to_shop()
+        conn = get_connection()
         self.failUnless(Person.selectOneBy(name="Person 4",
                                            connection=conn))
         self.failUnless(Person.iselectOneBy(IIndividual, occupation="Working",
