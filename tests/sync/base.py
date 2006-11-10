@@ -78,7 +78,8 @@ class SyncTest(unittest.TestCase):
         provide_database_settings(dbname, SyncTestData.db_address,
                                   SyncTestData.db_port,
                                   SyncTestData.db_username,
-                                  SyncTestData.db_password)
+                                  SyncTestData.db_password,
+                                  create=False)
         provide_utilities(station_name, branch_name)
 
     def switch_to_shop(self):
