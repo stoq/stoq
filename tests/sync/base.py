@@ -183,4 +183,10 @@ def bootstrap():
 
     _provide_original_settings()
 
-bootstrap()
+try:
+    bootstrap()
+except Exception, e:
+    # Work around trial
+    import traceback
+    traceback.print_exc()
+    os._exit(1)
