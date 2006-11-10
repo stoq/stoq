@@ -37,7 +37,7 @@ class TestClone(SyncTest):
         office_trans = new_transaction()
 
         policy = get_policy_by_name("shop")
-        for table in get_tables(policy, filter=(SyncPolicy.FROM_TARGET, )):
+        for table in get_tables(policy, pfilter=(SyncPolicy.FROM_TARGET, )):
             if table is TransactionEntry:
                 continue
             office_count = table.select(connection=office_trans).count()
