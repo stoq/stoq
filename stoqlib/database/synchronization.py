@@ -465,10 +465,8 @@ class SynchronizationClient(object):
         trans.query(cmd)
 
     def _bump_id_sequences(self, station, policy):
-        table_names = []
-        for table_name, table_policy in policy.tables:
-            table = get_table_type_by_name(table_name)
-            table_names.append(table.sqlmeta.table + '_id_seq')
+        table_names = [t.sqlmeta.table + '_id_seq' for t in get_tables(policy)]
+
         branch = station.branch
         # The main branch is assumed to be 1, so out must be at least 2
         if branch.id < 2:
