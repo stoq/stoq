@@ -85,10 +85,20 @@ def _collect_table(tables, table):
         for facet_type in table.getFacetTypes():
             _collect_table(tables, facet_type)
 
-def get_tables(policy, filter):
+def get_tables(policy, pfilter=None):
+    """
+    Fetches a list of tables given a specific policy.
+    A pfilter can optionally be specified to filter out tables
+    which does not match a specific state.
+
+    @param policy: a SynchronizationPolicy
+    @param pfilter: a sequence of states to skip or None to fetch all
+    @returns: a list of tables
+    @rtype: list of sqlobject tables
+    """
     tables = []
     for table_name, table_policy in policy.tables:
-        if table_policy in filter:
+        if pfilter and table_policy in pfilter:
             continue
         table = get_table_type_by_name(table_name)
         _collect_table(tables, table)
@@ -565,7 +575,7 @@ class SynchronizationClient(object):
             trans = transaction
         timestamp = datetime.datetime.now()
         station = self._get_station(trans, station_name)
-        tables = get_tables(policy, filter=(SyncPolicy.FROM_TARGET,))
+        tables = get_tables(policy, pfilter=(SyncPolicy.FROM_TARGET,))
         self._sql_send(self._dump_tables(tables))
         if not self._commit:
             return
