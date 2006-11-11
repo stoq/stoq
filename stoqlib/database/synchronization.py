@@ -106,10 +106,10 @@ def get_tables(policy, pfilter=None):
     return tables
 
 class TableSerializer:
-    def __init__(self, conn, tables, station_id):
+    def __init__(self, conn, tables, station):
         self._conn = conn
         self._tables = tables
-        self._station_id = station_id
+        self._station = station
 
     def _serialize_update(self, obj):
         values = []
@@ -159,7 +159,7 @@ class TableSerializer:
 
     def get_chunks(self, timestamp):
         data = ""
-        station_id = self._station_id
+        station_id = self._station.id
         for table in self._tables:
             if table == TransactionEntry:
                 continue
@@ -550,7 +550,7 @@ class SynchronizationClient(object):
         # Send over all the changes from the source to the target
         tables = get_tables(policy, (SyncPolicy.FROM_TARGET,
                                      SyncPolicy.INITIAL))
-        ts = TableSerializer(trans, tables, station.id)
+        ts = TableSerializer(trans, tables, station)
 
         self._sql_send(ts.get_chunks(last_sync))
 
