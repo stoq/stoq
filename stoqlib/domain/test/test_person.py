@@ -25,7 +25,8 @@
 ##
 """ Test case for stoq/domain/person.py module.  """
 
-from datetime import datetime
+import datetime
+
 from kiwi.datatypes import currency
 from sqlobject.main import SQLObjectMoreThanOneResultError
 
@@ -200,7 +201,7 @@ class TestPerson(BaseDomainTest):
     def test_facet_ICreditProvider_add(self):
         person = get_person(self.trans)
         short_name = 'Credicard'
-        date = datetime(2006,06,01)
+        date = datetime.date(2006, 06, 01)
         assert self._check_create_facet_fails(person, ICreditProvider,
                                               short_name=short_name,
                                               open_contract_date=date)
@@ -389,7 +390,7 @@ class TestClient(BaseDomainTest):
         assert people
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
-        date=datetime(2006,11,11)
+        date = datetime.date(2006, 11, 11)
         new_sale = Sale(coupon_id=123, client=client, cfop=cfop,
                         till=till, salesperson=salesperson,
                         connection=self.trans,
@@ -619,7 +620,7 @@ class TestCreditProvider(BaseDomainTest):
         return  person.addFacet(ICreditProvider,
                                 connection=self.trans,
                                 short_name='Velec',
-                                open_contract_date=datetime(2006,01,01))
+                                open_contract_date=datetime.date(2006, 01, 01))
 
 
     def test_get_card_providers(self):
@@ -628,7 +629,7 @@ class TestCreditProvider(BaseDomainTest):
         count = PersonAdaptToCreditProvider.get_card_providers(self.trans).count()
         credit_provider = person.addFacet(ICreditProvider, connection=self.trans,
                                           short_name='Plus',
-                                          open_contract_date=datetime(2006,02,02),
+                                          open_contract_date=datetime.date(2006, 02, 02),
                                           provider_type=0)
         assert credit_provider.get_card_providers(self.trans).count() == count + 1
 
@@ -638,7 +639,7 @@ class TestCreditProvider(BaseDomainTest):
         count = PersonAdaptToCreditProvider.get_finance_companies(self.trans).count()
         credit_provider = person.addFacet(ICreditProvider, connection=self.trans,
                                           short_name='Cards',
-                                          open_contract_date=datetime(2006,02,02),
+                                          open_contract_date=datetime.date(2006, 02, 02),
                                           provider_type=1)
         assert credit_provider.get_finance_companies(self.trans).count() == count + 1
 

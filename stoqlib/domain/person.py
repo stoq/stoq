@@ -418,11 +418,18 @@ class PersonAdaptToClient(_PersonAdapter):
                                orderBy=SaleView.q.open_date)
 
     def get_last_purchase_date(self):
+        """
+        Fetch the date of the last purchased item by this client.
+        None is returned if there are no sales yet made by the client
+
+        @returns: the date of the last purchased item
+        @rtype: datetime.date or None
+        """
         sales = self.get_client_sales()
         if sales:
             # The get_client_sales method already returns a sorted list of
             # sales by open_date column
-            return sales[-1].open_date
+            return sales[-1].open_date.date()
 
 
 Person.registerFacet(PersonAdaptToClient, IClient)
