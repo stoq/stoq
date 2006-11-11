@@ -132,6 +132,7 @@ class TestUpdate(SyncTest):
 
         trans = new_transaction()
         person = Person.selectOneBy(name="Employee", connection=trans)
+        self.failUnless(person)
         person.addFacet(ISalesPerson, comission=10, connection=trans)
         trans.commit()
 
@@ -139,6 +140,7 @@ class TestUpdate(SyncTest):
         self.switch_to_shop()
         trans = new_transaction()
         person = Person.selectOneBy(name="Employee", connection=trans)
+        self.failUnless(person)
         profile = UserProfile.selectOneBy(name='Administrator', connection=trans)
         person.addFacet(IUser, username="username", password="password",
                         profile=profile, connection=trans)
@@ -149,6 +151,7 @@ class TestUpdate(SyncTest):
         self.update("shop-computer")
 
         person = Person.selectOneBy(name="Employee", connection=trans)
+        self.failUnless(person)
         user = IUser(person, None)
         self.failUnless(user)
         self.assertEquals(user.username, "username")
@@ -156,6 +159,7 @@ class TestUpdate(SyncTest):
         # Shop
         self.switch_to_shop()
         person = Person.selectOneBy(name="Employee", connection=trans)
+        self.failUnless(person)
         salesperson = ISalesPerson(person, None)
         self.failUnless(salesperson)
         self.assertEquals(salesperson.comission, 10)
