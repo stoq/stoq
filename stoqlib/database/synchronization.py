@@ -62,9 +62,6 @@ CHUNKSIZE = 40960
 BRANCH_ID_OFFSET = 1000000000000000
 #BRANCH_ID_OFFSET = 1 << 50
 
-(CREATED,
- MODIFIED) = range(2)
-
 def _collect_table(tables, table):
     if table in tables:
         return
@@ -164,8 +161,8 @@ class TableSerializer:
             if table == TransactionEntry:
                 continue
 
-            for (te_type, te_id) in [(table.q.te_createdID, CREATED),
-                                     (table.q.te_modifiedID, MODIFIED)]:
+            for (te_type, te_id) in [(table.q.te_createdID, TransactionEntry.CREATED),
+                                     (table.q.te_modifiedID, TransactionEntry.MODIFIED)]:
                 results = table.select(
                     AND(TransactionEntry.q.id == te_type,
                         TransactionEntry.q.station_id != station_id,
@@ -175,14 +172,16 @@ class TableSerializer:
                 if not results:
                     continue
 
-                if te_id == CREATED:
+                if te_id == TransactionEntry.CREATED:
                     log.info("Serializing %d insert(s) to table %s" % (
                         results.count(), table.sqlmeta.table))
                     data += self._serialize_inserts(results)
-                else:
+                elif te_id == TransactionEntry.MODIFIED:
                     log.info("Serializing %d update(s) to table %s" % (
                         results.count(), table.sqlmeta.table))
                     data += self._serialize_updates(results)
+                else:
+                    raise AssertionError
 
             if len(data) >= CHUNKSIZE:
                 yield data[:CHUNKSIZE]
@@ -314,18 +313,20 @@ class SynchronizationService(XMLRPCService):
             if table == TransactionEntry:
                 continue
             objs = []
-            for (te_type, te_id) in [(table.q.te_createdID, CREATED),
-                                     (table.q.te_modifiedID, MODIFIED)]:
+            for (te_type, te_id) in [(table.q.te_createdID, TransactionEntry.CREATED),
+                                     (table.q.te_modifiedID, TransactionEntry.MODIFIED)]:
                 results = table.select(
                     AND(TransactionEntry.q.id == te_type,
                         TransactionEntry.q.station_id == station.id,
                         TransactionEntry.q.timestamp > timestamp),
                     connection=conn)
                 for so in results:
-                    if te_id == CREATED:
+                    if te_id == TransactionEntry.CREATED:
                         f = so.te_createdID
-                    else:
+                    elif te_id == TransactionEntry.MODIFED:
                         f = so.te_modifiedID
+                    else:
+                        raise AssertionError
                     te = TransactionEntry.get(f, connection=conn)
                     # FIXME: Fix it, so we can avoid cpickle crap
                     attrs = [(column.dbName, conn.sqlrepr(getattr(so, column.name)))
