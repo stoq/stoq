@@ -33,7 +33,6 @@ from kiwi.log import Logger
 
 from dateutil.parser import parse
 from sqlobject import SQLObjectNotFound
-from sqlobject.sqlbuilder import AND
 from stoqlib.database.admin import create_base_schema
 from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
@@ -156,27 +155,21 @@ class TableSerializer:
 
     def get_chunks(self, timestamp):
         data = ""
-        station_id = self._station.id
+        station = self._station
         for table in self._tables:
             if table == TransactionEntry:
                 continue
-
-            for (te_type, te_id) in [(table.q.te_createdID, TransactionEntry.CREATED),
-                                     (table.q.te_modifiedID, TransactionEntry.MODIFIED)]:
-                results = table.select(
-                    AND(TransactionEntry.q.id == te_type,
-                        TransactionEntry.q.station_id != station_id,
-                        TransactionEntry.q.timestamp > timestamp),
-                    connection=self._conn)
-
+            for te_type in [TransactionEntry.CREATED, TransactionEntry.MODIFIED]:
+                results = station.fetchTIDsForOtherStations(
+                    table, timestamp, te_type, self._conn)
                 if not results:
                     continue
 
-                if te_id == TransactionEntry.CREATED:
+                if te_type == TransactionEntry.CREATED:
                     log.info("Serializing %d insert(s) to table %s" % (
                         results.count(), table.sqlmeta.table))
                     data += self._serialize_inserts(results)
-                elif te_id == TransactionEntry.MODIFIED:
+                elif te_type == TransactionEntry.MODIFIED:
                     log.info("Serializing %d update(s) to table %s" % (
                         results.count(), table.sqlmeta.table))
                     data += self._serialize_updates(results)
@@ -264,7 +257,7 @@ class SynchronizationService(XMLRPCService):
                                 stdout=stdout)
 
         self._processes[proc.pid] = proc
-        log.info('sql_prepare: return %d' % (proc.pid, ))
+        log.info('sql_prepare: PID is %d' % (proc.pid, ))
 
         return proc.pid
 
@@ -313,17 +306,12 @@ class SynchronizationService(XMLRPCService):
             if table == TransactionEntry:
                 continue
             objs = []
-            for (te_type, te_id) in [(table.q.te_createdID, TransactionEntry.CREATED),
-                                     (table.q.te_modifiedID, TransactionEntry.MODIFIED)]:
-                results = table.select(
-                    AND(TransactionEntry.q.id == te_type,
-                        TransactionEntry.q.station_id == station.id,
-                        TransactionEntry.q.timestamp > timestamp),
-                    connection=conn)
-                for so in results:
-                    if te_id == TransactionEntry.CREATED:
+            for te_type in [TransactionEntry.CREATED, TransactionEntry.MODIFIED]:
+                for so in station.fetchTIDs(
+                    table, timestamp, te_type, conn):
+                    if te_type == TransactionEntry.CREATED:
                         f = so.te_createdID
-                    elif te_id == TransactionEntry.MODIFED:
+                    elif te_type == TransactionEntry.MODIFIED:
                         f = so.te_modifiedID
                     else:
                         raise AssertionError
