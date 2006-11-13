@@ -326,7 +326,7 @@ class POSApp(AppWindow):
             # Do not raise any exception here, since this method can be called
             # when the user activate a row with product in the sellables list.
             return
-        if IDelivery(item):
+        if IDelivery(item, None):
             editor = DeliveryEditor
         else:
             editor = ServiceItemEditor
