@@ -111,7 +111,7 @@ class ReceivingOrder(Domain):
 
     def _get_payment_group(self):
         conn = self.get_connection()
-        group = IPaymentGroup(self)
+        group = IPaymentGroup(self, None)
         if self.purchase:
             purchase_group = IPaymentGroup(self.purchase)
             default_method = purchase_group.default_method
