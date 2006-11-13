@@ -390,7 +390,7 @@ class TestClient(BaseDomainTest):
         assert people
         salesperson = people[0]
         count_sales = client.get_client_sales().count()
-        date = datetime.date(2006, 11, 11)
+        date = datetime.date(2050, 11, 11)
         new_sale = Sale(coupon_id=123, client=client, cfop=cfop,
                         till=till, salesperson=salesperson,
                         connection=self.trans,
