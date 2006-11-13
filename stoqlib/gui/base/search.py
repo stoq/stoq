@@ -685,6 +685,7 @@ class SearchDialog(BasicDialog):
     main_label_text = ''
     title = ''
     table = None
+    search_table = None
     selection_mode = gtk.SELECTION_BROWSE
     searchbar_labels = None
     searchbar_result_strings = None
