@@ -93,7 +93,7 @@ class AdminApp(SearchableAppWindow):
     def _edit_user(self):
         user = self.users.get_selected()
         model =  run_person_role_dialog(UserEditor, self, self.conn, user)
-        if finish_transaction(self.conn, model, keep_transaction=True):
+        if finish_transaction(self.conn, model):
             self.users.update(model)
 
     #
@@ -121,7 +121,7 @@ class AdminApp(SearchableAppWindow):
 
     def _add_user(self):
         model = run_person_role_dialog(UserEditor, self, self.conn)
-        if finish_transaction(self.conn, model, keep_transaction=True):
+        if finish_transaction(self.conn, model):
             self.searchbar.search_items()
             model = self.table.get(model.id, connection=self.conn)
             self.users.select(model)
