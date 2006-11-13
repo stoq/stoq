@@ -109,8 +109,9 @@ class PurchaseDetailsDialog(BaseEditor):
     def setup_proxies(self):
         self._setup_widgets()
         self.add_proxy(self.model, PurchaseDetailsDialog.proxy_widgets)
-        payment_group = IPaymentGroup(self.model)
-        self.add_proxy(payment_group, PurchaseDetailsDialog.payment_proxy)
+        payment_group = IPaymentGroup(self.model, None)
+        if payment_group:
+            self.add_proxy(payment_group, PurchaseDetailsDialog.payment_proxy)
 
 
     #
