@@ -102,7 +102,7 @@ class UserEditor(BasePersonRoleEditor):
 
     def create_model(self, conn):
         person = BasePersonRoleEditor.create_model(self, conn)
-        user = IUser(person)
+        user = IUser(person, None)
         return user or person.addFacet(IUser, connection=conn, username="",
                                        password="", profile=None)
 
