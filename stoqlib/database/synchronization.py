@@ -133,48 +133,49 @@ class TableSerializer:
         log.info(cmd)
         return cmd
 
-    def _serialize_inserts(self, results):
+    def _serialize_inserts(self, table, timestamp):
+        results = self._station.fetchTIDsForOtherStations(
+            table, timestamp, TransactionEntry.CREATED, self._conn)
+
         data = ""
-        for so in results:
-            tec = TransactionEntry.get(so.te_createdID, connection=self._conn)
-            data += self._serialize_insert(tec)
-            tem = TransactionEntry.get(so.te_modifiedID, connection=self._conn)
-            data += self._serialize_insert(tem)
-            data += self._serialize_insert(so)
+        if results:
+            log.info("Serializing %d insert(s) to table %s" % (
+                results.count(), table.sqlmeta.table))
+
+            for so in results:
+                tec = TransactionEntry.get(so.te_createdID,
+                                           connection=self._conn)
+                data += self._serialize_insert(tec)
+                tem = TransactionEntry.get(so.te_modifiedID,
+                                           connection=self._conn)
+                data += self._serialize_insert(tem)
+                data += self._serialize_insert(so)
 
         return data
 
-    def _serialize_updates(self, results):
+    def _serialize_updates(self, table, timestamp):
+        results = self._station.fetchTIDsForOtherStations(
+            table, timestamp, TransactionEntry.MODIFIED, self._conn)
+
         data = ""
-        for so in results:
-            te = TransactionEntry.get(so.te_modifiedID, connection=self._conn)
-            data += self._serialize_update(te)
-            data += self._serialize_update(so)
+        if results:
+            log.info("Serializing %d update(s) to table %s" % (
+                results.count(), table.sqlmeta.table))
+
+            for so in results:
+                te = TransactionEntry.get(so.te_modifiedID,
+                                          connection=self._conn)
+                data += self._serialize_update(te)
+                data += self._serialize_update(so)
 
         return data
 
     def get_chunks(self, timestamp):
         data = ""
-        station = self._station
-        for table in self._tables:
-            if table == TransactionEntry:
-                continue
-            for te_type in [TransactionEntry.CREATED, TransactionEntry.MODIFIED]:
-                results = station.fetchTIDsForOtherStations(
-                    table, timestamp, te_type, self._conn)
-                if not results:
-                    continue
 
-                if te_type == TransactionEntry.CREATED:
-                    log.info("Serializing %d insert(s) to table %s" % (
-                        results.count(), table.sqlmeta.table))
-                    data += self._serialize_inserts(results)
-                elif te_type == TransactionEntry.MODIFIED:
-                    log.info("Serializing %d update(s) to table %s" % (
-                        results.count(), table.sqlmeta.table))
-                    data += self._serialize_updates(results)
-                else:
-                    raise AssertionError
+        for table in self._tables:
+            data += self._serialize_inserts(table, timestamp)
+            data += self._serialize_updates(table, timestamp)
 
             if len(data) >= CHUNKSIZE:
                 yield data[:CHUNKSIZE]

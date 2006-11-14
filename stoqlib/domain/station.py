@@ -131,7 +131,7 @@ class BranchStation(Domain):
         """
 
         if table == TransactionEntry:
-            return []
+            return
 
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
@@ -149,7 +149,7 @@ class BranchStation(Domain):
         @param trans: a transaction
         """
         if table == TransactionEntry:
-            return []
+            return
 
         return table.select(
             AND(self._fetchTIDs(table, timestamp, te_type),
