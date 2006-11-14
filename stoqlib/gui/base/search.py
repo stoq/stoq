@@ -702,10 +702,16 @@ class SearchDialog(BasicDialog):
             raise ValueError(
                 "%r must define a table or search_table attribute" % self)
         self.search_table = search_table or table
+
+        # For consistency do not allow none or single, in other words,
+        # only allowed values are browse and multiple so we always will
+        # be able to use both the keyboard and the mouse to select items
+        # in the search list.
+        selection_mode = selection_mode or self.selection_mode
         if (selection_mode != gtk.SELECTION_BROWSE and
             selection_mode != gtk.SELECTION_MULTIPLE):
-            raise ValueError('Invalid selection mode %d' % self.selection_mode)
-        self.selection_mode = selection_mode or self.selection_mode
+            raise ValueError('Invalid selection mode %r' % selection_mode)
+        self.selection_mode = selection_mode
 
         BasicDialog.__init__(self)
         title = title or self.title
