@@ -55,7 +55,7 @@ class ProductRetentionDialog(BaseEditor):
             raise TypeError("Product must provide a IStorable facet")
         if ISellable(product, None) is None:
             raise TypeError("Product must provide a ISellable facet")
-
+        self.branch = get_current_branch(conn)
         self.product = product
         model = self._get_model(conn, product)
         BaseEditor.__init__(self, conn, model)
@@ -69,7 +69,6 @@ class ProductRetentionDialog(BaseEditor):
                         quantity=Decimal())
 
     def setup_widgets(self):
-        self.branch = get_current_branch(self.conn)
         self.quantity.set_range(1,
                                 self.storable.get_full_balance(self.branch))
 
