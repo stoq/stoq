@@ -478,6 +478,35 @@ class SynchronizationClient(object):
         self.proxy.bump_sequences(table_names, str(branch_offset),
                                   str(branch_offset + BRANCH_ID_OFFSET))
 
+
+    def _has_update_conflict(self, trans, obj, station, last_sync, attrs):
+        # At this point we need to check if the target has
+        # modified an object which has been modified locally
+        # as well, in that case we're just going to ignore it
+        # and write an entry in a conflict log
+
+        if (obj.te_modified.station == station and
+            obj.te_modified.timestamp <= last_sync):
+            # FIXME: Write a conflict log entry
+            return False
+
+        current = [(column.dbName,
+                    trans.sqlrepr(getattr(obj, column.name)))
+                   for column in obj.sqlmeta.columnList]
+
+        # xmlrpc converts the list of tuples to a list of lists,
+        # convert it back so set won't barf at us.
+        attrs = [tuple(pair) for pair in attrs]
+        modified = sets.Set(current).difference(sets.Set(attrs))
+
+        log.info("Change Conflict on %d in %s %s" % (
+            obj.id, obj.sqlmeta.table,
+            ', '.join(['%s=%s' % part for part in modified])))
+
+        # FIXME: Delete the transaction entry on the client side
+        return True
+
+
     #
     # Public API
     #
@@ -528,25 +557,8 @@ class SynchronizationClient(object):
                     self._insert_one(trans, TransactionEntry, tem_id, entry_attrs)
                     self._insert_one(trans, table, obj_id, attrs)
                 else:
-
-                    # At this point we need to check if the target has
-                    # modified an object which has been modified locally
-                    # as well, in that case we're just going to ignore it
-                    # and write an entry in a conflict log
-                    if (obj.te_modified.station != station and
-                        obj.te_modified.timestamp > last_sync):
-                        current = [(column.dbName,
-                                    trans.sqlrepr(getattr(obj, column.name)))
-                                   for column in obj.sqlmeta.columnList]
-                        # xmlrpc converts the list of tuples to a list of lists,
-                        # convert it back so set won't barf at us.
-                        attrs = [tuple(pair) for pair in attrs]
-                        modified = sets.Set(current).difference(sets.Set(attrs))
-
-                        log.info("Change Conflict on %d in %s %s" % (
-                            obj_id, table_name,
-                            ', '.join(['%s=%s' % part for part in modified])))
-                        # FIXME: Delete the transaction entry on the client side
+                    if self._has_update_conflict(trans, obj, station,
+                                                 last_sync, attrs):
                         continue
 
                     self._update_one(trans, TransactionEntry, tem_id, entry_attrs)
