@@ -22,7 +22,6 @@
 ## Author(s):   Johan Dahlin      <jdahlin@async.com.br>
 ##
 
-import cPickle
 import datetime
 import sets
 import socket
@@ -317,17 +316,29 @@ class SynchronizationService(XMLRPCService):
                     else:
                         raise AssertionError
                     te = TransactionEntry.get(f, connection=conn)
-                    # FIXME: Fix it, so we can avoid cpickle crap
-                    attrs = [(column.dbName, conn.sqlrepr(getattr(so, column.name)))
+
+                    # XML-RPC does not handle:
+                    #   - numbers using more than 32 bits
+                    #   - datetime objects
+                    # Convert these objects to string and convert them
+                    # back on the other side
+                    #
+                    attrs = [(column.dbName,
+                              conn.sqlrepr(getattr(so, column.name)))
                              for column in so.sqlmeta.columnList]
-                    objs.append((so.id, attrs, so.te_createdID, so.te_modifiedID,
-                                 (te.timestamp, te.user_id, te.station_id)))
+                    objs.append((conn.sqlrepr(so.id),
+                                 attrs,
+                                 conn.sqlrepr(so.te_createdID),
+                                 conn.sqlrepr(so.te_modifiedID),
+                                 conn.sqlrepr(te.timestamp),
+                                 conn.sqlrepr(te.user_id),
+                                 conn.sqlrepr(te.station_id)))
             if objs:
                 data.append((table.__name__, objs))
 
         log.info("changes: returning %d objects" % (
             sum([len(objs) for objs in data])))
-        return cPickle.dumps(data)
+        return data
 
     def quit(self):
         self.stop()
@@ -496,19 +507,21 @@ class SynchronizationClient(object):
         # We'll get them back in special format because we're not committing
         # all of them with certainty
         changes = self.proxy.changes(policy.name, str(last_sync))
-        changes = cPickle.loads(changes)
         for table_name, objs in changes:
             table = get_table_type_by_name(table_name)
-            for obj_id, attrs, tem_id, tec_id, te in objs:
+            for (obj_ids, attrs, tem_ids, tec_ids,
+                 timestamp_, user_id, station_id) in objs:
+                obj_id = long(obj_ids)
+                tec_id = long(tec_ids)
+                tem_id = long(tem_ids)
                 try:
                     obj = table.get(obj_id, connection=trans)
                 except SQLObjectNotFound:
                     obj = None
 
-                timestamp_, user_id, station_id = te
-                entry_attrs = [('timestamp', trans.sqlrepr(timestamp_)),
-                               ('user_id', trans.sqlrepr(user_id)),
-                               ('station_id', trans.sqlrepr(station_id))]
+                entry_attrs = [('timestamp', timestamp_),
+                               ('user_id', user_id),
+                               ('station_id', station_id)]
 
                 if obj is None:
                     self._insert_one(trans, TransactionEntry, tec_id, entry_attrs)
@@ -525,6 +538,9 @@ class SynchronizationClient(object):
                         current = [(column.dbName,
                                     trans.sqlrepr(getattr(obj, column.name)))
                                    for column in obj.sqlmeta.columnList]
+                        # xmlrpc converts the list of tuples to a list of lists,
+                        # convert it back so set won't barf at us.
+                        attrs = [tuple(pair) for pair in attrs]
                         modified = sets.Set(current).difference(sets.Set(attrs))
 
                         log.info("Change Conflict on %d in %s %s" % (
