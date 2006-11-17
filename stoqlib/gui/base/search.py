@@ -38,7 +38,6 @@ from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import SOUnicodeCol, SOIntCol, SODateTimeCol, SODateCol
 
-from stoqlib.common import is_integer, is_float
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
@@ -344,17 +343,15 @@ class SearchBar(GladeSlaveDelegate):
             q = LIKE(func.UPPER(table_field), search_str)
             query.append(q)
 
-    @argcheck(str, list)
+    @argcheck(float, list)
     def _set_query_float(self, search_str, query):
-        search_str = float(search_str)
         for field_name, table_type in self.decimal_fields:
             table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
 
-    @argcheck(str, list)
+    @argcheck(int, list)
     def _set_query_int(self, search_str, query):
-        search_str = int(search_str)
         for field_name, table_type in self.int_fields:
             table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
@@ -393,10 +390,20 @@ class SearchBar(GladeSlaveDelegate):
         """
         query = []
         if search_str:
-            if is_integer(search_str):
-                self._set_query_int(search_str, query)
-            elif is_float(search_str):
-                self._set_query_float(search_str, query)
+            # Do the try/except separated from the set_query_* calls to avoid
+            # catch too ValueError:s inside the function calls
+            try:
+                value = int(search_str)
+            except ValueError:
+                try:
+                    value = float(search_str)
+                except ValueError:
+                    value = search_str
+
+            if isinstance(value, int):
+                self._set_query_int(value, query)
+            elif isinstance(value, float):
+                self._set_query_float(value, query)
             else:
                 # Instead of checking for another type, perform later a
                 # query for string fields and for any search string.
