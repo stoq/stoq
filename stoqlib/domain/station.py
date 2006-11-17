@@ -25,12 +25,10 @@
 """ Station, a branch station per computer """
 
 from sqlobject import UnicodeCol, ForeignKey, BoolCol
-from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive, IBranch
-from stoqlib.domain.transaction import TransactionEntry
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -116,56 +114,3 @@ class BranchStation(Domain):
         Returns the branch name
         """
         return self.branch.get_description()
-
-    # FIXME: Move TID handling to branch as part of #2911
-
-    def fetchTIDs(self, table, timestamp, te_type, trans):
-        """
-        Fetches the transaction entries (TIDs) for a specific table which
-        were created using this station.
-
-        @param table: table to get objects in
-        @param timestamp: since when?
-        @param te_type: CREATED or MODIFIED
-        @param trans: a transaction
-        """
-
-        if table == TransactionEntry:
-            return
-
-        return table.select(
-            AND(self._fetchTIDs(table, timestamp, te_type),
-                TransactionEntry.q.station_id == self.id),
-            connection=trans)
-
-    def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
-        """
-        Fetches the transaction entries (TIDs) for a specific table which
-        were created using any station except the specified one.
-
-        @param table: table to get objects in
-        @param timestamp: since when?
-        @param te_type: CREATED or MODIFIED
-        @param trans: a transaction
-        """
-        if table == TransactionEntry:
-            return
-
-        return table.select(
-            AND(self._fetchTIDs(table, timestamp, te_type),
-                TransactionEntry.q.station_id != self.id),
-            connection=trans)
-
-    # Private
-
-    def _fetchTIDs(self, table, timestamp, te_type):
-        if te_type == TransactionEntry.CREATED:
-            te_id = table.q.te_createdID,
-        elif te_type == TransactionEntry.MODIFIED:
-            te_id = table.q.te_modifiedID
-        else:
-            raise TypeError("te_type must be CREATED or MODIFIED")
-
-        return AND(TransactionEntry.q.id == te_id,
-                   TransactionEntry.q.timestamp > timestamp)
-

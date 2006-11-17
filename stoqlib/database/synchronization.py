@@ -37,7 +37,7 @@ from stoqlib.database.interfaces import (ICurrentBranchStation, ICurrentBranch,
                                          IDatabaseSettings)
 from stoqlib.database.policy import get_policy_by_name
 from stoqlib.database.runtime import (get_connection, new_transaction,
-                                      get_current_station)
+                                      get_current_branch)
 
 from stoqlib.database.tables import get_table_type_by_name
 from stoqlib.domain.base import AdaptableSQLObject
@@ -104,7 +104,7 @@ class TableSerializer:
     def __init__(self, conn, tables, station):
         self._conn = conn
         self._tables = tables
-        self._station = station
+        self._branch = station.branch
 
     def _serialize_update(self, obj):
         values = []
@@ -133,7 +133,7 @@ class TableSerializer:
         return cmd
 
     def _serialize_inserts(self, table, timestamp):
-        results = self._station.fetchTIDsForOtherStations(
+        results = self._branch.fetchTIDsForOtherStations(
             table, timestamp, TransactionEntry.CREATED, self._conn)
 
         data = ""
@@ -153,7 +153,7 @@ class TableSerializer:
         return data
 
     def _serialize_updates(self, table, timestamp):
-        results = self._station.fetchTIDsForOtherStations(
+        results = self._branch.fetchTIDsForOtherStations(
             table, timestamp, TransactionEntry.MODIFIED, self._conn)
 
         data = ""
@@ -297,7 +297,7 @@ class SynchronizationService(XMLRPCService):
         policy = get_policy_by_name(policy_name)
         timestamp = parse(timestr)
         conn = get_connection()
-        station = get_current_station(conn)
+        branch = get_current_branch(conn)
         tables = get_tables(policy, (SyncPolicy.FROM_SOURCE,
                                      SyncPolicy.INITIAL))
         log.info("Fetching all changes since %s" % (timestamp,))
@@ -307,7 +307,7 @@ class SynchronizationService(XMLRPCService):
                 continue
             objs = []
             for te_type in [TransactionEntry.CREATED, TransactionEntry.MODIFIED]:
-                for so in station.fetchTIDs(
+                for so in branch.fetchTIDs(
                     table, timestamp, te_type, conn):
                     if te_type == TransactionEntry.CREATED:
                         f = so.te_createdID
