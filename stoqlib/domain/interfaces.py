@@ -349,6 +349,28 @@ class IBranch(IPersonFacet):
     def get_active_stations():
         """FIXME"""
 
+    def fetchTIDs(self, table, timestamp, te_type, trans):
+        """
+        Fetches the transaction entries (TIDs) for a specific table which
+        were created using this station.
+
+        @param table: table to get objects in
+        @param timestamp: since when?
+        @param te_type: CREATED or MODIFIED
+        @param trans: a transaction
+        """
+
+    def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
+        """
+        Fetches the transaction entries (TIDs) for a specific table which
+        were created using any station except the specified one.
+
+        @param table: table to get objects in
+        @param timestamp: since when?
+        @param te_type: CREATED or MODIFIED
+        @param trans: a transaction
+        """
+
 class ISalesPerson(IPersonFacet):
     """An employee in charge of make sales"""
 

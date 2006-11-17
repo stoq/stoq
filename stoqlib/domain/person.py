@@ -46,6 +46,7 @@ from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        ICreditProvider, ITransporter,
                                        IDescribable, IPersonFacet)
 from stoqlib.domain.station import BranchStation
+from stoqlib.domain.transaction import TransactionEntry
 
 _ = stoqlib_gettext
 
@@ -609,9 +610,44 @@ class PersonAdaptToBranch(_PersonAdapter):
                 BranchStation.q.branchID == self.id),
             connection=self.get_connection())
 
+    def fetchTIDs(self, table, timestamp, te_type, trans):
+        if table == TransactionEntry:
+            return
+
+        return table.select(
+            AND(self._fetchTIDs(table, timestamp, te_type),
+                BranchStation.q.branchID == self.id),
+            connection=trans)
+
+    def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
+        if table == TransactionEntry:
+            return
+
+        return table.select(
+            AND(self._fetchTIDs(table, timestamp, te_type),
+                BranchStation.q.branchID != self.id),
+            connection=trans)
+
+    # Private
+
+    def _fetchTIDs(self, table, timestamp, te_type):
+        if te_type == TransactionEntry.CREATED:
+            te_id = table.q.te_createdID,
+        elif te_type == TransactionEntry.MODIFIED:
+            te_id = table.q.te_modifiedID
+        else:
+            raise TypeError("te_type must be CREATED or MODIFIED")
+
+        return AND(TransactionEntry.q.id == te_id,
+                   TransactionEntry.q.station_id == BranchStation.q.id,
+                   TransactionEntry.q.timestamp > timestamp)
+
+    # Classmethods
+
     @classmethod
     def get_active_branches(cls, conn):
         return cls.select(cls.q.is_active == True, connection=conn)
+
 
 Person.registerFacet(PersonAdaptToBranch, IBranch)
 
