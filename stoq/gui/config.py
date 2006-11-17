@@ -245,8 +245,8 @@ class ExistingAdminPasswordStep(AdminPasswordStep):
         # We can't use PersonAdaptToUser.select here because it requires
         # us to have an IDatabaseSettings utility provided.
         results = conn.queryOne(
-            "SELECT password FROM person_adapt_to_user WHERE username='%s'" % (
-            USER_ADMIN_DEFAULT_NAME,))
+            "SELECT password FROM person_adapt_to_user WHERE username=%s" % (
+            conn.sqlrepr(USER_ADMIN_DEFAULT_NAME),))
         if not results:
             return True
         if len(results) > 1:
