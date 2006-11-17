@@ -349,7 +349,7 @@ class IBranch(IPersonFacet):
     def get_active_stations():
         """FIXME"""
 
-    def fetchTIDs(self, table, timestamp, te_type, trans):
+    def fetchTIDs(table, timestamp, te_type, trans):
         """
         Fetches the transaction entries (TIDs) for a specific table which
         were created using this station.
@@ -360,7 +360,7 @@ class IBranch(IPersonFacet):
         @param trans: a transaction
         """
 
-    def fetchTIDsForOtherStations(self, table, timestamp, te_type, trans):
+    def fetchTIDsForOtherStations(table, timestamp, te_type, trans):
         """
         Fetches the transaction entries (TIDs) for a specific table which
         were created using any station except the specified one.
