@@ -26,12 +26,14 @@
 """ A debug session for domain objects.  """
 
 import code
+import datetime
 import sys
 
 from kiwi.component import provide_utility
 from stoqlib.database.admin import get_admin_user
 from stoqlib.database.interfaces import ICurrentUser
-from stoqlib.database.runtime import get_connection, new_transaction
+from stoqlib.database.runtime import (get_connection, new_transaction,
+                                      get_current_branch, get_current_station)
 from stoqlib.database.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
 
@@ -73,6 +75,10 @@ def main(args):
     ns['conn'] = conn
     ns['trans'] = trans = new_transaction()
     ns['sysparam'] = sysparam
+    ns['branch'] = get_current_branch(conn)
+    ns['station'] = get_current_station(conn)
+    ns['now'] = datetime.datetime.now
+    ns['today'] = datetime.date.today
 
     for name in ('sqlobject', 'sqlobject.sqlbuilder',
                  'stoqlib.database.runtime',
