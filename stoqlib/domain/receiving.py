@@ -112,8 +112,12 @@ class ReceivingOrder(Domain):
     def _get_payment_group(self):
         conn = self.get_connection()
         group = IPaymentGroup(self, None)
-        if self.purchase:
-            purchase_group = IPaymentGroup(self.purchase, None)
+        if group:
+            raise ValueError("You should not have a IPaymentGroup facet "
+                             "defined at this point")
+
+        purchase_group = IPaymentGroup(self.purchase, None)
+        if self.purchase and purchase_group:
             default_method = purchase_group.default_method
             installments_number = purchase_group.installments_number
             interval_type = purchase_group.interval_type
