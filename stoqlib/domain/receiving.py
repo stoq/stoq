@@ -113,7 +113,7 @@ class ReceivingOrder(Domain):
         conn = self.get_connection()
         group = IPaymentGroup(self, None)
         if self.purchase:
-            purchase_group = IPaymentGroup(self.purchase)
+            purchase_group = IPaymentGroup(self.purchase, None)
             default_method = purchase_group.default_method
             installments_number = purchase_group.installments_number
             interval_type = purchase_group.interval_type
