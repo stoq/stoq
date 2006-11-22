@@ -372,8 +372,13 @@ class FS345(SerialBase):
                                  custom_pm)
 
     def coupon_cancel(self):
-        self._check_status()
-        self._verify_coupon_open()
+        # If we need reduce Z don't verify that the coupon is open, instead
+        # just cancel the coupon. This avoids a race when you forgot
+        # to close a coupon and reduce Z at the same time.
+        if not self.needs_reduce_z(): 
+            self._check_status()
+            self._verify_coupon_open()
+
         self.send_command(CMD_CANCEL_COUPON)
 
     def coupon_totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
