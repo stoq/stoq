@@ -86,8 +86,8 @@ class NewOrderEditor(BaseEditor):
     def _update_client_role_box(self):
         if self.model.client:
             person = self.model.client.person
-            if (ICompany(person)
-                and IIndividual(person)):
+            if (ICompany(person, None)
+                and IIndividual(person, None)):
                 self.clientrole_box.show()
                 return
         self.clientrole_box.hide()
@@ -97,8 +97,8 @@ class NewOrderEditor(BaseEditor):
             self.model.client_role = None
             return
         person = self.model.client.person
-        if (ICompany(person)
-            and not IIndividual(person)):
+        if (ICompany(person, None)
+            and not IIndividual(person, None)):
             self.model.client_role = Sale.CLIENT_COMPANY
         else:
             self.model.client_role = Sale.CLIENT_INDIVIDUAL
