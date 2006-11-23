@@ -375,7 +375,7 @@ class FS345(SerialBase):
         # If we need reduce Z don't verify that the coupon is open, instead
         # just cancel the coupon. This avoids a race when you forgot
         # to close a coupon and reduce Z at the same time.
-        if not self.needs_reduce_z(): 
+        if not self.needs_reduce_z():
             self._check_status()
             self._verify_coupon_open()
 
