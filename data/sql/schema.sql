@@ -502,7 +502,7 @@ CREATE TABLE asellable_item (
     --    service_sellable_item
     --    gift_certificate_item
     id bigserial NOT NULL PRIMARY KEY,
-    quantity numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     base_price numeric(10,2),
     price numeric(10,2),
     sale_id bigint REFERENCES sale(id),
