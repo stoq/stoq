@@ -24,8 +24,9 @@
 ##
 """ Basic dialogs definition """
 
-import shutil
+import inspect
 import os
+import shutil
 
 import gtk
 from gtk import keysyms
@@ -422,11 +423,22 @@ def get_dialog(parent, dialog, *args, **kwargs):
     return dialog
 
 def run_dialog(dialog, parent, *args, **kwargs):
-    """Run a gtk DialogBox. If  dialog is a class, the dialog will be
-    instantiated before runing the dialog.
+    """
+    Runs a dialog and return the return value of it.
+    If dialog is a class it will be instantiated before running the dialog.
+
+    @dialog: the dialog, could be a class or instance
+    @parent: parent of the dialog
+    @args: custom positional argument
+    @kwargs: custom keyword arguments
     """
     parent = parent or get_current_toplevel()
     orig_dialog = dialog
+    if inspect.isclass(dialog):
+        dialog_name = dialog.__name__
+    else:
+        dialog_name = dialog.__class__.__name__
+
     dialog = get_dialog(parent, dialog, *args, **kwargs)
     if hasattr(dialog, 'main_dialog'):
         dialog = dialog.main_dialog
@@ -434,7 +446,6 @@ def run_dialog(dialog, parent, *args, **kwargs):
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
 
-    dialog_name = orig_dialog.__name__
 
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
