@@ -289,7 +289,7 @@ class Sale(Domain):
                     salesperson=self.salesperson, connection=conn)
 
     def check_payment_group(self):
-        return IPaymentGroup(self)
+        return IPaymentGroup(self, None)
 
     def update_client(self, person):
         # Do not change the name of this method to set_client: this is a
@@ -326,10 +326,15 @@ class Sale(Domain):
         """Checks if the payment group has all the payments paid and close
         the group and the sale order
         """
-        group = self.check_payment_group()
+        group = IPaymentGroup(self, None)
+        if group is None:
+            return False
+
         if not group.check_close():
-            return
+            return False
+
         self.close_date = datetime.now()
+        return True
 
     def create_sale_return_adapter(self):
         conn = self.get_connection()
