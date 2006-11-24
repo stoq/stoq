@@ -44,10 +44,17 @@ from stoqlib.gui.slaves.filterslave import FilterSlave
 _ = gettext.gettext
 
 
+def _foreach_child(widget, cb, lvl=0):
+    cb(widget, lvl)
+    if isinstance(widget, gtk.Container):
+        for child in widget.get_children():
+            _foreach_child(child, cb, lvl+1)
+
 class App(BaseApp):
 
     def __init__(self, window_class, appconfig):
         self.config = appconfig
+        self.options = appconfig.options
         self.window_class = window_class
         BaseApp.__init__(self, window_class)
 
@@ -90,6 +97,8 @@ class AppWindow(BaseAppWindow):
         self._klist = getattr(self, self.klist_name)
         self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)
+        if app.options.debug:
+            self._create_debug_menu()
         self._create_user_menu()
         self.setup_focus()
 
@@ -181,6 +190,25 @@ class AppWindow(BaseAppWindow):
         self.menu_hbox.pack_start(menubar, expand=False)
         menubar.show_all()
 
+    def _create_debug_menu(self):
+        ui_string = """<ui>
+          <menubar name="menubar">
+            <menu action="DebugMenu">
+              <menuitem action="Introspect"/>
+            </menu>
+          </menubar>
+        </ui>"""
+        actions = [
+            ('DebugMenu', None, _('Debug')),
+            ('Introspect', None, _('Introspect slaves'),
+             None, None, self.on_Introspect_activate),
+            ]
+
+        ag = gtk.ActionGroup('DebugMenuActions')
+        ag.add_actions(actions)
+        self.uimanager.insert_action_group(ag, 0)
+        self.uimanager.add_ui_from_string(ui_string)
+
     def print_report(self, report_class, *args, **kwargs):
         print_report(report_class, *args, **kwargs)
 
@@ -216,6 +244,19 @@ class AppWindow(BaseAppWindow):
         # Implement a change user dialog here
         raise NotImplementedError
 
+    def on_Introspect_activate(self, action):
+        def _printone(slave, lvl=0):
+            filename = slave.gladefile + '.glade'
+            print ' ' * lvl, slave.__class__.__name__, filename
+
+        def _parse(widget, lvl):
+            if isinstance(widget, gtk.EventBox):
+                slave = widget.get_data('kiwi::slave')
+                _printone(slave, lvl)
+
+        window = self.get_toplevel()
+
+        _foreach_child(window, _parse)
 
 class SearchableAppWindow(AppWindow):
     """ Base class for searchable applications.

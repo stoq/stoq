@@ -101,8 +101,9 @@ class SelectApplicationsSlave(GladeSlaveDelegate):
 
 class LoginHelper:
 
-    def __init__(self, appname):
+    def __init__(self, appname, options):
         self.appname = appname
+        self.options = options
 
         if not self.validate_user():
             raise LoginError('Could not authenticate in the system')
