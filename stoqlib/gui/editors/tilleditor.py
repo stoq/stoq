@@ -139,6 +139,8 @@ class BaseCashSlave(BaseEditorSlave):
 
     def create_model(self, conn):
         till = Till.get_current(conn)
+        assert till, "till must be open"
+
         if self.payment_iface == IInPayment:
             return till.create_credit(currency(0), self.payment_description)
         elif self.payment_iface == IOutPayment:
@@ -205,6 +207,7 @@ class CashAdvanceEditor(BaseEditor):
         payment_description = (_(u'Cash advance paid to employee: %s')
                                  % employee_name)
         self.cash_slave.model.description = payment_description
+
         value = self.cash_slave.model.value
         value *= -1
         self.cash_slave.model.value = value
@@ -278,4 +281,5 @@ class CashOutEditor(BaseEditor):
             payment_description = _(u'Cash out')
         self.model.description = payment_description
         self.model.value = -self.model.value
+
         return self.cash_slave.on_confirm()
