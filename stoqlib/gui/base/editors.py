@@ -99,12 +99,13 @@ class BaseEditorSlave(GladeSlaveDelegate):
             widget.set_sensitive(False)
         self.update_visual_mode()
 
-    def create_model(self, conn):
+    def create_model(self, trans):
         """
-        It is expected to return a new model, which will be used if a model
-        wasn't sent to the object at instantiation time.
+        Creates a new model for the editor.
+        After this method is called, the model can be accessed as self.model.
         The default behavior is to raise a TypeError, which can
         be overridden in a subclass.
+        @param trans: a database transaction
         """
         raise TypeError("%r needs a model, got None. Perhaps you want to "
                         "implement create_model?" % self)
