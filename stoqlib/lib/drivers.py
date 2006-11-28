@@ -423,17 +423,20 @@ class FiscalCoupon:
         if not self._item_ids:
             return True
         discount = self.sale.discount_percentage
-        surcharge = self.sale.surcharge_percentage
-        if discount > surcharge:
-            discount = discount - surcharge
-            surcharge = 0
-        elif surcharge > discount:
-            surcharge = surcharge - discount
-            discount = 0
-        else:
-            # If these values are greater than zero we will get problems in
-            # stoqdrivers
-            surcharge = discount = 0
+        surcharge = 0
+
+        # Surcharge is currently disabled, see #2811
+        #if discount > surcharge:
+        #    discount = discount - surcharge
+        #    surcharge = 0
+        #elif surcharge > discount:
+        #    surcharge = surcharge - discount
+        #    discount = 0
+        #else:
+        #    # If these values are greater than zero we will get problems in
+        #    # stoqdrivers
+        #    surcharge = discount = 0
+
         try:
             self.printer.totalize(discount, surcharge, TAX_NONE)
         except DriverError, details:
