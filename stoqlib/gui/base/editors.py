@@ -21,6 +21,7 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##                  Henrique Romano             <henrique@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Base classes for editors """
 
@@ -212,57 +213,3 @@ class BaseEditor(BaseEditorSlave):
         """ Refreshes ok button sensitivity according to widget validators
         status """
         self.main_dialog.ok_button.set_sensitive(validation_value)
-
-class SimpleEntryEditor(BaseEditor):
-    """Editor that offers a generic entry to input a string value."""
-    gladefile = "SimpleEntryEditor"
-
-    def __init__(self, conn, model, attr_name, name_entry_label='Name:',
-                 title='', visual_mode=False):
-        self.title = title
-        self.attr_name = attr_name
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self.name_entry_label.set_text(name_entry_label)
-
-    def on_name_entry__activate(self, entry):
-        self.main_dialog.confirm()
-
-    def setup_proxies(self):
-        assert self.model
-        self.name_entry.set_property('model-attribute', self.attr_name)
-        self.add_proxy(model=self.model, widgets=['name_entry'])
-
-class NoteEditor(BaseEditor):
-    """ Simple editor that offers a label and a textview. """
-    gladefile = "NoteSlave"
-    proxy_widgets = ('notes',)
-    size = (500, 200)
-
-    def __init__(self, conn, model, attr_name, title='', label_text=None,
-                 visual_mode=False):
-        assert model, ("You must supply a valid model to this editor "
-                       "(%r)" % self)
-        self.model_type = type(model)
-        self.title = title
-        self.label_text = label_text
-        self.attr_name = attr_name
-
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        if self.label_text:
-            self.notes_label.set_text(self.label_text)
-        self.notes.set_accepts_tab(False)
-
-    #
-    # BaseEditor hooks
-    #
-
-    def setup_proxies(self):
-        self.notes.set_property('model-attribute', self.attr_name)
-        self.add_proxy(self.model, NoteEditor.proxy_widgets)
-
-
-    def get_title(self, *args):
-        return self.title

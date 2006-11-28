@@ -25,14 +25,15 @@
 """ Purchase receiving slaves implementation"""
 
 
-from stoqlib.gui.base.editors import BaseEditorSlave, NoteEditor
-from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.fiscal import CfopData
 from stoqlib.domain.receiving import ReceivingOrder
 from stoqlib.domain.person import (PersonAdaptToSupplier,
                                    PersonAdaptToTransporter)
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 
 _ = stoqlib_gettext
 
