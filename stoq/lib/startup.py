@@ -91,6 +91,12 @@ def setup(config, options=None, register_station=True, check_schema=True):
                     "update the schema  to the latest available version."))
 
     if options and options.debug:
+        from stoqlib.gui.keyboardhandler import install_global_keyhandler
+        from stoqlib.gui.introspection import introspect_slaves
+        from gtk import keysyms
+
+        install_global_keyhandler(keysyms.F12, introspect_slaves)
+
         conn.debug = True
     sqlhub.threadConnection = conn
 
