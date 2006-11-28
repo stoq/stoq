@@ -516,8 +516,3 @@ class PaymentAdaptToOutPayment(ModelAdapter):
 
 Payment.registerFacet(PaymentAdaptToOutPayment, IOutPayment)
 
-class CashAdvanceInfo(Domain):
-    employee = ForeignKey("PersonAdaptToEmployee")
-    payment = ForeignKey("Payment")
-    open_date = DateTimeCol(default=datetime.now)
-

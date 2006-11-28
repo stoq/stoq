@@ -21,6 +21,7 @@
 ##
 ## Author(s):        Henrique Romano            <henrique@async.com.br>
 ##                   Evandro Vale Miquelito     <evandro@async.com.br>
+##                   Johan Dahlin               <jdahlin@async.com.br>
 ##
 """ Editors implementation for open/close operation on till operation"""
 
@@ -30,15 +31,19 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_station
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import IEmployee
+from stoqlib.domain.till import Till, TillEntry
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
-from stoqlib.domain.till import Till, TillEntry
-from stoqlib.domain.payment.base import CashAdvanceInfo
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IInPayment, IEmployee, IOutPayment
 
 _ = stoqlib_gettext
 
+
+class CashAdvanceInfo(Settable):
+    employee = None
+    payment = None
+    open_date = None
 
 class TillOpeningEditor(BaseEditor):
     title = _(u'Till Opening')
@@ -46,7 +51,7 @@ class TillOpeningEditor(BaseEditor):
     gladefile = 'TillOpening'
 
     #
-    # BaseEditor hooks
+    # BaseEditorSlave
     #
 
     def create_model(self, conn):
@@ -86,7 +91,7 @@ class TillClosingEditor(BaseEditor):
                      'balance')
 
     #
-    # BaseEditor hooks
+    # BaseEditorSlave
     #
 
     def on_confirm(self):
@@ -120,43 +125,24 @@ class TillClosingEditor(BaseEditor):
 
 
 class BaseCashSlave(BaseEditorSlave):
+    """
+    A slave representing two fields, which is used by Cash editors:
+
+    Date:        YYYY-MM-DD
+    Cash Amount: [        ]
+    """
+
     model_type = TillEntry
     gladefile = 'BaseCashSlave'
     proxy_widgets = ('cash_amount',)
 
-    def __init__(self, conn, payment_description,
-                 payment_iface=IInPayment):
-        self.payment_description = payment_description
-        self.payment_iface = payment_iface
-        BaseEditorSlave.__init__(self, conn)
-
-    def _setup_widgets(self):
-        self.date.set_text(datetime.now().strftime('%x'))
-
     #
-    # BaseEditorSlave Hooks
+    # BaseEditorSlave
     #
-
-    def create_model(self, conn):
-        till = Till.get_current(conn)
-        assert till, "till must be open"
-
-        if self.payment_iface == IInPayment:
-            return till.create_credit(currency(0), self.payment_description)
-        elif self.payment_iface == IOutPayment:
-            return till.create_debit(currency(0), self.payment_description)
-        else:
-            raise ValueError('Invalid interface, got %s'
-                             % self.payment_iface)
 
     def setup_proxies(self):
-        self.proxy = self.add_proxy(self.model,
-                                    BaseCashSlave.proxy_widgets)
-        self._setup_widgets()
-
-    #
-    # Kiwi handlers
-    #
+        self.proxy = self.add_proxy(self.model, BaseCashSlave.proxy_widgets)
+        self.date.set_text(datetime.now().strftime('%x'))
 
     def validate_confirm(self):
         if self.model.value <= 0:
@@ -166,11 +152,19 @@ class BaseCashSlave(BaseEditorSlave):
 
 
 class CashAdvanceEditor(BaseEditor):
+    """
+    An editor which extends BashCashSlave to include an employee combobox
+    """
+
     model_name = _(u'Cash Advance')
     model_type = CashAdvanceInfo
     gladefile = 'CashAdvanceEditor'
 
-    payment_iface = IOutPayment
+    def _get_employee(self):
+        return self.employee_combo.get_selected_data()
+
+    def _get_employee_name(self):
+        return self.employee_combo.get_selected_label()
 
     def _setup_widgets(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToEmployee
@@ -180,20 +174,18 @@ class CashAdvanceEditor(BaseEditor):
         self.employee_combo.set_active(0)
 
     #
-    # BaseEditorSlave Hooks
+    # BaseEditorSlave
     #
 
     def create_model(self, conn):
-        # XXX We should not need to set None values here.
-        # Waiting for bug 2163.
-        model = CashAdvanceInfo(employee=None, payment=None,
-                                connection=conn)
-        return model
+        till = Till.get_current(conn)
+        assert till
+        self.payment = till.create_credit(currency(0))
+
+        return CashAdvanceInfo(payment=self.payment)
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(conn=self.conn,
-                                        payment_description=u"",
-                                        payment_iface=self.payment_iface)
+        self.cash_slave = BaseCashSlave(self.conn, self.payment)
         self.attach_slave("base_cash_holder", self.cash_slave)
         self._setup_widgets()
 
@@ -201,85 +193,91 @@ class CashAdvanceEditor(BaseEditor):
         return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
-        self.model.employee = self.employee_combo.get_selected_data()
-        self.model.payment = self.cash_slave.model
-        employee_name = self.employee_combo.get_selected_label()
-        payment_description = (_(u'Cash advance paid to employee: %s')
-                                 % employee_name)
-        self.cash_slave.model.description = payment_description
+        valid = self.cash_slave.on_confirm()
+        if valid:
+            self.model.description = (_(u'Cash advance paid to employee: %s')
+                                     % self._get_employee_name())
+            self.model.employee = self._get_employee()
+            self.model.value = -self.payment.value
 
-        value = self.cash_slave.model.value
-        value *= -1
-        self.cash_slave.model.value = value
-        return self.model
+            return self.model
 
-
-class CashInEditor(BaseEditor):
-    model_name = _(u'Cash In')
-    model_type = TillEntry
-    gladefile = 'BaseTemplate'
-
-    #
-    # BaseEditorSlave Hooks
-    #
-
-    def setup_slaves(self):
-        if not self.cash_slave:
-            raise ValueError("The cash_slave attribute should be defined at "
-                             "this point")
-        self.attach_slave("main_holder", self.cash_slave)
-
-    def create_model(self, conn):
-        current_till = Till.get_current(conn)
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
-        description = (_(u'Cash in for station "%s" of branch "%s"')
-                       % (current_till.station.name,
-                          current_till.station.branch.person.name))
-        self.cash_slave = BaseCashSlave(payment_description=description,
-                                        conn=conn)
-        return self.cash_slave.model
-
-    def validate_confirm(self):
-        return self.cash_slave.validate_confirm()
-
-    def on_confirm(self):
-        return self.cash_slave.on_confirm()
+        return valid
 
 
 class CashOutEditor(BaseEditor):
+    """
+    An editor to Remove cash from the Till
+    It extends BashCashSlave to include a reason entry.
+    """
+
     model_name = _(u'Cash Out')
     model_type = TillEntry
     gladefile = 'CashOutEditor'
     title = _(u'Reverse Payment')
 
-    payment_iface = IOutPayment
-
     #
-    # BaseEditorSlave Hooks
+    # BaseEditorSlave
     #
 
     def create_model(self, conn):
-        self.cash_slave = BaseCashSlave(self.conn, payment_description=u"",
-                                        payment_iface=self.payment_iface)
-        return self.cash_slave.model
+        till = Till.get_current(conn)
+        assert till
+
+        return till.create_debit(currency(0))
 
     def setup_slaves(self):
-        if not self.cash_slave:
-            raise ValueError("The cash_slave attribute should be defined at "
-                             "this point")
+        self.cash_slave = BaseCashSlave(self.conn, self.model)
         self.attach_slave("base_cash_holder", self.cash_slave)
 
     def validate_confirm(self):
         return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
-        reason = self.reason.get_text()
-        if reason:
-            # %s is the description used when removing money
-            payment_description = _(u'Cash out: %s') % reason
-        else:
-            payment_description = _(u'Cash out')
-        self.model.description = payment_description
-        self.model.value = -self.model.value
+        valid = self.cash_slave.on_confirm()
+        if valid:
+            reason = self.reason.get_text()
+            if reason:
+                # %s is the description used when removing money
+                payment_description = _(u'Cash out: %s') % reason
+            else:
+                payment_description = _(u'Cash out')
+            self.model.description = payment_description
+            self.model.value = -self.model.value
 
+        return valid
+
+
+class CashInEditor(BaseEditor):
+    """
+    An editor to Add cash to the Till
+    It uses BashCashSlave without any extensions
+    """
+
+    model_name = _(u'Cash In')
+    model_type = TillEntry
+    gladefile = 'BaseTemplate'
+
+    #
+    # BaseEditorSlave
+    #
+
+    def create_model(self, conn):
+        till = Till.get_current(conn)
+        assert till
+
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
+        description = (_(u'Cash in for station "%s" of branch "%s"')
+                       % (till.station.name,
+                          till.station.branch.person.name))
+        return till.create_credit(currency(0), description)
+
+    def setup_slaves(self):
+        self.cash_slave = BaseCashSlave(self.conn, self.model)
+        self.attach_slave("main_holder", self.cash_slave)
+
+    def validate_confirm(self):
+        return self.cash_slave.validate_confirm()
+
+    def on_confirm(self):
         return self.cash_slave.on_confirm()
