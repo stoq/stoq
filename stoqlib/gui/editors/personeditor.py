@@ -35,7 +35,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.wizards.paymentmethodwizard import PaymentMethodDetailsWizard
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.base.editors import SimpleEntryEditor
+from stoqlib.gui.editors.simpleeditor import SimpleEntryEditor
 from stoqlib.gui.templates.persontemplate import BasePersonRoleEditor
 from stoqlib.gui.slaves.paymentmethodslave import FinanceDetailsSlave
 from stoqlib.gui.slaves.clientslave import ClientStatusSlave

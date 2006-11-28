@@ -43,8 +43,8 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.base.editors import NoteEditor
 from stoqlib.gui.base.lists import AdditionListSlave
+from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
