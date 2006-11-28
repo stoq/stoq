@@ -172,7 +172,7 @@ class Till(Domain):
         self.final_cash_amount = current_balance - self.balance_sent
         self.status = self.STATUS_CLOSED
 
-    def create_debit(self, value, reason):
+    def create_debit(self, value, reason=u""):
         """
         Add debit to the till
         @param value: amount to add
@@ -182,7 +182,7 @@ class Till(Domain):
         group = self._get_payment_group()
         return group.create_debit(value, reason, self)
 
-    def create_credit(self, value, reason):
+    def create_credit(self, value, reason=u""):
         """
         Add credit to the till
         @param value: amount to add

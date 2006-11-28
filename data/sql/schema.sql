@@ -690,16 +690,6 @@ CREATE TABLE payment (
     destination_id bigint REFERENCES payment_destination(id)
 );
 
-CREATE TABLE cash_advance_info (
-    id bigserial NOT NULL PRIMARY KEY,
-    is_valid_model boolean,
-    te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    employee_id bigint REFERENCES payment(id),
-    payment_id bigint REFERENCES person_adapt_to_employee(id),
-    open_date timestamp without time zone
-);
-
 CREATE TABLE check_data (
     id bigserial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
