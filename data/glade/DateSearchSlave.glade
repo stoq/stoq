@@ -2,6 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="DateSearchSlave">
+        <property name="visible">True</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="spacing">5</property>
@@ -15,17 +16,30 @@
                     </widget>
                 </child>
                 <child>
+                    <placeholder/>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+                <child>
                     <widget class="GtkHBox" id="hbox1">
                         <property name="spacing">5</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                            <placeholder/>
+                            <packing/>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel2">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
+                            <packing>
+                                <property name="position">1</property>
+                            </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="search_label">
+                            <widget class="ProxyLabel" id="search_label">
                                 <property name="data_type">unicode</property>
                                 <property name="justify">right</property>
                                 <property name="label" context="yes" translatable="yes">Placed:</property>
@@ -33,28 +47,16 @@
                                 <property name="xalign">1.0</property>
                             </widget>
                             <packing>
-                                <property name="position">1</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="anytime_check">
-                                <property name="data_type">bool</property>
-                                <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">At any date</property>
-                                <property name="visible">True</property>
-                            </widget>
-                            <packing>
-                                <property name="expand">False</property>
                                 <property name="position">2</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+radiobutton+RadioButton" id="date_check">
+                            <widget class="ProxyRadioButton" id="anytime_check">
                                 <property name="active">False</property>
                                 <property name="data_type">bool</property>
-                                <property name="group">anytime_check</property>
+                                <property name="group">today_check</property>
                                 <property name="is_focus">True</property>
-                                <property name="label" context="yes" translatable="yes">From:</property>
+                                <property name="label" context="yes" translatable="yes">At any date</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -63,24 +65,24 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="start_date">
-                                <property name="data_type">date</property>
+                            <widget class="GtkRadioButton" id="today_check">
+                                <property name="app_paintable">True</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">start_date</property>
+                                <property name="label" context="yes" translatable="yes">Today</property>
                                 <property name="visible">True</property>
-                                <property name="width_chars">11</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">False</property>
                                 <property name="position">4</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
-                                <property name="data_type">unicode</property>
-                                <property name="ellipsize">end</property>
-                                <property name="label" context="yes" translatable="yes">to</property>
+                            <widget class="ProxyRadioButton" id="date_check">
+                                <property name="active">False</property>
+                                <property name="data_type">bool</property>
+                                <property name="group">today_check</property>
+                                <property name="is_focus">True</property>
+                                <property name="label" context="yes" translatable="yes">From:</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
@@ -89,12 +91,14 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+entry+Entry" id="end_date">
+                            <widget class="ProxyEntry" id="start_date">
                                 <property name="data_type">date</property>
                                 <property name="is_focus">True</property>
-                                <property name="model_attribute">end_date</property>
+                                <property name="model_attribute">start_date</property>
+                                <property name="text" context="yes" translatable="yes">  -  -    </property>
                                 <property name="visible">True</property>
                                 <property name="width_chars">11</property>
+                                <property name="xalign">1.0</property>
                             </widget>
                             <packing>
                                 <property name="expand">False</property>
@@ -103,26 +107,72 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel1">
+                            <widget class="ProxyLabel" id="kiwilabel4">
                                 <property name="data_type">unicode</property>
+                                <property name="ellipsize">end</property>
+                                <property name="label" context="yes" translatable="yes">to</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
+                                <property name="expand">False</property>
                                 <property name="position">7</property>
                             </packing>
                         </child>
                         <child>
-                            <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                            <widget class="ProxyEntry" id="end_date">
+                                <property name="data_type">date</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">end_date</property>
+                                <property name="text" context="yes" translatable="yes">  -  -    </property>
+                                <property name="visible">True</property>
+                                <property name="width_chars">11</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">8</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="position">9</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="position">10</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <placeholder/>
+                            <packing>
+                                <property name="position">11</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel1">
                                 <property name="data_type">unicode</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>
-                                <property name="position">8</property>
+                                <property name="position">12</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyLabel" id="kiwilabel3">
+                                <property name="data_type">unicode</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="position">13</property>
                             </packing>
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                     </packing>
                 </child>
             </widget>

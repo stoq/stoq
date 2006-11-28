@@ -82,7 +82,7 @@ class DateSearchSlave(GladeSlaveDelegate):
         self._update_view()
 
     def _update_view(self):
-        enable_dates = not self.anytime_check.get_active()
+        enable_dates = self.date_check.get_active() 
         self.start_date.set_sensitive(enable_dates)
         self.end_date.set_sensitive(enable_dates)
 
@@ -102,9 +102,21 @@ class DateSearchSlave(GladeSlaveDelegate):
         self.search_label.set_text(date_search_lbl)
 
     def get_search_dates(self):
+        """
+        Returns one of the following:
+          - None: If 'at any date' is selected
+          - datetime, datetime: If a range is selected, start and end
+        """
+
         if self.anytime_check.get_active():
             return
-        start_date = self.model.start_date
+        elif self.today_check.get_active():
+            start_date = datetime.datetime.today()
+            end_date = start_date + datetime.timedelta(1)
+        elif self.date_check.get_active():
+            start_date = self.model.start_date
+            end_date = self.model.end_date
+        
         # We need datetime.datetime instances in SearchBar and here we
         # must convert them since kiwi doesn't have support for datetime
         # widgets, only instances of type datetime.date
@@ -112,7 +124,6 @@ class DateSearchSlave(GladeSlaveDelegate):
             start_date = datetime.datetime(start_date.year,
                                            start_date.month,
                                            start_date.day)
-        end_date = self.model.end_date
         if end_date:
             end_date = datetime.datetime(end_date.year,
                                          end_date.month,
@@ -132,6 +143,10 @@ class DateSearchSlave(GladeSlaveDelegate):
     #
     # Kiwi callbacks
     #
+
+    """ today callbacks """
+    def on_today_check__toggled(self, *args):
+        self._update_view()
 
     def on_anytime_check__toggled(self, *args):
         self._update_view()
