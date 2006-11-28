@@ -13,7 +13,7 @@
                         <property name="border_width">6</property>
                         <property name="column_spacing">6</property>
                         <property name="n_columns">2</property>
-                        <property name="n_rows">9</property>
+                        <property name="n_rows">8</property>
                         <property name="row_spacing">6</property>
                         <property name="visible">True</property>
                         <child>
@@ -80,8 +80,8 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="GtkLabel" id="label16">
-                                <property name="label" context="yes" translatable="yes">Cash Total:</property>
+                            <widget class="GtkLabel" id="label18">
+                                <property name="label" context="yes" translatable="yes">Float Remaining:</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -99,17 +99,6 @@
                             <packing>
                                 <property name="bottom_attach">8</property>
                                 <property name="top_attach">7</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="GtkLabel" id="label18">
-                                <property name="label" context="yes" translatable="yes">Float Remaining:</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">9</property>
-                                <property name="top_attach">8</property>
                             </packing>
                         </child>
                         <child>
@@ -181,9 +170,9 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyLabel" id="cash_total">
+                            <widget class="ProxyLabel" id="float_remaining">
                                 <property name="data_type">currency</property>
-                                <property name="model_attribute">cash_total</property>
+                                <property name="model_attribute">float_remaining</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
                             </widget>
@@ -207,20 +196,6 @@
                                 <property name="left_attach">1</property>
                                 <property name="right_attach">2</property>
                                 <property name="top_attach">7</property>
-                            </packing>
-                        </child>
-                        <child>
-                            <widget class="ProxyLabel" id="float_remaining">
-                                <property name="data_type">currency</property>
-                                <property name="model_attribute">float_remaining</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">1.0</property>
-                            </widget>
-                            <packing>
-                                <property name="bottom_attach">9</property>
-                                <property name="left_attach">1</property>
-                                <property name="right_attach">2</property>
-                                <property name="top_attach">8</property>
                             </packing>
                         </child>
                     </widget>

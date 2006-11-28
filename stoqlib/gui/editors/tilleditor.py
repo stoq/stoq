@@ -87,7 +87,6 @@ class TillClosingEditor(BaseEditor):
                      'balance_sent',
                      'closing_date',
                      'opening_date',
-                     'cash_total',
                      'balance')
 
     #
