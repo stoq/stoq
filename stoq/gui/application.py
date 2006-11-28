@@ -31,6 +31,7 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import get_current_user, new_transaction
 from stoqlib.gui.base.dialogs import print_report
@@ -43,12 +44,6 @@ from stoqlib.gui.slaves.filterslave import FilterSlave
 
 _ = gettext.gettext
 
-
-def _foreach_child(widget, cb, lvl=0):
-    cb(widget, lvl)
-    if isinstance(widget, gtk.Container):
-        for child in widget.get_children():
-            _foreach_child(child, cb, lvl+1)
 
 class App(BaseApp):
 
@@ -245,18 +240,8 @@ class AppWindow(BaseAppWindow):
         raise NotImplementedError
 
     def on_Introspect_activate(self, action):
-        def _printone(slave, lvl=0):
-            filename = slave.gladefile + '.glade'
-            print ' ' * lvl, slave.__class__.__name__, filename
-
-        def _parse(widget, lvl):
-            if isinstance(widget, gtk.EventBox):
-                slave = widget.get_data('kiwi::slave')
-                _printone(slave, lvl)
-
         window = self.get_toplevel()
-
-        _foreach_child(window, _parse)
+        introspect_slaves(window)
 
 class SearchableAppWindow(AppWindow):
     """ Base class for searchable applications.
