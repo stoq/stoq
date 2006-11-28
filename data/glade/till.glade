@@ -11,6 +11,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="AddCash">
+                        <property name="name">AddCash</property>
+                        <property name="label" translatable="yes">Add cash...</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User</property>
@@ -104,6 +110,12 @@
                         <property name="tooltip" translatable="yes">Quit the program</property>
                         <property name="stock_id">gtk-quit</property>
                         <signal handler="_on_quit_action__clicked" name="activate"/>
+                    </widget>
+                </child>
+                <child>
+                    <widget class="GtkAction" id="RemoveCash">
+                        <property name="name">RemoveCash</property>
+                        <property name="label" translatable="yes">Remove cash...</property>
                     </widget>
                 </child>
                 <child>
@@ -201,7 +213,7 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
-<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator/><menuitem action="Treasury" name="Treasury"/><menuitem action="FiscalTillOperations" name="FiscalTillOperations"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
+<menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><separator/><menuitem action="AddCash" name="AddCash"/><menuitem action="RemoveCash" name="RemoveCash"/><separator name="sep"/><menuitem action="quit_action" name="quit_action"/></menu><menu action="Actions" name="Actions"><menuitem action="ClientSearch" name="ClientSearch"/><menuitem action="SaleSearch" name="SaleSearch"/><separator name="sep2"/><menuitem action="Treasury" name="Treasury"/><menuitem action="FiscalTillOperations" name="FiscalTillOperations"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="till">

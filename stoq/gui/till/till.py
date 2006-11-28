@@ -44,6 +44,7 @@ from stoqlib.gui.dialogs.tilloperation import (TillOperationDialog,
                                                verify_and_open_till,
                                                verify_and_close_till)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
+from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.search.personsearch import ClientSearch
 from stoqlib.gui.search.salesearch import SaleSearch
 from stoqlib.gui.search.tillsearch import TillFiscalOperationsSearch
@@ -104,6 +105,8 @@ class TillApp(SearchableAppWindow):
         has_till = Till.get_current(self.conn) is not None
         self.TillClose.set_sensitive(has_till)
         self.TillOpen.set_sensitive(not has_till)
+        self.AddCash.set_sensitive(has_till)
+        self.RemoveCash.set_sensitive(has_till)
         self.Treasury.set_sensitive(has_till)
 
         till = Till.get_current(self.conn)
@@ -245,6 +248,14 @@ class TillApp(SearchableAppWindow):
                                    self._on_till_operation_close_till)
         self.run_dialog(dialog, self.conn)
         dialog.disconnect(signal_id)
+
+    def on_AddCash__activate(self, action):
+        model = run_dialog(CashInEditor, self, self.conn)
+        finish_transaction(self.conn, model)
+
+    def on_RemoveCash__activate(self, action):
+        model = run_dialog(CashOutEditor, self, self.conn)
+        finish_transaction(self.conn, model)
 
     #
     # Callbacks
