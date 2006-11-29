@@ -122,8 +122,7 @@ class Till(Domain):
 
     def open_till(self):
         if self.status == Till.STATUS_OPEN:
-            # TODO: Raise an error
-            log.warning('till_open(): Till was already open')
+            raise StoqlibError('till_open(): Till was already open')
 
         conn = self.get_connection()
         last_till = get_last_till_operation_for_current_branch(conn)
