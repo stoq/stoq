@@ -147,6 +147,15 @@ def create_sales():
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
 
+    till.close_till()
+
+    # This is sort of hack, set the opening/closing dates to the date before
+    # it's run, so we can open/close the till in the tests, which uses
+    # the examples.
+    yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
+    till.opening_date = yesterday
+    till.closing_date = yesterday
+
     trans.commit()
 
 if __name__ == '__main__':
