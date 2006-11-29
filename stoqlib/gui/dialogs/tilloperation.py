@@ -59,16 +59,21 @@ def verify_and_open_till(self, conn):
         raise TillError("You already have a till operation opened. "
                         "Close the current Till and open another one.")
 
-    if self.run_dialog(TillOpeningEditor, conn):
-        self.conn.commit()
+    try:
+        model = self.run_dialog(TillOpeningEditor, conn)
+    except TillError, e:
+        warning(e)
+        model = None
+
+    if finish_transaction(self.conn, model):
         self._update_widgets()
         return True
 
+    return False
+
 def verify_and_close_till(self, conn, *args):
-    till = Till.get_current(conn)
-    if till is None:
-        raise ValueError("You should have a till operation opened at "
-                         "this point")
+    till = Till.get_last_opened(conn)
+    assert till
 
     # TillClosingEditor closes the till
     if not self.run_dialog(TillClosingEditor, conn, till):
@@ -242,6 +247,7 @@ class TillOperationDialog(GladeSlaveDelegate):
 
     def get_extra_query(self):
         current_till = Till.get_current(self.conn)
+        assert current_till
         group = IPaymentGroup(current_till)
         group_ids = [group.id]
         for sale in Sale.get_available_sales(self.conn, current_till):

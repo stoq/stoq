@@ -23,13 +23,14 @@
 ##
 """ This module test all class in stoq/domain/station.py """
 
+import datetime
+
 from kiwi.datatypes import currency
 
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import TillError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.till import (Till,
-                                 get_last_till_operation_for_current_branch)
+from stoqlib.domain.till import Till
 
 from stoqlib.domain.test.domaintest import DomainTest
 
@@ -44,7 +45,16 @@ class TestTill(DomainTest):
         till.open_till()
         self.assertEqual(Till.get_current(self.trans), till)
 
-        self.assertRaises(StoqlibError, till.open_till)
+        self.assertRaises(TillError, till.open_till)
+
+    def testTillOpenOnce(self):
+        station = get_current_station(self.trans)
+        till = Till(connection=self.trans, station=station)
+
+        till.open_till()
+        till.close_till()
+
+        self.assertRaises(TillError, till.open_till)
 
     def testGetCurrentTillClose(self):
         station = get_current_station(self.trans)
@@ -121,11 +131,19 @@ class TestTill(DomainTest):
         till.create_credit(currency(5), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
 
+    def testTillOpenYesterday(self):
+        yesterday = (datetime.datetime.today() - datetime.timedelta(1)).date()
 
-    def testGetLastTillOperationForCurrentBranch(self):
+        # Open a till, set the opening_date to yesterday
         till = Till(connection=self.trans, station=get_current_station(self.trans))
         till.open_till()
+        till.opening_date = yesterday
+
+        self.assertRaises(TillError, Till.get_current, self.trans)
+        # This is used to close a till
+        self.assertEqual(Till.get_last_opened(self.trans), till)
+
         till.close_till()
 
-        self.assertEqual(till,
-                         get_last_till_operation_for_current_branch(self.trans))
+        self.assertEqual(Till.get_current(self.trans), None)
+
