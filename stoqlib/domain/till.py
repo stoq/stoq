@@ -37,8 +37,7 @@ from kiwi.log import Logger
 from stoqlib.database.columns import PriceCol, AutoIncCol
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.runtime import get_current_branch
-from stoqlib.exceptions import (TillError, DatabaseInconsistency,
-                                StoqlibError)
+from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
@@ -85,10 +84,9 @@ class Till(Domain):
     status = IntCol(default=STATUS_PENDING)
     balance_sent = PriceCol(default=0)
     final_cash_amount = PriceCol(default=0)
-    opening_date = DateTimeCol(default=datetime.datetime.now)
+    opening_date = DateTimeCol(default=None)
     closing_date = DateTimeCol(default=None)
     station = ForeignKey('BranchStation')
-
 
     #
     # Classmethods
@@ -104,17 +102,35 @@ class Till(Domain):
         branch = get_current_branch(conn)
         assert branch is not None
 
-        result = cls.select(AND(cls.q.status == Till.STATUS_OPEN,
-                                cls.q.stationID == BranchStation.q.id,
-                                BranchStation.q.branchID == branch.id),
-                            connection=conn)
-        if result.count() > 1:
-            raise TillError(
-                "You should have only one Till opened. Got %d instead." %
-                result.count())
-        elif result.count() == 0:
-            return None
-        return result[0]
+        till = cls.selectOne(AND(cls.q.status == Till.STATUS_OPEN,
+                                 cls.q.stationID == BranchStation.q.id,
+                                 # Bug 2978: Empty till objects are sometimes created
+                                 cls.q.opening_date != None,
+                                 BranchStation.q.branchID == branch.id),
+                             connection=conn)
+
+        if till is not None:
+            # Verify that the currently open till was opened today
+            open_date = till.opening_date.date()
+            if open_date != datetime.datetime.today().date():
+                raise TillError(_("You need to close the till opened at %s before "
+                                  "doing any fiscal operations" % (open_date,)))
+
+        return till
+
+    @classmethod
+    def get_last_opened(cls, conn):
+        """
+        Fetches the last Till which was opened.
+        If in doubt, use Till.get_current instead. This method is a special case
+        which is used to be able to close a till without calling get_current()
+        @param conn: a database connection
+        """
+
+        result = Till.selectBy(status=Till.STATUS_OPEN,
+                               connection=conn).orderBy('opening_date')
+        if result:
+            return result[0]
 
     #
     # Till methods
@@ -122,17 +138,29 @@ class Till(Domain):
 
     def open_till(self):
         if self.status == Till.STATUS_OPEN:
-            raise StoqlibError('till_open(): Till was already open')
+            raise TillError(_('Till is already open'))
 
         conn = self.get_connection()
+
+        # Make sure that the till has not been opened today
+        today = datetime.datetime.today().date()
+        if Till.select(Till.q.opening_date >= today, connection=conn):
+            raise TillError(_("A till has already been opened today"))
+
         last_till = get_last_till_operation_for_current_branch(conn)
         if last_till:
+            if not last_till.closing_date:
+                raise TillError(_("Previous till was not closed"))
+            elif last_till.opening_date.date() == today:
+                raise TillError(_("A till has already been opened today"))
+
             final_cash = last_till.final_cash_amount
             if final_cash > 0:
                 reason = _(u'Cash amount remaining of %s'
                            % last_till.closing_date.strftime('%x'))
                 self.create_credit(final_cash, reason)
 
+            # FIXME: Move to sale.confirm()
             sales = last_till.get_unconfirmed_sales()
             for sale in sales:
                 sale.till = self
@@ -142,6 +170,7 @@ class Till(Domain):
             # available to receive new payments
             self.addFacet(IPaymentGroup, connection=conn)
 
+        self.opening_date = datetime.datetime.now()
         self.status = Till.STATUS_OPEN
 
     def close_till(self):
@@ -152,8 +181,7 @@ class Till(Domain):
         """
 
         if self.status == Till.STATUS_CLOSED:
-            raise StoqlibError("This till is already closed. Open a new till "
-                               "before close it.")
+            raise TillError(_("Till is already closed"))
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale)
