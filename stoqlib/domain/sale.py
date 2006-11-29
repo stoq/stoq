@@ -491,6 +491,10 @@ class Sale(Domain):
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
+    @property
+    def sale(self):
+        return self.get_adapted()
+
     def _get_pm_commission_total(self):
         """Return the payment method commission total. Usually credit
         card payment method is the most common method which uses
@@ -509,8 +513,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         icms_total = Decimal(0)
         conn = self.get_connection()
         icms_tax = sysparam(conn).ICMS_TAX / Decimal(100)
-        sale = self.get_adapted()
-        for item in sale.get_products():
+        for item in self.sale.get_products():
             price = item.price + av_difference
             sellable = item.sellable
             if (sellable.tax_type == TAX_SUBSTITUTION or
@@ -535,8 +538,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         iss_total = Decimal(0)
         conn = self.get_connection()
         iss_tax = sysparam(conn).ISS_TAX / Decimal(100)
-        sale = self.get_adapted()
-        for item in sale.get_services():
+        for item in self.sale.get_services():
             price = item.price + av_difference
             iss_total += iss_tax * (price * item.quantity)
         return iss_total
@@ -550,7 +552,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
                                             self.get_connection(), self)
 
     def _get_average_difference(self):
-        sale = self.get_adapted()
+        sale = self.sale
         if not sale.has_items():
             raise DatabaseInconsistency("Sale orders must have items, which "
                                         "means products or services or gift "
@@ -578,7 +580,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         overpaid_value = gift_certificate_settings.renegotiation_value
         number = gift_certificate_settings.gift_certificate_number
 
-        order = self.get_adapted()
+        order = self.sale
         if regtype == GiftCertificateOverpaidSettings.TYPE_RETURN_MONEY:
             order_number = order.order_number
             reason = _(u'1/1 Money returned for gift certificate '
@@ -623,7 +625,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
         it will be calculated for the products sold when using gift
         certificates as payment methods.
         """
-        sale = self.get_adapted()
+        sale = self.sale
         av_difference = self._get_average_difference()
 
         if sale.has_products():
@@ -668,17 +670,15 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
     #
 
     def get_thirdparty(self):
-        sale = self.get_adapted()
-        client = sale.client
+        client = self.sale.client
         return client and client.person or None
 
     def get_group_description(self):
-        sale = self.get_adapted()
-        return _(u'sale %s') % sale.get_order_number_str()
+        return _(u'sale %s') % self.sale.get_order_number_str()
 
     def get_total_received(self):
-        sale = self.get_adapted()
-        return sale.get_total_sale_amount() - self._get_pm_commission_total()
+        return (self.sale.get_total_sale_amount() -
+                self._get_pm_commission_total())
 
     def get_default_payment_method(self):
         return self.default_method
