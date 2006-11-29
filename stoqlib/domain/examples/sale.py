@@ -147,7 +147,6 @@ def create_sales():
     adapter = cancelled_sale.create_sale_return_adapter()
     adapter.confirm(cancelled_sale)
 
-    till.close_till()
     trans.commit()
 
 if __name__ == '__main__':
