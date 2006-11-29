@@ -642,7 +642,7 @@ class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 #     def update_iss_entries(self):
 #         """Update iss entries after printing a service invoice"""
 #         av_difference = self._get_average_difference()
-#         sale = self.get_adapted()
+#         sale = self.sale
 #         if not self._has_iss_entry():
 #             iss_total = self._get_iss_total(av_difference)
 #             self.create_iss_book_entry(sale.cfop,
