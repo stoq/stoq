@@ -179,7 +179,7 @@ class CashAdvanceEditor(BaseEditor):
     def create_model(self, conn):
         till = Till.get_current(conn)
         assert till
-        self.payment = till.create_credit(currency(0))
+        self.payment = till.create_debit(currency(0))
 
         return CashAdvanceInfo(payment=self.payment)
 
@@ -197,7 +197,8 @@ class CashAdvanceEditor(BaseEditor):
             self.model.description = (_(u'Cash advance paid to employee: %s')
                                      % self._get_employee_name())
             self.model.employee = self._get_employee()
-            self.model.value = -self.payment.value
+            self.payment.value = -self.payment.value
+            self.model.value = abs(self.payment.value)
 
             return self.model
 
