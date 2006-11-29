@@ -36,7 +36,7 @@ from kiwi.log import Logger
 from kiwi.ui.widgets.list import Column
 from kiwi.python import Settable
 from stoqdrivers.constants import UNIT_WEIGHT
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
 from stoqlib.lib.message import warning, yesno
@@ -207,9 +207,17 @@ class POSApp(AppWindow):
             self.sellables.select(self.sellables[0])
 
     def _update_widgets(self):
-        has_till = Till.get_current(self.conn) is not None
-        self.TillOpen.set_sensitive(not has_till and self.sale is None)
-        self.TillClose.set_sensitive(has_till and self.sale is None)
+        try:
+            has_till = Till.get_current(self.conn) is not None
+            till_close = has_till
+            till_open = not has_till
+        except TillError:
+            has_till = False
+            till_close = True
+            till_open = False
+
+        self.TillOpen.set_sensitive(till_open and self.sale is None)
+        self.TillClose.set_sensitive(till_close and self.sale is None)
         has_sellables = len(self.sellables) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
@@ -335,9 +343,14 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
-        if not Till.get_current(self.conn):
-            warning(_(u"You need open the till before start doing sales."))
-            return
+        try:
+            till = Till.get_current(self.conn)
+            if not till:
+                warning(_(u"You need open the till before start doing sales."))
+                return
+        except TillError:
+            till = None
+
         if not ISalesPerson(get_current_user(self.conn).person, None):
             warning(_(u"You can't start a new sale, since you are not a "
                       "salesperson."))
