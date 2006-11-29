@@ -34,8 +34,8 @@ from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.till import Till, TillEntry
-from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
@@ -152,7 +152,8 @@ class BaseCashSlave(BaseEditorSlave):
 
 class CashAdvanceEditor(BaseEditor):
     """
-    An editor which extends BashCashSlave to include an employee combobox
+    An editor which extends BashCashSlave to include.
+    It extends BashCashSlave to include an employee combobox
     """
 
     model_name = _(u'Cash Advance')
