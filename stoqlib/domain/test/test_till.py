@@ -25,6 +25,7 @@
 
 from kiwi.datatypes import currency
 
+from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
 from stoqlib.domain.till import Till
@@ -41,6 +42,8 @@ class TestStation(DomainTest):
         self.assertEqual(Till.get_current(self.trans), None)
         till.open_till()
         self.assertEqual(Till.get_current(self.trans), till)
+
+        self.assertRaises(StoqlibError, till.open_till)
 
     def testGetCurrentTillClose(self):
         station = get_current_station(self.trans)
