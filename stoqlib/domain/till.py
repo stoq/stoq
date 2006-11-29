@@ -370,11 +370,10 @@ def get_last_till_operation_for_current_branch(conn):
     on the final_cash_amount attribute of the last till operation
     """
 
-    table = TillFiscalOperationsView
-    query = AND(table.q.status == Till.STATUS_CLOSED,
-                table.q.branch_id == get_current_branch(conn).id)
-    result = table.select(query, connection=conn).orderBy('closing_date')
-    if not result:
-        return
-    till_entry = result[-1]
-    return Till.get(till_entry.till_id, connection=conn)
+    branch = get_current_branch(conn)
+    result = TillFiscalOperationsView.selectBy(status=Till.STATUS_CLOSED,
+                                               branch_id=branch.id,
+                                               connection=conn)
+    if result:
+        till_entry = result[-1]
+        return Till.get(till_entry.till_id, connection=conn)
