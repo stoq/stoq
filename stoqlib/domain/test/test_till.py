@@ -28,11 +28,12 @@ from kiwi.datatypes import currency
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.runtime import get_current_station
 from stoqlib.domain.station import BranchStation
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import (Till,
+                                 get_last_till_operation_for_current_branch)
 
 from stoqlib.domain.test.domaintest import DomainTest
 
-class TestStation(DomainTest):
+class TestTill(DomainTest):
     def testGetCurrentTillOpen(self):
         self.assertEqual(Till.get_current(self.trans), None)
 
@@ -120,3 +121,11 @@ class TestStation(DomainTest):
         till.create_credit(currency(5), u"")
         self.assertEqual(till.get_debits_total(), old - 10)
 
+
+    def testGetLastTillOperationForCurrentBranch(self):
+        till = Till(connection=self.trans, station=get_current_station(self.trans))
+        till.open_till()
+        till.close_till()
+
+        self.assertEqual(till,
+                         get_last_till_operation_for_current_branch(self.trans))
