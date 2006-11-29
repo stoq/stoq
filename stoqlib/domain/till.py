@@ -324,6 +324,11 @@ class TillEntry(Domain):
 class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     implements(IPaymentGroup, ITillOperation)
 
+
+    @property
+    def till(self):
+        return self.get_adapted()
+
     #
     # ITillOperation implementation
     #
@@ -352,13 +357,10 @@ class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     #
 
     def get_thirdparty(self):
-        branch = self.get_adapted().branch
-        return branch.person
+        return self.till.branch.person
 
     def get_group_description(self):
-        till = self.get_adapted()
-        date_format = _(u'%d of %B')
-        today_str = till.opening_date.strftime(date_format)
+        today_str = self.till.opening_date.strftime(_(u'%d of %B'))
         return _(u'till of %s') % today_str
 
 Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
