@@ -31,7 +31,7 @@ from datetime import date
 import gtk
 from kiwi.datatypes import currency, converter
 from kiwi.ui.widgets.list import Column
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
@@ -102,24 +102,41 @@ class TillApp(SearchableAppWindow):
         self.confirm_order_button.set_sensitive(accept_confirm)
 
     def _update_widgets(self):
-        has_till = Till.get_current(self.conn) is not None
-        self.TillClose.set_sensitive(has_till)
-        self.TillOpen.set_sensitive(not has_till)
+        # Three different options;
+        #
+        # - Till is closed
+        # - Till is opened
+        # - Till was not closed the previous fiscal day
+        #
+
+        try:
+            till = Till.get_current(self.conn)
+        except TillError:
+            till = Till.get_last_opened(self.conn)
+            # We forgot to close the till the last opened day
+            close_till = True
+            open_till = False
+            has_till = False
+        else:
+            has_till = till is None
+            close_till = has_till
+            open_till = not has_till
+
+        self.TillClose.set_sensitive(close_till)
+        self.TillOpen.set_sensitive(open_till)
         self.AddCash.set_sensitive(has_till)
         self.RemoveCash.set_sensitive(has_till)
         self.Treasury.set_sensitive(has_till)
 
-        till = Till.get_current(self.conn)
         if not till:
             text = _(u"Till Closed")
             self.sales.clear()
             self.searchbar.clear()
         else:
-            opendate = till.opening_date
-            datestr = opendate.strftime('%x')
-            text = _(u"Till Opened on %s") % datestr
+            text = _(u"Till Opened on %s") % till.opening_date.strftime('%x')
+
         self.till_status_label.set_text(text)
-        self.app_vbox.set_sensitive(till is not None)
+        self.app_vbox.set_sensitive(open_till)
 
         self._update_toolbar_buttons()
         self._update_total()
