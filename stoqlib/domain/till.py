@@ -370,9 +370,11 @@ def get_last_till_operation_for_current_branch(conn):
     """
 
     branch = get_current_branch(conn)
-    result = TillFiscalOperationsView.selectBy(status=Till.STATUS_CLOSED,
-                                               branch_id=branch.id,
-                                               connection=conn)
+    result = TillFiscalOperationsView.selectBy(
+        status=Till.STATUS_CLOSED,
+        branch_id=branch.id,
+        connection=conn).orderBy('date')
+
     if result:
         till_entry = result[-1]
         return Till.get(till_entry.till_id, connection=conn)
