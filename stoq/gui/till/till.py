@@ -30,6 +30,7 @@ from datetime import date
 
 import gtk
 from kiwi.datatypes import currency, converter
+from kiwi.log import Logger
 from kiwi.ui.widgets.list import Column
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
@@ -38,6 +39,7 @@ from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
 from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
                                  check_emit_read_X)
+from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.tilloperation import (TillOperationDialog,
@@ -54,6 +56,7 @@ from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
+log = Logger('stoq.till')
 
 
 class TillApp(SearchableAppWindow):
@@ -70,6 +73,7 @@ class TillApp(SearchableAppWindow):
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
+        self._check_till()
         self._setup_widgets()
         self.searchbar.search_items()
         self._update_widgets()
@@ -161,16 +165,52 @@ class TillApp(SearchableAppWindow):
     # Till methods
     #
 
-    def open_till(self):
+    # FIXME: Move to tilloperations.py
+    def _open_till(self):
+        """
+        Opens the till
+        """
+        parent = self.get_toplevel()
+        if not check_emit_read_X(self.conn, parent):
+            return
+
+        log.info("Opening till")
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
             return
         rollback_and_begin(self.conn)
 
-    def close_till(self):
-        if not verify_and_close_till(self, self.conn):
-            return
+    def _close_till(self):
+        """
+        Closes the till
+        @param: True if the till was closed, otherwise False
+        """
+        parent = self.get_toplevel()
+        if not check_emit_reduce_Z(self.conn, parent):
+            return False
+
+        log.info("Closing till")
+        if verify_and_close_till(self, self.conn):
+            return False
+
         self.conn.commit()
+        return True
+
+    def _check_till(self):
+        till = Till.get_last_opened(self.conn)
+        if till.status != Till.STATUS_OPEN:
+            return False
+
+        if yesno(_(u"You need to close the till opened %s before "
+                   "creating a new order.\n\nClose the till?") %
+                 till.opening_date.date(),
+                 gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+            return False
+
+        if not self._close_till():
+            return False
+
+        return True
 
     def _confirm_order(self):
         rollback_and_begin(self.conn)
@@ -240,7 +280,7 @@ class TillApp(SearchableAppWindow):
     def _on_close_till_action__clicked(self, button):
         parent = self.get_toplevel()
         if check_emit_reduce_Z(self.conn, parent):
-            self.close_till()
+            self._close_till()
 
     def _on_open_till_action__clicked(self, button):
         parent = self.get_toplevel()
@@ -257,7 +297,7 @@ class TillApp(SearchableAppWindow):
         self._run_search_dialog(TillFiscalOperationsSearch)
 
     def _on_till_operation_close_till(self, till_operation):
-        self.close_till()
+        self._close_till()
 
     def _on_treasury_action__clicked(self, button):
         dialog = TillOperationDialog(self.conn)
