@@ -50,6 +50,10 @@ class TillOpeningEditor(BaseEditor):
     model_type = Till
     gladefile = 'TillOpening'
 
+    def __init__(self, conn, model=None, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        self.main_dialog.set_confirm_widget(self.initial_cash_amount)
+
     #
     # BaseEditorSlave
     #
@@ -89,6 +93,10 @@ class TillClosingEditor(BaseEditor):
                      'opening_date',
                      'balance')
 
+    def __init__(self, conn, model=None, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        self.main_dialog.set_confirm_widget(self.balance_sent)
+
     #
     # BaseEditorSlave
     #
@@ -104,6 +112,7 @@ class TillClosingEditor(BaseEditor):
             self.balance_sent.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
+
 
     #
     # Kiwi handlers
