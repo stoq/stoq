@@ -198,7 +198,10 @@ class TillApp(SearchableAppWindow):
 
     def _check_till(self):
         till = Till.get_last_opened(self.conn)
-        if till and till.status != Till.STATUS_OPEN:
+        if till is None:
+            return True
+
+        if till.status != Till.STATUS_OPEN:
             return False
 
         if yesno(_(u"You need to close the till opened %s before "

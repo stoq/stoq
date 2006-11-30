@@ -474,7 +474,10 @@ class POSApp(AppWindow):
         @returns: True if the till was properly closed, otherwise False
         """
         till = Till.get_last_opened(self.conn)
-        if till and till.status == Till.STATUS_OPEN:
+        if till is None:
+            return True
+
+        if till.status == Till.STATUS_OPEN:
             if not yesno(_(u"You need to close the till opened %s before "
                            "creating a new order.\n\nClose the till?") %
                          till.opening_date.date(),
