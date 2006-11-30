@@ -191,6 +191,30 @@ class BasicDialog(AbstractDialog):
     def justify_label(self, just):
         self.main_label.set_justify(just)
 
+    def set_confirm_widget(self, widget):
+        """
+        Enables widget as a confirm widget, the dialog will be closed as
+        confirmed if the widget is activated.
+        @param widget: a widget
+        """
+        dialog = self.get_toplevel()
+        if not widget.is_ancestor(dialog):
+            raise ValueError("dialog %r is not an ancestor of widget %r" % (
+                dialog, widget))
+        widget.connect('activate', self.confirm)
+
+    def set_cancel_widget(self, widget):
+        """
+        Enables widget as a cancel widget, the dialog will be closed as
+        canceled if the widget is activated.
+        @param widget: a widget
+        """
+        dialog = self.get_toplevel()
+        if not widget.is_ancestor(dialog):
+            raise ValueError("dialog %r is not an ancestor of widget %r" % (
+                dialog, widget))
+        widget.connect('activate', self.cancel)
+
     #
     # Kiwi handlers
     #
