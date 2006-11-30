@@ -109,12 +109,11 @@ class Till(Domain):
                                  BranchStation.q.branchID == branch.id),
                              connection=conn)
 
-        if till is not None:
-            # Verify that the currently open till was opened today
-            open_date = till.opening_date.date()
-            if open_date != datetime.datetime.today().date():
-                raise TillError(_("You need to close the till opened at %s before "
-                                  "doing any fiscal operations" % (open_date,)))
+        if till and till.pending_closure():
+            raise TillError(
+                _("You need to close the till opened at %s before "
+                  "doing any fiscal operations" % (
+                till.opening_date.date(),)))
 
         return till
 
@@ -197,7 +196,7 @@ class Till(Domain):
 
         self.closing_date = datetime.datetime.now()
         self.final_cash_amount = current_balance - self.balance_sent
-        self.status = self.STATUS_CLOSED
+        self.status = Till.STATUS_CLOSED
 
     def create_debit(self, value, reason=u""):
         """
@@ -233,6 +232,23 @@ class Till(Domain):
         sales = Sale.get_available_sales(self.get_connection(), self)
         return [sale for sale in sales
                          if sale.status != Sale.STATUS_CONFIRMED]
+
+    def pending_closure(self):
+        """
+        Checks if there's an open till that needs to be closed before
+        we can do any further fiscal operations.
+        @returns: True if it needs to be closed, otherwise false
+        """
+        if self.status != Till.STATUS_CLOSED:
+            if not self.opening_date:
+                return False
+
+            # Verify that the currently open till was opened today
+            open_date = self.opening_date.date()
+            if open_date != datetime.datetime.today().date():
+                return True
+
+        return False
 
     #
     # Operations on TillFiscalOperationsView
