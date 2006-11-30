@@ -91,6 +91,7 @@ class POSApp(AppWindow):
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
         self._coupon = None
+        self._check_till()
         self._setup_widgets()
         self._setup_proxies()
         self._clear_order()
@@ -343,13 +344,13 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
-        try:
-            till = Till.get_current(self.conn)
-            if not till:
-                warning(_(u"You need open the till before start doing sales."))
-                return
-        except TillError:
-            till = None
+        if self._check_till():
+            return
+
+        till = Till.get_current(self.conn)
+        if not till:
+            warning(_(u"You need open the till before start doing sales."))
+            return
 
         if not ISalesPerson(get_current_user(self.conn).person, None):
             warning(_(u"You can't start a new sale, since you are not a "
@@ -441,7 +442,12 @@ class POSApp(AppWindow):
     # Till methods
     #
 
+    # FIXME: Move to tilloperations.py
     def _open_till(self):
+        parent = self.get_toplevel()
+        if not check_emit_read_X(self.conn, parent):
+            return
+
         log.info("Opening till")
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
@@ -449,10 +455,34 @@ class POSApp(AppWindow):
         rollback_and_begin(self.conn)
 
     def _close_till(self):
+        parent = self.get_toplevel()
+        if not check_emit_reduce_Z(self.conn, parent):
+            return False
+
         log.info("Closing till")
         if verify_and_close_till(self, self.conn):
-            return
+
+            return False
         self.conn.commit()
+
+        return True
+
+    def _check_till(self):
+        """
+        Checks if the last opened till was closed
+
+        @returns: True if the till was properly closed, otherwise False
+        """
+        till = Till.get_last_opened(self.conn)
+        if till.status == Till.STATUS_OPEN:
+            if not yesno(_(u"You need to close the till opened %s before "
+                           "creating a new order.\n\nClose the till?") %
+                         till.opening_date.date(),
+                         gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+                if not self._close_till():
+                    return False
+
+        return True
 
     #
     # Coupon related
@@ -586,14 +616,10 @@ class POSApp(AppWindow):
         self._add_delivery()
 
     def on_TillClose__activate(self, action):
-        parent = self.get_toplevel()
-        if check_emit_reduce_Z(self.conn, parent):
-            self._close_till()
+        self._close_till()
 
     def on_TillOpen__activate(self, action):
-        parent = self.get_toplevel()
-        if check_emit_read_X(self.conn, parent):
-            self._open_till()
+        self._open_till()
 
     #
     # Other callbacks
