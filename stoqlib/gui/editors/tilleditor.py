@@ -107,6 +107,7 @@ class TillClosingEditor(BaseEditor):
                      'opening_date')
 
     def __init__(self, conn, model=None, visual_mode=False):
+        self.till = Till.get_last_opened(conn)
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
 
         self.main_dialog.set_confirm_widget(self.value)
@@ -116,7 +117,6 @@ class TillClosingEditor(BaseEditor):
     #
 
     def create_model(self, trans):
-        self.till = Till.get_last_opened(self.conn)
         return _TillClosingModel(till=self.till, value=currency(0))
 
     def on_confirm(self):
