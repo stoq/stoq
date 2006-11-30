@@ -344,13 +344,14 @@ class POSApp(AppWindow):
             self.sellables.update(item)
 
     def _new_order(self):
-        if self._check_till():
-            return
-
-        till = Till.get_current(self.conn)
-        if not till:
-            warning(_(u"You need open the till before start doing sales."))
-            return
+        try:
+            till = Till.get_current(self.conn)
+            if till is None:
+                warning(_(u"You need open the till before start doing sales."))
+                return
+        except TillError:
+            if self._check_till():
+                return
 
         if not ISalesPerson(get_current_user(self.conn).person, None):
             warning(_(u"You can't start a new sale, since you are not a "
@@ -474,10 +475,7 @@ class POSApp(AppWindow):
         @returns: True if the till was properly closed, otherwise False
         """
         till = Till.get_last_opened(self.conn)
-        if till is None:
-            return True
-
-        if till.status == Till.STATUS_OPEN:
+        if till and till.pending_closure():
             if not yesno(_(u"You need to close the till opened %s before "
                            "creating a new order.\n\nClose the till?") %
                          till.opening_date.date(),
