@@ -109,7 +109,7 @@ class Till(Domain):
                                  BranchStation.q.branchID == branch.id),
                              connection=conn)
 
-        if till and till.pending_closure():
+        if till and till.needs_closing():
             raise TillError(
                 _("You need to close the till opened at %s before "
                   "doing any fiscal operations" % (
@@ -233,7 +233,7 @@ class Till(Domain):
         return [sale for sale in sales
                          if sale.status != Sale.STATUS_CONFIRMED]
 
-    def pending_closure(self):
+    def needs_closing(self):
         """
         Checks if there's an open till that needs to be closed before
         we can do any further fiscal operations.
