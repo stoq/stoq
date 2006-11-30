@@ -148,12 +148,12 @@ class TestTill(DomainTest):
         self.assertEqual(Till.get_current(self.trans), None)
 
 
-    def testPendingClosure(self):
+    def testNeedsClosing(self):
         till = Till(connection=self.trans, station=get_current_station(self.trans))
-        self.failIf(till.pending_closure())
+        self.failIf(till.needs_closing())
         till.open_till()
-        self.failIf(till.pending_closure())
+        self.failIf(till.needs_closing())
         till.opening_date = (datetime.datetime.today() - datetime.timedelta(1)).date()
-        self.failUnless(till.pending_closure())
+        self.failUnless(till.needs_closing())
         till.close_till()
-        self.failIf(till.pending_closure())
+        self.failIf(till.needs_closing())
