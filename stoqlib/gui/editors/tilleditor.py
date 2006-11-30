@@ -123,7 +123,7 @@ class TillClosingEditor(BaseEditor):
     def on_confirm(self):
         self.till.close_till(self.model.value)
         self.till.create_debit(self.model.value,
-                               _(u'Amount removed Till on %s' %
+                               _(u'Amount removed from Till on %s' %
                                  self.till.closing_date.strftime('%x')))
 
         return True
