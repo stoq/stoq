@@ -31,8 +31,8 @@ from kiwi.datatypes import ValidationError, currency
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import get_current_station
-from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IEmployee
+from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
 from stoqlib.lib.translation import stoqlib_gettext
@@ -40,47 +40,13 @@ from stoqlib.lib.translation import stoqlib_gettext
 _ = stoqlib_gettext
 
 
-class CashAdvanceInfo(Settable):
-    employee = None
-    payment = None
-    open_date = None
+class _TillOpeningModel(object):
+    def __init__(self, till, value):
+        self.till = till
+        self.value = value
 
-class TillOpeningEditor(BaseEditor):
-    title = _(u'Till Opening')
-    model_type = Till
-    gladefile = 'TillOpening'
-
-    def __init__(self, conn, model=None, visual_mode=False):
-        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self.main_dialog.set_confirm_widget(self.initial_cash_amount)
-
-    #
-    # BaseEditorSlave
-    #
-
-    def create_model(self, conn):
-        model = Till(connection=conn, station=get_current_station(conn))
-        model.open_till()
-        return model
-
-    def setup_proxies(self):
-        self.till_proxy = self.add_proxy(self.model, ['opening_date'])
-
-        model = Settable(initial_cash_amount=currency(0))
-        self.settable_proxy = self.add_proxy(model, ['initial_cash_amount'])
-
-    def on_confirm(self):
-        initial_cash = self.settable_proxy.model.initial_cash_amount
-        if initial_cash > 0:
-            reason = (_(u'Initial Cash amount of %s')
-                        % self.model.opening_date.strftime('%x'))
-            self.model.create_credit(initial_cash, reason)
-        return self.model
-
-    def on_initial_cash_amount__validate(self, entry, data):
-        if data < currency(0):
-            return ValidationError(
-                _("You cannot open the till with a negative amount."))
+    def get_balance(self):
+        return currency(self.till.get_balance() + self.value)
 
 class _TillClosingModel(object):
     def __init__(self, till, value):
@@ -90,11 +56,72 @@ class _TillClosingModel(object):
     def get_opening_date(self):
         return self.till.opening_date
 
+    def get_balance(self):
+        return currency(self.till.get_balance() - self.value)
+
     def get_total_balance(self):
         return self.till.get_balance()
 
-    def get_balance(self):
-        return currency(self.till.get_balance() - self.value)
+class CashAdvanceInfo(Settable):
+    employee = None
+    payment = None
+    open_date = None
+
+class TillOpeningEditor(BaseEditor):
+    """
+    An editor to open a till.
+    You can add cash to the till in the editor and it also shows
+    the balance of the till, after the cash has been added.
+
+    Callers of this editor are responsible for sending in a valid Till object,
+    which the method open_till() can be called.
+    """
+    title = _(u'Till Opening')
+    model_type = _TillOpeningModel
+    gladefile = 'TillOpening'
+    proxy_widgets = ('value',
+                     'balance')
+
+    def __init__(self, conn, model=None, visual_mode=False):
+        BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        self.main_dialog.set_confirm_widget(self.value)
+
+    #
+    # BaseEditorSlave
+    #
+
+    def create_model(self, conn):
+        till = Till(connection=conn, station=get_current_station(conn))
+        till.open_till()
+
+        return _TillOpeningModel(till=till, value=currency(0))
+
+    def setup_proxies(self):
+        self.proxy = self.add_proxy(self.model, TillOpeningEditor.proxy_widgets)
+
+    def on_confirm(self):
+        till = self.model.till
+
+        value = self.proxy.model.value
+        if value:
+            till.create_credit(value,
+                               (_(u'Initial Cash amount of %s')
+                                % till.opening_date.strftime('%x')))
+
+        return till
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_value__validate(self, entry, data):
+        if data < currency(0):
+            self.proxy.update('balance', currency(0))
+            return ValidationError(
+                _("You cannot add a negative amount when opening the till."))
+
+    def after_value__content_changed(self, entry):
+        self.proxy.update('balance')
 
 class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
