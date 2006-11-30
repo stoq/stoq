@@ -122,7 +122,7 @@ class TillApp(SearchableAppWindow):
             open_till = False
             has_till = False
         else:
-            has_till = till is None
+            has_till = bool(till)
             close_till = has_till
             open_till = not has_till
 
@@ -140,7 +140,7 @@ class TillApp(SearchableAppWindow):
             text = _(u"Till Opened on %s") % till.opening_date.strftime('%x')
 
         self.till_status_label.set_text(text)
-        self.app_vbox.set_sensitive(open_till)
+        self.app_vbox.set_sensitive(has_till)
 
         self._update_toolbar_buttons()
         self._update_total()
@@ -198,20 +198,13 @@ class TillApp(SearchableAppWindow):
 
     def _check_till(self):
         till = Till.get_last_opened(self.conn)
-        if till is None:
-            return True
-
-        if till.status != Till.STATUS_OPEN:
-            return False
-
-        if yesno(_(u"You need to close the till opened %s before "
-                   "creating a new order.\n\nClose the till?") %
-                 till.opening_date.date(),
-                 gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
-            return False
-
-        if not self._close_till():
-            return False
+        if till and till.pending_closure():
+            if not yesno(_(u"You need to close the till opened %s before "
+                           "creating a new order.\n\nClose the till?") %
+                         till.opening_date.date(),
+                         gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+                if not self._close_till():
+                    return False
 
         return True
 
@@ -288,7 +281,7 @@ class TillApp(SearchableAppWindow):
     def _on_open_till_action__clicked(self, button):
         parent = self.get_toplevel()
         if check_emit_read_X(self.conn, parent):
-            self.open_till()
+            self._open_till()
 
     def _on_client_search_action__clicked(self, button):
         self._run_search_dialog(ClientSearch, hide_footer=True)
