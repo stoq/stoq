@@ -202,13 +202,18 @@ def _run_app(options, appname):
         raise RuntimeError(
             "Application %s must have a app.main() function")
 
+    # Hide the splash in an idle, so we can show dialogs in the
+    # constructor of the application without having the splash screen
+    # visible at the same time, not ideal but remember that if you
+    # want to change the splash screen code.
+    import gobject
+    gobject.idle_add(splash.hide)
+
     log.info('Starting %s application' % appname)
     module.main(appconf)
 
-    splash.hide()
-
-    log.debug("Entering main loop")
     import gtk
+    log.debug("Entering main loop")
     gtk.main()
 
     log.info("Shutting down %s application" % appname)
