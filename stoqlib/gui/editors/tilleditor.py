@@ -82,34 +82,55 @@ class TillOpeningEditor(BaseEditor):
             return ValidationError(
                 _("You cannot open the till with a negative amount."))
 
+class _TillClosingModel(object):
+    def __init__(self, till, value):
+        self.till = till
+        self.value = value
+
+    def get_opening_date(self):
+        return self.till.opening_date
+
+    def get_total_balance(self):
+        return self.till.get_balance()
+
+    def get_balance(self):
+        return currency(self.till.get_balance() - self.value)
+
 class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
-    model_type = Till
+    model_type = _TillClosingModel
     gladefile = 'TillClosing'
     size = (350, 290)
-    proxy_widgets = ('float_remaining',
-                     'balance_sent',
-                     'closing_date',
-                     'opening_date',
-                     'balance')
+    proxy_widgets = ('value',
+                     'balance',
+                     'total_balance',
+                     'opening_date')
 
     def __init__(self, conn, model=None, visual_mode=False):
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
-        self.main_dialog.set_confirm_widget(self.balance_sent)
+
+        self.main_dialog.set_confirm_widget(self.value)
 
     #
     # BaseEditorSlave
     #
 
+    def create_model(self, trans):
+        self.till = Till.get_last_opened(self.conn)
+        return _TillClosingModel(till=self.till, value=currency(0))
+
     def on_confirm(self):
-        self.model.close_till()
-        return self.model
+        self.till.close_till(self.model.value)
+        self.till.create_debit(self.model.value,
+                               _(u'Amount removed Till on %s' %
+                                 self.till.closing_date.strftime('%x')))
+
+        return True
 
     def setup_proxies(self):
-        self.model.closing_date = datetime.now()
-        self.total_cash = self.model.get_cash_total()
+        self.total_cash = self.till.get_cash_total()
         if not self.total_cash:
-            self.balance_sent.set_sensitive(False)
+            self.value.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
 
@@ -118,18 +139,18 @@ class TillClosingEditor(BaseEditor):
     # Kiwi handlers
     #
 
-    def after_balance_sent__validate(self, widget, value):
+    def after_value__validate(self, widget, value):
         if value < currency(0):
-            return ValidationError(_("Value cannot be lesser that zero"))
-        if value <= self.total_cash:
-            return
-        return ValidationError(_("You can not specifiy an amount "
-                                 "removed greater than the "
-                                 "till balance."))
+            self.proxy.update('balance', currency(0))
+            return ValidationError(_("Value cannot be less than zero"))
+        if value > self.total_cash:
+            self.proxy.update('balance', currency(0))
+            return ValidationError(_("You can not specify an amount "
+                                     "removed greater than the "
+                                     "till balance."))
 
-    def after_balance_sent__changed(self, *args):
+    def after_value__content_changed(self, entry):
         self.proxy.update('balance')
-        self.proxy.update('float_remaining')
 
 
 class BaseCashSlave(BaseEditorSlave):

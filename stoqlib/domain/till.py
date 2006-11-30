@@ -63,11 +63,11 @@ class Till(Domain):
         - I{STATUS_OPEN}: this till is opened and we can make sales for it.
         - I{STATUS_CLOSED}: end of the day, the till is closed and no more
                             financial operations can be done in this store.
-        - I{balance_sent}: the amount total sent to the warehouse or main
-                           store after closing the till.
         - I{initial_cash_amount}: The total amount we have in the moment we
                                   are opening the till. This value is useful
                                   when providing change during sales.
+        - I{final_cash_amount}: The total amount we have in the moment we
+                                are closing the till.
         - I{station}: a till operation is always associated with a branch
                       station which means the computer in a branch company
                       responsible to open the till
@@ -82,7 +82,6 @@ class Till(Domain):
                 STATUS_CLOSED:  _("Closed")}
 
     status = IntCol(default=STATUS_PENDING)
-    balance_sent = PriceCol(default=0)
     final_cash_amount = PriceCol(default=0)
     opening_date = DateTimeCol(default=None)
     closing_date = DateTimeCol(default=None)
@@ -172,15 +171,22 @@ class Till(Domain):
         self.opening_date = datetime.datetime.now()
         self.status = Till.STATUS_OPEN
 
-    def close_till(self):
-        """ This method close the current till operation with the confirmed
+    def close_till(self, removed=0):
+        """
+        This method close the current till operation with the confirmed
         sales associated. If there is a sale with a differente status than
         SALE_CONFIRMED, a new 'pending' till operation is created and
         these sales are associated with the current one.
+        @param removed:
         """
 
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
+
+        balance = self.get_balance()
+        if removed > balance:
+            raise ValueError("The cash amount that you want to send is "
+                             "greater than the current balance.")
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale)
@@ -189,13 +195,8 @@ class Till(Domain):
             for payment in group.get_items():
                 payment.status = Payment.STATUS_PENDING
 
-        current_balance = self.get_balance()
-        if self.balance_sent and self.balance_sent > current_balance:
-            raise ValueError("The cash amount that you want to send is "
-                             "greater than the current balance.")
-
         self.closing_date = datetime.datetime.now()
-        self.final_cash_amount = current_balance - self.balance_sent
+        self.final_cash_amount = balance - removed
         self.status = Till.STATUS_CLOSED
 
     def create_debit(self, value, reason=u""):
@@ -296,9 +297,6 @@ class Till(Domain):
                                   view.q.till_id == self.id),
                               connection=self.get_connection())
         return currency(results.sum('value') or 0)
-
-    def get_float_remaining(self):
-        return currency(self.get_balance() - self.balance_sent)
 
     #
     # Private

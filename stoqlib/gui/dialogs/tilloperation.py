@@ -76,7 +76,7 @@ def verify_and_close_till(self, conn, *args):
     assert till
 
     # TillClosingEditor closes the till
-    if not self.run_dialog(TillClosingEditor, conn, till):
+    if not self.run_dialog(TillClosingEditor, conn):
         rollback_and_begin(self.conn)
         return False
     self.conn.commit()
