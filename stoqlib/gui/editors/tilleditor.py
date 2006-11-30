@@ -108,6 +108,7 @@ class TillClosingEditor(BaseEditor):
 
     def __init__(self, conn, model=None, visual_mode=False):
         self.till = Till.get_last_opened(conn)
+        assert self.till
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
 
         self.main_dialog.set_confirm_widget(self.value)
