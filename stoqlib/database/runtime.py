@@ -32,6 +32,7 @@ from kiwi.log import Logger
 from sqlobject.dbconnection import Transaction
 from sqlobject.inheritance import InheritableSQLObject
 from sqlobject.main import SQLObject
+from sqlobject.sqlbuilder import sqlIdentifier
 
 from stoqlib.database.interfaces import (
     IDatabaseSettings, IConnection, ITransaction, ICurrentBranch,
@@ -51,36 +52,41 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._objects = set()
+        self._sets = [set()]
+        self._savepoints = []
         Transaction.__init__(self, *args, **kwargs)
 
     def add_object(self, obj):
-        self._objects.add(obj)
+        objset = self._sets[-1]
+        objset.add(obj)
 
     def commit(self, close=False):
         user = get_current_user(self)
         station = get_current_station(self)
 
-        for obj in self._objects:
-            # FIXME: Figure out when this is needed
-            if obj.sqlmeta._obsolete:
-                continue
+        for objset in self._sets:
+            for obj in objset:
+                # FIXME: Figure out when this is needed
+                if obj.sqlmeta._obsolete:
+                    continue
 
-            obj.te_modified.timestamp = datetime.datetime.now()
-            if user is not None:
-                obj.te_modified.user_id = user.id
-            if station is not None:
-                obj.te_modified.station_id = station.id
-        self._objects.clear()
+                obj.te_modified.timestamp = datetime.datetime.now()
+                if user is not None:
+                    obj.te_modified.user_id = user.id
+                if station is not None:
+                    obj.te_modified.station_id = station.id
+        self._sets = [set()]
 
         Transaction.commit(self, close=close)
 
-    def rollback(self):
-        self._objects.clear()
-
-        # FIXME: SQLObject is busted, this is called from __del__
-        if Transaction is not None:
-            Transaction.rollback(self)
+    def rollback(self, name=None):
+        if name:
+            self.rollback_to_savepoint(name)
+        else:
+            # FIXME: SQLObject is busted, this is called from __del__
+            if Transaction is not None:
+                Transaction.rollback(self)
+            self._sets = [set()]
 
     def close(self):
         self._connection.close()
@@ -92,6 +98,25 @@ class StoqlibTransaction(Transaction):
 
         table = type(obj)
         return table.get(obj.id, connection=self)
+
+    def savepoint(self, name):
+        if not sqlIdentifier(name):
+            raise ValueError("Invalid savepoint name: %r" % name)
+        if name in self._savepoints:
+            raise ValueError("There's already a savepoint called %r" % name)
+        self.query('SAVEPOINT %s' % name)
+        self._sets.append(set())
+        self._savepoints.append(name)
+
+    def rollback_to_savepoint(self, name):
+        if not sqlIdentifier(name):
+            raise ValueError("Invalid savepoint name: %r" % name)
+        if not name in self._savepoints:
+            raise ValueError("Unknown savepoint: %r" % name)
+
+        self.query('ROLLBACK TO SAVEPOINT %s' % name)
+        self._sets.pop()
+        self._savepoints.remove(name)
 
 def get_connection():
     """
