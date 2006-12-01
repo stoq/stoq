@@ -54,36 +54,34 @@ from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 _ = stoqlib_gettext
 
 
-def verify_and_open_till(self, conn):
+def verify_and_open_till(till, conn):
     if Till.get_current(conn) is not None:
         raise TillError("You already have a till operation opened. "
                         "Close the current Till and open another one.")
 
     try:
-        model = self.run_dialog(TillOpeningEditor, conn)
+        model = till.run_dialog(TillOpeningEditor, conn)
     except TillError, e:
         warning(e)
         model = None
 
-    if finish_transaction(self.conn, model):
-        self._update_widgets()
+    if finish_transaction(till.conn, model):
         return True
 
     return False
 
-def verify_and_close_till(self, conn, *args):
+def verify_and_close_till(till, conn, *args):
     till = Till.get_last_opened(conn)
     assert till
 
-    model = self.run_dialog(TillClosingEditor, conn)
+    model = till.run_dialog(TillClosingEditor, conn)
 
     # TillClosingEditor closes the till
-    if not finish_transaction(self.conn, model):
-        self._update_widgets()
+    if not finish_transaction(till.conn, model):
         return False
 
     opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
-                               connection=self.conn)
+                               connection=till.conn)
     if not opened_sales:
         return False
 
@@ -92,7 +90,7 @@ def verify_and_close_till(self, conn, *args):
     # opened yet, but it will be considered when opening a
     # new operation
     branch_station = opened_sales[0].till.station
-    new_till = Till(connection=self.conn,
+    new_till = Till(connection=till.conn,
                     station=branch_station)
     for sale in opened_sales:
         sale.till = new_till
