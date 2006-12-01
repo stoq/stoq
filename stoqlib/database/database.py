@@ -67,7 +67,9 @@ def finish_transaction(trans, model):
     @param trans: a transaction
     @param model: abort if None else commit
     """
-    if model is not None:
+
+    # Allow false and None
+    if model:
         trans.commit()
     else:
         rollback_and_begin(trans)
