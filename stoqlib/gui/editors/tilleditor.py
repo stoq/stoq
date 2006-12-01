@@ -127,7 +127,6 @@ class TillClosingEditor(BaseEditor):
     title = _(u'Closing Opened Till')
     model_type = _TillClosingModel
     gladefile = 'TillClosing'
-    size = (350, 290)
     proxy_widgets = ('value',
                      'balance',
                      'total_balance',
@@ -156,8 +155,7 @@ class TillClosingEditor(BaseEditor):
         return True
 
     def setup_proxies(self):
-        self.total_cash = self.till.get_cash_total()
-        if not self.total_cash:
+        if not self.till.get_balance():
             self.value.set_sensitive(False)
         self.proxy = self.add_proxy(self.model,
                                     TillClosingEditor.proxy_widgets)
@@ -171,7 +169,7 @@ class TillClosingEditor(BaseEditor):
         if value < currency(0):
             self.proxy.update('balance', currency(0))
             return ValidationError(_("Value cannot be less than zero"))
-        if value > self.total_cash:
+        if value > self.till.get_balance():
             self.proxy.update('balance', currency(0))
             return ValidationError(_("You can not specify an amount "
                                      "removed greater than the "
