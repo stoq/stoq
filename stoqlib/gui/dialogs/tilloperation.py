@@ -75,13 +75,13 @@ def verify_and_close_till(self, conn, *args):
     till = Till.get_last_opened(conn)
     assert till
 
-    # TillClosingEditor closes the till
-    if not self.run_dialog(TillClosingEditor, conn):
-        rollback_and_begin(self.conn)
-        return False
-    self.conn.commit()
+    model = self.run_dialog(TillClosingEditor, conn)
 
-    self._update_widgets()
+    # TillClosingEditor closes the till
+    if not finish_transaction(self.conn, model):
+        self._update_widgets()
+        return False
+
     opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
                                connection=self.conn)
     if not opened_sales:
