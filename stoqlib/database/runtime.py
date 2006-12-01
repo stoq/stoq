@@ -52,19 +52,19 @@ class StoqlibTransaction(Transaction):
     implements(ITransaction)
 
     def __init__(self, *args, **kwargs):
-        self._sets = [set()]
+        self._modified_object_sets = [set()]
         self._savepoints = []
         Transaction.__init__(self, *args, **kwargs)
 
     def add_object(self, obj):
-        objset = self._sets[-1]
+        objset = self._modified_object_sets[-1]
         objset.add(obj)
 
     def commit(self, close=False):
         user = get_current_user(self)
         station = get_current_station(self)
 
-        for objset in self._sets:
+        for objset in self._modified_object_sets:
             for obj in objset:
                 # FIXME: Figure out when this is needed
                 if obj.sqlmeta._obsolete:
@@ -75,7 +75,7 @@ class StoqlibTransaction(Transaction):
                     obj.te_modified.user_id = user.id
                 if station is not None:
                     obj.te_modified.station_id = station.id
-        self._sets = [set()]
+        self._modified_object_sets = [set()]
 
         Transaction.commit(self, close=close)
 
@@ -86,7 +86,7 @@ class StoqlibTransaction(Transaction):
             # FIXME: SQLObject is busted, this is called from __del__
             if Transaction is not None:
                 Transaction.rollback(self)
-            self._sets = [set()]
+            self._modified_object_sets = [set()]
 
     def close(self):
         self._connection.close()
@@ -105,7 +105,7 @@ class StoqlibTransaction(Transaction):
         if name in self._savepoints:
             raise ValueError("There's already a savepoint called %r" % name)
         self.query('SAVEPOINT %s' % name)
-        self._sets.append(set())
+        self._modified_object_sets.append(set())
         self._savepoints.append(name)
 
     def rollback_to_savepoint(self, name):
@@ -115,7 +115,7 @@ class StoqlibTransaction(Transaction):
             raise ValueError("Unknown savepoint: %r" % name)
 
         self.query('ROLLBACK TO SAVEPOINT %s' % name)
-        self._sets.pop()
+        self._modified_object_sets.pop()
         self._savepoints.remove(name)
 
 def get_connection():
