@@ -54,13 +54,13 @@ from stoqlib.gui.editors.tilleditor import TillOpeningEditor, TillClosingEditor
 _ = stoqlib_gettext
 
 
-def verify_and_open_till(till, conn):
+def verify_and_open_till(app, conn):
     if Till.get_current(conn) is not None:
         raise TillError("You already have a till operation opened. "
                         "Close the current Till and open another one.")
 
     try:
-        model = till.run_dialog(TillOpeningEditor, conn)
+        model = app.run_dialog(TillOpeningEditor, conn)
     except TillError, e:
         warning(e)
         model = None
@@ -70,11 +70,11 @@ def verify_and_open_till(till, conn):
 
     return False
 
-def verify_and_close_till(till, conn, *args):
+def verify_and_close_till(app, conn, *args):
     till = Till.get_last_opened(conn)
     assert till
 
-    model = till.run_dialog(TillClosingEditor, conn)
+    model = app.run_dialog(TillClosingEditor, conn)
 
     # TillClosingEditor closes the till
     if not finish_transaction(conn, model):
