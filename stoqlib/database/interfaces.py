@@ -59,8 +59,10 @@ class ITransaction(IConnection):
         @param close: Optional, if True also closes the database
         """
 
-    def rollback():
-        """Undos all the changes made within the current transaction"""
+    def rollback(name=None):
+        """Undos all the changes made within the current transaction
+        @param name: If supplied limit changes to the last savepoint
+        """
 
     def get(object):
         """
@@ -74,6 +76,18 @@ class ITransaction(IConnection):
         Adds an object to the transaction.
         It's used by TransactionEntry to keep a log of all modified object
         @param object: A SQLObject subclass which should be marked as modified
+        """
+
+    def savepoint(self, name):
+        """
+        Creates a new savepoint
+        @param name: name of savepoint
+        """
+
+    def rollback_to_savepoint(self, name):
+        """
+        Rollback to a savepoint
+        @param name: name of the savepoint
         """
 
 class ICurrentBranch(Interface):
