@@ -30,8 +30,8 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="cash_amount_lbl">
-                        <property name="label" context="yes" translatable="yes">Cash Amount:</property>
+                    <widget class="GtkLabel" id="label5">
+                        <property name="label" context="yes" translatable="yes">Balance:</property>
                         <property name="sizegroup">casheditor_label_sizegroup</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -44,8 +44,11 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label5">
+                    <widget class="GtkLabel" id="cash_amount_lbl">
+                        <property name="label" context="yes" translatable="yes">Cash Amount:</property>
+                        <property name="sizegroup">casheditor_label_sizegroup</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
@@ -66,7 +69,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="date">
+                    <widget class="ProxyLabel" id="date">
                         <property name="sizegroup">casheditor_label_sizegroup</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
@@ -78,12 +81,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyEntry" id="cash_amount">
-                        <property name="data_type">Decimal</property>
-                        <property name="is_focus">True</property>
-                        <property name="mandatory">True</property>
-                        <property name="model_attribute">value</property>
-                        <property name="sizegroup">casheditor_entry_sizegroup</property>
+                    <widget class="ProxyLabel" id="balance">
+                        <property name="data_type">currency</property>
+                        <property name="model_attribute">balance</property>
+                        <property name="sizegroup">casheditor_label_sizegroup</property>
                         <property name="visible">True</property>
                         <property name="xalign">1.0</property>
                     </widget>
@@ -96,8 +97,13 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkLabel" id="label6">
+                    <widget class="ProxyEntry" id="value">
+                        <property name="data_type">Decimal</property>
+                        <property name="is_focus">True</property>
+                        <property name="mandatory">True</property>
+                        <property name="model_attribute">value</property>
                         <property name="visible">True</property>
+                        <property name="xalign">1.0</property>
                     </widget>
                     <packing>
                         <property name="bottom_attach">3</property>
