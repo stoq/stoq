@@ -25,7 +25,7 @@
 
 import unittest
 
-from stoqlib.database.database import finish_transaction
+from stoqlib.database.database import finish_transaction, rollback_and_begin
 
 class FakeTransaction:
     def __init__(self):
@@ -60,3 +60,9 @@ class DatabaseTest(unittest.TestCase):
             self.failIf(trans.committed, "%s is committed" % item)
             self.failUnless(trans.begun, "%s is not begun" % item)
             self.failUnless(trans.rollbacked, "%s is not rollbacked" % item)
+
+    def testRollBackAndBegin(self):
+        trans = FakeTransaction()
+        rollback_and_begin(trans)
+        self.failUnless(trans.begun, "is not begun")
+        self.failUnless(trans.rollbacked, "is not rollbacked")
