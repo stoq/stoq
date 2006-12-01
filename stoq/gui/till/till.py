@@ -184,7 +184,7 @@ class TillApp(SearchableAppWindow):
     def _close_till(self):
         """
         Closes the till
-        @param: True if the till was closed, otherwise False
+        @returns: True if the till was closed, otherwise False
         """
         parent = self.get_toplevel()
         if not check_emit_reduce_Z(self.conn, parent):
