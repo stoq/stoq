@@ -452,6 +452,7 @@ class POSApp(AppWindow):
         log.info("Opening till")
         rollback_and_begin(self.conn)
         if verify_and_open_till(self, self.conn):
+            self._update_widgets()
             return
         rollback_and_begin(self.conn)
 
@@ -462,8 +463,10 @@ class POSApp(AppWindow):
 
         log.info("Closing till")
         if verify_and_close_till(self, self.conn):
-
             return False
+
+        self._update_widgets()
+
         self.conn.commit()
 
         return True
