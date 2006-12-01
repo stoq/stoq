@@ -78,13 +78,13 @@ class ITransaction(IConnection):
         @param object: A SQLObject subclass which should be marked as modified
         """
 
-    def savepoint(self, name):
+    def savepoint(name):
         """
         Creates a new savepoint
         @param name: name of savepoint
         """
 
-    def rollback_to_savepoint(self, name):
+    def rollback_to_savepoint(name):
         """
         Rollback to a savepoint
         @param name: name of the savepoint
