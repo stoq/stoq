@@ -61,6 +61,8 @@ class Till(Domain):
         - I{STATUS_OPEN}: this till is opened and we can make sales for it.
         - I{STATUS_CLOSED}: end of the day, the till is closed and no more
                             financial operations can be done in this store.
+        - I{initial_cash_amount}: The total amount we have in the moment we
+                                  are opening the till.
         - I{final_cash_amount}: The total amount we have in the moment we
                                 are closing the till.
         - I{opening_date}: When the till was opened or None if it has not yet
@@ -80,7 +82,8 @@ class Till(Domain):
                 STATUS_CLOSED:  _(u"Closed")}
 
     status = IntCol(default=STATUS_PENDING)
-    final_cash_amount = PriceCol(default=0)
+    initial_cash_amount = PriceCol(default=0, notNull=True)
+    final_cash_amount = PriceCol(default=0, notNull=True)
     opening_date = DateTimeCol(default=None)
     closing_date = DateTimeCol(default=None)
     station = ForeignKey('BranchStation')
@@ -150,16 +153,16 @@ class Till(Domain):
             elif last_till.opening_date.date() == today:
                 raise TillError(_("A till has already been opened today"))
 
-            final_cash = last_till.final_cash_amount
-            if final_cash > 0:
-                reason = _(u'Cash amount remaining of %s'
-                           % last_till.closing_date.strftime('%x'))
-                self.create_credit(final_cash, reason)
-
             # FIXME: Move to sale.confirm()
             sales = last_till.get_unconfirmed_sales()
             for sale in sales:
                 sale.till = self
+
+            initial_cash_amount = last_till.final_cash_amount
+        else:
+            initial_cash_amount = 0
+
+        self.initial_cash_amount = initial_cash_amount
 
         if IPaymentGroup(self, None) is None:
             # Add a IPaymentGroup facet for the new till and make it easily
@@ -181,10 +184,16 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
-        balance = self.get_balance()
-        if removed > balance:
-            raise ValueError("The cash amount that you want to send is "
-                             "greater than the current balance.")
+        closing_date = datetime.datetime.now()
+
+        if removed:
+            if removed > self.get_balance():
+                raise ValueError("The cash amount that you want to send is "
+                                 "greater than the current balance.")
+
+            self.create_debit(removed,
+                              _(u'Amount removed from Till on %s' %
+                                closing_date.strftime('%x')))
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale)
@@ -193,8 +202,8 @@ class Till(Domain):
             for payment in group.get_items():
                 payment.status = Payment.STATUS_PENDING
 
-        self.closing_date = datetime.datetime.now()
-        self.final_cash_amount = balance - removed
+        self.closing_date = closing_date
+        self.final_cash_amount = self.get_balance()
         self.status = Till.STATUS_CLOSED
 
     def create_debit(self, value, reason=u""):
@@ -261,7 +270,7 @@ class Till(Domain):
         """
         results = TillFiscalOperationsView.selectBy(
             till_id=self.id, connection=self.get_connection())
-        return currency(results.sum('value') or 0)
+        return currency(self.initial_cash_amount + (results.sum('value') or 0))
 
     def get_entries(self):
         return TillFiscalOperationsView.selectBy(
