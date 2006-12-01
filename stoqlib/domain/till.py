@@ -219,11 +219,6 @@ class Till(Domain):
         group = self._get_payment_group()
         return group.create_credit(value, reason, self)
 
-    def get_cash_total(self):
-        results = TillEntry.selectBy(
-            tillID=self.id, connection=self.get_connection())
-        return currency(results.sum('value') or 0)
-
     def get_unconfirmed_sales(self):
         """
         Fetches a list of all sales which are not confirmed
@@ -328,6 +323,7 @@ class TillEntry(Domain):
     is_initial_cash_amount = BoolCol(default=False)
     till = ForeignKey("Till")
     payment_group = ForeignKey("AbstractPaymentGroup", default=None)
+
 
 
 #

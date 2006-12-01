@@ -113,7 +113,7 @@
                         </child>
                         <child>
                             <widget class="ProxyLabel" id="total_balance">
-                                <property name="data_type">Decimal</property>
+                                <property name="data_type">currency</property>
                                 <property name="model_attribute">total_balance</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">1.0</property>
