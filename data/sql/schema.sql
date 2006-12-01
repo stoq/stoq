@@ -450,6 +450,7 @@ CREATE TABLE till (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
+    initial_cash_amount numeric(10,2),
     final_cash_amount numeric(10,2),
     opening_date timestamp without time zone,
     closing_date timestamp without time zone,
