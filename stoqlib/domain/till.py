@@ -57,20 +57,18 @@ class Till(Domain):
     """A definition of till operation.
 
     B{Attributes}:
-        - I{STATUS_PENDING}: this till have some sales unconfirmed when
-                             closing the till of the last day but it's
-                             not opened yet.
+        - I{STATUS_PENDING}: this till is created, but not yet opened
         - I{STATUS_OPEN}: this till is opened and we can make sales for it.
         - I{STATUS_CLOSED}: end of the day, the till is closed and no more
                             financial operations can be done in this store.
-        - I{initial_cash_amount}: The total amount we have in the moment we
-                                  are opening the till. This value is useful
-                                  when providing change during sales.
         - I{final_cash_amount}: The total amount we have in the moment we
                                 are closing the till.
-        - I{station}: a till operation is always associated with a branch
-                      station which means the computer in a branch company
-                      responsible to open the till
+        - I{opening_date}: When the till was opened or None if it has not yet
+                           been opened.
+        - I{closing_date}: When the till was closed or None if it has not yet
+                           been closed
+        - I{station}: the station associated with the till, eg the computer
+                      which opened it.
     """
 
     (STATUS_PENDING,
@@ -78,8 +76,8 @@ class Till(Domain):
      STATUS_CLOSED) = range(3)
 
     statuses = {STATUS_PENDING: _(u"Pending"),
-                STATUS_OPEN:    _("Opened"),
-                STATUS_CLOSED:  _("Closed")}
+                STATUS_OPEN:    _(u"Opened"),
+                STATUS_CLOSED:  _(u"Closed")}
 
     status = IntCol(default=STATUS_PENDING)
     final_cash_amount = PriceCol(default=0)
@@ -270,6 +268,11 @@ class Till(Domain):
             till_id=self.id, connection=self.get_connection())
 
     def get_initial_cash_amount(self):
+        """
+        Get the total amount we have in the moment we are opening the till.
+        This value is useful when providing change during sales.
+        @returns: the initial amount
+        """
         entry = TillFiscalOperationsView.selectOneBy(
             till_id=self.id,
             is_initial_cash_amount=True,
