@@ -2,7 +2,6 @@
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
 <glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="DateSearchSlave">
-        <property name="visible">True</property>
         <child>
             <widget class="GtkVBox" id="vbox1">
                 <property name="spacing">5</property>
