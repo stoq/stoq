@@ -65,7 +65,7 @@ def verify_and_open_till(till, conn):
         warning(e)
         model = None
 
-    if finish_transaction(till.conn, model):
+    if finish_transaction(conn, model):
         return True
 
     return False
@@ -77,11 +77,11 @@ def verify_and_close_till(till, conn, *args):
     model = till.run_dialog(TillClosingEditor, conn)
 
     # TillClosingEditor closes the till
-    if not finish_transaction(till.conn, model):
+    if not finish_transaction(conn, model):
         return False
 
     opened_sales = Sale.select(Sale.q.status == Sale.STATUS_OPENED,
-                               connection=till.conn)
+                               connection=conn)
     if not opened_sales:
         return False
 
@@ -90,7 +90,7 @@ def verify_and_close_till(till, conn, *args):
     # opened yet, but it will be considered when opening a
     # new operation
     branch_station = opened_sales[0].till.station
-    new_till = Till(connection=till.conn,
+    new_till = Till(connection=conn,
                     station=branch_station)
     for sale in opened_sales:
         sale.till = new_till
