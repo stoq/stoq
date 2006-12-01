@@ -209,15 +209,11 @@ class BaseCashSlave(BaseEditorSlave):
         self.date.set_text(str(datetime.today().date()))
 
     def validate_confirm(self):
-        if self.model.value <= 0:
-            self.value.set_invalid( _("Value Must be greater than zero"))
-            return False
-
         zero = currency(0)
         if self.model.get_balance() < zero:
-            self.value.set_invali(_("You can not specify an amount "
-                                    "removed greater than the "
-                                    "till balance."))
+            self.value.set_invalid(_("You can not specify an amount "
+                                     "removed greater than the "
+                                     "till balance."))
             return False
 
         return True
