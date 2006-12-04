@@ -36,7 +36,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.slaves.filterslave import FilterSlave
-from stoqlib.gui.slaves.tillslave import TillFiscalOperationsToolbar
 from stoqlib.domain.till import TillFiscalOperationsView, Till
 
 
@@ -54,11 +53,6 @@ class TillFiscalOperationsSearch(SearchDialog):
     def __init__(self, conn):
         SearchDialog.__init__(self, conn)
         self.setup_summary_label('value', "<b>%s</b>" % (u"Total:"))
-        self._setup_slaves()
-
-    def _setup_slaves(self):
-        slave = TillFiscalOperationsToolbar()
-        self.attach_slave("extra_holder", slave)
 
     #
     # SearchDialog Hooks
@@ -83,8 +77,7 @@ class TillFiscalOperationsSearch(SearchDialog):
         status = self.filter_slave.get_selected_status()
         if status == ALL_ITEMS_INDEX:
             return base_query
-        q2 = TillFiscalOperationsView.q.status == status
-        return AND(base_query, q2)
+        return AND(base_query, TillFiscalOperationsView.q.status == status)
 
     def update_klist(self, *args):
         SearchDialog.update_klist(self, *args)

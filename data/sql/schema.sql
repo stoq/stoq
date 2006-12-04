@@ -1780,7 +1780,8 @@ CREATE VIEW iss_view AS
 --    station_name            - the value of name branch_station name column
 --    branch_id               - the id of the person_adapt_to_branch table
 --
-CREATE VIEW till_fiscal_operations_view AS
+
+CREATE VIEW till_entry_and_payment_view AS
 
   SELECT DISTINCT
   till_entry.identifier AS id,
@@ -1831,6 +1832,38 @@ CREATE VIEW till_fiscal_operations_view AS
 
         INNER JOIN person_adapt_to_branch
         ON (branch_station.branch_id = person_adapt_to_branch.id);
+
+--
+-- Stores information about payments
+-- Available fields are:
+--    identifier              - the identifier of till entries and payments
+--    date                    - the date when the entry was created
+--    description             - the entry description
+--    value                   - the entry value
+--    station_name            - the value of name branch_station name column
+--
+CREATE VIEW till_fiscal_operations_view AS
+
+  SELECT DISTINCT
+    payment.id AS id,
+    payment.identifier AS identifier,
+    payment.open_date AS date,
+    payment.description AS description,
+    payment.value AS value,
+    branch_station.name AS station_name,
+    person_adapt_to_branch.id AS branch_id,
+    till.status AS status
+
+    FROM payment
+
+      INNER JOIN till
+      ON (payment.till_id = till.id)
+
+      INNER JOIN branch_station
+      ON (till.station_id = branch_station.id)
+
+      INNER JOIN person_adapt_to_branch
+      ON (branch_station.branch_id = person_adapt_to_branch.id);
 
 --
 -- Finally create the system_table which we use to verify that the schema

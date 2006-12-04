@@ -254,7 +254,7 @@ class Till(Domain):
         return False
 
     #
-    # Operations on TillFiscalOperationsView
+    # Operations on TillEntryAndPaymentView
     #
     # TODO: Should they be moved to the view itself or should the view
     #       only be treated as an implementation details?
@@ -268,12 +268,12 @@ class Till(Domain):
         money, of all the sales associated with this operation
         *plus* the initial cash amount.
         """
-        results = TillFiscalOperationsView.selectBy(
+        results = TillEntryAndPaymentView.selectBy(
             till_id=self.id, connection=self.get_connection())
         return currency(self.initial_cash_amount + (results.sum('value') or 0))
 
     def get_entries(self):
-        return TillFiscalOperationsView.selectBy(
+        return TillEntryAndPaymentView.selectBy(
             till_id=self.id, connection=self.get_connection())
 
     def get_initial_cash_amount(self):
@@ -282,7 +282,7 @@ class Till(Domain):
         This value is useful when providing change during sales.
         @returns: the initial amount
         """
-        entry = TillFiscalOperationsView.selectOneBy(
+        entry = TillEntryAndPaymentView.selectOneBy(
             till_id=self.id,
             is_initial_cash_amount=True,
             connection=self.get_connection())
@@ -292,14 +292,14 @@ class Till(Domain):
         return entry.value
 
     def get_credits_total(self):
-        view = TillFiscalOperationsView
+        view = TillEntryAndPaymentView
         results = view.select(AND(view.q.value > 0,
                                   view.q.till_id == self.id),
                               connection=self.get_connection())
         return currency(results.sum('value') or 0)
 
     def get_debits_total(self):
-        view = TillFiscalOperationsView
+        view = TillEntryAndPaymentView
         results = view.select(AND(view.q.value < 0,
                                   view.q.till_id == self.id),
                               connection=self.get_connection())
@@ -394,6 +394,18 @@ Till.registerFacet(TillAdaptToPaymentGroup, IPaymentGroup)
 
 
 class TillFiscalOperationsView(SQLObject, BaseSQLView):
+    """Stores informations about till payment tables
+    """
+
+    identifier = IntCol()
+    date = DateTimeCol()
+    description = UnicodeCol()
+    station_name = UnicodeCol()
+    value = PriceCol()
+    branch_id = IntCol()
+    status = IntCol()
+
+class TillEntryAndPaymentView(SQLObject, BaseSQLView):
     """Stores informations about till fiscal operations, which is a union
     between till_entry and payment tables
     """
@@ -409,7 +421,6 @@ class TillFiscalOperationsView(SQLObject, BaseSQLView):
     branch_id = IntCol()
     status = IntCol()
 
-
 #
 # Functions
 #
@@ -422,7 +433,7 @@ def get_last_till_operation_for_current_branch(conn):
     """
 
     branch = get_current_branch(conn)
-    result = TillFiscalOperationsView.selectBy(
+    result = TillEntryAndPaymentView.selectBy(
         status=Till.STATUS_CLOSED,
         branch_id=branch.id,
         connection=conn).orderBy('date')
