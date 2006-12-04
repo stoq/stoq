@@ -28,7 +28,6 @@ import gtk
 from kiwi.argcheck import argcheck
 from kiwi.log import Logger
 from zope.interface import implements
-from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.cheque import ChequePrinter
 from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
@@ -42,7 +41,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
@@ -115,15 +113,8 @@ def _emit_reading(conn, cmd):
 
 
 def get_device_settings_by_station(conn, station, device_type):
-    query = AND(DeviceSettings.q.stationID == station.id,
-                DeviceSettings.q.type == device_type)
-    result = DeviceSettings.select(query, connection=conn)
-    result_quantity = result.count()
-    if result_quantity > 1:
-        raise DatabaseInconsistency("It's not possible to have more than "
-                                    "one setting for the same device type"
-                                    " and the same machine")
-    return result_quantity and result[0] or None
+    return DeviceSettings.selectOneBy(station=station, type=device_type,
+                                      connection=conn)
 
 def get_fiscal_printer_settings_by_station(conn, station):
     """ Returns the DeviceSettings object representing the printer currently
@@ -529,3 +520,4 @@ class FiscalCoupon:
             return False
         self.sale.coupon_id = coupon_id
         return True
+
