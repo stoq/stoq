@@ -43,8 +43,8 @@ from stoqlib.domain.sale import SaleAdaptToPaymentGroup
 from stoqlib.domain.till import TillAdaptToPaymentGroup, Till
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.base import (Payment, PaymentAdaptToInPayment,
-                                         AbstractPaymentGroup)
+from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
+                                            AbstractPaymentGroup)
 from stoqlib.domain.purchase import PurchaseOrderAdaptToPaymentGroup
 from stoqlib.domain.base import (Domain, InheritableModel,
                                  InheritableModelAdapter)

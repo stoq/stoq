@@ -37,7 +37,7 @@ from stoqlib.domain.till import Till
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
                                             FinanceDetails)
-from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
 

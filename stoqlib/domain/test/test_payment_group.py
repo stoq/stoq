@@ -25,7 +25,7 @@
 import datetime
 
 from stoqlib.domain.interfaces import IPaymentGroup
-from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.defaults import INTERVALTYPE_MONTH, METHOD_BILL
 
 from stoqlib.domain.test.domaintest import DomainTest

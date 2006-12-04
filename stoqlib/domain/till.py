@@ -40,7 +40,7 @@ from stoqlib.database.runtime import get_current_branch
 from stoqlib.exceptions import TillError, DatabaseInconsistency
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.payment.base import AbstractPaymentGroup, Payment
+from stoqlib.domain.payment.payment import AbstractPaymentGroup, Payment
 from stoqlib.domain.interfaces import (IPaymentGroup, ITillOperation,
                                        IOutPayment, IInPayment)
 from stoqlib.domain.station import BranchStation

@@ -35,7 +35,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import METHOD_BILL
 from stoqlib.domain.base import Domain
 from stoqlib.lib.parameters import sysparam
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.interfaces import IStorable, IPaymentGroup
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.service import Service

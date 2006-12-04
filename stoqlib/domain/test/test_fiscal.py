@@ -24,7 +24,7 @@
 """ This module tests all fiscal data"""
 
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.fiscal import (CfopData,
                                    AbstractFiscalBookEntry,
                                    IcmsIpiBookEntry, IssBookEntry)

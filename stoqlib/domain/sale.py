@@ -46,7 +46,7 @@ from stoqlib.domain.renegotiation import (RenegotiationData,
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.sellable import ASellableItem
 from stoqlib.domain.fiscal import IssBookEntry, IcmsIpiBookEntry
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.product import ProductSellableItem
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.giftcertificate import (GiftCertificateItem,
