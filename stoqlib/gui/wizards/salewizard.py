@@ -105,9 +105,6 @@ class PaymentMethodStep(WizardEditorStep):
         if 1: # not self.slaves_dict.has_key(slave_class):
             slave = slave_class(*slave_args)
             self.slaves_dict[slave_class] = slave
-            if slave_class is BillMethodSlave:
-                slave.bank_label.hide()
-                slave.bank_combo.hide()
         else:
             slave = self.slaves_dict[slave_class]
 

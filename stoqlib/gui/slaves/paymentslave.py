@@ -572,6 +572,14 @@ class CheckMethodSlave(BasePaymentMethodSlave):
 class BillMethodSlave(BasePaymentMethodSlave):
     _data_slave_class = BillDataSlave
 
+    def __init__(self, wizard, parent, conn, sale, payment_method,
+                 outstanding_value=currency(0)):
+        BasePaymentMethodSlave.__init__(self, wizard, parent, conn,
+                                        sale, payment_method,
+                                        outstanding_value=outstanding_value)
+        self.bank_label.hide()
+        self.bank_combo.hide()
+
     def get_slave_by_inpayment(self, inpayment):
         adapted = inpayment.get_adapted()
         return self.get_payment_slave(adapted)
