@@ -35,7 +35,7 @@ from stoqlib.database.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
 from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM
-from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
 from stoqlib.gui.search.categorysearch import (BaseSellableCatSearch,
