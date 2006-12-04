@@ -483,7 +483,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
     # Callbacks
     #
 
-    def on_add_button__clicked(self, *args):
+    def on_add_button__clicked(self, button):
         self._add_item()
 
     def on_certificate_number__activate(self, *args):

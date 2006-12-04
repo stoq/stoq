@@ -137,7 +137,7 @@ class SaleDetailsDialog(BaseEditor):
         print_report(SaleOrderReport,
                      Sale.get(self.model.id, connection=self.conn))
 
-    def on_details_button__clicked(self, *args):
+    def on_details_button__clicked(self, button):
         if not self.model.client_id:
             raise StoqlibError("You should never call ClientDetailsDialog "
                                "for sales which clients were not specified")
@@ -145,7 +145,7 @@ class SaleDetailsDialog(BaseEditor):
                              connection=self.conn)
         run_dialog(ClientDetailsDialog, self, self.conn, client)
 
-    def on_cancel_details_button__clicked(self, *args):
+    def on_cancel_details_button__clicked(self, button):
         run_dialog(SaleCancellationDetailsDialog, self, self.conn,
                    self.sale_order)
 

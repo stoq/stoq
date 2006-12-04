@@ -224,13 +224,13 @@ class AdditionListSlave(GladeSlaveDelegate):
     def on_klist__selection_changed(self, *args):
         self._update_sensitivity()
 
-    def on_add_button__clicked(self, *args):
+    def on_add_button__clicked(self, button):
         self._run()
 
-    def on_edit_button__clicked(self, *args):
+    def on_edit_button__clicked(self, button):
         self._edit()
 
-    def on_delete_button__clicked(self, *args):
+    def on_delete_button__clicked(self, button):
         self._clear()
 
 

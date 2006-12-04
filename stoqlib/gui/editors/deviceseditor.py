@@ -387,5 +387,5 @@ class DeviceSettingsEditor(BaseEditor):
         self._update_constants_button()
         self.refresh_ok()
 
-    def on_constants_button__clicked(self, *args):
+    def on_constants_button__clicked(self, button):
         self._edit_driver_constants()
