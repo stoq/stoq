@@ -42,7 +42,7 @@ from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.tilloperation import (TillOperationDialog,
+from stoqlib.gui.dialogs.tilloperation import (TillHistoryDialog,
                                                verify_and_open_till,
                                                verify_and_close_till)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -130,7 +130,7 @@ class TillApp(SearchableAppWindow):
         self.TillOpen.set_sensitive(open_till)
         self.AddCash.set_sensitive(has_till)
         self.RemoveCash.set_sensitive(has_till)
-        self.Treasury.set_sensitive(has_till)
+        self.TillHistory.set_sensitive(has_till)
 
         if not till:
             text = _(u"Till Closed")
@@ -298,8 +298,8 @@ class TillApp(SearchableAppWindow):
     def _on_till_operation_close_till(self, till_operation):
         self._close_till()
 
-    def _on_treasury_action__clicked(self, button):
-        dialog = TillOperationDialog(self.conn)
+    def on_TillHistory__activate(self, button):
+        dialog = TillHistoryDialog(self.conn)
         signal_id = dialog.connect('close-till',
                                    self._on_till_operation_close_till)
         self.run_dialog(dialog, self.conn)
