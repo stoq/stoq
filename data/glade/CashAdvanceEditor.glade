@@ -56,7 +56,7 @@
                             </packing>
                         </child>
                         <child>
-                            <widget class="ProxyComboBoxEntry" id="employee_combo">
+                            <widget class="ProxyComboEntry" id="employee_combo">
                                 <property name="data_type">unicode</property>
                                 <property name="mandatory">True</property>
                                 <property name="sizegroup">casheditor_entry_sizegroup</property>
