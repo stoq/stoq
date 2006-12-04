@@ -42,9 +42,9 @@ from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
 from stoqlib.lib.message import yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.dialogs import run_dialog
-from stoqlib.gui.dialogs.tilloperation import (TillHistoryDialog,
-                                               verify_and_open_till,
-                                               verify_and_close_till)
+from stoqlib.gui.dialogs.tillhistory import (TillHistoryDialog,
+                                             verify_and_open_till,
+                                             verify_and_close_till)
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.gui.editors.tilleditor import CashInEditor, CashOutEditor
 from stoqlib.gui.search.personsearch import ClientSearch
@@ -165,7 +165,7 @@ class TillApp(SearchableAppWindow):
     # Till methods
     #
 
-    # FIXME: Move to tilloperations.py
+    # FIXME: Move
     def _open_till(self):
         """
         Opens the till

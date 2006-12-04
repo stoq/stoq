@@ -59,8 +59,8 @@ from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.search.giftcertificatesearch import GiftCertificateSearch
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
-from stoqlib.gui.dialogs.tilloperation import (verify_and_open_till,
-                                               verify_and_close_till)
+from stoqlib.gui.dialogs.tillhistory import (verify_and_open_till,
+                                             verify_and_close_till)
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.product import ProductSellableItem, ProductAdaptToSellable
 from stoqlib.domain.person import PersonAdaptToClient
@@ -444,7 +444,7 @@ class POSApp(AppWindow):
     # Till methods
     #
 
-    # FIXME: Move to tilloperations.py
+    # FIXME: Move
     def _open_till(self):
         parent = self.get_toplevel()
         if not check_emit_read_X(self.conn, parent):
