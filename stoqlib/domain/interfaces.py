@@ -480,11 +480,6 @@ class IDelivery(Interface):
 class IMoneyPM(IPaymentMethodFacet):
     """Defines a money payment method"""
 
-    def get_change():
-        """Return the difference between the total amount paid and the total
-        sale value
-        """
-
 class ICheckPM(IPaymentMethodFacet):
     """Defines a check payment method"""
 
