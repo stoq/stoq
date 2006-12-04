@@ -35,17 +35,14 @@ from zope.interface.interface import InterfaceClass
 
 from stoqlib.database.columns import DecimalCol
 from stoqlib.database.runtime import get_connection
-from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
-from stoqlib.domain.sale import SaleAdaptToPaymentGroup
-from stoqlib.domain.till import TillAdaptToPaymentGroup, Till
+from stoqlib.domain.till import Till
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             AbstractPaymentGroup)
-from stoqlib.domain.purchase import PurchaseOrderAdaptToPaymentGroup
 from stoqlib.domain.base import (Domain, InheritableModel,
                                  InheritableModelAdapter)
 from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
@@ -436,15 +433,7 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
     # Money payment method must be always available
     active_editable = False
 
-    description = _(u'Money')
     destination = ForeignKey('PaymentDestination')
-
-    #
-    # IMoneyPM implementation
-    #
-
-    def get_change(self):
-        raise NotImplementedError
 
     #
     # Auxiliar method
@@ -454,35 +443,19 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
         # Money method supports only one payment
         return 1
 
-    def _create_till_entry(self, total, group):
-        from stoqlib.domain.till import TillEntry
-        if isinstance(group, SaleAdaptToPaymentGroup):
-            till = group.get_adapted().till
-        elif isinstance(group, TillAdaptToPaymentGroup):
-            till = group.get_adapted()
-        elif isinstance(group, PurchaseOrderAdaptToPaymentGroup):
-            # Johan 2006-09-28: HACK: No idea if this is correct
-            return
-        else:
-            raise StoqlibError(
-                "Invalid Payment group, got %s" % group)
-
+    def _setup_payment(self, total, group):
         description = _(u'1/1 %s for %s') % (
-            self.description, group.get_group_description())
+            _(u'Money'), group.get_group_description())
 
-        TillEntry(description=description,
-                  value=total,
-                  till=till,
-                  payment_group=group,
-                  connection=self.get_connection())
+        group.add_payment(total, description, self)
 
     # FIXME: This is absolutely horrible (**kwargs issues)
 
     def setup_outpayments(self, total, group, *args, **kwargs):
-        self._create_till_entry(-abs(total), group)
+        self._setup_payment(total, group)
 
     def setup_inpayments(self, total, group, *args, **kwargs):
-        self._create_till_entry(total, group)
+        self._setup_payment(total, group)
 
 PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
 
