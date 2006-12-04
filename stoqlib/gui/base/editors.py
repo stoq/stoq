@@ -25,12 +25,15 @@
 ##
 """ Base classes for editors """
 
+from kiwi.log import Logger
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.label import ProxyLabel
 
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
+
+log = Logger('stoqlib.gui.editors')
 
 _ = stoqlib_gettext
 
@@ -58,7 +61,15 @@ class BaseEditorSlave(GladeSlaveDelegate):
         self.edit_mode = model is not None
         self.visual_mode = visual_mode
 
-        model = model or self.create_model(self.conn)
+        if model:
+            created = ""
+        else:
+            created = "created "
+            model = self.create_model(self.conn)
+
+        log.info("%s editor using a %smodel %s" % (
+            self.__class__.__name__, created, type(model).__name__))
+
         if not model:
             raise ValueError("Editors must define a model at this point")
 
