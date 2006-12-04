@@ -193,10 +193,10 @@ class _SearchBarEntry(GladeSlaveDelegate):
     # Kiwi callbacks
     #
 
-    def on_search_button__clicked(self, *args):
+    def on_search_button__clicked(self, button):
         self.emit('selected')
 
-    def on_search_entry__activate(self, *args):
+    def on_search_entry__activate(self, entry):
         self.emit('selected')
 
     #

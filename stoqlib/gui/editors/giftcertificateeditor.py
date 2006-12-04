@@ -167,8 +167,8 @@ class GiftCertificateEditor(BaseEditor):
     # Kiwi callbacks
     #
 
-    def after_single_check__toggled(self, *args):
+    def after_single_check__toggled(self, button):
         self._update_view()
 
-    def after_multiple_check__toggled(self, *args):
+    def after_multiple_check__toggled(self, button):
         self._update_view()

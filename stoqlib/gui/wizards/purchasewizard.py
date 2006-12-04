@@ -101,7 +101,7 @@ class FinishPurchaseStep(WizardEditorStep):
     # Kiwi callbacks
     #
 
-    def on_transporter_button__clicked(self, *args):
+    def on_transporter_button__clicked(self, button):
         if run_person_role_dialog(TransporterEditor, self, self.conn,
                                   self.model.transporter):
             self.conn.commit()
@@ -291,7 +291,7 @@ class PurchaseItemStep(AbstractItemStep):
     # callbacks
     #
 
-    def on_add_new_item_button__clicked(self, *args):
+    def on_add_new_item_button__clicked(self, button):
         self.run_sellable_editor()
 
 
