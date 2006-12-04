@@ -39,7 +39,7 @@ from stoqlib.database.database import finish_transaction, rollback_and_begin
 from stoqlib.exceptions import TillError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import warning
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
@@ -101,7 +101,6 @@ class TillHistoryDialog(GladeSlaveDelegate):
     widgets = ('cash_out_button',
                'cash_advance_button',
                'cash_in_button',
-               'reverse_selection_button',
                'close_till_button',
                'total_balance_label',
                'payments')
@@ -194,35 +193,6 @@ class TillHistoryDialog(GladeSlaveDelegate):
                               color='red', data_func=payment_value_colorize,
                               width=120)]
 
-    def _reverse_selection(self):
-        if self.selected > 1:
-            transaction_string = _(u'transactions')
-        else:
-            transaction_string = _(u'transaction')
-            self.selected = ''
-        text = _(u'Are you sure you want to reverse the \n%s selected '
-                 '%s?') % (self.selected, transaction_string)
-        if self.canceled_items > 1:
-            item_string = _('items')
-        else:
-            item_string = _('item')
-        if self.canceled_items > 0:
-            text += _(u'\nWarning: It has %d cancelled %s in your '
-                      'selection.') % (self.canceled_items, item_string)
-        is_initial_cash = self._check_initial_cash_amount()
-        if is_initial_cash:
-            text = _(u"Your selection contains the initial cash amount "
-                     "payment."
-                     "\nIt's not possible to cancel this payment.")
-            warning(text)
-            return
-        if not yesno(text, gtk.RESPONSE_YES, _(u"Cancel"), _(u"Reverse Items")):
-            for item in self.selected_item:
-                item.cancel_till_entry()
-            self.conn.commit()
-        self.search_bar.search_items()
-        self._select_last_item()
-
     def _check_initial_cash_amount(self):
         # This method is wrong.
         # A good way to get the initial cash amount payment would be to
@@ -262,9 +232,6 @@ class TillHistoryDialog(GladeSlaveDelegate):
 
     def on_cash_advance_button__clicked(self, button):
         self._run_editor(CashAdvanceEditor)
-
-    def on_reverse_selection_button__clicked(self, button):
-        self._reverse_selection()
 
     def on_close_till_button__clicked(self, button):
         self.emit('close-till')
