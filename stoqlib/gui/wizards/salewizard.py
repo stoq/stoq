@@ -90,14 +90,13 @@ class PaymentMethodStep(WizardEditorStep):
         self.group = wizard.payment_group
         self.renegotiation_mode = outstanding_value > currency(0)
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
+        self.conn.savepoint('payment')
 
         self.handler_block(self.method_combo, 'changed')
         self._setup_combo()
         self.handler_unblock(self.method_combo, 'changed')
 
         self._update_payment_method_slave()
-        print 'SAVE'
-        self.conn.savepoint('payment')
 
     def _set_method_slave(self, slave_class, slave_args):
         if not self.slaves_dict.has_key(slave_class):
@@ -164,10 +163,8 @@ class PaymentMethodStep(WizardEditorStep):
     #
 
     def on_method_combo__changed(self, *args):
-        print 'ROLLBACK'
         self.conn.rollback('payment')
         self._update_payment_method_slave()
-        print 'SAVE'
         self.conn.savepoint('payment')
 
 class SaleRenegotiationOutstandingStep(WizardEditorStep):
