@@ -35,7 +35,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoqlib.domain.payment.base import Payment
+from stoqlib.domain.payment.payment import Payment
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
