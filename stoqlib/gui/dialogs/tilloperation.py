@@ -43,7 +43,7 @@ from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.till import Till
+from stoqlib.domain.till import TillEntryAndPaymentView, Till
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
@@ -95,9 +95,9 @@ def verify_and_close_till(app, conn, *args):
     for sale in opened_sales:
         sale.till = new_till
 
-class TillOperationDialog(GladeSlaveDelegate):
-    app_name = _('Till Operations')
-    gladefile = 'TillOperationDialog'
+class TillHistoryDialog(GladeSlaveDelegate):
+    app_name = _('Till History')
+    gladefile = 'TillHistoryDialog'
     widgets = ('cash_out_button',
                'cash_advance_button',
                'cash_in_button',
@@ -106,7 +106,7 @@ class TillOperationDialog(GladeSlaveDelegate):
                'total_balance_label',
                'payments')
 
-    title = _('Current Till Operation')
+    title = _('Current Till History')
     size = (800, 500)
 
     gsignal('close-till')
@@ -137,12 +137,12 @@ class TillOperationDialog(GladeSlaveDelegate):
         rollback_and_begin(self.conn)
 
     def _setup_slaves(self):
-        self.search_bar = SearchBar(self.conn, Payment,
+        self.search_bar = SearchBar(self.conn, TillEntryAndPaymentView,
                                     self._get_columns(),
                                     searching_by_date=True)
         self.search_bar.register_extra_query_callback(self.get_extra_query)
-        self.search_bar.set_searchbar_labels(_('Payments Matching'))
-        self.search_bar.set_result_strings(_('payment'), _('payments'))
+        self.search_bar.set_searchbar_labels(_('Items Matching'))
+        self.search_bar.set_result_strings(_('item'), _('items'))
         self.search_bar.connect('search-activate', self._update_list)
         self.search_bar.connect('before-search-activate', self._sync)
         self.attach_slave('searchbar_holder', self.search_bar)
@@ -151,12 +151,6 @@ class TillOperationDialog(GladeSlaveDelegate):
         self.selected_item = self.payments.get_selected_rows()
         self.canceled_items = 0
         self.selected = 0
-        for item in self.selected_item:
-            if item.status == Payment.STATUS_CANCELLED:
-                self.canceled_items += 1
-            if item.status == Payment.STATUS_PENDING:
-                self.selected += 1
-        self.reverse_selection_button.set_sensitive(self.selected > 0)
 
     def _setup_widgets(self):
         self.payments.set_columns(self._get_columns())
@@ -192,7 +186,7 @@ class TillOperationDialog(GladeSlaveDelegate):
     def _get_columns(self, *args):
         return [Column('identifier', _('Number'), data_type=int, width=100,
                         format='%03d', sorted=True),
-                Column('due_date', _('Due Date'),
+                Column('date', _('Due Date'),
                        data_type=datetime.date, width=120),
                 Column('description', _('Description'), data_type=str,
                        expand=True),
