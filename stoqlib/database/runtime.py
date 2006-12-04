@@ -102,11 +102,10 @@ class StoqlibTransaction(Transaction):
     def savepoint(self, name):
         if not sqlIdentifier(name):
             raise ValueError("Invalid savepoint name: %r" % name)
-        if name in self._savepoints:
-            raise ValueError("There's already a savepoint called %r" % name)
         self.query('SAVEPOINT %s' % name)
         self._modified_object_sets.append(set())
-        self._savepoints.append(name)
+        if not name in self._savepoints:
+            self._savepoints.append(name)
 
     def rollback_to_savepoint(self, name):
         if not sqlIdentifier(name):
