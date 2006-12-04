@@ -86,6 +86,7 @@ class POSApp(AppWindow):
 
     def __init__(self, app):
         AppWindow.__init__(self, app)
+        self.sale = None
         self.param = sysparam(self.conn)
         self.max_results = self.param.MAX_SEARCH_RESULTS
         self.client_table = PersonAdaptToClient
