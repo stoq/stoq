@@ -30,7 +30,6 @@ import datetime
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
 from kiwi.datatypes import format_price, currency
-from sqlobject.sqlbuilder import AND
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -383,18 +382,13 @@ class BasePaymentMethodSlave(BaseEditorSlave):
             self.payment_list.add_slave(slave)
 
     def get_created_inpayments(self):
-        group = self.wizard.payment_group
-        q1 = Payment.q.methodID == self.method.id
-        q2 = Payment.q.groupID == group.id
-        q3 = Payment.q.status == Payment.STATUS_PREVIEW
-        query = AND(q1, q2, q3)
-        payments = Payment.select(query, connection=self.conn)
-        inpayments = []
-        for payment in payments:
+        for payment in Payment.selectBy(group=self.wizard.payment_group,
+                                        method=self.method,
+                                        status=Payment.STATUS_PREVIEW,
+                                        connection=self.conn):
             inpayment = IInPayment(payment, None)
             if inpayment:
-                inpayments.append(inpayment)
-        return inpayments
+                yield inpayment
 
     def _setup_payments(self):
         group = self.wizard.payment_group
