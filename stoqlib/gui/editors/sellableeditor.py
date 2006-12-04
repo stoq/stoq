@@ -149,7 +149,8 @@ class SellableEditor(BaseEditor):
         self._original_barcode = self._sellable.barcode
         self.setup_widgets()
 
-        self.set_description(ISellable(model).base_sellable_info.description)
+        self.set_description(
+            ISellable(self.model).base_sellable_info.description)
 
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
@@ -285,7 +286,8 @@ class SellableItemEditor(BaseEditor):
             self.quantity.set_range(1, self.model.quantity)
         if not editable_price:
             self.disable_price_fields()
-        self.set_description(model.sellable.base_sellable_info.description)
+        self.set_description(
+            self.model.sellable.base_sellable_info.description)
 
 
     def _get_model_name(self, model_type):

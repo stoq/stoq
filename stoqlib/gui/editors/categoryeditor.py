@@ -40,13 +40,16 @@ class BaseSellableCategoryEditor(BaseEditor):
                      'commission')
     size = (400, 175)
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.get_description())
+
     def create_model(self, conn):
         return BaseSellableCategory(description=u"", connection=conn)
 
     def setup_proxies(self):
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
-        self.set_description(self.model.get_description())
 
 
 class SellableCategoryEditor(BaseEditor):
@@ -57,6 +60,10 @@ class SellableCategoryEditor(BaseEditor):
                      'suggested_markup',
                      'base_category',
                      'commission')
+
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.get_description())
 
     def create_model(self, conn):
         return SellableCategory(
@@ -75,5 +82,4 @@ class SellableCategoryEditor(BaseEditor):
         self.setup_combo()
         self.add_proxy(model=self.model,
                        widgets=SellableCategoryEditor.proxy_widgets)
-        self.set_description(self.model.get_description())
 

@@ -279,7 +279,7 @@ class EmployeeRoleEditor(SimpleEntryEditor):
         SimpleEntryEditor.__init__(self, conn, model, attr_name='name',
                                    name_entry_label=_('Role Name:'),
                                    visual_mode=visual_mode)
-        self.set_description(model.name)
+        self.set_description(self.model.name)
 
     #
     # BaseEditorSlave Hooks

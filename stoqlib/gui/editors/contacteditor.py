@@ -38,6 +38,10 @@ class ContactEditor(BaseEditor):
     gladefile = 'ContactEditor'
     proxy_widgets = ('name', 'phone_number')
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.name)
+
     #
     # BaseEditor Hooks
     #
@@ -47,5 +51,4 @@ class ContactEditor(BaseEditor):
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, ContactEditor.proxy_widgets)
-        self.set_description(self.model.name)
 
