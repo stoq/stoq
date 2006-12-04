@@ -66,6 +66,7 @@ class DeliveryEditor(BaseEditor):
         self.additional_info_label.set_color('Red')
         self.register_validate_function(self._validate_widgets)
         self.update_widgets()
+        self.set_description(self.model_name)
 
     def _validate_widgets(self, validation_value):
         if not self.delivery.get_items():
@@ -140,9 +141,6 @@ class DeliveryEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
-
-    def get_title_model_attribute(self, model):
-        return self.model_name
 
     def create_model(self, conn):
         self._check_products()

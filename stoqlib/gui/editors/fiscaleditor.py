@@ -43,15 +43,13 @@ class CfopEditor(BaseEditor):
     # BaseEditor Hooks
     #
 
-    def get_title_model_attribute(self, model):
-        return model.code
-
     def create_model(self, conn):
         return CfopData(code=u"", description=u"",
                         connection=conn)
 
     def setup_proxies(self):
         self.add_proxy(self.model, CfopEditor.proxy_widgets)
+        self.set_description(self.model.code)
 
 
 class FiscalBookEntryEditor(BaseEditor):

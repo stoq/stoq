@@ -50,8 +50,7 @@ class StationEditor(BaseEditor):
             self.is_active.set_sensitive(False)
             self.branch.set_sensitive(False)
 
-    def get_title_model_attribute(self, model):
-        return model.name
+        self.set_description(model.name)
 
     def create_model(self, conn):
         return BranchStation(name=u"", branch=None,

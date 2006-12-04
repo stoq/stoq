@@ -50,13 +50,10 @@ class ServiceItemEditor(BaseEditor):
     def __init__(self, conn, model):
         BaseEditor.__init__(self, conn, model)
         self.service_name_label.set_bold(True)
-
+        self.set_description(model.sellable.base_sellable_info.description)
     #
     # BaseEditor hooks
     #
-
-    def get_title_model_attribute(self, model):
-        return model.sellable.base_sellable_info.description
 
     def setup_proxies(self):
         self.add_proxy(self.model, ServiceItemEditor.proxy_widgets)
