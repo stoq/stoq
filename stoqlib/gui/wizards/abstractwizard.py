@@ -48,7 +48,7 @@ from stoqlib.gui.editors.noteeditor import NoteEditor
 from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.sale import Sale
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import IPaymentGroup, ISalesPerson
 from stoqlib.domain.sellable import ASellable

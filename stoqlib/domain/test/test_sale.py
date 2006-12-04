@@ -35,7 +35,7 @@ from stoqlib.domain.interfaces import (IClient, IEmployee, ISalesPerson,
                                        ICompany, IIndividual,
                                        ISellable, IPaymentGroup, ICheckPM,
                                        IStorable)
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.product import Product
 from stoqlib.domain.renegotiation import RenegotiationAdaptToReturnSale

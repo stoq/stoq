@@ -40,7 +40,6 @@ from stoqlib.lib.drivers import get_current_cheque_printer_settings
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.account import BankAccount
 from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
-from stoqlib.domain.payment.base import Payment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CreditProviderGroupData,
                                             DebitCardDetails,
@@ -50,6 +49,7 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             FinanceDetails,
                                             PaymentMethodDetails,
                                             AbstractPaymentMethodAdapter)
+from stoqlib.domain.payment.payment import Payment
 
 _ = stoqlib_gettext
 

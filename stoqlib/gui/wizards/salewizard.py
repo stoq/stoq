@@ -49,7 +49,7 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                         CardMethodSlave,
                                         FinanceMethodSlave)
 from stoqlib.domain.payment.methods import get_active_pm_ifaces
-from stoqlib.domain.payment.base import AbstractPaymentGroup
+from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale, GiftCertificateOverpaidSettings
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,

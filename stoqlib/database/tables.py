@@ -83,7 +83,7 @@ _tables = [
                           "AbstractPaymentMethodAdapter",
                           "PaymentMethodDetails"]),
      ('renegotiation', ["AbstractRenegotiationAdapter"]),
-     ('payment.base', ["AbstractPaymentGroup",
+     ('payment.payment', ["AbstractPaymentGroup",
                        "Payment",
                        "PaymentAdaptToInPayment",
                        "PaymentAdaptToOutPayment"]),
