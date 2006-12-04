@@ -51,6 +51,10 @@ class GiftCertificateTypeEditor(BaseEditor):
                      'commission',
                      'max_discount')
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.base_sellable_info.description)
+
     #
     # BaseEditor hooks
     #
@@ -63,7 +67,6 @@ class GiftCertificateTypeEditor(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(self.model, GiftCertificateTypeEditor.proxy_widgets)
-        self.set_description(self.model.base_sellable_info.description)
 
     def setup_slaves(self):
         self.slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)

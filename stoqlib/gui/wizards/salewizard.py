@@ -84,13 +84,20 @@ class PaymentMethodStep(WizardEditorStep):
         self.method_dict = {}
         # A cache for instantiated slaves
         self.slaves_dict = {}
+        self.method_slave = None
+
         self.outstanding_value = outstanding_value
         self.group = wizard.payment_group
         self.renegotiation_mode = outstanding_value > currency(0)
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
-        self.method_slave = None
-        self.setup_combo()
+
+        self.handler_block(self.method_combo, 'changed')
+        self._setup_combo()
+        self.handler_unblock(self.method_combo, 'changed')
+
         self._update_payment_method_slave()
+        print 'SAVE'
+        self.conn.savepoint('payment')
 
     def _set_method_slave(self, slave_class, slave_args):
         if not self.slaves_dict.has_key(slave_class):
@@ -122,14 +129,13 @@ class PaymentMethodStep(WizardEditorStep):
             self.detach_slave(self.slave_holder)
         self.attach_slave(self.slave_holder, self.method_slave)
 
-    def setup_combo(self):
+    def _setup_combo(self):
         active_pm_ifaces = get_active_pm_ifaces()
-        slaves_info = [(iface, slave)
-                           for iface, slave in PaymentMethodStep.slaves_info
-                               if iface in active_pm_ifaces]
         base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
         combo_items = []
-        for iface, slave_class in slaves_info:
+        for iface, slave_class in PaymentMethodStep.slaves_info:
+            if not iface in active_pm_ifaces:
+                continue
             method = iface(base_method)
             if method.is_active:
                 self.method_dict[method] = iface, slave_class
@@ -158,7 +164,11 @@ class PaymentMethodStep(WizardEditorStep):
     #
 
     def on_method_combo__changed(self, *args):
+        print 'ROLLBACK'
+        self.conn.rollback('payment')
         self._update_payment_method_slave()
+        print 'SAVE'
+        self.conn.savepoint('payment')
 
 class SaleRenegotiationOutstandingStep(WizardEditorStep):
     gladefile = 'SaleRenegotiationOutstandingStep'

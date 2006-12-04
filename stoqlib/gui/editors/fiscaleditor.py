@@ -39,6 +39,9 @@ class CfopEditor(BaseEditor):
     gladefile = 'CfopEditor'
     proxy_widgets = ('code', 'description')
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.code)
     #
     # BaseEditor Hooks
     #
@@ -49,7 +52,6 @@ class CfopEditor(BaseEditor):
 
     def setup_proxies(self):
         self.add_proxy(self.model, CfopEditor.proxy_widgets)
-        self.set_description(self.model.code)
 
 
 class FiscalBookEntryEditor(BaseEditor):

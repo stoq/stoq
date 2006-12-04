@@ -45,6 +45,10 @@ class UserProfileEditor(BaseEditor):
     gladefile = 'UserProfileEditor'
     proxy_widgets = ('profile_name', )
 
+    def __init__(self, conn, model):
+        BaseEditor.__init__(self, conn, model)
+        self.set_description(self.model.name)
+
     #
     # BaseEditor Hooks
     #
@@ -55,7 +59,6 @@ class UserProfileEditor(BaseEditor):
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     UserProfileEditor.proxy_widgets)
-        self.set_description(self.model.name)
 
     def setup_slaves(self):
         settings = {}
