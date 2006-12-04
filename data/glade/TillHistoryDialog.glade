@@ -118,17 +118,6 @@
                                                 <property name="position">2</property>
                                             </packing>
                                         </child>
-                                        <child>
-                                            <widget class="GtkButton" id="reverse_selection_button">
-                                                <property name="is_focus">True</property>
-                                                <property name="label" context="yes" translatable="yes">_Reverse Selection</property>
-                                                <property name="use_underline">True</property>
-                                                <property name="visible">True</property>
-                                            </widget>
-                                            <packing>
-                                                <property name="position">3</property>
-                                            </packing>
-                                        </child>
                                     </widget>
                                 </child>
                                 <child>
