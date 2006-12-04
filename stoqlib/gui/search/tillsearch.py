@@ -53,8 +53,7 @@ class TillFiscalOperationsSearch(SearchDialog):
 
     def __init__(self, conn):
         SearchDialog.__init__(self, conn)
-        text = "<b>%s</b>" % (u"Total:")
-        self.setup_summary_label('value', text)
+        self.setup_summary_label('value', "<b>%s</b>" % (u"Total:"))
         self._setup_slaves()
 
     def _setup_slaves(self):
