@@ -99,7 +99,10 @@ class PaymentMethodStep(WizardEditorStep):
         self._update_payment_method_slave()
 
     def _set_method_slave(self, slave_class, slave_args):
-        if not self.slaves_dict.has_key(slave_class):
+        # FIXME: This could be improved to cache the editor, but
+        #        not the models between runs. That requires heavy
+        #        modifications to BaseEditor (separating UI from Persistence)
+        if 1: # not self.slaves_dict.has_key(slave_class):
             slave = slave_class(*slave_args)
             self.slaves_dict[slave_class] = slave
             if slave_class is BillMethodSlave:
@@ -107,6 +110,7 @@ class PaymentMethodStep(WizardEditorStep):
                 slave.bank_combo.hide()
         else:
             slave = self.slaves_dict[slave_class]
+
         self.method_slave = slave
 
     def _update_payment_method(self, iface):
@@ -126,6 +130,7 @@ class PaymentMethodStep(WizardEditorStep):
         self._set_method_slave(slave_class, slave_args)
         if self.get_slave(self.slave_holder):
             self.detach_slave(self.slave_holder)
+
         self.attach_slave(self.slave_holder, self.method_slave)
 
     def _setup_combo(self):
