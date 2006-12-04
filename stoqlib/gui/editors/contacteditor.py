@@ -42,11 +42,10 @@ class ContactEditor(BaseEditor):
     # BaseEditor Hooks
     #
 
-    def get_title_model_attribute(self, model):
-        return model.name
-
     def create_model(self, conn):
         return Liaison(person=None, connection=conn)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model, ContactEditor.proxy_widgets)
+        self.set_description(self.model.name)
+

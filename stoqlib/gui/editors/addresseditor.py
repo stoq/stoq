@@ -79,6 +79,7 @@ class AddressEditor(BaseEditor):
         self.person = person
         self.current_main_address = self.person.get_main_address()
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        self.set_description(self.model_name)
 
     #
     # BaseEditor Hooks
@@ -88,9 +89,6 @@ class AddressEditor(BaseEditor):
         ct_location = CityLocation.get_default(conn)
         return Address(connection=self.conn, person=self.person,
                        city_location=ct_location)
-
-    def get_title_model_attribute(self, model):
-        return self.model_name
 
     def setup_slaves(self):
         self.address_slave = AddressSlave(self.conn, self.person, self.model,

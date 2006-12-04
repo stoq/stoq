@@ -43,12 +43,11 @@ class BaseSellableCategoryEditor(BaseEditor):
     def create_model(self, conn):
         return BaseSellableCategory(description=u"", connection=conn)
 
-    def get_title_model_attribute(self, model):
-        return model.get_description()
-
     def setup_proxies(self):
         self.add_proxy(model=self.model,
                        widgets=BaseSellableCategoryEditor.proxy_widgets)
+        self.set_description(self.model.get_description())
+
 
 class SellableCategoryEditor(BaseEditor):
     gladefile = 'SellableCategoryDataSlave'
@@ -64,9 +63,6 @@ class SellableCategoryEditor(BaseEditor):
             description=u"", base_category=sysparam(conn).DEFAULT_BASE_CATEGORY,
             connection=conn)
 
-    def get_title_model_attribute(self, model):
-        return model.get_description()
-
     def setup_combo(self):
         base_category_list = BaseSellableCategory.select(connection=self.conn)
         items = [(base_cat.description, base_cat)
@@ -79,3 +75,5 @@ class SellableCategoryEditor(BaseEditor):
         self.setup_combo()
         self.add_proxy(model=self.model,
                        widgets=SellableCategoryEditor.proxy_widgets)
+        self.set_description(self.model.get_description())
+

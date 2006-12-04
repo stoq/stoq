@@ -48,6 +48,8 @@ class PaymentMethodEditor(BaseEditor):
         """
         self.model_type = AbstractPaymentMethodAdapter
         BaseEditor.__init__(self, conn, model)
+        self.set_description(model.description)
+
 
     def _setup_widgets(self):
         destinations = PaymentDestination.select(connection=self.conn)
@@ -57,9 +59,6 @@ class PaymentMethodEditor(BaseEditor):
     #
     # BaseEditor Hooks
     #
-
-    def get_title_model_attribute(self, model):
-        return model.description
 
     def setup_proxies(self):
         self._setup_widgets()

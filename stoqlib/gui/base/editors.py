@@ -25,7 +25,6 @@
 ##
 """ Base classes for editors """
 
-
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.ui.widgets.label import ProxyLabel
 
@@ -34,7 +33,6 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.dialogs import BasicWrappingDialog
 
 _ = stoqlib_gettext
-
 
 class BaseEditorSlave(GladeSlaveDelegate):
     """ Base class for editor slaves inheritance. It offers methods for
@@ -83,8 +81,8 @@ class BaseEditorSlave(GladeSlaveDelegate):
         else:
             raise ValueError("Editors must define a model_type or "
                              "model_iface attributes")
-
         self.model = model
+
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         if self.visual_mode:
             self._setup_visual_mode()
@@ -159,13 +157,6 @@ class BaseEditor(BaseEditorSlave):
                        Callsites will decide what could be the best name
                        applicable in each situation.
 
-    get_title_model_attribute = get a certain model attribute value to
-                                allow creating customized editor titles.
-                                Subclasses will choose the right attribute
-                                acording to the editor features and
-                                with usability in mind.
-                                The editor title has this format:
-                                'Edit "title_model_attr" Details'
     """
 
     model_name = None
@@ -177,13 +168,17 @@ class BaseEditor(BaseEditorSlave):
     def __init__(self, conn, model=None, visual_mode=False):
         BaseEditorSlave.__init__(self, conn, model,
                                  visual_mode=visual_mode)
+
         # We can not use self.model for get_title since we will create a new
         # one in BaseEditorSlave if model is None.
         self.main_dialog = BasicWrappingDialog(self,
                                                self.get_title(self.model),
                                                self.header, self.size)
+
+
         if self.hide_footer or self.visual_mode:
             self.main_dialog.hide_footer()
+
         self.register_validate_function(self.refresh_ok)
         self.force_validation()
 
@@ -201,13 +196,21 @@ class BaseEditor(BaseEditorSlave):
             raise ValueError("A model should be defined at this point")
 
         title_format = self._get_title_format()
-        if self.model_name and not self.edit_mode:
-            return title_format % self.model_name
-        model_attr = self.get_title_model_attribute(model)
-        return title_format % model_attr
+        if self.model_name:
+            model_name = self.model_name
+        else:
+            # Fallback to the name of the class
+            model_name = type(self.model).__name__
 
-    def get_title_model_attribute(self, model):
-        raise NotImplementedError
+        return title_format % model_name
+
+    def set_description(self, description):
+        """
+        Sets the description of the model object which is used by the editor
+        @param description:
+        """
+        format = self._get_title_format()
+        self.main_dialog.set_title(format % description)
 
     def refresh_ok(self, validation_value):
         """ Refreshes ok button sensitivity according to widget validators

@@ -149,6 +149,8 @@ class SellableEditor(BaseEditor):
         self._original_barcode = self._sellable.barcode
         self.setup_widgets()
 
+        self.set_description(ISellable(model).base_sellable_info.description)
+
     def set_widget_formats(self):
         for widget in (self.cost, self.stock_total_lbl, self.price):
             widget.set_data_format('%.02f')
@@ -200,10 +202,6 @@ class SellableEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
-
-    def get_title_model_attribute(self, model):
-        sellable = ISellable(model)
-        return sellable.base_sellable_info.description
 
     def setup_combos(self):
         category_list = SellableCategory.select(connection=self.conn)
@@ -287,6 +285,8 @@ class SellableItemEditor(BaseEditor):
             self.quantity.set_range(1, self.model.quantity)
         if not editable_price:
             self.disable_price_fields()
+        self.set_description(model.sellable.base_sellable_info.description)
+
 
     def _get_model_name(self, model_type):
         if not self.model_names.has_key(model_type):
@@ -301,9 +301,6 @@ class SellableItemEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
-
-    def get_title_model_attribute(self, model):
-        return model.sellable.base_sellable_info.description
 
     def setup_proxies(self):
         # We need to setup the widgets format before the proxy fill them

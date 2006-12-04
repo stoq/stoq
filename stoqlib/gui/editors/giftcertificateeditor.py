@@ -61,15 +61,14 @@ class GiftCertificateTypeEditor(BaseEditor):
         return self.model_type(connection=conn,
                                base_sellable_info=sellable_info)
 
-    def get_title_model_attribute(self, model):
-        return model.base_sellable_info.description
-
     def setup_proxies(self):
         self.add_proxy(self.model, GiftCertificateTypeEditor.proxy_widgets)
+        self.set_description(self.model.base_sellable_info.description)
 
     def setup_slaves(self):
         self.slave = OnSaleInfoSlave(self.conn, self.model.on_sale_info)
         self.attach_slave('on_sale_holder', self.slave)
+
 
     def validate_confirm(self):
         if self.model.base_sellable_info.price <= 0:

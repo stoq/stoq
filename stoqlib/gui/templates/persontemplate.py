@@ -261,6 +261,8 @@ class BasePersonRoleEditor(BaseEditor):
         self.role_type = role_type
         self.person = person
         BaseEditor.__init__(self, conn, model, visual_mode=visual_mode)
+        # FIXME: Implement and use IDescribable on the model
+        self.set_description(self.model.person.name)
 
     def get_person_slave(self):
         return self.main_slave.get_person_slave()
@@ -291,10 +293,6 @@ class BasePersonRoleEditor(BaseEditor):
     #
     # BaseEditor hooks
     #
-
-    def get_title_model_attribute(self, model):
-        # FIXME: Implement and use IDescribable on the model
-        return model.person.name
 
 
     def create_model(self, conn):

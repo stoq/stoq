@@ -49,15 +49,13 @@ class UserProfileEditor(BaseEditor):
     # BaseEditor Hooks
     #
 
-    def get_title_model_attribute(self, model):
-        return model.name
-
     def create_model(self, conn):
         return UserProfile(name='', connection=conn)
 
     def setup_proxies(self):
         self.proxy = self.add_proxy(self.model,
                                     UserProfileEditor.proxy_widgets)
+        self.set_description(self.model.name)
 
     def setup_slaves(self):
         settings = {}
