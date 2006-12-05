@@ -1,0 +1,80 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
+<glade-interface domain="stoqlib">
+    <widget class="GtkSizeGroup" id="casheditor_entry_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkSizeGroup" id="casheditor_label_sizegroup">
+        <property name="mode">horizontal</property>
+    </widget>
+    <widget class="GtkWindow" id="CashInEditor">
+        <property name="default_height">250</property>
+        <property name="default_width">440</property>
+        <child>
+            <widget class="GtkVBox" id="vbox1">
+                <property name="spacing">6</property>
+                <property name="visible">True</property>
+                <child>
+                    <widget class="GtkEventBox" id="base_cash_holder">
+                        <property name="visible">True</property>
+                        <child>
+                            <placeholder/>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="expand">False</property>
+                    </packing>
+                </child>
+                <child>
+                    <widget class="GtkTable" id="table2">
+                        <property name="column_spacing">6</property>
+                        <property name="n_columns">3</property>
+                        <property name="n_rows">1</property>
+                        <property name="row_spacing">6</property>
+                        <property name="visible">True</property>
+                        <child>
+                            <widget class="GtkLabel" id="reason_lbl">
+                                <property name="label" context="yes" translatable="yes">Reason:</property>
+                                <property name="sizegroup">casheditor_label_sizegroup</property>
+                                <property name="visible">True</property>
+                                <property name="xalign">1.0</property>
+                            </widget>
+                            <packing>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="GtkLabel" id="label1">
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">1</property>
+                                <property name="right_attach">2</property>
+                                <property name="x_options">fill</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                        <child>
+                            <widget class="ProxyEntry" id="reason">
+                                <property name="data_type">unicode</property>
+                                <property name="is_focus">True</property>
+                                <property name="model_attribute">description</property>
+                                <property name="sizegroup">casheditor_entry_sizegroup</property>
+                                <property name="visible">True</property>
+                            </widget>
+                            <packing>
+                                <property name="left_attach">2</property>
+                                <property name="right_attach">3</property>
+                                <property name="y_options">fill</property>
+                            </packing>
+                        </child>
+                    </widget>
+                    <packing>
+                        <property name="position">1</property>
+                    </packing>
+                </child>
+            </widget>
+        </child>
+    </widget>
+</glade-interface>
