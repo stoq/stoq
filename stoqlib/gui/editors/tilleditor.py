@@ -306,7 +306,11 @@ class CashOutEditor(BaseEditor):
         till = Till.get_current(conn)
         assert till
 
-        return till.create_debit(currency(0))
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
+        description = (_(u'Cash out for station "%s" of branch "%s"')
+                       % (till.station.name,
+                          till.station.branch.person.name))
+        return till.create_debit(currency(0), description)
 
     def setup_slaves(self):
         self.cash_slave = BaseCashSlave(
@@ -343,9 +347,9 @@ class CashInEditor(BaseEditor):
     It uses BashCashSlave without any extensions
     """
 
-    model_name = _(u'Cash In')
+    model_name = _(u'Cash Out')
     model_type = TillEntry
-    gladefile = 'BaseTemplate'
+    gladefile = 'CashOutEditor'
 
     #
     # BaseEditorSlave
@@ -362,12 +366,22 @@ class CashInEditor(BaseEditor):
         return till.create_credit(currency(0), description)
 
     def setup_slaves(self):
-        self.cash_slave = BaseCashSlave(self.conn,
-                                        _BaseCashModel(self.model))
-        self.attach_slave("main_holder", self.cash_slave)
+        self.cash_slave = BaseCashSlave(
+            self.conn, _BaseCashModel(self.model))
+        self.attach_slave("base_cash_holder", self.cash_slave)
 
     def validate_confirm(self):
         return self.cash_slave.validate_confirm()
 
     def on_confirm(self):
-        return self.cash_slave.on_confirm()
+        valid = self.cash_slave.on_confirm()
+        if valid:
+            reason = self.reason.get_text()
+            if reason:
+                # %s is the description used when removing money
+                payment_description = _(u'Cash in: %s') % reason
+            else:
+                payment_description = _(u'Cash in')
+            self.model.description = payment_description
+
+        return valid
