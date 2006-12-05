@@ -279,6 +279,7 @@ class CashAdvanceEditor(BaseEditor):
         if valid:
             self.model.description = (_(u'Cash advance paid to employee: %s')
                                      % self._get_employee_name())
+            self.payment.description = self.model.description
             self.model.employee = self._get_employee()
             self.payment.value = -self.payment.value
             self.model.value = abs(self.payment.value)
