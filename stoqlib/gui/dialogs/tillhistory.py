@@ -106,13 +106,14 @@ class TillHistoryDialog(GladeSlaveDelegate):
                'payments')
 
     title = _('Current Till History')
-    size = (800, 500)
+    size = (750, -1)
 
     gsignal('close-till')
 
     def __init__(self, conn):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self.main_dialog = BasicWrappingDialog(self, self.title, size=self.size,
+        self.main_dialog = BasicWrappingDialog(self, self.title,
+                                               size=self.size,
                                                hide_footer=True)
         self.conn = conn
         self._setup_widgets()
@@ -152,6 +153,8 @@ class TillHistoryDialog(GladeSlaveDelegate):
         self.selected = 0
 
     def _setup_widgets(self):
+        # FIXME: an ObjectList API to set number of visible columns
+        self.payments.set_size_request(-1, 300)
         self.payments.set_columns(self._get_columns())
         self.payments.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self._update_total()
@@ -183,15 +186,16 @@ class TillHistoryDialog(GladeSlaveDelegate):
             self.total_balance_label.set_color('black')
 
     def _get_columns(self, *args):
-        return [Column('identifier', _('Number'), data_type=int, width=100,
+        return [Column('identifier', _('Number'), data_type=int, width=70,
                         format='%03d', sorted=True),
                 Column('date', _('Due Date'),
-                       data_type=datetime.date, width=120),
+                       data_type=datetime.date, width=110),
                 Column('description', _('Description'), data_type=str,
-                       expand=True),
+                       expand=True,
+                       width=300),
                 ColoredColumn('value', _('Value'), data_type=currency,
                               color='red', data_func=payment_value_colorize,
-                              width=120)]
+                              width=140)]
 
     def _check_initial_cash_amount(self):
         # This method is wrong.
