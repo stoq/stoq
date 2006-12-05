@@ -274,6 +274,12 @@ _parameter_info = dict(
     _(u'The tax applied on all sale products with substitution tax type. '
       'Note that this a percentage value and must be set as the format: '
       '0 < value < 100. E.g: 16, which means 16% of tax.')),
+
+    DEFAULT_AREA_CODE=ParameterDetails(
+    _(u'General'),
+    _(u'Default area code'),
+    _(u'This is the default area code which will be used when '
+      'registering new clients, users and more to the system')),
     )
 
 class ParameterAttr:
@@ -321,6 +327,7 @@ class ParameterAccess(ClassInittableObject):
         ParameterAttr('ISS_TAX', int, initial=18),
         ParameterAttr('SUBSTITUTION_TAX', int, initial=18),
         ParameterAttr('POS_SEPARATE_CASHIER', bool, initial=False),
+        ParameterAttr('DEFAULT_AREA_CODE', int, initial=16),
         # Adding objects -- Note that all the object referred here must
         # implements the IDescribable interface.
         ParameterAttr('DEFAULT_SALES_CFOP', u'fiscal.CfopData'),

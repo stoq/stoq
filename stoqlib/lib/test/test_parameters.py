@@ -295,3 +295,7 @@ class TestParameter(DomainTest):
     def test_SubstitutionTax(self):
         param = self.sparam.SUBSTITUTION_TAX
         assert isinstance(param, int)
+
+    def test_DefaultAreaCode(self):
+        param = self.sparam.DEFAULT_AREA_CODE
+        self.failUnless(isinstance(param, int), type(param))
