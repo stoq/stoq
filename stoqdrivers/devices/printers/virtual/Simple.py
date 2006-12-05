@@ -195,6 +195,12 @@ class Simple:
     def close_till(self):
         return
 
+    def till_add_cash(self, value):
+        pass
+
+    def till_remove_cash(self, value):
+        pass
+
     #
     # IChequePrinter implementation
     #
