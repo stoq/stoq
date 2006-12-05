@@ -245,7 +245,7 @@ class TillApp(SearchableAppWindow):
                     if key in statuses]
 
     def get_filterslave_default_selected_item(self):
-        return Sale.STATUS_OPENED
+        return Sale.STATUS_CONFIRMED
 
     def get_title(self):
         self.branch = get_current_branch(self.conn)
