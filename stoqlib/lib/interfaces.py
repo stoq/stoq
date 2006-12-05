@@ -100,4 +100,3 @@ class ISystemNotifier(Interface):
 
     def yesno(text, default, *verbs):
         pass
-
