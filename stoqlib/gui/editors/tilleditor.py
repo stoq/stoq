@@ -35,6 +35,7 @@ from stoqlib.domain.interfaces import IEmployee
 from stoqlib.domain.person import Person
 from stoqlib.domain.till import Till, TillEntry
 from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.lib.drivers import till_add_cash, till_remove_cash
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -298,6 +299,11 @@ class CashOutEditor(BaseEditor):
     gladefile = 'CashOutEditor'
     title = _(u'Reverse Payment')
 
+    def __init__(self, conn):
+        BaseEditor.__init__(self, conn)
+        self.main_dialog.set_confirm_widget(self.reason)
+        self.main_dialog.set_confirm_widget(self.cash_slave.value)
+
     #
     # BaseEditorSlave
     #
@@ -332,6 +338,7 @@ class CashOutEditor(BaseEditor):
                 payment_description = _(u'Cash out')
             self.model.description = payment_description
 
+        till_remove_cash(self.conn, abs(self.cash_slave.model.value))
         return valid
 
     #
@@ -347,9 +354,14 @@ class CashInEditor(BaseEditor):
     It uses BashCashSlave without any extensions
     """
 
-    model_name = _(u'Cash Out')
+    model_name = _(u'Cash In')
     model_type = TillEntry
     gladefile = 'CashOutEditor'
+
+    def __init__(self, conn):
+        BaseEditor.__init__(self, conn)
+        self.main_dialog.set_confirm_widget(self.reason)
+        self.main_dialog.set_confirm_widget(self.cash_slave.value)
 
     #
     # BaseEditorSlave
@@ -384,4 +396,5 @@ class CashInEditor(BaseEditor):
                 payment_description = _(u'Cash in')
             self.model.description = payment_description
 
+        till_add_cash(self.conn, self.cash_slave.model.value)
         return valid

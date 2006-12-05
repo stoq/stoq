@@ -72,6 +72,7 @@ def _get_fiscalprinter(conn):
                _(u"There is no fiscal printer configured for this "
                 "station (\"%s\") or the printer is not enabled "
                 "currently." % station.name))
+
     return _printer
 
 def _get_scale(conn):
@@ -286,6 +287,15 @@ def print_cheques_for_payment_group(conn, group):
         max_len = get_capability(printer, "cheque_thirdparty")
         thirdparty = thirdparty and thirdparty.name[:max_len] or ""
         printer.print_cheque(bank, payment.value, thirdparty, city)
+
+
+def till_add_cash(conn, value):
+    printer = _get_fiscalprinter(conn)
+    printer.till_add_cash(value)
+
+def till_remove_cash(conn, value):
+    printer = _get_fiscalprinter(conn)
+    printer.till_remove_cash(value)
 
 
 #
