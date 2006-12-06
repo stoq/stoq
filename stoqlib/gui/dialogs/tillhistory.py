@@ -153,9 +153,8 @@ class TillHistoryDialog(GladeSlaveDelegate):
         self.selected = 0
 
     def _setup_widgets(self):
-        # FIXME: an ObjectList API to set number of visible columns
-        self.payments.set_size_request(-1, 300)
         self.payments.set_columns(self._get_columns())
+        self.payments.set_visible_rows(10)
         self.payments.set_selection_mode(gtk.SELECTION_MULTIPLE)
         self._update_total()
 
