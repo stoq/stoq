@@ -95,6 +95,9 @@ class DiscountSurchargeSlave(BaseEditorSlave):
         if value > 100:
             return ValidationError(_("%s can not be greater then 100")
                                      % type_text)
+        if value < 0:
+            return ValidationError(_("%s can not be less then 0")
+                                    % type_text)
 
     #
     # BaseEditorSlave hooks
