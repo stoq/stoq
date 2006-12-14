@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
@@ -93,9 +93,11 @@ class DiscountSurchargeSlave(BaseEditorSlave):
 
     def _validate_percentage(self, value, type_text):
         if value > 100:
+            self.model.discount_percentage = 0
             return ValidationError(_("%s can not be greater then 100")
                                      % type_text)
         if value < 0:
+            self.model.discount_percentage = 0
             return ValidationError(_("%s can not be less then 0")
                                     % type_text)
 
@@ -127,33 +129,38 @@ class DiscountSurchargeSlave(BaseEditorSlave):
         if self.model.discount_percentage > 100:
             msg = _("Discount can not be greater then 100 percent")
             self.discount_value.set_invalid(msg)
+            self.model.discount_percentage = 0
+            self.setup_discount_surcharge()
         elif self.model.discount_percentage < 0:
            msg = _("Discount can not be negative")
            self.discount_value.set_invalid(msg)
+           self.model.discount_percentage = 0
+           self.setup_discount_surcharge()
         else:
             self.setup_discount_surcharge()
 
     @signal_block('surcharge_value.changed')
-    def after_surcharge_perc__changed(self, *args):
+    def after_surcharge_perc__changed(self, *args): 
         self.setup_discount_surcharge()
 
     @signal_block('surcharge_perc.changed')
     def after_surcharge_value__changed(self, *args):
         self.setup_discount_surcharge()
-        if self.model.surcharge_percentage > 100:
-            msg = _("Surcharge can not be greater then 100 percent")
-            self.surcharge_value.set_invalid(msg)
 
-    def on_surcharge_perc_ck__toggled(self, *args):
-        self.update_widget_status()
+    def on_surcharge_perc_ck__toggled(self, *args): 
+        self.setup_discount_surcharge() 
+        self.update_widget_status() 
 
     def on_surcharge_value_ck__toggled(self, *args):
+        self.setup_discount_surcharge()
         self.update_widget_status()
 
     def on_discount_perc_ck__toggled(self, *args):
+        self.setup_discount_surcharge()
         self.update_widget_status()
 
     def on_discount_value_ck__toggled(self, *args):
+        self.setup_discount_surcharge()
         self.update_widget_status()
 
 
