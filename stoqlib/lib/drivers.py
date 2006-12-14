@@ -42,6 +42,7 @@ from stoqlib.lib.message import warning, info, yesno
 from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
                                   get_method_names)
 from stoqlib.domain.devices import DeviceSettings
+from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
 from stoqlib.domain.service import ServiceSellableItem
@@ -332,6 +333,10 @@ class FiscalCoupon:
         if isinstance(item, ServiceSellableItem):
             log.info("item %r couldn't added to the coupon, "
                      "since it is a service" % item)
+            return
+        # GiftCertificates are not printed on the fiscal printer
+        # See #2985 for more information.
+        elif isinstance(item, GiftCertificateItem):
             return
 
         sellable = item.sellable
