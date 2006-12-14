@@ -231,7 +231,8 @@ def emit_coupon(sale, conn):
         coupon.identify_customer(sale.client.person)
     if not coupon.open():
         return False
-    map(coupon.add_item, products)
+    for product in products:
+        coupon.add_item(product)
     if not coupon.totalize():
         return False
     if not coupon.setup_payments():
