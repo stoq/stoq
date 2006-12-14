@@ -214,9 +214,9 @@ class SellableSelectionEditor(BaseEditor):
     # XXX: Remove this, we need to add better infrastructure to handle
     #      dialogs with a slave but without a model
     model_name = _('Item')
-    model_type = bool
+    model_type = object
     def create_model(self, conn):
-        return True
+        return ProductEditor
 
 
 class PurchaseItemStep(AbstractItemStep):
@@ -244,6 +244,8 @@ class PurchaseItemStep(AbstractItemStep):
             model = run_dialog(editor, None, self.conn, item)
         else:
             editor = run_dialog(SellableSelectionEditor, None, self.conn)
+            if not editor:
+                return
             model = run_dialog(editor, self, self.conn)
         if not finish_transaction(self.conn, model):
             return
