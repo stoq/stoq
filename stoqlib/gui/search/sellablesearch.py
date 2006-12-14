@@ -128,7 +128,7 @@ class SellableSearch(SearchEditor):
         if not items:
             raise ValueError('You should have at least one branch at '
                              'this point')
-        items.append(ALL_BRANCHES)
+        items.insert(0, ALL_BRANCHES)
         selected = get_current_branch(self.conn)
         self.filter_slave = FilterSlave(items, selected=selected)
         self.filter_slave.set_filter_label(_('Show sale items at'))
