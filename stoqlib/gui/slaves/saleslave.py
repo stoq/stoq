@@ -21,6 +21,7 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Slaves for sale management """
 
@@ -29,7 +30,6 @@ from kiwi.utils import gsignal
 from kiwi.decorators import signal_block
 from kiwi.datatypes import ValidationError
 from kiwi.ui.delegates import GladeSlaveDelegate
-from kiwi.argcheck import argcheck
 
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -171,39 +171,33 @@ class SaleListToolbar(GladeSlaveDelegate):
     gladefile = "SaleListToolbar"
 
     def __init__(self, conn, searchbar, klist, parent=None):
-        GladeSlaveDelegate.__init__(self, gladefile=SaleListToolbar.gladefile,
-                               toplevel_name=SaleListToolbar.gladefile)
+        self.conn = conn
         if klist.get_selection_mode() != gtk.SELECTION_BROWSE:
             raise TypeError("Only SELECTION_BROWSE mode for the "
                             "list is supported on this slave")
-        self.conn, self.klist, self.parent = conn, klist, parent
+        self.sales = klist
+        self.parent = parent
+
+        GladeSlaveDelegate.__init__(self)
+
         self.searchbar = searchbar
-        self.klist.connect("selection-changed",
-                           self.on_klist_selection_changed)
-        self.klist.connect("double-click", self.on_klist_double_clicked)
-        self.klist.connect("has-rows", self._update_print_button)
-        self._update_print_button(None, False)
-        self.klist.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self._update_print_button(False)
         self._update_buttons(False)
 
-    def hide_return_sale_button(self):
-        self.return_sale_button.hide()
+    #
+    # Public API
+    #
 
-    def hide_edit_button(self):
+    def disable_editing(self):
+        """
+        Disables editing of the sales
+        """
+        self.return_sale_button.hide()
         self.edit_button.hide()
 
-    def _lookup_sale_order(self, object):
-        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            return object[0]
-        return object
-
-    def _get_selected(self):
-        if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
-            return self.klist.get_selected_rows()
-        return self.klist.get_selected()
-
-    def _update_print_button(self, klist, enabled):
-        self.print_button.set_sensitive(enabled)
+    #
+    # Private
+    #
 
     def _update_buttons(self, enabled):
         for w in (self.return_sale_button,
@@ -211,40 +205,40 @@ class SaleListToolbar(GladeSlaveDelegate):
                   self.details_button):
             w.set_sensitive(enabled)
 
-    @argcheck(SaleView)
-    def _run_details_dialog(self, sale_view):
+    def _update_print_button(self, enabled):
+        self.print_button.set_sensitive(enabled)
+
+    def _show_details(self, sale_view):
         run_dialog(SaleDetailsDialog, self.parent, self.conn, sale_view)
 
     #
     # Kiwi callbacks
     #
 
-    def on_klist_selection_changed(self, widget, sale):
-        self._update_buttons(len(sale) == 1)
+    def on_sales__has_rows(self, klist, enabled):
+        self._update_print_button(enabled)
 
-    def on_klist_double_clicked(self, widget, sales):
-        sale = self._lookup_sale_order(sales)
-        self._run_details_dialog(sale)
+    def on_sales__selection_changed(self, sales, sale):
+        self._update_buttons(sale != None)
 
-    def on_return_sale_button__clicked(self, *args):
+    def on_sales__row_activated(self, sales, sale):
+        self._show_details(sale)
+
+    def on_return_sale_button__clicked(self, button):
         from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-        selected = self._get_selected()
-        sale = self._lookup_sale_order(selected)
+        sale = self.get_selected()
         retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
         finish_transaction(self.conn, retval)
 
-    def on_edit_button__clicked(self, *args):
+    def on_edit_button__clicked(self, button):
         # TODO: this method will be implemented on bug #2189
         pass
 
-    def on_details_button__clicked(self, *args):
-        self._run_details_dialog(self.klist.get_selected_rows()[0])
+    def on_details_button__clicked(self, button):
+        self._show_details(self.get_selected())
 
-    def on_print_button__clicked(self, *args):
-        self.searchbar.print_report(SalesReport,
-                                    (self.klist.get_selected_rows()
-                                     or self.klist))
-
+    def on_print_button__clicked(self, button):
+        self.searchbar.print_report(SalesReport, self.sales)
 
 class SaleReturnSlave(BaseEditorSlave):
     """A slave for sale return data """
