@@ -32,7 +32,7 @@ from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.stationeditor import StationEditor
 from stoqlib.gui.slaves.filterslave import FilterSlave
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.defaults import ALL_BRANCHES, ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
@@ -50,7 +50,7 @@ class StationSearch(SearchEditor):
     #
 
     def get_filter_slave(self):
-        statuses = [(_('All branches'), ALL_ITEMS_INDEX)]
+        statuses = [ALL_BRANCHES]
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         for branch in Person.iselect(IBranch, connection=self.conn):
             statuses.append((branch.person.name, branch))
