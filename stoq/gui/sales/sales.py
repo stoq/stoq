@@ -69,6 +69,7 @@ class SalesApp(SearchableAppWindow):
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
         self.summary_label = None
+        self._columns_set = False
         self._create_summary_label()
         self._update_widgets()
         self._setup_columns()
@@ -97,15 +98,13 @@ class SalesApp(SearchableAppWindow):
         self._update_total_label()
 
     def _update_toolbar(self, *args):
-        selected_rows = self._klist.get_selected_rows()
-        one_selected = len(selected_rows) == 1
-        can_print_invoice = (one_selected
-                             and selected_rows[0].client_name is not None)
+        selected = self._klist.get_selected()
+        can_print_invoice = bool(selected and
+                                 selected.client_name is not None)
         self.print_invoice.set_sensitive(can_print_invoice)
 
         rejected = Sale.STATUS_CANCELLED, Sale.STATUS_ORDER
-        can_cancel = (one_selected
-                      and selected_rows[0].status not in rejected)
+        can_cancel = bool(selected and selected.status not in rejected)
         self.sale_toolbar.return_sale_button.set_sensitive(can_cancel)
 
     def _update_total_label(self):
@@ -115,11 +114,11 @@ class SalesApp(SearchableAppWindow):
         raise NotImplementedError("not implemented yet :)")
 
     def _print_invoice(self):
-        assert len(self._klist.get_selected_rows()) == 1
+        assert self._klist.get_selected()
         invoice_data = self.run_dialog(InvoiceDetailsEditor, self.conn)
         if not invoice_data:
             return
-        sale_view = self._klist.get_selected_rows()[0]
+        sale_view = self._klist.get_selected()
         sale = Sale.get(sale_view.id, connection=self.conn)
         print_report(SaleInvoice, sale, date=invoice_data,
                      default_filename=SaleInvoice.default_filename,
@@ -175,7 +174,9 @@ class SalesApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        self._setup_columns(status)
+        if not self._columns_set:
+            self._setup_columns(status)
+            self._columns_set = True
         if status == ALL_ITEMS_INDEX:
             return
         return SaleView.q.status == status
