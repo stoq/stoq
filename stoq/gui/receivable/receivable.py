@@ -27,15 +27,19 @@ stoq/gui/receivable/receivable.py:
     Implementation of receivable application.
 """
 
-import gtk
-import gettext
 import datetime
+import gettext
 
+import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from sqlobject.sqlbuilder import AND
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import SaleView, SaleAdaptToPaymentGroup
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
-from stoqlib.domain.payment.payment import Payment
 from stoq.gui.application import SearchableAppWindow
 
 _ = gettext.gettext
@@ -69,10 +73,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def _update_widgets(self):
         has_sales = len(self.receivables) > 0
-        widgets = [self.cancel_button, self.details_button,
-                   self.edit_button, self.add_button]
-        for widget in widgets:
-            widget.set_sensitive(has_sales)
+        self.details_button.set_sensitive(has_sales)
         self._update_total_label()
 
     def _update_total_label(self):
@@ -107,16 +108,32 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return
-        return Payment.q.status == status
+        query = Payment.q.groupID == SaleAdaptToPaymentGroup.q.id
+        if status != ALL_ITEMS_INDEX:
+            query = AND(query, Payment.q.status == status)
+        return query
+              
+    #
+    # Private
+    #
+
+
+    # This list operates on payments, but SaleDetailsDialog expects a
+    # SaleView object, so we have to fetch the sale via the payment group.
+    # We have to assure that the selected Payment group refers to a
+    # SaleAdaptToPaymentGroup, and not to a PurchaseOrderAdaptToPaymentGroup.
+    def _show_details(self, payment):
+        assert isinstance(payment.group, SaleAdaptToPaymentGroup)
+        sale_view = SaleView.get(payment.group.sale.id)
+        run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
+
 
     #
     # Kiwi callbacks
     #
 
-    def _on_conference_action_clicked(self, button):
-        pass
+    def on_details_button__clicked(self, button):
+        if len(self.receivables):
+            self._show_details(self.receivables.get_selected_rows()[0])
 
-    def _on_bills_action_clicked(self, button):
-        pass
+
