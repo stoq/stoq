@@ -82,7 +82,7 @@ class WarehouseApp(SearchableAppWindow):
             raise DatabaseInconsistency('You should have at least one '
                                         'branch on your database.'
                                         'Found zero')
-        items.append(ALL_BRANCHES)
+        items.insert(0, ALL_BRANCHES)
         return items
 
     def _update_widgets(self):
