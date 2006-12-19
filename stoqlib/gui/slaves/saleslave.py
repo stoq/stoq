@@ -224,7 +224,7 @@ class SaleListToolbar(GladeSlaveDelegate):
 
     def on_return_sale_button__clicked(self, button):
         from stoqlib.gui.wizards.salereturnwizard import SaleReturnWizard
-        sale = self.get_selected()
+        sale = self.sales.get_selected()
         retval = run_dialog(SaleReturnWizard, self.parent, self.conn, sale)
         finish_transaction(self.conn, retval)
 
@@ -233,7 +233,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         pass
 
     def on_details_button__clicked(self, button):
-        self._show_details(self.get_selected())
+        self._show_details(self.sales.get_selected())
 
     def on_print_button__clicked(self, button):
         self.searchbar.print_report(SalesReport, self.sales)
