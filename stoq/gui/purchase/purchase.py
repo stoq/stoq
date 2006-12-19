@@ -201,8 +201,7 @@ class PurchaseApp(SearchableAppWindow):
     def get_filter_slave_items(self):
         items = [(text, value)
                     for value, text in PurchaseOrder.statuses.items()]
-        first_item = (_('Any'), ALL_ITEMS_INDEX)
-        items.append(first_item)
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         return items
 
     def on_searchbar_activate(self, slave, objs):

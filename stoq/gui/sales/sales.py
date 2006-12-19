@@ -153,7 +153,7 @@ class SalesApp(SearchableAppWindow):
         items = [(value, key) for key, value in Sale.statuses.items()
                     # No reason to show orders in sales app
                     if key != Sale.STATUS_ORDER]
-        items.append((_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         return items
 
     def get_filterslave_default_selected_item(self):
@@ -178,7 +178,7 @@ class SalesApp(SearchableAppWindow):
             self._setup_columns(status)
             self._columns_set = True
         if status == ALL_ITEMS_INDEX:
-            return
+            return SaleView.q.status != Sale.STATUS_ORDER
         return SaleView.q.status == status
 
     #
