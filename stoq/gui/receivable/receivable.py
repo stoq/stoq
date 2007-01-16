@@ -134,6 +134,8 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_details_button__clicked(self, button):
         if len(self.receivables):
+            if not self.receivables.get_selected_rows():
+                self.receivables.select(self.receivables[0])
             self._show_details(self.receivables.get_selected_rows()[0])
 
 
