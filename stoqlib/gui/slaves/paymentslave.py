@@ -526,6 +526,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
 
     def on_reset_button__clicked(self, *args):
         self._setup_payments()
+        self.update_view()
 
     def on_intervals__validation_changed(self, widget, is_valid):
         self.reset_btn_validation_ok = is_valid
