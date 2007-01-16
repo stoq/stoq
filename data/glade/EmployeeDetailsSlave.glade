@@ -184,12 +184,12 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkFrame" id="frame3">
+                    <widget class="GtkFrame" id="frame4">
                         <property name="border_width">2</property>
-                        <property name="label" context="yes" translatable="yes">Military Certificate</property>
+                        <property name="label" context="yes" translatable="yes">Bank Information</property>
                         <property name="visible">True</property>
                         <child>
-                            <widget class="GtkTable" id="table4">
+                            <widget class="GtkTable" id="table8">
                                 <property name="border_width">5</property>
                                 <property name="column_spacing">5</property>
                                 <property name="n_columns">2</property>
@@ -197,9 +197,9 @@
                                 <property name="row_spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="GtkLabel" id="military_cert_number_label">
-                                        <property name="label" context="yes" translatable="yes">Number:</property>
-                                        <property name="sizegroup">left_size_group</property>
+                                    <widget class="GtkLabel" id="bank_label">
+                                        <property name="label" context="yes" translatable="yes">Bank ID:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -208,9 +208,9 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkLabel" id="military_cert_serie_label">
-                                        <property name="label" context="yes" translatable="yes">Serie:</property>
-                                        <property name="sizegroup">left_size_group</property>
+                                    <widget class="GtkLabel" id="bank_agency_label">
+                                        <property name="label" context="yes" translatable="yes">Branch Number:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -221,9 +221,9 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="GtkLabel" id="military_cert_category_label">
-                                        <property name="label" context="yes" translatable="yes">Category:</property>
-                                        <property name="sizegroup">left_size_group</property>
+                                    <widget class="GtkLabel" id="bank_account_label">
+                                        <property name="label" context="yes" translatable="yes">Account:</property>
+                                        <property name="sizegroup">right_size_group</property>
                                         <property name="visible">True</property>
                                         <property name="xalign">1.0</property>
                                     </widget>
@@ -234,11 +234,12 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyEntry" id="military_doc_number">
-                                        <property name="data_type">unicode</property>
+                                    <widget class="ProxyEntry" id="name">
+                                        <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">number</property>
+                                        <property name="model_attribute">bank_id</property>
                                         <property name="visible">True</property>
+                                        <property name="xalign">1.0</property>
                                     </widget>
                                     <packing>
                                         <property name="left_attach">1</property>
@@ -247,10 +248,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyEntry" id="military_doc_serie">
+                                    <widget class="ProxyEntry" id="branch">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">series_number</property>
+                                        <property name="model_attribute">branch</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -262,10 +263,10 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="ProxyEntry" id="military_doc_category">
+                                    <widget class="ProxyEntry" id="account">
                                         <property name="data_type">unicode</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">category</property>
+                                        <property name="model_attribute">account</property>
                                         <property name="visible">True</property>
                                     </widget>
                                     <packing>
@@ -285,104 +286,10 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkFrame" id="frame5">
-                        <property name="border_width">2</property>
-                        <property name="label" context="yes" translatable="yes">Voter Id</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkTable" id="table6">
-                                <property name="border_width">5</property>
-                                <property name="column_spacing">5</property>
-                                <property name="n_columns">2</property>
-                                <property name="n_rows">3</property>
-                                <property name="row_spacing">5</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkLabel" id="voter_id_number_label">
-                                        <property name="label" context="yes" translatable="yes">Number:</property>
-                                        <property name="sizegroup">left_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="voter_id_section_label">
-                                        <property name="label" context="yes" translatable="yes">Section:</property>
-                                        <property name="sizegroup">left_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="voter_id_zone_label">
-                                        <property name="label" context="yes" translatable="yes">Zone:</property>
-                                        <property name="sizegroup">left_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">3</property>
-                                        <property name="top_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="voter_id_number">
-                                        <property name="data_type">unicode</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">number</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="voter_id_section">
-                                        <property name="data_type">unicode</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">section</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="voter_id_zone">
-                                        <property name="data_type">unicode</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">zone</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">3</property>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="top_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                        </child>
-                    </widget>
+                    <placeholder/>
                     <packing>
-                        <property name="bottom_attach">4</property>
                         <property name="top_attach">3</property>
+                        <property name="bottom_attach">4</property>
                     </packing>
                 </child>
                 <child>
@@ -566,107 +473,12 @@ Number:</property>
                     </packing>
                 </child>
                 <child>
-                    <widget class="GtkFrame" id="frame4">
-                        <property name="border_width">2</property>
-                        <property name="label" context="yes" translatable="yes">Bank Information</property>
-                        <property name="visible">True</property>
-                        <child>
-                            <widget class="GtkTable" id="table8">
-                                <property name="border_width">5</property>
-                                <property name="column_spacing">5</property>
-                                <property name="n_columns">2</property>
-                                <property name="n_rows">3</property>
-                                <property name="row_spacing">5</property>
-                                <property name="visible">True</property>
-                                <child>
-                                    <widget class="GtkLabel" id="bank_label">
-                                        <property name="label" context="yes" translatable="yes">Bank ID:</property>
-                                        <property name="sizegroup">right_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="bank_agency_label">
-                                        <property name="label" context="yes" translatable="yes">Branch Number:</property>
-                                        <property name="sizegroup">right_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="GtkLabel" id="bank_account_label">
-                                        <property name="label" context="yes" translatable="yes">Account:</property>
-                                        <property name="sizegroup">right_size_group</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">3</property>
-                                        <property name="top_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="name">
-                                        <property name="data_type">int</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">bank_id</property>
-                                        <property name="visible">True</property>
-                                        <property name="xalign">1.0</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="branch">
-                                        <property name="data_type">unicode</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">branch</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">2</property>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="top_attach">1</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                                <child>
-                                    <widget class="ProxyEntry" id="account">
-                                        <property name="data_type">unicode</property>
-                                        <property name="is_focus">True</property>
-                                        <property name="model_attribute">account</property>
-                                        <property name="visible">True</property>
-                                    </widget>
-                                    <packing>
-                                        <property name="bottom_attach">3</property>
-                                        <property name="left_attach">1</property>
-                                        <property name="right_attach">2</property>
-                                        <property name="top_attach">2</property>
-                                        <property name="y_options">fill</property>
-                                    </packing>
-                                </child>
-                            </widget>
-                        </child>
-                    </widget>
+                    <placeholder/>
                     <packing>
-                        <property name="bottom_attach">3</property>
                         <property name="left_attach">1</property>
                         <property name="right_attach">2</property>
                         <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
                     </packing>
                 </child>
                 <child>

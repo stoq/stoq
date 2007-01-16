@@ -39,8 +39,7 @@ from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.person import (WorkPermitData, MilitaryData,
-                                   VoterData, EmployeeRole,
+from stoqlib.domain.person import (WorkPermitData, EmployeeRole,
                                    EmployeeRoleHistory)
 
 _ = stoqlib_gettext
@@ -70,14 +69,6 @@ class EmployeeDetailsSlave(BaseEditorSlave):
                            'pis_registry_date',
                            'pis_bank')
 
-    voter_widgets =       ('voter_id_number',
-                           'voter_id_zone',
-                           'voter_id_section')
-
-    military_widgets =    ('military_doc_category',
-                           'military_doc_serie',
-                           'military_doc_number')
-
     #
     # BaseEditorSlave hooks
     #
@@ -89,10 +80,6 @@ class EmployeeDetailsSlave(BaseEditorSlave):
         proxy_info = [
             ('workpermit_data',
              EmployeeDetailsSlave.work_permit_widgets, WorkPermitData),
-            ('military_data',
-             EmployeeDetailsSlave.military_widgets, MilitaryData),
-            ('voter_data',
-             EmployeeDetailsSlave.voter_widgets, VoterData),
             ('bank_account',
              EmployeeDetailsSlave.bank_account_widgets, BankAccount)
         ]
