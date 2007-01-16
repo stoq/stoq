@@ -181,6 +181,7 @@ class SaleListToolbar(GladeSlaveDelegate):
         self.searchbar = searchbar
         self._update_print_button(False)
         self._update_buttons(False)
+        self.edit_button.hide()
 
     #
     # Public API
@@ -199,7 +200,6 @@ class SaleListToolbar(GladeSlaveDelegate):
 
     def _update_buttons(self, enabled):
         for w in (self.return_sale_button,
-                  self.edit_button,
                   self.details_button):
             w.set_sensitive(enabled)
 
