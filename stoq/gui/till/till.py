@@ -104,6 +104,8 @@ class TillApp(SearchableAppWindow):
         status = self.sales.get_selected().status
         accept_confirm = status == Sale.STATUS_OPENED
         self.confirm_order_button.set_sensitive(accept_confirm)
+        can_return = status == Sale.STATUS_CANCELLED
+        self.return_button.set_sensitive(not can_return)
 
     def _update_widgets(self):
         # Three different options;
