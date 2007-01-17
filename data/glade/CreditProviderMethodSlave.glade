@@ -20,7 +20,7 @@
                                 <property name="row_spacing">5</property>
                                 <property name="visible">True</property>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel4">
+                                    <widget class="ProxyLabel" id="kiwilabel4">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Credit Provider:</property>
                                         <property name="visible">True</property>
@@ -31,7 +31,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel2">
+                                    <widget class="ProxyLabel" id="kiwilabel2">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Payment Type:</property>
                                         <property name="visible">True</property>
@@ -44,7 +44,7 @@
                                     </packing>
                                 </child>
                                 <child>
-                                    <widget class="kiwi+ui+widgets+label+Label" id="kiwilabel3">
+                                    <widget class="ProxyLabel" id="kiwilabel3">
                                         <property name="data_type">unicode</property>
                                         <property name="label" context="yes" translatable="yes">Number of Installments:</property>
                                         <property name="visible">True</property>
@@ -62,6 +62,7 @@
                                         <child>
                                             <widget class="ProxyComboEntry" id="credit_provider">
                                                 <property name="data_type">object</property>
+                                                <property name="list_editable">False</property>
                                                 <property name="model_attribute">provider</property>
                                                 <property name="visible">True</property>
                                             </widget>
@@ -82,6 +83,7 @@
                                         <child>
                                             <widget class="ProxyComboEntry" id="payment_type">
                                                 <property name="data_type">object</property>
+                                                <property name="list_editable">False</property>
                                                 <property name="model_attribute">payment_type</property>
                                                 <property name="visible">True</property>
                                             </widget>
@@ -102,7 +104,7 @@
                                     <widget class="GtkHBox" id="hbox1">
                                         <property name="visible">True</property>
                                         <child>
-                                            <widget class="kiwi+ui+widgets+spinbutton+SpinButton" id="installments_number">
+                                            <widget class="ProxySpinButton" id="installments_number">
                                                 <property name="adjustment">0 0 100 1 10 0</property>
                                                 <property name="data_type">int</property>
                                                 <property name="model_attribute">installments_number</property>

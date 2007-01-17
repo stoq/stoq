@@ -611,11 +611,11 @@ class CreditProviderMethodSlave(BaseEditorSlave):
                             self.sale.get_total_sale_amount())
         self.providers = self._get_credit_providers()
         BaseEditorSlave.__init__(self, conn)
-        self.register_validate_function(self._refresh_next)
         self.parent = parent
         # this will be properly updated after changing data in payment_type
         # widget
         self.installments_number.set_range(1, 1)
+        self.payment_type.set_sensitive(False)
 
     def _refresh_next(self, validation_ok=True):
         validation_ok = validation_ok and self.model.installments_number
@@ -630,7 +630,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         # This is for PaymentMethodStep compatibility.
         # FIXME We need to change PaymentMethodDetails to use signals
         # instead of calling methods of parents and slaves directly
-        pass
+        self.payment_type.set_sensitive(True)
 
     def _get_credit_providers(self):
         raise NotImplementedError
@@ -676,6 +676,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
 
     def finish(self):
         self._setup_payments()
+        self.update_view()
 
     #
     # BaseEditor Slave hooks
@@ -702,9 +703,12 @@ class CreditProviderMethodSlave(BaseEditorSlave):
 
     def on_payment_type__content_changed(self, *args):
         self._setup_max_installments()
+        self._refresh_next()
+        self.credit_provider.set_sensitive(False)
 
     def on_credit_provider__content_changed(self, *args):
         self._setup_payment_types()
+        self.update_view()
 
 
 class CardMethodSlave(CreditProviderMethodSlave):
