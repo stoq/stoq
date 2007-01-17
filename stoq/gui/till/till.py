@@ -37,6 +37,7 @@ from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
 from stoqlib.domain.sale import Sale, SaleView
 from stoqlib.domain.till import Till
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.drivers import (emit_coupon, check_emit_reduce_Z,
                                  check_emit_read_X)
 from stoqlib.lib.message import yesno
@@ -242,9 +243,11 @@ class TillApp(SearchableAppWindow):
                                           self.details_button])
 
     def get_filter_slave_items(self):
-        statuses = Sale.STATUS_OPENED, Sale.STATUS_CONFIRMED
-        return [(value, key) for key, value in Sale.statuses.items()
-                    if key in statuses]
+        keys = Sale.STATUS_OPENED, Sale.STATUS_CONFIRMED, Sale.STATUS_CANCELLED
+        statuses = [(value, key) for key, value in Sale.statuses.items()
+            if key in [v for k, v in enumerate(keys)]]
+        statuses.insert(0, (_('Any'), ALL_ITEMS_INDEX))
+        return statuses
 
     def get_filterslave_default_selected_item(self):
         return Sale.STATUS_CONFIRMED
@@ -272,6 +275,8 @@ class TillApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
+        if status == ALL_ITEMS_INDEX:
+            return 
         return SaleView.q.status == status
 
     #
