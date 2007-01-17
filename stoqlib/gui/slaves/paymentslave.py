@@ -327,6 +327,8 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         BaseEditorSlave.__init__(self, conn)
         self.register_validate_function(self._refresh_next)
         self.parent = parent
+        self.interval_type_combo.set_sensitive(False)
+        self.intervals.set_sensitive(False)
         self.update_view()
 
     def _refresh_next(self, validation_ok=True):
@@ -513,16 +515,25 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         inst_number = self.model.installments_number
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
-        self.update_view()
+        has_installments = inst_number > 1
+        self.interval_type_combo.set_sensitive(has_installments)
+        self.intervals.set_sensitive(has_installments)
 
     def after_first_duedate__changed(self, *args):
         self.update_view()
+        self._refresh_next(False)
 
     def on_intervals__value_changed(self, *args):
         self.update_view()
+        self._refresh_next(False)
+
+    def on_interest__value_changed(self, *args):
+        self.update_view()
+        self._refresh_next(False)
 
     def on_interval_type_combo__changed(self, *args):
         self.update_view()
+        self._refresh_next(False)
 
     def on_reset_button__clicked(self, *args):
         self._setup_payments()
@@ -616,6 +627,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         # widget
         self.installments_number.set_range(1, 1)
         self.payment_type.set_sensitive(False)
+        self._refresh_next(False)
 
     def _refresh_next(self, validation_ok=True):
         validation_ok = validation_ok and self.model.installments_number
@@ -655,6 +667,7 @@ class CreditProviderMethodSlave(BaseEditorSlave):
         # This is useful to avoid multiple database selects when calling
         # kiwi combobox content changed signal
         self._pmdetails_objs = pmdetails_objs
+        self.update_view()
         return self._pmdetails_objs
 
     def _setup_payment_types(self):
