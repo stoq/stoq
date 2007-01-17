@@ -286,23 +286,28 @@ class AbstractItemStep(WizardEditorStep):
 
     def _update_total(self, *args):
         self.summary.update_total()
+        has_items = bool(self.slave.klist)
+        self._refresh_next(has_items)
         self.force_validation()
 
     def _update_list(self, item):
-        items = [s.sellable for s in self.slave.klist]
-        if item in items:
-            msg = (_("The item '%s' was already added to the order")
-                   % item.get_description())
-            self.item.set_invalid(msg)
-            return
         if self.item_proxy.model.item is item:
             cost = self.proxy.model.cost
         else:
             cost = item.cost
         quantity = (self.proxy.model and self.proxy.model.quantity or
                     Decimal(1))
-        order_item = self.get_order_item(item, cost, quantity)
-        self.slave.klist.append(order_item)
+
+        # For items already present in the list, increase the quantity of the
+        # existing item. If the item is not in the list, just add it.
+        items = [s.sellable for s in self.slave.klist]  
+        if item in items:
+            object_item = self.slave.klist[items.index(item)]
+            object_item.quantity += quantity
+            self.slave.klist.update(object_item)
+        else:
+            order_item = self.get_order_item(item, cost, quantity)
+            self.slave.klist.append(order_item)
         self._update_total()
         self.proxy.set_model(None, relax_type=True)
         self.item.set_text('')
