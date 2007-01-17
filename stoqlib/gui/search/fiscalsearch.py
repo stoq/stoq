@@ -63,7 +63,7 @@ class CfopSearch(SearchEditor):
 
 class FiscalBookEntrySearch(SearchEditor):
     title = _("Search for fiscal entries")
-    size = (875, 450)
+    size = (750, 450)
     search_table = IcmsIpiView
     editor_class = FiscalBookEntryEditor
     searching_by_date = True

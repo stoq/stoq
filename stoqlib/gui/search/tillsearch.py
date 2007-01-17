@@ -36,7 +36,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, payment_value_colorize
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.slaves.filterslave import FilterSlave
-from stoqlib.domain.till import TillFiscalOperationsView, Till
+from stoqlib.domain.till import TillFiscalOperationsView, Till,
 
 
 _ = stoqlib_gettext
@@ -58,7 +58,7 @@ class TillFiscalOperationsSearch(SearchDialog):
     # SearchDialog Hooks
     #
 
-    def get_columns(self):
+    def get_columns(self, *args):
         return [Column('identifier', title=_('#'), width=60,
                        justify=gtk.JUSTIFY_RIGHT, format="%05d",
                        data_type=int, sorted=True),

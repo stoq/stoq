@@ -90,7 +90,7 @@ class ServiceSearch(SellableSearch):
         columns = [Column('code', title=_('Code'), data_type=int, sorted=True,
                           format="%03d", width=80),
                    Column('barcode', title=_('Barcode'), data_type=str,
-                          visible=True, width=80),
+                          visible=True, width=120),
                    Column('description', title=_('Description'), data_type=str,
                           expand=True)]
 
