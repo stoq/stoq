@@ -76,9 +76,6 @@ class PurchaseItem(Domain):
         if not 'cost' in kw:
             kw['cost'] = kw['sellable'].cost
 
-        if kw['sellable'].id in [item.sellable.id
-                                   for item in kw['order'].get_items()]:
-            raise ValueError('This product was already added to the order')
         Domain._create(self, id, **kw)
 
     #
