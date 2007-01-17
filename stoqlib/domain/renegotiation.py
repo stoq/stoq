@@ -34,7 +34,8 @@ from stoqlib.exceptions import StoqlibError
 from stoqlib.domain.base import Domain, InheritableModelAdapter
 from stoqlib.domain.interfaces import (IRenegotiationReturnSale,
                                        IDescribable, IPaymentGroup,
-                                       IMoneyPM, IRenegotiationExchange,
+                                       IRenegotiationExchange,
+                                       IGiftCertificatePM,
                                        IRenegotiationInstallments)
 
 _ = stoqlib_gettext
@@ -103,7 +104,6 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
     def _setup_giftcert_renegotiation(self, sale_order, giftcert_number,
                                       overpaid_value, reason):
-        from stoqlib.domain.till import Till
         clone = sale_order.get_clone()
         conn = self.get_connection()
 
@@ -115,15 +115,14 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
         group = clone.addFacet(IPaymentGroup, connection=conn)
         base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = IMoneyPM(base_method)
+        adapter = IGiftCertificatePM(base_method)
         adapter.setup_inpayments(overpaid_value, group)
         clone.confirm_sale()
 
         # The new payment for the new sale has it's value already paid
         # in the old sale order. So, create a reversal one
-        till = Till.get_current(conn)
-        till_group = IPaymentGroup(till)
-        till_group.create_debit(-overpaid_value, reason)
+        payment = IPaymentGroup(sale_order)
+        payment.add_payment(-overpaid_value, reason, base_method)
         return clone
 
     def confirm(self, sale_order, gift_certificate_settings=None):
