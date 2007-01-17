@@ -51,6 +51,8 @@ class ServiceItemEditor(BaseEditor):
         BaseEditor.__init__(self, conn, model)
         self.service_name_label.set_bold(True)
         self.set_description(model.sellable.base_sellable_info.description)
+        self.price.set_sensitive(False)
+
     #
     # BaseEditor hooks
     #
