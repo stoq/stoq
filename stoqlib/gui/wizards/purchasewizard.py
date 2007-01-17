@@ -24,6 +24,8 @@
 ##
 """ Purchase wizard definition """
 
+import datetime
+
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
@@ -100,6 +102,14 @@ class FinishPurchaseStep(WizardEditorStep):
     #
     # Kiwi callbacks
     #
+
+    def on_receival_date__content_changed(self, proxy_date_entry):
+        select_date = proxy_date_entry.get_date()
+
+        if select_date is None:
+            return
+        if select_date < datetime.date.today():
+            proxy_date_entry.set_invalid(_("Expected receival date must be set to a future date"))
 
     def on_transporter_button__clicked(self, button):
         if run_person_role_dialog(TransporterEditor, self, self.conn,
@@ -283,6 +293,7 @@ class PurchaseItemStep(AbstractItemStep):
     #
 
     def post_init(self):
+        self._refresh_next(False)
         self.product_button.hide()
 
     def next_step(self):
