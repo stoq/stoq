@@ -276,7 +276,9 @@ class TillApp(SearchableAppWindow):
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
         if status == ALL_ITEMS_INDEX:
-            return 
+            # The Till does not display items with the STATUS_ORDER set,
+            # filter it out when displaying all items.
+            return SaleView.q.status != Sale.STATUS_ORDER
         return SaleView.q.status == status
 
     #
