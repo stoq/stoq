@@ -415,6 +415,7 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self.slave.klist.unselect_all()
         self.slave.klist.select(item)
         self.certificate_number.set_text('')
+        self.wizard.enable_next()
         self._update_total()
 
     #
