@@ -110,11 +110,11 @@ class WarehouseApp(SearchableAppWindow):
 
     def get_columns(self):
         return [Column('code', title=_('Code'), sorted=True,
-                       data_type=int, format='%03d', width=120),
+                       data_type=int, format='%03d', width=80),
                 Column('description', title=_("Description"),
                        data_type=str, expand=True),
                 Column('supplier_name', title=('Supplier'),
-                       data_type=str, width=170),
+                       data_type=str, width=200),
                 Column('stock', title=_('Quantity'),
                        data_type=decimal.Decimal, width=90),
                 Column('unit', title=_("Unit"), data_type=str,
