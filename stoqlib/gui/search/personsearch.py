@@ -269,6 +269,7 @@ class ClientSearch(BasePersonSearch):
     def update_widgets(self, *args):
         items = self.klist.get_selected()
         self.set_details_button_sensitive(items is not None)
+        self.set_edit_button_sensitive(items is not None)
 
 
 class TransporterSearch(BasePersonSearch):
