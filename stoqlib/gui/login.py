@@ -65,8 +65,8 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.retval = None
         self.username.grab_focus()
 
-    def on_escape_pressed(self, window, event, extra):
-        self.close()
+    def on_escape_pressed(self):
+        gtk.main_quit()
 
     def on_delete_event(self, window, event):
         self.close()
