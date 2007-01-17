@@ -271,11 +271,10 @@ class PurchaseItemStep(AbstractItemStep):
             Column('sellable.description', title=_('Description'),
                    data_type=str, expand=True, searchable=True),
             Column('quantity', title=_('Quantity'), data_type=float, width=90,
-                   format_func=format_quantity, editable=True),
+                   format_func=format_quantity),
             Column('sellable.unit_description',title=_('Unit'), data_type=str,
                    width=50),
-            Column('cost', title=_('Cost'), data_type=currency, editable=True,
-                   width=90),
+            Column('cost', title=_('Cost'), data_type=currency, width=90),
             Column('total', title=_('Total'), data_type=currency, width=100),
             ]
 
