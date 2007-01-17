@@ -70,18 +70,19 @@ class SaleSearch(SearchDialog):
     #
 
     def get_columns(self):
-        return [Column('order_number', title=_('Number'), width=80,
+        return [Column('order_number', title=_('Number'), width=70,
                        data_type=int, sorted=True),
                 Column('open_date', title=_('Date Started'), width=120,
                        data_type=date, justify=gtk.JUSTIFY_RIGHT),
                 Column('client_name', title=_('Client'),
-                       data_type=str, width=120),
+                       data_type=str, width=140),
                 Column('salesperson_name', title=_('Salesperson'),
-                       data_type=str, width=190, expand=True),
+                       data_type=str, width=170, expand=True),
                 Column('total_quantity', title=_('Items Quantity'),
-                       data_type=Decimal, width=140,
+                       data_type=Decimal, width=120,
                        format_func=format_quantity),
-                Column('total', title=_('Total'), data_type=currency)]
+                Column('total', title=_('Total'), data_type=currency,
+                       width=80)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
@@ -95,7 +96,7 @@ class SaleSearch(SearchDialog):
     def get_filter_slave(self):
         items = [(value, key) for key, value in Sale.statuses.items()]
         items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
-        self.filter_slave = FilterSlave(items, selected=Sale.STATUS_OPENED)
+        self.filter_slave = FilterSlave(items, selected=Sale.STATUS_CONFIRMED)
         self.filter_slave.set_filter_label(_('Show sales with status'))
         return self.filter_slave
 

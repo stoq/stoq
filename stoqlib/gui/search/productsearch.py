@@ -110,7 +110,7 @@ class ProductSearch(SellableSearch):
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=int, sorted=True,
-                       format='%03d', width=80),
+                       format='%03d', width=70),
                 Column('barcode', title=_('Barcode'), data_type=str,
                        width=120),
                 Column('description', title=_('Description'), data_type=str,
@@ -120,7 +120,7 @@ class ProductSearch(SellableSearch):
                 Column('cost', _('Cost'), data_type=currency,
                        width=80),
                 Column('price', title=_('Price'), data_type=currency,
-                       width=70),
+                       width=80),
                 Column('stock', title=_('Stock Total'),
                        format_func=format_quantity,
                        data_type=Decimal, width=100)]

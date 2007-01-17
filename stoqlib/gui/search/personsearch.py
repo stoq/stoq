@@ -145,10 +145,10 @@ class SupplierSearch(BasePersonSearch):
         return [Column('name', _('Name'), str,
                        sorted=True, width=250, expand=True),
                 Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number),
+                       format_func=format_phone_number, width=110),
                 FacetColumn(ICompany, 'fancy_name', _('Fancy Name'), str,
                             width=180),
-                FacetColumn(ICompany, 'cnpj', _('CNPJ'), str)]
+                FacetColumn(ICompany, 'cnpj', _('CNPJ'), str, width=140)]
 
     def get_extra_query(self):
         supplier_table = Person.getAdapterClass(ISupplier)
@@ -252,9 +252,9 @@ class ClientSearch(BasePersonSearch):
         return [Column('name', _('Name'), str,
                        sorted=True, width=250, expand=True),
                 Column('phone_number', _('Phone Number'), str,
-                       format_func=format_phone_number, width=180),
+                       format_func=format_phone_number, width=150),
                 Column('cpf', _('CPF'), str, width=130),
-                Column('rg_number', _('RG'), str)]
+                Column('rg_number', _('RG'), str, width=120)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
