@@ -317,9 +317,6 @@ class Sale(Domain):
         """
         branch = self.get_till_branch()
         for item in self.get_items():
-            if isinstance(item, ProductSellableItem):
-                item.cancel(branch)
-                continue
             item.cancel(branch)
 
     def check_close(self):

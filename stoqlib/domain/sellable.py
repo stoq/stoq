@@ -127,8 +127,8 @@ class ASellableItem(InheritableModel):
     def sell(self):
         self.sellable.sell()
 
-    def cancel(self):
-        self.sellable.cancel()
+    def cancel(self, branch):
+        self.sellable.can_sell()
 
     #
     # Accessors
