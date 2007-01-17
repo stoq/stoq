@@ -993,6 +993,11 @@ class SearchEditor(SearchDialog):
         self.klist.connect('double_click', self._on_toolbar__edit)
         self.update_widgets()
 
+    @argcheck(bool)
+    def set_edit_button_sensitive(self, value):
+        """Control sensitivity of button edit"""
+        self._toolbar.edit_button.set_sensitive(value)
+
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
         self._toolbar = SearchEditorToolBar()
