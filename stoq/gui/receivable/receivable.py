@@ -104,7 +104,7 @@ class ReceivableApp(SearchableAppWindow):
                 Column('status_str', title=_('Status'), width=80,
                        data_type=str),
                 Column('value', title=_('Value'), data_type=currency,
-                       width=60)]
+                       width=100)]
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
