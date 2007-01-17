@@ -27,13 +27,13 @@
 from datetime import date
 
 import gtk
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.widgets.list import Column, ColoredColumn
 from kiwi.datatypes import currency
 from sqlobject.sqlbuilder import AND
 
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX, payment_value_colorize
 from stoqlib.gui.base.search import SearchDialog
 from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.domain.till import TillFiscalOperationsView, Till
@@ -68,8 +68,9 @@ class TillFiscalOperationsSearch(SearchDialog):
                        data_type=str, expand=True),
                 Column('station_name', title=_('Station'), data_type=str,
                        width=120),
-                Column('value', title=_('Value'), width=80,
-                       justify=gtk.JUSTIFY_RIGHT, data_type=currency)]
+                ColoredColumn('value', _('Value'), data_type=currency,
+                       color='red', data_func=payment_value_colorize,
+                       width=80)]
 
     def get_extra_query(self):
         branch_id = get_current_branch(self.conn).id
