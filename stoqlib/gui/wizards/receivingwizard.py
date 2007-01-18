@@ -149,6 +149,7 @@ class PurchaseSelectionStep(WizardEditorStep):
     model_type = ReceivingOrder
 
     def __init__(self, wizard, conn, model):
+        self._next_step = None
         WizardEditorStep.__init__(self, conn, wizard, model)
 
     def _refresh_next(self, validation_value):
@@ -209,8 +210,14 @@ class PurchaseSelectionStep(WizardEditorStep):
             self.model.transporter = self.model.purchase.transporter
         else:
             self.model.purchase = None
-        return ReceivingOrderProductStep(self.wizard, self, self.conn,
-                                         self.model)
+
+        # FIXME: Improve the infrastructure to avoid this local caching of
+        #        Wizard steps.
+        if not self._next_step:
+            self._next_step = ReceivingOrderProductStep(self.wizard,
+                                                        self, self.conn,
+                                                        self.model)
+        return self._next_step
 
     def has_previous_step(self):
         return False
