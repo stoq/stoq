@@ -39,7 +39,7 @@ from stoqdrivers.constants import UNIT_WEIGHT
 from stoqlib.exceptions import StoqlibError, TillError
 from stoqlib.database.database import rollback_and_begin, finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_user
-from stoqlib.lib.message import warning, yesno
+from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
@@ -179,11 +179,12 @@ class POSApp(AppWindow):
         price = registered_price or sellable.price
 
         if isinstance(sellable.get_adapted(), Service) and quantity > 1:
-            for i in range(quantity):
-                sellable_item = sellable.add_sellable_item(self.sale,
-                                                           price=price)
-                self._update_added_item(sellable_item)
-            return
+            # It's not a common operation to add more than one item at
+            # a time, it's also problematic since you'd have to show
+            # one dialog per service item. See #3092
+            info(_(u"Only one service was added since its not possible to"
+                   "add more than one service to an order at a time."))
+
         sellable_item = sellable.add_sellable_item(self.sale,
                                                    quantity=quantity,
                                                    price=price)
