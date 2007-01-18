@@ -97,6 +97,9 @@ class ReceivingOrderProductStep(AbstractItemStep):
 
     def post_init(self):
         self.add_new_item_button.hide()
+        # Hide the search bar, since it does not make sense to add new
+        # items to a receivable order.
+        self.item_hbox.hide()
 
     def next_step(self):
         return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
