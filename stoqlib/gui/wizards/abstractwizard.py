@@ -300,7 +300,7 @@ class AbstractItemStep(WizardEditorStep):
 
         # For items already present in the list, increase the quantity of the
         # existing item. If the item is not in the list, just add it.
-        items = [s.sellable for s in self.slave.klist]  
+        items = [s.sellable for s in self.slave.klist]
         if item in items:
             object_item = self.slave.klist[items.index(item)]
             object_item.quantity += quantity
