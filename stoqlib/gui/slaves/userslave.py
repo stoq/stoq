@@ -227,11 +227,14 @@ class UserDetailsSlave(BaseEditorSlave):
         #    are related to the facets the current profile will add
         profile = self.profile.get_selected()
         if profile.name == 'Salesperson':
-            role = EmployeeRole.selectOneBy(name=profile.name,
-                                            connection=self.conn)
             person = self.model.person
-            person.addFacet(IEmployee, role=role, connection=self.conn)
-            person.addFacet(ISalesPerson, connection=self.conn)
+            if not IEmployee(person, None):
+                role = EmployeeRole.selectOneBy(name=profile.name,
+                                                connection=self.conn)
+                person.addFacet(IEmployee, role=role, connection=self.conn)
+
+                if not ISalesPerson(person, None):
+                    person.addFacet(ISalesPerson, connection=self.conn)
 
     #
     # Kiwi handlers
