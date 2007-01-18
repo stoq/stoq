@@ -39,7 +39,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import raw_phone_number
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.domain.base import Domain, ModelAdapter, BaseSQLView
-from stoqlib.domain.address import Address
+from stoqlib.domain.address import Address, CityLocation
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IEmployee,
                                        IClient, ISupplier, IUser, IBranch,
                                        ISalesPerson, IBankBranch, IActive,
@@ -321,6 +321,13 @@ class _PersonAdaptToIndividual(_PersonAdapter):
     def get_marital_statuses(self):
         return [(self.marital_statuses[i], i)
                 for i in self.marital_statuses.keys()]
+
+    def ensure_birth_location(self):
+        similar = self.birth_location.get_similar()
+        if similar:
+            location = self.birth_location
+            self.birth_location = similar.getOne()
+            CityLocation.delete(location.id, connection=self.get_connection())
 
 Person.registerFacet(_PersonAdaptToIndividual, IIndividual)
 

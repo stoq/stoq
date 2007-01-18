@@ -76,19 +76,6 @@ class IndividualDetailsSlave(BaseEditorSlave):
 
         self.marital_status.prefill(self.model.get_marital_statuses())
 
-    def ensure_city_location(self):
-        """ Search for the birth location fields in database, if found some
-        item, reuse the city location object """
-        birthloc = self.model.birth_location
-        if not birthloc.is_valid_model():
-            self.model.birth_location = None
-            CityLocation.delete(birthloc.id, connection=self.conn)
-            return
-        new_birthloc = birthloc.get_validated()
-        if new_birthloc:
-            self.model.birth_location = new_birthloc
-            CityLocation.delete(birthloc.id, connection=self.conn)
-
     def update_marital_status(self):
         marital_status = self.marital_status.get_selected_data()
         visible = marital_status == self.model_type.STATUS_MARRIED
@@ -133,5 +120,5 @@ class IndividualDetailsSlave(BaseEditorSlave):
             self.model.gender = self.model_type.GENDER_MALE
         else:
             self.model.gender = self.model_type.GENDER_FEMALE
-        self.ensure_city_location()
+        self.model.ensure_birth_location()
         return self.model
