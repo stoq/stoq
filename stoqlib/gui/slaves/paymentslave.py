@@ -515,6 +515,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         inst_number = self.model.installments_number
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
+        self._refresh_next(False)
         has_installments = inst_number > 1
         self.interval_type_combo.set_sensitive(has_installments)
         self.intervals.set_sensitive(has_installments)
