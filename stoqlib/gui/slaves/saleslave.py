@@ -191,17 +191,20 @@ class SaleListToolbar(GladeSlaveDelegate):
         """
         Disables editing of the sales
         """
-        self.return_sale_button.hide()
-        self.edit_button.hide()
+        sale = self.sales.get_selected()
+        self.details_button.set_sensitive(bool(sale))
+        if sale and sale.status == Sale.STATUS_CANCELLED:
+            self.return_sale_button.set_sensitive(False)
 
     #
     # Private
     #
 
     def _update_buttons(self, enabled):
-        for w in (self.return_sale_button,
-                  self.details_button):
-            w.set_sensitive(enabled)
+        if self.disable_editing():
+            for w in (self.return_sale_button,
+                      self.details_button):
+                w.set_sensitive(enabled)
 
     def _update_print_button(self, enabled):
         self.print_button.set_sensitive(enabled)
