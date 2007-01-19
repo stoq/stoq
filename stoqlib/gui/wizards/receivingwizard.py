@@ -187,6 +187,7 @@ class PurchaseSelectionStep(WizardEditorStep):
     def on_searchbar_activate(self, slave, objs):
         """Use this callback with SearchBar search-activate signal"""
         self.orders.add_list(objs, clear=True)
+        self.wizard.refresh_next(False)
 
     def _update_view(self):
         has_selection = self.orders.get_selected() is not None
@@ -269,6 +270,7 @@ class ReceivingOrderWizard(BaseWizard):
         model = self._create_model(conn)
         first_step = PurchaseSelectionStep(self, conn, model)
         BaseWizard.__init__(self, conn, first_step, model)
+        self.next_button.set_sensitive(False)
 
     def _create_model(self, conn):
         current_user = get_current_user(conn)
