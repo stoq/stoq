@@ -379,8 +379,8 @@ class POSApp(AppWindow):
 
     def _cancel_order(self):
         if self.sale is not None:
-            if not yesno(_(u'The current order will be canceled, Confirm?'),
-                         gtk.RESPONSE_YES,_(u"Cancel Order"), _(u"Go Back")):
+            if yesno(_(u'The current order will be canceled, Confirm?'),
+                     gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
                 return
         log.info("Cancelling order")
         self._clear_order()
