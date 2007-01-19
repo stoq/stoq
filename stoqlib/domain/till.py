@@ -184,8 +184,6 @@ class Till(Domain):
         if self.status == Till.STATUS_CLOSED:
             raise TillError(_("Till is already closed"))
 
-        closing_date = datetime.datetime.now()
-
         if removed:
             if removed > self.get_balance():
                 raise ValueError("The cash amount that you want to send is "
@@ -193,7 +191,7 @@ class Till(Domain):
 
             self.create_debit(removed,
                               _(u'Amount removed from Till on %s' %
-                                closing_date.strftime('%x')))
+                                self.opening_date.strftime('%x')))
 
         for sale in self.get_unconfirmed_sales():
             group = IPaymentGroup(sale)
@@ -202,7 +200,7 @@ class Till(Domain):
             for payment in group.get_items():
                 payment.status = Payment.STATUS_PENDING
 
-        self.closing_date = closing_date
+        self.closing_date = datetime.datetime.now()
         self.final_cash_amount = self.get_balance()
         self.status = Till.STATUS_CLOSED
 
