@@ -174,8 +174,10 @@ class ICouponPrinter(IDevice):
         """
 
     def coupon_cancel():
-        """ Can only be called when a coupon is opened. It needs to be
-        possible to open new coupons after this is called.
+        """
+        Cancels the currently open coupon or the last closed open.
+        You cannot close a previous coupon if you already created
+        a new one.
         """
 
     def coupon_totalize(discount=Decimal("0.0"), surcharge=Decimal("0.0"),
