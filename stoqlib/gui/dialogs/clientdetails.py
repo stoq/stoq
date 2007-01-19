@@ -165,7 +165,7 @@ class ClientDetailsDialog(BaseEditor):
                        data_type=date, sorted=True),
                 Column("status_str", title=_("Status"), width=80,
                        data_type=str),
-                ColoredColumn("value", title=_("Value"),
+                ColoredColumn("base_value", title=_("Value"),
                               justify=gtk.JUSTIFY_RIGHT, data_type=currency,
                               color='red', width=100,
                               data_func=payment_value_colorize),

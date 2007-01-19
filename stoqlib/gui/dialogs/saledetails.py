@@ -71,7 +71,7 @@ class SaleDetailsDialog(BaseEditor):
         value_format = '<b>%s</b>'
         total_text = '<b>%s</b>' % _(u"Total:")
         summary_label = SummaryLabel(klist=self.payments_list,
-                                     column='value',
+                                     column='base_value',
                                      label=total_text,
                                      value_format=value_format)
         summary_label.show()
@@ -105,7 +105,7 @@ class SaleDetailsDialog(BaseEditor):
                        data_type=datetime.date, width=110,
                        justify=gtk.JUSTIFY_RIGHT),
                 Column('status_str', _("Status"), data_type=str, width=80),
-                ColoredColumn('value', _("Value"), data_type=currency,
+                ColoredColumn('base_value', _("Value"), data_type=currency,
                               width=90, color='red',
                               justify=gtk.JUSTIFY_RIGHT,
                               data_func=payment_value_colorize)]
