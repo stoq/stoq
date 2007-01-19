@@ -34,7 +34,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from sqlobject.sqlbuilder import AND
-from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
 from stoqlib.domain.sale import SaleView, SaleAdaptToPaymentGroup
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -108,11 +108,12 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        query = Payment.q.groupID == SaleAdaptToPaymentGroup.q.id
+        query = AND(Payment.q.groupID == SaleAdaptToPaymentGroup.q.id,
+                    Payment.q.id == PaymentAdaptToInPayment.q._originalID)
         if status != ALL_ITEMS_INDEX:
             query = AND(query, Payment.q.status == status)
         return query
-              
+
     #
     # Private
     #
