@@ -146,7 +146,6 @@
                         <property name="data_type">unicode</property>
                         <property name="is_focus">True</property>
                         <property name="mandatory">True</property>
-                        <property name="max_length">2</property>
                         <property name="model_attribute">city_location.state</property>
                         <property name="visible">True</property>
                     </widget>
