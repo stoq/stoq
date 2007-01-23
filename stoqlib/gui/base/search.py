@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005, 2006, 2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -20,10 +20,9 @@
 ##
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Implementation of basic dialogs for searching data """
-
-import datetime
 
 import gtk
 import gobject
@@ -37,11 +36,13 @@ from sqlobject.sresults import SelectResults
 from sqlobject.dbconnection import Transaction
 from sqlobject.sqlbuilder import LIKE, AND, func, OR
 from sqlobject.col import SOUnicodeCol, SOIntCol, SODateTimeCol, SODateCol
+from zope.interface import implements
 
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.columns import AbstractDecimalCol, SOPriceCol
 from stoqlib.gui.base.columns import FacetColumn, ForeignKeyColumn
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog, print_report
+from stoqlib.gui.interfaces import ISearchBarEntrySlave
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.translation import stoqlib_gettext
@@ -63,26 +64,29 @@ class DateInterval:
     start_date = None
     end_date = None
 
-
 class DateSearchSlave(GladeSlaveDelegate):
+
+    implements(ISearchBarEntrySlave)
+
     gladefile = 'DateSearchSlave'
     proxy_widgets = ('start_date',
                      'end_date')
     gsignal('start-date-selected')
     gsignal('end-date-selected')
 
-    def __init__(self, filter_slave=None):
+    def __init__(self, filter_slave, fields):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
         self.model = DateInterval()
+        self._fields = fields
         self.add_proxy(self.model, self.proxy_widgets)
         self._slave = _SearchBarEntry(filter_slave)
         self.attach_slave('searchentry_holder', self._slave)
         self._update_view()
 
     def _update_view(self):
-        enable_dates = self.date_check.get_active() 
+        enable_dates = self.date_check.get_active()
         self.start_date.set_sensitive(enable_dates)
         self.end_date.set_sensitive(enable_dates)
 
@@ -101,34 +105,32 @@ class DateSearchSlave(GladeSlaveDelegate):
             date_search_lbl = ''
         self.search_label.set_text(date_search_lbl)
 
-    def get_search_dates(self):
-        """
-        Returns one of the following:
-          - None: If 'at any date' is selected
-          - datetime, datetime: If a range is selected, start and end
-        """
+    def get_extra_queries(self):
+        start_date = self.model.start_date
+        end_date = self.model.end_date
 
-        if self.anytime_check.get_active():
-            return
-        elif self.today_check.get_active():
-            start_date = datetime.datetime.today()
-            end_date = start_date + datetime.timedelta(1)
-        elif self.date_check.get_active():
-            start_date = self.model.start_date
-            end_date = self.model.end_date
-        
-        # We need datetime.datetime instances in SearchBar and here we
-        # must convert them since kiwi doesn't have support for datetime
-        # widgets, only instances of type datetime.date
-        if start_date:
-            start_date = datetime.datetime(start_date.year,
-                                           start_date.month,
-                                           start_date.day)
-        if end_date:
-            end_date = datetime.datetime(end_date.year,
-                                         end_date.month,
-                                         end_date.day)
-        return start_date, end_date
+        queries = []
+        for field_name, table_type in self._fields:
+            table_field = getattr(table_type.q, field_name)
+            # Today -> DATE(field) = DATE(TODAY())
+            if self.today_check.get_active():
+                queries.append(
+                    func.DATE(table_field) == func.DATE(func.NOW()))
+            # Date -> field >= DATE(start) or
+            #         field >= DATE(start) AND field < DATE(end) or
+            #         field < DATE(end)
+            elif self.date_check.get_active():
+                if start_date:
+                    queries.append(table_field >= func.DATE(start_date))
+                if end_date:
+                    queries.append(table_field <= func.DATE(end_date))
+            # Any date -> Nothing
+            elif self.anytime_check.get_active():
+                pass
+            else:
+                raise AssertionError
+
+        return queries
 
     def start_animate_search_icon(self):
         self._slave.start_animate_search_icon()
@@ -162,6 +164,9 @@ class DateSearchSlave(GladeSlaveDelegate):
 
 
 class _SearchBarEntry(GladeSlaveDelegate):
+
+    implements(ISearchBarEntrySlave)
+
     gladefile = 'SearchBarEntry'
     gsignal('selected')
 
@@ -177,8 +182,8 @@ class _SearchBarEntry(GladeSlaveDelegate):
         self.search_icon.hide()
         self.search_entry.grab_focus()
 
-    def set_search_label(self, search_lbl_text):
-        self.search_label.set_text(search_lbl_text)
+    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
+        self.search_label.set_text(search_entry_lbl)
 
     def get_search_string(self):
         return self.search_entry.get_text()
@@ -188,6 +193,12 @@ class _SearchBarEntry(GladeSlaveDelegate):
 
     def clear(self):
         self.search_entry.set_text('')
+
+    def get_slave(self):
+        return self
+
+    def get_extra_queries(self):
+        return []
 
     #
     # Kiwi callbacks
@@ -250,6 +261,11 @@ class SearchBar(GladeSlaveDelegate):
                            sent to the sqlobject select method
 
         """
+        self.int_fields = []
+        self.decimal_fields = []
+        self.str_fields = []
+        self.dtime_fields = []
+
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self.conn = conn
         self.max_search_results = sysparam(self.conn).MAX_SEARCH_RESULTS
@@ -258,17 +274,17 @@ class SearchBar(GladeSlaveDelegate):
         self.search_results_label.set_size('small')
         self.filter_slave = filter_slave
         if searching_by_date:
-            self._slave = DateSearchSlave(filter_slave)
-            entry_slave = self._slave.get_slave()
+            self._slave = DateSearchSlave(filter_slave, self.dtime_fields)
             self._slave.connect('start-date-selected',
                                 self._on_date_search__start_date_selected)
             self._slave.connect('end-date-selected',
                                 self._on_date_search__end_date_selected)
         else:
             self._slave = _SearchBarEntry(filter_slave)
-            entry_slave = self._slave
 
+        entry_slave = self._slave.get_slave()
         entry_slave.connect('selected', self._on_search_entry__selected)
+
         self._extra_query_callback = None
         self._filter_results_callback = None
         self._blocked_results_counter = None
@@ -315,10 +331,12 @@ class SearchBar(GladeSlaveDelegate):
                 self.dtime_fields.append(value)
 
     def split_field_types(self):
-        self.int_fields = []
-        self.decimal_fields = []
-        self.str_fields = []
-        self.dtime_fields = []
+         # We may have (eg DateSearchSlave) references to these lists, avoid
+         # replacing them with a new list/reference.
+        self.int_fields[:] = []
+        self.decimal_fields[:] = []
+        self.str_fields[:] = []
+        self.dtime_fields[:] = []
         if not self.columns:
             return
 
@@ -350,7 +368,6 @@ class SearchBar(GladeSlaveDelegate):
                 columns = parent_class.sqlmeta.columns.values()
                 self._set_field_types(columns, attributes, parent_class)
 
-    @argcheck(str, list)
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % search_str.upper()
         for field_name, table_type in self.str_fields:
@@ -358,43 +375,23 @@ class SearchBar(GladeSlaveDelegate):
             q = LIKE(func.UPPER(table_field), search_str)
             query.append(q)
 
-    @argcheck(float, list)
     def _set_query_float(self, search_str, query):
         for field_name, table_type in self.decimal_fields:
             table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
 
-    @argcheck(int, list)
     def _set_query_int(self, search_str, query):
         for field_name, table_type in self.int_fields:
             table_field = getattr(table_type.q, field_name)
             q = table_field == search_str
             query.append(q)
 
-    @argcheck(list, datetime.datetime, datetime.datetime)
-    def _set_query_dates(self, query, start_date=None, end_date=None):
-        for field_name, table_type in self.dtime_fields:
-            table_field = getattr(table_type.q, field_name)
-            q1 = q2 = None
-            if start_date:
-                q1 = table_field >= str(start_date)
-            if end_date:
-                end_date = end_date + datetime.timedelta(1)
-                q2 = table_field < str(end_date)
-
-            if q1 and q2:
-                q = AND(q1, q2)
-            else:
-                q = q1 or q2
-            query.append(q)
-
     #
     # Building query
     #
 
-    @argcheck(str, tuple)
-    def _build_query(self, search_str, search_dates=None):
+    def _build_query(self, search_str):
         """Here we build queries after check the search string type.
         Queries are always optimized for field types to avoid database
         input syntax errors and also make smart searches.
@@ -425,14 +422,6 @@ class SearchBar(GladeSlaveDelegate):
                 pass
             self._set_query_str(search_str, query)
 
-        if search_dates:
-            arg_len = len(search_dates)
-            if not arg_len == 2:
-                raise ValueError('Argument search_date must have only two '
-                                 'elements, got %s instead' % arg_len)
-            start_date, end_date = search_dates
-            self._set_query_dates(query, start_date, end_date)
-
         if not query:
             if self.columns:
                 columns = [c.attribute for c in self.columns]
@@ -451,37 +440,29 @@ class SearchBar(GladeSlaveDelegate):
     #
 
     def _run_query(self):
+        queries = []
         if self._extra_query_callback:
-            extra_query = self._extra_query_callback()
-        else:
-            extra_query = None
+            query = self._extra_query_callback()
+            if query:
+                queries.append(query)
 
         search_str = self._slave.get_search_string()
-        if isinstance(self._slave, DateSearchSlave):
-            search_dates = self._slave.get_search_dates()
-        else:
-            search_dates = None
+        if search_str:
+            queries.append(self._build_query(search_str))
 
-        query = None
-        if search_str or search_dates:
-            query = self._build_query(search_str, search_dates)
-        if extra_query:
-            query = query and AND(query, extra_query) or extra_query
+        queries.extend(self._slave.get_extra_queries())
 
         kwargs = {'connection': self.conn}
         if self.query_args:
-            keys = ['connection', 'clauseTables', 'distinct']
-            for query_arg in keys:
-                msg = 'Invalid query argument %s' % query_arg
-                assert not query_arg in self.query_args, msg
+            for keyword in ['connection', 'clauseTables', 'distinct']:
+                if keyword in self.query_args:
+                    raise AssertionError('Invalid query argument %s' % keyword)
             kwargs.update(self.query_args)
         kwargs['distinct'] = True
 
         self.emit('before-search-activate')
-        if query:
-            search_results = self.table_type.select(query, **kwargs)
-        else:
-            search_results = self.table_type.select(**kwargs)
+
+        search_results = self.table_type.select(AND(*queries), **kwargs)
 
         total = search_results.count()
         if total > self.max_search_results:
@@ -590,14 +571,6 @@ class SearchBar(GladeSlaveDelegate):
     def set_search_string(self, value):
         self._slave.set_search_string(value)
 
-    def get_search_dates(self):
-        res = (None, None)
-        if self.searching_by_date:
-            dates = self._slave.get_search_dates()
-            if dates is not None:
-                res = dates
-        return res
-
     def get_blocked_records_quantity(self):
         """ Return the number of records that were blocked in the last
         query.
@@ -619,10 +592,10 @@ class SearchBar(GladeSlaveDelegate):
         else:
             status_name = ""
         extra_filters = self.get_search_string()
-        start_date, end_date = self.get_search_dates()
+        #start_date, end_date = self.get_search_dates()
         print_report(report_class, blocked_records=blocked_records,
                      status_name=status_name, extra_filters=extra_filters,
-                     start_date=start_date, end_date=end_date,
+                     #start_date=start_date, end_date=end_date,
                      status=status, *args, **kwargs)
 
 class SearchEditorToolBar(GladeSlaveDelegate):
@@ -878,6 +851,7 @@ class SearchDialog(BasicDialog):
         """
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
+        # Second argument is only used by Stoq's SearchableAppWindow
         self.search_bar.set_searchbar_labels(search_entry_lbl,
                                              date_search_lbl)
 
