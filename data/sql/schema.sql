@@ -1152,12 +1152,12 @@ CREATE VIEW abstract_stock_view AS
   --     product_id      - the id of product table
   --
   SELECT DISTINCT
-  asellable.id AS id, 
-  asellable.code AS code, 
+  asellable.id AS id,
+  asellable.code AS code,
   asellable.barcode AS barcode,
   asellable.status AS status,
   abstract_stock_item.quantity + abstract_stock_item.logic_quantity AS stock,
-  abstract_stock_item.branch_id AS branch_id, 
+  abstract_stock_item.branch_id AS branch_id,
   abstract_stock_item.stock_cost AS stock_cost,
   product.id AS product_id
 
@@ -1290,8 +1290,8 @@ CREATE VIEW abstract_purchase_transporter_view AS
   --     transporter_name   - the name of the transporter
   --
   SELECT DISTINCT
-  purchase_order.id AS id, 
-  transporter_id AS transporter_id, 
+  purchase_order.id AS id,
+  transporter_id AS transporter_id,
   person.name AS transporter_name
     FROM purchase_order
 
@@ -1356,19 +1356,19 @@ CREATE VIEW abstract_purchase_branch_view AS
 CREATE VIEW sellable_view AS
 
   SELECT DISTINCT
-  asellable.id AS id, 
-  asellable.code AS code, 
+  asellable.id AS id,
+  asellable.code AS code,
   asellable.barcode AS barcode,
   asellable.status AS status,
-  sum(abstract_stock_view.stock) AS stock, 
+  sum(abstract_stock_view.stock) AS stock,
   abstract_stock_view.branch_id AS branch_id,
-  asellable.cost AS cost, 
+  asellable.cost AS cost,
   base_sellable_info.price AS price,
   base_sellable_info.is_valid_model AS is_valid_model,
-  base_sellable_info.description AS description, 
+  base_sellable_info.description AS description,
   sellable_unit.description AS unit,
-  abstract_product_supplier_view.supplier_name AS supplier_name, 
-  abstract_stock_view.product_id AS product_id		
+  abstract_product_supplier_view.supplier_name AS supplier_name,
+  abstract_stock_view.product_id AS product_id
 
     FROM base_sellable_info, asellable
 
@@ -1403,17 +1403,17 @@ CREATE VIEW sellable_view AS
 CREATE VIEW sellable_full_stock_view AS
 
   SELECT DISTINCT
-  sum(stock) AS stock, 
-  id, 
-  code, 
-  barcode, 
-  status, 
+  sum(stock) AS stock,
+  id,
+  code,
+  barcode,
+  status,
   0 AS branch_id, cost,
-  price, 
-  is_valid_model, 
-  description, 
-  unit, 
-  supplier_name, 
+  price,
+  is_valid_model,
+  description,
+  unit,
+  supplier_name,
   product_id
 
   FROM sellable_view
@@ -1451,13 +1451,13 @@ CREATE VIEW product_full_stock_view AS
 CREATE VIEW service_view AS
 
   SELECT DISTINCT
-  asellable.id AS id, 
-  asellable.code AS code, 
+  asellable.id AS id,
+  asellable.code AS code,
   asellable.barcode AS barcode,
   asellable.status AS status,
-  asellable.cost AS cost, 
+  asellable.cost AS cost,
   base_sellable_info.price AS price,
-  base_sellable_info.description AS description, 
+  base_sellable_info.description AS description,
   sellable_unit.description AS unit,
   service.id AS service_id
     FROM asellable
@@ -1494,14 +1494,14 @@ CREATE VIEW service_view AS
 CREATE VIEW gift_certificate_view AS
 
   SELECT DISTINCT
-  asellable.id AS id, 
-  asellable.code AS code, 
+  asellable.id AS id,
+  asellable.code AS code,
   asellable.barcode AS barcode,
   asellable.status AS status,
-  asellable.cost AS cost, 
+  asellable.cost AS cost,
   base_sellable_info.price AS price,
   on_sale_info.on_sale_price AS on_sale_price,
-  base_sellable_info.description AS description, 
+  base_sellable_info.description AS description,
   gift_certificate.id AS giftcertificate_id
     FROM asellable
 
@@ -1544,17 +1544,17 @@ CREATE VIEW gift_certificate_view AS
 CREATE VIEW sale_view AS
 
   SELECT DISTINCT
-  sale.id AS id, 
-  sale.coupon_id AS coupon_id, 
-  sale.order_number AS order_number, 
+  sale.id AS id,
+  sale.coupon_id AS coupon_id,
+  sale.order_number AS order_number,
   sale.open_date AS open_date,
-  sale.close_date AS close_date, 
-  sale.status AS status, 
+  sale.close_date AS close_date,
+  sale.status AS status,
   person.name AS salesperson_name,
-  sale.surcharge_value AS surcharge_value, 
-  sale.discount_value AS discount_value, 
+  sale.surcharge_value AS surcharge_value,
+  sale.discount_value AS discount_value,
   sale.confirm_date AS confirm_date,
-  sale.cancel_date AS cancel_date, 
+  sale.cancel_date AS cancel_date,
   sale.notes AS notes,
   abstract_sales_client_view.client_name AS client_name,
   abstract_sales_client_view.client_id AS client_id,
@@ -1590,12 +1590,12 @@ CREATE VIEW sale_view AS
 CREATE VIEW client_view AS
 
   SELECT DISTINCT
-  person.id AS id, 
-  person.name AS name, 
+  person.id AS id,
+  person.name AS name,
   person_adapt_to_client.status AS status,
-  person_adapt_to_individual.cpf AS cpf, 
+  person_adapt_to_individual.cpf AS cpf,
   person_adapt_to_individual.rg_number As rg_number,
-  person.phone_number AS phone_number, 
+  person.phone_number AS phone_number,
   person_adapt_to_client.id AS client_id
     FROM person
 
@@ -1635,19 +1635,19 @@ CREATE VIEW client_view AS
 CREATE VIEW purchase_order_view AS
 
   SELECT DISTINCT
-  purchase_order.id AS id, 
-  purchase_order.status AS status, 
+  purchase_order.id AS id,
+  purchase_order.status AS status,
   purchase_order.order_number AS order_number,
-  purchase_order.open_date AS open_date, 
+  purchase_order.open_date AS open_date,
   purchase_order.quote_deadline AS quote_deadline,
   purchase_order.expected_receival_date AS expected_receival_date,
-  purchase_order.expected_pay_date AS expected_pay_date, 
+  purchase_order.expected_pay_date AS expected_pay_date,
   purchase_order.receival_date AS receival_date,
-  purchase_order.confirm_date AS confirm_date, 
+  purchase_order.confirm_date AS confirm_date,
   purchase_order.salesperson_name AS salesperson_name,
-  purchase_order.freight AS freight, 
+  purchase_order.freight AS freight,
   purchase_order.surcharge_value AS surcharge_value,
-  purchase_order.discount_value AS discount_value, 
+  purchase_order.discount_value AS discount_value,
   person.name AS supplier_name,
   abstract_purchase_transporter_view.transporter_name AS transporter_name,
   abstract_purchase_branch_view.branch_name AS branch_name,
