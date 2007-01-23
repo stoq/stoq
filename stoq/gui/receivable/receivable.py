@@ -85,7 +85,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_filter_slave_items(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
-        items.append((_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         return items
 
     #
