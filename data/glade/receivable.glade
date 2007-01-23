@@ -155,8 +155,8 @@
         </child>
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
-  
-  
+
+
 <menu action="TillMenu" name="TillMenu"><menuitem action="quit_action" name="quit_action"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar>
 </ui>]]></ui>
     </widget>
@@ -164,6 +164,7 @@
         <property name="height_request">570</property>
         <property name="title" context="yes" translatable="yes">receivable</property>
         <property name="width_request">800</property>
+        <property name="window_position">center</property>
         <child>
             <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
