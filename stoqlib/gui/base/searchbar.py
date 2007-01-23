@@ -555,18 +555,11 @@ class SearchBar(GladeSlaveDelegate):
     def set_search_string(self, value):
         self._slave.set_search_string(value)
 
-    def get_blocked_records_quantity(self):
-        """ Return the number of records that were blocked in the last
-        query.
-        """
-        return self._blocked_results_counter
-
     def get_filter_slave(self):
         return self._filter_slave
 
     # XXX: This part will be improved after bug #2205
     def print_report(self, report_class, *args, **kwargs):
-        blocked_records = self.get_blocked_records_quantity()
         filter_slave = self.get_filter_slave()
         status = (filter_slave
                   and filter_slave.filter_combo.get_selected_data()
@@ -577,7 +570,8 @@ class SearchBar(GladeSlaveDelegate):
             status_name = ""
         extra_filters = self.get_search_string()
         #start_date, end_date = self.get_search_dates()
-        print_report(report_class, blocked_records=blocked_records,
+        print_report(report_class,
+                     blocked_records=self._blocked_results_counter,
                      status_name=status_name, extra_filters=extra_filters,
                      #start_date=start_date, end_date=end_date,
                      status=status, *args, **kwargs)
