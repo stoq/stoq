@@ -25,8 +25,36 @@
 from zope.interface import Interface
 
 class ISearchBarEntrySlave(Interface):
+    """
+    This interface represents a slave which you can embed in a SearchBar.
+    """
+
     def get_slave():
-        pass
+        """
+        Returns the slave which we embed in the search bar
+        """
+
+    def start_animation():
+        """
+        Start the search animation. This is called when a search is begun.
+        """
+
+    def stop_animation():
+        """
+        Stop the search animation. This is called after a search is done.
+        """
+
+    def clear():
+        """
+        Clear all interactive widgets inside the slave
+        """
+
+    def get_extra_queries():
+        """
+        Return a list of queries that will be combined with an AND in
+        the searchbar itself.
+        It can return an empty list if desired.
+        """
 
     def get_search_string():
         pass
@@ -34,18 +62,7 @@ class ISearchBarEntrySlave(Interface):
     def set_search_string(search_str):
         pass
 
+    # FIXME: Remove date_search_lbl=None
     def set_search_label(search_entry_lbl, date_search_lbl=None):
-        pass
-
-    def start_animate_search_icon():
-        pass
-
-    def stop_animate_search_icon():
-        pass
-
-    def clear():
-        pass
-
-    def get_extra_queries():
         pass
 

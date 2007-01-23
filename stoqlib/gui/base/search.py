@@ -78,9 +78,9 @@ class DateSearchSlave(GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
-        self.model = DateInterval()
+        self._model = DateInterval()
         self._fields = fields
-        self.add_proxy(self.model, self.proxy_widgets)
+        self.add_proxy(self._model, self.proxy_widgets)
         self._slave = _SearchBarEntry(filter_slave)
         self.attach_slave('searchentry_holder', self._slave)
         self._update_view()
@@ -106,19 +106,19 @@ class DateSearchSlave(GladeSlaveDelegate):
         self.search_label.set_text(date_search_lbl)
 
     def get_extra_queries(self):
-        start_date = self.model.start_date
-        end_date = self.model.end_date
+        start_date = self._model.start_date
+        end_date = self._model.end_date
 
         queries = []
-        for field_name, table_type in self._fields:
-            table_field = getattr(table_type.q, field_name)
+        for field_name, table in self._fields:
+            table_field = getattr(table.q, field_name)
             # Today -> DATE(field) = DATE(TODAY())
             if self.today_check.get_active():
                 queries.append(
                     func.DATE(table_field) == func.DATE(func.NOW()))
             # Date -> field >= DATE(start) or
-            #         field >= DATE(start) AND field < DATE(end) or
-            #         field < DATE(end)
+            #         field >= DATE(start) AND field <= DATE(end) or
+            #         field <= DATE(end)
             elif self.date_check.get_active():
                 if start_date:
                     queries.append(table_field >= func.DATE(start_date))
@@ -132,11 +132,11 @@ class DateSearchSlave(GladeSlaveDelegate):
 
         return queries
 
-    def start_animate_search_icon(self):
-        self._slave.start_animate_search_icon()
+    def start_animation(self):
+        self._slave.start_animation()
 
-    def stop_animate_search_icon(self):
-        self._slave.stop_animate_search_icon()
+    def stop_animation(self):
+        self._slave.stop_animation()
 
     def clear(self):
         self.start_date.set_text('')
@@ -227,14 +227,14 @@ class _SearchBarEntry(GladeSlaveDelegate):
 
         yield False
 
-    def start_animate_search_icon(self):
+    def start_animation(self):
         self.search_button.hide()
         self.search_icon.show()
         self._animate_search_icon_id = \
             gobject.timeout_add(self.ANIMATE_TIMEOUT,
                                 self._animate_search_icon().next)
 
-    def stop_animate_search_icon(self):
+    def stop_animation(self):
         self.search_button.show()
         if self._animate_search_icon_id == -1:
             log.warn("Search icon animation hasn't started")
@@ -259,42 +259,45 @@ class SearchBar(GladeSlaveDelegate):
         @param columns: a list of instances inherited by kiwi Column
         @param query_args: a list of strings that are argument which will be
                            sent to the sqlobject select method
-
+        @param search_callback:
+        @param filter_slave:
+        @param searching_by_date:
         """
-        self.int_fields = []
-        self.decimal_fields = []
-        self.str_fields = []
-        self.dtime_fields = []
+
+        self._conn = conn
+        self._columns = columns
+        self._table = table_type
+        self._query_args = query_args
+        self._slave_callback = search_callback
+        self._filter_slave = filter_slave
+        self._searching_by_date = searching_by_date
+        self._animate_search_icon_id = -1
+        self._extra_query_callback = None
+        self._blocked_results_counter = None
+        self._result_strings = None
+        self._int_fields = []
+        self._decimal_fields = []
+        self._str_fields = []
+        self._dtime_fields = []
+        self.max_search_results = sysparam(conn).MAX_SEARCH_RESULTS
 
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self.conn = conn
-        self.max_search_results = sysparam(self.conn).MAX_SEARCH_RESULTS
-        self._animate_search_icon_id = -1
         self.search_results_label.set_text('')
         self.search_results_label.set_size('small')
-        self.filter_slave = filter_slave
+
         if searching_by_date:
-            self._slave = DateSearchSlave(filter_slave, self.dtime_fields)
-            self._slave.connect('start-date-selected',
+            slave = DateSearchSlave(filter_slave, self._dtime_fields)
+            slave.connect('start-date-selected',
                                 self._on_date_search__start_date_selected)
-            self._slave.connect('end-date-selected',
+            slave.connect('end-date-selected',
                                 self._on_date_search__end_date_selected)
         else:
-            self._slave = _SearchBarEntry(filter_slave)
-
-        entry_slave = self._slave.get_slave()
+            slave = _SearchBarEntry(filter_slave)
+        entry_slave = slave.get_slave()
         entry_slave.connect('selected', self._on_search_entry__selected)
+        self.attach_slave('place_holder', slave)
+        self._slave = slave
 
-        self._extra_query_callback = None
-        self._filter_results_callback = None
-        self._blocked_results_counter = None
-        self.attach_slave('place_holder', self._slave)
-        self.searching_by_date = searching_by_date
-        self._result_strings = None
-        self.columns = columns
-        self.table_type = table_type
-        self.query_args = query_args
-        self._slave_callback = search_callback
         self.split_field_types()
 
     # Callbacks
@@ -312,78 +315,78 @@ class SearchBar(GladeSlaveDelegate):
     # Preparing query fields and groups
     #
 
-    def _set_field_types(self, columns, attributes, table_type):
-        for column in table_type.sqlmeta.columns.values():
+    def _set_field_types(self, columns, attributes, table):
+        for column in table.sqlmeta.columns.values():
             if not column.origName in attributes:
                 continue
-            value = (column.name, table_type)
+            value = (column.name, table)
             if (isinstance(column, SOUnicodeCol)
-                and value not in self.str_fields):
-                self.str_fields.append(value)
+                and value not in self._str_fields):
+                self._str_fields.append(value)
             elif (isinstance(column, SOIntCol)
-                  and value not in self.int_fields):
-                self.int_fields.append(value)
+                  and value not in self._int_fields):
+                self._int_fields.append(value)
             elif (isinstance(column, (SOPriceCol, AbstractDecimalCol))
-                  and value not in self.decimal_fields):
-                self.decimal_fields.append(value)
+                  and value not in self._decimal_fields):
+                self._decimal_fields.append(value)
             elif (isinstance(column, (SODateTimeCol, SODateCol))
-                  and value not in self.dtime_fields):
-                self.dtime_fields.append(value)
+                  and value not in self._dtime_fields):
+                self._dtime_fields.append(value)
 
     def split_field_types(self):
          # We may have (eg DateSearchSlave) references to these lists, avoid
          # replacing them with a new list/reference.
-        self.int_fields[:] = []
-        self.decimal_fields[:] = []
-        self.str_fields[:] = []
-        self.dtime_fields[:] = []
-        if not self.columns:
+        self._int_fields[:] = []
+        self._decimal_fields[:] = []
+        self._str_fields[:] = []
+        self._dtime_fields[:] = []
+        if not self._columns:
             return
 
-        attributes = [c.attribute for c in self.columns]
+        attributes = [c.attribute for c in self._columns]
 
         # Searching by id fields is evil, avoid it.
         if 'id' in attributes:
             raise ValueError('Private field id should not be added to '
                              'the search list')
 
-        for k_column in self.columns:
+        for k_column in self._columns:
             if isinstance(k_column, FacetColumn):
-                if issubclass(self.table_type, Adapter):
-                    table_type = self.table_type
+                if issubclass(self._table, Adapter):
+                    table = self._table
                 else:
                     iface = k_column.get_iface()
-                    table_type = self.table_type.getAdapterClass(iface)
+                    table = self._table.getAdapterClass(iface)
             elif isinstance(k_column, ForeignKeyColumn):
-                table_type = k_column._table
+                table = k_column._table
             elif isinstance(k_column, Column):
-                table_type = self.table_type
+                table = self._table
             else:
                 raise TypeError('Invalid column type %s' % type(k_column))
 
-            columns = table_type.sqlmeta.columns.values()
-            self._set_field_types(columns, attributes, table_type)
-            parent_class = table_type.sqlmeta.parentClass
+            columns = table.sqlmeta.columns.values()
+            self._set_field_types(columns, attributes, table)
+            parent_class = table.sqlmeta.parentClass
             if parent_class:
                 columns = parent_class.sqlmeta.columns.values()
                 self._set_field_types(columns, attributes, parent_class)
 
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % search_str.upper()
-        for field_name, table_type in self.str_fields:
-            table_field = getattr(table_type.q, field_name)
+        for field_name, table in self._str_fields:
+            table_field = getattr(table.q, field_name)
             q = LIKE(func.UPPER(table_field), search_str)
             query.append(q)
 
     def _set_query_float(self, search_str, query):
-        for field_name, table_type in self.decimal_fields:
-            table_field = getattr(table_type.q, field_name)
+        for field_name, table in self._decimal_fields:
+            table_field = getattr(table.q, field_name)
             q = table_field == search_str
             query.append(q)
 
     def _set_query_int(self, search_str, query):
-        for field_name, table_type in self.int_fields:
-            table_field = getattr(table_type.q, field_name)
+        for field_name, table in self._int_fields:
+            table_field = getattr(table.q, field_name)
             q = table_field == search_str
             query.append(q)
 
@@ -423,23 +426,21 @@ class SearchBar(GladeSlaveDelegate):
             self._set_query_str(search_str, query)
 
         if not query:
-            if self.columns:
-                columns = [c.attribute for c in self.columns]
+            if self._columns:
+                columns = [c.attribute for c in self._columns]
             else:
                 columns = '(not defined)'
             msg = ("There is no query for the search bar. Probably the "
                    "object type you are query on doesn't have attributes "
                    "matching with the columns argument. Got table %s and "
-                   "column attributes %s" % (self.table_type, columns))
+                   "column attributes %s" % (self._table, columns))
             raise ValueError(msg)
         query = OR(*query)
         return query
 
-    #
-    # Performing search
-    #
-
     def _run_query(self):
+        # Performing search
+
         queries = []
         if self._extra_query_callback:
             query = self._extra_query_callback()
@@ -452,24 +453,24 @@ class SearchBar(GladeSlaveDelegate):
 
         queries.extend(self._slave.get_extra_queries())
 
-        kwargs = {'connection': self.conn}
-        if self.query_args:
+        kwargs = {'connection': self._conn}
+        if self._query_args:
             for keyword in ['connection', 'clauseTables', 'distinct']:
-                if keyword in self.query_args:
+                if keyword in self._query_args:
                     raise AssertionError('Invalid query argument %s' % keyword)
-            kwargs.update(self.query_args)
+            kwargs.update(self._query_args)
         kwargs['distinct'] = True
 
         self.emit('before-search-activate')
 
-        search_results = self.table_type.select(AND(*queries), **kwargs)
+        search_results = self._table.select(AND(*queries), **kwargs)
 
         total = search_results.count()
         if total > self.max_search_results:
             self._blocked_results_counter = total - self.max_search_results
         else:
             self._blocked_results_counter = 0
-        objs = search_results[:self.max_search_results]
+        results = search_results[:self.max_search_results]
 
         if not self._result_strings:
             self._result_strings = _('result'), _('results')
@@ -479,10 +480,6 @@ class SearchBar(GladeSlaveDelegate):
         msg = self._get_search_results_msg(total, self.max_search_results)
         self.search_results_label.set_text(msg)
 
-        if self._filter_results_callback:
-            results = self._filter_results_callback(objs)
-        else:
-            results = objs
         # Since SQLObject doesn't support distinct-counting of sliced
         # objects we need to send here a list instead of a SearchResults
         if not isinstance(results, list):
@@ -511,11 +508,11 @@ class SearchBar(GladeSlaveDelegate):
         self.search_results_label.set_text('')
 
     def set_searchtable(self, search_table):
-        self.table_type = search_table
+        self._table = search_table
         self.split_field_types()
 
     def set_columns(self, columns):
-        self.columns = columns
+        self._columns = columns
         self.split_field_types()
 
     def register_extra_query_callback(self, query):
@@ -526,20 +523,8 @@ class SearchBar(GladeSlaveDelegate):
         """
         self._extra_query_callback = query
 
-    def register_filter_results_callback(self, callback):
-        """Register a filter results callback that will be called right
-        after fetching the data from database.
-
-        @param callback: The callback must have only one argument of
-                         type SelectResults or InheritableSelectResults.
-                         This callback will process the results and filter
-                         possible invalid data and must *always* return the
-                         filtered list of objects.
-        """
-        self._filter_results_callback = callback
-
     def set_focus(self):
-        if self.searching_by_date:
+        if self._searching_by_date:
             self._slave.get_slave().search_entry.grab_focus()
         else:
             self._slave.search_entry.grab_focus()
@@ -551,19 +536,19 @@ class SearchBar(GladeSlaveDelegate):
         self._result_strings = singular_form, plural_form
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
-        if self.searching_by_date:
+        if self._searching_by_date:
             self._slave.set_search_label(search_entry_lbl, date_search_lbl)
         else:
             self._slave.set_search_label(search_entry_lbl)
 
     def search_items(self, *args):
-        self._slave.start_animate_search_icon()
+        self._slave.start_animation()
         if self._slave_callback:
             # Perform an alternative search as desired
             self._slave_callback()
         else:
             self._run_query()
-        self._slave.stop_animate_search_icon()
+        self._slave.stop_animation()
 
     def get_search_string(self):
         return self._slave.get_search_string()
@@ -578,7 +563,7 @@ class SearchBar(GladeSlaveDelegate):
         return self._blocked_results_counter
 
     def get_filter_slave(self):
-        return self.filter_slave
+        return self._filter_slave
 
     # XXX: This part will be improved after bug #2205
     def print_report(self, report_class, *args, **kwargs):
@@ -739,7 +724,6 @@ class SearchDialog(BasicDialog):
         extra_query = self.get_extra_query
         if extra_query:
             self.search_bar.register_extra_query_callback(extra_query)
-        self.search_bar.register_filter_results_callback(self.filter_results)
         self.search_bar.connect('before-search-activate', self._sync)
         self.search_bar.connect('search-activate', self.update_klist)
         if self._check_searchbar_settings(self.searchbar_result_strings,
@@ -826,12 +810,6 @@ class SearchDialog(BasicDialog):
 
     def get_extra_query(self):
         """An optional SQLObject.sqlbuilder query for select statement."""
-
-    def filter_results(self, objects):
-        """Call sites can implement a filter here to allow multiple selects
-        for one search when it's necessary. Multiple selects are often
-        much better than one super complex query."""
-        return objects
 
     def get_filter_slave(self):
         """Returns a slave which will be used as filter by SearchBar.
