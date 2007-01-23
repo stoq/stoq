@@ -278,7 +278,6 @@ class SearchableAppWindow(AppWindow):
         extra_query = self.get_extra_query
         if extra_query:
             self.searchbar.register_extra_query_callback(extra_query)
-        self.searchbar.register_filter_results_callback(self.filter_results)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
         self.searchbar.connect('before-search-activate',
@@ -334,12 +333,6 @@ class SearchableAppWindow(AppWindow):
 
     def get_filterslave_default_selected_item(self):
         return ALL_ITEMS_INDEX
-
-    def filter_results(self, objects):
-        """A hook method for stoqlib SearchBar
-        @returns: a python list of objects that will be added in kiwi list
-        """
-        return objects
 
     def get_extra_query(self):
         """A hook method for stoqlib SearchBar
