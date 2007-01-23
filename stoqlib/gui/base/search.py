@@ -36,6 +36,7 @@ from sqlobject.dbconnection import Transaction
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
+from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext
@@ -335,7 +336,8 @@ class SearchDialog(BasicDialog):
     #
 
     def get_columns(self):
-        raise NotImplementedError
+        raise NotImplementedError(
+            "get_columns() must be implemented in %r" % self)
 
 
 class SearchEditorToolBar(GladeSlaveDelegate):
@@ -372,6 +374,38 @@ class SearchEditor(SearchDialog):
     Some important parameters:
     interface = The interface which we need to apply to the objects in
                 kiwi list to get adapter for the editor.
+
+    Simple example:
+
+    >>> class CarSearch(SearchEditor):
+    ...     title = _("Car Search")
+    ...     table = Car
+    ...     editor_class = CarEditor
+    ...     size = (465, 390)
+    ...     searchbar_result_strings = _("Car"), _("Cars")
+    ...
+    ...     def get_columns(self):
+    ...         return [Column('brand', _('Brand'), data_type=str, width=90),
+    ...                 Column('description', _('Description'), data_type=str,
+    ...                         expand=True)]
+
+    This will create a new editor called CarSearch.
+    - It will be populated using the table Car.
+    - The title of the editor is "Car Search".
+    - To create new Car objects or to edit an existing Car object the
+      CarEditor table will be used, which needs to be a subclass of BaseEditor.
+    - The size of the new dialog will be 465 pixels wide and 390 pixels high.
+    - When displaying results, the verb car and cars will be used, eg:
+      1 car or 34 cars.
+    - The get_columns() methods is required to be implemented, otherwise there's
+      no way to know which data is going to be displayed.
+      get_columns must return a list of kiwi objectlist columns.
+      In this case we will display two columns, brand and description.
+      They will be fetched from the car object using the attribute brand or
+      description. Both of them are strings (data_type=str), the width of the first
+      column is 90 pixels and the second column is expanded so it uses the rest
+      of the available width.
+
     """
     model_editor_lookup_attr = 'id'
     has_new_button = has_edit_button = True
@@ -381,11 +415,18 @@ class SearchEditor(SearchDialog):
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False):
+        editor_class = editor_class or self.editor_class
+        if not editor_class:
+            raise ValueError('An editor_class argument is required')
+        if not issubclass(editor_class, BaseEditor):
+            raise TypeError("editor_class must be a BaseEditor subclass")
+        self.editor_class = editor_class
+        self.interface = interface
+
         SearchDialog.__init__(self, conn, table, search_table,
                               hide_footer=hide_footer, title=title,
                               selection_mode=selection_mode)
-        self.interface = interface
-        self.editor_class = editor_class or self.editor_class
+
         if hide_toolbar:
             self.accept_edit_data = False
             self._toolbar.get_toplevel().hide()
@@ -393,22 +434,14 @@ class SearchEditor(SearchDialog):
             if not (self.has_new_button or self.has_edit_button):
                 raise ValueError("You must set hide_footer=False instead "
                                  "of disable these two attributes.")
-            if not self.editor_class:
-                raise ValueError('An editor_class argument is required')
-
             self.accept_edit_data = self.has_edit_button
             if not self.has_new_button:
                 self.hide_new_button()
             if not self.has_edit_button:
                 self.hide_edit_button()
         self._selected = None
-        self.klist.connect('double_click', self._on_toolbar__edit)
+        self.klist.connect('double_click', self._on_list__double_click)
         self.update_widgets()
-
-    @argcheck(bool)
-    def set_edit_button_sensitive(self, value):
-        """Control sensitivity of button edit"""
-        self._toolbar.edit_button.set_sensitive(value)
 
     def setup_slaves(self):
         SearchDialog.setup_slaves(self)
@@ -416,6 +449,13 @@ class SearchEditor(SearchDialog):
         self.attach_slave('extra_holder', self._toolbar)
         self._toolbar.connect("edit", self._on_toolbar__edit)
         self._toolbar.connect("add", self._on_toolbar__new)
+
+    # Public API
+
+    @argcheck(bool)
+    def set_edit_button_sensitive(self, value):
+        """Control sensitivity of button edit"""
+        self._toolbar.edit_button.set_sensitive(value)
 
     def update_widgets(self, *args):
         self._toolbar.edit_button.set_sensitive(len(self.klist))
@@ -468,38 +508,51 @@ class SearchEditor(SearchDialog):
     def run_editor(self, obj):
         return run_dialog(self.editor_class, self, self.conn, obj)
 
-    def _on_toolbar__edit(self, toolbar, obj=None):
+    # Private
+
+    def _edit(self, obj):
         if not self.accept_edit_data:
             return
+
         if obj is None:
-            msg = "There should be only one item selected. Got %s items"
             if self.klist.get_selection_mode() == gtk.SELECTION_MULTIPLE:
                 obj = self.klist.get_selected_rows()
-                msg = "There should be only one item selected. Got %s items"
                 qty = len(obj)
-                assert qty == 1, msg % qty
+                if qty != 1:
+                    raise AssertionError(
+                      "There should be only one item selected. Got %s items"
+                      % qty)
             else:
                 obj = self.klist.get_selected()
-                assert obj, msg % 0
+                if not obj:
+                    raise AssertionError(
+                        "There should be at least one item selected")
+
         self.run(obj)
+
+    # Callbacks
+
+    def _on_toolbar__edit(self, toolbar):
+        self._edit(None)
 
     def _on_toolbar__new(self, toolbar):
         self.run()
+
+    def _on_list__double_click(self, list, obj):
+        self._edit(obj)
 
     #
     # Hooks
     #
 
     def get_searchlist_model(self, model):
-        attr = self.model_list_lookup_attr
-        query = getattr(self.search_table.q, attr) == model.id
-        items = self.search_table.select(query, connection=self.conn)
-        qty = items.count()
-        if not qty == 1:
-            raise DatabaseInconsistency("There should be one item for "
-                                        "instance %r, got %d" % (model,
-                                        qty))
-        return items[0]
+        kwargs = dict([(self.model_list_lookup_attr, model.id),
+                       ('connection', self.conn)])
+        item = self.search_table.selectOneBy(**kwargs)
+        if item is None:
+            raise DatabaseInconsistency(
+                "There should be at least one item for %r " % model)
+        return item
 
     def get_editor_model(self, model):
         """This hook must be redefined on child when changing the type of
