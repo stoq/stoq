@@ -99,7 +99,7 @@ class EmployeeSearch(BasePersonSearch):
 
     def after_search_bar_created(self):
         self.filter_slave.connect('status-changed',
-                                   self.search_bar.search_items)
+                                  self.search_bar.search_items)
 
     def get_columns(self):
         return [ForeignKeyColumn(Person, 'name', _('Name'), str,

@@ -60,7 +60,7 @@ class StationSearch(SearchEditor):
 
     def after_search_bar_created(self):
         self.filter_slave.connect('status-changed',
-                                   self.search_bar.search_items)
+                                  self.search_bar.search_items)
 
     def get_columns(self):
         return [Column('name', _('Name'), data_type=str, sorted=True,
