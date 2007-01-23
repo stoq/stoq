@@ -26,18 +26,13 @@
 creation and edition.
 """
 
-import sets
-
 from kiwi.ui.objectlist import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.search import SearchEditor
-from stoqlib.gui.base.columns import AccessorColumn
-from stoqlib.gui.editors.categoryeditor import (BaseSellableCategoryEditor,
-                                          SellableCategoryEditor)
-from stoqlib.domain.sellable import (ASellableCategory,
-                                     BaseSellableCategory,
-                                     SellableCategory)
+from stoqlib.gui.editors.categoryeditor import BaseSellableCategoryEditor
+
+from stoqlib.domain.sellable import BaseSellableCategory
 
 _ = stoqlib_gettext
 
@@ -60,52 +55,3 @@ class BaseSellableCatSearch(SearchEditor):
                        _("Salesperson Commission (%)"), data_type=float,
                        width=200),
             ]
-
-class SellableCatSearch(SearchEditor):
-    size = (700, 500)
-    title = _('Sellable Category Search')
-
-    def __init__(self, conn):
-        # I'm using ASellableCategory here because I want to be able of
-        # to search in sellable category *and* its base category data as well.
-        SearchEditor.__init__(self, conn, ASellableCategory,
-                              SellableCategoryEditor)
-        self.set_result_strings(_('category'), _('categories'))
-        self.set_searchbar_labels(_('Categories Matching:'))
-
-    def get_columns(self):
-        return [AccessorColumn("description",
-                               SellableCategory.get_full_description,
-                               title=_('Description'), data_type=str,
-                               expand=True),
-                Column("suggested_markup", _("Suggested Markup (%)"),
-                       data_type=str, width=170),
-                Column("salesperson_comission",
-                       _("Suggested Commission (%)"), data_type=str,
-                       width=190),
-                ]
-
-    def filter_results(self, abstract_objects):
-        sellable_objs = SellableCategory.select(connection=self.conn)
-        base_ids = sets.Set([s.base_category.id for s in sellable_objs])
-
-        # Discard all base categories that aren't used.
-        base_objs = BaseSellableCategory.select(connection=self.conn)
-        reject = sets.Set([base.id for base in base_objs])
-        reject = reject - (reject & base_ids)
-
-        # Discard all base categories that doesn't match the search criteria
-        abstract_ids = sets.Set([a.id for a in abstract_objects])
-        abstract_ids = abstract_ids - (abstract_ids & reject)
-
-        return [s for s in sellable_objs
-                    if (s.id in abstract_ids
-                        or s.base_category.id in abstract_ids)]
-
-    # XXX: I need to overwrite SearchEditor's get_searchlist_model because
-    # its search_table differs from the objects in the Kiwi list -- but we
-    # need this, since we want to search in ASellableCategory and
-    # prefill the list with SellableCategory objects (which have a foreign
-    # key to ASellableCategory).
-    def get_searchlist_model(self, model):
-        return model
