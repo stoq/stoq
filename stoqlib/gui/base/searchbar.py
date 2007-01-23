@@ -264,7 +264,13 @@ class SearchBar(GladeSlaveDelegate):
         self._conn = conn
         self._columns = columns
         self._table = table_type
-        self._query_args = query_args
+        if query_args:
+            for keyword in ['connection', 'clauseTables', 'distinct']:
+                if keyword in query_args:
+                    raise AssertionError('Invalid query argument %s' % keyword)
+        self._query_args = query_args or {}
+        if search_callback is not None and not callable(search_callback):
+            raise TypeError("search_callback must callable or None")
         self._slave_callback = search_callback
         self._filter_slave = filter_slave
         self._searching_by_date = searching_by_date
@@ -368,23 +374,7 @@ class SearchBar(GladeSlaveDelegate):
                   and value not in self._dtime_fields):
                 self._dtime_fields.append(value)
 
-    def _set_query_str(self, search_str, query):
-        search_str = '%%%s%%' % search_str.upper()
-        for field_name, table in self._str_fields:
-            table_field = getattr(table.q, field_name)
-            query.append(LIKE(func.UPPER(table_field), search_str))
-
-    def _set_query_float(self, search_str, query):
-        for field_name, table in self._decimal_fields:
-            table_field = getattr(table.q, field_name)
-            query.append(table_field == search_str)
-
-    def _set_query_int(self, search_str, query):
-        for field_name, table in self._int_fields:
-            table_field = getattr(table.q, field_name)
-            query.append(table_field == search_str)
-
-    def _build_query(self, search_str):
+    def _get_field_queries(self, search_str):
         """Here we build queries after check the search string type.
         Queries are always optimized for field types to avoid database
         input syntax errors and also make smart searches.
@@ -393,7 +383,7 @@ class SearchBar(GladeSlaveDelegate):
         @param search_dates: a tuple with two datetime.datetime instances
                              meaning a 'start date' and 'end date'
         """
-        query = []
+        queries = []
         if search_str:
             # Do the try/except separated from the set_query_* calls to avoid
             # catch too ValueError:s inside the function calls
@@ -406,16 +396,24 @@ class SearchBar(GladeSlaveDelegate):
                     value = search_str
 
             if isinstance(value, int):
-                self._set_query_int(value, query)
+                for field_name, table in self._int_fields:
+                    table_field = getattr(table.q, field_name)
+                    queries.append(table_field == search_str)
             elif isinstance(value, float):
-                self._set_query_float(value, query)
+                for field_name, table in self._decimal_fields:
+                    table_field = getattr(table.q, field_name)
+                    queries.append(table_field == search_str)
             else:
                 # Instead of checking for another type, perform later a
                 # query for string fields and for any search string.
                 pass
-            self._set_query_str(search_str, query)
 
-        if not query:
+            search_str = '%%%s%%' % search_str.upper()
+            for field_name, table in self._str_fields:
+                table_field = getattr(table.q, field_name)
+                queries.append(LIKE(func.UPPER(table_field), search_str))
+
+        if not queries:
             if self._columns:
                 columns = [c.attribute for c in self._columns]
             else:
@@ -425,34 +423,38 @@ class SearchBar(GladeSlaveDelegate):
                 "object type you are query on doesn't have attributes "
                 "matching with the columns argument. Got table %s and "
                 "column attributes %s" % (self._table, columns))
-        return OR(*query)
 
-    def _run_query(self):
-        # Performing search
+        return queries
 
+    def _build_query(self):
         queries = []
+
+        # 1) Construct the query defined by the user
+        search_str = self._slave.get_search_string()
+        if search_str:
+            field_queries = self._get_field_queries(search_str)
+            queries.append(OR(*field_queries))
+
+        # 2) Add custom query from slave
+        queries.extend(self._slave.get_extra_queries())
+
+        # 3) Add extra query by callsite if any
         if self._extra_query_callback:
             query = self._extra_query_callback()
             if query:
                 queries.append(query)
 
-        search_str = self._slave.get_search_string()
-        if search_str:
-            queries.append(self._build_query(search_str))
+        return AND(*queries)
 
-        queries.extend(self._slave.get_extra_queries())
-
-        kwargs = dict(connection=self._conn)
-        if self._query_args:
-            for keyword in ['connection', 'clauseTables', 'distinct']:
-                if keyword in self._query_args:
-                    raise AssertionError('Invalid query argument %s' % keyword)
-            kwargs.update(self._query_args)
-        kwargs['distinct'] = True
+    def _run_query(self):
+        # Performing search
 
         self.emit('before-search-activate')
 
-        search_results = self._table.select(AND(*queries), **kwargs)
+        kwargs = dict(connection=self._conn, distinct=True)
+        kwargs.update(self._query_args)
+        query = self._build_query()
+        search_results = self._table.select(query, **kwargs)
 
         total = search_results.count()
         if total > self.max_search_results:
