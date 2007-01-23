@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import Column
 from stoqlib.database.runtime import get_current_user, get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
