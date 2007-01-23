@@ -42,7 +42,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 
 _ = stoqlib_gettext
 
-class SearchDialogDetailsSlave(GladeSlaveDelegate):
+class _SearchDialogDetailsSlave(GladeSlaveDelegate):
     """ Slave for internal use of SearchEditor, offering an eventbox for a
     toolbar and managing the 'New' and 'Edit' buttons. """
 
@@ -191,7 +191,7 @@ class SearchDialog(BasicDialog):
         if not (has_details_btn or has_print_btn):
             self._details_slave = None
             return
-        self._details_slave = SearchDialogDetailsSlave()
+        self._details_slave = _SearchDialogDetailsSlave()
         self.attach_slave('details_holder', self._details_slave)
         if has_details_btn:
             self._details_slave.connect("details",
