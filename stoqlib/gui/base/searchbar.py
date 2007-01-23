@@ -233,19 +233,19 @@ class _DateSearchSlave(GladeSlaveDelegate):
     #
 
     """ today callbacks """
-    def on_today_check__toggled(self, *args):
+    def on_today_check__toggled(self, button):
         self._update_view()
 
-    def on_anytime_check__toggled(self, *args):
+    def on_anytime_check__toggled(self, button):
         self._update_view()
 
-    def on_date_check__toggled(self, *args):
+    def on_date_check__toggled(self, button):
         self._update_view()
 
-    def on_start_date__activate(self, *args):
+    def on_start_date__activate(self, entry):
         self.emit('start-date-selected')
 
-    def on_end_date__activate(self, *args):
+    def on_end_date__activate(self, entry):
         self.emit('end-date-selected')
 
 
