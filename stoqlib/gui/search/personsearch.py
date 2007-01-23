@@ -356,8 +356,17 @@ class BranchSearch(BasePersonSearch):
                 Column('status_str', _('Status'), data_type=str)]
 
     def get_extra_query(self):
-        return OR(Person.q.id == self.table.q.managerID,
-                  Person.q.id == self.table.q._originalID)
+        table = Person.getAdapterClass(IBranch)
+        query = OR(Person.q.id == self.table.q.managerID,
+                   Person.q.id == self.table.q._originalID)
+
+        status = self.filter_slave.get_selected_status()
+        if status == self.table.STATUS_ACTIVE:
+            query = AND(query, table.q.is_active == True)
+        elif status == self.table.STATUS_INACTIVE:
+            query = AND(query, table.q.is_active == False)
+
+        return query
 
     def get_searchlist_model(self, person):
         return IBranch(person)
@@ -379,14 +388,3 @@ class BranchSearch(BasePersonSearch):
         self.filter_slave.connect('status-changed',
                                   self.search_bar.search_items)
 
-    def filter_results(self, branches):
-        status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return branches
-        elif status == self.table.STATUS_ACTIVE:
-            return [branch for branch in branches if branch.is_active]
-        elif status == self.table.STATUS_INACTIVE:
-            return [branch for branch in branches if not branch.is_active]
-        else:
-            raise ValueError(
-                'Invalid status for User table. got %s' % status)
