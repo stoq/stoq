@@ -33,8 +33,7 @@ import gettext
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND
-from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
+from stoqlib.domain.payment.payment import (Payment, InPaymentView)
 from stoqlib.domain.sale import SaleView, SaleAdaptToPaymentGroup
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
@@ -49,7 +48,7 @@ class ReceivableApp(SearchableAppWindow):
     app_name = _('Receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
-    searchbar_table = Payment
+    searchbar_table = InPaymentView
     searchbar_use_dates = True
     searchbar_result_strings = (_('payment'), _('payments'))
     searchbar_labels = (_('matching:'),)
@@ -85,7 +84,7 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_filter_slave_items(self):
         items = [(value, key) for key, value in Payment.statuses.items()]
-        items.append((_('Any'), ALL_ITEMS_INDEX))
+        items.insert(0, (_('Any'), ALL_ITEMS_INDEX))
         return items
 
     #
@@ -108,11 +107,8 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        query = AND(Payment.q.groupID == SaleAdaptToPaymentGroup.q.id,
-                    Payment.q.id == PaymentAdaptToInPayment.q._originalID)
         if status != ALL_ITEMS_INDEX:
-            query = AND(query, Payment.q.status == status)
-        return query
+            return InPaymentView.q.status == status
 
     #
     # Private

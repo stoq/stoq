@@ -102,22 +102,15 @@ class AdminApp(SearchableAppWindow):
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
-        q1 = self.table.q._originalID == Person.q.id
-        q2 = UserProfile.q.id == self.table.q.profileID
-        return AND(q1, q2)
-
-    def filter_results(self, users):
-        """Hook called by SearchBar"""
         status = self.filter_slave.get_selected_status()
-        if status == ALL_ITEMS_INDEX:
-            return users
-        elif status == self.table.STATUS_ACTIVE:
-            return [user for user in users if user.is_active]
+        query = AND(self.table.q._originalID == Person.q.id,
+                    UserProfile.q.id == self.table.q.profileID)
+        if status == self.table.STATUS_ACTIVE:
+            query = AND(query, PersonAdaptToUser.q.is_active == True)
         elif status == self.table.STATUS_INACTIVE:
-            return [user for user in users if not user.is_active]
-        else:
-            raise ValueError('Invalid status for User table. got %s'
-                             % status)
+            query = AND(query, PersonAdaptToUser.q.is_active == False)
+
+        return query
 
     def _add_user(self):
         model = run_person_role_dialog(UserEditor, self, self.conn)
