@@ -65,3 +65,7 @@ class ISearchBarEntrySlave(Interface):
     def set_search_label(label):
         pass
 
+    def set_focus():
+        """
+        Grab the focus
+        """
