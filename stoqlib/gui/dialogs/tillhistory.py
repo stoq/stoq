@@ -45,7 +45,7 @@ from stoqlib.domain.interfaces import IPaymentGroup
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.till import TillEntryAndPaymentView, Till
 from stoqlib.domain.payment.payment import Payment
-from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import BasicWrappingDialog, run_dialog
 from stoqlib.gui.editors.tilleditor import (CashAdvanceEditor, CashInEditor,
                                             CashOutEditor)
