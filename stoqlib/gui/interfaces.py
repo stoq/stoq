@@ -62,7 +62,6 @@ class ISearchBarEntrySlave(Interface):
     def set_search_string(search_str):
         pass
 
-    # FIXME: Remove date_search_lbl=None
-    def set_search_label(search_entry_lbl, date_search_lbl=None):
+    def set_search_label(label):
         pass
 
