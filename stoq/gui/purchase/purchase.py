@@ -38,8 +38,7 @@ from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.gui.search.categorysearch import (BaseSellableCatSearch,
-                                               SellableCatSearch)
+from stoqlib.gui.search.categorysearch import BaseSellableCatSearch
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -268,9 +267,6 @@ class PurchaseApp(SearchableAppWindow):
 
     def _on_base_categories_action_clicked(self, action):
         self.run_dialog(BaseSellableCatSearch, self.conn)
-
-    def _on_categories_action_clicked(self, action):
-        self.run_dialog(SellableCatSearch, self.conn)
 
     def _on_services_action_clicked(self, action):
         self.run_dialog(ServiceSearch, self.conn, hide_price_column=True)

@@ -21,14 +21,6 @@
                     </widget>
                 </child>
                 <child>
-                    <widget class="GtkAction" id="Categories">
-                        <property name="name">Categories</property>
-                        <property name="label" translatable="yes">Categories...</property>
-                        <signal handler="_on_categories_action_clicked" name="activate"/>
-                        <property name="accelerator">&lt;Control&gt;g</property>
-                    </widget>
-                </child>
-                <child>
                     <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
