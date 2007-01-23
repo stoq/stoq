@@ -71,8 +71,8 @@ class _SearchBarEntry(GladeSlaveDelegate):
         self.search_icon.hide()
         self.search_entry.grab_focus()
 
-    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
-        self.search_label.set_text(search_entry_lbl)
+    def set_search_label(self, label):
+        self.search_label.set_text(label)
 
     def get_search_string(self):
         return self.search_entry.get_text()
@@ -173,11 +173,13 @@ class _DateSearchSlave(GladeSlaveDelegate):
     def set_search_string(self, search_str):
         return self._slave.set_search_string(search_str)
 
-    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
-        self._slave.set_search_label(search_entry_lbl)
-        if date_search_lbl is None:
-            date_search_lbl = ''
-        self.search_label.set_text(date_search_lbl)
+    def set_search_label(self, label):
+        self._slave.set_search_label(label)
+
+    def set_date_label(self, label):
+        if label is None:
+            label = ''
+        self.search_label.set_text(label)
 
     def get_extra_queries(self):
         start_date = self._model.start_date
@@ -293,7 +295,7 @@ class SearchBar(GladeSlaveDelegate):
         self.attach_slave('place_holder', slave)
         self._slave = slave
 
-        self.split_field_types()
+        self._split_field_types()
 
     # Callbacks
 
@@ -310,25 +312,7 @@ class SearchBar(GladeSlaveDelegate):
     # Preparing query fields and groups
     #
 
-    def _set_field_types(self, columns, attributes, table):
-        for column in table.sqlmeta.columns.values():
-            if not column.origName in attributes:
-                continue
-            value = (column.name, table)
-            if (isinstance(column, SOUnicodeCol)
-                and value not in self._str_fields):
-                self._str_fields.append(value)
-            elif (isinstance(column, SOIntCol)
-                  and value not in self._int_fields):
-                self._int_fields.append(value)
-            elif (isinstance(column, (SOPriceCol, AbstractDecimalCol))
-                  and value not in self._decimal_fields):
-                self._decimal_fields.append(value)
-            elif (isinstance(column, (SODateTimeCol, SODateCol))
-                  and value not in self._dtime_fields):
-                self._dtime_fields.append(value)
-
-    def split_field_types(self):
+    def _split_field_types(self):
          # We may have (eg DateSearchSlave) references to these lists, avoid
          # replacing them with a new list/reference.
         self._int_fields[:] = []
@@ -366,28 +350,39 @@ class SearchBar(GladeSlaveDelegate):
                 columns = parent_class.sqlmeta.columns.values()
                 self._set_field_types(columns, attributes, parent_class)
 
+    def _set_field_types(self, columns, attributes, table):
+        for column in table.sqlmeta.columns.values():
+            if not column.origName in attributes:
+                continue
+            value = (column.name, table)
+            if (isinstance(column, SOUnicodeCol)
+                and value not in self._str_fields):
+                self._str_fields.append(value)
+            elif (isinstance(column, SOIntCol)
+                  and value not in self._int_fields):
+                self._int_fields.append(value)
+            elif (isinstance(column, (SOPriceCol, AbstractDecimalCol))
+                  and value not in self._decimal_fields):
+                self._decimal_fields.append(value)
+            elif (isinstance(column, (SODateTimeCol, SODateCol))
+                  and value not in self._dtime_fields):
+                self._dtime_fields.append(value)
+
     def _set_query_str(self, search_str, query):
         search_str = '%%%s%%' % search_str.upper()
         for field_name, table in self._str_fields:
             table_field = getattr(table.q, field_name)
-            q = LIKE(func.UPPER(table_field), search_str)
-            query.append(q)
+            query.append(LIKE(func.UPPER(table_field), search_str))
 
     def _set_query_float(self, search_str, query):
         for field_name, table in self._decimal_fields:
             table_field = getattr(table.q, field_name)
-            q = table_field == search_str
-            query.append(q)
+            query.append(table_field == search_str)
 
     def _set_query_int(self, search_str, query):
         for field_name, table in self._int_fields:
             table_field = getattr(table.q, field_name)
-            q = table_field == search_str
-            query.append(q)
-
-    #
-    # Building query
-    #
+            query.append(table_field == search_str)
 
     def _build_query(self, search_str):
         """Here we build queries after check the search string type.
@@ -425,13 +420,12 @@ class SearchBar(GladeSlaveDelegate):
                 columns = [c.attribute for c in self._columns]
             else:
                 columns = '(not defined)'
-            msg = ("There is no query for the search bar. Probably the "
-                   "object type you are query on doesn't have attributes "
-                   "matching with the columns argument. Got table %s and "
-                   "column attributes %s" % (self._table, columns))
-            raise ValueError(msg)
-        query = OR(*query)
-        return query
+            raise ValueError(
+                "There is no query for the search bar. Probably the "
+                "object type you are query on doesn't have attributes "
+                "matching with the columns argument. Got table %s and "
+                "column attributes %s" % (self._table, columns))
+        return OR(*query)
 
     def _run_query(self):
         # Performing search
@@ -448,7 +442,7 @@ class SearchBar(GladeSlaveDelegate):
 
         queries.extend(self._slave.get_extra_queries())
 
-        kwargs = {'connection': self._conn}
+        kwargs = dict(connection=self._conn)
         if self._query_args:
             for keyword in ['connection', 'clauseTables', 'distinct']:
                 if keyword in self._query_args:
@@ -469,7 +463,7 @@ class SearchBar(GladeSlaveDelegate):
 
         if not self._result_strings:
             self._result_strings = _('result'), _('results')
-            log.warn('You must define result strings before performing '
+            log.warn('You should define result strings before performing '
                      'searches in the SearchBar')
 
         msg = self._get_search_results_msg(total, self.max_search_results)
@@ -484,12 +478,14 @@ class SearchBar(GladeSlaveDelegate):
     def _get_search_results_msg(self, search_total, max_results):
         singular_str, plural_str = self._result_strings
         if search_total == 1:
-            msg = '%d %s' % (search_total, singular_str)
+            # %d = search item, %s = singular
+            msg = _('%d %s') % (search_total, singular_str)
         elif search_total > max_results:
             msg = _('%d of %d %s shown') % (max_results, search_total,
                                             plural_str)
         elif search_total > 1:
-            msg = '%d %s' % (search_total, plural_str)
+            # %d = search items, %s = plural
+            msg = _('%d %s') % (search_total, plural_str)
         else:
             msg = ''
         return msg
@@ -504,11 +500,11 @@ class SearchBar(GladeSlaveDelegate):
 
     def set_searchtable(self, search_table):
         self._table = search_table
-        self.split_field_types()
+        self._split_field_types()
 
     def set_columns(self, columns):
         self._columns = columns
-        self.split_field_types()
+        self._split_field_types()
 
     def register_extra_query_callback(self, query):
         """Register an extra query that will be added in the main query of
@@ -531,10 +527,9 @@ class SearchBar(GladeSlaveDelegate):
         self._result_strings = singular_form, plural_form
 
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
-        if self._searching_by_date:
-            self._slave.set_search_label(search_entry_lbl, date_search_lbl)
-        else:
-            self._slave.set_search_label(search_entry_lbl)
+        self._slave.set_search_label(search_entry_lbl)
+        if self._searching_by_date and date_search_lbl:
+            self._slave.set_date_label(search_entry_lbl)
 
     def search_items(self, *args):
         self._slave.start_animation()
