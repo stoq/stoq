@@ -71,6 +71,8 @@ class _SearchBarEntry(GladeSlaveDelegate):
         self.search_icon.hide()
         self.search_entry.grab_focus()
 
+    # ISearchBarEntrySlave
+
     def set_search_label(self, label):
         self.search_label.set_text(label)
 
@@ -88,6 +90,23 @@ class _SearchBarEntry(GladeSlaveDelegate):
 
     def get_extra_queries(self):
         return []
+
+    def start_animation(self):
+        self.search_button.hide()
+        self.search_icon.show()
+        self._animate_search_icon_id = \
+            gobject.timeout_add(self.ANIMATE_TIMEOUT,
+                                self._animate_search_icon().next)
+
+    def stop_animation(self):
+        self.search_button.show()
+        if self._animate_search_icon_id == -1:
+            log.warn("Search icon animation hasn't started")
+        gobject.source_remove(self._animate_search_icon_id)
+        self.search_icon.hide()
+
+    def set_focus(self):
+        self.search_entry.grab_focus()
 
     #
     # Kiwi callbacks
@@ -115,20 +134,6 @@ class _SearchBarEntry(GladeSlaveDelegate):
                 yield True
 
         yield False
-
-    def start_animation(self):
-        self.search_button.hide()
-        self.search_icon.show()
-        self._animate_search_icon_id = \
-            gobject.timeout_add(self.ANIMATE_TIMEOUT,
-                                self._animate_search_icon().next)
-
-    def stop_animation(self):
-        self.search_button.show()
-        if self._animate_search_icon_id == -1:
-            log.warn("Search icon animation hasn't started")
-        gobject.source_remove(self._animate_search_icon_id)
-        self.search_icon.hide()
 
 
 class _DateInterval:
@@ -163,6 +168,8 @@ class _DateSearchSlave(GladeSlaveDelegate):
         enable_dates = self.date_check.get_active()
         self.start_date.set_sensitive(enable_dates)
         self.end_date.set_sensitive(enable_dates)
+
+    # ISearchBarEntrySlave
 
     def get_slave(self):
         return self._slave
@@ -217,6 +224,9 @@ class _DateSearchSlave(GladeSlaveDelegate):
     def clear(self):
         self.start_date.set_text('')
         self.end_date.set_text('')
+
+    def set_focus(self):
+        self._slave.search_entry.grab_focus()
 
     #
     # Kiwi callbacks
@@ -517,10 +527,7 @@ class SearchBar(GladeSlaveDelegate):
         self._extra_query_callback = query
 
     def set_focus(self):
-        if self._searching_by_date:
-            self._slave.get_slave().search_entry.grab_focus()
-        else:
-            self._slave.search_entry.grab_focus()
+        self._slave.set_focus()
 
     def set_result_strings(self, singular_form, plural_form):
         """This method defines strings to be used in the
