@@ -52,14 +52,93 @@ log = Logger("stoqlib.gui.searchbar")
 # Slaves for search dialogs.
 #
 
-class DateInterval:
+class _SearchBarEntry(GladeSlaveDelegate):
+
+    implements(ISearchBarEntrySlave)
+
+    gladefile = 'SearchBarEntry'
+    gsignal('selected')
+
+    SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
+    ANIMATE_TIMEOUT = 200
+
+    def __init__(self, filter_slave=None):
+        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
+        self.search_icon.set_from_stock("stoq-searchtool-icon1",
+                                        self.SEARCH_ICON_SIZE)
+        if filter_slave:
+            self.attach_slave('filter_area', filter_slave)
+        self.search_icon.hide()
+        self.search_entry.grab_focus()
+
+    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
+        self.search_label.set_text(search_entry_lbl)
+
+    def get_search_string(self):
+        return self.search_entry.get_text()
+
+    def set_search_string(self, search_str):
+        return self.search_entry.set_text(search_str)
+
+    def clear(self):
+        self.search_entry.set_text('')
+
+    def get_slave(self):
+        return self
+
+    def get_extra_queries(self):
+        return []
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_search_button__clicked(self, button):
+        self.emit('selected')
+
+    def on_search_entry__activate(self, entry):
+        self.emit('selected')
+
+    #
+    # Animation
+    #
+
+    def _animate_search_icon(self):
+        stocklist = ["stoq-searchtool-icon2",
+                     "stoq-searchtool-icon3",
+                     "stoq-searchtool-icon4",
+                     "stoq-searchtool-icon1"]
+
+        while True:
+            for stock in stocklist:
+                self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
+                yield True
+
+        yield False
+
+    def start_animation(self):
+        self.search_button.hide()
+        self.search_icon.show()
+        self._animate_search_icon_id = \
+            gobject.timeout_add(self.ANIMATE_TIMEOUT,
+                                self._animate_search_icon().next)
+
+    def stop_animation(self):
+        self.search_button.show()
+        if self._animate_search_icon_id == -1:
+            log.warn("Search icon animation hasn't started")
+        gobject.source_remove(self._animate_search_icon_id)
+        self.search_icon.hide()
+
+
+class _DateInterval:
     """A basic class for a range of dates used by DateSearchSlave as the
     model object
     """
     start_date = None
     end_date = None
 
-class DateSearchSlave(GladeSlaveDelegate):
+class _DateSearchSlave(GladeSlaveDelegate):
 
     implements(ISearchBarEntrySlave)
 
@@ -73,7 +152,7 @@ class DateSearchSlave(GladeSlaveDelegate):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         # As we want to use kiwi validators with date fields we need to set
         # proxies here.
-        self._model = DateInterval()
+        self._model = _DateInterval()
         self._fields = fields
         self.add_proxy(self._model, self.proxy_widgets)
         self._slave = _SearchBarEntry(filter_slave)
@@ -158,85 +237,6 @@ class DateSearchSlave(GladeSlaveDelegate):
         self.emit('end-date-selected')
 
 
-class _SearchBarEntry(GladeSlaveDelegate):
-
-    implements(ISearchBarEntrySlave)
-
-    gladefile = 'SearchBarEntry'
-    gsignal('selected')
-
-    SEARCH_ICON_SIZE = gtk.ICON_SIZE_LARGE_TOOLBAR
-    ANIMATE_TIMEOUT = 200
-
-    def __init__(self, filter_slave=None):
-        GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self.search_icon.set_from_stock("stoq-searchtool-icon1",
-                                        self.SEARCH_ICON_SIZE)
-        if filter_slave:
-            self.attach_slave('filter_area', filter_slave)
-        self.search_icon.hide()
-        self.search_entry.grab_focus()
-
-    def set_search_label(self, search_entry_lbl, date_search_lbl=None):
-        self.search_label.set_text(search_entry_lbl)
-
-    def get_search_string(self):
-        return self.search_entry.get_text()
-
-    def set_search_string(self, search_str):
-        return self.search_entry.set_text(search_str)
-
-    def clear(self):
-        self.search_entry.set_text('')
-
-    def get_slave(self):
-        return self
-
-    def get_extra_queries(self):
-        return []
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_search_button__clicked(self, button):
-        self.emit('selected')
-
-    def on_search_entry__activate(self, entry):
-        self.emit('selected')
-
-    #
-    # Animation
-    #
-
-    def _animate_search_icon(self):
-        stocklist = ["stoq-searchtool-icon2",
-                     "stoq-searchtool-icon3",
-                     "stoq-searchtool-icon4",
-                     "stoq-searchtool-icon1"]
-
-        while True:
-            for stock in stocklist:
-                self.search_icon.set_from_stock(stock, self.SEARCH_ICON_SIZE)
-                yield True
-
-        yield False
-
-    def start_animation(self):
-        self.search_button.hide()
-        self.search_icon.show()
-        self._animate_search_icon_id = \
-            gobject.timeout_add(self.ANIMATE_TIMEOUT,
-                                self._animate_search_icon().next)
-
-    def stop_animation(self):
-        self.search_button.show()
-        if self._animate_search_icon_id == -1:
-            log.warn("Search icon animation hasn't started")
-        gobject.source_remove(self._animate_search_icon_id)
-        self.search_icon.hide()
-
-
 class SearchBar(GladeSlaveDelegate):
     """A portable search bar slave for dialogs and applications"""
 
@@ -281,7 +281,7 @@ class SearchBar(GladeSlaveDelegate):
         self.search_results_label.set_size('small')
 
         if searching_by_date:
-            slave = DateSearchSlave(filter_slave, self._dtime_fields)
+            slave = _DateSearchSlave(filter_slave, self._dtime_fields)
             slave.connect('start-date-selected',
                                 self._on_date_search__start_date_selected)
             slave.connect('end-date-selected',
