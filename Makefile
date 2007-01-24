@@ -2,9 +2,10 @@ VERSION=$(shell egrep ^version stoq/__init__.py|cut -d\" -f2)
 BUILDDIR=tmp
 PACKAGE=stoq
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
-DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog |grep Version|cut -d: -f3)
+DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
+REV=$(shell LANG=C svn info .|egrep ^Revision:|cut -d\  -f2)
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -24,12 +25,7 @@ upload:
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
-	cd $(DLDIR) && \
-	  rm -f Release Release.gpg && \
-	  dpkg-scanpackages . /dev/null > $(DLDIR)/Packages && \
-	  dpkg-scansources . /dev/null > $(DLDIR)/Sources && \
-	  apt-ftparchive release . > $(DLDIR)/Release && \
-	  gpg -abs -o Release.gpg Release
+	/mondo/local/bin/update-apt-directory $(DLDIR)
 
 tags:
 	find -name \*.py|xargs ctags
@@ -37,4 +33,10 @@ tags:
 TAGS:
 	find -name \*.py|xargs etags
 
-.PHONY: sdist deb upload tags TAGS
+nightly:
+	debchange -v${DEBVERSION}nightly$(shell date +%Y%m%d)rev${REV}.1 \
+            "Automatic rebuild against revision ${REV}"
+	debuild -us -uc -rfakeroot
+	svn revert debian/changelog
+
+.PHONY: sdist deb upload tags TAGS nightly
