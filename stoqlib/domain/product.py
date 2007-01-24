@@ -428,7 +428,7 @@ class ProductAdaptToStorable(ModelAdapter):
             # Of course that here we must use the logic quantity balance
             # as an addition to our main stock
             logic_qty = self.get_logic_balance(branch)
-            balance = self._get_full_balance(branch) - logic_qty
+            balance = self.get_full_balance(branch) - logic_qty
             logic_sold_qty = quantity - balance
             quantity -= logic_sold_qty
             self.decrease_logic_stock(logic_sold_qty, branch)
