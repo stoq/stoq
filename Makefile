@@ -5,7 +5,7 @@ TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
-REV=$(shell LANG=C svn info stoqlib/|egrep ^Revision:|cut -d\  -f2)
+REV=$(shell LANG=C svn info .|egrep ^Revision:|cut -d\  -f2)
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -39,4 +39,4 @@ nightly:
 	debuild -us -uc -rfakeroot
 	svn revert debian/changelog
 
-.PHONY: sdist deb tags TAGS nightly
+.PHONY: sdist deb upload tags TAGS nightly
