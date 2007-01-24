@@ -5,7 +5,6 @@ TARBALL=$(PACKAGE)-$(VERSION).tar.gz
 DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
-REV=$(shell LANG=C svn info .|egrep ^Revision:|cut -d\  -f2)
 
 sdist:
 	kiwi-i18n -p $(PACKAGE) -c
@@ -34,9 +33,6 @@ TAGS:
 	find -name \*.py|xargs etags
 
 nightly:
-	debchange -v${DEBVERSION}nightly$(shell date +%Y%m%d)rev${REV}.1 \
-            "Automatic rebuild against revision ${REV}"
-	debuild -us -uc -rfakeroot
-	svn revert debian/changelog
+	/mondo/local/bin/build-svn-deb
 
 .PHONY: sdist deb upload tags TAGS nightly
