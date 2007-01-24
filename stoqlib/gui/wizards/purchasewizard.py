@@ -61,65 +61,163 @@ _ = stoqlib_gettext
 #
 
 
-class FinishPurchaseStep(WizardEditorStep):
-    gladefile = 'FinishPurchaseStep'
+class StartPurchaseStep(WizardEditorStep):
+    gladefile = 'StartPurchaseStep'
     model_type = PurchaseOrder
-    proxy_widgets = ('salesperson_name',
-                     'receival_date',
-                     'transporter',
-                     'notes')
+    proxy_widgets = ('open_date',
+                     'order_number',
+                     'supplier',
+                     'branch',
+                     'freight')
 
-    def __init__(self, wizard, previous, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+    def __init__(self, wizard, conn, model):
+        WizardEditorStep.__init__(self, conn, wizard, model)
+        self.open_date.set_sensitive(False)
+        self._update_widgets()
 
-    def _setup_transporter_entry(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
-        table = Person.getAdapterClass(ITransporter)
-        transporters = table.get_active_transporters(self.conn)
-        items = [(t.person.name, t) for t in transporters]
-        self.transporter.prefill(items)
+    def _setup_supplier_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
+        table = Person.getAdapterClass(ISupplier)
+        suppliers = table.get_active_suppliers(self.conn)
+        items = [(s.person.name, s) for s in suppliers]
+        self.supplier.prefill(items)
 
-    def _setup_focus(self):
-        self.salesperson_name.grab_focus()
-        self.notes.set_accepts_tab(False)
+    def _setup_widgets(self):
+        self._setup_supplier_entry()
+        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
+        table = Person.getAdapterClass(IBranch)
+        branches = table.get_active_branches(self.conn)
+        items = [(s.person.name, s) for s in branches]
+        self.branch.prefill(items)
+
+    def _update_widgets(self):
+        has_freight = self.fob_radio.get_active()
+        self.freight.set_sensitive(has_freight)
+        self._update_freight()
+
+    def _update_freight(self):
+        if self.cif_radio.get_active():
+            self.model.freight_type = self.model_type.FREIGHT_CIF
+        else:
+            self.model.freight_type = self.model_type.FREIGHT_FOB
 
     #
     # WizardStep hooks
     #
 
-    def has_next_step(self):
-        return False
-
     def post_init(self):
-        self.salesperson_name.grab_focus()
+        self.open_date.grab_focus()
+        self.table.set_focus_chain([self.open_date, self.order_number,
+                                    self.branch, self.supplier,
+                                    self.radio_hbox, self.freight])
+        self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
         self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
+    def next_step(self):
+        return PurchaseItemStep(self.wizard, self, self.conn, self.model)
+
+    def has_previous_step(self):
+        return False
+
     def setup_proxies(self):
-        self._setup_transporter_entry()
-        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+        self._setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    StartPurchaseStep.proxy_widgets)
 
     #
     # Kiwi callbacks
     #
 
-    def on_receival_date__content_changed(self, proxy_date_entry):
-        select_date = proxy_date_entry.get_date()
+    def on_cif_radio__toggled(self, *args):
+        self._update_widgets()
 
-        if select_date is None:
-            return
-        if select_date < datetime.date.today():
-            proxy_date_entry.set_invalid(_("Expected receival date must be set to a future date"))
+    def on_fob_radio__toggled(self, *args):
+        self._update_widgets()
 
-    def on_transporter_button__clicked(self, button):
-        if run_person_role_dialog(TransporterEditor, self, self.conn,
-                                  self.model.transporter):
+    def on_supplier_button__clicked(self, *args):
+        if run_person_role_dialog(SupplierEditor, self, self.conn,
+                                  self.model.supplier):
             self.conn.commit()
-            self._setup_transporter_entry()
+            self._setup_supplier_entry()
 
-    def on_print_button__clicked(self, button):
-        print_report(PurchaseOrderReport, self.model)
 
+class PurchaseItemStep(AbstractItemStep):
+    """ Wizard step for purchase order's items selection """
+    model_type = PurchaseOrder
+    item_table = PurchaseItem
+    summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+
+    #
+    # Helper methods
+    #
+
+    def run_sellable_editor(self):
+        # We must commit now since we must rollback self.conn if the user
+        # abort the sellable's editor.
+        self.conn.commit()
+        if self.item_proxy.model.item:
+            item = self.item_proxy.model.item.get_adapted()
+            if isinstance(item, Product):
+                editor = ProductEditor
+            elif isinstance(item, Service):
+                editor = ServiceEditor
+            else:
+                raise StoqlibError("Invalid sellable type: %r" % type(item))
+            model = run_dialog(editor, None, self.conn, item)
+        else:
+            editor = run_dialog(SellableSelectionEditor, None, self.conn)
+            if not editor:
+                return
+            model = run_dialog(editor, self, self.conn)
+        if not finish_transaction(self.conn, model):
+            return
+        self.setup_item_entry()
+        item = self.item_proxy.model.item
+        if item:
+            self.item.select(self.item_proxy.model.item)
+
+    #
+    # AbstractItemStep virtual methods
+    #
+
+    def get_order_item(self, sellable, cost, quantity):
+        item = self.model.add_item(sellable, quantity)
+        item.cost = cost
+        return item
+
+    def get_saved_items(self):
+        return list(self.model.get_items())
+
+    def get_columns(self):
+        return [
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('quantity', title=_('Quantity'), data_type=float, width=90,
+                   format_func=format_quantity),
+            Column('sellable.unit_description',title=_('Unit'), data_type=str,
+                   width=50),
+            Column('cost', title=_('Cost'), data_type=currency, width=90),
+            Column('total', title=_('Total'), data_type=currency, width=100),
+            ]
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self._refresh_next(False)
+        self.product_button.hide()
+
+    def next_step(self):
+        return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
+
+    #
+    # callbacks
+    #
+
+    def on_add_new_item_button__clicked(self, button):
+        self.run_sellable_editor()
 
 class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'
@@ -211,6 +309,66 @@ class PurchasePaymentStep(WizardEditorStep):
     def on_method_combo__content_changed(self, *args):
         self._update_payment_method_slave()
 
+class FinishPurchaseStep(WizardEditorStep):
+    gladefile = 'FinishPurchaseStep'
+    model_type = PurchaseOrder
+    proxy_widgets = ('salesperson_name',
+                     'receival_date',
+                     'transporter',
+                     'notes')
+
+    def __init__(self, wizard, previous, conn, model):
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+
+    def _setup_transporter_entry(self):
+        # FIXME: Implement and use IDescribable on PersonAdaptToTransporter
+        table = Person.getAdapterClass(ITransporter)
+        transporters = table.get_active_transporters(self.conn)
+        items = [(t.person.name, t) for t in transporters]
+        self.transporter.prefill(items)
+
+    def _setup_focus(self):
+        self.salesperson_name.grab_focus()
+        self.notes.set_accepts_tab(False)
+
+    #
+    # WizardStep hooks
+    #
+
+    def has_next_step(self):
+        return False
+
+    def post_init(self):
+        self.salesperson_name.grab_focus()
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def setup_proxies(self):
+        self._setup_transporter_entry()
+        self.proxy = self.add_proxy(self.model, self.proxy_widgets)
+
+    #
+    # Kiwi callbacks
+    #
+
+    def on_receival_date__content_changed(self, proxy_date_entry):
+        select_date = proxy_date_entry.get_date()
+
+        if select_date is None:
+            return
+        if select_date < datetime.date.today():
+            proxy_date_entry.set_invalid(_("Expected receival date must be set to a future date"))
+
+    def on_transporter_button__clicked(self, button):
+        if run_person_role_dialog(TransporterEditor, self, self.conn,
+                                  self.model.transporter):
+            self.conn.commit()
+            self._setup_transporter_entry()
+
+    def on_print_button__clicked(self, button):
+        print_report(PurchaseOrderReport, self.model)
+
+
 class SellableSelectionEditor(BaseEditor):
     gladefile = 'SellableTypeStep'
 
@@ -229,163 +387,8 @@ class SellableSelectionEditor(BaseEditor):
         return ProductEditor
 
 
-class PurchaseItemStep(AbstractItemStep):
-    """ Wizard step for purchase order's items selection """
-    model_type = PurchaseOrder
-    item_table = PurchaseItem
-    summary_label_text = "<b>%s</b>" % _('Total Ordered:')
-
-    #
-    # Helper methods
-    #
-
-    def run_sellable_editor(self):
-        # We must commit now since we must rollback self.conn if the user
-        # abort the sellable's editor.
-        self.conn.commit()
-        if self.item_proxy.model.item:
-            item = self.item_proxy.model.item.get_adapted()
-            if isinstance(item, Product):
-                editor = ProductEditor
-            elif isinstance(item, Service):
-                editor = ServiceEditor
-            else:
-                raise StoqlibError("Invalid sellable type: %r" % type(item))
-            model = run_dialog(editor, None, self.conn, item)
-        else:
-            editor = run_dialog(SellableSelectionEditor, None, self.conn)
-            if not editor:
-                return
-            model = run_dialog(editor, self, self.conn)
-        if not finish_transaction(self.conn, model):
-            return
-        self.setup_item_entry()
-        item = self.item_proxy.model.item
-        if item:
-            self.item.select(self.item_proxy.model.item)
-
-    #
-    # AbstractItemStep virtual methods
-    #
-
-    def get_order_item(self, sellable, cost, quantity):
-        item = self.model.add_item(sellable, quantity)
-        item.cost = cost
-        return item
-
-    def get_saved_items(self):
-        return list(self.model.get_items())
-
-    def get_columns(self):
-        return [
-            Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
-            Column('quantity', title=_('Quantity'), data_type=float, width=90,
-                   format_func=format_quantity),
-            Column('sellable.unit_description',title=_('Unit'), data_type=str,
-                   width=50),
-            Column('cost', title=_('Cost'), data_type=currency, width=90),
-            Column('total', title=_('Total'), data_type=currency, width=100),
-            ]
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self._refresh_next(False)
-        self.product_button.hide()
-
-    def next_step(self):
-        return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
-
-    #
-    # callbacks
-    #
-
-    def on_add_new_item_button__clicked(self, button):
-        self.run_sellable_editor()
 
 
-class StartPurchaseStep(WizardEditorStep):
-    gladefile = 'StartPurchaseStep'
-    model_type = PurchaseOrder
-    proxy_widgets = ('open_date',
-                     'order_number',
-                     'supplier',
-                     'branch',
-                     'freight')
-
-    def __init__(self, wizard, conn, model):
-        WizardEditorStep.__init__(self, conn, wizard, model)
-        self.open_date.set_sensitive(False)
-        self._update_widgets()
-
-    def _setup_supplier_entry(self):
-        # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
-        table = Person.getAdapterClass(ISupplier)
-        suppliers = table.get_active_suppliers(self.conn)
-        items = [(s.person.name, s) for s in suppliers]
-        self.supplier.prefill(items)
-
-    def _setup_widgets(self):
-        self._setup_supplier_entry()
-        # FIXME: Implement and use IDescribable on PersonAdaptToBranch
-        table = Person.getAdapterClass(IBranch)
-        branches = table.get_active_branches(self.conn)
-        items = [(s.person.name, s) for s in branches]
-        self.branch.prefill(items)
-
-    def _update_widgets(self):
-        has_freight = self.fob_radio.get_active()
-        self.freight.set_sensitive(has_freight)
-        self._update_freight()
-
-    def _update_freight(self):
-        if self.cif_radio.get_active():
-            self.model.freight_type = self.model_type.FREIGHT_CIF
-        else:
-            self.model.freight_type = self.model_type.FREIGHT_FOB
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.open_date.grab_focus()
-        self.table.set_focus_chain([self.open_date, self.order_number,
-                                    self.branch, self.supplier,
-                                    self.radio_hbox, self.freight])
-        self.radio_hbox.set_focus_chain([self.cif_radio, self.fob_radio])
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-
-    def next_step(self):
-        return PurchaseItemStep(self.wizard, self, self.conn, self.model)
-
-    def has_previous_step(self):
-        return False
-
-    def setup_proxies(self):
-        self._setup_widgets()
-        self.proxy = self.add_proxy(self.model,
-                                    StartPurchaseStep.proxy_widgets)
-
-    #
-    # Kiwi callbacks
-    #
-
-    def on_cif_radio__toggled(self, *args):
-        self._update_widgets()
-
-    def on_fob_radio__toggled(self, *args):
-        self._update_widgets()
-
-    def on_supplier_button__clicked(self, *args):
-        if run_person_role_dialog(SupplierEditor, self, self.conn,
-                                  self.model.supplier):
-            self.conn.commit()
-            self._setup_supplier_entry()
 
 
 #
