@@ -318,7 +318,7 @@ class StartPurchaseStep(WizardEditorStep):
 
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
-        self.open_date.set_sensitive(False) 
+        self.open_date.set_sensitive(False)
         self._update_widgets()
 
     def _setup_supplier_entry(self):
