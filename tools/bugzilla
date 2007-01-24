@@ -14,6 +14,9 @@ TD_ID = 1
 TD_RESOLUTION = 7
 TD_SUMMARY = 8
 
+ENTITY = {'amp': '&',
+          'quot': '"'}
+
 # Horrible, don't look here
 class HP(HTMLParser.HTMLParser):
     def __init__(self):
@@ -35,7 +38,7 @@ class HP(HTMLParser.HTMLParser):
 
     # all &gt; refs are handled through this method; append them to self.summary
     def handle_entityref(self, name):
-        self.summary += " &%s; " % name
+        self.summary += ' %s ' % (ENTITY.get(name, '&%s;' % name))
 
     # can be called more than once for one td
     def handle_data(self, data):
