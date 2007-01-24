@@ -50,100 +50,11 @@ from stoqlib.domain.sellable import ASellable
 _ = stoqlib_gettext
 
 
+
 #
 # Wizard Steps
 #
 
-
-class ReceivingInvoiceStep(WizardEditorStep):
-    gladefile = 'HolderTemplate'
-    model_type = ReceivingOrder
-
-    #
-    # WizardStep hooks
-    #
-
-    def has_next_step(self):
-        return False
-
-    def post_init(self):
-        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
-        self.attach_slave("place_holder", self.invoice_slave)
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-
-
-class ReceivingOrderProductStep(AbstractItemStep):
-    model_type = ReceivingOrder
-    item_table = ReceivingOrderItem
-    summary_label_text = "<b>%s</b>" % _('Total Received:')
-
-    #
-    # AbstractItemStep overrides
-    #
-
-    def setup_item_entry(self):
-        purchase = self.model.purchase
-        if purchase:
-            sellables = [i.sellable for i in purchase.get_pending_items()]
-        else:
-            sellables = ASellable.get_unblocked_sellables(self.conn)
-        self.item.prefill([(sellable.get_description(), sellable)
-                                 for sellable in sellables])
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.add_new_item_button.hide()
-        # Hide the search bar, since it does not make sense to add new
-        # items to a receivable order.
-        self.item_hbox.hide()
-
-    def next_step(self):
-        return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
-
-    def get_columns(self):
-        return [
-            Column('sellable.description', title=_('Description'),
-                   data_type=str, expand=True, searchable=True),
-            Column('quantity_received', title=_('Quantity'), data_type=float,
-                   width=90, format_func=format_quantity),
-            Column('sellable.unit_description', title=_('Unit'), data_type=str,
-                   width=50),
-            Column('cost', title=_('Cost'), data_type=currency, width=90),
-            Column('total', title=_('Total'), data_type=currency, width=100)
-            ]
-
-    def get_order_item(self, sellable, cost, quantity):
-        return ReceivingOrderItem(connection=self.conn, sellable=sellable,
-                                  receiving_order=self.model,
-                                  cost=cost, quantity_received=quantity)
-
-    def get_saved_items(self):
-        if not self.model.purchase:
-            return []
-        return get_receiving_items_by_purchase_order(self.model.purchase,
-                                                     self.model)
-
-    #
-    # callbacks
-    #
-
-    def on_product_button__clicked(self, *args):
-        # We are going to call a SearchEditor subclass which means
-        # database synchronization... Outch, time to commit !
-        self.conn.commit()
-        item_statuses = [ASellable.STATUS_AVAILABLE,
-                         ASellable.STATUS_SOLD]
-        items = run_dialog(ProductSearch, self, self.conn,
-                           hide_footer=False, hide_toolbar=True,
-                           hide_price_column=True,
-                           selection_mode=gtk.SELECTION_MULTIPLE,
-                           use_product_statuses=item_statuses)
-        for item in items:
-            self._update_list(item)
 
 class PurchaseSelectionStep(WizardEditorStep):
     gladefile = 'PurchaseSelectionStep'
@@ -256,6 +167,97 @@ class PurchaseSelectionStep(WizardEditorStep):
                              'at this point, got nothing')
         order = PurchaseOrder.get(selected.id, connection=self.conn)
         run_dialog(PurchaseDetailsDialog, self, self.conn, model=order)
+
+
+class ReceivingOrderProductStep(AbstractItemStep):
+    model_type = ReceivingOrder
+    item_table = ReceivingOrderItem
+    summary_label_text = "<b>%s</b>" % _('Total Received:')
+
+    #
+    # AbstractItemStep overrides
+    #
+
+    def setup_item_entry(self):
+        purchase = self.model.purchase
+        if purchase:
+            sellables = [i.sellable for i in purchase.get_pending_items()]
+        else:
+            sellables = ASellable.get_unblocked_sellables(self.conn)
+        self.item.prefill([(sellable.get_description(), sellable)
+                                 for sellable in sellables])
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.add_new_item_button.hide()
+        # Hide the search bar, since it does not make sense to add new
+        # items to a receivable order.
+        self.item_hbox.hide()
+
+    def next_step(self):
+        return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
+
+    def get_columns(self):
+        return [
+            Column('sellable.description', title=_('Description'),
+                   data_type=str, expand=True, searchable=True),
+            Column('quantity_received', title=_('Quantity'), data_type=float,
+                   width=90, format_func=format_quantity),
+            Column('sellable.unit_description', title=_('Unit'), data_type=str,
+                   width=50),
+            Column('cost', title=_('Cost'), data_type=currency, width=90),
+            Column('total', title=_('Total'), data_type=currency, width=100)
+            ]
+
+    def get_order_item(self, sellable, cost, quantity):
+        return ReceivingOrderItem(connection=self.conn, sellable=sellable,
+                                  receiving_order=self.model,
+                                  cost=cost, quantity_received=quantity)
+
+    def get_saved_items(self):
+        if not self.model.purchase:
+            return []
+        return get_receiving_items_by_purchase_order(self.model.purchase,
+                                                     self.model)
+
+    #
+    # callbacks
+    #
+
+    def on_product_button__clicked(self, *args):
+        # We are going to call a SearchEditor subclass which means
+        # database synchronization... Outch, time to commit !
+        self.conn.commit()
+        item_statuses = [ASellable.STATUS_AVAILABLE,
+                         ASellable.STATUS_SOLD]
+        items = run_dialog(ProductSearch, self, self.conn,
+                           hide_footer=False, hide_toolbar=True,
+                           hide_price_column=True,
+                           selection_mode=gtk.SELECTION_MULTIPLE,
+                           use_product_statuses=item_statuses)
+        for item in items:
+            self._update_list(item)
+
+
+class ReceivingInvoiceStep(WizardEditorStep):
+    gladefile = 'HolderTemplate'
+    model_type = ReceivingOrder
+
+    #
+    # WizardStep hooks
+    #
+
+    def has_next_step(self):
+        return False
+
+    def post_init(self):
+        self.invoice_slave = ReceivingInvoiceSlave(self.conn, self.model)
+        self.attach_slave("place_holder", self.invoice_slave)
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
 
 
 #
