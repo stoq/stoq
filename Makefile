@@ -2,32 +2,30 @@ VERSION=$(shell egrep ^__version__ stoqdrivers/__init__.py|perl -pe 's/[\(\)]/\"
 BUILDDIR=tmp
 PACKAGE=stoqdrivers
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
-DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog |grep Version|cut -d: -f3)
+DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
+TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
+REV=$(shell LANG=C svn info .|egrep ^Revision:|cut -d\  -f2)
 
 sdist:
-	kiwi-i18n -c
+	kiwi-i18n -p $(PACKAGE) -c
 	python setup.py -q sdist
 
 deb: sdist
 	rm -fr $(BUILDDIR)
 	mkdir $(BUILDDIR)
 	cd $(BUILDDIR) && tar xfz ../dist/$(TARBALL)
-	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION); debuild
+	cd $(BUILDDIR)/$(PACKAGE)-$(VERSION) && debuild
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
 
 upload:
+	cp dist/$(TARBALL) $(TARBALL_DIR)
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
 	  cp dist/$(PACKAGE)_$(DEBVERSION)*."$$suffix" $(DLDIR); \
 	done
-	cd $(DLDIR) && \
-	  rm -f Release Release.gpg && \
-	  dpkg-scanpackages . /dev/null | $(DLDIR)/Packages && \
-	  dpkg-scansources . /dev/null | $(DLDIR)/Sources && \
-	  apt-ftparchive release . > $(DLDIR)/Release && \
-	  gpg -abs -o Release.gpg Release
+	/mondo/local/bin/update-apt-directory $(DLDIR)
 
 tags:
 	find -name \*.py|xargs ctags
@@ -35,4 +33,10 @@ tags:
 TAGS:
 	find -name \*.py|xargs etags
 
-.PHONY: sdist deb upload tags TAGS
+nightly:
+	debchange -v${DEBVERSION}nightly$(shell date +%Y%m%d)rev${REV}.1 \
+            "Automatic rebuild against revision ${REV}"
+	debuild -us -uc -rfakeroot
+	svn revert debian/changelog
+
+.PHONY: sdist deb upload tags TAGS nightly
