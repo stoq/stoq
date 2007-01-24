@@ -55,15 +55,13 @@ def create_products():
     category_data = ['Generic',
                      'Optical',
                      'LCD',
-                     'AMD Durom']
+                     'AMD']
 
     descriptions = ['Keyboard AXDR', 'Optical Mouse 45FG',
-                    'Monitor LCD SXDF', 'Processor AMD Durom 1.2Ghz']
+                    'Monitor LCD SXDF', 'Processor AMD 1.2Ghz']
 
     prices = [100, 121, 150, 104] # (100, 200]
-    quantites = [40, 1, 38, 46] # (1, 50]
     costs = [87, 71, 9, 45] # (1, 99]
-    stock_costs = [90, 10, 60, 87] # (1, 99]
     commissions = [13, 4, 17, 27] # (1, 40]
     commissions2 = [27, 16, 23, 13] # (1, 40]
     markups = [44, 43, 78, 32] # (30, 80]
@@ -120,14 +118,7 @@ def create_products():
         product_obj.addFacet(ISellable, connection=trans, category=cat,
                              cost=cost, unit=unit, barcode=barcode,
                              base_sellable_info=sellable_info)
-
-        storable = product_obj.addFacet(IStorable, connection=trans)
-
-        # Setting a initial value for Stocks
-        for stock_item in storable.get_stocks():
-            stock_item.quantity = quantites[index]
-            stock_item.stock_cost = stock_costs[index]
-            stock_item.logic_quantity = stock_item.quantity * 2
+        product_obj.addFacet(IStorable, connection=trans)
 
     trans.commit()
 
