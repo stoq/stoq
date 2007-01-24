@@ -124,6 +124,15 @@ class AppWindow(BaseAppWindow):
 #             self.save_cookie_menuitem.set_sensitive(1)
 #         label.set_text("user: %s%s" % (username, star))
 
+    def _read_resource(self, domain, name):
+        try:
+            license = environ.find_resource(domain, name)
+            return file(license)
+        except EnvironmentError:
+            import gzip
+            license = environ.find_resource(domain, name + '.gz')
+            return gzip.GzipFile(license)
+
     def _run_about(self, *args):
         about = gtk.AboutDialog()
         about.set_name(stoq.program_name)
@@ -140,15 +149,16 @@ class AppWindow(BaseAppWindow):
         about.set_logo(logo)
 
         # License
-        license = environ.find_resource('docs', 'COPYING')
-        about.set_license(file(license).read())
+
+        fp = self._read_resource('docs', 'COPYING')
+        about.set_license(fp.read())
 
         # Authors & Contributors
-        authors = environ.find_resource('docs', 'AUTHORS')
-        lines = [a.strip() for a in file(authors).readlines()]
+        fp = self._read_resource('docs', 'AUTHORS')
+        lines = [a.strip() for a in fp.readlines()]
         lines.append('') # separate authors from contributors
-        contributors = environ.find_resource('docs', 'CONTRIBUTORS')
-        lines.extend([c.strip() for c in file(contributors).readlines()])
+        fp = self._read_resource('docs', 'CONTRIBUTORS')
+        lines.extend([c.strip() for c in fp.readlines()])
         about.set_authors(lines)
 
         about.run()
