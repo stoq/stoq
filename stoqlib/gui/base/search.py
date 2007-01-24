@@ -415,12 +415,6 @@ class SearchEditor(SearchDialog):
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False):
-        editor_class = editor_class or self.editor_class
-        if not editor_class:
-            raise ValueError('An editor_class argument is required')
-        if not issubclass(editor_class, BaseEditor):
-            raise TypeError("editor_class must be a BaseEditor subclass")
-        self.editor_class = editor_class
         self.interface = interface
 
         SearchDialog.__init__(self, conn, table, search_table,
@@ -434,6 +428,14 @@ class SearchEditor(SearchDialog):
             if not (self.has_new_button or self.has_edit_button):
                 raise ValueError("You must set hide_footer=False instead "
                                  "of disable these two attributes.")
+
+            editor_class = editor_class or self.editor_class
+            if not editor_class:
+                raise ValueError('An editor_class argument is required')
+            if not issubclass(editor_class, BaseEditor):
+                raise TypeError("editor_class must be a BaseEditor subclass")
+            self.editor_class = editor_class
+
             self.accept_edit_data = self.has_edit_button
             if not self.has_new_button:
                 self.hide_new_button()
