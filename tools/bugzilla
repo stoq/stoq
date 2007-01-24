@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+# -*- Mode: Python -*-
+# vi:si:et:sw=4:sts=4:ts=4
+
+import optparse
+import sys
+import urllib
+import HTMLParser
+
+BUGZILLA_URL = 'http://bugs.async.com.br'
+TRACKER_BUG_URL = '%s/showdependencytree.cgi?id=%s&hide_resolved=0'
+
+TD_ID = 1
+TD_RESOLUTION = 7
+TD_SUMMARY = 8
+
+# Horrible, don't look here
+class HP(HTMLParser.HTMLParser):
+    def __init__(self):
+        HTMLParser.HTMLParser.__init__(self)
+        self.tr = 0
+        self.td = 0
+        self.bugs = []
+        self.bugno = 0
+        self.summary = ""
+        self.resolution = ""
+
+    def handle_starttag(self, tag, data):
+        if tag == 'tr':
+            self.tr = 1
+            return
+        # count td's
+        elif self.tr and tag.startswith('td'):
+            self.td += 1
+
+    # all &gt; refs are handled through this method; append them to self.summary
+    def handle_entityref(self, name):
+        self.summary += " &%s; " % name
+
+    # can be called more than once for one td
+    def handle_data(self, data):
+        if not self.tr:
+            return
+        data = data.strip()
+        if not data:
+            return
+
+        # print self.td, self.tr, repr(data)
+
+        # clear self.summary if we're not in the correct td
+        if self.td != TD_SUMMARY:
+            self.summary = ""
+
+        # check what td it is in
+        if self.td == TD_ID:
+            try:
+                self.bugno = int(data)
+            except ValueError:
+                self.bugno = 0
+        elif self.td == TD_RESOLUTION:
+            self.resolution += data
+        elif self.td == TD_SUMMARY:
+            # the summary td
+            self.summary += data
+
+    def handle_endtag(self, tag):
+        if tag == 'tr':
+            self.tr = 0
+            self.td = 0
+            if self.bugno != 0:
+                self.bugs.append((self.bugno, self.resolution, self.summary))
+                self.bugno = 0
+                self.resolution = ""
+
+def main(args):
+    parser = optparse.OptionParser()
+    parser.add_option('-b', '--bug', action='store', dest='bug',
+                      default=None)
+    options, args = parser.parse_args(args)
+    if not options.bug:
+        raise SystemExit("Need a release bug number")
+
+    fp = urllib.urlopen(TRACKER_BUG_URL % (BUGZILLA_URL, options.bug))
+    for line in fp.readlines():
+        if 'view as bug list' in line:
+            buglist_url = line.split('"')[1]
+            buglist_url = BUGZILLA_URL + '/' + buglist_url
+            break
+    else:
+        raise AssertionError
+    fp.close()
+
+    fp = urllib.urlopen(buglist_url)
+    hp = HP()
+    hp.feed(fp.read())
+
+    fixed = 0
+    for no, res, summary in sorted(hp.bugs, lambda a, b: cmp(a[0], b[0])):
+        if res != 'FIXE':
+            continue
+        print '#%d: %s' % (no, unicode(summary, 'latin1').encode('utf-8'))
+        fixed += 1
+    print '---'
+    print '%d bugs fixed' % fixed
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
