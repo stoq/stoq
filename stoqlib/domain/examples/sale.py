@@ -140,12 +140,6 @@ def create_sales():
                                                       installments_numbers)):
         _create_sale(trans, open_date, status, salesperson, client, index,
                      product, installments_number, till)
-    cancelled_sale = _create_sale(trans, open_dates[0], Sale.STATUS_OPENED,
-                                  salespersons[0], clients[0], index+1,
-                                  product_list[0], installments_numbers[0],
-                                  till)
-    adapter = cancelled_sale.create_sale_return_adapter()
-    adapter.confirm(cancelled_sale)
 
     till.close_till()
 
