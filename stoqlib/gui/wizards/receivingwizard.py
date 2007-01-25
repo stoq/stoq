@@ -116,6 +116,11 @@ class PurchaseSelectionStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
+        # Remove all the items added previously, used if we hit back
+        # at any point in the wizard.
+        self.model.remove_items()
+
+        old_purchase = self.model.purchase
         selected = self.orders.get_selected()
         if selected:
             self.model.purchase = PurchaseOrder.get(selected.id,
@@ -127,7 +132,7 @@ class PurchaseSelectionStep(WizardEditorStep):
 
         # FIXME: Improve the infrastructure to avoid this local caching of
         #        Wizard steps.
-        if not self._next_step:
+        if not self._next_step or self.model.purchase != old_purchase:
             self._next_step = ReceivingOrderProductStep(self.wizard,
                                                         self, self.conn,
                                                         self.model)
