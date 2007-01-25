@@ -30,6 +30,7 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.python import all
 from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
@@ -77,6 +78,7 @@ class PurchaseApp(SearchableAppWindow):
                                           value_format=value_format)
         self.summary_total.show()
         self.summary_hbox.pack_start(self.summary_total, False)
+        self.send_to_supplier_button.set_sensitive(False)
 
     def _update_totals(self):
         self.summary_total.update_total()
@@ -92,9 +94,17 @@ class PurchaseApp(SearchableAppWindow):
         self._update_list_aware_widgets(len(self.orders))
         selection = self.orders.get_selected_rows()
         can_edit = one_selected = len(selection) == 1
+        if selection:
+            can_send_supplier = all(
+                order.status == PurchaseOrder.ORDER_PENDING
+                for order in selection)
+        else:
+            can_send_supplier = False
+
         if one_selected:
             can_edit = selection[0].status == PurchaseOrder.ORDER_PENDING
         self.edit_button.set_sensitive(can_edit)
+        self.send_to_supplier_button.set_sensitive(can_send_supplier)
         self.details_button.set_sensitive(one_selected)
 
     def _open_order(self, order=None, edit_mode=False):
@@ -235,7 +245,7 @@ class PurchaseApp(SearchableAppWindow):
     def on_details_button__clicked(self, button):
         self._run_details_dialog()
 
-    def on_orders__selection_changed(self, orders, selection):
+    def on_orders__selection_changed(self, orders, selected):
         self._update_view()
 
     def _on_orders__double_click(self, orders, order):
@@ -249,6 +259,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_print_button__clicked(self, button):
         self._print_selected_items()
+
+    def on_send_to_supplier_button__clicked(self, button):
+        self._send_selected_items_to_supplier()
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
