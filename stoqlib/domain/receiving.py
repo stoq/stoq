@@ -164,6 +164,10 @@ class ReceivingOrder(Domain):
         return ReceivingOrderItem.selectBy(receiving_order=self,
                                            connection=conn)
 
+    def remove_items(self):
+        for item in self.get_items():
+            item.receiving_order = None
+
     #
     # Accessors
     #
