@@ -28,6 +28,7 @@ import decimal
 
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
@@ -41,8 +42,7 @@ from stoqlib.reporting.product import ProductReport
 from stoqlib.domain.person import Person
 from stoqlib.domain.sellable import SellableView
 from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
-from stoqlib.domain.product import (Product, ProductFullStockView,
-                                    ProductAdaptToSellable)
+from stoqlib.domain.product import (Product, ProductAdaptToSellable)
 
 from stoq.gui.application import SearchableAppWindow
 
@@ -129,10 +129,10 @@ class WarehouseApp(SearchableAppWindow):
     def get_extra_query(self):
         """Hook called by SearchBar"""
         branch = self.filter_slave.get_selected_status()
+        query = SellableView.q.product_id != None
         if branch != ALL_ITEMS_INDEX:
-            self.set_searchtable(SellableView)
-            return SellableView.q.branch_id == branch.id
-        self.set_searchtable(ProductFullStockView)
+            return AND(query, SellableView.q.branch_id == branch.id)
+        return query
 
     #
     # Callbacks
