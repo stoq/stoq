@@ -299,6 +299,16 @@ def till_remove_cash(conn, value):
     printer = _get_fiscalprinter(conn)
     printer.till_remove_cash(value)
 
+class CouponPrinter(object):
+    """
+    CouponPrinter is a wrapper around the FiscalPrinter class inside
+    stoqdrivers, refer to it for documentation
+    """
+    def __init__(self, conn):
+        self._printer = _get_fiscalprinter(conn)
+
+    def cancel(self):
+        self._printer.cancel()
 
 #
 # Class definitions
