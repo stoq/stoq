@@ -96,7 +96,7 @@ class PaymentAdditionError(DriverError):
     "Error while adding a payment."
 
 class CancelItemError(DriverError):
-    "Error while cancelling coupon."
+    "Error while cancelling coupon item."
 
 class InvalidState(DriverError):
     "Invalid state for the requested operation."

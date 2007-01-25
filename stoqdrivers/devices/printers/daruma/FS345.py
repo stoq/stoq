@@ -224,7 +224,7 @@ class FS345(SerialBase):
 
     def handle_error(self, error_value, raw):
         error = int(error_value[2:])
-        # Page 14-16
+        # Page 61-62
         if error == 39:
             raise DriverError('Bad parameters: %r'  % raw)
         elif error == 45:
@@ -241,6 +241,8 @@ class FS345(SerialBase):
             raise CouponOpenError(_("Document is already open"))
         elif error == 11:
             raise CouponNotOpenError(_("Coupon is not open"))
+        elif error == 12:
+            raise CouponNotOpenError(_("There's no open document to cancel"))
         elif error == 15:
             raise CancelItemError(_("There is no such item in "
                                     "the coupon"))
@@ -378,7 +380,6 @@ class FS345(SerialBase):
         # to close a coupon and reduce Z at the same time.
         if not self.needs_reduce_z():
             self._check_status()
-            self._verify_coupon_open()
 
         self.send_command(CMD_CANCEL_COUPON)
 
