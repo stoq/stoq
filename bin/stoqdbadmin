@@ -102,8 +102,8 @@ class StoqCommandHandler:
         set_current_branch_station(get_connection(), socket.gethostname())
 
         if options.create_examples:
-            from stoq.lib.startup import create_examples
-            create_examples(config)
+            from stoqlib.domain.examples.createall import create
+            create()
 
     def opt_init(self, parser, group):
         group.add_option('-e', '--create-examples',
