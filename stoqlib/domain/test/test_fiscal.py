@@ -54,6 +54,7 @@ def get_new_payment_group(conn):
 
 
 def get_abstract_fiscal_book_entry(conn, identifier):
+    print identifier
     cfop = get_cfopdata(conn)
     branch = get_branch(conn)
     drawee = get_drawee(conn)
@@ -103,19 +104,19 @@ class TestAbstractFiscalBookEntry(DomainTest):
         return cfop, branch, drawee, payment_group
 
     def test_reverse_entry(self):
-        afbe = get_abstract_fiscal_book_entry(self.trans, 1)
-        self.assertRaises(NotImplementedError, afbe.reverse_entry, 1)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 11)
+        self.assertRaises(NotImplementedError, afbe.reverse_entry, 11)
 
     def test_get_reversal_clone(self):
-        afbe = get_abstract_fiscal_book_entry(self.trans, 2)
-        afbe_reversal = afbe.get_reversal_clone(invoice_number=3)
-        self.assertEquals(afbe_reversal.invoice_number, 3)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 12)
+        afbe_reversal = afbe.get_reversal_clone(invoice_number=13)
+        self.assertEquals(afbe_reversal.invoice_number, 13)
 
     def test_get_entries_by_payment_group(self):
-        afbe = get_abstract_fiscal_book_entry(self.trans, 3)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 13)
         assert afbe._get_entries_by_payment_group(self.trans,
                                                   afbe.payment_group)
-        almost_same_afbe = get_abstract_fiscal_book_entry(self.trans, 4)
+        almost_same_afbe = get_abstract_fiscal_book_entry(self.trans, 14)
         almost_same_afbe.payment_group = afbe.payment_group
         self.assertRaises(DatabaseInconsistency,
                           afbe._get_entries_by_payment_group,
@@ -123,14 +124,14 @@ class TestAbstractFiscalBookEntry(DomainTest):
 
     def test_has_entry_by_payment_group(self):
         new_payment_group = get_new_payment_group(self.trans)
-        afbe = get_abstract_fiscal_book_entry(self.trans, 5)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 15)
         assert afbe.has_entry_by_payment_group(self.trans,
                                                afbe.payment_group)
         assert not afbe.has_entry_by_payment_group(self.trans,
                                                    new_payment_group)
 
     def test_get_entry_by_payment_group(self):
-        afbe = get_abstract_fiscal_book_entry(self.trans, 6)
+        afbe = get_abstract_fiscal_book_entry(self.trans, 16)
         new_payment_group = get_new_payment_group(self.trans)
         self.assertRaises(StoqlibError, afbe.get_entry_by_payment_group,
                           self.trans, new_payment_group)
@@ -139,7 +140,7 @@ class TestAbstractFiscalBookEntry(DomainTest):
 class TestIcmsIpiBookEntry(DomainTest):
 
     def test_reverse_entry(self):
-       icmsipibookentry = get_IcmsIpiBookEntry(self.trans, 7)
+       icmsipibookentry = get_IcmsIpiBookEntry(self.trans, 17)
        reversal = icmsipibookentry.reverse_entry(100)
        self.assertEquals(reversal.icms_value, -10)
        self.assertEquals(reversal.ipi_value, -10)
@@ -148,6 +149,6 @@ class TestIcmsIpiBookEntry(DomainTest):
 class TestIssBookEntry(DomainTest):
 
     def test_reverse_entry(self):
-       issbookentry = get_IssBookEntry(self.trans, 8)
+       issbookentry = get_IssBookEntry(self.trans, 18)
        reversal = issbookentry.reverse_entry(201)
        self.assertEquals(reversal.iss_value, -10)
