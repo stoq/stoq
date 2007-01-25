@@ -204,7 +204,7 @@ Blocking the sellable removes from the return value:
 Sold means, are the ones which are in the state sold:
 
     >>> ASellable.get_sold_sellables(trans).count()
-    4L
+    1L
 
 
 We can query using a specific barcode:
