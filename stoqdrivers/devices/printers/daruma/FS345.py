@@ -227,16 +227,6 @@ class FS345(SerialBase):
         # Page 61-62
         if error == 39:
             raise DriverError('Bad parameters: %r'  % raw)
-        elif error == 45:
-            raise DriverError("Bad numeric string")
-        elif error == 42:
-            raise DriverError("Bad OKI command")
-        elif error == 24:
-            raise DriverError("Bad unit specified: %r" % raw)
-        elif error == 23:
-            raise DriverError("Bad description: %r" % raw)
-        elif error == 16:
-            raise DriverError("Bad discount/markup parameter")
         elif error == 10:
             raise CouponOpenError(_("Document is already open"))
         elif error == 11:
@@ -246,6 +236,18 @@ class FS345(SerialBase):
         elif error == 15:
             raise CancelItemError(_("There is no such item in "
                                     "the coupon"))
+        elif error == 16:
+            raise DriverError("Bad discount/markup parameter")
+        elif error == 22:
+            raise DriverError("Reduce Z was already sent today, try again tomorrow")
+        elif error == 23:
+            raise DriverError("Bad description: %r" % raw)
+        elif error == 24:
+            raise DriverError("Bad unit specified: %r" % raw)
+        elif error == 42:
+            raise DriverError("Bad OKI command")
+        elif error == 45:
+            raise DriverError("Bad numeric string")
         else:
             raise DriverError("Unhandled error: %d" % error)
 
