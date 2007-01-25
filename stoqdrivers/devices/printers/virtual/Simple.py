@@ -120,7 +120,9 @@ class Simple:
         del self._items[item_id]
 
     def coupon_cancel(self):
-        self._check_coupon_is_opened()
+        # FIXME: If we don't have a coupon open, verify that
+        #        we've opened at least one
+        #self._check_coupon_is_opened()
         self._reset_flags()
 
     def coupon_totalize(self, discount=Decimal("0.0"),
