@@ -194,12 +194,6 @@ class IStorable(Interface):
         StockReference object)
         """
 
-    def get_stocks():
-        """
-        Returns the stock items which belongs to this Storable
-        @returns: a list of ProductStockItems
-        """
-
     def get_stock_item(branch):
         """
         Fetch a stock item for a specific branch

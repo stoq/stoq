@@ -89,7 +89,7 @@ def get_sale(conn, specific=None, employee_role=None):
 
     # storable facet
     storable = product.addFacet(IStorable, connection=conn)
-    for stock_item in storable.get_stocks():
+    for stock_item in storable.get_stock_items():
         stock_item.quantity = 100
         stock_item.stock_cost = Decimal(10)
         stock_item.logic_quantity = stock_item.quantity
@@ -199,7 +199,7 @@ class TestSale(DomainTest):
         sale = usable[0]
         storable = usable[2]
         sale.sell_items()
-        product_item = storable.get_stocks()[0]
+        product_item = storable.get_stock_items()[0]
         self.assertEqual(product_item.quantity, 95)
     test_sell_items.skip = "Quantity"
 
@@ -208,9 +208,9 @@ class TestSale(DomainTest):
         sale = usable[0]
         storable = usable[2]
         sale.sell_items()
-        qty = storable.get_stocks()[0].quantity
+        qty = storable.get_stock_items()[0].quantity
         sale.cancel_items()
-        self.assertEqual(qty + 5, storable.get_stocks()[0].quantity)
+        self.assertEqual(qty + 5, storable.get_stock_items()[0].quantity)
     test_cancel_items.skip = "Quantity"
 
     def test_check_close(self):
