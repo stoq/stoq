@@ -33,7 +33,8 @@ from stoqdrivers.devices.scales.scales import Scale
 from stoqdrivers.constants import (UNIT_EMPTY, UNIT_CUSTOM, TAX_NONE,
                                    MONEY_PM, CHEQUE_PM, CUSTOM_PM)
 from stoqdrivers.exceptions import (CouponOpenError, DriverError,
-                                    OutofPaperError, PrinterOfflineError)
+                                    OutofPaperError, PrinterOfflineError,
+                                    CouponNotOpenError)
 
 from stoqlib.database.runtime import (new_transaction, get_current_branch,
                                       get_current_station)
@@ -308,7 +309,10 @@ class CouponPrinter(object):
         self._printer = _get_fiscalprinter(conn)
 
     def cancel(self):
-        self._printer.cancel()
+        try:
+            self._printer.cancel()
+        except CouponNotOpenError:
+            pass
 
 #
 # Class definitions
