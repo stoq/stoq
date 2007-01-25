@@ -379,6 +379,16 @@ class ProductAdaptToStorable(ModelAdapter):
                                 logic_quantity=logic_quantity,
                                 storable=self)
 
+    @argcheck(Person.getAdapterClass(IBranch))
+    def _get_stocks(self, branch=None):
+        # FIXME: Get rid of this after fixing all call sites.
+        query_args = {}
+        if branch:
+            query_args['branch'] = branch.id
+        return ProductStockItem.selectBy(storable=self,
+                                         connection=self.get_connection(),
+                                         **query_args)
+
     #
     # IContainer implementation
     #
@@ -387,8 +397,7 @@ class ProductAdaptToStorable(ModelAdapter):
         raise NotImplementedError
 
     def get_items(self):
-        raise NotImplementedError(
-            'This method should be replaced by get_stocks')
+        raise NotImplementedError
 
     def remove_item(self, item):
         conn = self.get_connection()
@@ -440,21 +449,21 @@ class ProductAdaptToStorable(ModelAdapter):
 
     def increase_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
-        stocks = self.get_stocks(branch)
+        stocks = self._get_stocks(branch)
         for stock_item in stocks:
             stock_item.logic_quantity += quantity
 
     def decrease_logic_stock(self, quantity, branch=None):
         self._check_logic_quantity()
 
-        stocks = self.get_stocks(branch)
+        stocks = self._get_stocks(branch)
         self._check_rejected_stocks(stocks, quantity, check_logic=True)
         for stock_item in stocks:
             stock_item.logic_quantity -= quantity
 
     def get_full_balance(self, branch=None):
         """ Get the stock balance and the logic balance."""
-        stocks = self.get_stocks(branch)
+        stocks = self._get_stocks(branch)
         if not stocks:
             raise StockError, 'Invalid stock references for %s' % self
         value = Decimal(0)
@@ -466,7 +475,7 @@ class ProductAdaptToStorable(ModelAdapter):
         return value
 
     def get_logic_balance(self, branch=None):
-        stocks = self.get_stocks(branch)
+        stocks = self._get_stocks(branch)
         assert stocks.count() >= 1
         values = [stock_item.logic_quantity for stock_item in stocks]
         return sum(values, Decimal(0))
@@ -487,7 +496,7 @@ class ProductAdaptToStorable(ModelAdapter):
         return currency(total_cost / total_qty)
 
     def has_stock_by_branch(self, branch):
-        stock = self.get_stocks(branch)
+        stock = self._get_stocks(branch)
         qty = stock.count()
         if not qty == 1:
             raise DatabaseInconsistency("You should have only one stock "
@@ -505,20 +514,6 @@ class ProductAdaptToStorable(ModelAdapter):
         return ProductStockItem.selectOneBy(branch=branch,
                                             storable=self,
                                             connection=self.get_connection())
-
-    @argcheck(Person.getAdapterClass(IBranch))
-    def get_stocks(self, branch=None):
-        conn = self.get_connection()
-        table, parent = ProductStockItem, AbstractStockItem
-        q1 = table.q.id == parent.q.id
-        q2 = table.q.storableID == self.id
-        if not branch:
-            query = AND(q1, q2)
-        else:
-            q3 = parent.q.branchID == branch.id
-            query = AND(q1, q2, q3)
-        return table.select(query, connection=conn)
-
 
 Product.registerFacet(ProductAdaptToStorable, IStorable)
 

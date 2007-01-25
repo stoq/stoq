@@ -65,7 +65,7 @@ class TestProduct(DomainTest):
         self.failIf(IStorable(self.product, None))
         storable = self.product.addFacet(IStorable, connection=self.trans)
         branches_count = Person.iselect(IBranch, connection=self.trans).count()
-        self.assertEqual(storable.get_stocks().count(), branches_count)
+        self.assertEqual(storable.get_stock_items().count(), branches_count)
 
     def test_get_main_supplier_info(self):
         self.failIf(self.product.get_main_supplier_info())
@@ -117,17 +117,17 @@ class TestProductSellableItem(BaseDomainTest):
         storable = product.addFacet(IStorable, connection=self.trans)
 
         branch = get_current_branch(self.trans)
-        stock_results = storable.get_stocks(branch)
-        assert stock_results.count() == 1
-        current_stock = stock_results[0].quantity
+        stock_item = storable.get_stock_item(branch)
+        assert stock_item is not None
+        current_stock = stock_item.quantity
         if current_stock:
             storable.decrease_stock(branch, current_stock)
-        assert not storable.get_stocks(branch)[0].quantity
+        assert not storable.get_stock_item(branch).quantity
         sold_qty = 2
         storable.increase_stock(sold_qty, branch)
-        assert storable.get_stocks(branch).count() == 1
-        assert storable.get_stocks(branch)[0].quantity == sold_qty
+        assert storable.get_stock_item(branch) is not None
+        assert storable.get_stock_item(branch).quantity == sold_qty
         # now setting the proper sold quantity in the sellable item
         self._instance.quantity = sold_qty
         self._instance.sell(branch)
-        assert not storable.get_stocks(branch)[0].quantity
+        assert not storable.get_stock_item(branch).quantity
