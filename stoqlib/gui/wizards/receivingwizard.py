@@ -116,23 +116,28 @@ class PurchaseSelectionStep(WizardEditorStep):
         self.force_validation()
 
     def next_step(self):
+        selected = self.orders.get_selected()
+        purchase = PurchaseOrder.get(selected.id, connection=self.conn)
+
         # Remove all the items added previously, used if we hit back
         # at any point in the wizard.
-        self.model.remove_items()
+        if self.model.purchase and self.model.purchase != purchase:
+            self.model.remove_items()
+            # This forces ReceivingOrderProductStep to create a new model
+            self._next_step = None
 
-        old_purchase = self.model.purchase
-        selected = self.orders.get_selected()
         if selected:
-            self.model.purchase = PurchaseOrder.get(selected.id,
-                                                    connection=self.conn)
-            self.model.supplier = self.model.purchase.supplier
-            self.model.transporter = self.model.purchase.transporter
+            self.model.purchase = purchase
+            self.model.supplier = purchase.supplier
+            self.model.transporter = purchase.transporter
         else:
             self.model.purchase = None
 
         # FIXME: Improve the infrastructure to avoid this local caching of
         #        Wizard steps.
-        if not self._next_step or self.model.purchase != old_purchase:
+        if not self._next_step:
+            # Remove all the items added previously, used if we hit back
+            # at any point in the wizard.
             self._next_step = ReceivingOrderProductStep(self.wizard,
                                                         self, self.conn,
                                                         self.model)
