@@ -54,7 +54,6 @@ def get_new_payment_group(conn):
 
 
 def get_abstract_fiscal_book_entry(conn, identifier):
-    print identifier
     cfop = get_cfopdata(conn)
     branch = get_branch(conn)
     drawee = get_drawee(conn)
