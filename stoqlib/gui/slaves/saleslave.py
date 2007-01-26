@@ -193,8 +193,8 @@ class SaleListToolbar(GladeSlaveDelegate):
         """
         sale = self.sales.get_selected()
         self.details_button.set_sensitive(bool(sale))
-        if sale and sale.status == Sale.STATUS_CANCELLED:
-            self.return_sale_button.set_sensitive(False)
+        can_return = bool(sale and sale.status == Sale.STATUS_CONFIRMED)
+        self.return_sale_button.set_sensitive(can_return)
 
     #
     # Private
