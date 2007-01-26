@@ -13,6 +13,12 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="CancelLastOrder">
+                        <property name="name">CancelLastOrder</property>
+                        <property name="label" translatable="yes">Cancel Last Order</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="CancelOrder">
                         <property name="name">CancelOrder</property>
                         <property name="label" translatable="yes">Cancel Order</property>
@@ -251,7 +257,7 @@
             </widget>
         </child>
         <ui id="initial-state"><![CDATA[<ui>
-<menubar action="menubar" name="menubar"><menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><menuitem action="EditClient" name="EditClient"/><menuitem action="ClientDetails" name="ClientDetails"/><separator name="sep"/><menuitem action="NewDelivery" name="NewDelivery"/><menuitem action="OrderCheckout" name="OrderCheckout"/><separator name="sep10"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/></menu><menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
+<menubar action="menubar" name="menubar"><menu action="SalesMenu" name="SalesMenu"><menuitem action="ResetOrder" name="ResetOrder"/><menuitem action="CancelOrder" name="CancelOrder"/><menuitem action="EditClient" name="EditClient"/><menuitem action="ClientDetails" name="ClientDetails"/><separator name="sep"/><menuitem action="NewDelivery" name="NewDelivery"/><menuitem action="OrderCheckout" name="OrderCheckout"/><separator name="sep10"/><menuitem action="PrintOrder" name="PrintOrder"/><separator name="sep2"/><menuitem action="Quit" name="Quit"/></menu> <menu action="SearchMenu" name="SearchMenu"><menuitem action="Sales" name="Sales"/><menuitem action="Clients" name="Clients"/><menuitem action="ProductSearch" name="ProductSearch"/><menuitem action="ServiceSearch" name="ServiceSearch"/><menuitem action="GiftCertificateSearch" name="GiftCertificateSearch"/></menu><menu action="TillMenu" name="TillMenu"><menuitem action="TillOpen" name="TillOpen"/><menuitem action="TillClose" name="TillClose"/><menuitem action="CancelLastOrder" name="CancelLastOrder"/></menu><menu action="help_menu" name="help_menu"><menuitem action="About" name="About"/></menu></menubar>
 </ui>]]></ui>
     </widget>
     <widget class="GtkWindow" id="pos">

@@ -42,7 +42,8 @@ from stoqlib.database.runtime import new_transaction, get_current_user
 from stoqlib.lib.message import info, warning, yesno
 from stoqlib.lib.validators import format_quantity
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import (FiscalCoupon, read_scale_info,
+from stoqlib.lib.drivers import (CouponPrinter,
+                                 FiscalCoupon, read_scale_info,
                                  get_current_scale_settings,
                                  check_emit_reduce_Z,
                                  check_emit_read_X)
@@ -92,6 +93,7 @@ class POSApp(AppWindow):
         self.client_table = PersonAdaptToClient
         self._product_table = ProductAdaptToSellable
         self._coupon = None
+        self._printer = CouponPrinter(self.conn)
         self._check_till()
         self._setup_widgets()
         self._setup_proxies()
@@ -221,6 +223,7 @@ class POSApp(AppWindow):
 
         self.TillOpen.set_sensitive(till_open and self.sale is None)
         self.TillClose.set_sensitive(till_close and self.sale is None)
+        self.CancelLastOrder.set_sensitive(till_close and self.sale is None)
         has_sellables = len(self.sellables) >= 1
         self.set_sensitive((self.checkout_button, self.remove_item_button,
                             self.PrintOrder, self.NewDelivery,
@@ -490,6 +493,12 @@ class POSApp(AppWindow):
 
         return True
 
+    def _cancel_last_order(self):
+        if not yesno(
+            _(u"Do you really want to cancel the last order?"),
+            gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Order")):
+            self._printer.cancel()
+
     #
     # Coupon related
     #
@@ -626,6 +635,9 @@ class POSApp(AppWindow):
 
     def on_TillOpen__activate(self, action):
         self._open_till()
+
+    def on_CancelLastOrder__activate(self, action):
+        self._cancel_last_order()
 
     #
     # Other callbacks
