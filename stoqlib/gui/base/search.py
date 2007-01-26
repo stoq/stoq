@@ -397,14 +397,14 @@ class SearchEditor(SearchDialog):
     - The size of the new dialog will be 465 pixels wide and 390 pixels high.
     - When displaying results, the verb car and cars will be used, eg:
       1 car or 34 cars.
-    - The get_columns() methods is required to be implemented, otherwise there's
-      no way to know which data is going to be displayed.
+    - The get_columns() methods is required to be implemented, otherwise
+      there's no way to know which data is going to be displayed.
       get_columns must return a list of kiwi objectlist columns.
       In this case we will display two columns, brand and description.
       They will be fetched from the car object using the attribute brand or
-      description. Both of them are strings (data_type=str), the width of the first
-      column is 90 pixels and the second column is expanded so it uses the rest
-      of the available width.
+      description. Both of them are strings (data_type=str), the width of
+      the first column is 90 pixels and the second column is expanded so
+      it uses the rest of the available width.
 
     """
     model_editor_lookup_attr = 'id'
