@@ -51,7 +51,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
                      'supplier',
                      'supplier_label',
                      'order_number',
-                     'invoice_total',
+                     'total',
                      'invoice_number',
                      'icms_total')
 
@@ -109,7 +109,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         self.proxy = self.add_proxy(self.model,
                                     ReceivingInvoiceSlave.proxy_widgets)
         self.model.invoice_total = self.model.get_products_total()
-        self.proxy.update('invoice_total')
+        self.proxy.update('total')
         purchase = self.model.purchase
         if purchase:
             transporter = purchase.transporter
@@ -127,12 +127,9 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         slave_holder = 'discount_surcharge_holder'
         if self.get_slave(slave_holder):
             return
-        if not self.edit_mode:
-            self.model.reset_discount_and_surcharge()
-        klass = DiscountSurchargeSlave
-        self.discount_surcharge_slave = klass(self.conn, self.model,
-                                              ReceivingOrder,
-                                              visual_mode=self.visual_mode)
+        self.discount_surcharge_slave = DiscountSurchargeSlave(
+            self.conn, self.model, ReceivingOrder,
+            visual_mode=self.visual_mode)
         self.attach_slave(slave_holder, self.discount_surcharge_slave)
 
     #
