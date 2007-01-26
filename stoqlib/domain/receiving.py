@@ -61,7 +61,9 @@ class ReceivingOrderItem(Domain):
     #
 
     def get_total(self):
-        return currency(self.quantity_received * self.cost)
+        purchase = self.receiving_order.purchase
+        return currency(self.quantity_received * self.cost) - (
+            purchase.discount_value + purchase.surcharge_value)
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
