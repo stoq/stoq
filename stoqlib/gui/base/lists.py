@@ -164,7 +164,7 @@ class AdditionListSlave(GladeSlaveDelegate):
             msg = _(u'Delete these %d items?') % qty
         else:
             msg = _(u'Delete this item?')
-        if yesno(msg, gtk.RESPONSE_YES, _(u"Cancel"), _(u"Delete items")):
+        if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel"), _(u"Delete items")):
             return
         self.emit('before-delete-items', objs)
         if qty == len(self.klist):

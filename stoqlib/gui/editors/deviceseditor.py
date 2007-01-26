@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005, 2006, 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s): Henrique Romano <henrique@async.com.br>
+##            Johan Dahlin    <jdahlin@async.com.br>
 ##
 ##
 """ Editors implementation for Stoq devices configuration"""
@@ -31,7 +32,6 @@ import gtk
 from kiwi.ui.objectlist import Column
 from kiwi.python import Settable
 from kiwi.decorators import signal_block
-from sqlobject.sqlbuilder import AND
 from stoqdrivers.devices.printers.base import (get_supported_printers,
                                                get_supported_printers_by_iface)
 from stoqdrivers.devices.scales.base import get_supported_scales
@@ -303,12 +303,6 @@ class DeviceSettingsEditor(BaseEditor):
         else:
             return _("Add Device")
 
-    def _get_existing_printer_basequery(self):
-        q1 = DeviceSettings.q.stationID == self.model.station.id
-        q2 = DeviceSettings.q.type == self.model.type
-        return AND(q1, q2)
-
-
     def validate_confirm(self):
         if (self.model.is_a_fiscal_printer() and
             not self.model.is_custom_pm_configured()):
@@ -319,11 +313,10 @@ class DeviceSettingsEditor(BaseEditor):
                      _(u"Configure _Methods"), _(u"_Continue")):
                 return False
         if not self.edit_mode:
-            conn = get_connection()
-            basequery = self._get_existing_printer_basequery()
-            q2 = DeviceSettings.q.brand != 'virtual'
-            query = AND(basequery, q2)
-            settings = DeviceSettings.select(query, connection=conn)
+            settings = DeviceSettings.get_by_station_and_type(
+                conn=get_connection(),
+                station=self.model.station.id,
+                type=self.model.type)
             if settings:
                 self.station.set_invalid(
                     _(u"A %s already exists for station \"%s\""
@@ -348,16 +341,13 @@ class DeviceSettingsEditor(BaseEditor):
             self.model.inactivate()
 
         # Check if we have a virtual printer, if so we must remove it
-        query = AND(DeviceSettings.q.stationID == self.model.station.id,
-                    (DeviceSettings.q.type
-                     == DeviceSettings.FISCAL_PRINTER_DEVICE),
-                    DeviceSettings.q.brand == "virtual")
-        result = DeviceSettings.select(query, connection=self.conn)
-        if result:
-            if result[0].constants:
-                DeviceConstants.delete(result[0].constants.id,
+        settings = DeviceSettings.get_virtual_printer_settings(
+            self.conn, self.model.station)
+        if settings:
+            if settings.constants:
+                DeviceConstants.delete(settings.constants.id,
                                        connection=self.conn)
-            DeviceSettings.delete(result[0].id, connection=self.conn)
+            DeviceSettings.delete(settings.id, connection=self.conn)
         return self.model
 
     #

@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005,2006, 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Henrique Romano <henrique@async.com.br>
+##            Johan Dahlin    <jdahlin@async.com.br>
 ##
 """
 stoq/domain/devices.py
@@ -28,6 +29,7 @@ stoq/domain/devices.py
 """
 
 from sqlobject import UnicodeCol, IntCol, PickleCol, ForeignKey, BoolCol
+from sqlobject.sqlbuilder import AND
 from zope.interface import implements
 from stoqdrivers.devices.interfaces import IDriverConstants
 from stoqdrivers.devices.printers.fiscal import FiscalPrinter
@@ -190,6 +192,36 @@ class DeviceSettings(Domain):
     def is_valid(self):
         return (None not in (self.model, self.device, self.brand, self.station)
                 and self.type in DeviceSettings.device_types)
+
+    @classmethod
+    def get_by_station_and_type(cls, conn, station, type):
+        """
+        Fetch all non-virtual settings for a specific station and type.
+
+        @param conn: a database connection
+        @param station: a BranchStation instance
+        @param type: device type
+        """
+        return cls.select(
+            AND(cls.q.stationID == station,
+                cls.q.type == type,
+                cls.q.brand != 'virtual'),
+        connection=conn)
+
+    @classmethod
+    def get_virtual_printer_settings(cls, conn, station):
+        """
+        Fetch the virtual printer settings for a station. None will
+        be return if the station lacks a setting.
+        @param conn: a database connection
+        @param station: a BranchStation instance
+        """
+        return cls.selectOneBy(
+            station=station,
+            brand="virtual",
+            type=DeviceSettings.FISCAL_PRINTER_DEVICE,
+            connection=conn)
+
 
     #
     # IActive implementation
