@@ -494,10 +494,16 @@ class POSApp(AppWindow):
         return True
 
     def _cancel_last_order(self):
-        if not yesno(
+        if yesno(
             _(u"Do you really want to cancel the last order?"),
             gtk.RESPONSE_NO, _(u"Not now"), _("Cancel Last Order")):
-            self._printer.cancel()
+            return
+
+        cancelled = self._printer.cancel()
+        if not cancelled:
+            info(_("Cancelling sale failed, nothing to cancel"))
+        else:
+            info(_("Sale was cancelled"))
 
     #
     # Coupon related
