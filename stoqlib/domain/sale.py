@@ -28,6 +28,7 @@ from decimal import Decimal
 from datetime import datetime
 
 from sqlobject import UnicodeCol, DateTimeCol, ForeignKey, IntCol, SQLObject
+from sqlobject.sqlbuilder import AND
 from stoqdrivers.constants import TAX_ICMS, TAX_NONE, TAX_SUBSTITUTION
 from zope.interface import implements
 from kiwi.argcheck import argcheck
@@ -250,6 +251,19 @@ class Sale(Domain):
         if not status in cls.statuses:
             raise DatabaseInconsistency("Invalid status %d" % status)
         return cls.statuses[status]
+
+    @classmethod
+    def get_last_confirmed(cls, conn):
+        """
+        Fetch the last confirmed sale
+        @param conn: a database connection
+        """
+        results = cls.select(AND(cls.q.status == cls.STATUS_CONFIRMED,
+                                 cls.q.confirm_date != None),
+                             orderBy='-confirm_date',
+                             connection=conn).limit(1)
+        if results:
+            return results[0]
 
     #
     # Public API
