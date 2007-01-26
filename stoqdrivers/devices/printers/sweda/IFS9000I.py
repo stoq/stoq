@@ -195,6 +195,8 @@ class IFS9000I(SerialBase):
                    'ERRO-ITEM INEXISTE': (CancelItemError,
                                           _("There is no such item to cancel "
                                             "in the coupon")),
+                   'ERRO-CANC: NAO HOUVE LANCAMENTO' : (CouponNotOpenError,
+                                                        (_("There's no open document to cancel"))),
                    }
 
     def __init__(self, port, consts=None):
