@@ -46,6 +46,7 @@ from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
                                        ICheckPM, IMoneyPM, IContainer)
+from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.sellable import ASellableItem
 
@@ -309,10 +310,22 @@ class CouponPrinter(object):
         self._printer = _get_fiscalprinter(conn)
 
     def cancel(self):
+        # FIXME: We need to ask the fiscal printer which was the last
+        #        made sale and cancel the sale with /that/ coupon number
+        #        That requires each sale to have a reference to a coupon.
+        #        See #3130 for more information
+
         try:
             self._printer.cancel()
         except CouponNotOpenError:
-            pass
+            return
+
+        trans = new_transaction()
+
+        sale = Sale.get_last_confirmed(trans)
+        sale.cancel(sale.create_sale_return_adapter())
+
+        trans.commit()
 
 #
 # Class definitions
