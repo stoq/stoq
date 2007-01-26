@@ -310,6 +310,10 @@ class CouponPrinter(object):
         self._printer = _get_fiscalprinter(conn)
 
     def cancel(self):
+        """
+        Cancel the current or the last made sale.
+        @return: True it was canceled, False if there was nothing to cancel
+        """
         # FIXME: We need to ask the fiscal printer which was the last
         #        made sale and cancel the sale with /that/ coupon number
         #        That requires each sale to have a reference to a coupon.
@@ -318,7 +322,7 @@ class CouponPrinter(object):
         try:
             self._printer.cancel()
         except CouponNotOpenError:
-            return
+            return False
 
         trans = new_transaction()
 
@@ -326,6 +330,8 @@ class CouponPrinter(object):
         sale.cancel(sale.create_sale_return_adapter())
 
         trans.commit()
+
+        return True
 
 #
 # Class definitions
