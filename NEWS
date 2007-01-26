@@ -1,3 +1,10 @@
+Release 0.5.0 - 24/08/2006:
+
+	* Add debian package
+	* Improve support for canceling coupons.
+	* Require kiwi 1.9.6
+	* Updated translation
+
 Release 0.4.0 - 24/08/2006:
 
 	* Bug fixes: 2502, 2532, 2641
