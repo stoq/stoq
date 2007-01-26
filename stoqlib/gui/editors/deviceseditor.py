@@ -312,11 +312,11 @@ class DeviceSettingsEditor(BaseEditor):
     def validate_confirm(self):
         if (self.model.is_a_fiscal_printer() and
             not self.model.is_custom_pm_configured()):
-            if not yesno(_(u"Some payment methods are not configured. It "
-                           "will not be possible to emit a coupon for "
-                           "sales with these payment methods, are you "
-                           "sure you want to continue?"), gtk.RESPONSE_NO,
-                         _(u"_Continue"), _(u"Configure _Methods")):
+            if yesno(_(u"Some payment methods are not configured. It "
+                       "will not be possible to emit a coupon for "
+                       "sales with these payment methods, are you "
+                       "sure you want to continue?"), gtk.RESPONSE_NO,
+                     _(u"Configure _Methods"), _(u"_Continue")):
                 return False
         if not self.edit_mode:
             conn = get_connection()
