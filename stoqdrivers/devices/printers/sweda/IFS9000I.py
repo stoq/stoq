@@ -33,6 +33,7 @@ import string
 import datetime
 from decimal import Decimal
 
+from kiwi.log import Logger
 from zope.interface import implements
 
 from stoqdrivers.constants import (TAX_IOF, TAX_ICMS, TAX_SUBSTITUTION,
@@ -55,6 +56,8 @@ from stoqdrivers.devices.printers.base import BaseDriverConstants
 from stoqdrivers.translation import stoqdrivers_gettext
 
 _ = lambda msg: stoqdrivers_gettext(msg)
+
+log = Logger('stoqdrivers.sweda')
 
 class IFS9000IConstants(BaseDriverConstants):
     # TODO Fixup these values
@@ -407,7 +410,13 @@ class IFS9000I(SerialBase):
         # Man page 4-62
         rv = self.get_transaction_status()
         if rv is not None:
-            return int(rv[4:7])
+            data = rv[4:7]
+            try:
+                return int(data)
+            except ValueError:
+                # This seems to happen the first time of the day we
+                # print something.
+                log.warn("Could not parse data status item: %r" % data)
         return rv
 
     def get_totalized_value(self):
