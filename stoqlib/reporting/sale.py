@@ -108,7 +108,7 @@ class SalesReport(SearchResultsReport):
 
     def __init__(self, filename, sale_list, status=None, *args, **kwargs):
         self.sale_list = sale_list
-        self._landscape_mode = status and status == ALL_ITEMS_INDEX
+        self._landscape_mode = bool(status and status == ALL_ITEMS_INDEX)
         SearchResultsReport.__init__(self, filename, sale_list,
                                      SalesReport.report_name,
                                      landscape=self._landscape_mode,
