@@ -2,7 +2,7 @@ VERSION=$(shell egrep ^__version__ stoqdrivers/__init__.py|perl -pe 's/[\(\)]/\"
 BUILDDIR=tmp
 PACKAGE=stoqdrivers
 TARBALL=$(PACKAGE)-$(VERSION).tar.gz
-DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2)
+DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\  -f2|cut -d: -f2)
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
 
