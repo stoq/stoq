@@ -61,9 +61,7 @@ class ReceivingOrderItem(Domain):
     #
 
     def get_total(self):
-        purchase = self.receiving_order.purchase
-        return currency(self.quantity_received * self.cost) - (
-            purchase.discount_value + purchase.surcharge_value)
+        return currency(self.quantity_received * self.cost)
 
     def get_quantity_unit_string(self):
         unit = self.sellable.unit
@@ -206,6 +204,16 @@ class ReceivingOrder(Domain):
 
     def get_receival_date_str(self):
         return self.receival_date.strftime("%x")
+
+    def get_total(self):
+        """
+        Fetch the total, including discount and surcharge for both the
+        purchase order and the receiving order.
+        """
+        return currency(self.invoice_total -
+                        self.purchase.discount_value + self.purchase.surcharge_value -
+                        self.discount_value + self.surcharge_value)
+
 
     #
     # General methods
