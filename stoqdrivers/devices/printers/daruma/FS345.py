@@ -382,8 +382,6 @@ class FS345(SerialBase):
         # to close a coupon and reduce Z at the same time.
         if not self.needs_reduce_z():
             self._check_status()
-            # XXX: Remove this
-            self._verify_coupon_open()
         self.send_command(CMD_CANCEL_COUPON)
 
     def coupon_totalize(self, discount=Decimal("0.0"), surcharge=Decimal("0.0"),
