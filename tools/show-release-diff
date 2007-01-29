@@ -1,0 +1,4 @@
+#!/bin/sh
+# $1 - module (eg stoq, stoqlib)
+# $2 - release (eg 0.8.2)
+svn diff svn://async.com.br/$1/tags/$1-$2 svn://async.com.br/$1/trunk/ 
