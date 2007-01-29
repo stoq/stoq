@@ -132,10 +132,12 @@ class DatabaseSettingsStep(WizardEditorStep):
                    "The PostgreSQL user must be a superuser. "
                    "Consult the Stoq documentation for more information on "
                    "how to solve this problem.") % username)
+            conn.close()
             return False
 
         # Finally create it, nothing should go wrong at this point
         conn.createDatabase(dbname, ifNotExists=True)
+        conn.close()
         return True
 
     def _create_station(self, conn, branch, station_name):
@@ -176,6 +178,7 @@ class DatabaseSettingsStep(WizardEditorStep):
                 return False
 
             self.has_installed_db = SystemTable.is_available(conn)
+            conn.close()
         else:
             if not self._create_database(db_settings):
                 return False
