@@ -244,10 +244,8 @@ class AbstractItemStep(WizardEditorStep):
         self._update_widgets()
         self.unit_label.set_bold(True)
 
-    def _refresh_next(self, validation_value):
-        if not len(self.slave.klist):
-            validation_value = False
-        self.wizard.refresh_next(validation_value)
+    def _refresh_next(self):
+        self.wizard.refresh_next(len(self.slave.klist))
 
     def setup_item_entry(self):
         result = ASellable.get_unblocked_sellables(self.conn)
@@ -286,8 +284,7 @@ class AbstractItemStep(WizardEditorStep):
 
     def _update_total(self, *args):
         self.summary.update_total()
-        has_items = bool(self.slave.klist)
-        self._refresh_next(has_items)
+        self._refresh_next()
         self.force_validation()
 
     def _update_list(self, item):
@@ -341,7 +338,7 @@ class AbstractItemStep(WizardEditorStep):
                                         self.quantity, self.cost,
                                         self.add_item_button,
                                         self.product_button])
-        self.register_validate_function(self._refresh_next)
+        self.register_validate_function(self.wizard.refresh_next)
         self.force_validation()
 
     def setup_proxies(self):
@@ -376,6 +373,7 @@ class AbstractItemStep(WizardEditorStep):
     def _before_delete_items(self, slave, items):
         for item in items:
             self.item_table.delete(item.id, connection=self.conn)
+        self._refresh_next()
 
     def on_product_button__clicked(self, *args):
         raise NotImplementedError('This method must be defined on child')

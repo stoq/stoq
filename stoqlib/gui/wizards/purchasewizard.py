@@ -206,7 +206,7 @@ class PurchaseItemStep(AbstractItemStep):
     #
 
     def post_init(self):
-        self._refresh_next(False)
+        self._refresh_next()
         self.product_button.hide()
 
     def next_step(self):
