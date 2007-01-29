@@ -170,19 +170,19 @@ class DatabaseSettingsStep(WizardEditorStep):
             return False
 
         db_settings = self.wizard_model.db_settings
-        if db_settings.has_database():
-            try:
+        try:
+            if db_settings.has_database():
                 conn = db_settings.get_connection()
-            except DatabaseError, e:
-                warning(e.short, e.msg)
-                return False
+                self.has_installed_db = SystemTable.is_available(conn)
+                conn.close()
+            else:
+                if not self._create_database(db_settings):
+                    return False
+                self.has_installed_db = False
 
-            self.has_installed_db = SystemTable.is_available(conn)
-            conn.close()
-        else:
-            if not self._create_database(db_settings):
-                return False
-            self.has_installed_db = False
+        except DatabaseError, e:
+            warning(e.short, e.msg)
+            return False
 
         return True
 
