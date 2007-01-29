@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006, 2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,25 @@
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##              João Victor Duarte Martins  <jvdm@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
-""" Stoq Configuration dialogs"""
+"""First time installation wizard for Stoq
+
+Stoq Configuration dialogs
+
+Current flow of the database steps:
+
+-> DatabaseSettingsStep
+    If Existing DB -> ExistingAdminPasswordStep
+        -> DeviceSettingsStep
+    If New DB -> AdminPasswordStep
+        -> ExampleDatabaseStep
+            If DB is empty -> DeviceSettingsStep
+            Otherwise      -> BranchSettingsStep
+                -> DeviceSettingsStep
+
+"""
 
 import gettext
 from decimal import Decimal
@@ -62,250 +78,6 @@ _ = gettext.gettext
 # Wizard Steps
 #
 
-
-class DeviceSettingsStep(BaseWizardStep):
-    gladefile = 'DeviceSettingsStep'
-
-    def __init__(self, conn, wizard, station, previous):
-        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
-        self._setup_widgets()
-        self._setup_slaves(station)
-
-    def _setup_widgets(self):
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-
-    def _setup_slaves(self, station):
-        from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
-        slave = DeviceSettingsDialogSlave(self.conn, station=self.wizard.station)
-        self.attach_slave("devices_holder", slave)
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-
-    def has_next_step(self):
-        return False
-
-class BranchSettingsStep(WizardEditorStep):
-    gladefile = 'BranchSettingsStep'
-    person_widgets = ('name',
-                      'phone_number',
-                      'fax_number')
-    tax_widgets = ('icms',
-                   'iss',
-                   'substitution_icms')
-    proxy_widgets = person_widgets + tax_widgets
-
-
-    def __init__(self, conn, wizard, model, previous):
-        self.param = sysparam(conn)
-        self.model_type = Person
-        WizardEditorStep.__init__(self, conn, wizard, model, previous)
-        self._setup_widgets()
-
-    def _setup_widgets(self):
-        self.title_label.set_size('large')
-        self.title_label.set_bold(True)
-
-    def _update_system_parameters(self, company):
-        icms = self.tax_proxy.model.icms
-        self.param.update_parameter('ICMS_TAX', unicode(icms))
-
-        iss = self.tax_proxy.model.iss
-        self.param.update_parameter('ISS_TAX', unicode(iss))
-
-        substitution = self.tax_proxy.model.substitution_icms
-        self.param.update_parameter('SUBSTITUTION_TAX',
-                                    unicode(substitution))
-
-        address = company.person.get_main_address()
-        if not address:
-            raise StoqlibError("You should have an address defined at "
-                               "this point")
-
-        city = address.city_location.city
-        self.param.update_parameter('CITY_SUGGESTED', city)
-
-        country = address.city_location.country
-        self.param.update_parameter('COUNTRY_SUGGESTED', country)
-
-        state = address.city_location.state
-        self.param.update_parameter('STATE_SUGGESTED', state)
-
-    #
-    # WizardStep hooks
-    #
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-        self.name.grab_focus()
-
-    def next_step(self):
-        branch = self.param.MAIN_COMPANY
-        self._update_system_parameters(branch)
-        conn = self.wizard.get_connection()
-        return DeviceSettingsStep(conn, self.wizard, self.model, self)
-
-    def setup_proxies(self):
-        widgets = BranchSettingsStep.person_widgets
-        self.person_proxy = self.add_proxy(self.model, widgets)
-
-        widgets = BranchSettingsStep.tax_widgets
-        iss = Decimal(self.param.ISS_TAX)
-        icms = Decimal(self.param.ICMS_TAX)
-        substitution = Decimal(self.param.SUBSTITUTION_TAX)
-        model = Settable(iss=iss, icms=icms,
-                         substitution_icms=substitution)
-        self.tax_proxy = self.add_proxy(model, widgets)
-
-    def setup_slaves(self):
-        from stoqlib.gui.slaves.addressslave import AddressSlave
-        address = self.model.get_main_address()
-        slave = AddressSlave(self.conn, self.model, address)
-        self.attach_slave("address_holder", slave)
-
-
-class ExampleDatabaseStep(WizardEditorStep):
-    gladefile = "ExampleDatabaseStep"
-    model_type = object
-
-    def next_step(self):
-        if self.empty_database_radio.get_active():
-            stepclass = BranchSettingsStep
-        else:
-            self.conn.commit()
-            examples.create()
-            stepclass = DeviceSettingsStep
-        return stepclass(self.conn, self.wizard, self.model, self)
-
-
-class AdminPasswordStep(BaseWizardStep):
-    """ Ask a password for the new user being created. """
-    gladefile = 'AdminPasswordStep'
-
-    def __init__(self, conn, wizard, previous, next_model):
-        self._next_model = next_model
-        BaseWizardStep.__init__(self, conn, wizard, previous)
-        self.description_label.set_markup(
-            self.get_description_label())
-        self.title_label.set_markup(self.get_title_label())
-        self.setup_slaves()
-
-    def get_title_label(self):
-        return _("<b>Administrator Account Creation</b>")
-
-    def get_description_label(self):
-        return _("I'm adding a user called `%s' which will "
-                 "have administrator privilegies.\n\nTo be "
-                 "able to create other users you need to login "
-                 "with this user in the admin application and "
-                 "create them.") % USER_ADMIN_DEFAULT_NAME
-
-    def get_slave(self):
-        return PasswordEditorSlave(self.conn)
-
-    #
-    # WizardStep hooks
-    #
-
-    def setup_slaves(self):
-        self.password_slave = self.get_slave()
-        self.attach_slave("password_holder", self.password_slave)
-
-    def post_init(self):
-        self.register_validate_function(self.wizard.refresh_next)
-        self.force_validation()
-        self.password_slave.password.grab_focus()
-
-    def validate_step(self):
-        good_pass =  self.password_slave.validate_confirm()
-        if good_pass:
-            adminuser = Person.iselectOneBy(IUser,
-                                            username=USER_ADMIN_DEFAULT_NAME,
-                                            connection=self.conn)
-            if adminuser is None:
-                raise DatabaseInconsistency(
-                    ("You should have a user with username: %s"
-                     % USER_ADMIN_DEFAULT_NAME))
-            adminuser.password = self.password_slave.model.new_password
-        return good_pass
-
-    def next_step(self):
-        return ExampleDatabaseStep(
-            self.conn, self.wizard, self._next_model, self)
-
-class ExistingAdminPasswordStep(AdminPasswordStep):
-    def _check_password(self, conn, password):
-        # We can't use PersonAdaptToUser.select here because it requires
-        # us to have an IDatabaseSettings utility provided.
-        results = conn.queryOne(
-            "SELECT password FROM person_adapt_to_user WHERE username=%s" % (
-            conn.sqlrepr(USER_ADMIN_DEFAULT_NAME),))
-        if not results:
-            return True
-        if len(results) > 1:
-            raise DatabaseInconsistency(
-                "It is not possible have more than one user with "
-                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
-        elif len(results) == 1:
-            user_password = results[0]
-            if user_password and user_password != password:
-                return False
-        return True
-
-    def _setup_widgets(self):
-        msg = (_(u"This machine which has the name <b>%s</b> will be "
-                 "registered so it can be used to access the system.")
-               % self.wizard.station.name)
-        label = gtk.Label()
-        label.set_use_markup(True)
-        label.set_markup(msg)
-        label.set_alignment(0.0, 0.0)
-        label.set_line_wrap(True)
-        self.slave_box.pack_start(label, False, False, 10)
-        label.show()
-
-    #
-    # Hooks
-    #
-
-    def setup_slaves(self):
-        AdminPasswordStep.setup_slaves(self)
-        self._setup_widgets()
-
-    def get_description_label(self):
-        db_settings = self.wizard.model.db_settings
-        return (_("There is already a database called <b>%s</b> on <b>%s</b>. "
-                  "You must enter the password for the user <b>%s</b> to "
-                  "continue the installation: ")
-                % (db_settings.dbname, db_settings.address,
-                   USER_ADMIN_DEFAULT_NAME))
-
-    def get_title_label(self):
-        return _("<b>Administrator Account</b>")
-
-    def get_slave(self):
-        return PasswordEditorSlave(self.conn, confirm_password=False)
-
-    def validate_step(self):
-        if not self.password_slave.validate_confirm():
-            return False
-        slave = self.password_slave
-        if self._check_password(self.conn, slave.model.new_password):
-            return True
-        slave.invalidate_password(_("The password supplied is "
-                                    "not valid."))
-        return False
-
-    def next_step(self):
-        return DeviceSettingsStep(self.conn, self.wizard,
-                                  self._next_model, self)
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -463,6 +235,248 @@ class DatabaseSettingsStep(WizardEditorStep):
 
     def on_authentication_type__content_changed(self, *args):
         self._update_widgets()
+
+class AdminPasswordStep(BaseWizardStep):
+    """ Ask a password for the new user being created. """
+    gladefile = 'AdminPasswordStep'
+
+    def __init__(self, conn, wizard, previous, next_model):
+        self._next_model = next_model
+        BaseWizardStep.__init__(self, conn, wizard, previous)
+        self.description_label.set_markup(
+            self.get_description_label())
+        self.title_label.set_markup(self.get_title_label())
+        self.setup_slaves()
+
+    def get_title_label(self):
+        return _("<b>Administrator Account Creation</b>")
+
+    def get_description_label(self):
+        return _("I'm adding a user called `%s' which will "
+                 "have administrator privilegies.\n\nTo be "
+                 "able to create other users you need to login "
+                 "with this user in the admin application and "
+                 "create them.") % USER_ADMIN_DEFAULT_NAME
+
+    def get_slave(self):
+        return PasswordEditorSlave(self.conn)
+
+    #
+    # WizardStep hooks
+    #
+
+    def setup_slaves(self):
+        self.password_slave = self.get_slave()
+        self.attach_slave("password_holder", self.password_slave)
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.password_slave.password.grab_focus()
+
+    def validate_step(self):
+        good_pass =  self.password_slave.validate_confirm()
+        if good_pass:
+            adminuser = Person.iselectOneBy(IUser,
+                                            username=USER_ADMIN_DEFAULT_NAME,
+                                            connection=self.conn)
+            if adminuser is None:
+                raise DatabaseInconsistency(
+                    ("You should have a user with username: %s"
+                     % USER_ADMIN_DEFAULT_NAME))
+            adminuser.password = self.password_slave.model.new_password
+        return good_pass
+
+    def next_step(self):
+        return ExampleDatabaseStep(
+            self.conn, self.wizard, self._next_model, self)
+
+class ExistingAdminPasswordStep(AdminPasswordStep):
+    def _check_password(self, conn, password):
+        # We can't use PersonAdaptToUser.select here because it requires
+        # us to have an IDatabaseSettings utility provided.
+        results = conn.queryOne(
+            "SELECT password FROM person_adapt_to_user WHERE username=%s" % (
+            conn.sqlrepr(USER_ADMIN_DEFAULT_NAME),))
+        if not results:
+            return True
+        if len(results) > 1:
+            raise DatabaseInconsistency(
+                "It is not possible have more than one user with "
+                "the same username: %s" % USER_ADMIN_DEFAULT_NAME)
+        elif len(results) == 1:
+            user_password = results[0]
+            if user_password and user_password != password:
+                return False
+        return True
+
+    def _setup_widgets(self):
+        msg = (_(u"This machine which has the name <b>%s</b> will be "
+                 "registered so it can be used to access the system.")
+               % self.wizard.station.name)
+        label = gtk.Label()
+        label.set_use_markup(True)
+        label.set_markup(msg)
+        label.set_alignment(0.0, 0.0)
+        label.set_line_wrap(True)
+        self.slave_box.pack_start(label, False, False, 10)
+        label.show()
+
+    #
+    # Hooks
+    #
+
+    def setup_slaves(self):
+        AdminPasswordStep.setup_slaves(self)
+        self._setup_widgets()
+
+    def get_description_label(self):
+        db_settings = self.wizard.model.db_settings
+        return (_("There is already a database called <b>%s</b> on <b>%s</b>. "
+                  "You must enter the password for the user <b>%s</b> to "
+                  "continue the installation: ")
+                % (db_settings.dbname, db_settings.address,
+                   USER_ADMIN_DEFAULT_NAME))
+
+    def get_title_label(self):
+        return _("<b>Administrator Account</b>")
+
+    def get_slave(self):
+        return PasswordEditorSlave(self.conn, confirm_password=False)
+
+    def validate_step(self):
+        if not self.password_slave.validate_confirm():
+            return False
+        slave = self.password_slave
+        if self._check_password(self.conn, slave.model.new_password):
+            return True
+        slave.invalidate_password(_("The password supplied is "
+                                    "not valid."))
+        return False
+
+    def next_step(self):
+        return DeviceSettingsStep(self.conn, self.wizard,
+                                  self._next_model, self)
+
+class ExampleDatabaseStep(WizardEditorStep):
+    gladefile = "ExampleDatabaseStep"
+    model_type = object
+
+    def next_step(self):
+        if self.empty_database_radio.get_active():
+            stepclass = BranchSettingsStep
+        else:
+            self.conn.commit()
+            examples.create()
+            stepclass = DeviceSettingsStep
+        return stepclass(self.conn, self.wizard, self.model, self)
+
+class BranchSettingsStep(WizardEditorStep):
+    gladefile = 'BranchSettingsStep'
+    person_widgets = ('name',
+                      'phone_number',
+                      'fax_number')
+    tax_widgets = ('icms',
+                   'iss',
+                   'substitution_icms')
+    proxy_widgets = person_widgets + tax_widgets
+
+
+    def __init__(self, conn, wizard, model, previous):
+        self.param = sysparam(conn)
+        self.model_type = Person
+        WizardEditorStep.__init__(self, conn, wizard, model, previous)
+        self._setup_widgets()
+
+    def _setup_widgets(self):
+        self.title_label.set_size('large')
+        self.title_label.set_bold(True)
+
+    def _update_system_parameters(self, company):
+        icms = self.tax_proxy.model.icms
+        self.param.update_parameter('ICMS_TAX', unicode(icms))
+
+        iss = self.tax_proxy.model.iss
+        self.param.update_parameter('ISS_TAX', unicode(iss))
+
+        substitution = self.tax_proxy.model.substitution_icms
+        self.param.update_parameter('SUBSTITUTION_TAX',
+                                    unicode(substitution))
+
+        address = company.person.get_main_address()
+        if not address:
+            raise StoqlibError("You should have an address defined at "
+                               "this point")
+
+        city = address.city_location.city
+        self.param.update_parameter('CITY_SUGGESTED', city)
+
+        country = address.city_location.country
+        self.param.update_parameter('COUNTRY_SUGGESTED', country)
+
+        state = address.city_location.state
+        self.param.update_parameter('STATE_SUGGESTED', state)
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+        self.name.grab_focus()
+
+    def next_step(self):
+        branch = self.param.MAIN_COMPANY
+        self._update_system_parameters(branch)
+        conn = self.wizard.get_connection()
+        return DeviceSettingsStep(conn, self.wizard, self.model, self)
+
+    def setup_proxies(self):
+        widgets = BranchSettingsStep.person_widgets
+        self.person_proxy = self.add_proxy(self.model, widgets)
+
+        widgets = BranchSettingsStep.tax_widgets
+        iss = Decimal(self.param.ISS_TAX)
+        icms = Decimal(self.param.ICMS_TAX)
+        substitution = Decimal(self.param.SUBSTITUTION_TAX)
+        model = Settable(iss=iss, icms=icms,
+                         substitution_icms=substitution)
+        self.tax_proxy = self.add_proxy(model, widgets)
+
+    def setup_slaves(self):
+        from stoqlib.gui.slaves.addressslave import AddressSlave
+        address = self.model.get_main_address()
+        slave = AddressSlave(self.conn, self.model, address)
+        self.attach_slave("address_holder", slave)
+
+class DeviceSettingsStep(BaseWizardStep):
+    gladefile = 'DeviceSettingsStep'
+
+    def __init__(self, conn, wizard, station, previous):
+        BaseWizardStep.__init__(self, conn, wizard, previous=previous)
+        self._setup_widgets()
+        self._setup_slaves(station)
+
+    def _setup_widgets(self):
+        self.title_label.set_size('large')
+        self.title_label.set_bold(True)
+
+    def _setup_slaves(self, station):
+        from stoqlib.gui.slaves.devicesslave import DeviceSettingsDialogSlave
+        slave = DeviceSettingsDialogSlave(self.conn, station=self.wizard.station)
+        self.attach_slave("devices_holder", slave)
+
+    #
+    # WizardStep hooks
+    #
+
+    def post_init(self):
+        self.register_validate_function(self.wizard.refresh_next)
+        self.force_validation()
+
+    def has_next_step(self):
+        return False
 
 
 #
