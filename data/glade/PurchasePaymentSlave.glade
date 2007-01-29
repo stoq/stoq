@@ -60,7 +60,7 @@
                                 </child>
                                 <child>
                                     <widget class="ProxySpinButton" id="intervals">
-                                        <property name="adjustment">0 0 100 1 10 0</property>
+                                        <property name="adjustment">0 1 100 1 10 0</property>
                                         <property name="data_type">int</property>
                                         <property name="is_focus">True</property>
                                         <property name="model_attribute">intervals</property>
