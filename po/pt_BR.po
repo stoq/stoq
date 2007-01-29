@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-29 15:17-0200\n"
+"POT-Creation-Date: 2007-01-29 15:40-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -2765,7 +2765,7 @@ msgstr "resultados"
 #: ../stoqlib/gui/base/searchbar.py:494 ../stoqlib/gui/base/searchbar.py:500
 #, python-format
 msgid "%d %s"
-msgstr "Procurar %s"
+msgstr "%d %s"
 
 #: ../stoqlib/gui/base/searchbar.py:496
 #, python-format
