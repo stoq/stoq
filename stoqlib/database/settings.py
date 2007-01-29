@@ -162,7 +162,16 @@ class DatabaseSettings(object):
         Checks if the database specified in the settings exists
         @return: if the database exists
         """
-        conn = self.get_default_connection()
+        try:
+            conn = self.get_default_connection()
+        except OperationalError, e:
+            msg = e.args[0]
+            details = None
+            if ';' in msg:
+                msg, details = msg.split(';')
+            msg = msg.replace('\n', '').strip()
+            details = details.replace('\n', '').strip()
+            raise DatabaseError('Database Error:\n%s' % msg, details)
         retval = conn.databaseExists(self.dbname)
         conn.close()
         return retval
