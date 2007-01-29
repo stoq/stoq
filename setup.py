@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005, 2006, 2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -29,6 +29,8 @@
 
 
 PSYCOPG_REQUIRED = [2, 0, 5]
+KIWI_REQUIRED = (1, 9, 12)
+STOQDRIVERS_REQUIRED = (0, 5)
 
 def psycopg_check(mod):
     version = mod.__version__.split(' ', 1)[0]
@@ -37,7 +39,7 @@ def psycopg_check(mod):
 dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                  'http://www.zope.org/Products/ZopeInterface',
                  None),
-                ('kiwi', 'kiwi', (1, 9, 11),
+                ('kiwi', 'kiwi', KIWI_REQUIRED,
                  'http://www.async.com.br/projects/kiwi/',
                  lambda x: x.kiwi_version),
                 ('Gazpacho', 'gazpacho', '0.6.6',
@@ -46,7 +48,7 @@ dependencies = [('ZopeInterface', 'zope.interface', '3.0',
                 ('Psycopg', 'psycopg2', PSYCOPG_REQUIRED,
                  'http://www.initd.org/projects/psycopg2',
                  psycopg_check),
-                ('Stoqdrivers', 'stoqdrivers', (0, 4),
+                ('Stoqdrivers', 'stoqdrivers', STOQDRIVERS_REQUIRED,
                  'http://www.stoq.com.br',
                  lambda x: x.__version__),
                 ('Python Imaging Library (PIL)', 'PIL', '1.1.5',
