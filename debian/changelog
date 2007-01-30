@@ -1,3 +1,9 @@
+stoqlib (0.8.9-1) dapper; urgency=low
+
+  * New release. Bump Kiwi requirement to 1.9.12 and stoqdrivers to 0.5.0
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 30 Jan 2007 17:30:30 -0200
+
 stoqlib (0.8.2-3) dapper; urgency=low
 
   * Update swedish translation so the comboentry works
