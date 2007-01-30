@@ -81,10 +81,9 @@ class DatabaseSettings(object):
         authority = '%s:%s@%s:%s' % (
             self.username, password, self.address, self.port)
         if dbname is None:
-            # template1 is a special database which is always present in 7.4
-            # and later which we current depend on. When we upgrade the
-            # dependency to 8.1 we can switch this to `postgres'
-            dbname = 'template1'
+            # postgres is a special database which is always present,
+            # it was added in 8.1 which is thus our requirement'
+            dbname = 'postgres'
 
         return '%s://%s/%s' % (self.rdbms, authority, dbname)
 
