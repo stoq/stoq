@@ -1,3 +1,9 @@
+stoq (0.8.9-1) dapper; urgency=low
+
+  * New release. Bump requirement of stoqlib.
+
+ -- Johan Dahlin <jdahlin@async.com.br>  Tue, 30 Jan 2007 17:33:54 -0200
+
 stoq (0.8.2-1) dapper; urgency=low
 
   * New release
