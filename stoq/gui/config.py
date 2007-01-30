@@ -43,6 +43,7 @@ Current flow of the database steps:
 
 import gettext
 from decimal import Decimal
+import os
 import socket
 
 import gtk
@@ -78,6 +79,8 @@ _ = gettext.gettext
 # Wizard Steps
 #
 
+(TRUST_AUTHENTICATION,
+ PASSWORD_AUTHENTICATION) = range(2)
 
 class DatabaseSettingsStep(WizardEditorStep):
     gladefile = 'DatabaseSettingsStep'
@@ -87,9 +90,6 @@ class DatabaseSettingsStep(WizardEditorStep):
                      'username',
                      'password',
                      'dbname')
-
-    (TRUST_AUTHENTICATION,
-     PASSWORD_AUTHENTICATION) = range(2)
 
     authentication_types = {TRUST_AUTHENTICATION: _("Trust"),
                             PASSWORD_AUTHENTICATION: _("Needs Password")}
@@ -109,7 +109,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         if not self.authentication_items:
             return
         selected = self.authentication_type.get_selected_data()
-        need_password = selected == self.PASSWORD_AUTHENTICATION
+        need_password = selected == PASSWORD_AUTHENTICATION
         self.password.set_sensitive(need_password)
         self.passwd_label.set_sensitive(need_password)
 
@@ -186,7 +186,35 @@ class DatabaseSettingsStep(WizardEditorStep):
 
         return True
 
+    def _setup_pgpass(self):
+        # There's no way to pass in the password to psql, so we need
+        # to setup a ~/.pgpass where we store the password entered here
+        pgpass = os.environ.get('PGPASSFILE', os.path.join(
+            os.environ['HOME'], '.pgpass'))
+
+        if os.path.exists(pgpass):
+            lines = [line[:-1] for line in open(pgpass)]
+        else:
+            lines = []
+
+        line = '%s:%s:%s:%s:%s' % (self.model.address, self.model.port,
+                                   self.model.dbname,
+                                   self.model.username, self.model.password)
+        if line in lines:
+            return
+
+        lines.append(line)
+        open(pgpass, 'w').write('\n'.join(lines))
+        os.chmod(pgpass, 0600)
+
     def next_step(self):
+        # At this point all the data is validated and it's guaranteed that
+        # we can create a connection to postgres.
+
+        # Save password if using password authentication
+        if self.authentication_type.get_selected() == PASSWORD_AUTHENTICATION:
+            self._setup_pgpass()
+
         self.wizard.install_default()
 
         setup(self.wizard.config, register_station=False, check_schema=False)
