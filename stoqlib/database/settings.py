@@ -61,7 +61,7 @@ class DatabaseSettings(object):
         self.rdbms = rdbms
         if address is None:
             address = os.environ.get('PGHOST', 'localhost')
-        self.address = address 
+        self.address = address
         self.port = port
         self.dbname = dbname
         if not username:
