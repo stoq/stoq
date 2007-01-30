@@ -133,7 +133,8 @@ def _initialize(options):
     _check_dependencies()
     _setup_dialogs()
     log.debug('reading configuration')
-    config = StoqConfig(filename=options.filename)
+    config = StoqConfig()
+    config.load(options.filename)
     config_dir = config.get_config_directory()
 
     wizard = False

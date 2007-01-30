@@ -151,8 +151,7 @@ class DatabaseSettingsStep(WizardEditorStep):
     #
 
     def create_model(self, conn):
-        db_settings = DatabaseSettings()
-        self.wizard_model.db_settings = db_settings
+        self.wizard_model.db_settings = db_settings = DatabaseSettings()
         return db_settings
 
     def post_init(self):
@@ -215,7 +214,7 @@ class DatabaseSettingsStep(WizardEditorStep):
         if self.authentication_type.get_selected() == PASSWORD_AUTHENTICATION:
             self._setup_pgpass()
 
-        self.wizard.install_default()
+        self.wizard.config.load_settings(self.wizard_model.db_settings)
 
         setup(self.wizard.config, register_station=False, check_schema=False)
 
@@ -521,7 +520,7 @@ class FirstTimeConfigWizard(BaseWizard):
 
     @argcheck(StoqConfig)
     def __init__(self, config):
-        self.config = config
+        self.config = StoqConfig()
         self._conn = None
         self.station = None
         self.model = Settable(db_settings=None, stoq_user_data=None)
@@ -535,9 +534,6 @@ class FirstTimeConfigWizard(BaseWizard):
     def get_connection(self):
         return self._conn
 
-    def install_default(self):
-        self.config.install_default(self.model.db_settings)
-
     #
     # WizardStep hooks
     #
@@ -545,18 +541,14 @@ class FirstTimeConfigWizard(BaseWizard):
     def finish(self):
         self._conn.commit(close=True)
 
+        # Write configuration to disk
+        self.config.flush()
+
         self.retval = self.model
         self.close()
 
     def cancel(self):
         if self._conn:
             self._conn.close()
-
-        # XXX: Find out when the file was installed and only try to
-        #      remove it if it really was.
-        try:
-            self.config.remove()
-        except IOError:
-            pass
 
         BaseWizard.cancel(self)
