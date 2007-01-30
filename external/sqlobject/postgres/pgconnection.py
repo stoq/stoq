@@ -216,6 +216,11 @@ class PostgresConnection(DBAPI):
             name)
         return res[0] == 1
 
+    def dbVersion(self):
+        version_string = self.queryOne('SELECT VERSION();')[0]
+        version = version_string.split(' ', 2)[1]
+        return tuple(map(int, version.split('.')))
+
     def addColumn(self, tableName, column):
         self.query('ALTER TABLE %s ADD COLUMN %s' %
                    (tableName,
