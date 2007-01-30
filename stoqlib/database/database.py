@@ -87,9 +87,11 @@ def execute_sql(filename):
     log.info("Executing SQL script %s" % filename)
 
     if settings.rdbms == 'postgres':
-        cmd = ("psql -n -h %(address)s -p %(port)s %(dbname)s -q "
+        cmd = ("psql -n -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s -q "
                "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
             address=settings.address,
+            username=settings.username,
             port=settings.port,
             dbname=settings.dbname,
             schema='-')
