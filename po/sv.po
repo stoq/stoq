@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoqlib 0.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-29 15:19-0200\n"
+"POT-Creation-Date: 2007-01-30 17:02-0200\n"
 "PO-Revision-Date: 2006-08-25 16:15-0300\n"
 "Last-Translator: Johan Dahlin <jdahlin@async.com.br>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -28,16 +28,16 @@ msgstr ""
 "Tabellen `%s' existerar inte.\n"
 "Rådfråga din databasadministratör för att lösa detta problemet."
 
-#: ../stoq/main.py:158
+#: ../stoq/main.py:159
 msgid "Could not open database config file"
 msgstr "Kunda inte öppna databasekonfigureringsfilen"
 
-#: ../stoq/main.py:159
+#: ../stoq/main.py:160
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 
-#: ../stoq/main.py:168
+#: ../stoq/main.py:169
 msgid "Could not connect to database"
 msgstr "Kunde inte ansluta till databasen"
 
@@ -109,71 +109,41 @@ msgstr ""
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/config.py:201 ../data/glade/AdminPasswordStep.glade.h:1
-msgid "<b>Administrator Account Creation</b>"
-msgstr ""
-
-#: ../stoq/gui/config.py:204
-#, python-format
-msgid ""
-"I'm adding a user called `%s' which will have administrator privilegies.\n"
-"\n"
-"To be able to create other users you need to login with this user in the "
-"admin application and create them."
-msgstr ""
-
-#: ../stoq/gui/config.py:263
-#, python-format
-msgid ""
-"This machine which has the name <b>%s</b> will be registered so it can be "
-"used to access the system."
-msgstr ""
-
-#: ../stoq/gui/config.py:284
-#, python-format
-msgid ""
-"There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
-"the password for the user <b>%s</b> to continue the installation: "
-msgstr ""
-
-#: ../stoq/gui/config.py:291
-msgid "<b>Administrator Account</b>"
-msgstr ""
-
-#: ../stoq/gui/config.py:302
-msgid "The password supplied is not valid."
-msgstr ""
-
-#: ../stoq/gui/config.py:322
+#: ../stoq/gui/config.py:94
 msgid "Trust"
 msgstr "Lita"
 
-#: ../stoq/gui/config.py:323
+#: ../stoq/gui/config.py:95
 msgid "Needs Password"
 msgstr "Kräv lösenord"
 
-#: ../stoq/gui/config.py:347
+#: ../stoq/gui/config.py:121
+#, python-format
+msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
+msgstr ""
+
+#: ../stoq/gui/config.py:128
 #, python-format
 msgid ""
 "The specifed database `%s' does not exist.\n"
 "Do you want to create it?"
 msgstr ""
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:131
 msgid "Don't create"
 msgstr ""
 
-#: ../stoq/gui/config.py:350
+#: ../stoq/gui/config.py:131
 #, fuzzy
 msgid "Create"
 msgstr "Kod"
 
-#: ../stoq/gui/config.py:357
+#: ../stoq/gui/config.py:137
 #, python-format
 msgid "User <u>%s</u> has insufficient permissions"
 msgstr ""
 
-#: ../stoq/gui/config.py:358
+#: ../stoq/gui/config.py:138
 #, python-format
 msgid ""
 "The specified user `%s' does not have the required permissions to install "
@@ -182,18 +152,53 @@ msgid ""
 "more information on how to solve this problem."
 msgstr ""
 
-#: ../stoq/gui/config.py:390
+#: ../stoq/gui/config.py:171
 #, python-format
 msgid ""
 "The database address '%s' is invalid. Please fix the address you have set "
 "and try again"
 msgstr ""
 
-#: ../stoq/gui/config.py:393 ../stoq/gui/config.py:394
+#: ../stoq/gui/config.py:174 ../stoq/gui/config.py:175
 msgid "Invalid database address"
 msgstr ""
 
-#: ../stoq/gui/config.py:474
+#: ../stoq/gui/config.py:294 ../data/glade/AdminPasswordStep.glade.h:1
+msgid "<b>Administrator Account Creation</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:297
+#, python-format
+msgid ""
+"I'm adding a user called `%s' which will have administrator privilegies.\n"
+"\n"
+"To be able to create other users you need to login with this user in the "
+"admin application and create them."
+msgstr ""
+
+#: ../stoq/gui/config.py:356
+#, python-format
+msgid ""
+"This machine which has the name <b>%s</b> will be registered so it can be "
+"used to access the system."
+msgstr ""
+
+#: ../stoq/gui/config.py:377
+#, python-format
+msgid ""
+"There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
+"the password for the user <b>%s</b> to continue the installation: "
+msgstr ""
+
+#: ../stoq/gui/config.py:384
+msgid "<b>Administrator Account</b>"
+msgstr ""
+
+#: ../stoq/gui/config.py:395
+msgid "The password supplied is not valid."
+msgstr ""
+
+#: ../stoq/gui/config.py:530
 msgid "Setting up Stoq"
 msgstr ""
 
@@ -229,17 +234,17 @@ msgstr "Kod"
 
 #: ../stoq/gui/inventory/inventory.py:113
 #: ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:98 ../stoq/gui/pos/pos.py:577
+#: ../stoq/gui/receivable/receivable.py:98 ../stoq/gui/pos/pos.py:576
 msgid "Description"
 msgstr "Beskrivning"
 
 #: ../stoq/gui/inventory/inventory.py:117
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:581
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:580
 msgid "Quantity"
 msgstr "Antal"
 
 #: ../stoq/gui/inventory/inventory.py:119
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:584
+#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:583
 msgid "Unit"
 msgstr ""
 
@@ -427,7 +432,7 @@ msgid "Items Quantity"
 msgstr "Antal"
 
 #: ../stoq/gui/sales/sales.py:172 ../stoq/gui/till/till.py:273
-#: ../stoq/gui/pos/pos.py:586
+#: ../stoq/gui/pos/pos.py:585
 msgid "Total"
 msgstr "Totalt"
 
@@ -598,11 +603,11 @@ msgstr ""
 msgid "Try Again"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:572
 msgid "Reference"
 msgstr ""
 
-#: ../stoq/gui/pos/pos.py:579
+#: ../stoq/gui/pos/pos.py:578
 msgid "Price"
 msgstr "Pris"
 
