@@ -210,8 +210,8 @@ dbusername=%(DBUSERNAME)s"""
         self._config.set('Database', 'dbname', settings.dbname)
         self._config.set('Database', 'testdb', settings.dbname)
         self._config.set('Database', 'dbusername', settings.username)
+        self.store_password(settings.password)
         self._settings = settings
-
 
     def flush(self):
         """
