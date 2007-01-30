@@ -114,7 +114,16 @@ class DatabaseSettingsStep(WizardEditorStep):
         self.passwd_label.set_sensitive(need_password)
 
     def _create_database(self, db_settings):
-        # First, ask the user if he really wants to create the database,
+        # First check the version
+        conn = db_settings.get_default_connection()
+        version = conn.dbVersion()
+        if version < (8, 1):
+            info(_("Stoq requires PostgresSQL 8.1 or later, but %s found") %
+                 ".".join(map(str, version)))
+            conn.close()
+            return False
+
+        # Secondly, ask the user if he really wants to create the database,
         dbname = db_settings.dbname
         if yesno(_("The specifed database `%s' does not exist.\n"
                    "Do you want to create it?") % dbname,
@@ -122,8 +131,7 @@ class DatabaseSettingsStep(WizardEditorStep):
                  _("Don't create"), _("Create")):
             return False
 
-        # Secondly, verify that the user has permission to create the database
-        conn = db_settings.get_default_connection()
+        # Thirdly, verify that the user has permission to create the database
         if not user_has_usesuper(conn):
             username = db_settings.username
             info(_("User <u>%s</u> has insufficient permissions") % username,
