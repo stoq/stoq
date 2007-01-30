@@ -27,13 +27,12 @@
 
 import binascii
 import gettext
-import optparse
 import os
+import optparse
 from ConfigParser import SafeConfigParser
 
 from kiwi.argcheck import argcheck
 from kiwi.component import provide_utility
-from kiwi.environ import environ, EnvironmentError
 from stoqlib.database.interfaces import IDatabaseSettings
 from stoqlib.database.settings import DEFAULT_RDBMS, DatabaseSettings
 from stoqlib.exceptions import (FilePermissionError, ConfigError,
@@ -84,30 +83,15 @@ dbusername=%(DBUSERNAME)s"""
     domain = 'stoq'
     datafile = 'data'
 
-    def __init__(self, filename=None):
-        if not filename:
-            filename = self._get_config_file()
-
+    def __init__(self):
         self._config = SafeConfigParser()
-
-        if filename:
-            if not self._open_config(filename):
-                filename = None
-
-        self._filename = filename
+        self._filename = None
+        self._settings = None
 
     def _get_config_file(self):
         filename = self.domain + '.conf'
         configdir = self.get_config_directory()
-        standard = os.path.join(configdir, filename)
-        if os.path.exists(standard):
-            return standard
-
-        try:
-            conf_file = environ.find_resource('config', filename)
-        except EnvironmentError, e:
-            return
-        return conf_file
+        return os.path.join(configdir, filename)
 
     def _open_config(self, filename):
         if not os.path.exists(filename):
@@ -192,11 +176,52 @@ dbusername=%(DBUSERNAME)s"""
         if not self._config.has_section('Database'):
             self._config.add_section('Database')
 
+    def load(self, filename=None):
+        """
+        Loads the data from a configuration file, if filename is
+        not specified the default one will be loaded
+        @param filename: filename
+        """
+        if not filename:
+            filename = self._get_config_file()
+
+        if filename:
+            if not self._open_config(filename):
+                filename = None
+
+        self._filename = filename
+
+    @argcheck(DatabaseSettings)
+    def load_settings(self, settings):
+        """
+        Load data from a DatabaseSettings object
+        @param settings: the settings object
+        """
+        for section in StoqConfig.sections:
+            if not self._config.has_section(section):
+                self._config.add_section(section)
+
+        self._config.set('General', 'logfile',
+                         os.path.join(os.environ['HOME'], StoqConfig.domain,
+                                      'application.log'))
+        self._config.set('Database', 'rdbms', StoqConfig.rdbms)
+        self._config.set('Database', 'address', settings.address)
+        self._config.set('Database', 'port', str(settings.port))
+        self._config.set('Database', 'dbname', settings.dbname)
+        self._config.set('Database', 'testdb', settings.dbname)
+        self._config.set('Database', 'dbusername', settings.username)
+        self._settings = settings
+
+
     def flush(self):
         """
         Writes the current configuration data to disk.
         """
-        fd = open(self._filename, 'w')
+        if not self._filename:
+            self._filename = self._get_config_file()
+        filename = self._filename
+
+        fd = open(filename, 'w')
         self._config.write(fd)
         fd.close()
 
@@ -208,26 +233,6 @@ dbusername=%(DBUSERNAME)s"""
 
     def get_config_directory(self):
         return os.path.join(os.getenv('HOME'), '.' + self.domain)
-
-    @argcheck(DatabaseSettings)
-    def install_default(self, config_data):
-        password = config_data.password
-
-        self.store_password(password)
-        configdir = self.get_config_directory()
-        filename = os.path.join(configdir, StoqConfig.domain + '.conf')
-        fd = open(filename, 'w')
-        config_dict = dict(DOMAIN=StoqConfig.domain,
-                           RDBMS=StoqConfig.rdbms,
-                           PORT=config_data.port,
-                           ADDRESS=config_data.address,
-                           DBNAME=config_data.dbname,
-                           TESTDB=config_data.dbname,
-                           DBUSERNAME=config_data.username)
-        fd.write(StoqConfig.config_template % config_dict)
-        fd.close()
-        self._config.read(filename)
-        self._filename = filename
 
     def use_test_database(self):
         self._config.set('Database', 'dbname',
@@ -281,16 +286,20 @@ dbusername=%(DBUSERNAME)s"""
         return db_settings.get_connection_uri()
 
     def get_settings(self):
-        rdbms = self._get_rdbms_name()
-        dbname = self._get_option('dbname', section='Database')
+        if not self._settings:
+            rdbms = self._get_rdbms_name()
+            dbname = self._get_option('dbname', section='Database')
 
-        if self._has_option('dbusername', section='Database'):
-            username = self._get_option('dbusername', section='Database')
+            if self._has_option('dbusername', section='Database'):
+                username = self._get_option('dbusername', section='Database')
+            else:
+                username = getlogin()
+            settings = DatabaseSettings(
+                rdbms, self._get_address(), self._get_port(),
+                dbname, username, self.get_password())
         else:
-            username = getlogin()
-        return DatabaseSettings(
-            rdbms, self._get_address(), self._get_port(),
-            dbname, username, self.get_password())
+            settings = self._settings
+        return settings
 
     @argcheck(optparse.Values)
     def set_from_options(self, options):

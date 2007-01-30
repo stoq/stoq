@@ -135,7 +135,8 @@ def main(args):
         if not os.path.exists(filename):
             raise SystemExit("No such a file or directory: %s" % filename)
 
-    config = StoqConfig(filename=filename)
+    config = StoqConfig()
+    config.load(filename)
     if not options.dbname:
         config.use_test_database()
 
