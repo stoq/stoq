@@ -539,7 +539,7 @@ class POSApp(AppWindow):
         if self.param.CONFIRM_SALES_ON_TILL:
             return
 
-        self._coupon.add_item(sellable_item)
+        self._coupon.remove_item(sellable_item)
 
     #
     # AppWindow Hooks
