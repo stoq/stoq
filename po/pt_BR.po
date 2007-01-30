@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-01-29 15:16-0200\n"
+"POT-Creation-Date: 2007-01-30 17:02-0200\n"
 "PO-Revision-Date: 2006-11-28 10:49-0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -44,17 +44,17 @@ msgstr ""
 "Tabela `%s' não existe.\n"
 "Consulte o administrador da base de dados para resolver."
 
-#: ../stoq/main.py:158
+#: ../stoq/main.py:159
 msgid "Could not open database config file"
 msgstr "impossível abrir o arquivo de configuração do banco de dados"
 
-#: ../stoq/main.py:159
+#: ../stoq/main.py:160
 #, python-format
 msgid "Invalid config file settings, got error '%s', of type '%s'"
 msgstr ""
 "Dados inválidos do arquivo de configuração, obtido erro '%s', do tipo '%s'"
 
-#: ../stoq/main.py:168
+#: ../stoq/main.py:169
 msgid "Could not connect to database"
 msgstr "Não foi possível conectar ao banco de dados"
 
@@ -131,11 +131,72 @@ msgstr "Introspectar slave"
 msgid "Stoq - %s"
 msgstr "Stoq - %s"
 
-#: ../stoq/gui/config.py:201 ../data/glade/AdminPasswordStep.glade.h:1
+#: ../stoq/gui/config.py:94
+msgid "Trust"
+msgstr "Confiavel"
+
+#: ../stoq/gui/config.py:95
+msgid "Needs Password"
+msgstr "Necessita de senha:"
+
+#: ../stoq/gui/config.py:121
+#, python-format
+msgid "Stoq requires PostgresSQL 8.1 or later, but %s found"
+msgstr "Stoq requer PostgresSQL 8.1 ou posterior, mas %s encontrado"
+
+#: ../stoq/gui/config.py:128
+#, python-format
+msgid ""
+"The specifed database `%s' does not exist.\n"
+"Do you want to create it?"
+msgstr ""
+"A base de dados especificada `%s' não existe.\n"
+"Você deseja cria-la?"
+
+#: ../stoq/gui/config.py:131
+msgid "Don't create"
+msgstr "Não criar"
+
+#: ../stoq/gui/config.py:131
+msgid "Create"
+msgstr "Criar"
+
+#: ../stoq/gui/config.py:137
+#, python-format
+msgid "User <u>%s</u> has insufficient permissions"
+msgstr "Usuário <u>%s</u> possui permissões insuficientes"
+
+#: ../stoq/gui/config.py:138
+#, python-format
+msgid ""
+"The specified user `%s' does not have the required permissions to install "
+"Stoq.\n"
+"The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
+"more information on how to solve this problem."
+msgstr ""
+"O usuário especificado `%s' não tem as permissões requeridas para instalar o "
+"Stoq.\n"
+"O usuário PostgreSQL deve ser um super-usuário. Consulte a documentação do "
+"Stoq para maiores informações sobre como resolver esse problema."
+
+#: ../stoq/gui/config.py:171
+#, python-format
+msgid ""
+"The database address '%s' is invalid. Please fix the address you have set "
+"and try again"
+msgstr ""
+"O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
+"que você definiu:"
+
+#: ../stoq/gui/config.py:174 ../stoq/gui/config.py:175
+msgid "Invalid database address"
+msgstr "Endereço do banco de dados inválido"
+
+#: ../stoq/gui/config.py:294 ../data/glade/AdminPasswordStep.glade.h:1
 msgid "<b>Administrator Account Creation</b>"
 msgstr "<b>Criação da Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:204
+#: ../stoq/gui/config.py:297
 #, python-format
 msgid ""
 "I'm adding a user called `%s' which will have administrator privilegies.\n"
@@ -149,7 +210,7 @@ msgstr ""
 "Para estar apto a criar outros usuários você precisa logar com este usuário "
 "na aplicação 'Administrativo' e cria-los"
 
-#: ../stoq/gui/config.py:263
+#: ../stoq/gui/config.py:356
 #, python-format
 msgid ""
 "This machine which has the name <b>%s</b> will be registered so it can be "
@@ -158,7 +219,7 @@ msgstr ""
 "Essa maquina, que possui o nome <b>%s</b>, será registrada, logo, ela poderá "
 "ser utilizada para acessar o sistema."
 
-#: ../stoq/gui/config.py:284
+#: ../stoq/gui/config.py:377
 #, python-format
 msgid ""
 "There is already a database called <b>%s</b> on <b>%s</b>. You must enter "
@@ -167,71 +228,15 @@ msgstr ""
 "Já existe uma base de dados chamada <b>%s</b> em <b>%s</b>. Você deve entrar "
 "com o password para o usuário <b>%s</b> para continuar a instalação:"
 
-#: ../stoq/gui/config.py:291
+#: ../stoq/gui/config.py:384
 msgid "<b>Administrator Account</b>"
 msgstr "<b>Conta do Administrador</b>"
 
-#: ../stoq/gui/config.py:302
+#: ../stoq/gui/config.py:395
 msgid "The password supplied is not valid."
 msgstr "O password fornecido não é válido."
 
-#: ../stoq/gui/config.py:322
-msgid "Trust"
-msgstr "Confiavel"
-
-#: ../stoq/gui/config.py:323
-msgid "Needs Password"
-msgstr "Necessita de senha:"
-
-#: ../stoq/gui/config.py:347
-#, python-format
-msgid ""
-"The specifed database `%s' does not exist.\n"
-"Do you want to create it?"
-msgstr ""
-"A base de dados especificada `%s' não existe.\n"
-"Você deseja cria-la?"
-
-#: ../stoq/gui/config.py:350
-msgid "Don't create"
-msgstr "Não criar"
-
-#: ../stoq/gui/config.py:350
-msgid "Create"
-msgstr "Criar"
-
-#: ../stoq/gui/config.py:357
-#, python-format
-msgid "User <u>%s</u> has insufficient permissions"
-msgstr "Usuário <u>%s</u> possui permissões insuficientes"
-
-#: ../stoq/gui/config.py:358
-#, python-format
-msgid ""
-"The specified user `%s' does not have the required permissions to install "
-"Stoq.\n"
-"The PostgreSQL user must be a superuser. Consult the Stoq documentation for "
-"more information on how to solve this problem."
-msgstr ""
-"O usuário especificado `%s' não tem as permissões requeridas para instalar o "
-"Stoq.\n"
-"O usuário PostgreSQL deve ser um super-usuário. Consulte a documentação do "
-"Stoq para maiores informações sobre como resolver esse problema."
-
-#: ../stoq/gui/config.py:390
-#, python-format
-msgid ""
-"The database address '%s' is invalid. Please fix the address you have set "
-"and try again"
-msgstr ""
-"O endereço da base de dados '%s' é inválido. Por favor corrija o endereço "
-"que você definiu:"
-
-#: ../stoq/gui/config.py:393 ../stoq/gui/config.py:394
-msgid "Invalid database address"
-msgstr "Endereço do banco de dados inválido"
-
-#: ../stoq/gui/config.py:474
+#: ../stoq/gui/config.py:530
 msgid "Setting up Stoq"
 msgstr "Configurando o Stoq"
 
@@ -266,17 +271,17 @@ msgstr "Código"
 
 #: ../stoq/gui/inventory/inventory.py:113
 #: ../stoq/gui/warehouse/warehouse.py:114
-#: ../stoq/gui/receivable/receivable.py:98 ../stoq/gui/pos/pos.py:577
+#: ../stoq/gui/receivable/receivable.py:98 ../stoq/gui/pos/pos.py:576
 msgid "Description"
 msgstr "Descrição"
 
 #: ../stoq/gui/inventory/inventory.py:117
-#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:581
+#: ../stoq/gui/warehouse/warehouse.py:118 ../stoq/gui/pos/pos.py:580
 msgid "Quantity"
 msgstr "Quantidade"
 
 #: ../stoq/gui/inventory/inventory.py:119
-#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:584
+#: ../stoq/gui/warehouse/warehouse.py:120 ../stoq/gui/pos/pos.py:583
 msgid "Unit"
 msgstr "Unidade"
 
@@ -449,7 +454,7 @@ msgid "Items Quantity"
 msgstr "Quantidade de Itens"
 
 #: ../stoq/gui/sales/sales.py:172 ../stoq/gui/till/till.py:273
-#: ../stoq/gui/pos/pos.py:586
+#: ../stoq/gui/pos/pos.py:585
 msgid "Total"
 msgstr "Total"
 
@@ -623,11 +628,11 @@ msgstr ""
 msgid "Try Again"
 msgstr "Tente Novamente"
 
-#: ../stoq/gui/pos/pos.py:573
+#: ../stoq/gui/pos/pos.py:572
 msgid "Reference"
 msgstr "Referência"
 
-#: ../stoq/gui/pos/pos.py:579
+#: ../stoq/gui/pos/pos.py:578
 msgid "Price"
 msgstr "Preço"
 
