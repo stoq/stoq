@@ -539,6 +539,8 @@ class FirstTimeConfigWizard(BaseWizard):
         first_step = DatabaseSettingsStep(self, self.model)
         BaseWizard.__init__(self, None, first_step, self.model,
                             title=self.title)
+        # Disable back until #2771 is solved
+        self.previous_button.hide()
 
     def set_connection(self, conn):
         self._conn = conn
