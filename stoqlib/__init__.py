@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source
+## Copyright (C) 2005, 2006, 2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -33,9 +33,9 @@ FIRST_DB_VERSION = 5
 
 program_name    = "Stoqlib"
 website         = 'http://www.stoq.com.br/'
-version         = "0.8.2.1"
-db_version      = 9
-release_date    = (2006, 10, 11)
+version         = "0.8.9"
+db_version      = 10
+release_date    = (2007, 01, 30)
 
 __all__ = ['library']
 
