@@ -192,7 +192,11 @@ class DatabaseSettingsStep(WizardEditorStep):
             os.environ['HOME'], '.pgpass'))
 
         if os.path.exists(pgpass):
-            lines = [line[:-1] for line in open(pgpass)]
+            lines = []
+            for line in open(pgpass):
+                if line[-1] == '\n':
+                    line = line[:-1]
+                lines.append(line)
         else:
             lines = []
 
