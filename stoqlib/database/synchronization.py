@@ -235,11 +235,12 @@ class SynchronizationService(XMLRPCService):
         log.info('service.sql_prepare()')
         settings = get_utility(IDatabaseSettings)
 
-        CMD = ("psql -n -h %(address)s -p %(port)s %(dbname)s "
-               "--variable ON_ERROR_STOP=")
+        CMD = ("psql -n -h %(address)s -U %(username)s "
+               "-p %(port)s %(dbname)s --variable ON_ERROR_STOP=")
 
         cmd = CMD % dict(
             address=settings.address,
+            username=settings.username,
             port=settings.port,
             dbname=settings.dbname)
 
