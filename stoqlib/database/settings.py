@@ -59,7 +59,9 @@ class DatabaseSettings(object):
                  dbname='stoq', username=None, password=''):
 
         self.rdbms = rdbms
-        self.address = os.environ.get('PGHOST', 'localhost')
+        if address is None:
+            address = os.environ.get('PGHOST', 'localhost')
+        self.address = address 
         self.port = port
         self.dbname = dbname
         if not username:
