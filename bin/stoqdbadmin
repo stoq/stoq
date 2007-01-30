@@ -37,7 +37,8 @@ class StoqCommandHandler:
                      check_schema=True):
         from stoq.lib.configparser import StoqConfig
         from stoq.lib.startup import setup
-        config = StoqConfig(options.filename)
+        config = StoqConfig()
+        config.load(options.filename)
         if create:
             config.create()
         setup(config, options, register_station=register_station,
