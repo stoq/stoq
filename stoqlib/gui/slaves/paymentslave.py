@@ -509,18 +509,31 @@ class BasePaymentMethodSlave(BaseEditorSlave):
     # Kiwi callbacks
     #
 
-    def after_installments_number__value_changed(self, *args):
-        # Call this callback *after* the value changed because we need to
-        # have the same value for the length of the payments list
+    def on_installments_number__changed(self, proxyspinbutton):
+        # Call this callback *on* the value changed because we need to
+        # have the same value for the length of the payments list and
+        # validate the installments_number
         inst_number = self.model.installments_number
+        max = self.method.get_max_installments_number()
+        if inst_number > max:
+            self.installments_number.set_invalid(_("The number of installments "
+                "must be less then %d" % max))
+            self._refresh_next(False)
+            return
         if self.payment_list:
             self.payment_list.update_payment_list(inst_number)
-        self._refresh_next(False)
         has_installments = inst_number > 1
         self.interval_type_combo.set_sensitive(has_installments)
         self.intervals.set_sensitive(has_installments)
+        self._refresh_next(False)
 
-    def after_first_duedate__changed(self, *args):
+    def after_first_duedate__changed(self, proxy_date_entry):
+        select_date = proxy_date_entry.get_date()
+        if select_date is None:
+            return
+        if select_date < datetime.date.today():
+            proxy_date_entry.set_invalid(_("Expected first installment date must be set "
+                "to a future date"))
         self.update_view()
         self._refresh_next(False)
 
