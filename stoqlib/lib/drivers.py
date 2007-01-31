@@ -327,6 +327,8 @@ class CouponPrinter(object):
         trans = new_transaction()
 
         sale = Sale.get_last_confirmed(trans)
+        if not sale:
+            return False
         sale.cancel(sale.create_sale_return_adapter())
 
         trans.commit()
