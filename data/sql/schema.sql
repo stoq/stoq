@@ -1138,41 +1138,6 @@ CREATE TABLE abstract_fiscal_book_entry (
 --
 
 
-CREATE VIEW abstract_stock_view AS
-  --
-  -- This is an abstract view which stores stock informations to other views.
-  -- Available fields are:
-  --     id              - the id of the asellable table
-  --     code            - the product code
-  --     barcode         - the product barcode
-  --     status          - the product status
-  --     stock           - the total amount of stock for a certain product
-  --     branch_id       - the id of the person_adapt_to_branch table
-  --     stock_cost      - the total cost for the given stock
-  --     product_id      - the id of product table
-  --
-  SELECT DISTINCT
-  asellable.id AS id,
-  asellable.code AS code,
-  asellable.barcode AS barcode,
-  asellable.status AS status,
-  abstract_stock_item.quantity + abstract_stock_item.logic_quantity AS stock,
-  abstract_stock_item.branch_id AS branch_id,
-  abstract_stock_item.stock_cost AS stock_cost,
-  product.id AS product_id
-
-     FROM abstract_stock_item, asellable, product,
-     product_adapt_to_sellable, product_stock_item
-
-        LEFT JOIN product_adapt_to_storable
-        ON (product_stock_item.storable_id = product_adapt_to_storable.id)
-
-          WHERE (abstract_stock_item.id = product_stock_item.id
-          AND product.id = product_adapt_to_storable.original_id
-          AND product.id = product_adapt_to_sellable.original_id
-          AND asellable.id = product_adapt_to_sellable.id);
-
-
 CREATE VIEW abstract_product_supplier_view AS
   --
   -- This is an abstract view which stores the main supplier name for all
@@ -1360,15 +1325,15 @@ CREATE VIEW sellable_view AS
   asellable.code AS code,
   asellable.barcode AS barcode,
   asellable.status AS status,
-  sum(abstract_stock_view.stock) AS stock,
-  abstract_stock_view.branch_id AS branch_id,
+  sum(subquery.stock) AS stock,
+  subquery.branch_id AS branch_id,
   asellable.cost AS cost,
   base_sellable_info.price AS price,
   base_sellable_info.is_valid_model AS is_valid_model,
   base_sellable_info.description AS description,
   sellable_unit.description AS unit,
   abstract_product_supplier_view.supplier_name AS supplier_name,
-  abstract_stock_view.product_id AS product_id
+  subquery.product_id AS product_id
 
     FROM base_sellable_info, asellable
 
@@ -1378,11 +1343,27 @@ CREATE VIEW sellable_view AS
       LEFT JOIN sellable_unit
       ON (asellable.unit_id = sellable_unit.id)
 
-      LEFT JOIN abstract_stock_view
-      ON (asellable.id = abstract_stock_view.id)
+      LEFT JOIN (
+         SELECT DISTINCT
+         asellable.id AS id,
+         abstract_stock_item.quantity + abstract_stock_item.logic_quantity AS stock,
+         abstract_stock_item.branch_id AS branch_id,
+         product.id AS product_id
+
+         FROM abstract_stock_item, asellable, product,
+              product_adapt_to_sellable, product_stock_item
+
+            LEFT JOIN product_adapt_to_storable
+            ON (product_stock_item.storable_id = product_adapt_to_storable.id)
+
+               WHERE (abstract_stock_item.id = product_stock_item.id AND
+                      product.id = product_adapt_to_storable.original_id AND 
+                      product.id = product_adapt_to_sellable.original_id AND
+                      asellable.id = product_adapt_to_sellable.id)) AS subquery
+      ON (asellable.id = subquery.id)
 
       LEFT JOIN abstract_product_supplier_view
-      ON (abstract_stock_view.product_id = abstract_product_supplier_view.id)
+      ON (subquery.product_id = abstract_product_supplier_view.id)
 
         WHERE (asellable.base_sellable_info_id =
         base_sellable_info.id AND base_sellable_info.is_valid_model = 't')
@@ -1391,8 +1372,11 @@ CREATE VIEW sellable_view AS
     asellable.barcode, asellable.id,
     asellable.cost, base_sellable_info.price,
     base_sellable_info.description, sellable_unit.description,
-    base_sellable_info.is_valid_model, abstract_stock_view.branch_id,
-    abstract_product_supplier_view.supplier_name, abstract_stock_view.product_id;
+    base_sellable_info.is_valid_model, subquery.branch_id,
+    abstract_product_supplier_view.supplier_name, subquery.product_id;
+
+  
+
 
 --
 -- Stores information about sellables and stock information in all
