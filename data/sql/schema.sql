@@ -1211,28 +1211,6 @@ CREATE VIEW abstract_purchase_product_view AS
             order_id = purchase_order.id;
 
 
-CREATE VIEW abstract_purchase_transporter_view AS
-  --
-  -- Stores information about transporters tied with purchase orders
-  --
-  -- Available fields are:
-  --     id                 - the id of the purchase_order table
-  --     transporter_id     - the id of the person_adapt_to_transporter table
-  --     transporter_name   - the name of the transporter
-  --
-  SELECT DISTINCT
-  purchase_order.id AS id,
-  transporter_id AS transporter_id,
-  person.name AS transporter_name
-    FROM purchase_order
-
-      LEFT JOIN person_adapt_to_transporter
-      ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
-
-      LEFT JOIN person
-      ON (person_adapt_to_transporter.original_id = person.id);
-
-
 CREATE VIEW abstract_purchase_branch_view AS
   --
   -- Stores information about branch companies tied with purchase orders
@@ -1602,8 +1580,8 @@ CREATE VIEW purchase_order_view AS
   purchase_order.freight AS freight,
   purchase_order.surcharge_value AS surcharge_value,
   purchase_order.discount_value AS discount_value,
-  person.name AS supplier_name,
-  abstract_purchase_transporter_view.transporter_name AS transporter_name,
+  supplier_person.name AS supplier_name,
+  transporter_person.name AS transporter_name,
   abstract_purchase_branch_view.branch_name AS branch_name,
   abstract_purchase_product_view.ordered_quantity AS ordered_quantity,
   abstract_purchase_product_view.received_quantity AS received_quantity,
@@ -1614,11 +1592,14 @@ CREATE VIEW purchase_order_view AS
       INNER JOIN person_adapt_to_supplier
       ON (purchase_order.supplier_id = person_adapt_to_supplier.id)
 
-      INNER JOIN person
-      ON (person_adapt_to_supplier.original_id = person.id)
+      INNER JOIN person AS supplier_person
+      ON (person_adapt_to_supplier.original_id = supplier_person.id)
 
-      INNER JOIN abstract_purchase_transporter_view
-      ON (purchase_order.id = abstract_purchase_transporter_view.id)
+      LEFT JOIN person_adapt_to_transporter
+      ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
+
+      LEFT JOIN person AS transporter_person
+      ON (person_adapt_to_transporter.original_id = transporter_person.id)
 
       INNER JOIN abstract_purchase_branch_view
       ON (purchase_order.id = abstract_purchase_branch_view.id)
@@ -1627,6 +1608,7 @@ CREATE VIEW purchase_order_view AS
       ON (purchase_order.id = abstract_purchase_product_view.order_id)
 
         WHERE purchase_order.is_valid_model = 't';
+
 
 --
 -- Stores information about clients.
