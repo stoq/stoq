@@ -1,0 +1,13 @@
+Update stoqlib dependencies:
+  stoqlib/setup.py
+  stoqlib/README
+  stoqlib/debian/control
+  http://wiki.stoq.com.br/wiki/CheckoutSVN
+  /mondo/htdocs/async/project/stoq/dist/install_stoq.py
+
+Bump stoqlib version, date & schema version
+  stoqlib/stoqlib/__init__.py
+
+Copy stoqlib tag
+  svn cp svn://async.com.br/stoqlib/trunk/ \
+         svn://async.com.br/stoqlib/tags/stoqlib-X.Y.Z
