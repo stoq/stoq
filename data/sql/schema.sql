@@ -1162,25 +1162,6 @@ CREATE VIEW abstract_product_supplier_view AS
         WHERE product_supplier_info.is_main_supplier = 't';
 
 
-CREATE VIEW abstract_sales_client_view AS
-  --
-  -- Stores information about clients tied with sales
-  --
-  -- Available fields are:
-  --     id                 - the id of the sale table
-  --     client_id          - the id of the client table
-  --     client_name        - the name of the client
-  --
-  SELECT DISTINCT
-  sale.id AS id, sale.client_id AS client_id, person.name AS client_name
-    FROM sale
-
-      LEFT JOIN person_adapt_to_client
-      ON (sale.client_id = person_adapt_to_client.id)
-
-      LEFT JOIN person
-      ON (person_adapt_to_client.original_id = person.id);
-
 CREATE VIEW abstract_sales_product_view AS
   --
   -- Stores information about clients tied with sales
@@ -1525,15 +1506,12 @@ CREATE VIEW sale_view AS
   sale.confirm_date AS confirm_date,
   sale.cancel_date AS cancel_date,
   sale.notes AS notes,
-  abstract_sales_client_view.client_name AS client_name,
-  abstract_sales_client_view.client_id AS client_id,
+  client_person.name AS client_name,
+  sale.client_id AS client_id,
   abstract_sales_product_view.total AS total,
   abstract_sales_product_view.subtotal AS subtotal,
   abstract_sales_product_view.total_quantity
     FROM sale
-
-      INNER JOIN abstract_sales_client_view
-      ON (sale.id = abstract_sales_client_view.id)
 
       INNER JOIN abstract_sales_product_view
       ON (sale.id = abstract_sales_product_view.sale_id)
@@ -1543,8 +1521,15 @@ CREATE VIEW sale_view AS
 
       INNER JOIN person
       ON (person_adapt_to_sales_person.original_id = person.id)
+      
+      LEFT JOIN person_adapt_to_client
+      ON (sale.client_id = person_adapt_to_client.id)
+
+      LEFT JOIN person AS client_person
+      ON (person_adapt_to_client.original_id = client_person.id)
 
         WHERE sale.is_valid_model = 't';
+
 
 --
 -- Stores information about clients.
