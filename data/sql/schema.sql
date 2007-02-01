@@ -1211,26 +1211,6 @@ CREATE VIEW abstract_purchase_product_view AS
             order_id = purchase_order.id;
 
 
-CREATE VIEW abstract_purchase_branch_view AS
-  --
-  -- Stores information about branch companies tied with purchase orders
-  --
-  -- Available fields are:
-  --     id            - the id of the purchase_order table
-  --     branch_id     - the id of the person_adapt_to_branch table
-  --     branch_name   - the name of the branch
-  --
-  SELECT DISTINCT
-  purchase_order.id AS id, branch_id, person.name AS branch_name
-    FROM purchase_order
-
-      INNER JOIN person_adapt_to_branch
-      ON (purchase_order.branch_id = person_adapt_to_branch.id)
-
-      INNER JOIN person
-      ON (person_adapt_to_branch.original_id = person.id);
-
-
 --
 -- Views
 --
@@ -1582,7 +1562,7 @@ CREATE VIEW purchase_order_view AS
   purchase_order.discount_value AS discount_value,
   supplier_person.name AS supplier_name,
   transporter_person.name AS transporter_name,
-  abstract_purchase_branch_view.branch_name AS branch_name,
+  branch_person.name AS branch_name,
   abstract_purchase_product_view.ordered_quantity AS ordered_quantity,
   abstract_purchase_product_view.received_quantity AS received_quantity,
   abstract_purchase_product_view.subtotal AS subtotal,
@@ -1601,8 +1581,11 @@ CREATE VIEW purchase_order_view AS
       LEFT JOIN person AS transporter_person
       ON (person_adapt_to_transporter.original_id = transporter_person.id)
 
-      INNER JOIN abstract_purchase_branch_view
-      ON (purchase_order.id = abstract_purchase_branch_view.id)
+      INNER JOIN person_adapt_to_branch
+      ON (purchase_order.branch_id = person_adapt_to_branch.id)
+
+      INNER JOIN person AS branch_person
+      ON (person_adapt_to_branch.original_id = branch_person.id)
 
       INNER JOIN abstract_purchase_product_view
       ON (purchase_order.id = abstract_purchase_product_view.order_id)
