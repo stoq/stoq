@@ -1156,9 +1156,17 @@ CREATE TABLE abstract_fiscal_book_entry (
 --     product_id         - the id of the product table
 --     supplier_name      - the supplier name in case the sellable is a
 --                          product
---
 --     branch_id          - the id of person_adapt_to_branch table
 --     stock              - the stock in case the sellable is a product
+--
+--
+--
+-- Callsites:
+--
+--   stoqlib/gui/search/sellablesearch.py
+--   stoqlib/gui/search/productsearch.py
+--   stoqlib/reporting/product.py
+--   stoq/gui/warehouse/warehouse.py
 --
 CREATE VIEW sellable_view AS
    SELECT DISTINCT
@@ -1226,6 +1234,10 @@ CREATE VIEW sellable_view AS
 --
 -- Available fields are: the same fields of sellable_view table.
 --
+-- Callsites:
+--
+--   stoqlib/gui/search/sellablesearch.py
+--
 CREATE VIEW sellable_full_stock_view AS
 
   SELECT DISTINCT
@@ -1254,6 +1266,10 @@ CREATE VIEW sellable_full_stock_view AS
 --
 -- Available fields are: the same fields of sellable_full_stock_view
 --
+-- Callsites:
+--
+--   stoqlib/gui/search/productsearch.py
+--
 CREATE VIEW product_full_stock_view AS
 
   SELECT * FROM sellable_full_stock_view WHERE product_id IS NOT NULL;
@@ -1273,6 +1289,10 @@ CREATE VIEW product_full_stock_view AS
 --     unit               - the unit in case the sellable is not a gift
 --                          certificate
 --     service_id         - the id of the service table
+--
+-- Callsites:
+--
+--   stoqlib/gui/search/servicesearch.py
 --
 CREATE VIEW service_view AS
 
@@ -1316,6 +1336,10 @@ CREATE VIEW service_view AS
 --     on_sale_price      - the sellable price when the item is on sale
 --     description        - the sellable description
 --     giftcertificate_id - the id of giftcertificate table
+--
+-- Callsites:
+--
+--   stoqlib/gui/search/giftcertificatesearch.py
 --
 CREATE VIEW gift_certificate_view AS
 
@@ -1366,6 +1390,18 @@ CREATE VIEW gift_certificate_view AS
 --     discount_value     - the sale discount value
 --     total              - the subtotal - discount + charge
 --     total_quantity     - the items total quantity for the sale
+--
+--  Callsites:
+--   
+--   stoqlib/domain/person.py
+--   stoqlib/gui/search/salesearch.py
+--   stoqlib/gui/slaves/saleslave.py
+--   stoqlib/gui/dialogs/saledetails.p
+--   stoqlib/gui/wizards/salereturnwizard.py
+--   stoqlib/reporting/sale.py
+--   stoq/gui/receivable/receivable.py
+--   stoq/gui/sales/sales.py
+--   stoq/gui/till/till.py
 --
 CREATE VIEW sale_view AS
 
@@ -1424,6 +1460,10 @@ CREATE VIEW sale_view AS
 --    rg_number           - the brazil-specific rg_number attribute
 --    phone_number        - the client phone_number
 --
+-- Callsites:
+--
+--   stoqlib/gui/search/personsearch.py
+--
 CREATE VIEW client_view AS
 
   SELECT DISTINCT
@@ -1468,6 +1508,12 @@ CREATE VIEW client_view AS
 --    received_quantity       - the total quantity received
 --    subtotal                - the order subtotal (sum of product values)
 --    total                   - subtotal - discount_value + surcharge_value
+--
+-- Callsites:
+--
+--   stoqlib/gui/wizards/receivingwizard.py
+--   stoqlib/reporting/purchase.py
+--   stoq/gui/purchase/purchase.py
 --
 CREATE VIEW purchase_order_view AS
 
@@ -1545,6 +1591,10 @@ CREATE VIEW purchase_order_view AS
 --    branch_id           - the id of the person_adapt_to_branch table
 --    payment_group_id    - the id of the abstract_payment_group table
 --
+-- Callsites:
+--
+--   stoqlib/gui/search/fiscalsearch.py
+--
 CREATE VIEW icms_ipi_view AS
 
   SELECT DISTINCT
@@ -1588,6 +1638,10 @@ CREATE VIEW icms_ipi_view AS
 --    drawee_name         - the drawee name
 --    branch_id           - the id of the person_adapt_to_branch table
 --    payment_group_id    - the if of the abstract_payment_group table
+--
+-- Callsites:
+--
+--   stoqlib/gui/search/fiscalsearch.py
 --
 CREATE VIEW iss_view AS
 
@@ -1634,6 +1688,11 @@ CREATE VIEW iss_view AS
 --    closing_date            - the closing_date of the till table
 --    station_name            - the value of name branch_station name column
 --    branch_id               - the id of the person_adapt_to_branch table
+--
+-- Callsites:
+--
+--   stoqlib/domain/till.py
+--   stoqlib/gui/dialogs/tillhistory.py
 --
 
 CREATE VIEW till_entry_and_payment_view AS
