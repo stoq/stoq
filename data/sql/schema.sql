@@ -1181,21 +1181,6 @@ CREATE VIEW abstract_sales_client_view AS
       LEFT JOIN person
       ON (person_adapt_to_client.original_id = person.id);
 
-
-CREATE VIEW abstract_product_item_view AS
-  --
-  -- Stores information about asellable_item objects
-  --
-  -- Available fields are:
-  --     sale_id            - the id of the sale table
-  --     quantity           - the quantity sold for a sellable item
-  --     subtotal           - the subtotal for a sellable item
-  --
-  SELECT
-  sale_id, quantity, quantity * price AS subtotal
-    FROM asellable_item;
-
-
 CREATE VIEW abstract_sales_product_view AS
   --
   -- Stores information about clients tied with sales
@@ -1209,10 +1194,10 @@ CREATE VIEW abstract_sales_product_view AS
   --
   SELECT
   sum(quantity) AS total_quantity,
-  sum(subtotal) AS subtotal,
-  sum(subtotal) - sale.discount_value + sale.surcharge_value AS total,
+  sum(quantity * price) AS subtotal,
+  sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
   sale_id
-    FROM abstract_product_item_view, sale
+    FROM sale, asellable_item AS b
       GROUP BY
         sale_id, sale.discount_value, sale.surcharge_value, sale.id
           HAVING
