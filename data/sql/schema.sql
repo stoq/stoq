@@ -1133,41 +1133,6 @@ CREATE TABLE abstract_fiscal_book_entry (
 -- Views
 --
 
---
--- Abstract Views: do not use them on directly on applications
---
-
-
-CREATE VIEW abstract_product_supplier_view AS
-  --
-  -- This is an abstract view which stores the main supplier name for all
-  -- the products.
-  -- Available fields are:
-  --     id                 - the id of the product table
-  --     supplier_name      - the name of the supplier
-  --
-  SELECT DISTINCT product.id AS id, person.name AS supplier_name
-    FROM product
-
-      LEFT JOIN product_supplier_info
-      ON (product_supplier_info.product_id = product.id)
-
-      INNER JOIN person_adapt_to_supplier
-      ON (person_adapt_to_supplier.id =
-      product_supplier_info.supplier_id)
-
-      INNER JOIN person
-      ON (person.id = person_adapt_to_supplier.original_id)
-
-        WHERE product_supplier_info.is_main_supplier = 't';
-
-
-
-
---
--- Views
---
-
 
 --
 -- Stores information about sellables. Note: This view must be used
@@ -1182,77 +1147,77 @@ CREATE VIEW abstract_product_supplier_view AS
 --     code               - the sellable code
 --     barcode            - the sellable barcode
 --     status             - the sellable status
---     stock              - the stock in case the sellable is a product
---     branch_id          - the if of person_adapt_to_branch table
 --     cost               - the sellable cost
 --     price              - the sellable price
 --     is_valid_model     - the sellable is_valid_model system attribute
 --     description        - the sellable description
 --     unit               - the unit in case the sellable is not a gift
 --                          certificate
+--     product_id         - the id of the product table
 --     supplier_name      - the supplier name in case the sellable is a
 --                          product
---     product_id         - the id of the product table
 --
-
+--     branch_id          - the id of person_adapt_to_branch table
+--     stock              - the stock in case the sellable is a product
+--
 CREATE VIEW sellable_view AS
+   SELECT DISTINCT
+      asellable.id AS id,
+      asellable.code AS code,
+      asellable.barcode AS barcode,
+      asellable.status AS status,
+      asellable.cost AS cost,
+      base_sellable_info.price AS price,
+      base_sellable_info.is_valid_model AS is_valid_model,
+      base_sellable_info.description AS description,
+      sellable_unit.description AS unit,
+      product.id as product_id,
+      supplier_person.name AS supplier_name,
+      abstract_stock_item.branch_id AS branch_id,
+      sum(abstract_stock_item.quantity+abstract_stock_item.logic_quantity) AS stock
 
-  SELECT DISTINCT
-  asellable.id AS id,
-  asellable.code AS code,
-  asellable.barcode AS barcode,
-  asellable.status AS status,
-  sum(subquery.stock) AS stock,
-  subquery.branch_id AS branch_id,
-  asellable.cost AS cost,
-  base_sellable_info.price AS price,
-  base_sellable_info.is_valid_model AS is_valid_model,
-  base_sellable_info.description AS description,
-  sellable_unit.description AS unit,
-  abstract_product_supplier_view.supplier_name AS supplier_name,
-  subquery.product_id AS product_id
-
-    FROM base_sellable_info, asellable
+   FROM base_sellable_info, asellable
 
       LEFT JOIN product_adapt_to_sellable
-      ON (asellable.id = product_adapt_to_sellable.id)
+      ON (product_adapt_to_sellable.id = asellable.id)
 
       LEFT JOIN sellable_unit
-      ON (asellable.unit_id = sellable_unit.id)
+      ON (sellable_unit.id = asellable.unit_id)
 
-      LEFT JOIN (
-         SELECT DISTINCT
-         asellable.id AS id,
-         abstract_stock_item.quantity + abstract_stock_item.logic_quantity AS stock,
-         abstract_stock_item.branch_id AS branch_id,
-         product.id AS product_id
+      LEFT JOIN product
+      ON (product.id = product_adapt_to_sellable.original_id)
 
-         FROM abstract_stock_item, asellable, product,
-              product_adapt_to_sellable, product_stock_item
+      LEFT JOIN product_adapt_to_storable
+      ON (product_adapt_to_storable.original_id = product.id)
 
-            LEFT JOIN product_adapt_to_storable
-            ON (product_stock_item.storable_id = product_adapt_to_storable.id)
+      LEFT JOIN product_supplier_info
+      ON (product_supplier_info.product_id = product.id AND
+          product_supplier_info.is_main_supplier = 't')
 
-               WHERE (abstract_stock_item.id = product_stock_item.id AND
-                      product.id = product_adapt_to_storable.original_id AND 
-                      product.id = product_adapt_to_sellable.original_id AND
-                      asellable.id = product_adapt_to_sellable.id)) AS subquery
-      ON (asellable.id = subquery.id)
+      LEFT JOIN person_adapt_to_supplier
+      ON (person_adapt_to_supplier.id = product_supplier_info.supplier_id)
 
-      LEFT JOIN abstract_product_supplier_view
-      ON (subquery.product_id = abstract_product_supplier_view.id)
+      LEFT JOIN person AS supplier_person
+      ON (supplier_person.id = person_adapt_to_supplier.original_id)
 
-        WHERE (asellable.base_sellable_info_id =
-        base_sellable_info.id AND base_sellable_info.is_valid_model = 't')
+      LEFT JOIN product_stock_item
+      ON (product_stock_item.storable_id = product_adapt_to_storable.id)
 
-    group by asellable.code, asellable.status,
-    asellable.barcode, asellable.id,
-    asellable.cost, base_sellable_info.price,
-    base_sellable_info.description, sellable_unit.description,
-    base_sellable_info.is_valid_model, subquery.branch_id,
-    abstract_product_supplier_view.supplier_name, subquery.product_id;
+      LEFT JOIN abstract_stock_item
+      ON (abstract_stock_item.id = product_stock_item.id)
 
-  
+   WHERE
+        asellable.base_sellable_info_id = base_sellable_info.id AND
+        base_sellable_info.is_valid_model = 't'
+
+   GROUP BY
+        asellable.code, asellable.status,  asellable.barcode, asellable.id, asellable.cost,
+        base_sellable_info.price, base_sellable_info.description, base_sellable_info.is_valid_model,
+        sellable_unit.description, product.id,  supplier_person.name,
+        abstract_stock_item.branch_id
+;
+
+
 
 
 --
