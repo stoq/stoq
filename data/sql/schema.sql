@@ -1162,53 +1162,6 @@ CREATE VIEW abstract_product_supplier_view AS
         WHERE product_supplier_info.is_main_supplier = 't';
 
 
-CREATE VIEW abstract_sales_product_view AS
-  --
-  -- Stores information about clients tied with sales
-  --
-  -- Available fields are:
-  --     sale_id            - the id of the sale table
-  --     total_quantity     - the total_quantity of sold products
-  --     subtotal           - the sale sum of product prices
-  --     total              - the sale total value after applying discounts
-  --                          and charge
-  --
-  SELECT
-  sum(quantity) AS total_quantity,
-  sum(quantity * price) AS subtotal,
-  sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
-  sale_id
-    FROM sale, asellable_item AS b
-      GROUP BY
-        sale_id, sale.discount_value, sale.surcharge_value, sale.id
-          HAVING
-            sale_id = sale.id;
-
-
-CREATE VIEW abstract_purchase_product_view AS
-  --
-  -- Stores information about products tied with purchase orders
-  --
-  -- Available fields are:
-  --     ordered_quantity   - the total ordered products quantity
-  --     received_quantity  - the total quantity of received products
-  --     subtotal           - the purchase sum of product prices
-  --     total              - the purchase total value after applying discounts
-  --                          and charge
-  --     order_id           - the id of purchase_order table
-  --
-  SELECT
-  sum(quantity) AS ordered_quantity,
-  sum(quantity_received) AS received_quantity,
-  sum(cost*quantity) AS subtotal,
-  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total,
-  order_id
-    FROM purchase_item, purchase_order
-      GROUP BY
-        order_id, purchase_order.discount_value, purchase_order.surcharge_value,
-        purchase_order.id
-          HAVING
-            order_id = purchase_order.id;
 
 
 --
@@ -1466,13 +1419,20 @@ CREATE VIEW sale_view AS
   sale.notes AS notes,
   client_person.name AS client_name,
   sale.client_id AS client_id,
-  abstract_sales_product_view.total AS total,
-  abstract_sales_product_view.subtotal AS subtotal,
-  abstract_sales_product_view.total_quantity
+  subquery.total AS total,
+  subquery.subtotal AS subtotal,
+  subquery.total_quantity
     FROM sale
 
-      INNER JOIN abstract_sales_product_view
-      ON (sale.id = abstract_sales_product_view.sale_id)
+      INNER JOIN (SELECT
+          sum(quantity) AS total_quantity,
+          sum(quantity * price) AS subtotal,
+          sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
+          sale_id
+          FROM sale, asellable_item AS b
+          GROUP BY sale_id, sale.discount_value, sale.surcharge_value, sale.id
+          HAVING sale_id = sale.id) AS subquery
+      ON (sale.id = subquery.sale_id)
 
       INNER JOIN person_adapt_to_sales_person
       ON (sale.salesperson_id = person_adapt_to_sales_person.id)
@@ -1563,10 +1523,10 @@ CREATE VIEW purchase_order_view AS
   supplier_person.name AS supplier_name,
   transporter_person.name AS transporter_name,
   branch_person.name AS branch_name,
-  abstract_purchase_product_view.ordered_quantity AS ordered_quantity,
-  abstract_purchase_product_view.received_quantity AS received_quantity,
-  abstract_purchase_product_view.subtotal AS subtotal,
-  abstract_purchase_product_view.total AS total
+  subquery.ordered_quantity AS ordered_quantity,
+  subquery.received_quantity AS received_quantity,
+  subquery.subtotal AS subtotal,
+  subquery.total AS total
     FROM purchase_order
 
       INNER JOIN person_adapt_to_supplier
@@ -1587,8 +1547,19 @@ CREATE VIEW purchase_order_view AS
       INNER JOIN person AS branch_person
       ON (person_adapt_to_branch.original_id = branch_person.id)
 
-      INNER JOIN abstract_purchase_product_view
-      ON (purchase_order.id = abstract_purchase_product_view.order_id)
+      INNER JOIN (SELECT
+         sum(quantity) AS ordered_quantity,
+         sum(quantity_received) AS received_quantity,
+         sum(cost*quantity) AS subtotal,
+         sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total,
+         order_id
+         FROM purchase_item, purchase_order
+         GROUP BY order_id, 
+                  purchase_order.discount_value, 
+                  purchase_order.surcharge_value,
+                  purchase_order.id
+         HAVING order_id = purchase_order.id) AS subquery
+      ON (purchase_order.id = subquery.order_id)
 
         WHERE purchase_order.is_valid_model = 't';
 
