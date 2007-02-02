@@ -1169,6 +1169,7 @@ CREATE TABLE abstract_fiscal_book_entry (
 --   stoq/gui/warehouse/warehouse.py
 --
 CREATE VIEW sellable_view AS
+
    SELECT DISTINCT
       asellable.id AS id,
       asellable.code AS code,
@@ -1219,12 +1220,10 @@ CREATE VIEW sellable_view AS
         base_sellable_info.is_valid_model = 't'
 
    GROUP BY
-        asellable.code, asellable.status,  asellable.barcode, asellable.id, asellable.cost,
-        base_sellable_info.price, base_sellable_info.description, base_sellable_info.is_valid_model,
-        sellable_unit.description, product.id,  supplier_person.name,
-        abstract_stock_item.branch_id
-;
-
+        asellable.code, asellable.status,  asellable.barcode, asellable.id, 
+        asellable.cost, base_sellable_info.price, base_sellable_info.description, 
+        base_sellable_info.is_valid_model, sellable_unit.description, 
+        product.id,  supplier_person.name, abstract_stock_item.branch_id;
 
 
 
@@ -1241,23 +1240,23 @@ CREATE VIEW sellable_view AS
 CREATE VIEW sellable_full_stock_view AS
 
   SELECT DISTINCT
-  sum(stock) AS stock,
-  id,
-  code,
-  barcode,
-  status,
-  0 AS branch_id, cost,
-  price,
-  is_valid_model,
-  description,
-  unit,
-  supplier_name,
-  product_id
+    sum(stock) AS stock,
+    id,
+    code,
+    barcode,
+    status,
+    0 AS branch_id, cost,
+    price,
+    is_valid_model,
+    description,
+    unit,
+    supplier_name,
+    product_id
 
   FROM sellable_view
 
-    GROUP BY code, barcode, status, id, cost, price, is_valid_model,
-    description, unit, supplier_name, product_id;
+  GROUP BY code, barcode, status, id, cost, price, is_valid_model,
+           description, unit, supplier_name, product_id;
 
 
 --
@@ -1272,7 +1271,11 @@ CREATE VIEW sellable_full_stock_view AS
 --
 CREATE VIEW product_full_stock_view AS
 
-  SELECT * FROM sellable_full_stock_view WHERE product_id IS NOT NULL;
+  SELECT * 
+
+  FROM sellable_full_stock_view 
+
+  WHERE product_id IS NOT NULL;
 
 
 --
