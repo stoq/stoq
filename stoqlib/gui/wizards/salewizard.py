@@ -38,8 +38,7 @@ from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.drivers import (print_cheques_for_payment_group,
-                                 check_virtual_printer_for_current_station)
+from stoqlib.lib.drivers import print_cheques_for_payment_group
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -527,11 +526,6 @@ class SalesPersonStep(AbstractSalesPersonStep):
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             self.model.reset_discount_and_surcharge()
 
-    def setup_invoice_number_widgets(self):
-        if not check_virtual_printer_for_current_station(self.conn):
-            self.hide_invoice_number_widgets()
-        self.force_validation()
-
     def on_payment_method_changed(self, slave, method_iface):
         self._update_next_step(method_iface)
 
@@ -568,13 +562,6 @@ class SalesPersonStep(AbstractSalesPersonStep):
 
 class PreOrderSalesPersonStep(AbstractSalesPersonStep):
     """A wizard step used when creating a pre order """
-
-    #
-    # AbstractSalesPersonStep hooks
-    #
-
-    def setup_invoice_number_widgets(self):
-        self.hide_invoice_number_widgets()
 
     #
     # WizardStep hooks

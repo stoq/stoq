@@ -113,13 +113,12 @@ class AbstractSaleWizard(BaseWizard):
 
 class AbstractSalesPersonStep(WizardEditorStep):
     """ An abstract step which allows to define a salesperson, the sale's
-    discount and surcharge as well the invoice number, when it is needed.
+    discount and surcharge, when it is needed.
     """
     gladefile = 'SalesPersonStep'
     model_type = Sale
     proxy_widgets = ('total_lbl',
                      'subtotal_lbl',
-                     'invoice_number',
                      'salesperson_combo')
 
     @argcheck(BaseWizard, StoqlibTransaction, Sale, AbstractPaymentGroup)
@@ -127,7 +126,6 @@ class AbstractSalesPersonStep(WizardEditorStep):
         self.payment_group = payment_group
         WizardEditorStep.__init__(self, conn, wizard, model)
         self.update_discount_and_surcharge()
-        self.setup_invoice_number_widgets()
 
     def _update_totals(self):
         for field_name in ('total_sale_amount', 'sale_subtotal'):
@@ -146,24 +144,11 @@ class AbstractSalesPersonStep(WizardEditorStep):
         return self.pm_slave.get_selected_method()
 
     #
-    # Public API
-    #
-
-    def hide_invoice_number_widgets(self):
-        self.invoice_number.hide()
-        self.invoice_label.hide()
-
-    #
     # Hooks
     #
 
     def update_discount_and_surcharge(self):
         """Update discount and surcharge values when it's needed"""
-
-    def setup_invoice_number_widgets(self):
-        """Perform some operations for invoice number widgets when it's
-        needed
-        """
 
     def on_payment_method_changed(self, slave, method_iface):
         """Overwrite this method when controling the status of finish button
