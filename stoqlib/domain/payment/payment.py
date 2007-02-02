@@ -65,6 +65,18 @@ class Payment(Domain):
                        this payment.
     """
 
+    # Status description
+    # Sale: (PENDING, PAID, CANCELLED)
+    # A payment is created in STATUS_PREVIEW
+    # setup_installments is immediatelly called and the status is modified
+    # to STATUS_PENDING
+    # If you pay with money, status is set to STATUS_PAID
+    # Otherwise it's left as pending until the money is received.
+    # Finally if you cancel the payment (or use a gift certificate),
+    # the status is set to STATUS_CANCELLED
+
+    # Purchase: (PENDING, PAID, REVIEWING, CONFIRMED, CANCELLED)
+    # TODO
     (STATUS_PREVIEW,
      STATUS_PENDING,
      STATUS_PAID,
