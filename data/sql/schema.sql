@@ -1406,34 +1406,28 @@ CREATE VIEW gift_certificate_view AS
 CREATE VIEW sale_view AS
 
   SELECT DISTINCT
-  sale.id AS id,
+  sale_id AS id,
   sale.coupon_id AS coupon_id,
   sale.order_number AS order_number,
   sale.open_date AS open_date,
   sale.close_date AS close_date,
   sale.status AS status,
-  person.name AS salesperson_name,
   sale.surcharge_value AS surcharge_value,
   sale.discount_value AS discount_value,
   sale.confirm_date AS confirm_date,
   sale.cancel_date AS cancel_date,
   sale.notes AS notes,
-  client_person.name AS client_name,
   sale.client_id AS client_id,
-  subquery.total AS total,
-  subquery.subtotal AS subtotal,
-  subquery.total_quantity
+  client_person.name AS client_name,
+  person.name AS salesperson_name,
+  sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
+  sum(quantity * price) AS subtotal,
+  sum(quantity) AS total_quantity
+
     FROM sale
 
-      INNER JOIN (SELECT
-          sum(quantity) AS total_quantity,
-          sum(quantity * price) AS subtotal,
-          sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
-          sale_id
-          FROM sale, asellable_item AS b
-          GROUP BY sale_id, sale.discount_value, sale.surcharge_value, sale.id
-          HAVING sale_id = sale.id) AS subquery
-      ON (sale.id = subquery.sale_id)
+      INNER JOIN asellable_item
+      ON (asellable_item.sale_id = sale_id)
 
       INNER JOIN person_adapt_to_sales_person
       ON (sale.salesperson_id = person_adapt_to_sales_person.id)
@@ -1447,8 +1441,19 @@ CREATE VIEW sale_view AS
       LEFT JOIN person AS client_person
       ON (person_adapt_to_client.original_id = client_person.id)
 
-        WHERE sale.is_valid_model = 't';
+      WHERE sale.is_valid_model = 't'
+ 
+      GROUP BY asellable_item.sale_id, sale.id,
+               sale.surcharge_value, sale.discount_value, 
+               sale.coupon_id, sale.order_number,
+               sale.open_date, sale.close_date,
+               sale.status, sale.confirm_date,
+               sale.cancel_date, sale.notes,
+               sale.client_id,
+               client_person.name,
+               person.name
 
+      HAVING sale_id = sale.id;
 
 --
 -- Stores information about clients.
