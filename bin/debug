@@ -61,6 +61,7 @@ def main(args):
     options, args = parser.parse_args(args)
 
     config = StoqConfig()
+    config.load()
     setup(config, options)
 
     # Namespace
