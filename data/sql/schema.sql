@@ -1187,17 +1187,31 @@ CREATE VIEW sellable_view AS
 
    FROM base_sellable_info, asellable
 
-      LEFT JOIN product_adapt_to_sellable
-      ON (product_adapt_to_sellable.id = asellable.id)
+      -- Sellable unit
 
       LEFT JOIN sellable_unit
       ON (sellable_unit.id = asellable.unit_id)
 
+      -- Product
+
+      LEFT JOIN product_adapt_to_sellable
+      ON (product_adapt_to_sellable.id = asellable.id)
+
       LEFT JOIN product
       ON (product.id = product_adapt_to_sellable.original_id)
 
+      -- Product Stock Item
+
       LEFT JOIN product_adapt_to_storable
       ON (product_adapt_to_storable.original_id = product.id)
+      
+      LEFT JOIN product_stock_item
+      ON (product_stock_item.storable_id = product_adapt_to_storable.id)
+
+      LEFT JOIN abstract_stock_item
+      ON (abstract_stock_item.id = product_stock_item.id)
+
+      -- Product Supplier
 
       LEFT JOIN product_supplier_info
       ON (product_supplier_info.product_id = product.id AND
@@ -1208,12 +1222,6 @@ CREATE VIEW sellable_view AS
 
       LEFT JOIN person AS supplier_person
       ON (supplier_person.id = person_adapt_to_supplier.original_id)
-
-      LEFT JOIN product_stock_item
-      ON (product_stock_item.storable_id = product_adapt_to_storable.id)
-
-      LEFT JOIN abstract_stock_item
-      ON (abstract_stock_item.id = product_stock_item.id)
 
    WHERE
         asellable.base_sellable_info_id = base_sellable_info.id AND
