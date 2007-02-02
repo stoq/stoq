@@ -1539,10 +1539,11 @@ CREATE VIEW purchase_order_view AS
   supplier_person.name AS supplier_name,
   transporter_person.name AS transporter_name,
   branch_person.name AS branch_name,
-  subquery.ordered_quantity AS ordered_quantity,
-  subquery.received_quantity AS received_quantity,
-  subquery.subtotal AS subtotal,
-  subquery.total AS total
+  sum(quantity) AS ordered_quantity,
+  sum(quantity_received) AS received_quantity,
+  sum(cost*quantity) AS subtotal,
+  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total
+
     FROM purchase_order
 
       INNER JOIN person_adapt_to_supplier
@@ -1563,22 +1564,30 @@ CREATE VIEW purchase_order_view AS
       INNER JOIN person AS branch_person
       ON (person_adapt_to_branch.original_id = branch_person.id)
 
-      INNER JOIN (SELECT
-         sum(quantity) AS ordered_quantity,
-         sum(quantity_received) AS received_quantity,
-         sum(cost*quantity) AS subtotal,
-         sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total,
-         order_id
-         FROM purchase_item, purchase_order
-         GROUP BY order_id, 
-                  purchase_order.discount_value, 
-                  purchase_order.surcharge_value,
-                  purchase_order.id
-         HAVING order_id = purchase_order.id) AS subquery
-      ON (purchase_order.id = subquery.order_id)
+      INNER JOIN purchase_item
+      ON (purchase_item.order_id = purchase_order.id)
 
-        WHERE purchase_order.is_valid_model = 't';
+      WHERE purchase_order.is_valid_model = 't'
 
+      GROUP BY purchase_item.order_id,
+               purchase_order.id,
+               purchase_order.status,
+               purchase_order.order_number,
+               purchase_order.open_date,
+               purchase_order.quote_deadline,
+               purchase_order.expected_receival_date,
+               purchase_order.expected_pay_date,
+               purchase_order.receival_date,
+               purchase_order.confirm_date,
+               purchase_order.salesperson_name,
+               purchase_order.freight,
+               purchase_order.surcharge_value,
+               purchase_order.discount_value,
+               supplier_person.name,
+               transporter_person.name,
+               branch_person.name
+
+     HAVING order_id = purchase_order.id;
 
 --
 -- Stores information about clients.
