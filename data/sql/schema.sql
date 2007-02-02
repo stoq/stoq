@@ -1297,30 +1297,25 @@ CREATE VIEW product_full_stock_view AS
 CREATE VIEW service_view AS
 
   SELECT DISTINCT
-  asellable.id AS id,
-  asellable.code AS code,
-  asellable.barcode AS barcode,
-  asellable.status AS status,
-  asellable.cost AS cost,
-  base_sellable_info.price AS price,
-  base_sellable_info.description AS description,
-  sellable_unit.description AS unit,
-  service.id AS service_id
-    FROM asellable
+    asellable.id AS id,
+    asellable.code AS code,
+    asellable.barcode AS barcode,
+    asellable.status AS status,
+    asellable.cost AS cost,
+    base_sellable_info.price AS price,
+    base_sellable_info.description AS description,
+    sellable_unit.description AS unit,
+    service.id AS service_id
 
-      INNER JOIN base_sellable_info
-      ON (asellable.base_sellable_info_id = base_sellable_info.id)
+  FROM base_sellable_info, service_adapt_to_sellable, service, asellable
 
-      INNER JOIN service_adapt_to_sellable
-      ON (asellable.id = service_adapt_to_sellable.id)
+    LEFT JOIN sellable_unit
+    ON (asellable.unit_id = sellable_unit.id)
 
-      INNER JOIN service
-      ON (service.id = service_adapt_to_sellable.original_id)
-
-      LEFT JOIN sellable_unit
-      ON (asellable.unit_id = sellable_unit.id)
-
-        WHERE service.is_valid_model = 't';
+  WHERE service.is_valid_model = 't' AND
+        asellable.base_sellable_info_id = base_sellable_info.id AND
+        asellable.id = service_adapt_to_sellable.id AND
+        service.id = service_adapt_to_sellable.original_id;
 
 
 --
@@ -1344,30 +1339,24 @@ CREATE VIEW service_view AS
 CREATE VIEW gift_certificate_view AS
 
   SELECT DISTINCT
-  asellable.id AS id,
-  asellable.code AS code,
-  asellable.barcode AS barcode,
-  asellable.status AS status,
-  asellable.cost AS cost,
-  base_sellable_info.price AS price,
-  on_sale_info.on_sale_price AS on_sale_price,
-  base_sellable_info.description AS description,
-  gift_certificate.id AS giftcertificate_id
-    FROM asellable
+    asellable.id AS id,
+    asellable.code AS code,
+    asellable.barcode AS barcode,
+    asellable.status AS status,
+    asellable.cost AS cost,
+    base_sellable_info.price AS price,
+    on_sale_info.on_sale_price AS on_sale_price,
+    base_sellable_info.description AS description,
+    gift_certificate.id AS giftcertificate_id
 
-      INNER JOIN base_sellable_info
-      ON (asellable.base_sellable_info_id = base_sellable_info.id)
+  FROM asellable, base_sellable_info, on_sale_info, 
+       gift_certificate_adapt_to_sellable, gift_certificate
 
-      INNER JOIN on_sale_info
-      ON (asellable.on_sale_info_id = on_sale_info.id)
-
-      INNER JOIN gift_certificate_adapt_to_sellable
-      ON (asellable.id = gift_certificate_adapt_to_sellable.id)
-
-      INNER JOIN gift_certificate
-      ON (gift_certificate_adapt_to_sellable.original_id = gift_certificate.id)
-
-        WHERE gift_certificate.is_valid_model = 't';
+  WHERE gift_certificate.is_valid_model = 't' AND
+        asellable.base_sellable_info_id = base_sellable_info.id AND
+        asellable.on_sale_info_id = on_sale_info.id AND
+        asellable.id = gift_certificate_adapt_to_sellable.id AND
+        gift_certificate_adapt_to_sellable.original_id = gift_certificate.id;
 
 --
 -- Stores information about sales
@@ -1406,54 +1395,48 @@ CREATE VIEW gift_certificate_view AS
 CREATE VIEW sale_view AS
 
   SELECT DISTINCT
-  sale_id AS id,
-  sale.coupon_id AS coupon_id,
-  sale.order_number AS order_number,
-  sale.open_date AS open_date,
-  sale.close_date AS close_date,
-  sale.status AS status,
-  sale.surcharge_value AS surcharge_value,
-  sale.discount_value AS discount_value,
-  sale.confirm_date AS confirm_date,
-  sale.cancel_date AS cancel_date,
-  sale.notes AS notes,
-  sale.client_id AS client_id,
-  client_person.name AS client_name,
-  person.name AS salesperson_name,
-  sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
-  sum(quantity * price) AS subtotal,
-  sum(quantity) AS total_quantity
+    sale_id AS id,
+    sale.coupon_id AS coupon_id,
+    sale.order_number AS order_number,
+    sale.open_date AS open_date,
+    sale.close_date AS close_date,
+    sale.status AS status,
+    sale.surcharge_value AS surcharge_value,
+    sale.discount_value AS discount_value,
+    sale.confirm_date AS confirm_date,
+    sale.cancel_date AS cancel_date,
+    sale.notes AS notes,
+    sale.client_id AS client_id,
+    client_person.name AS client_name,
+    person.name AS salesperson_name,
+    sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
+    sum(quantity * price) AS subtotal,
+    sum(quantity) AS total_quantity
 
-    FROM sale
+  FROM asellable_item, person_adapt_to_sales_person, person, sale
+    
+    LEFT JOIN person_adapt_to_client
+    ON (sale.client_id = person_adapt_to_client.id)
 
-      INNER JOIN asellable_item
-      ON (asellable_item.sale_id = sale_id)
+    LEFT JOIN person AS client_person
+    ON (person_adapt_to_client.original_id = client_person.id)
 
-      INNER JOIN person_adapt_to_sales_person
-      ON (sale.salesperson_id = person_adapt_to_sales_person.id)
-
-      INNER JOIN person
-      ON (person_adapt_to_sales_person.original_id = person.id)
-      
-      LEFT JOIN person_adapt_to_client
-      ON (sale.client_id = person_adapt_to_client.id)
-
-      LEFT JOIN person AS client_person
-      ON (person_adapt_to_client.original_id = client_person.id)
-
-      WHERE sale.is_valid_model = 't'
+  WHERE sale.is_valid_model = 't' AND
+        asellable_item.sale_id = sale_id AND
+        sale.salesperson_id = person_adapt_to_sales_person.id AND
+        person_adapt_to_sales_person.original_id = person.id
  
-      GROUP BY asellable_item.sale_id, sale.id,
-               sale.surcharge_value, sale.discount_value, 
-               sale.coupon_id, sale.order_number,
-               sale.open_date, sale.close_date,
-               sale.status, sale.confirm_date,
-               sale.cancel_date, sale.notes,
-               sale.client_id,
-               client_person.name,
-               person.name
+  GROUP BY asellable_item.sale_id, sale.id,
+           sale.surcharge_value, sale.discount_value, 
+           sale.coupon_id, sale.order_number,
+           sale.open_date, sale.close_date,
+           sale.status, sale.confirm_date,
+           sale.cancel_date, sale.notes,
+           sale.client_id,
+           client_person.name,
+           person.name
 
-      HAVING sale_id = sale.id;
+  HAVING sale_id = sale.id;
 
 --
 -- Stores information about clients.
@@ -1472,22 +1455,21 @@ CREATE VIEW sale_view AS
 CREATE VIEW client_view AS
 
   SELECT DISTINCT
-  person.id AS id,
-  person.name AS name,
-  person_adapt_to_client.status AS status,
-  person_adapt_to_individual.cpf AS cpf,
-  person_adapt_to_individual.rg_number As rg_number,
-  person.phone_number AS phone_number,
-  person_adapt_to_client.id AS client_id
-    FROM person
+    person.id AS id,
+    person.name AS name,
+    person_adapt_to_client.status AS status,
+    person_adapt_to_individual.cpf AS cpf,
+    person_adapt_to_individual.rg_number As rg_number,
+    person.phone_number AS phone_number,
+    person_adapt_to_client.id AS client_id
 
-      LEFT JOIN person_adapt_to_individual
-      ON (person.id = person_adapt_to_individual.original_id)
+  FROM person_adapt_to_client, person
 
-      INNER JOIN person_adapt_to_client
-      ON (person.id = person_adapt_to_client.original_id)
+    LEFT JOIN person_adapt_to_individual
+    ON (person.id = person_adapt_to_individual.original_id)
 
-        WHERE person_adapt_to_client.is_valid_model = 't';
+  WHERE person_adapt_to_client.is_valid_model = 't' AND
+        person.id = person_adapt_to_client.original_id;
 
 
 --
@@ -1523,71 +1505,66 @@ CREATE VIEW client_view AS
 CREATE VIEW purchase_order_view AS
 
   SELECT DISTINCT
-  purchase_order.id AS id,
-  purchase_order.status AS status,
-  purchase_order.order_number AS order_number,
-  purchase_order.open_date AS open_date,
-  purchase_order.quote_deadline AS quote_deadline,
-  purchase_order.expected_receival_date AS expected_receival_date,
-  purchase_order.expected_pay_date AS expected_pay_date,
-  purchase_order.receival_date AS receival_date,
-  purchase_order.confirm_date AS confirm_date,
-  purchase_order.salesperson_name AS salesperson_name,
-  purchase_order.freight AS freight,
-  purchase_order.surcharge_value AS surcharge_value,
-  purchase_order.discount_value AS discount_value,
-  supplier_person.name AS supplier_name,
-  transporter_person.name AS transporter_name,
-  branch_person.name AS branch_name,
-  sum(quantity) AS ordered_quantity,
-  sum(quantity_received) AS received_quantity,
-  sum(cost*quantity) AS subtotal,
-  sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total
+    purchase_order.id AS id,
+    purchase_order.status AS status,
+    purchase_order.order_number AS order_number,
+    purchase_order.open_date AS open_date,
+    purchase_order.quote_deadline AS quote_deadline,
+    purchase_order.expected_receival_date AS expected_receival_date,
+    purchase_order.expected_pay_date AS expected_pay_date,
+    purchase_order.receival_date AS receival_date,
+    purchase_order.confirm_date AS confirm_date,
+    purchase_order.salesperson_name AS salesperson_name,
+    purchase_order.freight AS freight,
+    purchase_order.surcharge_value AS surcharge_value,
+    purchase_order.discount_value AS discount_value,
+    supplier_person.name AS supplier_name,
+    transporter_person.name AS transporter_name,
+    branch_person.name AS branch_name,
+    sum(quantity) AS ordered_quantity,
+    sum(quantity_received) AS received_quantity,
+    sum(cost*quantity) AS subtotal,
+    sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total
 
-    FROM purchase_order
+  FROM person_adapt_to_supplier,
+       person AS supplier_person,
+       person_adapt_to_branch,
+       purchase_item,
+       person AS branch_person,
+       purchase_order
+       
+    LEFT JOIN person_adapt_to_transporter
+    ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
 
-      INNER JOIN person_adapt_to_supplier
-      ON (purchase_order.supplier_id = person_adapt_to_supplier.id)
+    LEFT JOIN person AS transporter_person
+    ON (person_adapt_to_transporter.original_id = transporter_person.id)
 
-      INNER JOIN person AS supplier_person
-      ON (person_adapt_to_supplier.original_id = supplier_person.id)
+  WHERE purchase_order.is_valid_model = 't' AND
+        person_adapt_to_supplier.original_id = supplier_person.id AND
+        person_adapt_to_branch.original_id = branch_person.id AND
+        purchase_order.supplier_id = person_adapt_to_supplier.id AND
+        purchase_order.branch_id = person_adapt_to_branch.id AND
+        purchase_item.order_id = purchase_order.id
 
-      LEFT JOIN person_adapt_to_transporter
-      ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
+  GROUP BY purchase_item.order_id,
+           purchase_order.id,
+           purchase_order.status,
+           purchase_order.order_number,
+           purchase_order.open_date,
+           purchase_order.quote_deadline,
+           purchase_order.expected_receival_date,
+           purchase_order.expected_pay_date,
+           purchase_order.receival_date,
+           purchase_order.confirm_date,
+           purchase_order.salesperson_name,
+           purchase_order.freight,
+           purchase_order.surcharge_value,
+           purchase_order.discount_value,
+           supplier_person.name,
+           transporter_person.name,
+           branch_person.name
 
-      LEFT JOIN person AS transporter_person
-      ON (person_adapt_to_transporter.original_id = transporter_person.id)
-
-      INNER JOIN person_adapt_to_branch
-      ON (purchase_order.branch_id = person_adapt_to_branch.id)
-
-      INNER JOIN person AS branch_person
-      ON (person_adapt_to_branch.original_id = branch_person.id)
-
-      INNER JOIN purchase_item
-      ON (purchase_item.order_id = purchase_order.id)
-
-      WHERE purchase_order.is_valid_model = 't'
-
-      GROUP BY purchase_item.order_id,
-               purchase_order.id,
-               purchase_order.status,
-               purchase_order.order_number,
-               purchase_order.open_date,
-               purchase_order.quote_deadline,
-               purchase_order.expected_receival_date,
-               purchase_order.expected_pay_date,
-               purchase_order.receival_date,
-               purchase_order.confirm_date,
-               purchase_order.salesperson_name,
-               purchase_order.freight,
-               purchase_order.surcharge_value,
-               purchase_order.discount_value,
-               supplier_person.name,
-               transporter_person.name,
-               branch_person.name
-
-     HAVING order_id = purchase_order.id;
+  HAVING order_id = purchase_order.id;
 
 --
 -- Stores information about clients.
@@ -1612,31 +1589,26 @@ CREATE VIEW purchase_order_view AS
 CREATE VIEW icms_ipi_view AS
 
   SELECT DISTINCT
-  icms_ipi_book_entry.id AS id,
-  icms_ipi_book_entry.icms_value AS icms_value,
-  icms_ipi_book_entry.ipi_value AS ipi_value,
+    icms_ipi_book_entry.id AS id,
+    icms_ipi_book_entry.icms_value AS icms_value,
+    icms_ipi_book_entry.ipi_value AS ipi_value,
+    abstract_fiscal_book_entry.identifier AS identifier,
+    abstract_fiscal_book_entry.date AS date,
+    abstract_fiscal_book_entry.invoice_number AS invoice_number,
+    abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
+    abstract_fiscal_book_entry.branch_id AS branch_id,
+    abstract_fiscal_book_entry.drawee_id AS drawee_id,
+    abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
+    cfop_data.code AS cfop_code,
+    person.name AS drawee_name
 
-  abstract_fiscal_book_entry.identifier AS identifier,
-  abstract_fiscal_book_entry.date AS date,
-  abstract_fiscal_book_entry.invoice_number AS invoice_number,
-  abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
-  abstract_fiscal_book_entry.branch_id AS branch_id,
-  abstract_fiscal_book_entry.drawee_id AS drawee_id,
-  abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
+  FROM cfop_data, icms_ipi_book_entry, abstract_fiscal_book_entry
 
-  cfop_data.code AS cfop_code,
-  person.name AS drawee_name
+   LEFT JOIN person
+   ON (abstract_fiscal_book_entry.drawee_id = person.id)
 
-    FROM icms_ipi_book_entry
-
-      INNER JOIN abstract_fiscal_book_entry
-      ON (icms_ipi_book_entry.id = abstract_fiscal_book_entry.id)
-
-      INNER JOIN cfop_data
-      ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
-
-      LEFT JOIN person
-      ON (abstract_fiscal_book_entry.drawee_id = person.id);
+  WHERE icms_ipi_book_entry.id = abstract_fiscal_book_entry.id AND 
+        cfop_data.id = abstract_fiscal_book_entry.cfop_id;
 
 
 --
@@ -1660,30 +1632,25 @@ CREATE VIEW icms_ipi_view AS
 CREATE VIEW iss_view AS
 
   SELECT DISTINCT
-  iss_book_entry.id AS id,
-  iss_book_entry.iss_value AS iss_value,
+    iss_book_entry.id AS id,
+    iss_book_entry.iss_value AS iss_value,
+    abstract_fiscal_book_entry.identifier AS identifier,
+    abstract_fiscal_book_entry.date AS date,
+    abstract_fiscal_book_entry.invoice_number AS invoice_number,
+    abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
+    abstract_fiscal_book_entry.branch_id AS branch_id,
+    abstract_fiscal_book_entry.drawee_id AS drawee_id,
+    abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
+    cfop_data.code AS cfop_code,
+    person.name AS drawee_name
 
-  abstract_fiscal_book_entry.identifier AS identifier,
-  abstract_fiscal_book_entry.date AS date,
-  abstract_fiscal_book_entry.invoice_number AS invoice_number,
-  abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
-  abstract_fiscal_book_entry.branch_id AS branch_id,
-  abstract_fiscal_book_entry.drawee_id AS drawee_id,
-  abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
+  FROM iss_book_entry, cfop_data, abstract_fiscal_book_entry
 
-  cfop_data.code AS cfop_code,
-  person.name AS drawee_name
+    LEFT JOIN person
+    ON (abstract_fiscal_book_entry.drawee_id = person.id)
 
-    FROM iss_book_entry
-
-      INNER JOIN abstract_fiscal_book_entry
-      ON (iss_book_entry.id = abstract_fiscal_book_entry.id)
-
-      INNER JOIN cfop_data
-      ON (cfop_data.id = abstract_fiscal_book_entry.cfop_id)
-
-      LEFT JOIN person
-      ON (abstract_fiscal_book_entry.drawee_id = person.id);
+  WHERE iss_book_entry.id = abstract_fiscal_book_entry.id AND
+        cfop_data.id = abstract_fiscal_book_entry.cfop_id;
 
 
 --
@@ -1712,28 +1679,23 @@ CREATE VIEW iss_view AS
 CREATE VIEW till_entry_and_payment_view AS
 
   SELECT DISTINCT
-  till_entry.identifier AS id,
-  till_entry.identifier AS identifier,
-  till_entry.date AS date,
-  till_entry.description AS description,
-  till_entry.value AS value,
-  till_entry.is_initial_cash_amount AS is_initial_cash_amount,
-  till_entry.till_id AS till_id,
-  till.status AS status,
-  till.closing_date AS closing_date,
-  branch_station.name AS station_name,
-  person_adapt_to_branch.id AS branch_id
+    till_entry.identifier AS id,
+    till_entry.identifier AS identifier,
+    till_entry.date AS date,
+    till_entry.description AS description,
+    till_entry.value AS value,
+    till_entry.is_initial_cash_amount AS is_initial_cash_amount,
+    till_entry.till_id AS till_id,
+    till.status AS status,
+    till.closing_date AS closing_date,
+    branch_station.name AS station_name,
+    person_adapt_to_branch.id AS branch_id
 
-  FROM till_entry
-
-    INNER JOIN till
-    ON (till_entry.till_id = till.id)
-
-    INNER JOIN branch_station
-    ON (till.station_id = branch_station.id)
-
-    INNER JOIN person_adapt_to_branch
-    ON (branch_station.branch_id = person_adapt_to_branch.id)
+  FROM till_entry, till, branch_station, person_adapt_to_branch
+  
+  WHERE till_entry.till_id = till.id AND
+    	till.station_id = branch_station.id AND
+    	branch_station.branch_id = person_adapt_to_branch.id
 
   UNION ALL
 
@@ -1750,16 +1712,11 @@ CREATE VIEW till_entry_and_payment_view AS
       branch_station.name AS station_name,
       person_adapt_to_branch.id AS branch_id
 
-      FROM payment
+    FROM payment, till, branch_station, person_adapt_to_branch
 
-        INNER JOIN till
-        ON (payment.till_id = till.id)
-
-        INNER JOIN branch_station
-        ON (till.station_id = branch_station.id)
-
-        INNER JOIN person_adapt_to_branch
-        ON (branch_station.branch_id = person_adapt_to_branch.id);
+    WHERE payment.till_id = till.id AND
+          till.station_id = branch_station.id AND
+          branch_station.branch_id = person_adapt_to_branch.id;
 
 --
 -- Stores information about payments
@@ -1782,16 +1739,11 @@ CREATE VIEW till_fiscal_operations_view AS
     person_adapt_to_branch.id AS branch_id,
     till.status AS status
 
-    FROM payment
+  FROM payment, till, branch_station, person_adapt_to_branch
 
-      INNER JOIN till
-      ON (payment.till_id = till.id)
-
-      INNER JOIN branch_station
-      ON (till.station_id = branch_station.id)
-
-      INNER JOIN person_adapt_to_branch
-      ON (branch_station.branch_id = person_adapt_to_branch.id);
+  WHERE payment.till_id = till.id AND
+        till.station_id = branch_station.id AND
+        branch_station.branch_id = person_adapt_to_branch.id;
 
 --
 -- Finally create the system_table which we use to verify that the schema
