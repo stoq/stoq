@@ -87,6 +87,13 @@ def execute_sql(filename):
     log.info("Executing SQL script %s" % filename)
 
     if settings.rdbms == 'postgres':
+        # Okay, this might look crazy, but it's actually the only way
+        # to execute many SQL statements in PostgreSQL and
+        # 1) Stop immediatelly when an error occur
+        # 2) Print the error message, the filename and the line number where
+        #    the error occurred.
+        # 3) Do not print anything on the output unless it's an warning or a
+        #    an error
         cmd = ("psql -n -h %(address)s -U %(username)s "
                "-p %(port)s %(dbname)s -q "
                "--variable ON_ERROR_STOP= -f \"%(schema)s\"")% dict(
@@ -101,7 +108,8 @@ def execute_sql(filename):
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
 
-        # We don't want to see notices on the output, skip them
+        # We don't want to see notices on the output, skip them,
+        # this will make all reported line numbers offset by 1
         proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
 
         data = open(filename).read()
