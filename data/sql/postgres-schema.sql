@@ -37,13 +37,6 @@ CREATE SEQUENCE stoqlib_branch_identifier_seq
     NO MINVALUE
     CACHE 1;
 
-CREATE SEQUENCE stoqlib_branch_station_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
 CREATE SEQUENCE stoqlib_payment_identifier_seq
     INCREMENT BY 1
     NO MAXVALUE
