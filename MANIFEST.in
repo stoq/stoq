@@ -13,3 +13,4 @@ include MANIFEST.in
 include README
 include INSTALL
 include CONTRIBUTORS
+include stoqlib.spec

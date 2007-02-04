@@ -19,6 +19,16 @@ deb: sdist
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
 
+rpm: sdist
+	mkdir -p build
+	rpmbuild --define="_sourcedir `pwd`/dist" \
+	         --define="_srcrpmdir `pwd`/dist" \
+	         --define="_rpmdir `pwd`/dist" \
+	         --define="_builddir `pwd`/build" \
+                 -ba stoqlib.spec
+	mv dist/noarch/* dist
+	rm -fr dist/noarch
+
 upload:
 	cp dist/$(TARBALL) $(TARBALL_DIR)
 	for suffix in "gz" "dsc" "build" "changes" "deb"; do \
