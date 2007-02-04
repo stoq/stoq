@@ -6,7 +6,7 @@ DEBVERSION=$(shell dpkg-parsechangelog -ldebian/changelog|egrep ^Version|cut -d\
 DLDIR=/mondo/htdocs/download.stoq.com.br/ubuntu
 TARBALL_DIR=/mondo/htdocs/download.stoq.com.br/sources
 
-sdist:
+sdist: dist/$(TARBALL)
 	kiwi-i18n -p $(PACKAGE) -c
 	python setup.py -q sdist
 
@@ -18,6 +18,16 @@ deb: sdist
 	rm -fr $(BUILDDIR)/$(PACKAGE)-$(VERSION)
 	mv $(BUILDDIR)/* dist
 	rm -fr $(BUILDDIR)
+
+rpm: sdist
+	mkdir -p build
+	rpmbuild --define="_sourcedir `pwd`/dist" \
+	         --define="_srcrpmdir `pwd`/dist" \
+	         --define="_rpmdir `pwd`/dist" \
+	         --define="_builddir `pwd`/build" \
+                 -ba stoqdrivers.spec
+	mv dist/noarch/* dist
+	rm -fr dist/noarch
 
 upload:
 	cp dist/$(TARBALL) $(TARBALL_DIR)

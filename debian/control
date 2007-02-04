@@ -9,7 +9,7 @@ Standards-Version: 3.6.2
 Package: stoqdrivers
 Architecture: all
 Depends: python2.4, ${shlibs:Depends}, python-zopeinterface (>= 3.2.1), python-serial (>= 2.2), kiwi (>= 1.9.9)
-Description: Useful drivers for Stoq and retail systems
+Description: Fiscal driver collection
  This is a powerful collection of device drivers written in Python and totally
  focused on retail systems. Stoqdrivers also offers an unified API for devices
  like fiscal printers which makes it easy to embed in many applications.

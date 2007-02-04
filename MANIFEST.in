@@ -3,6 +3,7 @@ include NEWS
 include AUTHORS
 include ChangeLog
 include COPYING
+include stoqdrivers.spec
 include debian/changelog debian/compat debian/copyright debian/control debian/rules
 recursive-include stoqdrivers/conf *.ini
 recursive-include po POTFILES.list stoqdrivers.pot *.po
