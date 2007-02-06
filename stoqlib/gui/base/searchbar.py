@@ -370,7 +370,7 @@ class SearchBar(GladeSlaveDelegate):
         for column in table.sqlmeta.columns.values():
             if not column.origName in attributes:
                 continue
-            value = (column.name, table)
+            value = (column.name, column.soClass)
             if (isinstance(column, SOUnicodeCol)
                 and value not in self._str_fields):
                 self._str_fields.append(value)
