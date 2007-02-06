@@ -523,7 +523,7 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
 
     destination = ForeignKey('PaymentDestination')
 
-    max_installments_number = IntCol(default=1)
+    max_installments_number = IntCol(default=12)
     monthly_interest = DecimalCol(default=0)
     daily_penalty = DecimalCol(default=0)
 
