@@ -27,7 +27,7 @@ from stoqlib.database.runtime import new_transaction
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.examples import log
-from stoqlib.domain.interfaces import (ICreditProvider, ICheckPM, IBillPM)
+from stoqlib.domain.interfaces import ICreditProvider
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import (CardInstallmentSettings,
                                             DebitCardDetails,
@@ -95,12 +95,6 @@ def create_payments():
         general_args = dict(commission=commission, destination=destination,
                             connection=trans, provider=provider)
         FinanceDetails(receive_days=DEFAULT_RECEIVE_DAY, **general_args)
-
-
-    pm = sysparam(trans).BASE_PAYMENT_METHOD
-    for iface in [ICheckPM, IBillPM]:
-        method = iface(pm)
-        method.max_installments_number = MAX_INSTALLMENTS_NUMBER
 
     trans.commit()
 
