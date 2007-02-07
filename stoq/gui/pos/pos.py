@@ -264,7 +264,7 @@ class POSApp(AppWindow):
         # whole process trough SaleWizard.
         self.conn.commit()
         items = self.run_dialog(SellableSearch, self.conn,
-                                search_str=search_str)
+                                search_str=search_str, order=self.sale)
         if not items:
             return
         for item in items:
