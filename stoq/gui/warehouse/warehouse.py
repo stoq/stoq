@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """ Main gui definition for warehouse application.  """
 
@@ -28,7 +29,6 @@ import decimal
 
 import gtk
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
@@ -40,11 +40,11 @@ from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
 from stoqlib.domain.person import Person
-from stoqlib.domain.sellable import SellableView
 from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
 from stoqlib.domain.product import (Product, ProductAdaptToSellable)
 
 from stoq.gui.application import SearchableAppWindow
+from stoq.gui.warehouse.view import WarehouseView
 
 _ = gettext.gettext
 
@@ -53,7 +53,7 @@ class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
-    searchbar_table = SellableView
+    searchbar_table = WarehouseView
     searchbar_result_strings = (_('product'), _('products'))
     searchbar_labels = (_('Matching:'),)
     filter_slave_label = _('Show products at:')
@@ -129,10 +129,9 @@ class WarehouseApp(SearchableAppWindow):
     def get_extra_query(self):
         """Hook called by SearchBar"""
         branch = self.filter_slave.get_selected_status()
-        query = SellableView.q.product_id != None
-        if branch != ALL_ITEMS_INDEX:
-            return AND(query, SellableView.q.branch_id == branch.id)
-        return query
+        if branch == ALL_ITEMS_INDEX:
+            branch = None
+        return WarehouseView.get_query(branch)
 
     #
     # Callbacks
