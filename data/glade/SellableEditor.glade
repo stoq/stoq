@@ -354,7 +354,7 @@
                         <child>
                             <widget class="ProxyComboBox" id="unit_combo">
                                 <property name="data_type">object</property>
-                                <property name="model_attribute">index</property>
+                                <property name="model_attribute">unit_index</property>
                                 <property name="visible">True</property>
                             </widget>
                             <packing>

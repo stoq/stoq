@@ -366,7 +366,7 @@ CREATE TABLE sellable_unit (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     description text,
-    "index" integer
+    unit_index integer
 );
 
 CREATE TABLE asellable (

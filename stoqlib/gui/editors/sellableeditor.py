@@ -169,14 +169,14 @@ class SellableEditor(BaseEditor):
 
     def ensure_sellable_unit(self):
         unit = self._sellable.unit
-        if unit.index == -1:
+        if unit.unit_index == -1:
             self._sellable.unit = None
         else:
-            if unit.index == UNIT_CUSTOM:
+            if unit.unit_index == UNIT_CUSTOM:
                 query = LIKE(func.UPPER(SellableUnit.q.description),
                              "%%%s%%" % unit.description.upper())
             else:
-                query = SellableUnit.q.index == unit.index
+                query = SellableUnit.q.unit_index == unit.unit_index
             trans = new_transaction()
             sellable = SellableUnit.selectOne(query, connection=trans)
             if not sellable:
@@ -187,7 +187,7 @@ class SellableEditor(BaseEditor):
 
     def update_unit_entry(self):
         if (self._sellable and self._sellable.unit
-            and self._sellable.unit.index == UNIT_CUSTOM):
+            and self._sellable.unit.unit_index == UNIT_CUSTOM):
             enabled = True
         else:
             enabled = False
@@ -195,7 +195,7 @@ class SellableEditor(BaseEditor):
 
     def update_requires_weighing_label(self):
         if (self._sellable is not None
-            and self._sellable.unit.index == UNIT_WEIGHT):
+            and self._sellable.unit.unit_index == UNIT_WEIGHT):
             self.requires_weighing_label.set_text(self._requires_weighing_text)
         else:
             self.requires_weighing_label.set_text("")
@@ -208,10 +208,10 @@ class SellableEditor(BaseEditor):
         category_list = SellableCategory.select(connection=self.conn)
         items = [(cat.get_full_description(), cat) for cat in category_list]
         self.category_combo.prefill(items)
-        query = SellableUnit.q.index != UNIT_CUSTOM
+        query = SellableUnit.q.unit_index != UNIT_CUSTOM
         primitive_units = SellableUnit.select(query, connection=self.conn)
         items = [(_("No unit"), -1)]
-        items.extend([(obj.description, obj.index)
+        items.extend([(obj.description, obj.unit_index)
                           for obj in primitive_units])
         items.append((_("Specify:"), UNIT_CUSTOM))
         self.unit_combo.prefill(items)
@@ -235,7 +235,8 @@ class SellableEditor(BaseEditor):
         if self._sellable.unit:
             self._sellable.unit = self._sellable.unit.clone()
         else:
-            self._sellable.unit = SellableUnit(description=None, index=None,
+            self._sellable.unit = SellableUnit(description=None,
+                                               unit_index=None,
                                                connection=self.conn)
         self.unit_proxy = self.add_proxy(self._sellable.unit,
                                          SellableEditor.sellable_unit_widgets)

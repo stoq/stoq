@@ -54,7 +54,7 @@ class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
     - I{description}: The unit description
-    - I{index}:       This column defines if this object represents a custom
+    - I{unit_index}:  This column defines if this object represents a custom
                       product unit (created by the user through the product
                       editor) or a 'native unit', like 'Km', 'Lt' and 'pc'.
                       This data is used mainly to interact with stoqdrivers,
@@ -64,7 +64,7 @@ class SellableUnit(Domain):
                       this is directly related to the DeviceSettings editor.
     """
     description = UnicodeCol()
-    index = IntCol()
+    unit_index = IntCol()
 
 class ASellableCategory(InheritableModel):
     """ Abstract class for sellable's category. This class can represents a
