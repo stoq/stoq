@@ -99,7 +99,7 @@ class ProductFilterSlave(GladeSlaveDelegate):
         table = PersonAdaptToBranch
         items = [(item.get_description(), item)
                     for item in table.get_active_branches(self.conn)]
-        items.append(ALL_BRANCHES)
+        items.insert(0, ALL_BRANCHES)
         self.branch_slave = FilterSlave(items, selected=ALL_ITEMS_INDEX)
         self.branch_slave.set_filter_label(_('Branch:'))
         self.branch_slave.connect("status-changed", self._on_branch_changed)
