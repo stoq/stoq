@@ -183,7 +183,7 @@ class PurchaseApp(SearchableAppWindow):
             msg += _(u"Warning: there are %d order(s) with "
                      "status different than pending that "
                      "will not be included") % invalid_qty
-        if yesno(msg, gtk.RESPONSE_YES, _(u"Cancel"), _(u"Confirm")):
+        if yesno(msg, gtk.RESPONSE_NO, _(u"Cancel"), _(u"Confirm")):
             return
         for item in valid_orders:
             order = PurchaseOrder.get(item.id, connection=self.conn)
