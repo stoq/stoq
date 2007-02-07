@@ -21,6 +21,13 @@
                     </widget>
                 </child>
                 <child>
+                    <widget class="GtkAction" id="Categories">
+                        <property name="name">Categories</property>
+                        <property name="label" translatable="yes">Categories...</property>
+                        <property name="accelerator">&lt;Control&gt;c</property>
+                    </widget>
+                </child>
+                <child>
                     <widget class="GtkAction" id="ChangeUser">
                         <property name="name">ChangeUser</property>
                         <property name="label" translatable="yes">Change User...</property>
@@ -227,7 +234,7 @@
         <ui id="initial-state"><![CDATA[<ui>
 <menubar action="menubar" name="menubar">
 
- <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="send_to_supplier_action" name="send_to_supplier_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
+ <menu action="PurchaseMenu" name="PurchaseMenu"><menuitem action="AddOrder" name="AddOrder"/><menuitem action="send_to_supplier_action" name="send_to_supplier_action"/><separator name="sep"/><menuitem action="Quit" name="Quit"/></menu><menu action="SearchMenu"><menuitem action="BaseCategories" name="BaseCategories"/><menuitem action="Categories" name="Categories"/><menuitem action="Products" name="Products"/><menuitem action="Services" name="Services"/><menuitem action="Suppliers" name="Suppliers"/><menuitem action="Transporter" name="Transporter"/></menu><menu action="help_menu" name="help_menu"><menuitem action="about_menu" name="about_menu"/></menu></menubar><toolbar action="toolbar1" name="toolbar1">
   
   
   
