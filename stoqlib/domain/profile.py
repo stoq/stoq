@@ -25,7 +25,6 @@ from kiwi.component import get_utility
 from sqlobject import UnicodeCol, ForeignKey, MultipleJoin, BoolCol
 
 from stoqlib.domain.base import Domain
-from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.interfaces import IApplicationDescriptions
 
 
@@ -79,18 +78,15 @@ class UserProfile(Domain):
                         has_permission=has_permission, user_profile=self)
 
     def check_app_permission(self, app_name):
-        # FIXME: Use SQL query
-        settings = [s for s in self.profile_settings
-                            if s.app_dir_name == app_name
-                                    and s.has_permission]
-        if not settings:
-            return False
-        if len(settings) > 1:
-            raise DatabaseInconsistency("You should have only one "
-                                        "ProfileSettings instance for "
-                                        "directory name %s, got %d"
-                                        % (app_name, len(settings)))
-        return True
+        """
+        Check if the user has permission to use an application
+        @param app_name: name of application to check
+        """
+        return bool(ProfileSettings.selectOneBy(
+            user_profile=self,
+            app_dir_name=app_name,
+            has_permission=True,
+            connection=self.get_connection()))
 
 
 def update_profile_applications(conn, profile=None):
