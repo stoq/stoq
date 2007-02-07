@@ -286,9 +286,14 @@ class TillApp(SearchableAppWindow):
     #
 
     def _on_close_till_action__clicked(self, button):
-        parent = self.get_toplevel()
-        if check_emit_reduce_Z(self.conn, parent):
-            self._close_till()
+        if not yesno(_(u"You can only close the till once per day. "
+                       "\n\nClose the till?"),
+                     gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+            if not self._close_till():
+                parent = self.get_toplevel()
+                if check_emit_reduce_Z(self.conn, parent):
+                    self._close_till()
+                return False
 
     def _on_open_till_action__clicked(self, button):
         parent = self.get_toplevel()
