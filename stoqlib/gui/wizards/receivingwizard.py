@@ -31,7 +31,7 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column
 
-from stoqlib.database.runtime import get_current_user, get_current_branch
+from stoqlib.database.runtime import get_current_user
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.searchbar import SearchBar
@@ -128,6 +128,7 @@ class PurchaseSelectionStep(WizardEditorStep):
 
         if selected:
             self.model.purchase = purchase
+            self.model.branch = purchase.branch
             self.model.supplier = purchase.supplier
             self.model.transporter = purchase.transporter
         else:
@@ -286,9 +287,8 @@ class ReceivingOrderWizard(BaseWizard):
 
     def _create_model(self, conn):
         current_user = get_current_user(conn)
-        branch = get_current_branch(conn)
         return ReceivingOrder(responsible=current_user, supplier=None,
-                              invoice_number=None, branch=branch,
+                              invoice_number=None, branch=None,
                               connection=conn)
 
     #
@@ -296,6 +296,8 @@ class ReceivingOrderWizard(BaseWizard):
     #
 
     def finish(self):
+        assert self.model.branch
+
         if not self.model.get_valid():
             self.model.set_valid()
         self.retval = self.model
