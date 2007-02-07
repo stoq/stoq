@@ -637,7 +637,10 @@ class POSApp(AppWindow):
         self._add_delivery()
 
     def on_TillClose__activate(self, action):
-        self._close_till()
+        if not yesno(_(u"You can only close the till once per day. "
+                       "\n\nClose the till?"),
+                    gtk.RESPONSE_NO, _(u"Not now"), _("Close Till")):
+            self._close_till()
 
     def on_TillOpen__activate(self, action):
         self._open_till()
