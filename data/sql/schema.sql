@@ -417,8 +417,8 @@ CREATE TABLE purchase_item (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity numeric(10,2),
-    quantity_received numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
+    quantity_received numeric(10,2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
     base_cost numeric(10,2),
     cost numeric(10,2),
     sellable_id bigint REFERENCES asellable(id),
@@ -515,8 +515,8 @@ CREATE TABLE abstract_stock_item (
     --    product_stock_item
     id bigserial NOT NULL PRIMARY KEY,
     stock_cost numeric(10,2),
-    quantity numeric(10,2),
-    logic_quantity numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
+    logic_quantity numeric(10,2) CONSTRAINT positive_logic_quantity CHECK (logic_quantity >= 0),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     child_name character varying(255)
 );
@@ -944,7 +944,7 @@ CREATE TABLE product_retention_history (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     reason text,
     product_id bigint REFERENCES product(id)
 );
@@ -959,8 +959,8 @@ CREATE TABLE product_stock_reference (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity numeric(10,2),
-    logic_quantity numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
+    logic_quantity numeric(10,2) CONSTRAINT positive_logic_quantity CHECK (logic_quantity >= 0),
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     product_item_id bigint REFERENCES product_sellable_item(id)
 );
@@ -1017,7 +1017,7 @@ CREATE TABLE receiving_order_item (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity_received numeric(10,2),
+    quantity_received numeric(10,2) CONSTRAINT positive_quantity_received CHECK (quantity_received >= 0),
     cost numeric(10,2),
     sellable_id bigint REFERENCES asellable(id),
     receiving_order_id bigint REFERENCES receiving_order(id)
@@ -1076,7 +1076,7 @@ CREATE TABLE delivery_item (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    quantity numeric(10,2),
+    quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     sellable_id bigint REFERENCES asellable(id),
     delivery_id bigint REFERENCES service_sellable_item_adapt_to_delivery(id)
 );
