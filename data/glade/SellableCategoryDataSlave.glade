@@ -76,7 +76,7 @@
                     </packing>
                 </child>
                 <child>
-                    <widget class="ProxyComboBoxEntry" id="base_category">
+                    <widget class="ProxyComboEntry" id="base_category">
                         <property name="data_type">object</property>
                         <property name="mandatory">True</property>
                         <property name="model_attribute">base_category</property>
