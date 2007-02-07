@@ -28,7 +28,7 @@
 
 CREATE TABLE transaction_entry (
     id bigserial NOT NULL PRIMARY KEY,
-    te_time timestamp without time zone NOT NULL,
+    te_time timestamp NOT NULL,
     user_id integer,
     station_id integer,
     "type" integer
@@ -108,7 +108,7 @@ CREATE TABLE person_adapt_to_credit_provider (
     provider_type integer,
     short_name text,
     provider_id text,
-    open_contract_date timestamp without time zone,
+    open_contract_date timestamp,
     original_id bigint UNIQUE REFERENCES person(id)
 );
 
@@ -129,12 +129,12 @@ CREATE TABLE person_adapt_to_individual (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     cpf text,
     rg_number text,
-    birth_date timestamp without time zone,
+    birth_date timestamp,
     occupation text,
     marital_status integer,
     father_name text,
     mother_name text,
-    rg_expedition_date timestamp without time zone,
+    rg_expedition_date timestamp,
     rg_expedition_local text,
     gender integer,
     spouse_name text,
@@ -159,7 +159,7 @@ CREATE TABLE work_permit_data (
     series_number text,
     pis_number text,
     pis_bank text,
-    pis_registry_date timestamp without time zone
+    pis_registry_date timestamp
 );
 
 CREATE TABLE military_data (
@@ -197,8 +197,8 @@ CREATE TABLE person_adapt_to_employee (
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
-    admission_date timestamp without time zone,
-    expire_vacation timestamp without time zone,
+    admission_date timestamp,
+    expire_vacation timestamp,
     salary numeric(10,2),
     status integer,
     registry_number text,
@@ -239,7 +239,7 @@ CREATE TABLE person_adapt_to_transporter (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     is_active boolean,
-    open_contract_date timestamp without time zone,
+    open_contract_date timestamp,
     freight_percentage numeric(10,2),
     original_id bigint UNIQUE REFERENCES person(id)
 );
@@ -334,8 +334,8 @@ CREATE TABLE on_sale_info (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     on_sale_price numeric(10,2),
-    on_sale_start_date timestamp without time zone,
-    on_sale_end_date timestamp without time zone
+    on_sale_start_date timestamp,
+    on_sale_end_date timestamp
 );
 
 CREATE TABLE asellable_category (
@@ -395,12 +395,12 @@ CREATE TABLE purchase_order (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
     order_number integer NOT NULL UNIQUE,
-    open_date timestamp without time zone,
-    quote_deadline timestamp without time zone,
-    expected_receival_date timestamp without time zone,
-    expected_pay_date timestamp without time zone,
-    receival_date timestamp without time zone,
-    confirm_date timestamp without time zone,
+    open_date timestamp,
+    quote_deadline timestamp,
+    expected_receival_date timestamp,
+    expected_pay_date timestamp,
+    receival_date timestamp,
+    confirm_date timestamp,
     notes text,
     salesperson_name text,
     freight_type integer,
@@ -452,8 +452,8 @@ CREATE TABLE till (
     status integer,
     initial_cash_amount numeric(10,2),
     final_cash_amount numeric(10,2),
-    opening_date timestamp without time zone,
-    closing_date timestamp without time zone,
+    opening_date timestamp ,
+    closing_date timestamp ,
     station_id bigint REFERENCES branch_station(id)
 );
 
@@ -474,10 +474,10 @@ CREATE TABLE sale (
     order_number integer NOT NULL UNIQUE,
     coupon_id integer,
     service_invoice_number integer,
-    open_date timestamp without time zone,
-    close_date timestamp without time zone,
-    confirm_date timestamp without time zone,
-    cancel_date timestamp without time zone,
+    open_date timestamp ,
+    close_date timestamp ,
+    confirm_date timestamp ,
+    cancel_date timestamp ,
     status integer,
     discount_value numeric(10,2),
     surcharge_value numeric(10,2),
@@ -552,9 +552,9 @@ CREATE TABLE abstract_payment_group (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
-    open_date timestamp without time zone,
-    close_date timestamp without time zone,
-    cancel_date timestamp without time zone,
+    open_date timestamp ,
+    close_date timestamp ,
+    cancel_date timestamp ,
     default_method integer,
     installments_number integer,
     interval_type integer,
@@ -568,7 +568,7 @@ CREATE TABLE bill_check_group_data (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     installments_number integer,
-    first_duedate timestamp without time zone,
+    first_duedate timestamp ,
     monthly_interest numeric(10,2),
     interval_type integer,
     intervals integer,
@@ -577,7 +577,7 @@ CREATE TABLE bill_check_group_data (
 
 CREATE TABLE branch_synchronization (
     id bigserial NOT NULL PRIMARY KEY,
-    sync_time timestamp without time zone NOT NULL,
+    sync_time timestamp  NOT NULL,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     policy text NOT NULL
 );
@@ -587,7 +587,7 @@ CREATE TABLE calls (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    date timestamp without time zone,
+    date timestamp ,
     message text,
     person_id bigint REFERENCES person(id),
     attendant_id bigint REFERENCES person_adapt_to_user(id)
@@ -672,10 +672,10 @@ CREATE TABLE payment (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier integer NOT NULL UNIQUE,
     status integer,
-    open_date timestamp without time zone,
-    due_date timestamp without time zone,
-    paid_date timestamp without time zone,
-    cancel_date timestamp without time zone,
+    open_date timestamp ,
+    due_date timestamp ,
+    paid_date timestamp ,
+    cancel_date timestamp ,
     paid_value numeric(10,2),
     base_value numeric(10,2),
     value numeric(10,2),
@@ -750,8 +750,8 @@ CREATE TABLE employee_role_history (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    began timestamp without time zone,
-    ended timestamp without time zone,
+    began timestamp ,
+    ended timestamp ,
     salary numeric(10,2),
     role_id bigint REFERENCES employee_role(id),
     employee_id bigint REFERENCES person_adapt_to_employee(id),
@@ -882,7 +882,7 @@ CREATE TABLE payment_operation (
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
-    operation_date timestamp without time zone
+    operation_date timestamp 
 );
 
 CREATE TABLE pm_adapt_to_bill_p_m (
@@ -988,8 +988,8 @@ CREATE TABLE receiving_order (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     receiving_number integer NOT NULL UNIQUE,
     status integer,
-    receival_date timestamp without time zone,
-    confirm_date timestamp without time zone,
+    receival_date timestamp ,
+    confirm_date timestamp ,
     notes text,
     freight_total numeric(10,2),
     surcharge_value numeric(10,2),
@@ -1057,8 +1057,8 @@ CREATE TABLE renegotiation_adapt_to_return_sale (
 CREATE TABLE service_sellable_item (
     id bigserial NOT NULL PRIMARY KEY,
     notes text,
-    estimated_fix_date timestamp without time zone,
-    completion_date timestamp without time zone,
+    estimated_fix_date timestamp ,
+    completion_date timestamp ,
     child_name character varying(255)
 );
 
@@ -1099,7 +1099,7 @@ CREATE TABLE till_entry (
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     identifier integer NOT NULL UNIQUE,
-    date timestamp without time zone,
+    date timestamp ,
     description text,
     value numeric(10,2),
     is_initial_cash_amount boolean,
@@ -1119,7 +1119,7 @@ CREATE TABLE abstract_fiscal_book_entry (
     --    iss_book_entry
     id bigserial NOT NULL PRIMARY KEY,
     identifier integer NOT NULL UNIQUE,
-    date timestamp without time zone,
+    date timestamp ,
     is_reversal boolean,
     invoice_number integer,
     cfop_id bigint REFERENCES cfop_data(id),
@@ -1761,6 +1761,6 @@ CREATE VIEW till_fiscal_operations_view AS
 --
 CREATE TABLE system_table (
     id bigserial NOT NULL PRIMARY KEY,
-    update_date timestamp without time zone,
+    update_date timestamp,
     version integer
 );
