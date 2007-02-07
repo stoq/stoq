@@ -68,6 +68,7 @@ CREATE SEQUENCE stoqlib_sellable_code_seq
     NO MINVALUE
     CACHE 1;
 
+ALTER TABLE transaction_entry ALTER COLUMN id TYPE bigint;
 ALTER TABLE person ALTER COLUMN id TYPE bigint;
 ALTER TABLE bank ALTER COLUMN id TYPE bigint;
 ALTER TABLE person_adapt_to_bank_branch ALTER COLUMN id TYPE bigint;
