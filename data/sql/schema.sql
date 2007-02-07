@@ -1166,7 +1166,6 @@ CREATE TABLE abstract_fiscal_book_entry (
 --   stoqlib/gui/search/sellablesearch.py
 --   stoqlib/gui/search/productsearch.py
 --   stoqlib/reporting/product.py
---   stoq/gui/warehouse/warehouse.py
 --
 CREATE VIEW sellable_view AS
 
