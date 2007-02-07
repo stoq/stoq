@@ -28,18 +28,18 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
+from kiwi.ui.objectlist import Column
 from kiwi.argcheck import argcheck
 from sqlobject.sqlbuilder import AND
 
-from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.columns import Column
-from stoqlib.lib.defaults import ALL_ITEMS_INDEX
-from stoqlib.lib.validators import format_quantity
 from stoqlib.domain.product import Product, ProductFullStockView
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.productslave import ProductFilterSlave
 from stoqlib.gui.search.sellablesearch import SellableSearch, SellableView
 from stoqlib.gui.base.dialogs import print_report
+from stoqlib.lib.translation import stoqlib_gettext
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
+from stoqlib.lib.validators import format_quantity
 from stoqlib.reporting.product import ProductReport
 
 _ = stoqlib_gettext
