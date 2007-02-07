@@ -40,22 +40,22 @@ class TestTransaction(DomainTest):
         person = Person(name="dummy", connection=self.trans)
         created = datetime.datetime.now()
 
-        self.assertEqual(person.te_created.timestamp,
-                         person.te_modified.timestamp)
+        self.assertEqual(person.te_created.te_time,
+                         person.te_modified.te_time)
 
         self.trans.commit()
         person.name = 'updated'
         self.trans.commit()
 
-        self.assertNotEqual(person.te_created.timestamp,
-                            person.te_modified.timestamp)
+        self.assertNotEqual(person.te_created.te_time,
+                            person.te_modified.te_time)
 
         updated = datetime.datetime.now()
 
         dates = [(before, 'before create'),
-                 (person.te_created.timestamp, 'create'),
+                 (person.te_created.te_time, 'create'),
                  (created, 'after create'),
-                 (person.te_modified.timestamp, 'modifiy' ),
+                 (person.te_modified.te_time, 'modifiy' ),
                  (updated, 'after modify')]
         for i in range(len(dates)-1):
             before, before_name = dates[i]
@@ -78,7 +78,7 @@ class TestTransaction(DomainTest):
         self.assertEqual(person.te_created.station, station)
 
     def test_empty(self):
-        entry = TransactionEntry(timestamp=datetime.datetime.now(),
+        entry = TransactionEntry(te_time=datetime.datetime.now(),
                                  connection=self.trans,
                                  type=TransactionEntry.CREATED)
         self.assertEqual(entry.user, None)

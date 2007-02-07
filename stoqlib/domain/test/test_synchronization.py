@@ -43,7 +43,7 @@ class TestBranchSynchronization(DomainTest):
         t1 = datetime.datetime.now()
         obj = BranchSynchronization(branch=self.branch,
                                     policy="shop",
-                                    timestamp=t1,
+                                    sync_time=t1,
                                     connection=self.trans)
 
         results = BranchSynchronization.select(
@@ -51,18 +51,18 @@ class TestBranchSynchronization(DomainTest):
             connection=self.trans)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)
-        self.assertEqual(obj.timestamp, t1)
+        self.assertEqual(obj.sync_time, t1)
         self.assertEqual(obj.policy, "shop")
         self.assertEqual(obj.branch, self.branch)
 
         t2 = datetime.datetime.now()
-        obj.timestamp = t2
+        obj.sync_time = t2
 
         results = BranchSynchronization.select(
             BranchSynchronization.q.branchID == self.branch.id,
             connection=self.trans)
         self.assertEqual(results.count(), 1)
         self.assertEqual(results[0], obj)
-        self.assertEqual(obj.timestamp, t2)
+        self.assertEqual(obj.sync_time, t2)
         self.assertEqual(obj.policy, "shop")
         self.assertEqual(obj.branch, self.branch)

@@ -331,7 +331,7 @@ class SynchronizationService(XMLRPCService):
                                  attrs,
                                  conn.sqlrepr(so.te_createdID),
                                  conn.sqlrepr(so.te_modifiedID),
-                                 conn.sqlrepr(te.timestamp),
+                                 conn.sqlrepr(te.te_time),
                                  conn.sqlrepr(te.user_id),
                                  conn.sqlrepr(te.station_id)))
             if objs:
@@ -416,11 +416,11 @@ class SynchronizationClient(object):
         if not sync:
             log.info("Created BranchSynchronization object")
             BranchSynchronization(
-                timestamp=timestamp, branch=station.branch, policy=policy,
+                sync_time=timestamp, branch=station.branch, policy=policy,
                 connection=trans)
         else:
             log.info("Updating BranchSynchronization object")
-            sync.timestamp = timestamp
+            sync.sync_time = timestamp
 
     def _sql_send(self, iterator):
         if not self._commit:
@@ -445,7 +445,7 @@ class SynchronizationClient(object):
                 "Tried to synchronize against for station %s which does "
                 "not have an entry in the BranchSynchronization table" % (
                 station_name,))
-        return sync.timestamp
+        return sync.sync_time
 
     def _insert_one(self, trans, table, obj_id, attrs):
         attrs = attrs[:]
@@ -487,7 +487,7 @@ class SynchronizationClient(object):
         # and write an entry in a conflict log
 
         if (obj.te_modified.station == station and
-            obj.te_modified.timestamp <= last_sync):
+            obj.te_modified.te_time <= last_sync):
             # FIXME: Write a conflict log entry
             return False
 
@@ -549,7 +549,7 @@ class SynchronizationClient(object):
                 except SQLObjectNotFound:
                     obj = None
 
-                entry_attrs = [('timestamp', timestamp_),
+                entry_attrs = [('te_time', timestamp_),
                                ('user_id', user_id),
                                ('station_id', station_id)]
 

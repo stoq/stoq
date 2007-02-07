@@ -647,7 +647,7 @@ class PersonAdaptToBranch(_PersonAdapter):
 
         return AND(TransactionEntry.q.id == te_id,
                    TransactionEntry.q.station_id == BranchStation.q.id,
-                   TransactionEntry.q.timestamp > timestamp)
+                   TransactionEntry.q.te_time > timestamp)
 
     # Classmethods
 

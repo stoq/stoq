@@ -28,7 +28,7 @@
 
 CREATE TABLE transaction_entry (
     id bigserial NOT NULL PRIMARY KEY,
-    "timestamp" timestamp without time zone NOT NULL,
+    te_time timestamp without time zone NOT NULL,
     user_id integer,
     station_id integer,
     "type" integer
@@ -577,7 +577,7 @@ CREATE TABLE bill_check_group_data (
 
 CREATE TABLE branch_synchronization (
     id bigserial NOT NULL PRIMARY KEY,
-    "timestamp" timestamp without time zone NOT NULL,
+    sync_time timestamp without time zone NOT NULL,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     policy text NOT NULL
 );
