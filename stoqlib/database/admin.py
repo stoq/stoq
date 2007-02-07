@@ -118,7 +118,7 @@ def ensure_sellable_units():
                  ("Lt", UNIT_LITERS),
                  ("m ", UNIT_METERS)]
     for desc, index in unit_list:
-        SellableUnit(description=desc, index=index, connection=trans)
+        SellableUnit(description=desc, unit_index=index, connection=trans)
     trans.commit(close=True)
 
 def user_has_usesuper(trans):

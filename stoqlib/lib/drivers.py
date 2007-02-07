@@ -381,10 +381,9 @@ class FiscalCoupon:
         if not sellable.unit:
             unit = UNIT_EMPTY
         else:
-            if sellable.unit.index == UNIT_CUSTOM:
+            if sellable.unit.unit_index == UNIT_CUSTOM:
                 unit_desc = sellable.unit.description
-            unit = sellable.unit.index
-        unit = unit or UNIT_EMPTY
+            unit = sellable.unit.unit_index or UNIT_EMPTY
         max_len = get_capability(self.printer, "item_code")
         code = sellable.get_code_str()[:max_len]
 

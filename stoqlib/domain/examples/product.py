@@ -74,7 +74,8 @@ def create_products():
 
     units = SellableUnit.select(connection=trans)
     if units.count() < MAX_PRODUCT_NUMBER:
-        SellableUnit(connection=trans, description='Cx', index=UNIT_CUSTOM)
+        SellableUnit(connection=trans, description='Cx',
+                     unit_index=UNIT_CUSTOM)
         units = SellableUnit.select(connection=trans)
 
     # Creating products and facets
