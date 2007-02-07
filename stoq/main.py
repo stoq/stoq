@@ -104,22 +104,19 @@ def _setup_cookiefile(config_dir):
     provide_utility(ICookieFile, Base64CookieFile(cookiefile))
 
 def _check_tables():
-    from stoqlib.database.tables import get_table_types
     from stoqlib.database.runtime import get_connection
 
     log.debug('checking tables')
 
-    # We must check if all the tables are already in the database.
+    # Check so SystemTable is present
     conn = get_connection()
+    if not conn.tableExists('system_table'):
+        error(
+            _("Database schema error"),
+            _("Table `system_table' does not exist.\n"
+              "Consult your database administrator to solve this problem."))
 
-    for table_type in get_table_types():
-        classname = table_type.sqlmeta.table
-        if not conn.tableExists(classname):
-            error(
-                _("Database schema error"),
-                _("Table `%s' does not exist.\n"
-                  "Consult your database administrator to solve this problem.")
-                % classname)
+    # FIXME: Check so SystemTable is up-to-date
 
 def _initialize(options):
     # Do this as early as possible to get as much as possible into the
@@ -170,8 +167,8 @@ def _initialize(options):
               'error=%s uri=%s' % (str(e), config.get_connection_uri()))
         raise SystemExit("Error: bad connection settings provided")
 
-    _setup_printers()
     _check_tables()
+    _setup_printers()
 
 def _show_splash():
     from stoqlib.gui.splash import SplashScreen
