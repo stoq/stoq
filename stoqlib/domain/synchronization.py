@@ -41,7 +41,7 @@ class BranchSynchronization(SQLObject):
     @cvar branch: a branch
     @cvar policy: policy used to update the branch
     """
-    timestamp = DateTimeCol(notNone=True)
+    sync_time = DateTimeCol(notNone=True)
     branch = ForeignKey('PersonAdaptToBranch', unique=True)
     policy = StringCol(notNone=True)
 

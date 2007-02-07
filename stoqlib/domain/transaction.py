@@ -33,7 +33,7 @@ class TransactionEntry(SQLObject):
     It's main use case is to know information about the system when
     a domain object is created or modified.
 
-    @cvar timestamp:
+    @cvar te_time:
     @cvar type: if it represents a creation or modification
     @cvar user_id:
     @cvar station_id:
@@ -42,7 +42,7 @@ class TransactionEntry(SQLObject):
     (CREATED,
      MODIFIED) = range(2)
 
-    timestamp = DateTimeCol(notNone=True)
+    te_time = DateTimeCol(notNone=True)
 
     # This is used by base classes in Stoq, SQLObject does not allow
     # us to use circular dependencies so instead we define them

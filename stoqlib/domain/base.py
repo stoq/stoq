@@ -142,7 +142,7 @@ class AbstractModel(object):
         for entry, entry_type in [('te_created', TransactionEntry.CREATED),
                                   ('te_modified', TransactionEntry.MODIFIED)]:
             kwargs[entry] = TransactionEntry(
-                timestamp=timestamp,
+                te_time=timestamp,
                 user_id=user and user.id,
                 station_id=station and station.id,
                 type=entry_type,

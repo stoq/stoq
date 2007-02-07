@@ -70,7 +70,7 @@ class StoqlibTransaction(Transaction):
                 if obj.sqlmeta._obsolete:
                     continue
 
-                obj.te_modified.timestamp = datetime.datetime.now()
+                obj.te_modified.te_time = datetime.datetime.now()
                 if user is not None:
                     obj.te_modified.user_id = user.id
                 if station is not None:
