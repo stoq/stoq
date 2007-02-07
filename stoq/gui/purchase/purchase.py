@@ -39,7 +39,8 @@ from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
-from stoqlib.gui.search.categorysearch import BaseSellableCatSearch
+from stoqlib.gui.search.categorysearch import (SellableCategorySearch,
+                                               BaseSellableCatSearch)
 from stoqlib.gui.search.productsearch import ProductSearch
 from stoqlib.gui.search.servicesearch import ServiceSearch
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
@@ -262,6 +263,9 @@ class PurchaseApp(SearchableAppWindow):
 
     def on_send_to_supplier_button__clicked(self, button):
         self._send_selected_items_to_supplier()
+
+    def on_Categories__activate(self, action):
+        self.run_dialog(SellableCategorySearch, self.conn)
 
     # FIXME: Kiwi autoconnection OR rename, see #2323
 
