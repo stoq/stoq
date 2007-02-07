@@ -29,10 +29,11 @@ from decimal import Decimal
 
 import gtk
 from kiwi.datatypes import currency
-from kiwi.ui.widgets.list import Column
+from kiwi.ui.objectlist import Column
 from sqlobject.sqlbuilder import AND, OR
 
 from stoqlib.database.runtime import get_current_branch
+from stoqlib.gui.base.columns import AccessorColumn
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.parameters import sysparam
@@ -43,7 +44,7 @@ from stoqlib.domain.sellable import (ASellable, SellableView,
                                      SellableFullStockView)
 from stoqlib.domain.product import Product
 from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import IBranch, ISellable
+from stoqlib.domain.interfaces import IBranch, ISellable, IStorable
 
 _ = stoqlib_gettext
 
@@ -58,7 +59,17 @@ class SellableSearch(SearchEditor):
     searchbar_result_strings = (_('sale item'), _('sale items'))
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
-                 selection_mode=gtk.SELECTION_MULTIPLE, search_str=None):
+                 selection_mode=gtk.SELECTION_MULTIPLE, search_str=None,
+                 order=None):
+        """
+        @param conn: a sqlobject Transaction instance
+        @param hide_footer: do I have to hide the dialog footer?
+        @param hide_toolbar: do I have to hide the dialog toolbar?
+        @param selection_mode: the kiwi list selection mode
+        @param search_str: FIXME
+        @param order: optionally, an order from which will use to deduct
+                      stock values
+        """
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
@@ -73,6 +84,15 @@ class SellableSearch(SearchEditor):
         if search_str:
             self.set_searchbar_search_string(search_str)
             self.perform_search()
+
+        # FIXME: This dictionary should be used to deduct from the
+        #        current stock (in the current branch) and not others
+        self.current_sale_stock = {}
+
+        if order:
+            for item in order.get_items():
+                if IStorable(item.sellable.get_adapted(), None):
+                    self.current_sale_stock[item.sellable.id] = item.quantity
 
     #
     # Hooks
@@ -92,12 +112,17 @@ class SellableSearch(SearchEditor):
                    Column('price', title=_('Price'), data_type=currency,
                           width=80, justify=gtk.JUSTIFY_RIGHT)]
         if self.has_stock_mode:
-            column = Column('stock', title=_('Stock'),
-                            format_func=format_quantity,
-                            data_type=Decimal,
-                            width=80)
+            column = AccessorColumn('stock', title=_('Stock'),
+                                    accessor=self._get_available_stock,
+                                    format_func=format_quantity,
+                                    data_type=Decimal,
+                                    width=80)
             columns.append(column)
         return columns
+
+    def _get_available_stock(self, sellable_view):
+        return sellable_view.stock - self.current_sale_stock.get(
+            sellable_view.id, 0)
 
     def get_extra_query(self):
         """Hook called by SearchBar"""
