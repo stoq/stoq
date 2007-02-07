@@ -166,6 +166,10 @@ def create_base_schema():
     schema = environ.find_resource('sql', '%s-schema.sql' % settings.rdbms)
     execute_sql(schema)
 
+    log.info('Creating views')
+    schema = environ.find_resource('sql', 'views.sql')
+    execute_sql(schema)
+
 def create_default_profiles():
     trans = new_transaction()
 

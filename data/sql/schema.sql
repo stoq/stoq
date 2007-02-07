@@ -1,5 +1,5 @@
 --
--- Copyright (C) 2006 Async Open Source
+-- Copyright (C) 2006,2007 Async Open Source
 --
 -- This program is free software; you can redistribute it and/or
 -- modify it under the terms of the GNU Lesser General Public License
@@ -27,7 +27,7 @@
 --
 
 CREATE TABLE transaction_entry (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     te_time timestamp NOT NULL,
     user_id integer,
     station_id integer,
@@ -35,7 +35,7 @@ CREATE TABLE transaction_entry (
 );
 
 CREATE TABLE person (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -48,7 +48,7 @@ CREATE TABLE person (
 );
 
 CREATE TABLE bank (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -58,7 +58,7 @@ CREATE TABLE bank (
 );
 
 CREATE TABLE person_adapt_to_bank_branch (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -68,7 +68,7 @@ CREATE TABLE person_adapt_to_bank_branch (
 );
 
 CREATE TABLE person_adapt_to_branch (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -79,7 +79,7 @@ CREATE TABLE person_adapt_to_branch (
 );
 
 CREATE TABLE person_adapt_to_client (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -89,7 +89,7 @@ CREATE TABLE person_adapt_to_client (
 );
 
 CREATE TABLE person_adapt_to_company (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -100,7 +100,7 @@ CREATE TABLE person_adapt_to_company (
 );
 
 CREATE TABLE person_adapt_to_credit_provider (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -113,7 +113,7 @@ CREATE TABLE person_adapt_to_credit_provider (
 );
 
 CREATE TABLE city_location (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -123,7 +123,7 @@ CREATE TABLE city_location (
 );
 
 CREATE TABLE person_adapt_to_individual (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -143,7 +143,7 @@ CREATE TABLE person_adapt_to_individual (
 );
 
 CREATE TABLE employee_role (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -151,7 +151,7 @@ CREATE TABLE employee_role (
 );
 
 CREATE TABLE work_permit_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -163,7 +163,7 @@ CREATE TABLE work_permit_data (
 );
 
 CREATE TABLE military_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -173,7 +173,7 @@ CREATE TABLE military_data (
 );
 
 CREATE TABLE voter_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -183,7 +183,7 @@ CREATE TABLE voter_data (
 );
 
 CREATE TABLE bank_account (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -193,7 +193,7 @@ CREATE TABLE bank_account (
 );
 
 CREATE TABLE person_adapt_to_employee (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -213,7 +213,7 @@ CREATE TABLE person_adapt_to_employee (
 );
 
 CREATE TABLE person_adapt_to_sales_person (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -224,7 +224,7 @@ CREATE TABLE person_adapt_to_sales_person (
 );
 
 CREATE TABLE person_adapt_to_supplier (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -234,7 +234,7 @@ CREATE TABLE person_adapt_to_supplier (
 );
 
 CREATE TABLE person_adapt_to_transporter (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -245,7 +245,7 @@ CREATE TABLE person_adapt_to_transporter (
 );
 
 CREATE TABLE user_profile (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -253,7 +253,7 @@ CREATE TABLE user_profile (
 );
 
 CREATE TABLE person_adapt_to_user (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -265,7 +265,7 @@ CREATE TABLE person_adapt_to_user (
 );
 
 CREATE TABLE product (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -273,7 +273,7 @@ CREATE TABLE product (
 );
 
 CREATE TABLE product_adapt_to_sellable (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     tax_type integer,
     tax_value numeric(10,2),
     child_name character varying(255),
@@ -283,7 +283,7 @@ CREATE TABLE product_adapt_to_sellable (
 -- FIXME: original_id should be marked as UNIQUE
 
 CREATE TABLE product_adapt_to_storable (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -291,7 +291,7 @@ CREATE TABLE product_adapt_to_storable (
 );
 
 CREATE TABLE product_supplier_info (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -304,7 +304,7 @@ CREATE TABLE product_supplier_info (
 );
 
 CREATE TABLE service (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -312,13 +312,13 @@ CREATE TABLE service (
 );
 
 CREATE TABLE service_adapt_to_sellable (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES service(id)
 );
 
 CREATE TABLE base_sellable_info (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -329,7 +329,7 @@ CREATE TABLE base_sellable_info (
 );
 
 CREATE TABLE on_sale_info (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -342,7 +342,7 @@ CREATE TABLE asellable_category (
     -- Subclasses:
     --    base_sellable_category
     --    sellable_category
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     description text,
     suggested_markup numeric(10,2),
     salesperson_commission numeric(10,2),
@@ -350,18 +350,18 @@ CREATE TABLE asellable_category (
 );
 
 CREATE TABLE base_sellable_category (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255)
 );
 
 CREATE TABLE sellable_category (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     base_category_id bigint REFERENCES base_sellable_category(id),
     child_name character varying(255)
 );
 
 CREATE TABLE sellable_unit (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -374,7 +374,7 @@ CREATE TABLE asellable (
     --    product_adapt_to_sellable
     --    service_adapt_to_sellable
     --    gift_certificate_adapt_to_sellable
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     code integer NOT NULL UNIQUE,
     barcode text,
     status integer,
@@ -389,7 +389,7 @@ CREATE TABLE asellable (
 
 
 CREATE TABLE purchase_order (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -413,7 +413,7 @@ CREATE TABLE purchase_order (
 );
 
 CREATE TABLE purchase_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -430,12 +430,12 @@ CREATE TABLE abstract_renegotiation_adapter (
     --    renegotiation_adapt_to_return_sale
     --    renegotiation_adapt_to_exchange
     --    renegotiation_adapt_to_change_installments
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255)
 );
 
 CREATE TABLE branch_station (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -445,7 +445,7 @@ CREATE TABLE branch_station (
 );
 
 CREATE TABLE till (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -458,7 +458,7 @@ CREATE TABLE till (
 );
 
 CREATE TABLE cfop_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -467,7 +467,7 @@ CREATE TABLE cfop_data (
 );
 
 CREATE TABLE sale (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -491,7 +491,7 @@ CREATE TABLE sale (
 );
 
 CREATE TABLE sale_adapt_to_payment_group (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES sale(id)
 );
@@ -501,7 +501,7 @@ CREATE TABLE asellable_item (
     --    product_sellable_item
     --    service_sellable_item
     --    gift_certificate_item
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     base_price numeric(10,2),
     price numeric(10,2),
@@ -513,7 +513,7 @@ CREATE TABLE asellable_item (
 CREATE TABLE abstract_stock_item (
     -- Subclasses:
     --    product_stock_item
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     stock_cost numeric(10,2),
     quantity numeric(10,2) CONSTRAINT positive_quantity CHECK (quantity >= 0),
     logic_quantity numeric(10,2) CONSTRAINT positive_logic_quantity CHECK (logic_quantity >= 0),
@@ -522,13 +522,13 @@ CREATE TABLE abstract_stock_item (
 );
 
 CREATE TABLE product_stock_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     storable_id bigint REFERENCES product_adapt_to_storable(id),
     child_name character varying(255)
 );
 
 CREATE TABLE address (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -548,7 +548,7 @@ CREATE TABLE abstract_payment_group (
     --    till_adapt_to_payment_group
     --    purchase_order_adapt_to_payment_group
     --    receiving_order_adapt_to_payment_group
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     status integer,
@@ -563,7 +563,7 @@ CREATE TABLE abstract_payment_group (
 );
 
 CREATE TABLE bill_check_group_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -576,14 +576,14 @@ CREATE TABLE bill_check_group_data (
 );
 
 CREATE TABLE branch_synchronization (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     sync_time timestamp  NOT NULL,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     policy text NOT NULL
 );
 
 CREATE TABLE calls (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -594,7 +594,7 @@ CREATE TABLE calls (
 );
 
 CREATE TABLE card_installment_settings (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -603,13 +603,13 @@ CREATE TABLE card_installment_settings (
 );
 
 CREATE TABLE card_installments_provider_details (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     installment_settings_id bigint REFERENCES card_installment_settings(id),
     child_name character varying(255)
 );
 
 CREATE TABLE card_installments_store_details (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     max_installments_number integer,
     installment_settings_id bigint REFERENCES card_installment_settings(id),
     child_name character varying(255)
@@ -619,7 +619,7 @@ CREATE TABLE payment_destination (
     -- Subclasses:
     --    store_destination
     --    bank_destination
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     description text,
     account_id bigint REFERENCES bank_account(id),
     notes text,
@@ -630,7 +630,7 @@ CREATE TABLE abstract_check_bill_adapter (
     -- Subclasses:
     --   pm_adapt_to_bill_p_m
     --   pm_adapt_to_check_p_m
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
@@ -645,7 +645,7 @@ CREATE TABLE payment_method_details (
     --    card_installments_store_details
     --    card_installments_provider_details
     --    finance_details
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_active boolean,
     commission numeric(10,2),
     provider_id bigint REFERENCES person_adapt_to_credit_provider(id),
@@ -660,13 +660,13 @@ CREATE TABLE abstract_payment_method_adapter (
     --    pm_adapt_to_gift_certificate_p_m
     --    pm_adapt_to_card_p_m
     --    pm_adapt_to_finance_p_m
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_active boolean,
     child_name character varying(255)
 );
 
 CREATE TABLE payment (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -691,7 +691,7 @@ CREATE TABLE payment (
 );
 
 CREATE TABLE check_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -700,13 +700,13 @@ CREATE TABLE check_data (
 );
 
 CREATE TABLE credit_card_details (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     installment_settings_id bigint REFERENCES card_installment_settings(id),
     child_name character varying(255)
 );
 
 CREATE TABLE credit_provider_group_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -717,13 +717,13 @@ CREATE TABLE credit_provider_group_data (
 );
 
 CREATE TABLE debit_card_details (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     receive_days integer,
     child_name character varying(255)
 );
 
 CREATE TABLE device_constants (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -731,7 +731,7 @@ CREATE TABLE device_constants (
 );
 
 CREATE TABLE device_settings (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -746,7 +746,7 @@ CREATE TABLE device_settings (
 );
 
 CREATE TABLE employee_role_history (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -759,32 +759,32 @@ CREATE TABLE employee_role_history (
 );
 
 CREATE TABLE finance_details (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     receive_days integer,
     child_name character varying(255)
 );
 
 CREATE TABLE gift_certificate (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
 );
 
 CREATE TABLE gift_certificate_adapt_to_sellable (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     group_id bigint REFERENCES abstract_payment_group(id),
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES gift_certificate(id)
 );
 
 CREATE TABLE gift_certificate_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255)
 );
 
 CREATE TABLE gift_certificate_type (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -794,7 +794,7 @@ CREATE TABLE gift_certificate_type (
 );
 
 CREATE TABLE icms_ipi_book_entry (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     icms_value numeric(10,2),
     ipi_value numeric(10,2),
     child_name character varying(255)
@@ -808,7 +808,7 @@ CREATE TABLE inheritable_model (
     --   abstract_stock_item
     --   payment_destination
     --   payment_method_details
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -821,7 +821,7 @@ CREATE TABLE inheritable_model_adapter (
     --   abstract_renegotiation_adapter
     --   abstract_payment_group
     --   abstract_payment_method_adapter
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -829,13 +829,13 @@ CREATE TABLE inheritable_model_adapter (
 );
 
 CREATE TABLE iss_book_entry (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     iss_value numeric(10,2),
     child_name character varying(255)
 );
 
 CREATE TABLE liaison (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -845,7 +845,7 @@ CREATE TABLE liaison (
 );
 
 CREATE TABLE parameter_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -855,7 +855,7 @@ CREATE TABLE parameter_data (
 );
 
 CREATE TABLE payment_adapt_to_in_payment (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -863,7 +863,7 @@ CREATE TABLE payment_adapt_to_in_payment (
 );
 
 CREATE TABLE payment_adapt_to_out_payment (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -871,14 +871,14 @@ CREATE TABLE payment_adapt_to_out_payment (
 );
 
 CREATE TABLE payment_method (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id)
 );
 
 CREATE TABLE payment_operation (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -886,44 +886,44 @@ CREATE TABLE payment_operation (
 );
 
 CREATE TABLE pm_adapt_to_bill_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_card_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_check_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_finance_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_gift_certificate_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE pm_adapt_to_money_p_m (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE po_adapt_to_payment_deposit (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -931,7 +931,7 @@ CREATE TABLE po_adapt_to_payment_deposit (
 );
 
 CREATE TABLE po_adapt_to_payment_devolution (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -940,7 +940,7 @@ CREATE TABLE po_adapt_to_payment_devolution (
 );
 
 CREATE TABLE product_retention_history (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -950,12 +950,12 @@ CREATE TABLE product_retention_history (
 );
 
 CREATE TABLE product_sellable_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255)
 );
 
 CREATE TABLE product_stock_reference (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -966,7 +966,7 @@ CREATE TABLE product_stock_reference (
 );
 
 CREATE TABLE profile_settings (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -976,13 +976,13 @@ CREATE TABLE profile_settings (
 );
 
 CREATE TABLE purchase_order_adapt_to_payment_group (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES purchase_order(id)
 );
 
 CREATE TABLE receiving_order (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1007,13 +1007,13 @@ CREATE TABLE receiving_order (
 );
 
 CREATE TABLE receiving_order_adapt_to_payment_group (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES receiving_order(id)
 );
 
 CREATE TABLE receiving_order_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1024,7 +1024,7 @@ CREATE TABLE receiving_order_item (
 );
 
 CREATE TABLE renegotiation_data (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1037,25 +1037,25 @@ CREATE TABLE renegotiation_data (
 );
 
 CREATE TABLE renegotiation_adapt_to_change_installments (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_exchange (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_return_sale (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE service_sellable_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     notes text,
     estimated_fix_date timestamp ,
     completion_date timestamp ,
@@ -1063,7 +1063,7 @@ CREATE TABLE service_sellable_item (
 );
 
 CREATE TABLE service_sellable_item_adapt_to_delivery (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1072,7 +1072,7 @@ CREATE TABLE service_sellable_item_adapt_to_delivery (
 );
 
 CREATE TABLE delivery_item (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1082,19 +1082,19 @@ CREATE TABLE delivery_item (
 );
 
 CREATE TABLE store_destination (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     branch_id bigint REFERENCES person_adapt_to_branch(id),
     child_name character varying(255)
 );
 
 CREATE TABLE till_adapt_to_payment_group (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES till(id)
 );
 
 CREATE TABLE till_entry (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     is_valid_model boolean,
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
@@ -1108,7 +1108,7 @@ CREATE TABLE till_entry (
 );
 
 CREATE TABLE bank_destination (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     branch_id bigint REFERENCES person_adapt_to_bank_branch(id),
     child_name character varying(255)
 );
@@ -1117,7 +1117,7 @@ CREATE TABLE abstract_fiscal_book_entry (
     -- Subclasses:
     --    icms_ipi_book_entry
     --    iss_book_entry
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     identifier integer NOT NULL UNIQUE,
     date timestamp ,
     is_reversal boolean,
@@ -1130,637 +1130,11 @@ CREATE TABLE abstract_fiscal_book_entry (
 );
 
 --
--- Views
---
-
-
---
--- Stores information about sellables. Note: This view must be used
--- always when searching for stock information on a certain branch
--- company. For general sellable information in all the branches go to
--- sellable_full_stock_view.
---
--- Usage: select * from sellable_view where branch_id=1;
---
--- Available fields are:
---     id                 - the id of the asellable table
---     code               - the sellable code
---     barcode            - the sellable barcode
---     status             - the sellable status
---     cost               - the sellable cost
---     price              - the sellable price
---     is_valid_model     - the sellable is_valid_model system attribute
---     description        - the sellable description
---     unit               - the unit in case the sellable is not a gift
---                          certificate
---     product_id         - the id of the product table
---     supplier_name      - the supplier name in case the sellable is a
---                          product
---     branch_id          - the id of person_adapt_to_branch table
---     stock              - the stock in case the sellable is a product
---
---
---
--- Callsites:
---
---   stoqlib/gui/search/sellablesearch.py
---   stoqlib/gui/search/productsearch.py
---   stoqlib/reporting/product.py
---
-CREATE VIEW sellable_view AS
-
-   SELECT DISTINCT
-      asellable.id AS id,
-      asellable.code AS code,
-      asellable.barcode AS barcode,
-      asellable.status AS status,
-      asellable.cost AS cost,
-      base_sellable_info.price AS price,
-      base_sellable_info.is_valid_model AS is_valid_model,
-      base_sellable_info.description AS description,
-      sellable_unit.description AS unit,
-      product.id as product_id,
-      supplier_person.name AS supplier_name,
-      abstract_stock_item.branch_id AS branch_id,
-      sum(abstract_stock_item.quantity+abstract_stock_item.logic_quantity) AS stock
-
-   FROM base_sellable_info, asellable
-
-      -- Sellable unit
-
-      LEFT JOIN sellable_unit
-      ON (sellable_unit.id = asellable.unit_id)
-
-      -- Product
-
-      LEFT JOIN product_adapt_to_sellable
-      ON (product_adapt_to_sellable.id = asellable.id)
-
-      LEFT JOIN product
-      ON (product.id = product_adapt_to_sellable.original_id)
-
-      -- Product Stock Item
-
-      LEFT JOIN product_adapt_to_storable
-      ON (product_adapt_to_storable.original_id = product.id)
-      
-      LEFT JOIN product_stock_item
-      ON (product_stock_item.storable_id = product_adapt_to_storable.id)
-
-      LEFT JOIN abstract_stock_item
-      ON (abstract_stock_item.id = product_stock_item.id)
-
-      -- Product Supplier
-
-      LEFT JOIN product_supplier_info
-      ON (product_supplier_info.product_id = product.id AND
-          product_supplier_info.is_main_supplier = 't')
-
-      LEFT JOIN person_adapt_to_supplier
-      ON (person_adapt_to_supplier.id = product_supplier_info.supplier_id)
-
-      LEFT JOIN person AS supplier_person
-      ON (supplier_person.id = person_adapt_to_supplier.original_id)
-
-   WHERE
-        asellable.base_sellable_info_id = base_sellable_info.id AND
-        base_sellable_info.is_valid_model = 't'
-
-   GROUP BY
-        asellable.code, asellable.status,  asellable.barcode, asellable.id, 
-        asellable.cost, base_sellable_info.price, base_sellable_info.description, 
-        base_sellable_info.is_valid_model, sellable_unit.description, 
-        product.id,  supplier_person.name, abstract_stock_item.branch_id;
-
-
-
---
--- Stores information about sellables and stock information in all
--- branch companies.
---
--- Available fields are: the same fields of sellable_view table.
---
--- Callsites:
---
---   stoqlib/gui/search/sellablesearch.py
---
-CREATE VIEW sellable_full_stock_view AS
-
-  SELECT DISTINCT
-    sum(stock) AS stock,
-    id,
-    code,
-    barcode,
-    status,
-    0 AS branch_id, cost,
-    price,
-    is_valid_model,
-    description,
-    unit,
-    supplier_name,
-    product_id
-
-  FROM sellable_view
-
-  GROUP BY code, barcode, status, id, cost, price, is_valid_model,
-           description, unit, supplier_name, product_id;
-
-
---
--- Stores information about products and stock information in all
--- branch companies.
---
--- Available fields are: the same fields of sellable_full_stock_view
---
--- Callsites:
---
---   stoqlib/gui/search/productsearch.py
---
-CREATE VIEW product_full_stock_view AS
-
-  SELECT * 
-
-  FROM sellable_full_stock_view 
-
-  WHERE product_id IS NOT NULL;
-
-
---
--- Stores information about services
---
--- Available fields are:
---     id                 - the id of the asellable table
---     code               - the sellable code
---     barcode            - the sellable barcode
---     status             - the sellable status
---     cost               - the sellable cost
---     price              - the sellable price
---     description        - the sellable description
---     unit               - the unit in case the sellable is not a gift
---                          certificate
---     service_id         - the id of the service table
---
--- Callsites:
---
---   stoqlib/gui/search/servicesearch.py
---
-CREATE VIEW service_view AS
-
-  SELECT DISTINCT
-    asellable.id AS id,
-    asellable.code AS code,
-    asellable.barcode AS barcode,
-    asellable.status AS status,
-    asellable.cost AS cost,
-    base_sellable_info.price AS price,
-    base_sellable_info.description AS description,
-    sellable_unit.description AS unit,
-    service.id AS service_id
-
-  FROM base_sellable_info, service_adapt_to_sellable, service, asellable
-
-    LEFT JOIN sellable_unit
-    ON (asellable.unit_id = sellable_unit.id)
-
-  WHERE service.is_valid_model = 't' AND
-        asellable.base_sellable_info_id = base_sellable_info.id AND
-        asellable.id = service_adapt_to_sellable.id AND
-        service.id = service_adapt_to_sellable.original_id;
-
-
---
--- Stores information about gift certificates
---
--- Available fields are:
---     id                 - the id of the asellable table
---     code               - the sellable code
---     barcode            - the sellable barcode
---     status             - the sellable status
---     cost               - the sellable cost
---     price              - the sellable price
---     on_sale_price      - the sellable price when the item is on sale
---     description        - the sellable description
---     giftcertificate_id - the id of giftcertificate table
---
--- Callsites:
---
---   stoqlib/gui/search/giftcertificatesearch.py
---
-CREATE VIEW gift_certificate_view AS
-
-  SELECT DISTINCT
-    asellable.id AS id,
-    asellable.code AS code,
-    asellable.barcode AS barcode,
-    asellable.status AS status,
-    asellable.cost AS cost,
-    base_sellable_info.price AS price,
-    on_sale_info.on_sale_price AS on_sale_price,
-    base_sellable_info.description AS description,
-    gift_certificate.id AS giftcertificate_id
-
-  FROM asellable, base_sellable_info, on_sale_info, 
-       gift_certificate_adapt_to_sellable, gift_certificate
-
-  WHERE gift_certificate.is_valid_model = 't' AND
-        asellable.base_sellable_info_id = base_sellable_info.id AND
-        asellable.on_sale_info_id = on_sale_info.id AND
-        asellable.id = gift_certificate_adapt_to_sellable.id AND
-        gift_certificate_adapt_to_sellable.original_id = gift_certificate.id;
-
---
--- Stores information about sales
---
--- Available fields are:
---     id                 - the id of the sale table
---     coupon_id          - the id generated by the fiscal printer
---     order_number       - the sale order_number
---     open_date          - the date when the sale was started
---     confirm_date       - the date when the sale was confirmed
---     close_date         - the date when the sale was closed
---     cancel_date        - the date when the sale was cancelled
---     notes              - sale order general notes
---     status             - the sale status
---     salesperson_name   - the salesperson name
---     client_name        - the sale client name
---     client_id          - the if of the client table
---     subtotal           - the sum of all items in the sale
---     surcharge_value    - the sale surcharge value
---     discount_value     - the sale discount value
---     total              - the subtotal - discount + charge
---     total_quantity     - the items total quantity for the sale
---
---  Callsites:
---   
---   stoqlib/domain/person.py
---   stoqlib/gui/search/salesearch.py
---   stoqlib/gui/slaves/saleslave.py
---   stoqlib/gui/dialogs/saledetails.p
---   stoqlib/gui/wizards/salereturnwizard.py
---   stoqlib/reporting/sale.py
---   stoq/gui/receivable/receivable.py
---   stoq/gui/sales/sales.py
---   stoq/gui/till/till.py
---
-CREATE VIEW sale_view AS
-
-  SELECT DISTINCT
-    sale_id AS id,
-    sale.coupon_id AS coupon_id,
-    sale.order_number AS order_number,
-    sale.open_date AS open_date,
-    sale.close_date AS close_date,
-    sale.status AS status,
-    sale.surcharge_value AS surcharge_value,
-    sale.discount_value AS discount_value,
-    sale.confirm_date AS confirm_date,
-    sale.cancel_date AS cancel_date,
-    sale.notes AS notes,
-    sale.client_id AS client_id,
-    client_person.name AS client_name,
-    person.name AS salesperson_name,
-    sum(quantity * price) - sale.discount_value + sale.surcharge_value AS total,
-    sum(quantity * price) AS subtotal,
-    sum(quantity) AS total_quantity
-
-  FROM asellable_item, person_adapt_to_sales_person, person, sale
-    
-    LEFT JOIN person_adapt_to_client
-    ON (sale.client_id = person_adapt_to_client.id)
-
-    LEFT JOIN person AS client_person
-    ON (person_adapt_to_client.original_id = client_person.id)
-
-  WHERE sale.is_valid_model = 't' AND
-        asellable_item.sale_id = sale_id AND
-        sale.salesperson_id = person_adapt_to_sales_person.id AND
-        person_adapt_to_sales_person.original_id = person.id
- 
-  GROUP BY asellable_item.sale_id, sale.id,
-           sale.surcharge_value, sale.discount_value, 
-           sale.coupon_id, sale.order_number,
-           sale.open_date, sale.close_date,
-           sale.status, sale.confirm_date,
-           sale.cancel_date, sale.notes,
-           sale.client_id,
-           client_person.name,
-           person.name
-
-  HAVING sale_id = sale.id;
-
---
--- Stores information about clients.
--- Available fields are:
---    id                  - the id of the person table
---    name                - the client name
---    status              - the client financial status
---    cpf                 - the brazil-specific cpf attribute
---    rg_number           - the brazil-specific rg_number attribute
---    phone_number        - the client phone_number
---
--- Callsites:
---
---   stoqlib/gui/search/personsearch.py
---
-CREATE VIEW client_view AS
-
-  SELECT DISTINCT
-    person.id AS id,
-    person.name AS name,
-    person_adapt_to_client.status AS status,
-    person_adapt_to_individual.cpf AS cpf,
-    person_adapt_to_individual.rg_number As rg_number,
-    person.phone_number AS phone_number,
-    person_adapt_to_client.id AS client_id
-
-  FROM person_adapt_to_client, person
-
-    LEFT JOIN person_adapt_to_individual
-    ON (person.id = person_adapt_to_individual.original_id)
-
-  WHERE person_adapt_to_client.is_valid_model = 't' AND
-        person.id = person_adapt_to_client.original_id;
-
-
---
--- Stores information about purchase orders.
--- Available fields are:
---    id                      - the if of purchase_order table
---    status                  - the purchase order status
---    order_number            - the purchase order_number
---    open_date               - the date when the order was started
---    quote_deadline          - the date when the quotation expires
---    expected_receival_date  - expected date to receive products
---    expected_pay_date       - expected date to pay the products
---    receival_date           - the date when the products were received
---    confirm_date            - the date when the order was confirmed
---    salesperson_name        - the name of supplier's salesperson
---    freight                 - the freight value
---    surcharge_value         - the surcharge value for the order total
---    discount_value          - the discount_value for the order total
---    supplier_name           - the supplier name
---    transporter_name        - the transporter name
---    branch_name             - the branch company name
---    ordered_quantity        - the total quantity ordered
---    received_quantity       - the total quantity received
---    subtotal                - the order subtotal (sum of product values)
---    total                   - subtotal - discount_value + surcharge_value
---
--- Callsites:
---
---   stoqlib/gui/wizards/receivingwizard.py
---   stoqlib/reporting/purchase.py
---   stoq/gui/purchase/purchase.py
---
-CREATE VIEW purchase_order_view AS
-
-  SELECT DISTINCT
-    purchase_order.id AS id,
-    purchase_order.status AS status,
-    purchase_order.order_number AS order_number,
-    purchase_order.open_date AS open_date,
-    purchase_order.quote_deadline AS quote_deadline,
-    purchase_order.expected_receival_date AS expected_receival_date,
-    purchase_order.expected_pay_date AS expected_pay_date,
-    purchase_order.receival_date AS receival_date,
-    purchase_order.confirm_date AS confirm_date,
-    purchase_order.salesperson_name AS salesperson_name,
-    purchase_order.freight AS freight,
-    purchase_order.surcharge_value AS surcharge_value,
-    purchase_order.discount_value AS discount_value,
-    supplier_person.name AS supplier_name,
-    transporter_person.name AS transporter_name,
-    branch_person.name AS branch_name,
-    sum(quantity) AS ordered_quantity,
-    sum(quantity_received) AS received_quantity,
-    sum(cost*quantity) AS subtotal,
-    sum(cost*quantity) - purchase_order.discount_value + purchase_order.surcharge_value AS total
-
-  FROM person_adapt_to_supplier,
-       person AS supplier_person,
-       person_adapt_to_branch,
-       purchase_item,
-       person AS branch_person,
-       purchase_order
-       
-    LEFT JOIN person_adapt_to_transporter
-    ON (purchase_order.transporter_id = person_adapt_to_transporter.id)
-
-    LEFT JOIN person AS transporter_person
-    ON (person_adapt_to_transporter.original_id = transporter_person.id)
-
-  WHERE purchase_order.is_valid_model = 't' AND
-        person_adapt_to_supplier.original_id = supplier_person.id AND
-        person_adapt_to_branch.original_id = branch_person.id AND
-        purchase_order.supplier_id = person_adapt_to_supplier.id AND
-        purchase_order.branch_id = person_adapt_to_branch.id AND
-        purchase_item.order_id = purchase_order.id
-
-  GROUP BY purchase_item.order_id,
-           purchase_order.id,
-           purchase_order.status,
-           purchase_order.order_number,
-           purchase_order.open_date,
-           purchase_order.quote_deadline,
-           purchase_order.expected_receival_date,
-           purchase_order.expected_pay_date,
-           purchase_order.receival_date,
-           purchase_order.confirm_date,
-           purchase_order.salesperson_name,
-           purchase_order.freight,
-           purchase_order.surcharge_value,
-           purchase_order.discount_value,
-           supplier_person.name,
-           transporter_person.name,
-           branch_person.name
-
-  HAVING order_id = purchase_order.id;
-
---
--- Stores information about clients.
--- Available fields are:
---    id                  - the id of the icms_ipi_book_entry table
---    identifier          - the identifier of icms_ipi_book_entry table
---    icms_value          - the total value of icms
---    ipi_value           - the total value of ipi
---    date                - the date when the entry was created
---    invoice_number      - the invoice number
---    cfop_data_id        - the if of the cfop_data table
---    cfop_code           - the code of the cfop
---    drawee_name         - the drawee name
---    drawee_id           - the if of Person table
---    branch_id           - the id of the person_adapt_to_branch table
---    payment_group_id    - the id of the abstract_payment_group table
---
--- Callsites:
---
---   stoqlib/gui/search/fiscalsearch.py
---
-CREATE VIEW icms_ipi_view AS
-
-  SELECT DISTINCT
-    icms_ipi_book_entry.id AS id,
-    icms_ipi_book_entry.icms_value AS icms_value,
-    icms_ipi_book_entry.ipi_value AS ipi_value,
-    abstract_fiscal_book_entry.identifier AS identifier,
-    abstract_fiscal_book_entry.date AS date,
-    abstract_fiscal_book_entry.invoice_number AS invoice_number,
-    abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
-    abstract_fiscal_book_entry.branch_id AS branch_id,
-    abstract_fiscal_book_entry.drawee_id AS drawee_id,
-    abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
-    cfop_data.code AS cfop_code,
-    person.name AS drawee_name
-
-  FROM cfop_data, icms_ipi_book_entry, abstract_fiscal_book_entry
-
-   LEFT JOIN person
-   ON (abstract_fiscal_book_entry.drawee_id = person.id)
-
-  WHERE icms_ipi_book_entry.id = abstract_fiscal_book_entry.id AND 
-        cfop_data.id = abstract_fiscal_book_entry.cfop_id;
-
-
---
--- Stores information about clients.
--- Available fields are:
---    id                  - the id of the iss_book_entry table
---    identifier          - the identifier of iss_book_entry table
---    iss_value           - the total value of iss
---    date                - the date when the entry was created
---    invoice_number      - the invoice number
---    cfop_data_id        - the if of the cfop_data table
---    cfop_code           - the code of the cfop
---    drawee_name         - the drawee name
---    branch_id           - the id of the person_adapt_to_branch table
---    payment_group_id    - the if of the abstract_payment_group table
---
--- Callsites:
---
---   stoqlib/gui/search/fiscalsearch.py
---
-CREATE VIEW iss_view AS
-
-  SELECT DISTINCT
-    iss_book_entry.id AS id,
-    iss_book_entry.iss_value AS iss_value,
-    abstract_fiscal_book_entry.identifier AS identifier,
-    abstract_fiscal_book_entry.date AS date,
-    abstract_fiscal_book_entry.invoice_number AS invoice_number,
-    abstract_fiscal_book_entry.cfop_id AS cfop_data_id,
-    abstract_fiscal_book_entry.branch_id AS branch_id,
-    abstract_fiscal_book_entry.drawee_id AS drawee_id,
-    abstract_fiscal_book_entry.payment_group_id AS payment_group_id,
-    cfop_data.code AS cfop_code,
-    person.name AS drawee_name
-
-  FROM iss_book_entry, cfop_data, abstract_fiscal_book_entry
-
-    LEFT JOIN person
-    ON (abstract_fiscal_book_entry.drawee_id = person.id)
-
-  WHERE iss_book_entry.id = abstract_fiscal_book_entry.id AND
-        cfop_data.id = abstract_fiscal_book_entry.cfop_id;
-
-
---
--- Stores information about till entries and payments
--- Available fields are:
---    id                      - the identifier of till entries and payments
---    Note: this field is used only to deal with SQLObject compatibility
---    identifier              - the identifier of till entries and payments
---    Note: this is a field used to query on with search dialogs
---    date                    - the date when the entry was created
---    description             - the entry description
---    value                   - the entry value
---    is_initial_cash_amount  - is this entry the initial cash amount?
---    till_id                 - the id of the till table
---    status                  - the status of the till table
---    closing_date            - the closing_date of the till table
---    station_name            - the value of name branch_station name column
---    branch_id               - the id of the person_adapt_to_branch table
---
--- Callsites:
---
---   stoqlib/domain/till.py
---   stoqlib/gui/dialogs/tillhistory.py
---
-
-CREATE VIEW till_entry_and_payment_view AS
-
-  SELECT DISTINCT
-    till_entry.identifier AS id,
-    till_entry.identifier AS identifier,
-    till_entry.date AS date,
-    till_entry.description AS description,
-    till_entry.value AS value,
-    till_entry.is_initial_cash_amount AS is_initial_cash_amount,
-    till_entry.till_id AS till_id,
-    till.status AS status,
-    till.closing_date AS closing_date,
-    branch_station.name AS station_name,
-    person_adapt_to_branch.id AS branch_id
-
-  FROM till_entry, till, branch_station, person_adapt_to_branch
-  
-  WHERE till_entry.till_id = till.id AND
-    	till.station_id = branch_station.id AND
-    	branch_station.branch_id = person_adapt_to_branch.id
-
-  UNION ALL
-
-    SELECT DISTINCT
-      payment.identifier AS id,
-      payment.identifier AS identifier,
-      payment.open_date AS date,
-      payment.description AS description,
-      payment.value AS value,
-      FALSE AS is_initial_cash_amount,
-      payment.till_id AS till_id,
-      till.status AS status,
-      till.closing_date AS date,
-      branch_station.name AS station_name,
-      person_adapt_to_branch.id AS branch_id
-
-    FROM payment, till, branch_station, person_adapt_to_branch
-
-    WHERE payment.till_id = till.id AND
-          till.station_id = branch_station.id AND
-          branch_station.branch_id = person_adapt_to_branch.id;
-
---
--- Stores information about payments
--- Available fields are:
---    identifier              - the identifier of till entries and payments
---    date                    - the date when the entry was created
---    description             - the entry description
---    value                   - the entry value
---    station_name            - the value of name branch_station name column
---
-CREATE VIEW till_fiscal_operations_view AS
-
-  SELECT DISTINCT
-    payment.id AS id,
-    payment.identifier AS identifier,
-    payment.open_date AS date,
-    payment.description AS description,
-    payment.value AS value,
-    branch_station.name AS station_name,
-    person_adapt_to_branch.id AS branch_id,
-    till.status AS status
-
-  FROM payment, till, branch_station, person_adapt_to_branch
-
-  WHERE payment.till_id = till.id AND
-        till.station_id = branch_station.id AND
-        branch_station.branch_id = person_adapt_to_branch.id;
-
---
 -- Finally create the system_table which we use to verify that the schema
 -- is properly created.
 --
 CREATE TABLE system_table (
-    id bigserial NOT NULL PRIMARY KEY,
+    id serial NOT NULL PRIMARY KEY,
     update_date timestamp,
     version integer
 );
