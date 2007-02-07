@@ -402,13 +402,15 @@ class InheritableSQLObject(SQLObject):
     selectOne = classmethod(selectOne)
 
     def _SO_prepareSelectBy(cls, conn, kw):
-        ops = {None: "IS"}
         data = {}
-        clauses = []
         tables = []
 
-        # Inherited attributes
+        # ID
         currentClass = cls.sqlmeta.parentClass
+        if 'id' in kw:
+            data[currentClass.sqlmeta.table + '.id'] = kw.pop('id')
+
+        # Inherited attributes
         while currentClass:
             tableName = currentClass.sqlmeta.table
             for c in currentClass.sqlmeta.columns.values():
@@ -428,9 +430,10 @@ class InheritableSQLObject(SQLObject):
                         data[dbName] = obj
             currentClass = currentClass.sqlmeta.parentClass
 
-        clauses.extend(['%s %s %s' %
-                        (dbName, ops.get(value, "="), conn.sqlrepr(value))
-                        for dbName, value in data.items()])
+        ops = { None: "IS" }
+        clauses = ['%s %s %s' %
+                   (dbName, ops.get(value, "="), conn.sqlrepr(value))
+                   for dbName, value in data.items()]
 
         # join in parent tables
         # This is rather tricky, we need to tie the ids and the child names
