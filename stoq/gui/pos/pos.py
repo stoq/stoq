@@ -104,8 +104,9 @@ class POSApp(AppWindow):
         sellable = self._get_sellable()
         # If the sellable has a weight unit specified and we have a scale
         # configured for this station, go and check out what the printer says.
-        if (sellable and sellable.unit and sellable.unit.index == UNIT_WEIGHT
-            and get_current_scale_settings(self.conn)):
+        if (sellable and sellable.unit and
+            sellable.unit.unit_index == UNIT_WEIGHT and
+            get_current_scale_settings(self.conn)):
             self._read_scale()
 
     def _setup_proxies(self):
@@ -303,9 +304,9 @@ class POSApp(AppWindow):
                 return
             # If the sellable has a weight unit specified and we have a scale
             # configured for this station, go and check what the scale says.
-            if (sellable and sellable.unit
-                and sellable.unit.index == UNIT_WEIGHT
-                and get_current_scale_settings(self.conn)):
+            if (sellable and sellable.unit and
+                sellable.unit.unit_index == UNIT_WEIGHT and
+                get_current_scale_settings(self.conn)):
                 self._read_scale(sellable)
 
         self._update_list(sellable, notify_on_entry=True)
