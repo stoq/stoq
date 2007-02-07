@@ -32,6 +32,9 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
+from stoqlib.domain.person import Person
+from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
+from stoqlib.domain.product import (Product, ProductAdaptToSellable)
 from stoqlib.lib.message import warning
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -39,9 +42,6 @@ from stoqlib.gui.search.receivingsearch import PurchaseReceivingSearch
 from stoqlib.gui.dialogs.productstockdetails import ProductStockHistoryDialog
 from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
-from stoqlib.domain.person import Person
-from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
-from stoqlib.domain.product import (Product, ProductAdaptToSellable)
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.warehouse.view import WarehouseView
