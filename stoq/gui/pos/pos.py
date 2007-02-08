@@ -366,7 +366,9 @@ class POSApp(AppWindow):
                       "salesperson."))
             return
         if self._coupon is not None:
-            self._cancel_order()
+            if not self._cancel_order():
+                return
+
         rollback_and_begin(self.conn)
         sale = self.run_dialog(NewOrderEditor, self.conn)
         if sale:
@@ -385,16 +387,22 @@ class POSApp(AppWindow):
             return
 
     def _cancel_order(self):
+        """
+        Cancels the currently opened order.
+        @returns: True if the order was canceled, otherwise false
+        """
         if self.sale is not None:
             if yesno(_(u'The current order will be canceled, Confirm?'),
-                     gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
-                return
+                         gtk.RESPONSE_NO,_(u"Go Back"), _(u"Cancel Order")):
+                return False
         log.info("Cancelling order")
         self._clear_order()
         if not self.param.CONFIRM_SALES_ON_TILL:
             if self._coupon:
                 self._coupon.cancel()
                 self._coupon = None
+
+        return True
 
     def _add_delivery(self):
         if not self.sellables:
