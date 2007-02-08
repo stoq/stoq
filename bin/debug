@@ -38,7 +38,8 @@ from stoqlib.database.tables import get_table_types
 from stoqlib.lib.parameters import sysparam
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, get_option_parser
+from stoq.lib.options import get_option_parser
+from stoq.lib.startup import setup
 
 def _interactive(ns):
     import readline

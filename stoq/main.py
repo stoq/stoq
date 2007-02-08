@@ -33,28 +33,27 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger, set_log_file
-from stoqlib.database.exceptions import PostgreSQLError
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import StoqlibError, UserProfileError
 from stoqlib.lib.message import error
 
 from stoq.lib.applist import get_application_names
-from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import setup, get_option_parser
+from stoq.lib.options import get_option_parser
 
 _ = gettext.gettext
 log = Logger('stoq.main')
 
 def _check_dependencies():
-    log.debug('checking dependencies')
-    try:
-        import reportlab
-    except ImportError:
-        raise SystemExit("Reportlab 1.20 is required but could not be found.")
+    if 0:
+        log.debug('checking dependencies')
+        try:
+            import reportlab
+        except ImportError:
+            raise SystemExit("Reportlab 1.20 is required but could not be found.")
 
-    if map(int, reportlab.Version.split('.')) < [1, 20]:
-        raise SystemExit("Reportlab 1.20 is required but %s found" %
-                         reportlab.Version)
-    log.debug('reportlab okay')
+        if map(int, reportlab.Version.split('.')) < [1, 20]:
+            raise SystemExit("Reportlab 1.20 is required but %s found" %
+                             reportlab.Version)
+        log.debug('reportlab okay')
 
     try:
         import gazpacho
@@ -129,6 +128,8 @@ def _initialize(options):
 
     _check_dependencies()
     _setup_dialogs()
+
+    from stoq.lib.configparser import StoqConfig
     log.debug('reading configuration')
     config = StoqConfig()
     config.load(options.filename)
@@ -157,6 +158,8 @@ def _initialize(options):
               _("Invalid config file settings, got error '%s', "
                 "of type '%s'" % (value, type)))
 
+    from stoq.lib.startup import setup
+    from stoqlib.database.exceptions import PostgreSQLError
     log.debug('calling setup()')
     # XXX: progress dialog for connecting (if it takes more than
     # 2 seconds) or creating the database
@@ -168,7 +171,6 @@ def _initialize(options):
         raise SystemExit("Error: bad connection settings provided")
 
     _check_tables()
-    _setup_printers()
 
 def _show_splash():
     from stoqlib.gui.splash import SplashScreen
@@ -181,17 +183,25 @@ def _show_splash():
     return splash
 
 def _run_app(options, appname):
+    from stoqlib.gui.base.dialogs import run_dialog
     from stoqlib.gui.base.gtkadds import register_iconsets
-    from stoq.gui.login import LoginHelper
+    from stoq.gui.login import LoginHelper, SelectApplicationsDialog
 
     log.debug('register stock icons')
     register_iconsets()
 
     log.debug('loading application')
-    appconf = LoginHelper(appname, options)
+    login = LoginHelper(options)
     # Get the selected application if nothing was selected
     if not appname:
-        appname = appconf.appname
+        appname = run_dialog(SelectApplicationsDialog())
+        if appname is None:
+            return
+
+        if not login.user.profile.check_app_permission(appname):
+            raise UserProfileError(
+                _("This user lacks credentials \nfor application %s")
+                % appname)
 
     splash = _show_splash()
 
@@ -207,8 +217,10 @@ def _run_app(options, appname):
     import gobject
     gobject.idle_add(splash.hide)
 
+    _setup_printers()
+
     log.info('Starting %s application' % appname)
-    module.main(appconf)
+    module.main(login)
 
     import gtk
     log.debug("Entering main loop")

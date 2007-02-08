@@ -58,24 +58,16 @@ class ApplicationDescriptions:
         return get_application_names()
 
     def get_descriptions(self):
-        # Import these modules here to reduce the startup time
-        import inspect
-        from stoq.gui.application import AppWindow
-
         applications = self.get_application_names()
         app_desc = []
-        for appname in applications:
-            module = __import__("stoq.gui.%s.%s" % (appname, appname),
-                                globals(), locals(), appname)
-            for name, member in inspect.getmembers(module, inspect.isclass):
-                if member.__module__ != module.__name__:
-                    continue
-                if not issubclass(member, AppWindow):
-                    continue
-                app_full_name = getattr(member, 'app_name', None)
-                app_icon_name = getattr(member, 'app_icon_name', None)
-                if not app_full_name:
-                    raise ValueError('App %s must have an app_name attribute'
-                                     % member)
-                app_desc.append((appname, app_full_name, app_icon_name))
+        for name in applications:
+            module = __import__("stoq.gui.%s" % (name,),
+                                globals(), locals(), ' ')
+            if not hasattr(module, "application"):
+                raise ValueError('Module %r must have an application attribute'
+                                 % module)
+            icon = getattr(module, 'icon_name', None)
+            description = getattr(module, 'description', None)
+            app_desc.append((name,
+                             module.application, icon, description))
         return app_desc

@@ -27,7 +27,6 @@
 """ Database startup routines"""
 
 import gettext
-import optparse
 import socket
 
 from kiwi.argcheck import argcheck
@@ -122,59 +121,6 @@ def _set_default_profile_settings():
     profile = UserProfile.selectOneBy(name='Salesperson', connection=trans)
     ProfileSettings.set_permission(trans, profile, 'pos', True)
     trans.commit(close=True)
-
-def get_option_parser():
-    """
-    Get the option parser used to parse arguments on the command line
-    @returns: an optparse.OptionParser
-    """
-
-    # Note: only generic command line options here, specific ones
-    #       should be added at callsite
-
-    parser = optparse.OptionParser()
-
-    group = optparse.OptionGroup(parser, 'General')
-    group.add_option('-f', '--filename',
-                      action="store",
-                      type="string",
-                      dest="filename",
-                      default=None,
-                      help='Use this file name for config file')
-    group.add_option('-v', '--verbose',
-                     action="store_true",
-                     dest="verbose",
-                     default=False)
-    group.add_option('', '--debug',
-                     action="store_true",
-                     dest="debug")
-    parser.add_option_group(group)
-
-    group = optparse.OptionGroup(parser, 'Database access')
-    group.add_option('-d', '--dbname',
-                      action="store",
-                      dest="dbname",
-                      help='Database name to use')
-    group.add_option('-H', '--hostname',
-                      action="store",
-                      dest="address",
-                      help='Database address to connect to')
-    group.add_option('-p', '--port',
-                      action="store",
-                      dest="port",
-                      help='Database port')
-    group.add_option('-u', '--username',
-                      action="store",
-                      dest="username",
-                      help='Database username')
-    group.add_option('-w', '--password',
-                     action="store",
-                     type="str",
-                     dest="password",
-                     help='user password',
-                     default='')
-    parser.add_option_group(group)
-    return parser
 
 @argcheck(StoqConfig)
 def create_examples(config):
