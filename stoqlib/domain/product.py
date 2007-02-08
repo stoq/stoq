@@ -209,18 +209,16 @@ class ProductSellableItem(ASellableItem):
         sparam = sysparam(conn)
         if not (branch and
                 branch.id == get_current_branch(conn).id):
-            msg = ("Stock still doesn't support sales for "
-                   "branch companies different than the "
-                   "current one")
-            raise SellError(msg)
+            raise SellError("Stock still doesn't support sales for "
+                            "branch companies different than the "
+                            "current one")
 
         if order_product and not sparam.ACCEPT_ORDER_PRODUCTS:
-            msg = _("This company doesn't allow order products")
-            raise SellError(msg)
+            raise SellError(
+                _("This company doesn't allow order products"))
 
         if not self.sellable.can_be_sold():
-            msg = '%r is already sold' % self.sellable
-            raise SellError(msg)
+            raise SellError('%r is already sold' % self.sellable)
 
         if order_product:
             # TODO waiting for bug 2469
@@ -355,9 +353,8 @@ class ProductAdaptToStorable(ModelAdapter):
             else:
                 base_qty = stock_item.quantity
             if base_qty < quantity:
-                msg = ('Quantity to decrease is greater than available '
-                       'stock.')
-                raise StockError(msg)
+                raise StockError('Quantity to decrease is greater than available '
+                                 'stock.')
 
     def _has_qty_available(self, quantity, branch):
         logic_qty = self.get_logic_balance(branch)
@@ -366,9 +363,8 @@ class ProductAdaptToStorable(ModelAdapter):
         logic_qty_ok = quantity <= self.get_full_balance(branch)
         has_logic_qty = sysparam(self.get_connection()).USE_LOGIC_QUANTITY
         if not qty_ok and not (has_logic_qty and logic_qty_ok):
-            msg = ('Quantity to sell is greater than the available '
-                   'stock.')
-            raise StockError(msg)
+            raise StockError('Quantity to sell is greater than the available '
+                             'stock.')
         return qty_ok
 
     def _add_stock_item(self, branch, stock_cost=0.0, quantity=0.0,
@@ -488,9 +484,9 @@ class ProductAdaptToStorable(ModelAdapter):
             total_qty += stock_item.quantity
 
         if total_cost and not total_qty:
-            msg = ('%r has inconsistent stock information: Quantity = 0 '
-                   'and TotalCost= %f')
-            raise StockError(msg % (self, total_cost))
+            raise StockError(
+                '%r has inconsistent stock information: Quantity = 0 '
+                'and TotalCost= %f' % (self, total_cost))
         if not total_qty:
             return currency(0)
         return currency(total_cost / total_qty)
