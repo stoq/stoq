@@ -216,6 +216,7 @@ class BasicDialog(AbstractDialog):
                 dialog, widget))
         widget.connect('activate', self.cancel)
 
+
     #
     # Kiwi handlers
     #
@@ -447,7 +448,7 @@ def get_dialog(parent, dialog, *args, **kwargs):
             dialog.set_transient_for(parent)
     return dialog
 
-def run_dialog(dialog, parent, *args, **kwargs):
+def run_dialog(dialog, parent=None, *args, **kwargs):
     """
     Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.
@@ -470,7 +471,6 @@ def run_dialog(dialog, parent, *args, **kwargs):
 
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
-
 
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
