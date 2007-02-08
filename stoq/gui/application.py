@@ -29,17 +29,20 @@ import gettext
 import gtk
 from kiwi.component import get_utility
 from kiwi.environ import environ
-from stoqlib.gui.base.application import BaseApp, BaseAppWindow
-from stoqlib.gui.base.search import SearchBar
-from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import get_current_user, new_transaction
-from stoqlib.gui.base.dialogs import print_report
+from stoqlib.exceptions import UserProfileError
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.interfaces import ICookieFile
+from stoqlib.gui.base.application import BaseApp, BaseAppWindow
+from stoqlib.gui.base.dialogs import print_report
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.base.search import SearchBar
+from stoqlib.gui.introspection import introspect_slaves
+from stoqlib.gui.slaves.filterslave import FilterSlave
 
 import stoq
-from stoqlib.gui.slaves.filterslave import FilterSlave
+from stoq.gui.login import SelectApplicationsDialog
 
 
 _ = gettext.gettext
@@ -168,6 +171,7 @@ class AppWindow(BaseAppWindow):
               <menuitem action="ClearCookie"/>
               <separator/>
               <menuitem action="ChangeUser"/>
+              <menuitem action="ChangeApplication"/>
             </menu>
           </menubar>
         </ui>"""
@@ -179,6 +183,8 @@ class AppWindow(BaseAppWindow):
              _('Clear the cookie'), self.on_ClearCookie__activate),
             ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
              _('Change user'), self.on_ChangeUser__activate),
+            ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
+             'F11', _('Change application'), self._on_ChangeApplication__activate),
             ]
         ag = gtk.ActionGroup('UsersMenuActions')
         ag.add_actions(actions)
@@ -244,6 +250,33 @@ class AppWindow(BaseAppWindow):
     def on_ChangeUser__activate(self, action):
         # Implement a change user dialog here
         raise NotImplementedError
+
+    def _on_ChangeApplication__activate(self, action):
+        toplevel = self.get_toplevel()
+
+        appname = run_dialog(SelectApplicationsDialog(self.app.config.appname),
+                             parent=toplevel)
+        if appname is None:
+            return
+
+        user = get_current_user(self.conn)
+        if not user.profile.check_app_permission(appname):
+            raise UserProfileError(
+                _("This user lacks credentials \nfor application %s")
+                % appname)
+
+        toplevel.hide()
+        self.app.shutdown()
+
+        module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
+        if not hasattr(module, "main"):
+            raise RuntimeError(
+                "Application %s must have a app.main() function")
+        self.app.config.appname = appname
+
+        module.main(self.app.config)
+
+        gtk.main()
 
     def on_Introspect_activate(self, action):
         window = self.get_toplevel()
