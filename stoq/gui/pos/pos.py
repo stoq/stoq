@@ -368,17 +368,18 @@ class POSApp(AppWindow):
         if self._coupon is not None:
             self._cancel_order()
         rollback_and_begin(self.conn)
-        self.sale = self.run_dialog(NewOrderEditor, self.conn)
-        if self.sale:
+        sale = self.run_dialog(NewOrderEditor, self.conn)
+        if sale:
             log.info("Creating a new order")
             self.sellables.clear()
-            self.order_proxy.set_model(self.sale)
+            self.order_proxy.set_model(sale)
             self._update_widgets()
             self._update_totals()
             self.set_sensitive((self.search_box, self.footer_hbox,
                                 self.list_vbox, self.CancelOrder),
                                True)
             self.barcode.grab_focus()
+            self.sale = sale
         else:
             rollback_and_begin(self.conn)
             return
