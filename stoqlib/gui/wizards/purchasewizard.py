@@ -39,7 +39,7 @@ from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import print_report, run_dialog
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
-from stoqlib.gui.wizards.abstractwizard import AbstractItemStep
+from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.editors.personeditor import SupplierEditor, TransporterEditor
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
@@ -142,7 +142,7 @@ class StartPurchaseStep(WizardEditorStep):
             self._setup_supplier_entry()
 
 
-class PurchaseItemStep(AbstractItemStep):
+class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
@@ -178,7 +178,7 @@ class PurchaseItemStep(AbstractItemStep):
             self.item.select(self.item_proxy.model.item)
 
     #
-    # AbstractItemStep virtual methods
+    # SellableItemStep virtual methods
     #
 
     def get_order_item(self, sellable, cost, quantity):

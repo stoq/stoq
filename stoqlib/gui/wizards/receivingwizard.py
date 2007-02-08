@@ -38,7 +38,7 @@ from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.slaves.receivingslave import ReceivingInvoiceSlave
 from stoqlib.gui.search.productsearch import ProductSearch
-from stoqlib.gui.wizards.abstractwizard import AbstractItemStep
+from stoqlib.gui.wizards.abstractwizard import SellableItemStep
 from stoqlib.gui.dialogs.purchasedetails import PurchaseDetailsDialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
@@ -180,13 +180,13 @@ class PurchaseSelectionStep(WizardEditorStep):
         run_dialog(PurchaseDetailsDialog, self, self.conn, model=order)
 
 
-class ReceivingOrderProductStep(AbstractItemStep):
+class ReceivingOrderProductStep(SellableItemStep):
     model_type = ReceivingOrder
     item_table = ReceivingOrderItem
     summary_label_text = "<b>%s</b>" % _('Total Received:')
 
     #
-    # AbstractItemStep overrides
+    # SellableItemStep overrides
     #
 
     def setup_item_entry(self):
