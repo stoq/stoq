@@ -86,11 +86,10 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         # sorting by app_full_name
         for name, full, icon, descr in sorted(descriptions,
                                               key=operator.itemgetter(1)):
-            model = Settable(name=name,
-                             fullname=full,
-                             icon=icon,
-                             description=descr)
-            self.klist.append(model)
+            self.klist.append(Settable(name=name,
+                                       fullname=full,
+                                       icon=icon,
+                                       description=descr))
         if not len(self.klist):
             raise ValueError('Application list should have items at '
                              'this point')
