@@ -184,7 +184,7 @@ class AppWindow(BaseAppWindow):
             ('ChangeUser',    gtk.STOCK_REFRESH, _('C_hange User'), '<control>h',
              _('Change user'), self.on_ChangeUser__activate),
             ('ChangeApplication',    gtk.STOCK_REFRESH, _('Change Application'),
-             'F11', _('Change application'), self._on_ChangeApplication__activate),
+             'F5', _('Change application'), self._on_ChangeApplication__activate),
             ]
         ag = gtk.ActionGroup('UsersMenuActions')
         ag.add_actions(actions)
