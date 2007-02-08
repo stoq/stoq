@@ -264,13 +264,15 @@ class POSApp(AppWindow):
         # is not valid (_is_valid_model defaults to False) until we finish the
         # whole process trough SaleWizard.
         self.conn.commit()
-        items = self.run_dialog(SellableSearch, self.conn,
-                                search_str=search_str, order=self.sale)
-        if not items:
+        sellable_view_item = self.run_dialog(SellableSearch, self.conn,
+                                selection_mode=gtk.SELECTION_BROWSE,
+                                search_str=search_str, order=self.sale,
+                                quantity=self.sellableitem_proxy.model.quantity)
+        if not sellable_view_item:
             return
-        for item in items:
-            sellable = ASellable.get(item.id, connection=self.conn)
-            self._update_list(sellable)
+
+        sellable = ASellable.get(sellable_view_item.id, connection=self.conn)
+        self._update_list(sellable)
         self.barcode.grab_focus()
 
     def _reset_quantity_proxy(self):
