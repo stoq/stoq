@@ -61,7 +61,7 @@ class SellableSearch(SearchEditor):
 
     def __init__(self, conn, hide_footer=False, hide_toolbar=True,
                  selection_mode=gtk.SELECTION_MULTIPLE, search_str=None,
-                 order=None):
+                 order=None, quantity=None):
         """
         @param conn: a sqlobject Transaction instance
         @param hide_footer: do I have to hide the dialog footer?
@@ -70,7 +70,10 @@ class SellableSearch(SearchEditor):
         @param search_str: FIXME
         @param order: optionally, an order from which will use to deduct
                       stock values
+        @param quantity: the quantity of stock to add to the order,
+                      is necessary to supply if you supply an order.
         """
+        self.quantity = quantity
         self.has_stock_mode = sysparam(conn).HAS_STOCK_MODE
         SearchEditor.__init__(self, conn, table=self.table,
                               search_table=self.search_table,
@@ -91,6 +94,12 @@ class SellableSearch(SearchEditor):
         self.current_sale_stock = {}
 
         if order:
+            if selection_mode == gtk.SELECTION_MULTIPLE:
+                raise TypeError("gtk.SELECTION_MULTIPLE is not supported "
+                                "when supplying an order")
+            if self.quantity is None:
+                raise TypeError("You need to specify a quantity "
+                                "when supplying an order")
             for item in order.get_items():
                 if IStorable(item.sellable.get_adapted(), None):
                     self.current_sale_stock[item.sellable.id] = item.quantity
@@ -164,3 +173,14 @@ class SellableSearch(SearchEditor):
         if self.has_stock_mode:
             self.filter_slave.connect('status-changed',
                                       self.search_bar.search_items)
+
+    def update_widgets(self):
+        sellable_view = self.klist.get_selected()
+        if not sellable_view:
+            return
+        sellable = ASellable.get(sellable_view.id, self.conn)
+        if (IStorable(sellable.get_adapted(), None) and
+            self.quantity > self._get_available_stock(sellable_view)):
+            self.ok_button.set_sensitive(False)
+        else:
+            self.ok_button.set_sensitive(True)
