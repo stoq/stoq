@@ -140,7 +140,7 @@ class AppWindow(BaseAppWindow):
         release_date = stoq.release_date
         about.set_comments('Release Date: %s' %
                            datetime.datetime(*release_date).strftime('%x'))
-        about.set_copyright('Copyright (C) 2005, 2006 Async Open Source')
+        about.set_copyright('Copyright (C) 2005-2007 Async Open Source')
 
         # Logo
         icon_file = environ.find_resource('pixmaps', 'stoq_logo.png')
