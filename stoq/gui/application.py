@@ -76,7 +76,6 @@ class AppWindow(BaseAppWindow):
 
     """
 
-    app_name = None
     app_icon_name = None
     klist_name = 'klist'
     klist_selection_mode = gtk.SELECTION_BROWSE
@@ -86,9 +85,6 @@ class AppWindow(BaseAppWindow):
         BaseAppWindow.__init__(self, app)
         self.user_menu_label = get_current_user(self.conn
                                     ).username.capitalize()
-        if not self.app_name:
-            raise ValueError('Child classes must define an app_name '
-                             'attribute')
         self._klist = getattr(self, self.klist_name)
         self._klist.set_columns(self.get_columns())
         self._klist.set_selection_mode(self.klist_selection_mode)

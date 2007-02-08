@@ -217,7 +217,7 @@ def main(args):
     cmd = args[0]
     args = args[1:]
 
-    from stoq.lib.startup import get_option_parser
+    from stoq.lib.options import get_option_parser
     parser = get_option_parser()
 
     handler = StoqCommandHandler(parser.get_prog_name())

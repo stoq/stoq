@@ -32,7 +32,9 @@ from kiwi import environ
 from kiwi.log import set_log_level
 
 from stoq.lib.configparser import StoqConfig
-from stoq.lib.startup import (setup, get_option_parser, create_examples,
+from stoq.lib.options import get_option_parser
+from stoq.lib.startup import (setup,
+                              create_examples,
                               clean_database)
 
 DEFAULT_SEPARATORS = 79
