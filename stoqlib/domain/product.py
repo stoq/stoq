@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,9 @@
 ## along with this program; if not, write to the Free Software
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
+## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
+
 """ Base classes to manage product's informations """
 
 from decimal import Decimal
@@ -252,11 +255,10 @@ class ProductSellableItem(ASellableItem):
     def get_quantity_delivered(self):
         # Avoiding circular imports here
         from stoqlib.domain.service import ServiceSellableItem
-        conn = self.get_connection()
-        q1 = ASellableItem.q.saleID == self.sale.id
-        q2 = ASellableItem.q.id == ServiceSellableItem.q.id
-        query = AND(q1, q2)
-        services = ASellableItem.select(query, connection=conn)
+        services = ASellableItem.select(
+            AND(ASellableItem.q.saleID == self.sale.id,
+                ASellableItem.q.id == ServiceSellableItem.q.id),
+            connection=self.get_connection())
         if not services:
             return Decimal(0)
         delivered_qty = Decimal(0)
