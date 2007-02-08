@@ -91,8 +91,7 @@ class LoginDialog(GladeDelegate, RunnableView):
     def _do_login(self):
         username = self.username.get_text().strip()
         password = self.password.get_text().strip()
-        app_name = self.get_app_name()
-        self.retval = username, password, app_name
+        self.retval = username, password
         self.set_field_sensitivity(False)
         self.notification_label.set_color('black')
         msg = _(" Authenticating user...")
@@ -110,15 +109,3 @@ class LoginDialog(GladeDelegate, RunnableView):
         self.show()
         gtk.main()
         return self.retval
-
-    #
-    # Hooks
-    #
-
-    def get_app_name(self):
-        """This method must be overwrited if a subclass want to manage an
-        application list and return the selected application by the user
-
-        @returns: a string with the name of the selected application
-        """
-        return None
