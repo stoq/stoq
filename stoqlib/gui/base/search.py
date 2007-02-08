@@ -184,7 +184,7 @@ class SearchDialog(BasicDialog):
         self.main.add(self.klist_vbox)
         self.klist.show()
         self.klist.connect('cell_edited', self.on_cell_edited)
-        self.klist.connect('selection-changed', self.update_widgets)
+        self.klist.connect('selection-changed', self._on_selection_changed)
 
     def _setup_details_slave(self):
         has_details_btn = hasattr(self, 'on_details_button_clicked')
@@ -266,6 +266,9 @@ class SearchDialog(BasicDialog):
         tasks when editing a row.
         """
 
+    def _on_selection_changed(self, klist, selected):
+        self.update_widgets()
+
     def set_searchbar_labels(self, search_entry_lbl, date_search_lbl=None):
         # Second argument is only used by Stoq's SearchableAppWindow
         self.search_bar.set_searchbar_labels(search_entry_lbl,
@@ -326,7 +329,7 @@ class SearchDialog(BasicDialog):
             self.summary_label.update_total()
         self.update_widgets()
 
-    def update_widgets(self, *args):
+    def update_widgets(self):
         """ Subclass can have an 'update_widgets', and this method will be
         called when a signal is emitted by 'Filter' or 'Clear' buttons and
         also when a list item is selected. """
