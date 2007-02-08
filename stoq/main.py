@@ -191,7 +191,7 @@ def _run_app(options, appname):
     register_iconsets()
 
     log.debug('loading application')
-    login = LoginHelper(options)
+    login = LoginHelper()
     # Get the selected application if nothing was selected
     if not appname:
         appname = run_dialog(SelectApplicationsDialog())
@@ -220,6 +220,9 @@ def _run_app(options, appname):
     _setup_printers()
 
     log.info('Starting %s application' % appname)
+    # FIXME: send in options as an argument.
+    login.options = options
+    login.appname = appname
     module.main(login)
 
     import gtk

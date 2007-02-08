@@ -55,7 +55,10 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
     title = _('Choose application')
     size = (520, 340)
 
-    def __init__(self):
+    def __init__(self, appname=None):
+        """
+        @param appname: application name to select
+        """
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
 
         self.logo.set_from_file(environ.find_resource("pixmaps",
@@ -65,6 +68,12 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
                                                size=self.size)
 
         self._setup_applist()
+
+        # O(n), but not so important, we have few apps.
+        for model in self.klist:
+            if model.name == appname:
+                self.klist.select(model)
+                break
 
     def get_toplevl(self):
         return self.main_dialog.get_toplevel()
@@ -93,7 +102,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
                        justify=gtk.JUSTIFY_LEFT,
                        icon_size=gtk.ICON_SIZE_LARGE_TOOLBAR),
                 Column('fullname', data_type=str,
-                       expand=True)]
+                       expand=True, searchable=True)]
 
     def on_confirm(self):
         app = self.klist.get_selected()
@@ -106,7 +115,8 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
         return True
 
     def on_klist__selection_changed(self, klist, model):
-        self.description.set_text(model.description)
+        if model:
+            self.description.set_text(model.description)
 
     def on_klist__row_activated(self, klist, model):
         self.main_dialog.confirm()
@@ -116,8 +126,7 @@ class SelectApplicationsDialog(GladeSlaveDelegate):
 
 class LoginHelper:
 
-    def __init__(self, options):
-        self.options = options
+    def __init__(self):
         self.user = None
 
         if not self.validate_user():
