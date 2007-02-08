@@ -47,7 +47,7 @@ def register_iconsets():
                  ("stoq-warehouse-app", "warehouse_24.png"),
                  ("stoq-purchase-app", "gnome-gnomine48px.png"),
                  ("stoq-sales-app", "gnome-log48px.png")]
-                 
+
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
     for stock_id, filename in icon_info:
@@ -67,7 +67,7 @@ def change_toolbar_button_appearance(item, icon=None, text=None):
         image.set_from_stock(icon, gtk.ICON_SIZE_LARGE_TOOLBAR)
     if text:
         label.set_text(text)
-    
+
 def change_button_appearance(button, icon=None, text=None):
     alignment = button.get_children()[0]
     hbox = alignment.get_children()[0]
