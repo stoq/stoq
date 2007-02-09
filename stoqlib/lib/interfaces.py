@@ -64,6 +64,7 @@ class IApplicationDescriptions(Interface):
         * Application name
         * Application full name
         * Application icon name
+        * Application description
         """
 
 class IXMLRPCService(Interface):
