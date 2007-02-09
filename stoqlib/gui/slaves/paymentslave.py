@@ -29,7 +29,7 @@ import datetime
 
 from kiwi.utils import gsignal
 from kiwi.ui.views import SlaveView
-from kiwi.datatypes import format_price, currency
+from kiwi.datatypes import format_price, currency, ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditorSlave
@@ -527,14 +527,10 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         self.intervals.set_sensitive(has_installments)
         self._refresh_next(False)
 
-    def after_first_duedate__changed(self, proxy_date_entry):
-        select_date = proxy_date_entry.get_date()
-        if select_date is None:
-            return
-        if select_date < datetime.date.today():
-            proxy_date_entry.set_invalid(_("Expected first installment date must be set "
+    def on_first_duedate__validate(self, widget, value):
+        if value < datetime.date.today():
+            return ValidationError(_("Expected first installment date must be set "
                 "to a future date"))
-        self.update_view()
         self._refresh_next(False)
 
     def on_intervals__value_changed(self, *args):
