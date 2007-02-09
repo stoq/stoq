@@ -33,6 +33,9 @@ class SQLObjectView(object):
         self.cls = cls
 
     def __getattr__(self, attr):
+        if attr == 'id':
+            return SQLObjectField(self.cls.sqlmeta.table,
+                                  self.cls.sqlmeta.idName, attr)
         return self.cls.sqlmeta.columns[attr].value
 
 
@@ -104,6 +107,7 @@ class Viewable(object):
         instance.id = idValue
         instance.__dict__.update(zip(cls.sqlmeta.columnNames,
                                       selectResults))
+        instance._connection = connection
 
         return instance
 
@@ -128,6 +132,14 @@ class Viewable(object):
                                      connection=connection,
                                      join=cls.joins,
                                      ns=cls.columns)
+
+    def sync(self):
+        obj = self.select(
+            self.q.id == self.id,
+            connection=self._connection).getOne()
+
+        for attr in self.sqlmeta.columnNames:
+            setattr(self, attr, getattr(obj, attr, None))
 
 def queryForSelect(conn, select):
     ops = select.ops
