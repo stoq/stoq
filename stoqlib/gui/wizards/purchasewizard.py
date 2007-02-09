@@ -26,14 +26,15 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
-
 from stoqlib.exceptions import StoqlibError
 from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
                                   METHOD_CHECK, METHOD_MONEY)
+from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.dialogs import print_report, run_dialog
@@ -70,26 +71,27 @@ class StartPurchaseStep(WizardEditorStep):
                      'supplier',
                      'branch',
                      'freight')
-
     def __init__(self, wizard, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model)
-        self.open_date.set_sensitive(False)
-        self._update_widgets()
 
-    def _setup_supplier_entry(self):
+    def _fill_supplier_combo(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToSupplier
         table = Person.getAdapterClass(ISupplier)
         suppliers = table.get_active_suppliers(self.conn)
         items = [(s.person.name, s) for s in suppliers]
         self.supplier.prefill(items)
 
-    def _setup_widgets(self):
-        self._setup_supplier_entry()
+    def _fill_branch_combo(self):
         # FIXME: Implement and use IDescribable on PersonAdaptToBranch
         table = Person.getAdapterClass(IBranch)
         branches = table.get_active_branches(self.conn)
         items = [(s.person.name, s) for s in branches]
         self.branch.prefill(items)
+
+    def _setup_widgets(self):
+        self._fill_supplier_combo()
+        self._fill_branch_combo()
+        self._update_widgets()
 
     def _update_widgets(self):
         has_freight = self.fob_radio.get_active()
@@ -142,6 +144,11 @@ class StartPurchaseStep(WizardEditorStep):
             self.conn.commit()
             self._setup_supplier_entry()
 
+    def on_open_date__validate(self, widget, date):
+        if date < datetime.date.today():
+            return ValidationError(
+                _("Expected receival date must be set to today or "
+                  "a future date"))
 
 class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
@@ -421,8 +428,10 @@ class PurchaseWizard(BaseWizard):
         return _('Edit Order')
 
     def _create_model(self, conn):
+        supplier = sysparam(conn).SUGGESTED_SUPPLIER
+        branch = get_current_branch(conn)
         status = PurchaseOrder.ORDER_PENDING
-        return PurchaseOrder(supplier=None, branch=None, status=status,
+        return PurchaseOrder(supplier=supplier, branch=branch, status=status,
                              connection=conn)
 
     #
