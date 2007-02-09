@@ -66,7 +66,7 @@ class UserProfileEditor(BaseEditor):
             settings[setting.app_dir_name] = setting
 
         apps = get_utility(IApplicationDescriptions)
-        for name, full_name, icon_name in apps.get_descriptions():
+        for name, full_name, icon_name, description in apps.get_descriptions():
             # Create the user interface for each application which is
             # a HBox, a CheckButton and an Image
             box = gtk.HBox()
