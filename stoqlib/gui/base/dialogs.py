@@ -458,6 +458,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     @args: custom positional argument
     @kwargs: custom keyword arguments
     """
+
+    if dialog is None:
+        raise TypeError("dialog cannot be None")
+
     parent = parent or get_current_toplevel()
     orig_dialog = dialog
     if inspect.isclass(dialog):
