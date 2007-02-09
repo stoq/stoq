@@ -472,6 +472,9 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     toplevel = dialog.get_toplevel()
     add_current_toplevel(toplevel)
 
+    if parent:
+        toplevel.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+
     log.info("%s: Opening" % dialog_name)
     toplevel.run()
 
