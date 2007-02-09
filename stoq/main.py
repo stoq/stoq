@@ -33,7 +33,7 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger, set_log_file
-from stoqlib.exceptions import StoqlibError, UserProfileError
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import error
 
 from stoq.lib.applist import get_application_names
@@ -198,10 +198,9 @@ def _run_app(options, appname):
         if appname is None:
             return
 
-        if not login.user.profile.check_app_permission(appname):
-            raise UserProfileError(
-                _("This user lacks credentials \nfor application %s")
-                % appname)
+    if not login.user.profile.check_app_permission(appname):
+        error(_("This user lacks credentials \nfor application %s") % appname)
+        return
 
     splash = _show_splash()
 
