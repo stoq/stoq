@@ -26,6 +26,7 @@
 
 import datetime
 
+from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListSlave, SimpleListDialog
@@ -140,13 +141,9 @@ class DeliveryEditor(BaseEditor):
                       title=_('Delivery Instructions')):
             self.update_widgets()
 
-    def on_delivery_date__content_changed(self, proxy_date_entry):
-        select_date = proxy_date_entry.get_date()
-
-        if select_date is None:
-            return
-        if select_date < datetime.date.today():
-            proxy_date_entry.set_invalid(_("Expected delivery date must "
+    def on_delivery_date__validate(self, widget, date):
+        if date < datetime.date.today():
+            return ValidationError(_("Expected delivery date must "
                  "be set to a future date"))
 
     #

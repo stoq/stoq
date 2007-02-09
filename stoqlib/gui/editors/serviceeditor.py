@@ -27,7 +27,7 @@
 
 import datetime
 
-from kiwi.datatypes import currency
+from kiwi.datatypes import currency, ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.editors import BaseEditor
@@ -66,10 +66,9 @@ class ServiceItemEditor(BaseEditor):
     # Kiwi handlers
     #
 
-    def on_estimated_fix_date__content_changed(self, proxy_date_entry):
-        selected_date = proxy_date_entry.get_date()
-        if selected_date and selected_date < datetime.date.today():
-            proxy_date_entry.set_invalid(_("Expected receival date must be set to a future date"))
+    def on_estimated_fix_date__validate(self, widget, date):
+        if date < datetime.date.today():
+            return ValidationError(_("Expected receival date must be set to a future date"))
 
 
 class ServiceEditor(SellableEditor):
