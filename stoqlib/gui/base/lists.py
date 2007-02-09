@@ -105,7 +105,7 @@ class AdditionListSlave(GladeSlaveDelegate):
         self.edit_button.set_sensitive(_can_edit)
         self.delete_button.set_sensitive(can_delete)
 
-    def _run(self, model=None):
+    def _edit_model(self, model=None):
         # Here we need manage objects persistence by our own
         # hands using clone.
         edit_mode = model
@@ -116,6 +116,12 @@ class AdditionListSlave(GladeSlaveDelegate):
             clone = model.clone()
         else:
             clone = None
+
+        if self._editor_class is None:
+            raise TypeError(
+                "%s cannot create or edit items without the editor_class "
+                "argument set" % (self.__class__.__name__))
+
         result = run_dialog(self._editor_class, None, conn=self.conn,
                             model=clone, **self._editor_kwargs)
         if not result and not edit_mode:
@@ -148,11 +154,10 @@ class AdditionListSlave(GladeSlaveDelegate):
         objs = self.get_selection()
         qty = len(objs)
         if qty != 1:
-            msg = ("Please select only one item before choosing Edit."
-                   "\nThere are currently %d items selected")
-            raise SelectionError(msg % qty)
-        model = objs[0]
-        self._run(model)
+            raise SelectionError(
+                ("Please select only one item before choosing Edit."
+                   "\nThere are currently %d items selected") % qty)
+        self._edit_model(objs[0])
 
     def _clear(self):
         objs = self.get_selection()
@@ -225,7 +230,7 @@ class AdditionListSlave(GladeSlaveDelegate):
         self._update_sensitivity()
 
     def on_add_button__clicked(self, button):
-        self._run()
+        self._edit_model()
 
     def on_edit_button__clicked(self, button):
         self._edit()
