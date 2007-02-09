@@ -221,12 +221,6 @@ class LoginHelper:
         self._abort("Depleted attempts of authentication")
         return False
 
-    def choose_application(self):
-        """
-        Shows a dialog to let the user choose an application.
-        This raises SystemExit if the user pressed cancel
-        """
-
     #
     # Exit strategies
     #
