@@ -391,10 +391,22 @@ class ASellable(InheritableModelAdapter):
         return cls.select(query, connection=conn)
 
     @classmethod
-    def get_unblocked_sellables(cls, conn):
-        return cls.select(OR(cls.get_available_sellables_query(conn),
-                             cls.q.status == cls.STATUS_SOLD),
-                          connection=conn)
+    def get_unblocked_sellables(cls, conn, storable=False):
+        """
+        @param conn: a database connection
+        @param storable: if True, only return Storables
+        """
+        query = OR(cls.get_available_sellables_query(conn),
+                   cls.q.status == cls.STATUS_SOLD)
+        if storable:
+            from stoqlib.domain.product import (Product, ProductAdaptToSellable,
+                                                ProductAdaptToStorable)
+            query = AND(query,
+                        ProductAdaptToSellable.q.id == cls.q.id,
+                        ProductAdaptToSellable.q._originalID == Product.q.id,
+                        ProductAdaptToStorable.q._originalID == Product.q.id)
+
+        return cls.select(query, connection=conn)
 
     @classmethod
     def get_sold_sellables(cls, conn):

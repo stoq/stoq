@@ -45,6 +45,7 @@ from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.editors.serviceeditor import ServiceEditor
 from stoqlib.gui.slaves.purchaseslave import PurchasePaymentSlave
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
+from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
@@ -151,6 +152,11 @@ class PurchaseItemStep(SellableItemStep):
     #
     # Helper methods
     #
+
+    def setup_item_entry(self):
+        sellables = ASellable.get_unblocked_sellables(self.conn, storable=True)
+        self.item.prefill([(sellable.get_description(), sellable)
+                           for sellable in sellables])
 
     def run_sellable_editor(self):
         # We must commit now since we must rollback self.conn if the user
