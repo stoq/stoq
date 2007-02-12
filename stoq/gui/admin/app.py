@@ -24,13 +24,11 @@
 """
 gui/admin/admin.py:
 
-    Main callsite for Admin application    
+    Main callsite for Admin application
 """
 
-from stoq.gui.application import App
 from stoq.gui.admin.admin import AdminApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
-    app = App(AdminApp, config)
-    app.run()
+    return AdminApp

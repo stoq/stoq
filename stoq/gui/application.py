@@ -31,18 +31,15 @@ from kiwi.component import get_utility
 from kiwi.environ import environ
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.database.runtime import get_current_user, new_transaction
-from stoqlib.exceptions import UserProfileError
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.lib.interfaces import ICookieFile
 from stoqlib.gui.base.application import BaseApp, BaseAppWindow
 from stoqlib.gui.base.dialogs import print_report
-from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.base.search import SearchBar
 from stoqlib.gui.introspection import introspect_slaves
 from stoqlib.gui.slaves.filterslave import FilterSlave
 
 import stoq
-from stoq.gui.login import SelectApplicationsDialog
 
 
 _ = gettext.gettext
@@ -50,9 +47,10 @@ _ = gettext.gettext
 
 class App(BaseApp):
 
-    def __init__(self, window_class, appconfig):
-        self.config = appconfig
-        self.options = appconfig.options
+    def __init__(self, window_class, config, options, runner):
+        self.config = config
+        self.options = options
+        self.runner = runner
         self.window_class = window_class
         BaseApp.__init__(self, window_class)
 
@@ -63,6 +61,7 @@ class App(BaseApp):
         self.config.validate_user()
         self.reinit()
         self.run()
+
 
 class AppWindow(BaseAppWindow):
     """ Base class for the main window of applications.
@@ -252,31 +251,10 @@ class AppWindow(BaseAppWindow):
         raise NotImplementedError
 
     def _on_ChangeApplication__activate(self, action):
-        toplevel = self.get_toplevel()
-
-        appname = run_dialog(SelectApplicationsDialog(self.app.config.appname),
-                             parent=toplevel)
-        if appname is None:
-            return
-
-        user = get_current_user(self.conn)
-        if not user.profile.check_app_permission(appname):
-            raise UserProfileError(
-                _("This user lacks credentials \nfor application %s")
-                % appname)
-
-        toplevel.hide()
-        self.app.shutdown()
-
-        module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
-        if not hasattr(module, "main"):
-            raise RuntimeError(
-                "Application %s must have a app.main() function")
-        self.app.config.appname = appname
-
-        module.main(self.app.config)
-
-        gtk.main()
+        runner = self.app.runner
+        appname = runner.choose()
+        if appname:
+            runner.run(appname)
 
     def on_Introspect_activate(self, action):
         window = self.get_toplevel()

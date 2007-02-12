@@ -24,13 +24,11 @@
 """
 gui/warehouse/app.py:
 
-    Main callsite for Warehouse application    
+    Main callsite for Warehouse application
 """
 
-from stoq.gui.application import App
 from stoq.gui.warehouse.warehouse import WarehouseApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
-    app = App(WarehouseApp, config)
-    app.run()
+    return WarehouseApp
