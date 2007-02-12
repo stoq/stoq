@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 ##
 """ Sale wizard definition """
@@ -34,19 +35,24 @@ from kiwi.argcheck import argcheck
 from kiwi.python import Settable
 
 from stoqlib.database.runtime import StoqlibTransaction
+from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.message import warning
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import print_cheques_for_payment_group
 from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
+from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
-from stoqlib.gui.wizards.abstractwizard import (AbstractSaleWizard,
-                                                AbstractSalesPersonStep)
+from stoqlib.gui.base.dialogs import run_dialog
+from stoqlib.gui.editors.noteeditor import NoteEditor
+from stoqlib.gui.slaves.paymentmethodslave import SelectPaymentMethodSlave
 from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
-                                        CardMethodSlave,
-                                        FinanceMethodSlave)
+                                             CardMethodSlave,
+                                             FinanceMethodSlave)
+from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
+from stoqlib.domain.person import Person
 from stoqlib.domain.payment.methods import get_active_pm_ifaces
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale, GiftCertificateOverpaidSettings
@@ -56,7 +62,9 @@ from stoqlib.domain.giftcertificate import (GiftCertificate,
 from stoqlib.domain.interfaces import (ICheckPM, ICardPM, IBillPM,
                                        IFinancePM, ISellable,
                                        IMultiplePM, IMoneyPM,
-                                       IGiftCertificatePM)
+                                       IGiftCertificatePM,
+                                       IPaymentGroup, ISalesPerson)
+
 _ = stoqlib_gettext
 
 
@@ -500,7 +508,102 @@ class GiftCertificateSelectionStep(WizardEditorStep):
         self._update_total()
         self._update_widgets()
 
-class SalesPersonStep(AbstractSalesPersonStep):
+class _AbstractSalesPersonStep(WizardEditorStep):
+    """ An abstract step which allows to define a salesperson, the sale's
+    discount and surcharge, when it is needed.
+    """
+    gladefile = 'SalesPersonStep'
+    model_type = Sale
+    proxy_widgets = ('total_lbl',
+                     'subtotal_lbl',
+                     'salesperson_combo')
+
+    @argcheck(BaseWizard, StoqlibTransaction, Sale, AbstractPaymentGroup)
+    def __init__(self, wizard, conn, model, payment_group):
+        self.payment_group = payment_group
+        WizardEditorStep.__init__(self, conn, wizard, model)
+        self.update_discount_and_surcharge()
+
+    def _update_totals(self):
+        for field_name in ('total_sale_amount', 'sale_subtotal'):
+            self.proxy.update(field_name)
+
+    def setup_widgets(self):
+        salespersons = Person.iselect(ISalesPerson, connection=self.conn)
+        items = [(s.get_adapted().name, s) for s in salespersons]
+        self.salesperson_combo.prefill(items)
+        if not sysparam(self.conn).ACCEPT_CHANGE_SALESPERSON:
+            self.salesperson_combo.set_sensitive(False)
+        else:
+            self.salesperson_combo.grab_focus()
+
+    def _get_selected_payment_method(self):
+        return self.pm_slave.get_selected_method()
+
+    #
+    # Hooks
+    #
+
+    def update_discount_and_surcharge(self):
+        """Update discount and surcharge values when it's needed"""
+
+    def on_payment_method_changed(self, slave, method_iface):
+        """Overwrite this method when controling the status of finish button
+        is a required task when changing payment methods
+        """
+
+    def on_next_step(self):
+        raise NotImplementedError("Overwrite on child to return the "
+                                  "proper next step or None for finish")
+
+    #
+    # WizardStep hooks
+    #
+
+    def next_step(self):
+        self.payment_group.set_method(self.pm_slave.get_selected_method())
+        return self.on_next_step()
+
+    #
+    # BaseEditorSlave hooks
+    #
+
+    def setup_slaves(self):
+        self.discsurcharge_slave = DiscountSurchargeSlave(self.conn, self.model,
+                                                          self.model_type)
+        self.discsurcharge_slave.connect('discount-changed',
+                                         self.on_discsurcharge_slave_changed)
+        slave_holder = 'discount_surcharge_slave'
+        if self.get_slave(slave_holder):
+            self.detach_slave(slave_holder)
+        self.attach_slave('discount_surcharge_slave', self.discsurcharge_slave)
+
+        group = IPaymentGroup(self.model, None)
+        if not group:
+            raise StoqlibError(
+                "You should have a IPaymentGroup facet defined at this point")
+        self.pm_slave = SelectPaymentMethodSlave(
+            method_iface=get_all_methods_dict()[group.default_method])
+        self.pm_slave.connect('method-changed', self.on_payment_method_changed)
+        self.attach_slave('select_method_holder', self.pm_slave)
+
+    def setup_proxies(self):
+        self.setup_widgets()
+        self.proxy = self.add_proxy(self.model,
+                                    _AbstractSalesPersonStep.proxy_widgets)
+
+    #
+    # Callbacks
+    #
+
+    def on_discsurcharge_slave_changed(self, slave):
+        self._update_totals()
+
+    def on_notes_button__clicked(self, *args):
+        run_dialog(NoteEditor, self, self.conn, self.model, 'notes',
+                   title=_("Additional Information"))
+
+class SalesPersonStep(_AbstractSalesPersonStep):
     """A wizard step used when confirming a sale order """
 
     def _update_next_step(self, pm_iface):
@@ -560,7 +663,7 @@ class SalesPersonStep(AbstractSalesPersonStep):
         return step_class(self.wizard, self, self.conn, self.model)
 
 
-class PreOrderSalesPersonStep(AbstractSalesPersonStep):
+class PreOrderSalesPersonStep(_AbstractSalesPersonStep):
     """A wizard step used when creating a pre order """
 
     #
@@ -579,11 +682,52 @@ class PreOrderSalesPersonStep(AbstractSalesPersonStep):
 
 
 #
-# Main wizard
+# Wizards for sales
 #
 
+class _AbstractSaleWizard(BaseWizard):
+    """An abstract wizard for sale orders"""
+    size = (600, 400)
+    first_step = None
+    title = None
 
-class ConfirmSaleWizard(AbstractSaleWizard):
+    def __init__(self, conn, model):
+        self._check_payment_group(model, conn)
+        self.initialize()
+        # Saves the initial state of the sale order and allow us to call
+        # rollback safely when it's needed
+        conn.commit()
+        first_step = self.first_step(self, conn, model, self.payment_group)
+        BaseWizard.__init__(self, conn, first_step, model)
+
+    def _check_payment_group(self, model, conn):
+        if not isinstance(model, Sale):
+            raise StoqlibError("Invalid datatype for model, it should be "
+                               "of type Sale, got %s instead" % model)
+        group = IPaymentGroup(model, None)
+        if not group:
+            group = model.addFacet(IPaymentGroup, connection=conn)
+        self.payment_group = group
+
+    #
+    # Hooks
+    #
+
+    def initialize(self):
+        """Overwrite this method on child when performing some tasks before
+        calling the wizard constructor is an important requirement
+        """
+
+    #
+    # Public API
+    #
+
+    def setup_cash_payment(self, total=None):
+        money_method = sysparam(self.conn).METHOD_MONEY
+        total = total or self.payment_group.get_total_received()
+        money_method.setup_inpayments(total, self.payment_group)
+
+class ConfirmSaleWizard(_AbstractSaleWizard):
     """A wizard used when confirming a sale order. It means generate
     payments, fiscal data and update stock
     """
@@ -620,7 +764,7 @@ class ConfirmSaleWizard(AbstractSaleWizard):
         self.close()
 
 
-class PreOrderWizard(AbstractSaleWizard):
+class PreOrderWizard(_AbstractSaleWizard):
     """A wizard used to create a preorder which will be confirmed later. A
     pre order doesn't create payments, fiscal data and also doesn't update
     the stock for products
