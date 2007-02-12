@@ -66,16 +66,13 @@ class AdditionListSlave(GladeSlaveDelegate):
         @type: editor_class:  a L{stoqlib.gui.editors.BaseEditor} subclass
         @param klist_objects: initial objects to insert into the list
         """
-        if editor_class and not issubclass(editor_class,
-                                           (BaseEditor, BaseWizard)):
-            raise TypeError("editor_class must be a BaseEditor subclass")
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         self._columns = columns or self.get_columns()
         if not self._columns:
             raise StoqlibError("columns must be specified")
         self.visual_mode = visual_mode
         self.conn = conn
-        self._editor_class = editor_class
+        self.set_editor(editor_class)
         self._editor_kwargs = dict()
         self._can_edit = True
         if self.visual_mode:
@@ -122,8 +119,8 @@ class AdditionListSlave(GladeSlaveDelegate):
                 "%s cannot create or edit items without the editor_class "
                 "argument set" % (self.__class__.__name__))
 
-        result = run_dialog(self._editor_class, None, conn=self.conn,
-                            model=clone, **self._editor_kwargs)
+        result = self.run_editor(clone)
+
         if not result and not edit_mode:
             return
         elif not result and edit_mode:
@@ -192,6 +189,13 @@ class AdditionListSlave(GladeSlaveDelegate):
         raise NotImplementedError("get_columns must be implemented in "
                                   "subclasses")
 
+    def run_editor(self, model):
+        """
+        This can be overriden to provide a custom run_dialog line,
+        or a conversion function for the model
+        """
+        return run_dialog(self._editor_class, None, conn=self.conn,
+                          model=model, **self._editor_kwargs)
     #
     # Public API
     #
@@ -218,6 +222,12 @@ class AdditionListSlave(GladeSlaveDelegate):
 
     def hide_del_button(self):
         self.delete_button.hide()
+
+    def set_editor(self, editor_class):
+        if editor_class and not issubclass(editor_class,
+                                           (BaseEditor, BaseWizard)):
+            raise TypeError("editor_class must be a BaseEditor subclass")
+        self._editor_class = editor_class
 
     #
     # Signal handlers

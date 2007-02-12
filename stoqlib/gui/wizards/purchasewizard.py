@@ -28,8 +28,6 @@ import datetime
 
 from kiwi.datatypes import currency, ValidationError
 from kiwi.ui.widgets.list import Column
-from stoqlib.exceptions import StoqlibError
-from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import get_current_branch
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
@@ -37,7 +35,7 @@ from stoqlib.lib.defaults import (INTERVALTYPE_MONTH, METHOD_BILL,
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.validators import format_quantity
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
-from stoqlib.gui.base.dialogs import print_report, run_dialog
+from stoqlib.gui.base.dialogs import print_report
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.gui.wizards.abstractwizard import SellableItemStep
@@ -51,8 +49,6 @@ from stoqlib.domain.person import Person
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseItem
 from stoqlib.domain.interfaces import (IBranch, ITransporter, ISupplier,
                                        IPaymentGroup)
-from stoqlib.domain.product import Product
-from stoqlib.domain.service import Service
 from stoqlib.reporting.purchase import PurchaseOrderReport
 
 _ = stoqlib_gettext
@@ -150,11 +146,22 @@ class StartPurchaseStep(WizardEditorStep):
                 _("Expected receival date must be set to today or "
                   "a future date"))
 
+from stoqlib.gui.base.lists import AdditionListSlave
+
+class PurchaseListSlave(AdditionListSlave):
+    def run_editor(self, model):
+        # Model is a PurchaseOrder, fetch the product since we're
+        # actually editing products.
+        if model:
+            model = model.sellable.get_adapted()
+        return AdditionListSlave.run_editor(self, model)
+
 class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
+    list_slave_class = PurchaseListSlave
 
     #
     # Helper methods
@@ -164,31 +171,6 @@ class PurchaseItemStep(SellableItemStep):
         sellables = ASellable.get_unblocked_sellables(self.conn, storable=True)
         self.item.prefill([(sellable.get_description(), sellable)
                            for sellable in sellables])
-
-    def run_sellable_editor(self):
-        # We must commit now since we must rollback self.conn if the user
-        # abort the sellable's editor.
-        self.conn.commit()
-        if self.item_proxy.model.item:
-            item = self.item_proxy.model.item.get_adapted()
-            if isinstance(item, Product):
-                editor = ProductEditor
-            elif isinstance(item, Service):
-                editor = ServiceEditor
-            else:
-                raise StoqlibError("Invalid sellable type: %r" % type(item))
-            model = run_dialog(editor, None, self.conn, item)
-        else:
-            editor = run_dialog(SellableSelectionEditor, None, self.conn)
-            if not editor:
-                return
-            model = run_dialog(editor, self, self.conn)
-        if not finish_transaction(self.conn, model):
-            return
-        self.setup_item_entry()
-        item = self.item_proxy.model.item
-        if item:
-            self.item.select(self.item_proxy.model.item)
 
     #
     # SellableItemStep virtual methods
@@ -219,18 +201,12 @@ class PurchaseItemStep(SellableItemStep):
     #
 
     def post_init(self):
+        self.slave.set_editor(ProductEditor)
         self._refresh_next()
         self.product_button.hide()
 
     def next_step(self):
         return PurchasePaymentStep(self.wizard, self, self.conn, self.model)
-
-    #
-    # callbacks
-    #
-
-    def on_add_new_item_button__clicked(self, button):
-        self.run_sellable_editor()
 
 class PurchasePaymentStep(WizardEditorStep):
     gladefile = 'PurchasePaymentStep'

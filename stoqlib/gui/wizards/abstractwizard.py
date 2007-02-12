@@ -223,6 +223,7 @@ class SellableItemStep(WizardEditorStep):
     table = ASellable
     item_table = None
     summary_label_text = None
+    list_slave_class = AdditionListSlave
 
     def __init__(self, wizard, previous, conn, model):
         WizardEditorStep.__init__(self, conn, wizard, model, previous)
@@ -336,10 +337,8 @@ class SellableItemStep(WizardEditorStep):
 
     def setup_slaves(self):
         items = self.get_saved_items()
-        self.slave = AdditionListSlave(self.conn, self.get_columns(),
-                                       klist_objects=items)
-        self.slave.hide_add_button()
-        self.slave.hide_edit_button()
+        self.slave = self.list_slave_class(self.conn, self.get_columns(),
+                                           klist_objects=items)
         self.slave.connect('before-delete-items', self._before_delete_items)
         self.slave.connect('after-delete-items', self._update_total)
         self.slave.connect('on-edit-item', self._update_total)
@@ -361,9 +360,6 @@ class SellableItemStep(WizardEditorStep):
         self._refresh_next()
 
     def on_product_button__clicked(self, *args):
-        raise NotImplementedError('This method must be defined on child')
-
-    def on_add_new_item_button__clicked(self, *args):
         raise NotImplementedError('This method must be defined on child')
 
     def on_add_item_button__clicked(self, *args):
