@@ -45,6 +45,12 @@ class BaseApp:
         self.main_window = main_window_class(self)
 
     def run(self):
+        self.show()
+
+    def hide(self):
+        self.main_window.hide()
+
+    def show(self):
         self.main_window.show()
 
     def shutdown(self, *args):
