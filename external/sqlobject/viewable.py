@@ -117,10 +117,11 @@ class Viewable(object):
                lazyColumns=False, reversed=False,
                distinct=False, connection=None,
                join=None, columns=None):
-        if clause:
-            clause = AND(clause, cls.clause)
-        else:
-            clause = cls.clause
+        if cls.clause:
+            if clause:
+                clause = AND(clause, cls.clause)
+            else:
+                clause = cls.clause
 
         return ViewableSelectResults(cls, clause,
                                      clauseTables=clauseTables,
