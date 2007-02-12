@@ -26,7 +26,7 @@ from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.person import Person, PersonAdaptToClient
 from stoqlib.domain.sale import Sale, SaleAdaptToPaymentGroup
 
-from sqlobject.sqlbuilder import INNERJOINOn
+from sqlobject.sqlbuilder import LEFTJOINOn, INNERJOINOn
 from sqlobject.viewable import Viewable
 
 class ReceivableView(Viewable):
@@ -46,10 +46,10 @@ class ReceivableView(Viewable):
                     SaleAdaptToPaymentGroup.q.id == Payment.q.groupID),
         INNERJOINOn(None, Sale,
                     Sale.q.id == SaleAdaptToPaymentGroup.q._originalID),
-        INNERJOINOn(None, PersonAdaptToClient,
+        LEFTJOINOn(None, PersonAdaptToClient,
                     PersonAdaptToClient.q.id == Sale.q.id),
-        INNERJOINOn(None, Person,
-                    Person.q.id == PersonAdaptToClient.q._originalID),
+        LEFTJOINOn(None, Person,
+                   Person.q.id == PersonAdaptToClient.q._originalID),
         ]
 
     def get_status_str(self):
