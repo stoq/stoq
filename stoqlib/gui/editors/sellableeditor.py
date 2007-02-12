@@ -208,8 +208,10 @@ class SellableEditor(BaseEditor):
         category_list = SellableCategory.select(connection=self.conn)
         items = [(cat.get_full_description(), cat) for cat in category_list]
         self.category_combo.prefill(items)
-        query = SellableUnit.q.unit_index != UNIT_CUSTOM
-        primitive_units = SellableUnit.select(query, connection=self.conn)
+
+        primitive_units = SellableUnit.select(
+            SellableUnit.q.unit_index != UNIT_CUSTOM,
+            connection=self.conn)
         items = [(_("No unit"), -1)]
         items.extend([(obj.description, obj.unit_index)
                           for obj in primitive_units])
@@ -233,6 +235,8 @@ class SellableEditor(BaseEditor):
             self.add_proxy(storable,
                            SellableEditor.storable_widgets)
         if self._sellable.unit:
+            # FIXME: This is absurd, and due to a commit bug
+            #        it ends up in the DB twice in some circumstances
             self._sellable.unit = self._sellable.unit.clone()
         else:
             self._sellable.unit = SellableUnit(description=None,
