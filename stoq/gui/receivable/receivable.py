@@ -33,23 +33,24 @@ import gettext
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
-from sqlobject.sqlbuilder import AND
-from stoqlib.domain.payment.payment import Payment, PaymentAdaptToInPayment
-from stoqlib.domain.sale import SaleView, SaleAdaptToPaymentGroup
+from stoqlib.domain.payment.payment import Payment
+from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.dialogs.saledetails import SaleDetailsDialog
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.application import SearchableAppWindow
+from stoq.gui.receivable.view import ReceivableView
 
 _ = gettext.gettext
+
 
 class ReceivableApp(SearchableAppWindow):
 
     app_name = _('Receivable')
     app_icon_name = 'stoq-bills'
     gladefile = 'receivable'
-    searchbar_table = Payment
+    searchbar_table = ReceivableView
     searchbar_use_dates = True
     searchbar_result_strings = (_('payment'), _('payments'))
     searchbar_labels = (_('matching:'),)
@@ -108,24 +109,15 @@ class ReceivableApp(SearchableAppWindow):
 
     def get_extra_query(self):
         status = self.filter_slave.get_selected_status()
-        query = AND(Payment.q.groupID == SaleAdaptToPaymentGroup.q.id,
-                    Payment.q.id == PaymentAdaptToInPayment.q._originalID)
         if status != ALL_ITEMS_INDEX:
-            query = AND(query, Payment.q.status == status)
-        return query
+            return Payment.q.status == status
 
     #
     # Private
     #
 
-
-    # This list operates on payments, but SaleDetailsDialog expects a
-    # SaleView object, so we have to fetch the sale via the payment group.
-    # We have to assure that the selected Payment group refers to a
-    # SaleAdaptToPaymentGroup, and not to a PurchaseOrderAdaptToPaymentGroup.
-    def _show_details(self, payment):
-        assert isinstance(payment.group, SaleAdaptToPaymentGroup)
-        sale_view = SaleView.get(payment.group.sale.id)
+    def _show_details(self, reveivable_view):
+        sale_view = SaleView.get(reveivable_view.sale_id)
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
 
