@@ -63,14 +63,12 @@ class PurchaseItem(Domain):
     order = ForeignKey('PurchaseOrder')
 
     def _create(self, id, **kw):
-        if 'base_cost' in kw:
-            raise TypeError('You should not provide a base_cost'
-                            'argument since it is set automatically')
         if not 'sellable' in kw:
             raise TypeError('You must provide a sellable argument')
         if not 'order' in kw:
             raise TypeError('You must provide a order argument')
 
+        # FIXME: Avoding shadowing sellable.cost
         kw['base_cost'] = kw['sellable'].cost
 
         if not 'cost' in kw:
