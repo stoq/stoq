@@ -95,7 +95,11 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
         cfop_items = [(item.get_description(), item)
                         for item in CfopData.select(connection=self.conn)]
         self.cfop.prefill(cfop_items)
-        self.transporter.grab_focus()
+
+        # The user should not be allowed to change the transporter,
+        # if it's already set.
+        if self.model.transporter:
+            self.transporter.set_sensitive(False)
 
     #
     # BaseEditorSlave hooks
@@ -131,6 +135,7 @@ class ReceivingInvoiceSlave(BaseEditorSlave):
             self.conn, self.model, ReceivingOrder,
             visual_mode=self.visual_mode)
         self.attach_slave(slave_holder, self.discount_surcharge_slave)
+
 
     #
     # Callbacks
