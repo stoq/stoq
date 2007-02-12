@@ -172,57 +172,26 @@ def _initialize(options):
 
     _check_tables()
 
-def _show_splash():
-    from stoqlib.gui.splash import SplashScreen
-    from kiwi.environ import environ
-
-    log.debug('displaying splash screen')
-    splash = SplashScreen(environ.find_resource("pixmaps", "splash.jpg"))
-    splash.show()
-
-    return splash
-
 def _run_app(options, appname):
-    from stoqlib.gui.base.dialogs import run_dialog
     from stoqlib.gui.base.gtkadds import register_iconsets
-    from stoq.gui.login import LoginHelper, SelectApplicationsDialog
+    from stoq.gui.login import LoginHelper
 
     log.debug('register stock icons')
     register_iconsets()
 
     log.debug('loading application')
     login = LoginHelper()
-    # Get the selected application if nothing was selected
+
+    from stoq.gui.runner import ApplicationRunner
+    runner = ApplicationRunner(login, options)
     if not appname:
-        appname = run_dialog(SelectApplicationsDialog())
-        if appname is None:
+        appname = runner.choose()
+        if not appname:
             return
 
-    if not login.user.profile.check_app_permission(appname):
-        error(_("This user lacks credentials \nfor application %s") % appname)
-        return
-
-    splash = _show_splash()
-
-    module = __import__("stoq.gui.%s.app" % appname, globals(), locals(), [''])
-    if not hasattr(module, "main"):
-        raise RuntimeError(
-            "Application %s must have a app.main() function")
-
-    # Hide the splash in an idle, so we can show dialogs in the
-    # constructor of the application without having the splash screen
-    # visible at the same time, not ideal but remember that if you
-    # want to change the splash screen code.
-    import gobject
-    gobject.idle_add(splash.hide)
+    runner.run(appname)
 
     _setup_printers()
-
-    log.info('Starting %s application' % appname)
-    # FIXME: send in options as an argument.
-    login.options = options
-    login.appname = appname
-    module.main(login)
 
     import gtk
     log.debug("Entering main loop")

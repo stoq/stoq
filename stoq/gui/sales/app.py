@@ -28,8 +28,6 @@ stoq/gui/sales/app.py:
 """
 
 from stoq.gui.sales.sales import SalesApp
-from stoq.gui.application import App
 
 def main(config):
-    app = App(SalesApp, config)
-    app.run()
+    return SalesApp

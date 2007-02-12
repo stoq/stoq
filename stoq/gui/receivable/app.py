@@ -28,8 +28,6 @@ stoq/gui/receivable/receivable.py:
 """
 
 from stoq.gui.receivable.receivable import ReceivableApp
-from stoq.gui.application import App
 
 def main(config):
-    app = App(ReceivableApp, config)
-    app.run()
+    return ReceivableApp

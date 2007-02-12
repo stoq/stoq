@@ -24,13 +24,11 @@
 """
 gui/purchase/app.py:
 
-    Main callsite for purchase application    
+    Main callsite for purchase application
 """
 
-from stoq.gui.application import App
 from stoq.gui.purchase.purchase import PurchaseApp
 
 # Here we define config in the call site: /bin/stoq file
 def main(config):
-    app = App(PurchaseApp, config)
-    app.run()
+    return PurchaseApp

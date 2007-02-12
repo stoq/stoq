@@ -28,9 +28,7 @@ stoq/gui/till/app.py:
 """
 
 from stoq.gui.till.till import TillApp
-from stoq.gui.application import App
 
 def main(config):
-    app = App(TillApp, config)
-    app.run()
+    return TillApp
 

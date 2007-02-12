@@ -34,7 +34,6 @@ from stoqlib.domain.till import Till
 from stoqlib.lib.message import error
 from stoqlib.lib.parameters import sysparam
 
-from stoq.gui.application import App
 from stoq.gui.pos.pos import POSApp
 
 _ = gettext.gettext
@@ -47,5 +46,4 @@ def main(config):
         not Till.get_current(conn)):
         error(_(u"You need to open the till before start doing sales."))
 
-    app = App(POSApp, config)
-    app.run()
+    return POSApp
