@@ -604,6 +604,7 @@ CREATE TABLE card_installment_settings (
 
 CREATE TABLE card_installments_provider_details (
     id serial NOT NULL PRIMARY KEY,
+    max_installments_number integer,
     installment_settings_id bigint REFERENCES card_installment_settings(id),
     child_name character varying(255)
 );

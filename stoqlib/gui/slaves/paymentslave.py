@@ -646,7 +646,11 @@ class CreditProviderMethodSlave(BaseEditorSlave):
     def _setup_max_installments(self):
         selected = self.payment_type.get_selected_data()
         max = selected.get_max_installments_number()
-        self.installments_number.set_range(1, max)
+        if max > 1:
+            min = 2
+        else:
+            min = 1
+        self.installments_number.set_range(min, max)
 
     def update_view(self):
         # This is for PaymentMethodStep compatibility.
@@ -744,7 +748,10 @@ class CardMethodSlave(CreditProviderMethodSlave):
         return self.method.get_credit_card_providers()
 
     def _setup_payment_types(self):
-        payment_types = self._get_payment_types(self.providers[0])
+        selected = self.credit_provider.get_selected_data()
+        if not selected:
+            return
+        payment_types = self._get_payment_types(selected)
         self.ptypes_items = [(p.payment_type_name, p) for p in payment_types]
         self.payment_type.prefill(self.ptypes_items)
 

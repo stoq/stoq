@@ -840,10 +840,7 @@ class CardInstallmentsProviderDetails(PaymentMethodDetails):
     interface_method = ICardPM
     description = _(u'Credit Card')
 
-
-    # Lowercases here is for PaymentMethodDetails
-    # get_max_installments_number compatibility
-    max_installments_number = 1
+    max_installments_number = IntCol(default=12)
     installment_settings = ForeignKey('CardInstallmentSettings')
 
     #

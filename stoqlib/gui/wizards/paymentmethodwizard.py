@@ -84,10 +84,9 @@ class CreditCardDetailsStep(AbstractCreditCardStep):
 
     def setup_slaves(self):
         ptype = self.wizard.get_method_details_type()
-        if not ptype is CardInstallmentsStoreDetails:
-            return
-        slave = InstallmentsNumberSettingsSlave(self.conn, self.model)
-        self.attach_slave('installments_number_holder', slave)
+        if ptype in (CardInstallmentsStoreDetails, CardInstallmentsProviderDetails):
+            slave = InstallmentsNumberSettingsSlave(self.conn, self.model)
+            self.attach_slave('installments_number_holder', slave)
 
     def setup_proxies(self):
         self.add_proxy(self.model, CreditCardDetailsStep.proxy_widgets)
@@ -224,7 +223,7 @@ class PaymentMethodDetailsWizard(BaseWizard):
                 settings = CardInstallmentSettings(connection=self.conn,
                                                    **creditcard_kwargs)
                 kwargs['installment_settings'] = settings
-                if klass is CardInstallmentsStoreDetails:
+                if klass in (CardInstallmentsStoreDetails, CardInstallmentsProviderDetails):
                     value = self.model.max_installments_number
                     kwargs['max_installments_number'] = value
             self.retval = klass(**kwargs)
