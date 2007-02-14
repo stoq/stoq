@@ -32,9 +32,7 @@ from kiwi.python import namedAny, ClassInittableObject
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.parameter import ParameterData
 from stoqlib.domain.interfaces import (ISupplier, IBranch, ICompany,
-                                       ISellable, IMoneyPM, ICheckPM, IBillPM,
-                                       ICardPM, IFinancePM,
-                                       IGiftCertificatePM)
+                                       ISellable)
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -79,18 +77,6 @@ _parameter_info = dict(
     _(u'A default payment destination which will be used for all the '
       'created payments until the user change the destination of each '
       'payment method.')),
-
-    BASE_PAYMENT_METHOD=ParameterDetails(
-    _(u'Financial'),
-    _(u'Base Payment Method'),
-    _(u'The base payment method which can easily be converted to '
-      'other methods like check and bill.')),
-
-    METHOD_MONEY=ParameterDetails(
-    _(u'Financial'),
-    _(u'Money Payment Method'),
-    _(u'Definition of the money payment method. This parameter is not '
-      'editable')),
 
     DELIVERY_SERVICE=ParameterDetails(
     _(u'Sales'),
@@ -343,10 +329,6 @@ class ParameterAccess(ClassInittableObject):
                       u'person.EmployeeRole'),
         ParameterAttr('DEFAULT_PAYMENT_DESTINATION',
                       u'payment.destination.StoreDestination'),
-        ParameterAttr('BASE_PAYMENT_METHOD',
-                      u'payment.methods.PaymentMethod'),
-        ParameterAttr('METHOD_MONEY',
-                      u'payment.methods.PMAdaptToMoneyPM'),
         ParameterAttr('DELIVERY_SERVICE',
                       u'service.ServiceAdaptToSellable'),
         ParameterAttr('DEFAULT_GIFT_CERTIFICATE_TYPE',
@@ -468,7 +450,6 @@ class ParameterAccess(ClassInittableObject):
         self.ensure_default_salesperson_role()
         self.ensure_main_company()
         self.ensure_payment_destination()
-        self.ensure_payment_methods()
         self.ensure_delivery_service()
         self.ensure_default_gift_certificate_type()
 
@@ -537,23 +518,6 @@ class ParameterAccess(ClassInittableObject):
                               branch=branch,
                               connection=self.conn)
         self._set_schema(key, pm.id)
-
-    def ensure_payment_methods(self):
-        from stoqlib.domain.payment.methods import PaymentMethod
-        key = "METHOD_MONEY"
-        table = PaymentMethod.getAdapterClass(IMoneyPM)
-        if self.get_parameter_by_field(key, table):
-            return
-        destination = self.DEFAULT_PAYMENT_DESTINATION
-        pm = PaymentMethod(connection=self.conn)
-        for interface in [IMoneyPM, ICheckPM, IBillPM]:
-            pm.addFacet(interface, connection=self.conn,
-                        destination=destination)
-        for interface in [ICardPM, IGiftCertificatePM, IFinancePM]:
-            pm.addFacet(interface, connection=self.conn)
-        self._set_schema('BASE_PAYMENT_METHOD', pm.id, is_editable=False)
-        self._set_schema(key, IMoneyPM(pm).id,
-                        is_editable=False)
 
     def ensure_delivery_service(self):
         from stoqlib.domain.sellable import BaseSellableInfo

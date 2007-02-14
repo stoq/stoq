@@ -97,6 +97,22 @@ def ensure_admin_user(administrator_password):
 
     trans.commit(close=True)
 
+def ensure_payment_methods():
+    log.info("Creating payment methods")
+    trans = new_transaction()
+    from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
+                                                GiftCertificatePM,
+                                                CardPM, FinancePM)
+
+    destination = sysparam(trans).DEFAULT_PAYMENT_DESTINATION
+    for pm_type in (MoneyPM, BillPM, CheckPM):
+        pm_type(connection=trans, destination=destination)
+
+    for pm_type in (GiftCertificatePM, CardPM, FinancePM):
+        pm_type(connection=trans)
+
+    trans.commit(close=True)
+
 def get_admin_user(conn):
     """
     Retrieves the current administrator user for the
@@ -189,6 +205,7 @@ def initialize_system(delete_only=False, verbose=False):
     settings = get_utility(IDatabaseSettings)
     clean_database(settings.dbname)
     create_base_schema()
+    ensure_payment_methods()
     ensure_system_parameters()
     ensure_sellable_units()
     create_default_profiles()

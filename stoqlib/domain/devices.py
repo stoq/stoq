@@ -39,7 +39,7 @@ from stoqdrivers.devices.serialbase import VirtualPort, SerialPort
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import (get_all_methods_dict, METHOD_MONEY,
-                                  METHOD_CHECK, METHOD_MULTIPLE)
+                                  METHOD_CHECK)
 from stoqlib.domain.base import Domain
 from stoqlib.domain.interfaces import IActive
 from stoqlib.exceptions import DatabaseInconsistency
@@ -123,8 +123,7 @@ class DeviceSettings(Domain):
         for payment_method in get_all_methods_dict():
             # We don't store these constants to reach compatibility with
             # stoqdrivers.
-            if payment_method not in (METHOD_MONEY, METHOD_CHECK,
-                                      METHOD_MULTIPLE):
+            if payment_method not in (METHOD_MONEY, METHOD_CHECK):
                 data[payment_method] = None
         kw['pm_constants'] = DeviceConstants(constants=data,
                                              connection=self.get_connection())
@@ -142,7 +141,7 @@ class DeviceSettings(Domain):
         if not self.pm_constants:
             return False
         for method in get_all_methods_dict():
-            if method in (METHOD_MONEY, METHOD_CHECK, METHOD_MULTIPLE):
+            if method in (METHOD_MONEY, METHOD_CHECK):
                 continue
             if self.pm_constants.get_value(method) is None:
                 return False

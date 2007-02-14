@@ -629,8 +629,8 @@ CREATE TABLE payment_destination (
 
 CREATE TABLE abstract_check_bill_adapter (
     -- Subclasses:
-    --   pm_adapt_to_bill_p_m
-    --   pm_adapt_to_check_p_m
+    --   bill_p_m
+    --   check_p_m
     id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
@@ -657,10 +657,10 @@ CREATE TABLE payment_method_details (
 CREATE TABLE abstract_payment_method_adapter (
     -- Subclasses:
     --    abstract_check_bill_adapter
-    --    pm_adapt_to_money_p_m
-    --    pm_adapt_to_gift_certificate_p_m
-    --    pm_adapt_to_card_p_m
-    --    pm_adapt_to_finance_p_m
+    --    money_p_m
+    --    gift_certificate_p_m
+    --    card_p_m
+    --    finance_p_m
     id serial NOT NULL PRIMARY KEY,
     is_active boolean,
     child_name character varying(255)
@@ -886,37 +886,37 @@ CREATE TABLE payment_operation (
     operation_date timestamp 
 );
 
-CREATE TABLE pm_adapt_to_bill_p_m (
+CREATE TABLE bill_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
-CREATE TABLE pm_adapt_to_card_p_m (
+CREATE TABLE card_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
-CREATE TABLE pm_adapt_to_check_p_m (
+CREATE TABLE check_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
-CREATE TABLE pm_adapt_to_finance_p_m (
+CREATE TABLE finance_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
-CREATE TABLE pm_adapt_to_gift_certificate_p_m (
+CREATE TABLE gift_certificate_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
-CREATE TABLE pm_adapt_to_money_p_m (
+CREATE TABLE money_p_m (
     id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     child_name character varying(255),

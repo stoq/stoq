@@ -27,9 +27,6 @@
 import datetime
 
 
-from stoqlib.domain.interfaces import (IMoneyPM, ICheckPM, IBillPM,
-                                       ICardPM, IMultiplePM, IFinancePM,
-                                       IGiftCertificatePM)
 from stoqlib.lib.translation import stoqlib_gettext
 
 
@@ -93,8 +90,7 @@ def calculate_interval(interval_type, intervals):
  METHOD_BILL,
  METHOD_CARD,
  METHOD_FINANCE,
- METHOD_GIFT_CERTIFICATE,
- METHOD_MULTIPLE) = range(7)
+ METHOD_GIFT_CERTIFICATE) = range(6)
 
 def get_method_names():
     return {METHOD_MONEY: _(u'Money'),
@@ -102,17 +98,18 @@ def get_method_names():
             METHOD_BILL: _(u'Bill'),
             METHOD_CARD: _(u'Card'),
             METHOD_FINANCE: _(u'Finance'),
-            METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate'),
-            METHOD_MULTIPLE: _(u'Multiple')}
+            METHOD_GIFT_CERTIFICATE: _(u'Gift Certificate')}
 
 def get_all_methods_dict():
-    return {METHOD_MONEY: IMoneyPM,
-            METHOD_CHECK: ICheckPM,
-            METHOD_BILL: IBillPM,
-            METHOD_CARD: ICardPM,
-            METHOD_GIFT_CERTIFICATE: IGiftCertificatePM,
-            METHOD_FINANCE: IFinancePM,
-            METHOD_MULTIPLE: IMultiplePM}
+    from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
+                                                GiftCertificatePM,
+                                                CardPM, FinancePM)
+    return {METHOD_MONEY: MoneyPM,
+            METHOD_CHECK: CheckPM,
+            METHOD_BILL: BillPM,
+            METHOD_CARD: CardPM,
+            METHOD_GIFT_CERTIFICATE: GiftCertificatePM,
+            METHOD_FINANCE: FinancePM}
 
 def payment_value_colorize(column_data):
     """A helper method for payment value columns used to set different

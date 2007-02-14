@@ -41,8 +41,8 @@ from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.base import Domain, BaseSQLView
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
-from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IMoneyPM,
-                                       IPaymentGroup, IContainer)
+from stoqlib.domain.payment.methods import CheckPM, BillPM, MoneyPM
+from stoqlib.domain.interfaces import IPaymentGroup, IContainer
 from stoqlib.lib.validators import format_quantity
 
 _ = stoqlib_gettext
@@ -202,7 +202,7 @@ class PurchaseOrder(Domain):
             if not group:
                 raise ValueError('You must have a IPaymentGroup facet '
                                  'defined at this point')
-            base_method = sysparam(conn).BASE_PAYMENT_METHOD
+            base_method = None
             total = self.get_purchase_total()
             self._create_preview_outpayments(conn, group, base_method, total)
         self.status = self.ORDER_CONFIRMED
@@ -213,14 +213,14 @@ class PurchaseOrder(Domain):
         # FIXME: Move this special cased logic to the specific
         #        implementation of each payment method
         if group.default_method == METHOD_MONEY:
-            method = IMoneyPM(base_method)
+            method = MoneyPM.selectOne(connection=conn)
             method.setup_outpayments(total, group,
                                      group.installments_number)
             return
         elif group.default_method == METHOD_CHECK:
-            method = ICheckPM(base_method)
+            method = CheckPM.selectOne(connection=conn)
         elif group.default_method == METHOD_BILL:
-            method = IBillPM(base_method)
+            method = BillPM.selectOne(connection=conn)
         else:
             raise ValueError('Invalid payment method, got %d' %
                              group.default_method)
@@ -404,7 +404,7 @@ class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
     def create_preview_outpayments(self):
         conn = self.get_connection()
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
+        base_method = None
         order = self.get_adapted()
         total = order.get_purchase_total()
         #first_due_date = order.expected_receival_date

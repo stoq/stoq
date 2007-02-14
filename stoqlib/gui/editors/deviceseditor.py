@@ -43,7 +43,7 @@ from stoqlib.database.runtime import get_connection, get_current_station
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.message import warning, yesno
 from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
-                                  METHOD_MULTIPLE, UNKNOWN_CHARACTER)
+                                  UNKNOWN_CHARACTER)
 from stoqlib.domain.devices import DeviceSettings, DeviceConstants
 from stoqlib.domain.person import BranchStation
 from stoqlib.gui.base.editors import BaseEditor
@@ -80,7 +80,7 @@ class DeviceConstantsEditor(BaseEditor):
                          value=self._constants.get_value(item))
                         for item in self._constants.get_items()]
         for ident, name in get_method_names().items():
-            if ident in (METHOD_MONEY, METHOD_CHECK, METHOD_MULTIPLE):
+            if ident in (METHOD_MONEY, METHOD_CHECK):
                 continue
             data.append(Settable(identifier=ident, stoq_specific=True,
                                  description=_(u"%s Payment Method") % name,

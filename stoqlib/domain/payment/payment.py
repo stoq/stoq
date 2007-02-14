@@ -37,15 +37,14 @@ from stoqlib.database.columns import PriceCol, AutoIncCol
 from stoqlib.exceptions import DatabaseInconsistency, StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
-from stoqlib.lib.defaults import (get_method_names, get_all_methods_dict,
-                                  METHOD_MONEY)
+from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY)
 from stoqlib.domain.fiscal import (IssBookEntry, IcmsIpiBookEntry,
                                    AbstractFiscalBookEntry)
 from stoqlib.domain.base import Domain, ModelAdapter, InheritableModelAdapter
 from stoqlib.domain.payment.operation import PaymentOperation
 from stoqlib.domain.interfaces import (IInPayment, IOutPayment, IPaymentGroup,
-                                       ICheckPM, IBillPM, IContainer,
-                                       IPaymentDevolution, IPaymentDeposit)
+                                       IContainer, IPaymentDevolution,
+                                       IPaymentDeposit)
 
 _ = stoqlib_gettext
 
@@ -209,12 +208,13 @@ class Payment(Domain):
             Note that the payment group daily_penalty must be
             between 0 and 100.
         """
+        from stoqlib.domain.payment.methods import CheckPM, BillPM
         if self.status in [self.STATUS_PREVIEW, self.STATUS_CANCELLED]:
             return self.value
         if self.status in [self.STATUS_PAID, self.STATUS_REVIEWING,
                            self.STATUS_CONFIRMED]:
             return self.paid_value
-        if self.method.get_implemented_iface() in (ICheckPM, IBillPM):
+        if isinstance(self.method, (CheckPM, BillPM)):
             paid_date = paid_date or datetime.now()
             days = (paid_date - self.due_date).days
             if days <= 0:
@@ -399,14 +399,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
                             for payment in self._get_paid_payments()]
         return sum(paid_values, currency(0))
 
-    def set_method(self, method_iface):
-        items = get_all_methods_dict().items()
-        method = [method_id for method_id, iface in items
-                        if method_iface is iface]
-        if len(method) != 1:
-            raise TypeError('Invalid method_class argument, got type %s'
-                            % method_iface)
-        self.default_method = method[0]
+    def set_method(self, method):
+        self.default_method = method
 
     def get_till_entries(self):
         from stoqlib.domain.till import TillEntry
@@ -426,9 +420,9 @@ class AbstractPaymentGroup(InheritableModelAdapter):
             payment.set_pending()
 
     def confirm_money_payments(self):
-        from stoqlib.domain.payment.methods import PMAdaptToMoneyPM
+        from stoqlib.domain.payment.methods import MoneyPM
         for payment in self.get_items():
-            if not isinstance(payment.method, PMAdaptToMoneyPM):
+            if not isinstance(payment.method, MoneyPM):
                 continue
             payment.pay()
 
@@ -461,8 +455,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
 
         conn = self.get_connection()
         if ignore_method_iface:
-            base_method = sysparam(conn).BASE_PAYMENT_METHOD
-            query['method'] = ignore_method_iface(base_method)
+            query['method'] = ignore_method_iface.selectOne(connection=conn)
 
         for payment in Payment.selectBy(connection=conn, **query):
             inpayment = IInPayment(payment, None)

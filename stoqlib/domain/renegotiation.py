@@ -29,13 +29,11 @@ from kiwi.datatypes import currency
 
 from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 from stoqlib.exceptions import StoqlibError
 from stoqlib.domain.base import Domain, InheritableModelAdapter
 from stoqlib.domain.interfaces import (IRenegotiationReturnSale,
                                        IDescribable, IPaymentGroup,
                                        IRenegotiationExchange,
-                                       IGiftCertificatePM,
                                        IRenegotiationInstallments)
 
 _ = stoqlib_gettext
@@ -113,16 +111,16 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
         clone.add_custom_gift_certificate(overpaid_value,
                                           giftcert_number)
 
+        from stoqlib.domain.payment.methods import GiftCertificatePM
         group = clone.addFacet(IPaymentGroup, connection=conn)
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = IGiftCertificatePM(base_method)
-        adapter.setup_inpayments(overpaid_value, group)
+        method = GiftCertificatePM.selectOne(connection=conn)
+        method.setup_inpayments(overpaid_value, group)
         clone.confirm_sale()
 
         # The new payment for the new sale has it's value already paid
         # in the old sale order. So, create a reversal one
         payment = IPaymentGroup(sale_order)
-        payment.add_payment(-overpaid_value, reason, base_method)
+        payment.add_payment(-overpaid_value, reason, method)
         return clone
 
     def confirm(self, sale_order, gift_certificate_settings=None):

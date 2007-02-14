@@ -45,7 +45,8 @@ from stoqlib.lib.defaults import (METHOD_GIFT_CERTIFICATE, get_all_methods_dict,
 from stoqlib.domain.devices import DeviceSettings
 from stoqlib.domain.giftcertificate import GiftCertificateItem
 from stoqlib.domain.interfaces import (IIndividual, ICompany, IPaymentGroup,
-                                       ICheckPM, IMoneyPM, IContainer)
+                                       IContainer)
+from stoqlib.domain.payment.methods import CheckPM, MoneyPM
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.service import ServiceSellableItem
 from stoqlib.domain.sellable import ASellableItem
@@ -278,7 +279,7 @@ def print_cheques_for_payment_group(conn, group):
     city = main_address.city_location.city[:max_len]
     for idx, payment in enumerate(payments):
         method = payment.method
-        if not ICheckPM.providedBy(method):
+        if not isinstance(method, CheckPM):
             continue
         check_data = method.get_check_data_by_payment(payment)
         bank_id = check_data.bank_data.bank_id
@@ -518,17 +519,16 @@ class FiscalCoupon:
         all_methods = get_all_methods_dict()
         for payment in group.get_items():
             method = payment.method
-            method_iface = method.get_implemented_iface()
-            if method_iface in (ICheckPM, IMoneyPM):
-                if method_iface is ICheckPM:
+            if isinstance(method, (CheckPM, MoneyPM)):
+                if isinstance(method, CheckPM):
                     method_id = CHEQUE_PM
                 else:
                     method_id = MONEY_PM
                 self.printer.add_payment(method_id, payment.base_value)
                 continue
             method_id = None
-            for identifier, iface in all_methods.items():
-                if iface is method_iface:
+            for identifier in all_methods:
+                if identifier is method_id:
                     if method_id is not None:
                         raise TypeError(
                             "There is the same identifier for two "
@@ -538,8 +538,8 @@ class FiscalCoupon:
             if method_id is None:
                 raise ValueError(
                     "Can't find a valid identifier for the payment "
-                    "method interface: %r. It is not possible add "
-                    "the payment on the coupon" % method_iface)
+                    "method id: %d. It is not possible add "
+                    "the payment on the coupon" % method_id)
             custom_pm = pm_constants.get_value(method_id)
             if not custom_pm:
                 method_name = get_method_names()[method_id]

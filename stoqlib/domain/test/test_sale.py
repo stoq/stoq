@@ -33,9 +33,10 @@ from stoqlib.domain.renegotiation import AbstractRenegotiationAdapter
 from stoqlib.domain.giftcertificate import GiftCertificate
 from stoqlib.domain.interfaces import (IClient, IEmployee, ISalesPerson,
                                        ICompany, IIndividual,
-                                       ISellable, IPaymentGroup, ICheckPM,
+                                       ISellable, IPaymentGroup,
                                        IStorable)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
+from stoqlib.domain.payment.methods import CheckPM
 from stoqlib.domain.person import Person, EmployeeRole
 from stoqlib.domain.product import Product
 from stoqlib.domain.renegotiation import RenegotiationAdaptToReturnSale
@@ -219,7 +220,7 @@ class TestSale(DomainTest):
         sale_total = sale.get_sale_subtotal()
 
         pg_facet = IPaymentGroup(sale)
-        check_method = ICheckPM(sysparam(self.trans).BASE_PAYMENT_METHOD)
+        check_method = CheckPM.selectOne(connection=self.trans)
         check_method.setup_inpayments(pg_facet, 4,
                                       datetime.datetime.today(),
                                       INTERVALTYPE_MONTH, 1,

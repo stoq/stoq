@@ -41,7 +41,7 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import get_formatted_price
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.drivers import print_cheques_for_payment_group
-from stoqlib.lib.defaults import METHOD_MONEY, METHOD_MULTIPLE
+from stoqlib.lib.defaults import METHOD_MONEY, METHOD_GIFT_CERTIFICATE
 from stoqlib.lib.defaults import get_all_methods_dict
 from stoqlib.gui.base.wizards import WizardEditorStep, BaseWizard
 from stoqlib.gui.base.lists import AdditionListSlave
@@ -53,20 +53,32 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.methods import get_active_pm_ifaces
+from stoqlib.domain.payment.methods import (AbstractPaymentMethodAdapter,
+                                            MoneyPM, BillPM, CheckPM,
+                                            CardPM, FinancePM)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
 from stoqlib.domain.sale import Sale, GiftCertificateOverpaidSettings
 from stoqlib.domain.sellable import ASellable
 from stoqlib.domain.giftcertificate import (GiftCertificate,
                                             get_volatile_gift_certificate)
-from stoqlib.domain.interfaces import (ICheckPM, ICardPM, IBillPM,
-                                       IFinancePM, ISellable,
-                                       IMultiplePM, IMoneyPM,
-                                       IGiftCertificatePM,
-                                       IPaymentGroup, ISalesPerson)
+from stoqlib.domain.interfaces import (IPaymentGroup, ISalesPerson,
+                                       ISellable)
 
 _ = stoqlib_gettext
 
+
+METHOD_MULTIPLE = 10
+
+def _method_name_to_method_id(method_name):
+    if method_name == 'money':
+        method = METHOD_MONEY
+    elif method_name == 'gift':
+        method = METHOD_GIFT_CERTIFICATE
+    elif method_name == 'multiple':
+        method = METHOD_MULTIPLE
+    else:
+        raise ValueError(
+            "Invalid payment method interface, got %s" % method_name)
 
 #
 # Wizard Steps
@@ -76,11 +88,6 @@ class PaymentMethodStep(WizardEditorStep):
     gladefile = 'PaymentMethodStep'
     model_type = Sale
     slave_holder = 'method_holder'
-
-    slaves_info = ((ICheckPM, CheckMethodSlave),
-                   (IBillPM, BillMethodSlave),
-                   (ICardPM, CardMethodSlave),
-                   (IFinancePM, FinanceMethodSlave))
 
     def __init__(self, wizard, previous, conn, model,
                  outstanding_value=currency(0)):
@@ -117,10 +124,16 @@ class PaymentMethodStep(WizardEditorStep):
 
         self.method_slave = slave
 
-    def _update_payment_method(self, iface):
+    def _update_payment_method(self, method_type):
         if self.renegotiation_mode:
             return
-        self.group.set_method(iface)
+
+        for method_name, value in get_all_methods_dict().items():
+            if value == method_type:
+                break
+        else:
+            raise AssertionError
+        self.group.set_method(method_name)
 
     def _update_payment_method_slave(self):
         selected = self.method_combo.get_selected_data()
@@ -138,15 +151,22 @@ class PaymentMethodStep(WizardEditorStep):
         self.attach_slave(self.slave_holder, self.method_slave)
 
     def _setup_combo(self):
-        active_pm_ifaces = get_active_pm_ifaces()
-        base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
+        active_methods = AbstractPaymentMethodAdapter.get_active_methods(self.conn)
         combo_items = []
-        for iface, slave_class in PaymentMethodStep.slaves_info:
-            if not iface in active_pm_ifaces:
+        for method in active_methods:
+            method_type = type(method)
+            if method_type == CheckPM:
+                slave_class = CheckMethodSlave
+            elif method_type == BillPM:
+                slave_class = BillMethodSlave
+            elif method_type == CardPM:
+                slave_class = CardMethodSlave
+            elif method_type == FinancePM:
+                slave_class = FinanceMethodSlave
+            else:
                 continue
-            method = iface(base_method)
             if method.is_active:
-                self.method_dict[method] = iface, slave_class
+                self.method_dict[method] = method_type, slave_class
                 combo_items.append((method.description, method))
         self.method_combo.prefill(combo_items)
 
@@ -561,7 +581,9 @@ class _AbstractSalesPersonStep(WizardEditorStep):
     #
 
     def next_step(self):
-        self.payment_group.set_method(self.pm_slave.get_selected_method())
+        method_name = self.pm_slave.get_selected_method()
+        method = _method_name_to_method_id(method_name)
+        self.payment_group.set_method(method)
         return self.on_next_step()
 
     #
@@ -583,7 +605,7 @@ class _AbstractSalesPersonStep(WizardEditorStep):
             raise StoqlibError(
                 "You should have a IPaymentGroup facet defined at this point")
         self.pm_slave = SelectPaymentMethodSlave(
-            method_iface=get_all_methods_dict()[group.default_method])
+            method_type=get_all_methods_dict()[group.default_method])
         self.pm_slave.connect('method-changed', self.on_payment_method_changed)
         self.attach_slave('select_method_holder', self.pm_slave)
 
@@ -606,15 +628,15 @@ class _AbstractSalesPersonStep(WizardEditorStep):
 class SalesPersonStep(_AbstractSalesPersonStep):
     """A wizard step used when confirming a sale order """
 
-    def _update_next_step(self, pm_iface):
-        if pm_iface is IMoneyPM:
+    @argcheck(str)
+    def _update_next_step(self, method_name):
+        if method_name == 'money':
             self.wizard.enable_finish()
-        elif (pm_iface is IGiftCertificatePM
-              or pm_iface is IMultiplePM):
+        elif method_name in ['gift', 'multiple']:
             self.wizard.disable_finish()
         else:
             raise ValueError(
-                "Invalid payment method interface, got %s" % pm_iface)
+                "Invalid payment method interface, got %s" % method_name)
 
 
     #
@@ -629,8 +651,8 @@ class SalesPersonStep(_AbstractSalesPersonStep):
         if not sysparam(self.conn).CONFIRM_SALES_ON_TILL:
             self.model.reset_discount_and_surcharge()
 
-    def on_payment_method_changed(self, slave, method_iface):
-        self._update_next_step(method_iface)
+    def on_payment_method_changed(self, slave, method_name):
+        self._update_next_step(method_name)
 
     #
     # WizardStep hooks
@@ -644,13 +666,13 @@ class SalesPersonStep(_AbstractSalesPersonStep):
 
     def on_next_step(self):
         selected_method = self._get_selected_payment_method()
-        if selected_method is IMoneyPM:
+        if selected_method == 'money':
             # Return None here means call wizard.finish, which is exactly
             # what we need
             self.wizard.setup_cash_payment()
             return
 
-        elif selected_method is IGiftCertificatePM:
+        elif selected_method == 'gift':
             table = GiftCertificate.getAdapterClass(ISellable)
             if not table.get_sold_sellables(self.conn):
                 msg = _('There is no sold gift certificates at this moment.'
@@ -723,7 +745,7 @@ class _AbstractSaleWizard(BaseWizard):
     #
 
     def setup_cash_payment(self, total=None):
-        money_method = sysparam(self.conn).METHOD_MONEY
+        money_method = MoneyPM.selectOne(connection=self.conn)
         total = total or self.payment_group.get_total_received()
         money_method.setup_inpayments(total, self.payment_group)
 

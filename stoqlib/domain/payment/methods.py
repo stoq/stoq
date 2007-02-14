@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,7 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Evandro Vale Miquelito     <evandro@async.com.br>
+##              Johan Dahlin               <jdahlin@async.com.br>
 ##
 """ Payment method implementations. """
 
@@ -30,11 +31,10 @@ from dateutil.relativedelta import relativedelta
 from kiwi.argcheck import argcheck
 from kiwi.datatypes import currency
 from sqlobject import IntCol, DateTimeCol, ForeignKey, BoolCol
-from zope.interface import implements, implementedBy
+from zope.interface import implements
 from zope.interface.interface import InterfaceClass
 
 from stoqlib.database.columns import DecimalCol
-from stoqlib.database.runtime import get_connection
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.parameters import sysparam
 from stoqlib.lib.defaults import calculate_interval, get_all_methods_dict
@@ -45,11 +45,9 @@ from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             AbstractPaymentGroup)
 from stoqlib.domain.base import (Domain, InheritableModel,
                                  InheritableModelAdapter)
-from stoqlib.domain.interfaces import (IInPayment, IMoneyPM, ICheckPM,
-                                       IBillPM, IFinancePM, ICardPM,
-                                       ICreditProvider, IActive, IOutPayment,
-                                       IDescribable, IGiftCertificatePM,
-                                       IMultiplePM)
+from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
+                                       IActive, IOutPayment,
+                                       IDescribable)
 from stoqlib.exceptions import (PaymentError, DatabaseInconsistency,
                                 PaymentMethodError)
 
@@ -76,7 +74,7 @@ class PaymentMethodDetails(InheritableModel):
     implements(IActive, IDescribable)
 
     payment_type_name = None
-    interface_method = None
+    method_type = None
 
     is_active = BoolCol(default=True)
     commission = DecimalCol(default=0)
@@ -118,15 +116,6 @@ class PaymentMethodDetails(InheritableModel):
     def get_thirdparty(self):
         return self.provider.get_adapted()
 
-    def _get_payment_method_by_interface(self, iface):
-        conn = self.get_connection()
-        method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = iface(method, None)
-        if adapter is None:
-            raise TypeError('This object must implement interface '
-                            '%s' % iface)
-        return adapter
-
     def calculate_payment_duedate(self, first_duedate):
         if not hasattr(self, 'installment_settings'):
             return first_duedate + timedelta(self.receive_days)
@@ -142,11 +131,15 @@ class PaymentMethodDetails(InheritableModel):
         return self.max_installments_number
 
     def get_payment_method(self):
-        iface = self.interface_method
-        if not iface:
+        method_type = self.method_type
+        if not method_type:
             raise ValueError('Child must define a interface_method '
                              'attribute')
-        return self._get_payment_method_by_interface(iface)
+        method = method_type.selectOne(connection=self.get_connection())
+        if method is None:
+            raise TypeError('This object must implement interface '
+                            '%s' % method_type)
+        return method
 
     def create_inpayment(self, payment_group, due_date, value,
                          payment_method, description=None,
@@ -266,21 +259,11 @@ class CardInstallmentSettings(Domain):
         return first_duedate.replace(day=self.payment_day)
 
 
-class PaymentMethod(Domain):
-    """A base payment method with its description."""
-
-    def get_total_by_client(self, client):
-        raise NotImplementedError('This method must be implemented on child')
-
-    def get_total_by_date(self, start_date=None, end_date=None):
-        raise NotImplementedError('This method must be implemented on child')
-
 #
-# Adapters for PaymentMethod class
+# PaymentMethods
 #
 
 
-# FIXME: Remove Adapter from class name
 class AbstractPaymentMethodAdapter(InheritableModelAdapter):
     implements(IActive, IDescribable)
 
@@ -335,6 +318,13 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
                                         "implements more than one payment "
                                         "method iface (= %r)" % (self, res))
         return res[0]
+
+    @classmethod
+    def get_active_methods(cls, conn):
+        """Returns a list of payment method interfaces tied with the
+        active payment methods
+        """
+        return AbstractPaymentMethodAdapter.selectBy(is_active=True, connection=conn)
 
     def _check_installments_number(self, installments_number, max=None):
         if max is None:
@@ -427,8 +417,8 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
         return payment_group.get_thirdparty()
 
 
-class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
-    implements(IMoneyPM, IActive)
+class MoneyPM(AbstractPaymentMethodAdapter):
+    implements(IActive)
 
     # Money payment method must be always available
     active_editable = False
@@ -457,11 +447,8 @@ class PMAdaptToMoneyPM(AbstractPaymentMethodAdapter):
     def setup_inpayments(self, total, group, *args, **kwargs):
         self._setup_payment(total, group)
 
-PaymentMethod.registerFacet(PMAdaptToMoneyPM, IMoneyPM)
-
-
-class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
-    implements(IGiftCertificatePM, IActive)
+class GiftCertificatePM(AbstractPaymentMethodAdapter):
+    implements(IActive)
 
     description = _(u'Gift Certificate')
 
@@ -508,8 +495,6 @@ class PMAdaptToGiftCertificatePM(AbstractPaymentMethodAdapter):
     def get_max_installments_number(self):
         # Gift Certificates support exactly one installment
         return 1
-
-PaymentMethod.registerFacet(PMAdaptToGiftCertificatePM, IGiftCertificatePM)
 
 
 class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
@@ -645,14 +630,10 @@ class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
             connection=self.get_connection())
 
 
-class PMAdaptToCheckPM(AbstractCheckBillAdapter):
-    implements(ICheckPM, IActive)
+class CheckPM(AbstractCheckBillAdapter):
+    implements(IActive)
 
     description = _(u'Check')
-
-    #
-    # ICheckPM implementation
-    #
 
     def get_check_data_by_payment(self, payment):
         """Get an existing CheckData instance from a payment object."""
@@ -701,32 +682,19 @@ class PMAdaptToCheckPM(AbstractCheckBillAdapter):
         BankAccount.delete(bank_data.id, connection=conn)
         Payment.delete(payment.id, connection=conn)
 
-PaymentMethod.registerFacet(PMAdaptToCheckPM, ICheckPM)
-
-
-class PMAdaptToBillPM(AbstractCheckBillAdapter):
-    implements(IBillPM, IActive)
+class BillPM(AbstractCheckBillAdapter):
+    implements(IActive)
 
     description = _(u'Bill')
-
-    #
-    # IBillPM implementation
-    #
 
     def get_available_bill_accounts(self):
         raise NotImplementedError
 
-PaymentMethod.registerFacet(PMAdaptToBillPM, IBillPM)
 
-
-class PMAdaptToCardPM(AbstractPaymentMethodAdapter):
-    implements(ICardPM, IActive)
+class CardPM(AbstractPaymentMethodAdapter):
+    implements(IActive)
 
     description = _(u'Card')
-
-    #
-    # ICardPM implementation
-    #
 
     def get_credit_card_providers(self):
         table = Person.getAdapterClass(ICreditProvider)
@@ -746,11 +714,9 @@ class PMAdaptToCardPM(AbstractPaymentMethodAdapter):
         raise NotImplementedError('This method must be implemented in '
                                   'BasePMProviderInfo classes')
 
-PaymentMethod.registerFacet(PMAdaptToCardPM, ICardPM)
 
-
-class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
-    implements(IFinancePM, IActive)
+class FinancePM(AbstractPaymentMethodAdapter):
+    implements(IActive)
 
     description = _(u'Finance')
 
@@ -763,16 +729,11 @@ class PMAdaptToFinancePM(AbstractPaymentMethodAdapter):
     def get_max_installments_number(self):
         raise NotImplementedError('This method mus be implemented in '
                                   'BasePMProviderInfo classes')
-    #
-    # IFinancePM implementation
-    #
 
     def get_finance_companies(self):
         table = Person.getAdapterClass(ICreditProvider)
         conn = self.get_connection()
         return table.get_finance_companies(conn)
-
-PaymentMethod.registerFacet(PMAdaptToFinancePM, IFinancePM)
 
 
 #
@@ -787,7 +748,7 @@ class DebitCardDetails(PaymentMethodDetails):
     # get_max_installments_number compatibility
     max_installments_number = 1
     description = payment_type_name = _(u'Debit Card')
-    interface_method = ICardPM
+    method_type = CardPM
 
     receive_days = IntCol()
 
@@ -809,7 +770,7 @@ class CreditCardDetails(PaymentMethodDetails):
     # get_max_installments_number compatibility
     max_installments_number = 1
     description = payment_type_name = _(u'Credit Card')
-    interface_method = ICardPM
+    method_type = CardPM
 
     installment_settings = ForeignKey(u'CardInstallmentSettings')
 
@@ -818,7 +779,7 @@ class CardInstallmentsStoreDetails(PaymentMethodDetails):
     implements(IDescribable)
 
     payment_type_name = _(u'Installments Store')
-    interface_method = ICardPM
+    method_type = CardPM
     description = _(u'Credit Card')
 
     max_installments_number = IntCol(default=1)
@@ -837,7 +798,7 @@ class CardInstallmentsProviderDetails(PaymentMethodDetails):
     implements(IDescribable)
 
     payment_type_name = _(u'Installments Provider')
-    interface_method = ICardPM
+    method_type = CardPM
     description = _(u'Credit Card')
 
     max_installments_number = IntCol(default=12)
@@ -857,44 +818,7 @@ class FinanceDetails(PaymentMethodDetails):
 
     max_installments_number = 1
     payment_type_names = (_(u'Check'), _(u'Bill'))
-    interface_method = IFinancePM
+    method_type = FinancePM
     description = _(u'Finance')
 
     receive_days = IntCol(default=1)
-
-
-#
-# General methods
-#
-
-
-def get_active_pm_ifaces():
-    """returns a list of payment method interfaces tied with the
-    active payment methods
-    """
-    conn = get_connection()
-    methods = AbstractPaymentMethodAdapter.selectBy(is_active=True,
-                                                    connection=conn)
-    qty = methods.count()
-    if not qty:
-        raise DatabaseInconsistency("You should have at least one active "
-                                    "payment method, got nothing. ")
-
-    all_ifaces = get_all_methods_dict().values()
-    all_ifaces.remove(IMultiplePM)
-    if qty > len(all_ifaces):
-        raise DatabaseInconsistency("You can not have more payment methods "
-                                    "them the maximum allowed, which is %d, "
-                                    "found %d payment methods"
-                                    % (len(all_ifaces), qty))
-
-    ifaces = []
-    for pm in methods:
-        for iface in implementedBy(type(pm)):
-            if not iface in all_ifaces:
-                continue
-            ifaces.append(iface)
-    if not IMoneyPM in ifaces:
-        raise DatabaseInconsistency("Money payment method must be"
-                                    "always active.")
-    return ifaces
