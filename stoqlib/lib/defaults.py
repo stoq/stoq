@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005 Async Open Source
+## Copyright (C) 2005-2007 Async Open Source
 ##
 ## This program is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU Lesser General Public License
@@ -21,14 +21,15 @@
 ##
 ## Author(s):       Evandro Vale Miquelito      <evandro@async.com.br>
 ##                  Henrique Romano             <henrique@async.com.br>
+##                  Johan Dahlin                <jdahlin@async.com.br>
 ##
 """Default values for applications"""
 
 import datetime
 
 
+from stoqlib.enums import FiscalBookEntry
 from stoqlib.lib.translation import stoqlib_gettext
-
 
 _ = stoqlib_gettext
 
@@ -117,18 +118,9 @@ def payment_value_colorize(column_data):
     """
     return column_data < 0
 
-#
-# Fiscal constants
-# This is a Brazil-specific session
-#
-
-(ICMS_BOOK_ENTRY,
- IPI_BOOK_ENTRY,
- ISS_BOOK_ENTRY) = range(3)
-
-fiscal_book_entries = {ICMS_BOOK_ENTRY: _("ICMS"),
-                       IPI_BOOK_ENTRY: _("IPI"),
-                       ISS_BOOK_ENTRY: _("ISS")}
+fiscal_book_entries = {FiscalBookEntry.ICMS: _("ICMS"),
+                       FiscalBookEntry.IPI: _("IPI"),
+                       FiscalBookEntry.ISS: _("ISS")}
 
 
 #

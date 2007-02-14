@@ -30,9 +30,9 @@ import gtk
 from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import currency
 
+from stoqlib.enums import FiscalBookEntry
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, IPI_BOOK_ENTRY,
-                                  ISS_BOOK_ENTRY, ALL_ITEMS_INDEX)
+from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 from stoqlib.gui.base.search import SearchEditor
 from stoqlib.gui.editors.fiscaleditor import CfopEditor
 from stoqlib.gui.slaves.fiscalslave import FiscalBookEntryFilterSlave
@@ -120,11 +120,11 @@ class FiscalBookEntrySearch(SearchEditor):
     def get_extra_query(self):
         branch = self.filter_slave.get_selected_branch()
         entry_type = self.filter_slave.get_selected_entry_type()
-        if entry_type == ICMS_BOOK_ENTRY:
+        if entry_type == FiscalBookEntry.ICMS:
             self._setup_icms_columns()
-        elif entry_type == ISS_BOOK_ENTRY:
+        elif entry_type == FiscalBookEntry.ISS:
             self._setup_iss_columns()
-        elif entry_type == IPI_BOOK_ENTRY:
+        elif entry_type == FiscalBookEntry.IPI:
             self._setup_ipi_columns()
         else:
             raise ValueError("Invalid fical book entry type, got %s"

@@ -31,9 +31,10 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.domain.person import PersonAdaptToBranch
+from stoqlib.enums import FiscalBookEntry
 from stoqlib.gui.slaves.filterslave import FilterSlave
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.defaults import (ICMS_BOOK_ENTRY, fiscal_book_entries,
+from stoqlib.lib.defaults import (fiscal_book_entries,
                                   ALL_BRANCHES, ALL_ITEMS_INDEX)
 
 _ = stoqlib_gettext
@@ -56,7 +57,7 @@ class FiscalBookEntryFilterSlave(GladeSlaveDelegate):
     def _setup_slaves(self):
         items = [(value, key)
                     for key, value in fiscal_book_entries.items()]
-        self.entry_type_slave = FilterSlave(items, selected=ICMS_BOOK_ENTRY)
+        self.entry_type_slave = FilterSlave(items, selected=FiscalBookEntry.ICMS)
         self.entry_type_slave.set_filter_label(_('Show entries of type'))
         self.entry_type_slave.connect("status-changed",
                                       self._on_entry_type_changed)
