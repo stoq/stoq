@@ -113,6 +113,8 @@ def execute_sql(filename):
         proc.stdin.write("SET SESSION client_min_messages TO 'warning';");
 
         data = open(filename).read()
+        # Rename serial into bigserial, for 64-bit id columns
+        data = data.replace('serial', 'bigserial')
         proc.stdin.write(data)
         proc.stdin.close()
 
