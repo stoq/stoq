@@ -35,7 +35,8 @@ from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
                                             GiftCertificatePM,
                                             CardPM, FinancePM)
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
-                                                     CheckBillMethodEditor)
+                                                     BillMethodEditor,
+                                                     CheckMethodEditor)
 from stoqlib.gui.base.dialogs import BasicDialog
 from stoqlib.gui.base.search import SearchEditorToolBar
 from stoqlib.gui.base.dialogs import run_dialog
@@ -89,8 +90,8 @@ class PaymentMethodsDialog(BasicDialog):
         methods_dict = {GiftCertificatePM: GiftCertificateTypeSearch,
                         CardPM: CardProviderSearch,
                         MoneyPM: (PaymentMethodEditor, item),
-                        CheckPM: (CheckBillMethodEditor, item),
-                        BillPM: (CheckBillMethodEditor, item),
+                        CheckPM: (CheckMethodEditor, item),
+                        BillPM: (BillMethodEditor, item),
                         FinancePM: FinanceProviderSearch}
         item_table = type(item)
         if item_table in methods_dict.keys():

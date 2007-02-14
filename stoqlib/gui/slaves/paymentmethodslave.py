@@ -32,10 +32,11 @@ from kiwi.utils import gsignal
 from stoqlib.gui.base.editors import BaseEditorSlave
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
-                                            FinanceDetails,
+from stoqlib.domain.payment.methods import (FinanceDetails,
                                             MoneyPM,
-                                            GiftCertificatePM)
+                                            GiftCertificatePM,
+                                            BillPM,
+                                            CheckPM)
 from stoqlib.exceptions import StoqlibError
 
 
@@ -44,16 +45,21 @@ class PmSlaveType(enum):
      GIFT_CERTIFICATE,
      MULTIPLE) = range(3)
 
-class CheckBillSettingsSlave(BaseEditorSlave):
-    model_type = AbstractCheckBillAdapter
+class _CheckBillSettingsSlave(BaseEditorSlave):
+    model_type = BillPM
     gladefile = 'CheckBillSettingsSlave'
     proxy_widgets = ('installments_number',
                      'monthly_interest',
                      'daily_penalty')
 
     def setup_proxies(self):
-        self.add_proxy(self.model, CheckBillSettingsSlave.proxy_widgets)
+        self.add_proxy(self.model, _CheckBillSettingsSlave.proxy_widgets)
 
+class BillSettingsSlave(_CheckBillSettingsSlave):
+    model_type = BillPM
+
+class CheckSettingsSlave(_CheckBillSettingsSlave):
+    model_type = CheckPM
 
 class InstallmentsNumberSettingsSlave(BaseEditorSlave):
     gladefile = 'InstallmentsNumberSettingsSlave'
