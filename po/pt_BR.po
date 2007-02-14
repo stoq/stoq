@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: stoq 0.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-02-14 16:07-0200\n"
+"POT-Creation-Date: 2007-02-14 16:20-0200\n"
 "PO-Revision-Date: 2005-12-01 18:33+0200\n"
 "Last-Translator: Bruno Rafael Garcia <brg@async.com.br>\n"
 "Language-Team: Brazilian portuguese <pt_BR@li.org>\n"
@@ -3088,15 +3088,15 @@ msgstr "Detalhes da Venda"
 
 #: ../stoqlib/gui/editors/personeditor.py:226
 msgid "Employee"
-msgstr "Empregado"
+msgstr "Funcionário"
 
 #: ../stoqlib/gui/editors/personeditor.py:227
 msgid "New Employee"
-msgstr "Novo Empregado"
+msgstr "Novo Funcionário"
 
 #: ../stoqlib/gui/editors/personeditor.py:250
 msgid "Employee Data"
-msgstr "Dados do Empregado"
+msgstr "Dados do Funcionário"
 
 #: ../stoqlib/gui/editors/personeditor.py:261
 msgid "Role History"
@@ -3104,7 +3104,7 @@ msgstr "Histórico de Cargos"
 
 #: ../stoqlib/gui/editors/personeditor.py:275
 msgid "Employee Role"
-msgstr "Cargo de Empregado"
+msgstr "Cargo de Funcionário"
 
 #: ../stoqlib/gui/editors/personeditor.py:280
 msgid "Role Name:"
@@ -3298,7 +3298,7 @@ msgstr "Pesquisa de Pessoa"
 
 #: ../stoqlib/gui/search/personsearch.py:81
 msgid "Employee Search"
-msgstr "Pesquisa de Empregado"
+msgstr "Pesquisa de Funcionário"
 
 #: ../stoqlib/gui/search/personsearch.py:85
 msgid "employee"
@@ -3434,7 +3434,7 @@ msgstr "Frete (%)"
 
 #: ../stoqlib/gui/search/personsearch.py:317
 msgid "Employee Role Search"
-msgstr "Pesquisa de Cargo de Empregado"
+msgstr "Pesquisa de Cargo de Funcionário"
 
 #: ../stoqlib/gui/search/personsearch.py:325
 msgid "Role Matching"
@@ -4552,7 +4552,7 @@ msgstr "Razão:"
 
 #: ../data/glade/EmployeeStatusSlave.glade.h:1
 msgid "Employee Status:"
-msgstr "Situação do Empregado:"
+msgstr "Situação do Funcionário:"
 
 #: ../data/glade/AbstractItemStep.glade.h:1
 #: ../data/glade/AbstractProductStep.glade.h:1
