@@ -69,6 +69,10 @@ class SellableItemStep(WizardEditorStep):
         self._update_widgets()
         self.unit_label.set_bold(True)
 
+    def hide_add_and_edit_buttons(self):
+        self.slave.hide_add_button()
+        self.slave.hide_edit_button()
+
     def _refresh_next(self):
         self.wizard.refresh_next(len(self.slave.klist))
 
