@@ -44,9 +44,7 @@ def _create_adapter_test():
     #
     TODO = {
         'AbstractPaymentGroup': ' ',
-        'APaymentMethod': ' ',
         'GiftCertificateAdaptToSellable': ' ',
-        'PersonAdaptToClient': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
         }
 

@@ -417,9 +417,6 @@ class PersonAdaptToClient(_PersonAdapter):
         return cls.select(query, connection=conn)
 
     def get_client_sales(self):
-        """Returns a list of sales from a SaleView tied with the
-        current client
-        """
         from stoqlib.domain.sale import SaleView
         conn = self.get_connection()
         query = SaleView.q.client_id == self.id
@@ -427,13 +424,6 @@ class PersonAdaptToClient(_PersonAdapter):
                                orderBy=SaleView.q.open_date)
 
     def get_last_purchase_date(self):
-        """
-        Fetch the date of the last purchased item by this client.
-        None is returned if there are no sales yet made by the client
-
-        @returns: the date of the last purchased item
-        @rtype: datetime.date or None
-        """
         sales = self.get_client_sales()
         if sales:
             # The get_client_sales method already returns a sorted list of

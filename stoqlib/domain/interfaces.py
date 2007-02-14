@@ -280,6 +280,25 @@ class IClient(IPersonFacet):
     status = Attribute('ok, indebted, insolvent, inactive')
     days_late = Attribute('How many days is this client indebted')
 
+    def get_last_purchase_date():
+        """
+        Fetch the date of the last purchased item by this client.
+        None is returned if there are no sales yet made by the client
+
+        @returns: the date of the last purchased item
+        @rtype: datetime.date or None
+        """
+
+    def get_client_sales():
+        """Returns a list of sales from a SaleView tied with the
+        current client
+        """
+
+    def get_name():
+        """
+        Name of the client
+        """
+
 class ISupplier(IPersonFacet):
     """A company or an individual that produces, provides, or furnishes
     an item or service"""
