@@ -30,11 +30,10 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.database import finish_transaction
-from stoqlib.domain.interfaces import (IGiftCertificatePM, ICardPM,
-                                       IFinancePM, IMoneyPM, ICheckPM,
-                                       IBillPM)
-from stoqlib.domain.payment.methods import (AbstractPaymentMethodAdapter,
-                                            PaymentMethod)
+from stoqlib.domain.payment.methods import AbstractPaymentMethodAdapter
+from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
+                                            GiftCertificatePM,
+                                            CardPM, FinancePM)
 from stoqlib.gui.editors.paymentmethodeditor import (PaymentMethodEditor,
                                                      CheckBillMethodEditor)
 from stoqlib.gui.base.dialogs import BasicDialog
@@ -87,13 +86,12 @@ class PaymentMethodsDialog(BasicDialog):
                        editable=True)]
 
     def _get_dialog(self, item):
-        func = PaymentMethod.getAdapterClass
-        methods_dict = {func(IGiftCertificatePM): GiftCertificateTypeSearch,
-                        func(ICardPM): CardProviderSearch,
-                        func(IMoneyPM): (PaymentMethodEditor, item),
-                        func(ICheckPM): (CheckBillMethodEditor, item),
-                        func(IBillPM): (CheckBillMethodEditor, item),
-                        func(IFinancePM): FinanceProviderSearch}
+        methods_dict = {GiftCertificatePM: GiftCertificateTypeSearch,
+                        CardPM: CardProviderSearch,
+                        MoneyPM: (PaymentMethodEditor, item),
+                        CheckPM: (CheckBillMethodEditor, item),
+                        BillPM: (CheckBillMethodEditor, item),
+                        FinancePM: FinanceProviderSearch}
         item_table = type(item)
         if item_table in methods_dict.keys():
             return methods_dict[item_table]

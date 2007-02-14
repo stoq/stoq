@@ -38,7 +38,7 @@ from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH, \
 from stoqlib.lib.drivers import get_current_cheque_printer_settings
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.account import BankAccount
-from stoqlib.domain.interfaces import (ICheckPM, IBillPM, IInPayment)
+from stoqlib.domain.interfaces import IInPayment
 from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CreditProviderGroupData,
                                             DebitCardDetails,
@@ -47,7 +47,8 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CardInstallmentsProviderDetails,
                                             FinanceDetails,
                                             PaymentMethodDetails,
-                                            AbstractPaymentMethodAdapter)
+                                            AbstractPaymentMethodAdapter,
+                                            CheckPM, BillPM)
 from stoqlib.domain.payment.payment import Payment
 
 _ = stoqlib_gettext
@@ -239,8 +240,7 @@ class BillDataSlave(BaseEditorSlave):
     #
 
     def create_model(self, conn):
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        bill_method = IBillPM(base_method)
+        bill_method = BillPM(connection=conn)
         inpayment = bill_method.create_inpayment(self._payment_group,
                                                  self._due_date, self._value)
         return inpayment.get_adapted()
@@ -276,8 +276,7 @@ class CheckDataSlave(BillDataSlave):
         return self.model.payment.value
 
     def create_model(self, conn):
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        check_method = ICheckPM(base_method)
+        check_method = CheckPM.selectOne(connection=conn)
         inpayment = check_method.create_inpayment(self._payment_group,
                                                   self._due_date,
                                                   self._value)

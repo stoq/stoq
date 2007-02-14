@@ -28,11 +28,12 @@ from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
 from stoqlib.gui.base.editors import BaseEditorSlave
-from stoqlib.domain.interfaces import IGiftCertificatePM, IMultiplePM, IMoneyPM
+from stoqlib.database.runtime import get_connection
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.methods import (AbstractCheckBillAdapter,
                                             FinanceDetails,
-                                            get_active_pm_ifaces)
+                                            MoneyPM,
+                                            GiftCertificatePM)
 from stoqlib.exceptions import StoqlibError
 
 class CheckBillSettingsSlave(BaseEditorSlave):
@@ -83,43 +84,44 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     gladefile = 'SelectPaymentMethodSlave'
     gsignal('method-changed', object)
 
-    def __init__(self, method_iface=IMoneyPM):
+    def __init__(self, method_type=MoneyPM):
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
-        self._setup_widgets()
-        self._select_payment_method_by_iface(method_iface)
 
-    def _select_payment_method_by_iface(self, method_iface):
-        if not method_iface in get_active_pm_ifaces():
+        self.conn = get_connection()
+        method = method_type.selectOne(connection=self.conn)
+        self._setup_widgets()
+        self._select_payment_method(method)
+
+    def _select_payment_method(self, method):
+        if not method.is_active:
             raise StoqlibError("The payment method %r can't be used, since "
-                               "it isn't active." % method_iface)
-        if method_iface == IMoneyPM:
+                               "it isn't active." % method.__class__.__name__)
+        if isinstance(method, MoneyPM):
             widget = self.cash_check
-        elif method_iface == IGiftCertificatePM:
+        elif isinstance(method, GiftCertificatePM):
             widget = self.certificate_check
         else:
             widget = self.othermethods_check
         widget.set_active(True)
 
     def _setup_widgets(self):
-        active_pm_ifaces = get_active_pm_ifaces()
-        if not IGiftCertificatePM in active_pm_ifaces:
+        gift_method = GiftCertificatePM.selectOne(connection=self.conn)
+        if not gift_method.is_active:
             self.certificate_check.hide()
-        else:
-            active_pm_ifaces.remove(IGiftCertificatePM)
-        if not IMoneyPM in active_pm_ifaces:
+
+        money_method = MoneyPM.selectOne(connection=self.conn)
+        if not money_method.is_active:
             raise StoqlibError("The money payment method should be always "
                                "available")
-        active_pm_ifaces.remove(IMoneyPM)
-        if not active_pm_ifaces:
-            self.othermethods_check.hide()
+        #self.othermethods_check.hide()
 
     def get_selected_method(self):
         if self.cash_check.get_active():
-            return IMoneyPM
+            return 'money'
         elif self.certificate_check.get_active():
-            return IGiftCertificatePM
+            return 'gift'
         elif self.othermethods_check.get_active():
-            return IMultiplePM
+            return 'multiple'
         else:
             raise StoqlibError("You should have a valid payment method "
                                "selected at this point.")
@@ -129,10 +131,10 @@ class SelectPaymentMethodSlave(GladeSlaveDelegate):
     #
 
     def on_cash_check__toggled(self, *args):
-        self.emit('method-changed', IMoneyPM)
+        self.emit('method-changed', 'money')
 
     def on_certificate_check__toggled(self, *args):
-        self.emit('method-changed', IGiftCertificatePM)
+        self.emit('method-changed', 'gift')
 
     def on_othermethods_check__toggled(self, *args):
-        self.emit('method-changed', IMultiplePM)
+        self.emit('method-changed', 'multiple')

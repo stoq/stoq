@@ -30,12 +30,10 @@ from zope.interface import implements
 
 from stoqlib.database.columns import PriceCol
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.base import Domain, BaseSQLView
+from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive)
 from stoqlib.domain.sellable import (ASellable, ASellableItem,
                                      OnSaleInfo)
-from stoqlib.domain.interfaces import (ISellable, IDescribable, IActive,
-                                       IGiftCertificatePM)
 from stoqlib.exceptions import InvalidStatus
 
 _ = stoqlib_gettext
@@ -152,13 +150,13 @@ class GiftCertificateAdaptToSellable(ASellable):
         ASellable._create(self, id, **kw)
 
     def apply_as_payment_method(self):
+        from stoqlib.domain.payment.methods import GiftCertificatePM
         if self.status != self.STATUS_SOLD:
             raise InvalidStatus('This gift certificate must be sold to be used '
                                 'as a payment method.')
         conn = self.get_connection()
-        base_method = sysparam(conn).BASE_PAYMENT_METHOD
-        adapter = IGiftCertificatePM(base_method)
-        payment = adapter.setup_inpayments(self.price, self.group)
+        method = GiftCertificatePM.selectOne(connection=conn)
+        payment = method.setup_inpayments(self.price, self.group)
         payment.set_pending()
         self.status = self.STATUS_CLOSED
 

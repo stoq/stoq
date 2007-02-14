@@ -29,14 +29,15 @@ from kiwi.datatypes import currency
 from stoqlib.domain.sale import Sale
 from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ICompany, ISupplier, ISellable,
-                                       IPaymentGroup, IFinancePM)
+                                       IPaymentGroup)
 from stoqlib.domain.product import Product, ProductSupplierInfo
 from stoqlib.domain.sellable import (BaseSellableCategory, SellableCategory,
                                      BaseSellableInfo)
 from stoqlib.domain.till import Till
 from stoqlib.domain.payment.methods import (PaymentMethodDetails,
                                             CreditProviderGroupData,
-                                            FinanceDetails)
+                                            FinanceDetails,
+                                            FinancePM)
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.lib.parameters import sysparam
 from stoqlib.database.runtime import get_current_station
@@ -93,8 +94,7 @@ class TestPaymentMethodDetails(DomainTest):
         result = FinanceDetails.select(FinanceDetails.q.is_active == True,
                                        connection=self.trans)
         payment_type = result[0]
-        base_method = sysparam(self.trans).BASE_PAYMENT_METHOD
-        method = IFinancePM(base_method)
+        method = FinancePM.selectOne(connection=self.trans)
         provider = method.get_finance_companies()[0]
         provider_data = CreditProviderGroupData(group=group,
                                                 payment_type=payment_type,

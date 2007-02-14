@@ -34,7 +34,8 @@ from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.domain.examples import log
 from stoqlib.domain.examples.payment import MAX_INSTALLMENTS_NUMBER
 from stoqlib.domain.interfaces import (ISellable, IClient, IPaymentGroup,
-                                       ISalesPerson, ICheckPM)
+                                       ISalesPerson)
+from stoqlib.domain.payment.methods import CheckPM
 from stoqlib.domain.person import Person
 from stoqlib.domain.product import Product
 from stoqlib.domain.sale import Sale
@@ -95,7 +96,7 @@ def _create_sale(trans, open_date, status, salesperson, client, coupon_id,
         raise ValueError("Number of installments for this payment method can "
                          "not be greater than %d, got %d"
                          % (MAX_INSTALLMENTS_NUMBER, installments_number))
-    check_method = ICheckPM(sysparam(trans).BASE_PAYMENT_METHOD)
+    check_method = CheckPM.selectOne(connection=trans)
     check_method.setup_inpayments(pg_facet, installments_number,
                                   open_date, DEFAULT_PAYMENT_INTERVAL_TYPE,
                                   DEFAULT_PAYMENTS_INTERVAL, sale_total)

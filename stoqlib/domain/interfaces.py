@@ -226,13 +226,6 @@ class IPaymentFacet(Interface):
     """
     payment = Attribute("a Payment")
 
-class IPaymentMethodFacet(Interface):
-    """
-    A facet on a PaymentMethod, the only thing it has is a named reference
-    back to the payment method itself.
-    """
-    method = Attribute("a PaymentMethod")
-
 class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
@@ -476,39 +469,6 @@ class IDelivery(Interface):
         @returns: a list of DeliveryItems
         """
 
-
-class IMoneyPM(IPaymentMethodFacet):
-    """Defines a money payment method"""
-
-class ICheckPM(IPaymentMethodFacet):
-    """Defines a check payment method"""
-
-    def get_check_data_by_payment(payment):
-        """Return a CheckData instance for a certain payment"""
-
-class IBillPM(IPaymentMethodFacet):
-    """Defines a bill payment method"""
-
-    def get_available_bill_accounts():
-        """Get all the available bill accounts for the current Bill type"""
-
-class IFinancePM(IPaymentMethodFacet):
-    """Defines a Finance payment method"""
-
-    def get_finance_companies():
-        """Get all the finance companies for a certain method"""
-
-class ICardPM(IPaymentMethodFacet):
-    """Defines a card payment method"""
-
-    def get_credit_card_providers():
-        """Get all the credit providers for a certain method"""
-
-class IGiftCertificatePM(IPaymentMethodFacet):
-    """A marker interface for gift certificate payment method"""
-
-class IMultiplePM(IPaymentMethodFacet):
-    """A marker interface for multiple payment method"""
 
 class ITillOperation(Interface):
     """Basic payment operation like adding a credit and a debit"""
