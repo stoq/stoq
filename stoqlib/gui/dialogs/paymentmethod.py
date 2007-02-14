@@ -30,7 +30,7 @@ from kiwi.ui.widgets.list import Column
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.database.database import finish_transaction
-from stoqlib.domain.payment.methods import AbstractPaymentMethodAdapter
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.methods import (MoneyPM, BillPM, CheckPM,
                                             GiftCertificatePM,
                                             CardPM, FinancePM)
@@ -67,7 +67,7 @@ class PaymentMethodsDialog(BasicDialog):
         self.attach_slave("extra_holder", self._toolbar_slave)
 
     def _setup_list(self):
-        methods = AbstractPaymentMethodAdapter.select(connection=self.conn)
+        methods = APaymentMethod.select(connection=self.conn)
         self.klist = ObjectList(self._get_columns(), methods,
                                 gtk.SELECTION_BROWSE)
         self.klist.connect("selection-changed",

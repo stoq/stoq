@@ -654,7 +654,7 @@ CREATE TABLE payment_method_details (
     child_name character varying(255)
 );
 
-CREATE TABLE abstract_payment_method_adapter (
+CREATE TABLE apayment_method (
     -- Subclasses:
     --    abstract_check_bill_adapter
     --    money_p_m
@@ -684,7 +684,7 @@ CREATE TABLE payment (
     discount numeric(10,2),
     description text,
     payment_number text,
-    method_id bigint REFERENCES abstract_payment_method_adapter(id),
+    method_id bigint REFERENCES apayment_method(id),
     method_details_id bigint REFERENCES payment_method_details(id),
     group_id bigint REFERENCES abstract_payment_group(id),
     till_id bigint REFERENCES till(id),
@@ -807,6 +807,7 @@ CREATE TABLE inheritable_model (
     --   asellable_item
     --   abstract_fiscal_book_entry
     --   abstract_stock_item
+    --   apayment_method
     --   payment_destination
     --   payment_method_details
     id serial NOT NULL PRIMARY KEY,
@@ -821,7 +822,6 @@ CREATE TABLE inheritable_model_adapter (
     --   asellable
     --   abstract_renegotiation_adapter
     --   abstract_payment_group
-    --   abstract_payment_method_adapter
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
     te_created_id bigint UNIQUE REFERENCES transaction_entry(id),

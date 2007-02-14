@@ -24,7 +24,7 @@
 """ Editors for payment method management.  """
 
 
-from stoqlib.domain.payment.methods import AbstractPaymentMethodAdapter
+from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.gui.slaves.paymentmethodslave import CheckBillSettingsSlave
 from stoqlib.gui.base.editors import BaseEditor
@@ -44,9 +44,9 @@ class PaymentMethodEditor(BaseEditor):
         """
         @param conn: an sqlobject Transaction instance
         @param model: an adapter of PaymentMethod which means a subclass of
-                      AbstractPaymentMethodAdapter
+                      APaymentMethod
         """
-        self.model_type = AbstractPaymentMethodAdapter
+        self.model_type = APaymentMethod
         BaseEditor.__init__(self, conn, model)
         self.set_description(model.description)
 

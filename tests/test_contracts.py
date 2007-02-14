@@ -45,15 +45,8 @@ def _create_adapter_test():
     TODO = {
         'AbstractCheckBillAdapter': ' ',
         'AbstractPaymentGroup': ' ',
-        'AbstractPaymentMethodAdapter': ' ',
+        'APaymentMethod': ' ',
         'GiftCertificateAdaptToSellable': ' ',
-        'CheckPM': ' ',
-        'CheckPM': ' ',
-        'FinancePM': ' ',
-        'GiftCertificatePM': ' ',
-        'MoneyPM': ' ',
-        'BillPM': ' ',
-        'CardPM': ' ',
         'PersonAdaptToClient': ' ',
         'PurchaseOrderAdaptToPaymentGroup': ' ',
         }

@@ -53,7 +53,7 @@ from stoqlib.gui.slaves.paymentslave import (CheckMethodSlave, BillMethodSlave,
                                              FinanceMethodSlave)
 from stoqlib.gui.slaves.saleslave import DiscountSurchargeSlave
 from stoqlib.domain.person import Person
-from stoqlib.domain.payment.methods import (AbstractPaymentMethodAdapter,
+from stoqlib.domain.payment.methods import (APaymentMethod,
                                             MoneyPM, BillPM, CheckPM,
                                             CardPM, FinancePM)
 from stoqlib.domain.payment.payment import AbstractPaymentGroup
@@ -151,7 +151,7 @@ class PaymentMethodStep(WizardEditorStep):
         self.attach_slave(self.slave_holder, self.method_slave)
 
     def _setup_combo(self):
-        active_methods = AbstractPaymentMethodAdapter.get_active_methods(self.conn)
+        active_methods = APaymentMethod.get_active_methods(self.conn)
         combo_items = []
         for method in active_methods:
             method_type = type(method)

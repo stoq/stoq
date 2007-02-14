@@ -79,7 +79,7 @@ _tables = [
     # XXX Unfortunately we must add 'methods.py' module in two places
     # here since the class Payment needs one of its classes. This will
     # be fixed in bug 2036.
-     ('payment.methods', ["AbstractPaymentMethodAdapter",
+     ('payment.methods', ["APaymentMethod",
                           "PaymentMethodDetails"]),
      ('renegotiation', ["AbstractRenegotiationAdapter"]),
      ('payment.payment', ["AbstractPaymentGroup",

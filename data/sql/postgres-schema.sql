@@ -124,7 +124,7 @@ ALTER TABLE card_installments_store_details ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment_destination ALTER COLUMN id TYPE bigint;
 ALTER TABLE abstract_check_bill_adapter ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment_method_details ALTER COLUMN id TYPE bigint;
-ALTER TABLE abstract_payment_method_adapter ALTER COLUMN id TYPE bigint;
+ALTER TABLE apayment_method ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment ALTER COLUMN id TYPE bigint;
 ALTER TABLE check_data ALTER COLUMN id TYPE bigint;
 ALTER TABLE credit_card_details ALTER COLUMN id TYPE bigint;
