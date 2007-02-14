@@ -48,7 +48,7 @@ if library.uninstalled:
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
-    # We want $prefix/lib/stoqlib, eg ../../lib/stoqlib
+    # We want $prefix/lib/stoqlib, eg ../../stoqlib
     externals = os.path.join(library.get_root(), '..', '..', 'stoqlib')
 sys.path.insert(0, externals)
 library.enable_translation()
