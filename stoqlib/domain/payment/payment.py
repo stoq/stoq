@@ -103,7 +103,7 @@ class Payment(Domain):
     discount = PriceCol(default=0)
     description = UnicodeCol(default=None)
     payment_number = UnicodeCol(default=None)
-    method = ForeignKey('AbstractPaymentMethodAdapter')
+    method = ForeignKey('APaymentMethod')
     # FIXME: Move to methods itself?
     method_details = ForeignKey('PaymentMethodDetails', default=None)
     group = ForeignKey('AbstractPaymentGroup')

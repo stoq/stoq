@@ -43,8 +43,7 @@ from stoqlib.domain.account import BankAccount
 from stoqlib.domain.person import Person
 from stoqlib.domain.payment.payment import (Payment, PaymentAdaptToInPayment,
                                             AbstractPaymentGroup)
-from stoqlib.domain.base import (Domain, InheritableModel,
-                                 InheritableModelAdapter)
+from stoqlib.domain.base import (Domain, InheritableModel)
 from stoqlib.domain.interfaces import (IInPayment, ICreditProvider,
                                        IActive, IOutPayment,
                                        IDescribable)
@@ -264,7 +263,7 @@ class CardInstallmentSettings(Domain):
 #
 
 
-class AbstractPaymentMethodAdapter(InheritableModelAdapter):
+class APaymentMethod(InheritableModel):
     implements(IActive, IDescribable)
 
     description = None
@@ -324,7 +323,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
         """Returns a list of payment method interfaces tied with the
         active payment methods
         """
-        return AbstractPaymentMethodAdapter.selectBy(is_active=True, connection=conn)
+        return APaymentMethod.selectBy(is_active=True, connection=conn)
 
     def _check_installments_number(self, installments_number, max=None):
         if max is None:
@@ -417,7 +416,7 @@ class AbstractPaymentMethodAdapter(InheritableModelAdapter):
         return payment_group.get_thirdparty()
 
 
-class MoneyPM(AbstractPaymentMethodAdapter):
+class MoneyPM(APaymentMethod):
     implements(IActive)
 
     # Money payment method must be always available
@@ -447,7 +446,7 @@ class MoneyPM(AbstractPaymentMethodAdapter):
     def setup_inpayments(self, total, group, *args, **kwargs):
         self._setup_payment(total, group)
 
-class GiftCertificatePM(AbstractPaymentMethodAdapter):
+class GiftCertificatePM(APaymentMethod):
     implements(IActive)
 
     description = _(u'Gift Certificate')
@@ -497,7 +496,7 @@ class GiftCertificatePM(AbstractPaymentMethodAdapter):
         return 1
 
 
-class AbstractCheckBillAdapter(AbstractPaymentMethodAdapter):
+class AbstractCheckBillAdapter(APaymentMethod):
     """Base payment method adapter class for for Check and Bill.
 
     B{Importante attributes}:
@@ -691,7 +690,7 @@ class BillPM(AbstractCheckBillAdapter):
         raise NotImplementedError
 
 
-class CardPM(AbstractPaymentMethodAdapter):
+class CardPM(APaymentMethod):
     implements(IActive)
 
     description = _(u'Card')
@@ -715,7 +714,7 @@ class CardPM(AbstractPaymentMethodAdapter):
                                   'BasePMProviderInfo classes')
 
 
-class FinancePM(AbstractPaymentMethodAdapter):
+class FinancePM(APaymentMethod):
     implements(IActive)
 
     description = _(u'Finance')

@@ -72,7 +72,7 @@ class Shop(SynchronizationPolicy):
         ("CfopData", SyncPolicy.INITIAL),
         ('PaymentDestination', SyncPolicy.INITIAL),
         ('BankAccount', SyncPolicy.INITIAL),
-        ('AbstractPaymentMethodAdapter', SyncPolicy.INITIAL),
+        ('APaymentMethod', SyncPolicy.INITIAL),
         ('PaymentMethodDetails', SyncPolicy.INITIAL),
         ('SystemTable', SyncPolicy.INITIAL),
         ('SellableUnit', SyncPolicy.INITIAL),
