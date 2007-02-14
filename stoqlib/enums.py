@@ -43,3 +43,12 @@ class SyncPolicy(enum):
      BOTH,
      INITIAL) = range(4)
 
+
+class FiscalBookEntry(enum):
+    #
+    # Fiscal constants
+    # This is a Brazil-specific session
+    #
+    (ICMS,
+     IPI,
+     ISS) = range(3)
