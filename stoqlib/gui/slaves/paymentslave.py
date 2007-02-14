@@ -47,7 +47,7 @@ from stoqlib.domain.payment.methods import (BillCheckGroupData, CheckData,
                                             CardInstallmentsProviderDetails,
                                             FinanceDetails,
                                             PaymentMethodDetails,
-                                            AbstractPaymentMethodAdapter,
+                                            APaymentMethod,
                                             CheckPM, BillPM)
 from stoqlib.domain.payment.payment import Payment
 
@@ -65,7 +65,7 @@ class PaymentListSlave(BaseEditorSlave):
     """
 
     gladefile = 'PaymentListSlave'
-    model_type = AbstractPaymentMethodAdapter
+    model_type = APaymentMethod
 
     gsignal('remove-slave')
     gsignal('add-slave')
@@ -240,7 +240,7 @@ class BillDataSlave(BaseEditorSlave):
     #
 
     def create_model(self, conn):
-        bill_method = BillPM(connection=conn)
+        bill_method = BillPM.selectOne(connection=conn)
         inpayment = bill_method.create_inpayment(self._payment_group,
                                                  self._due_date, self._value)
         return inpayment.get_adapted()
