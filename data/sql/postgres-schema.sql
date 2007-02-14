@@ -122,7 +122,6 @@ ALTER TABLE card_installment_settings ALTER COLUMN id TYPE bigint;
 ALTER TABLE card_installments_provider_details ALTER COLUMN id TYPE bigint;
 ALTER TABLE card_installments_store_details ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment_destination ALTER COLUMN id TYPE bigint;
-ALTER TABLE abstract_check_bill_adapter ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment_method_details ALTER COLUMN id TYPE bigint;
 ALTER TABLE apayment_method ALTER COLUMN id TYPE bigint;
 ALTER TABLE payment ALTER COLUMN id TYPE bigint;

@@ -26,7 +26,8 @@
 
 from stoqlib.domain.payment.methods import APaymentMethod
 from stoqlib.domain.payment.destination import PaymentDestination
-from stoqlib.gui.slaves.paymentmethodslave import CheckBillSettingsSlave
+from stoqlib.gui.slaves.paymentmethodslave import (BillSettingsSlave,
+                                                   CheckSettingsSlave)
 from stoqlib.gui.base.editors import BaseEditor
 from stoqlib.lib.translation import stoqlib_gettext
 
@@ -65,8 +66,15 @@ class PaymentMethodEditor(BaseEditor):
         self.add_proxy(self.model, PaymentMethodEditor.proxy_widgets)
 
 
-class CheckBillMethodEditor(PaymentMethodEditor):
+class BillMethodEditor(PaymentMethodEditor):
 
     def setup_slaves(self):
-        slave = CheckBillSettingsSlave(self.conn, self.model)
+        slave = BillSettingsSlave(self.conn, self.model)
         self.attach_slave('slave_holder', slave)
+
+class CheckMethodEditor(PaymentMethodEditor):
+
+    def setup_slaves(self):
+        slave = CheckSettingsSlave(self.conn, self.model)
+        self.attach_slave('slave_holder', slave)
+

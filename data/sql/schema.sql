@@ -627,17 +627,6 @@ CREATE TABLE payment_destination (
     child_name character varying(255)
 );
 
-CREATE TABLE abstract_check_bill_adapter (
-    -- Subclasses:
-    --   bill_p_m
-    --   check_p_m
-    id serial NOT NULL PRIMARY KEY,
-    destination_id bigint REFERENCES payment_destination(id),
-    max_installments_number integer,
-    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
-    child_name character varying(255)
-);
-
 CREATE TABLE payment_method_details (
     -- Subclasses:
     --    debit_card_details
@@ -655,7 +644,6 @@ CREATE TABLE payment_method_details (
 
 CREATE TABLE apayment_method (
     -- Subclasses:
-    --    abstract_check_bill_adapter
     --    money_p_m
     --    gift_certificate_p_m
     --    card_p_m
@@ -889,6 +877,9 @@ CREATE TABLE payment_operation (
 CREATE TABLE bill_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
+    destination_id bigint REFERENCES payment_destination(id),
+    max_installments_number integer,
+    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
@@ -901,6 +892,9 @@ CREATE TABLE card_p_m (
 CREATE TABLE check_p_m (
     id serial NOT NULL PRIMARY KEY,
     child_name character varying(255),
+    destination_id bigint REFERENCES payment_destination(id),
+    max_installments_number integer,
+    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
