@@ -270,6 +270,7 @@ class APaymentMethod(InheritableModel):
 
     active_editable = True
     is_active = BoolCol(default=True)
+    daily_penalty = DecimalCol(default=0)
 
     #
     # IActive implementation
@@ -509,7 +510,6 @@ class AbstractCheckBillAdapter(APaymentMethod):
 
     max_installments_number = IntCol(default=12)
     monthly_interest = DecimalCol(default=0)
-    daily_penalty = DecimalCol(default=0)
 
 
     #

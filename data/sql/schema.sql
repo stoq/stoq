@@ -635,7 +635,6 @@ CREATE TABLE abstract_check_bill_adapter (
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
-    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
     child_name character varying(255)
 );
 
@@ -663,7 +662,8 @@ CREATE TABLE apayment_method (
     --    finance_p_m
     id serial NOT NULL PRIMARY KEY,
     is_active boolean,
-    child_name character varying(255)
+    child_name character varying(255),
+    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100)
 );
 
 CREATE TABLE payment (
