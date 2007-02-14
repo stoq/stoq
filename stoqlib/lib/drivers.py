@@ -516,7 +516,8 @@ class FiscalCoupon:
                 "%r, since there is no payment methods defined for "
                 "the current printer being used (%r)"
                 % (sale, self.printer))
-        all_methods = get_all_methods_dict()
+        all_methods = get_all_methods_dict().items()
+        method_id = None
         for payment in group.get_items():
             method = payment.method
             if isinstance(method, (CheckPM, MoneyPM)):
@@ -526,9 +527,10 @@ class FiscalCoupon:
                     method_id = MONEY_PM
                 self.printer.add_payment(method_id, payment.base_value)
                 continue
+            method_type = type(method)
             method_id = None
-            for identifier in all_methods:
-                if identifier is method_id:
+            for identifier, mtype in all_methods:
+                if method_type == mtype:
                     if method_id is not None:
                         raise TypeError(
                             "There is the same identifier for two "
@@ -538,8 +540,9 @@ class FiscalCoupon:
             if method_id is None:
                 raise ValueError(
                     "Can't find a valid identifier for the payment "
-                    "method id: %d. It is not possible add "
-                    "the payment on the coupon" % method_id)
+                    "method type: %s. It is not possible add "
+                    "the payment on the coupon" %
+                    method_type.__name__)
             custom_pm = pm_constants.get_value(method_id)
             if not custom_pm:
                 method_name = get_method_names()[method_id]
