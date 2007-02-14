@@ -378,6 +378,8 @@ class PurchaseOrder(Domain):
 
 class PurchaseOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
+    _inheritable = False
+
     #
     # IPaymentGroup implementation
     #

@@ -124,6 +124,7 @@ class GiftCertificateItem(ASellableItem):
     """A gift certificate item represent a sale item with a special
     property: it can be used as a payment method for another sale.
     """
+    _inheritable = False
 
 class GiftCertificate(Domain):
     """This is the base class for gift certificates representation. A gift
@@ -140,6 +141,8 @@ class GiftCertificateAdaptToSellable(ASellable):
     normally through POS application
     """
     sellableitem_table = GiftCertificateItem
+
+    _inheritable = False
     # This is used by the payment group to find the gift certificates
     # used as a payment method
     group = ForeignKey('AbstractPaymentGroup', default=None)

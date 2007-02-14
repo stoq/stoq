@@ -344,6 +344,7 @@ class TillEntry(Domain):
 class TillAdaptToPaymentGroup(AbstractPaymentGroup):
     implements(IPaymentGroup, ITillOperation)
 
+    _inheritable = False
 
     @property
     def till(self):

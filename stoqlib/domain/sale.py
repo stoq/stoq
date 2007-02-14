@@ -502,6 +502,8 @@ class Sale(Domain):
 
 class SaleAdaptToPaymentGroup(AbstractPaymentGroup):
 
+    _inheritable = False
+
     @property
     def sale(self):
         return self.get_adapted()

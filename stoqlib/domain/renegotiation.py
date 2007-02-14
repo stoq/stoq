@@ -100,6 +100,8 @@ class RenegotiationAdaptToReturnSale(AbstractRenegotiationAdapter):
 
     type_description = _(u"Return Sale")
 
+    _inheritable = False
+
     def _setup_giftcert_renegotiation(self, sale_order, giftcert_number,
                                       overpaid_value, reason):
         clone = sale_order.get_clone()
@@ -166,6 +168,8 @@ class RenegotiationAdaptToExchange(AbstractRenegotiationAdapter):
 
     type_description = _("Exchange")
 
+    _inheritable = False
+
     def confirm(self):
         # TODO to be implemented on bug 2230
         pass
@@ -178,6 +182,8 @@ class RenegotiationAdaptToChangeInstallments(AbstractRenegotiationAdapter):
     implements(IRenegotiationInstallments, IDescribable)
 
     type_description = _("Installments Renegotiation")
+
+    _inheritable = False
 
     def confirm(self):
         # TODO to be implemented on bug 2190
