@@ -35,7 +35,8 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.lib.message import warning, yesno
 from stoqlib.domain.purchase import PurchaseOrder, PurchaseOrderView
-from stoqlib.domain.interfaces import IPaymentGroup, IMoneyPM
+from stoqlib.domain.interfaces import IPaymentGroup
+from stoqlib.domain.payment.methods import MoneyPM
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.gui.search.personsearch import SupplierSearch, TransporterSearch
 from stoqlib.gui.wizards.purchasewizard import PurchaseWizard
@@ -141,8 +142,7 @@ class PurchaseApp(SearchableAppWindow):
                                  'defined at this point')
             if group.default_method == METHOD_MONEY:
                 destination = sysparam(self.conn).DEFAULT_PAYMENT_DESTINATION
-                base_method = sysparam(self.conn).BASE_PAYMENT_METHOD
-                method = IMoneyPM(base_method)
+                method = MoneyPM.selectOne(connection=self.conn)
                 first_due_date = order.expected_receival_date
                 Payment(value=order.get_purchase_total(), method=method,
                         due_date=first_due_date, group=group, till=None,
