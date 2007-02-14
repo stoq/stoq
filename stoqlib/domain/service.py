@@ -56,6 +56,7 @@ class Service(Domain):
 class ServiceSellableItem(ASellableItem):
     """A service implementation as a sellable item."""
 
+    _inheritable = False
     notes = UnicodeCol(default=None)
     estimated_fix_date = DateTimeCol(default=datetime.datetime.now)
     completion_date = DateTimeCol(default=None)
@@ -154,6 +155,8 @@ class ServiceAdaptToSellable(ASellable):
     """A service implementation as a sellable facet."""
 
     sellableitem_table = ServiceSellableItem
+
+    _inheritable = False
 
     def _create(self, id, **kw):
         if 'status' not in kw:

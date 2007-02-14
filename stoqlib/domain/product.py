@@ -183,6 +183,8 @@ class ProductSellableItem(ASellableItem):
 
     implements(IContainer)
 
+    _inheritable = False
+
     #
     # IContainer implementation
     #
@@ -288,6 +290,7 @@ class ProductStockItem(AbstractStockItem):
     """Class that makes a reference to the product stock of a
     certain branch company."""
 
+    _inheritable = False
     storable = ForeignKey('ProductAdaptToStorable')
 
 
@@ -300,14 +303,15 @@ class ProductAdaptToSellable(ASellable):
     """A product implementation as a sellable facet."""
 
     sellableitem_table = ProductSellableItem
-    tax_type = IntCol(default=TAX_ICMS)
-    tax_value = PriceCol(default=0)
-
     tax_type_names = {
         TAX_ICMS: _("Aliquot"),
         TAX_SUBSTITUTION: _("Substitution"),
         TAX_NONE: _("Exempt"),
         }
+
+    _inheritable = False
+    tax_type = IntCol(default=TAX_ICMS)
+    tax_value = PriceCol(default=0)
 
     def _create(self, id, **kw):
         if not 'tax_type' in kw:

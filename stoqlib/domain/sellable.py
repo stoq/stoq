@@ -63,6 +63,7 @@ class SellableUnit(Domain):
                       CUSTOM_PM constant) or as an index (using UNIT_*). Also,
                       this is directly related to the DeviceSettings editor.
     """
+    _inheritable = False
     description = UnicodeCol()
     unit_index = IntCol()
 
@@ -89,12 +90,15 @@ class ASellableCategory(InheritableModel):
         return self.description
 
 class BaseSellableCategory(ASellableCategory):
-    pass
+    _inheritable = False
+
 
 class SellableCategory(ASellableCategory):
-    base_category = ForeignKey('BaseSellableCategory')
 
     implements(IDescribable)
+
+    _inheritable = False
+    base_category = ForeignKey('BaseSellableCategory')
 
     def get_commission(self):
         return (self.salesperson_commission or
@@ -142,6 +146,7 @@ class ASellableItem(InheritableModel):
 
 
 class OnSaleInfo(Domain):
+    _inheritable = False
     on_sale_price = PriceCol(default=0)
     on_sale_start_date = DateTimeCol(default=None)
     on_sale_end_date = DateTimeCol(default=None)
@@ -150,6 +155,7 @@ class OnSaleInfo(Domain):
 class BaseSellableInfo(Domain):
     implements(IDescribable)
 
+    _inheritable = False
     price = PriceCol(default=0)
     description = UnicodeCol(default='')
     max_discount = DecimalCol(default=0)

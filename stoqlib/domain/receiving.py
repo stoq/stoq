@@ -276,6 +276,8 @@ class ReceivingOrder(Domain):
 
 class ReceivingOrderAdaptToPaymentGroup(AbstractPaymentGroup):
 
+    _inheritable = False
+
     #
     # IPaymentGroup implementation
     #

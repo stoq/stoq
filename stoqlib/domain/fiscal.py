@@ -114,6 +114,7 @@ class AbstractFiscalBookEntry(InheritableModel):
 
 class IcmsIpiBookEntry(AbstractFiscalBookEntry):
 
+    _inheritable = False
     icms_value = PriceCol()
     ipi_value = PriceCol()
 
@@ -125,6 +126,7 @@ class IcmsIpiBookEntry(AbstractFiscalBookEntry):
 
 class IssBookEntry(AbstractFiscalBookEntry):
 
+    _inheritable = False
     iss_value = PriceCol()
 
     def reverse_entry(self, invoice_number):

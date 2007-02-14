@@ -66,6 +66,7 @@ class StoreDestination(PaymentDestination):
     B{Importante attributes}:
         - I{branch}: the store itself.
     """
+    _inheritable = False
     branch = ForeignKey('PersonAdaptToBranch')
 
 

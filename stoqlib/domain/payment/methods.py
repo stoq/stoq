@@ -287,6 +287,8 @@ class APaymentMethod(InheritableModel):
 class MoneyPM(APaymentMethod):
     implements(IActive)
 
+    _inheritable = False
+
     # Money payment method must be always available
     active_editable = False
 
@@ -318,6 +320,8 @@ class GiftCertificatePM(APaymentMethod):
     implements(IActive)
 
     description = _(u'Gift Certificate')
+
+    _inheritable = False
 
     #
     # General methods
@@ -495,6 +499,7 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     description = _(u'Check')
 
+    _inheritable = False
     destination = ForeignKey('PaymentDestination')
     max_installments_number = IntCol(default=12)
     monthly_interest = DecimalCol(default=0)
@@ -549,6 +554,7 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
 
     description = _(u'Bill')
 
+    _inheritable = False
     destination = ForeignKey('PaymentDestination')
     max_installments_number = IntCol(default=12)
     monthly_interest = DecimalCol(default=0)
@@ -561,6 +567,8 @@ class CardPM(APaymentMethod):
     implements(IActive)
 
     description = _(u'Card')
+
+    _inheritable = False
 
     def get_credit_card_providers(self):
         table = Person.getAdapterClass(ICreditProvider)
@@ -586,6 +594,7 @@ class FinancePM(APaymentMethod):
 
     description = _(u'Finance')
 
+    _inheritable = False
 
     def get_thirdparty(self):
         raise NotImplementedError('You should call get_thirdparty method '
@@ -750,6 +759,7 @@ class DebitCardDetails(PaymentMethodDetails):
     description = payment_type_name = _(u'Debit Card')
     method_type = CardPM
 
+    _inheritable = False
     receive_days = IntCol()
 
 
@@ -772,6 +782,7 @@ class CreditCardDetails(PaymentMethodDetails):
     description = payment_type_name = _(u'Credit Card')
     method_type = CardPM
 
+    _inheritable = False
     installment_settings = ForeignKey(u'CardInstallmentSettings')
 
 
@@ -782,6 +793,7 @@ class CardInstallmentsStoreDetails(PaymentMethodDetails):
     method_type = CardPM
     description = _(u'Credit Card')
 
+    _inheritable = False
     max_installments_number = IntCol(default=1)
     installment_settings = ForeignKey('CardInstallmentSettings')
 
@@ -801,6 +813,7 @@ class CardInstallmentsProviderDetails(PaymentMethodDetails):
     method_type = CardPM
     description = _(u'Credit Card')
 
+    _inheritable = False
     max_installments_number = IntCol(default=12)
     installment_settings = ForeignKey('CardInstallmentSettings')
 
@@ -821,4 +834,5 @@ class FinanceDetails(PaymentMethodDetails):
     method_type = FinancePM
     description = _(u'Finance')
 
+    _inheritable = False
     receive_days = IntCol(default=1)

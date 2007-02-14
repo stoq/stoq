@@ -89,6 +89,8 @@ def _create_domain_test():
                     except ValueError:
                         raise SkipTest("No default for %r" % column)
 
+            if not klass._inheritable and column.origName == 'childName':
+                continue
             kwargs[column.origName] = value
 
             if not isinstance(column, SOForeignKey):

@@ -276,7 +276,6 @@ CREATE TABLE product_adapt_to_sellable (
     id serial NOT NULL PRIMARY KEY,
     tax_type integer,
     tax_value numeric(10,2),
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES product(id)
 );
 
@@ -313,7 +312,6 @@ CREATE TABLE service (
 
 CREATE TABLE service_adapt_to_sellable (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES service(id)
 );
 
@@ -350,14 +348,12 @@ CREATE TABLE asellable_category (
 );
 
 CREATE TABLE base_sellable_category (
-    id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255)
+    id serial NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE sellable_category (
     id serial NOT NULL PRIMARY KEY,
-    base_category_id bigint REFERENCES base_sellable_category(id),
-    child_name character varying(255)
+    base_category_id bigint REFERENCES base_sellable_category(id)
 );
 
 CREATE TABLE sellable_unit (
@@ -492,7 +488,6 @@ CREATE TABLE sale (
 
 CREATE TABLE sale_adapt_to_payment_group (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES sale(id)
 );
 
@@ -523,8 +518,7 @@ CREATE TABLE abstract_stock_item (
 
 CREATE TABLE product_stock_item (
     id serial NOT NULL PRIMARY KEY,
-    storable_id bigint REFERENCES product_adapt_to_storable(id),
-    child_name character varying(255)
+    storable_id bigint REFERENCES product_adapt_to_storable(id)
 );
 
 CREATE TABLE address (
@@ -605,15 +599,13 @@ CREATE TABLE card_installment_settings (
 CREATE TABLE card_installments_provider_details (
     id serial NOT NULL PRIMARY KEY,
     max_installments_number integer,
-    installment_settings_id bigint REFERENCES card_installment_settings(id),
-    child_name character varying(255)
+    installment_settings_id bigint REFERENCES card_installment_settings(id)
 );
 
 CREATE TABLE card_installments_store_details (
     id serial NOT NULL PRIMARY KEY,
     max_installments_number integer,
-    installment_settings_id bigint REFERENCES card_installment_settings(id),
-    child_name character varying(255)
+    installment_settings_id bigint REFERENCES card_installment_settings(id)
 );
 
 CREATE TABLE payment_destination (
@@ -690,8 +682,7 @@ CREATE TABLE check_data (
 
 CREATE TABLE credit_card_details (
     id serial NOT NULL PRIMARY KEY,
-    installment_settings_id bigint REFERENCES card_installment_settings(id),
-    child_name character varying(255)
+    installment_settings_id bigint REFERENCES card_installment_settings(id)
 );
 
 CREATE TABLE credit_provider_group_data (
@@ -707,8 +698,7 @@ CREATE TABLE credit_provider_group_data (
 
 CREATE TABLE debit_card_details (
     id serial NOT NULL PRIMARY KEY,
-    receive_days integer,
-    child_name character varying(255)
+    receive_days integer
 );
 
 CREATE TABLE device_constants (
@@ -749,8 +739,7 @@ CREATE TABLE employee_role_history (
 
 CREATE TABLE finance_details (
     id serial NOT NULL PRIMARY KEY,
-    receive_days integer,
-    child_name character varying(255)
+    receive_days integer
 );
 
 CREATE TABLE gift_certificate (
@@ -763,13 +752,11 @@ CREATE TABLE gift_certificate (
 CREATE TABLE gift_certificate_adapt_to_sellable (
     id serial NOT NULL PRIMARY KEY,
     group_id bigint REFERENCES abstract_payment_group(id),
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES gift_certificate(id)
 );
 
 CREATE TABLE gift_certificate_item (
-    id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255)
+    id serial NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE gift_certificate_type (
@@ -785,8 +772,7 @@ CREATE TABLE gift_certificate_type (
 CREATE TABLE icms_ipi_book_entry (
     id serial NOT NULL PRIMARY KEY,
     icms_value numeric(10,2),
-    ipi_value numeric(10,2),
-    child_name character varying(255)
+    ipi_value numeric(10,2)
 );
 
 CREATE TABLE inheritable_model (
@@ -819,8 +805,7 @@ CREATE TABLE inheritable_model_adapter (
 
 CREATE TABLE iss_book_entry (
     id serial NOT NULL PRIMARY KEY,
-    iss_value numeric(10,2),
-    child_name character varying(255)
+    iss_value numeric(10,2)
 );
 
 CREATE TABLE liaison (
@@ -876,7 +861,6 @@ CREATE TABLE payment_operation (
 
 CREATE TABLE bill_p_m (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
@@ -885,13 +869,11 @@ CREATE TABLE bill_p_m (
 
 CREATE TABLE card_p_m (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE check_p_m (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
     monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
@@ -900,20 +882,17 @@ CREATE TABLE check_p_m (
 
 CREATE TABLE finance_p_m (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE gift_certificate_p_m (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
 CREATE TABLE money_p_m (
     id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
@@ -945,8 +924,7 @@ CREATE TABLE product_retention_history (
 );
 
 CREATE TABLE product_sellable_item (
-    id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255)
+    id serial NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE product_stock_reference (
@@ -972,7 +950,6 @@ CREATE TABLE profile_settings (
 
 CREATE TABLE purchase_order_adapt_to_payment_group (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES purchase_order(id)
 );
 
@@ -1003,7 +980,6 @@ CREATE TABLE receiving_order (
 
 CREATE TABLE receiving_order_adapt_to_payment_group (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES receiving_order(id)
 );
 
@@ -1033,28 +1009,24 @@ CREATE TABLE renegotiation_data (
 
 CREATE TABLE renegotiation_adapt_to_change_installments (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_exchange (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE renegotiation_adapt_to_return_sale (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES renegotiation_data(id)
 );
 
 CREATE TABLE service_sellable_item (
     id serial NOT NULL PRIMARY KEY,
     notes text,
-    estimated_fix_date timestamp ,
-    completion_date timestamp ,
-    child_name character varying(255)
+    estimated_fix_date timestamp,
+    completion_date timestamp
 );
 
 CREATE TABLE service_sellable_item_adapt_to_delivery (
@@ -1078,13 +1050,11 @@ CREATE TABLE delivery_item (
 
 CREATE TABLE store_destination (
     id serial NOT NULL PRIMARY KEY,
-    branch_id bigint REFERENCES person_adapt_to_branch(id),
-    child_name character varying(255)
+    branch_id bigint REFERENCES person_adapt_to_branch(id)
 );
 
 CREATE TABLE till_adapt_to_payment_group (
     id serial NOT NULL PRIMARY KEY,
-    child_name character varying(255),
     original_id bigint UNIQUE REFERENCES till(id)
 );
 
@@ -1104,8 +1074,7 @@ CREATE TABLE till_entry (
 
 CREATE TABLE bank_destination (
     id serial NOT NULL PRIMARY KEY,
-    branch_id bigint REFERENCES person_adapt_to_bank_branch(id),
-    child_name character varying(255)
+    branch_id bigint REFERENCES person_adapt_to_bank_branch(id)
 );
 
 CREATE TABLE abstract_fiscal_book_entry (
