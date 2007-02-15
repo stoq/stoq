@@ -26,7 +26,7 @@ from stoqlib.domain.examples import log
 from stoqlib.domain.examples.person import create_people, set_person_utilities
 from stoqlib.importers.employeeimporter import EmployeeImporter
 from stoqlib.importers.productimporter import ProductImporter
-from stoqlib.domain.examples.service import create_services
+from stoqlib.importers.serviceimporter import ServiceImporter
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.payment import create_payments
 from stoqlib.domain.examples.purchase import create_purchases
@@ -44,7 +44,7 @@ def create(utilities=False):
     if utilities:
         set_person_utilities()
     _import_one(ProductImporter, 'products.csv')
-    create_services()
+    _import_one(ServiceImporter, 'services.csv')
     create_payments()
     create_sales()
     create_purchases()
