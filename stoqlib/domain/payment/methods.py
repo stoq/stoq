@@ -131,6 +131,14 @@ class CardInstallmentSettings(Domain):
 
 
 class APaymentMethod(InheritableModel):
+    """Base payment method adapter class for for Check and Bill.
+
+    B{Importante attributes}:
+        - I{interest}: a value for the interest.
+                       It must always be in the format:
+                       0 <= interest <= 100
+    """
+
     implements(IActive, IDescribable)
 
     description = None
@@ -138,6 +146,7 @@ class APaymentMethod(InheritableModel):
     active_editable = True
     is_active = BoolCol(default=True)
     daily_penalty = DecimalCol(default=0)
+    interest = DecimalCol(default=0)
 
     #
     # IActive implementation
@@ -369,56 +378,49 @@ class GiftCertificatePM(APaymentMethod):
 
 
 class _AbstractCheckBillMethodMixin(object):
-    """Base payment method adapter class for for Check and Bill.
-
-    B{Importante attributes}:
-        - I{monthly_interest}: a percentage value for the monthly interest.
-                               It must always be in the format:
-                               0 <= monthly_interest <= 100
-    """
 
     #
     # General methods
     #
 
-    def _check_interest_value(self, monthly_interest):
-        monthly_interest = monthly_interest or Decimal(0)
-        if not isinstance(monthly_interest, (int, Decimal)):
-            raise TypeError('monthly_interest argument must be integer '
+    def _check_interest_value(self, interest):
+        interest = interest or Decimal(0)
+        if not isinstance(interest, (int, Decimal)):
+            raise TypeError('interest argument must be integer '
                             'or Decimal, got %s instead'
-                            % type(monthly_interest))
+                            % type(interest))
         conn = self.get_connection()
         if (sysparam(conn).MANDATORY_INTEREST_CHARGE and
-            not monthly_interest == self.monthly_interest):
-            raise PaymentError('The monthly_interest charge is mandatory '
+            interest != self.interest):
+            raise PaymentError('The interest charge is mandatory '
                                'for this establishment. Got %s of '
-                               'monthly_interest, it should be %s'
-                               % (monthly_interest, self.monthly_interest))
-        if not (0 <= monthly_interest <= 100):
-            raise ValueError("Argument monthly_interest must be "
+                               'interest, it should be %s'
+                               % (interest, self.interest))
+        if not (0 <= interest <= 100):
+            raise ValueError("Argument interest must be "
                              "between 0 and 100, got %s"
-                             % monthly_interest)
+                             % interest)
 
     @argcheck(Decimal, int, Decimal)
     def _calculate_payment_value(self, total_value, installments_number,
-                                monthly_interest=None):
+                                interest=None):
         if not installments_number:
             raise ValueError('The payment_qty argument must be greater '
                              'than zero')
         self._check_installments_number(installments_number)
-        self._check_interest_value(monthly_interest)
+        self._check_interest_value(interest)
 
-        if not monthly_interest:
+        if not interest:
             return total_value / installments_number
 
-        interest_rate = monthly_interest / 100 + 1
+        interest_rate = interest / 100 + 1
         return (total_value / installments_number) * interest_rate
 
     @argcheck(AbstractPaymentGroup, int, datetime, int, int,
               Decimal, Decimal, InterfaceClass)
     def _setup_payments(self, payment_group, installments_number,
                         first_duedate, interval_type, intervals,
-                        total_value, monthly_interest=None,
+                        total_value, interest=None,
                         iface=IInPayment):
         """Return a list of newly created inpayments or outpayments and its
         total interest. The result value is a tuple where the first item
@@ -432,18 +434,18 @@ class _AbstractCheckBillMethodMixin(object):
                               to generate payments. See lib/defaults.py,
                               INTERVALTYPE_*
         intervals           = number of intervals useful to calculate
-                              payment duedates
+                              payment due dates
         total_value         = the sum of all the payments. Note that payment
                               values are total_value divided by
                               installments_number
-        monthly_interest            = a Decimal instance in the format
-                              0 <= monthly_interest <= 100
+        interest            = a Decimal instance in the format
+                              0 <= interest <= 100
         """
         value = self._calculate_payment_value(total_value,
                                               installments_number,
-                                              monthly_interest)
+                                              interest)
 
-        if monthly_interest:
+        if interest:
             interest_total = value * installments_number - total_value
         else:
             interest_total = Decimal(0)
@@ -472,17 +474,17 @@ class _AbstractCheckBillMethodMixin(object):
 
     def setup_inpayments(self, payment_group, installments_number,
                           first_duedate, interval_type, intervals,
-                          total_value, monthly_interest=None):
+                          total_value, interest=None):
         return self._setup_payments(payment_group, installments_number,
                                     first_duedate, interval_type,
-                                    intervals, total_value, monthly_interest)
+                                    intervals, total_value, interest)
 
     def setup_outpayments(self, payment_group, installments_number,
                          first_duedate, interval_type, intervals,
-                         total_value, monthly_interest=None):
+                         total_value, interest=None):
         return self._setup_payments(payment_group, installments_number,
                                     first_duedate, interval_type,
-                                    intervals, total_value, monthly_interest,
+                                    intervals, total_value, interest,
                                     IOutPayment)
 
     def get_max_installments_number(self):
@@ -502,7 +504,6 @@ class CheckPM(_AbstractCheckBillMethodMixin, APaymentMethod):
     _inheritable = False
     destination = ForeignKey('PaymentDestination')
     max_installments_number = IntCol(default=12)
-    monthly_interest = DecimalCol(default=0)
 
 
     def get_check_data_by_payment(self, payment):
@@ -557,7 +558,6 @@ class BillPM(_AbstractCheckBillMethodMixin, APaymentMethod):
     _inheritable = False
     destination = ForeignKey('PaymentDestination')
     max_installments_number = IntCol(default=12)
-    monthly_interest = DecimalCol(default=0)
 
     def get_available_bill_accounts(self):
         raise NotImplementedError
