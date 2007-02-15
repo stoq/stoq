@@ -375,13 +375,13 @@ class POSApp(AppWindow):
             log.info("Creating a new order")
             self.sellables.clear()
             self.order_proxy.set_model(sale)
+            self.sale = sale
             self._update_widgets()
             self._update_totals()
             self.set_sensitive((self.search_box, self.footer_hbox,
                                 self.list_vbox, self.CancelOrder),
                                True)
             self.barcode.grab_focus()
-            self.sale = sale
         else:
             rollback_and_begin(self.conn)
             return
