@@ -211,7 +211,7 @@
                                         <property name="adjustment">0 0 100 1 10 0</property>
                                         <property name="data_type">Decimal</property>
                                         <property name="is_focus">True</property>
-                                        <property name="model_attribute">monthly_interest</property>
+                                        <property name="model_attribute">interest</property>
                                         <property name="text" context="yes" translatable="yes">0</property>
                                         <property name="visible">True</property>
                                         <property name="width_chars">6</property>

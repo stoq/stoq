@@ -182,7 +182,7 @@ class TestParameter(DomainTest):
         self.failUnlessRaises(PaymentError,
                               bill._calculate_payment_value,
                               total_value=Decimal(512),
-                              monthly_interest=Decimal(30),
+                              interest=Decimal(30),
                               installments_number=1)
 
     def test_ConfirmSalesOnTill(self):
