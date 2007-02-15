@@ -343,19 +343,19 @@ class BasePaymentMethodSlave(BaseEditorSlave):
                                         self.reset_btn_validation_ok)
         self._refresh_next()
 
-    def _setup_monthly_interest(self):
+    def _setup_interest(self):
         # XXX Humm... if the interest charge is mandatory we can not allow
         # users go to the last step if the total value of installments
         # doesn't match with subtotal + interest_total
-        interest = self.method.monthly_interest
+        interest = self.method.interest
         if interest:
             self.interest.set_range(1, interest)
-            self.model.monthly_interest = interest
+            self.model.interest = interest
         param = sysparam(self.conn).MANDATORY_INTEREST_CHARGE
         self.interest.set_sensitive(not param)
 
     def _setup_widgets(self):
-        self._setup_monthly_interest()
+        self._setup_interest()
         max = self.method.get_max_installments_number()
         self.installments_number.set_range(1, max)
         items = [(label, constant) for constant, label
@@ -397,7 +397,7 @@ class BasePaymentMethodSlave(BaseEditorSlave):
         due_date = self.model.first_duedate
         interval_type = self.model.interval_type
         intervals = self.model.intervals
-        interest = self.model.monthly_interest
+        interest = self.model.interest
         self.payment_list.clear_list()
         method = self.method
         total = self.total_value
