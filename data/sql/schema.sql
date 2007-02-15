@@ -563,7 +563,7 @@ CREATE TABLE bill_check_group_data (
     te_modified_id bigint UNIQUE REFERENCES transaction_entry(id),
     installments_number integer,
     first_duedate timestamp ,
-    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100)
+    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
     interval_type integer,
     intervals integer,
     group_id bigint REFERENCES abstract_payment_group(id)
@@ -661,7 +661,7 @@ CREATE TABLE payment (
     paid_value numeric(10,2),
     base_value numeric(10,2),
     value numeric(10,2),
-    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100)
+    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100),
     discount numeric(10,2),
     description text,
     payment_number text,
