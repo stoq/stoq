@@ -56,6 +56,9 @@ class CSVImporter(object):
         trans = new_transaction()
         lineno = 1
         for item in csv.reader(iterable):
+            if item[0][0] == '%':
+                lineno += 1
+                continue
             if len(item) < len(self.fields):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we need at "
