@@ -56,19 +56,19 @@ class CSVImporter(object):
         trans = new_transaction()
         lineno = 1
         for item in csv.reader(iterable):
-            if item[0][0] == '%':
+            if not item or item[0].startswith('%'):
                 lineno += 1
                 continue
             if len(item) < len(self.fields):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we need at "
-                    "least %d fields to be able to process it" % (
+                    "least %d fields to be able to process it, fields=%s" % (
                     lineno, filename, len(item), len(self.fields)))
             if len(item) > len(field_names):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we can at most "
-                    "handle %d fields" % (
-                    lineno, filename, len(item), len(field_names)))
+                    "handle %d fields. fields=%r" % (
+                    lineno, filename, len(item), len(field_names), list(item)))
 
             data = CSVDataLine()
             fields = []

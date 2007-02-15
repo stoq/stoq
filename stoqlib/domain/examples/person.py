@@ -29,19 +29,15 @@ import gettext
 from decimal import Decimal
 
 from kiwi.component import provide_utility
-from kiwi.datatypes import currency
 
 from stoqlib.database.interfaces import ICurrentBranch, ICurrentBranchStation
 from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.examples import log
-from stoqlib.domain.profile import UserProfile
 from stoqlib.domain.address import Address, CityLocation
-from stoqlib.domain.person import (Person, EmployeeRole,
-                                   EmployeeRoleHistory)
+from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import (ICompany, ISupplier,
                                        IClient, IIndividual,
-                                       IEmployee, ISalesPerson,
-                                       IUser, ICreditProvider,
+                                       ICreditProvider,
                                        ITransporter)
 from stoqlib.domain.station import BranchStation
 from stoqlib.lib.parameters import sysparam
@@ -92,16 +88,6 @@ def create_people():
                          fancy_name='Pizzaria Donnatello',
                          state_registry='3421')]
 
-    role_data = [dict(name=_('Clerk')),
-                 dict(name=_('Manager')),
-                 dict(name=_('Secretary')),
-                 dict(name=_('Director'))]
-
-    employee_data = [dict(registry_number='00099'),
-                     dict(registry_number='7777'),
-                     dict(registry_number='6666'),
-                     dict(registry_number='5555')]
-
     now = datetime.datetime.now()
     transporter_data = [dict(open_contract_date=now, is_active=False,
                              freight_percentage=Decimal('2.5')),
@@ -111,15 +97,6 @@ def create_people():
                              freight_percentage=Decimal('10.5')),
                         dict(open_contract_date=now + datetime.timedelta(15),
                              freight_percentage=Decimal('12.3'))]
-
-    user_data = [dict(username='regi',
-                      password='regi243'),
-                 dict(username='r9madrid',
-                      password='r9brasil'),
-                 dict(username='elias',
-                      password='eli666'),
-                 dict(username='gigi',
-                      password='gigipink')]
 
     cityloc_data = [dict(city='Sao Paulo', country='Brazil', state='SP'),
                     dict(city='Curitiba', country='Brazil', state='PR'),
@@ -145,17 +122,6 @@ def create_people():
                             dict(short_name='Fininvest',
                                  provider_type=finance_type)]
 
-    role_history_data = [dict(began=now, salary=100,
-                              ended=now + datetime.timedelta(5)),
-                         dict(began=now + datetime.timedelta(5), salary=200,
-                              ended=now + datetime.timedelta(10)),
-                         dict(began=now + datetime.timedelta(10), salary=300,
-                              ended=now + datetime.timedelta(15)),
-                         dict(began=now + datetime.timedelta(15), salary=400,
-                              ended=now + datetime.timedelta(20))]
-
-    profile_names = ['Salesperson'] * 3 + ['Manager']
-
     # Creating persons and facets
     for index, person_args in enumerate(person_data):
         person_obj = Person(connection=trans, **person_args)
@@ -170,45 +136,14 @@ def create_people():
                             **individual_args)
 
         company_args = company_data[index]
-        person_obj.addFacet(ICompany, connection=trans,
-                            **company_args)
-
+        person_obj.addFacet(ICompany, connection=trans, **company_args)
         person_obj.addFacet(IClient, connection=trans)
         person_obj.addFacet(ISupplier, connection=trans)
-
         credit_provider = credit_provider_data[index]
         person_obj.addFacet(ICreditProvider, connection=trans,
                             open_contract_date=datetime.datetime.today(),
                             **credit_provider)
 
-        role_args = role_data[index]
-        role = EmployeeRole(connection=trans, **role_args)
-        employee_args = employee_data[index]
-        employee = person_obj.addFacet(IEmployee, connection=trans,
-                                       role=role, **employee_args)
-        for history in role_history_data:
-            role_history = EmployeeRoleHistory(connection=trans, role=role,
-                                               employee=employee,
-                                               is_active=False,
-                                               **history)
-        began = now + datetime.timedelta(20)
-        role_history = EmployeeRoleHistory(connection=trans, role=role,
-                                           employee=employee,
-                                           is_active=True,
-                                           salary=currency(500),
-                                           began=began)
-        employee.salary = role_history.salary
-        # SalesPerson facet requires an employee facet.
-        person_obj.addFacet(ISalesPerson, connection=trans)
-
-        prof_name = profile_names[index]
-        # The True argument here means full permition for this profile.
-        # This is useful when testing all the fetuares of Stoq applications
-        profile = UserProfile.selectOneBy(name=prof_name, connection=trans)
-
-        user_args = user_data[index]
-        person_obj.addFacet(IUser, connection=trans, profile=profile,
-                            **user_args)
         transporter_args = transporter_data[index]
         person_obj.addFacet(ITransporter, connection=trans,
                             **transporter_args)
