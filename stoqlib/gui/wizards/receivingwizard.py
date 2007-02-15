@@ -207,6 +207,7 @@ class ReceivingOrderProductStep(SellableItemStep):
         # items to a receivable order.
         self.item_hbox.hide()
         self.hide_add_and_edit_buttons()
+        self._refresh_next()
 
     def next_step(self):
         return ReceivingInvoiceStep(self.conn, self.wizard, self.model, self)
