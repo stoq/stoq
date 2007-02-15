@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005, 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -21,9 +21,10 @@
 ##
 """ Create all objects for an example database used by Stoq applications"""
 
+from kiwi.environ import environ
 from stoqlib.domain.examples import log
 from stoqlib.domain.examples.person import create_people, set_person_utilities
-from stoqlib.domain.examples.product import create_products
+from stoqlib.importers.productimporter import ProductImporter
 from stoqlib.domain.examples.service import create_services
 from stoqlib.domain.examples.sale import create_sales
 from stoqlib.domain.examples.payment import create_payments
@@ -31,12 +32,16 @@ from stoqlib.domain.examples.purchase import create_purchases
 from stoqlib.domain.examples.giftcertificate import create_giftcertificates
 from stoqlib.domain.examples.devices import create_device_settings
 
+def _import_one(klass, filename):
+    imp = klass()
+    imp.feed_file(environ.find_resource('csv', filename))
+
 def create(utilities=False):
     log.info('Creating example database')
     create_people()
     if utilities:
         set_person_utilities()
-    create_products()
+    _import_one(ProductImporter, 'products.csv')
     create_services()
     create_payments()
     create_sales()
