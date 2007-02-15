@@ -67,7 +67,7 @@ class CSVImporter(object):
             if len(item) > len(field_names):
                 raise ValueError(
                     "line %d in file %s has %d fields, but we can at most "
-                    "handle %d fields. fields=%r" % (
+                    "handle %d fields" % (
                     lineno, filename, len(item), len(field_names), list(item)))
 
             data = CSVDataLine()
