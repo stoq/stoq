@@ -1,3 +1,5 @@
+% base_category, barcode, category, description, price,
+% cost, commission, commission2, markup, markup2 [, unit]
 Keyboard,015432,Generic,Keyboard AXDR,100,87,13,27,44,36
 Mouse,32587,Optical,Optical Mouse,121,71,4,16,43,33,Kg
 Monitor,65742,LCD,Monitor LCD SXDF,150,9,17,23,78,67

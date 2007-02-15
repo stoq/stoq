@@ -86,7 +86,7 @@ class ProductImporter(CSVImporter):
         sellable_info = BaseSellableInfo(
             connection=trans,
             description=data.description,
-            price=int(data.price))
+            price=data.price)
 
         if 'unit' in fields:
             if not data.unit in self.units:
@@ -96,7 +96,7 @@ class ProductImporter(CSVImporter):
             unit = None
         product.addFacet(
             ISellable, connection=trans,
-            cost=int(data.cost),
+            cost=data.cost,
             barcode=data.barcode,
             category=category,
             base_sellable_info=sellable_info,
