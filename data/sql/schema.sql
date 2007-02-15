@@ -643,7 +643,8 @@ CREATE TABLE apayment_method (
     id serial NOT NULL PRIMARY KEY,
     is_active boolean,
     child_name character varying(255),
-    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100)
+    daily_penalty numeric(10,2) CHECK (daily_penalty >= 0 AND daily_penalty <= 100),
+    interest numeric(10,2) CONSTRAINT interest_percent CHECK (interest >= 0 AND interest <= 100)
 );
 
 CREATE TABLE payment (
@@ -863,7 +864,6 @@ CREATE TABLE bill_p_m (
     id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
-    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
@@ -876,7 +876,6 @@ CREATE TABLE check_p_m (
     id serial NOT NULL PRIMARY KEY,
     destination_id bigint REFERENCES payment_destination(id),
     max_installments_number integer,
-    monthly_interest numeric(10,2) CHECK (monthly_interest >= 0 AND monthly_interest <= 100),
     original_id bigint UNIQUE REFERENCES payment_method(id)
 );
 
