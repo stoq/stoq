@@ -44,7 +44,8 @@ if library.uninstalled:
     library.add_global_resources(pixmaps='data/pixmaps',
                                  sql='data/sql',
                                  glade='data/glade',
-                                 fonts='data/fonts')
+                                 fonts='data/fonts',
+                                 csv='data/csv')
     externals = os.path.join(library.get_root(), 'external')
 else:
     # root = $prefix/lib/pythonX.Y/site-packages
