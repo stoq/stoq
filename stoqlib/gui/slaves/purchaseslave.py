@@ -37,7 +37,7 @@ class PurchasePaymentSlave(BaseEditorSlave):
                      'installments_number')
 
     def _setup_widgets(self):
-        items = [(desc, constant) 
+        items = [(desc, constant)
                     for constant, desc in interval_types.items()]
         self.interval_type_combo.prefill(items)
 
