@@ -91,3 +91,7 @@ class WarehouseView(Viewable):
                 query = branch_query
 
         return cls.select(query, connection=connection)
+
+    @property
+    def product(self):
+        return Product.get(self.product_id, connection=self.get_connection())
