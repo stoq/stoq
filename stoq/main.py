@@ -174,16 +174,16 @@ def _initialize(options):
 
 def _run_app(options, appname):
     from stoqlib.gui.base.gtkadds import register_iconsets
-    from stoq.gui.login import LoginHelper
 
     log.debug('register stock icons')
     register_iconsets()
 
-    log.debug('loading application')
-    login = LoginHelper()
-
     from stoq.gui.runner import ApplicationRunner
-    runner = ApplicationRunner(login, options)
+    runner = ApplicationRunner(options)
+
+    if not runner.login():
+        return
+
     if not appname:
         appname = runner.choose()
         if not appname:

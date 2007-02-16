@@ -54,14 +54,6 @@ class App(BaseApp):
         self.window_class = window_class
         BaseApp.__init__(self, window_class)
 
-    def revalidate_user(self, *args):
-        self.shutdown()
-        get_utility(ICookieFile).clear()
-        # validate_user raises SystemExit if things go wrong
-        self.config.validate_user()
-        self.reinit()
-        self.run()
-
 
 class AppWindow(BaseAppWindow):
     """ Base class for the main window of applications.
@@ -247,8 +239,7 @@ class AppWindow(BaseAppWindow):
         self._clear_cookie()
 
     def on_ChangeUser__activate(self, action):
-        # Implement a change user dialog here
-        raise NotImplementedError
+        self.app.runner.relogin()
 
     def _on_ChangeApplication__activate(self, action):
         runner = self.app.runner
