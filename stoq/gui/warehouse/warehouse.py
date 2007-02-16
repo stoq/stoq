@@ -126,12 +126,11 @@ class WarehouseApp(SearchableAppWindow):
     def get_filterslave_default_selected_item(self):
         return get_current_branch(self.conn)
 
-    def get_extra_query(self):
-        """Hook called by SearchBar"""
+    def query(self, table, query, args):
         branch = self.filter_slave.get_selected_status()
         if branch == ALL_ITEMS_INDEX:
             branch = None
-        return WarehouseView.get_query(branch)
+        return WarehouseView.select_by_branch(query, branch, connection=self.conn)
 
     #
     # Callbacks

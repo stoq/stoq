@@ -30,7 +30,7 @@ from stoqlib.domain.product import (Product, ProductAdaptToSellable,
                                     ProductSupplierInfo)
 from stoqlib.domain.sellable import ASellable, SellableUnit, BaseSellableInfo
 from stoqlib.domain.stock import AbstractStockItem
-from sqlobject.sqlbuilder import func, AND, INNERJOINOn
+from sqlobject.sqlbuilder import func, AND, INNERJOINOn, LEFTJOINOn
 
 class WarehouseView(Viewable):
 
@@ -52,7 +52,7 @@ class WarehouseView(Viewable):
 
     joins = [
         # Sellable unit
-        INNERJOINOn(None, SellableUnit,
+        LEFTJOINOn(None, SellableUnit,
                     SellableUnit.q.id == ASellable.q.unitID),
         # Product
         INNERJOINOn(None, ProductAdaptToSellable,
@@ -82,17 +82,12 @@ class WarehouseView(Viewable):
         )
 
     @classmethod
-    def get_query(cls, branch):
-        """
-        @branch: branch to query or None for all
-        """
-
-        has_branch_column = 'branch_id' in WarehouseView.sqlmeta.columns
+    def select_by_branch(cls, query, branch, connection=None):
         if branch:
-            if not has_branch_column:
-                cls.addColumn('branch_id', AbstractStockItem.q.branchID)
-        elif has_branch_column:
-            cls.delColumn('branch_id')
+            branch_query = AbstractStockItem.q.branchID == branch.id
+            if query:
+                query = AND(query, branch_query)
+            else:
+                query = branch_query
 
-        if branch:
-            return WarehouseView.q.branch_id == branch.id
+        return cls.select(query, connection=connection)
