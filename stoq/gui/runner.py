@@ -125,9 +125,11 @@ class ApplicationRunner(object):
         @param try_cookie: Try to use a cookie if one is available
         @returns: True if login succeed, otherwise false
         """
+        user = None
         if try_cookie:
             user = self._login.cookie_login()
-        else:
+
+        if not user:
             try:
                 user = self._login.validate_user()
             except LoginError, e:

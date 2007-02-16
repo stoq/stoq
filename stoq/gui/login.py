@@ -152,7 +152,7 @@ class LoginHelper:
             username, password = get_utility(ICookieFile).get()
         except CookieError:
             log.info("Not using cookie based login")
-            return False
+            return
 
         try:
             user = self._check_user(username, password)
