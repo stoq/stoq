@@ -130,7 +130,8 @@ class WarehouseApp(SearchableAppWindow):
         branch = self.filter_slave.get_selected_status()
         if branch == ALL_ITEMS_INDEX:
             branch = None
-        return WarehouseView.select_by_branch(query, branch, connection=self.conn)
+        return WarehouseView.select_by_branch(query, branch,
+                                              connection=self.conn)
 
     #
     # Callbacks
