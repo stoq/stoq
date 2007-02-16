@@ -151,16 +151,15 @@ class WarehouseApp(SearchableAppWindow):
 
     def on_retention_button__clicked(self, button):
         sellable_view = self.products.get_selected_rows()[0]
-        product = Product.get(sellable_view.product_id,
-                              connection=self.conn)
-        storable = IStorable(product, None)
+        storable = IStorable(sellable_view.product, None)
         warehouse_branch = get_current_branch(self.conn)
         if (not storable
             or not storable.get_full_balance(warehouse_branch)):
             warning(_(u"You must have at least one item "
                       "in stock to perfom this action."))
             return
-        model = self.run_dialog(ProductRetentionDialog, self.conn, product)
+        model = self.run_dialog(ProductRetentionDialog, self.conn,
+                                sellable_view.product)
         if not finish_transaction(self.conn, model):
             return
         sellable_view.sync()
