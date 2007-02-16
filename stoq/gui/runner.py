@@ -25,7 +25,10 @@
 import gettext
 
 from kiwi.log import Logger
-from stoqlib.lib.message import error
+from stoqlib.exceptions import LoginError
+from stoqlib.lib.message import error, info
+
+from stoq.gui.login import LoginHelper
 
 log = Logger('stoq.runner')
 _ = gettext.gettext
@@ -38,12 +41,13 @@ class ApplicationRunner(object):
     be delayed to avoid unnecessary imports which are critical for
     good start-up performance
     """
-    def __init__(self, config, options):
+    def __init__(self, options):
         self._current_app = None
-        self._config = config
         self._options = options
         self._appname = None
         self._application_cache = {}
+        self._login = LoginHelper()
+        self._user = None
 
     def _import(self, appname):
         module = __import__("stoq.gui.%s.app" % appname,
@@ -70,10 +74,10 @@ class ApplicationRunner(object):
             splash = self._show_splash()
 
         module = self._import(appname)
-        window_class = module.main(self._config)
+        window_class = module.main(self._login)
 
         from stoq.gui.application import App
-        app = App(window_class, self._config, self._options, self)
+        app = App(window_class, self._login, self._options, self)
 
         if splash:
             import gobject
@@ -97,7 +101,7 @@ class ApplicationRunner(object):
         Runs an application
         @param appname: application to run
         """
-        if not self._config.user.profile.check_app_permission(appname):
+        if not self._user.profile.check_app_permission(appname):
             error(_("This user lacks credentials \nfor application %s") %
                   appname)
             return
@@ -114,3 +118,38 @@ class ApplicationRunner(object):
         self._appname = appname
 
         app.run()
+
+    def login(self, try_cookie=True):
+        """
+        Do a login
+        @param try_cookie: Try to use a cookie if one is available
+        @returns: True if login succeed, otherwise false
+        """
+        if try_cookie:
+            user = self._login.cookie_login()
+        else:
+            try:
+                user = self._login.validate_user()
+            except LoginError, e:
+                info(e)
+
+        if user:
+            self._user = user
+        return bool(user)
+
+    def relogin(self):
+        """
+        Do a relogin, eg switch users
+        """
+        if self._current_app:
+            self._current_app.hide()
+
+        if not self.login(try_cookie=False):
+            self._current_app.show()
+            return
+
+        appname = self.choose()
+        if appname:
+            self.run(appname)
+
+

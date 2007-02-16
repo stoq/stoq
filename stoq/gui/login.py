@@ -128,9 +128,6 @@ class LoginHelper:
     def __init__(self):
         self.user = None
 
-        if not self.validate_user():
-            raise LoginError('Could not authenticate in the system')
-
     def _check_user(self, username, password):
         # This function is really just a post-validation item.
         user = Person.iselectOneBy(IUser, username=username,
@@ -148,9 +145,9 @@ class LoginHelper:
         # ICurrentUser might already be provided which is the case when
         # creating a new database, thus we need to replace it.
         provide_utility(ICurrentUser, user, replace=True)
-        self.user = user
+        return user
 
-    def _cookie_login(self):
+    def cookie_login(self):
         try:
             username, password = get_utility(ICookieFile).get()
         except CookieError:
@@ -158,18 +155,18 @@ class LoginHelper:
             return False
 
         try:
-            self._check_user(username, password)
+            user = self._check_user(username, password)
         except (LoginError, UserProfileError, DatabaseError), e:
             log.info("Cookie login failed: %r" % e)
-            return False
+            return
 
         log.info("Logging in using cookie credentials")
-        return True
+        return user
 
     def validate_user(self):
-        if self._cookie_login():
-            return True
-
+        """
+        @returns: a user object
+        """
         log.info("Showing login dialog")
         # Loop for logins
         retry = 0
@@ -184,7 +181,7 @@ class LoginHelper:
 
             # user cancelled (escaped) the login dialog
             if not ret:
-                self._abort()
+                return
 
             # Use credentials
             if not (isinstance(ret, (tuple, list)) and len(ret) == 2):
@@ -198,7 +195,7 @@ class LoginHelper:
                 continue
 
             try:
-                self._check_user(username, password)
+                user = self._check_user(username, password)
             except (LoginError, UserProfileError), e:
                 # We don't hide the dialog here; it's kept open so the
                 # next loop we just can call run() and display the error
@@ -214,12 +211,12 @@ class LoginHelper:
                 if dialog:
                     dialog.destroy()
 
-                return True
+                return user
 
+        raise LoginError
         if dialog:
             dialog.destroy()
         self._abort("Depleted attempts of authentication")
-        return False
 
     #
     # Exit strategies
