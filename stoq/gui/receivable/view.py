@@ -54,3 +54,11 @@ class ReceivableView(Viewable):
 
     def get_status_str(self):
         return Payment.statuses[self.status]
+
+    @property
+    def sale(self):
+        return Sale.get(self.sale_id)
+
+    @property
+    def payment(self):
+        return Payment.get(self.id)
