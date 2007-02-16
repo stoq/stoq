@@ -139,10 +139,13 @@ class Viewable(object):
     def sync(self):
         obj = self.select(
             self.q.id == self.id,
-            connection=self._connection).getOne()
+            connection=self.get_connection()).getOne()
 
         for attr in self.sqlmeta.columnNames:
             setattr(self, attr, getattr(obj, attr, None))
+
+    def get_connection(self):
+        return self._connection
 
 def queryForSelect(conn, select):
     ops = select.ops
