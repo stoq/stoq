@@ -249,6 +249,12 @@ class _DateSearchSlave(GladeSlaveDelegate):
         self.emit('end-date-selected')
 
 
+# FIXME: Remove query_args in constructor,
+#               self._extra_query_callback
+#               self._query_args
+#               register_extra_query_callback method
+#        And replace them with self.set_query_callback()
+
 class SearchBar(GladeSlaveDelegate):
     """A portable search bar slave for dialogs and applications"""
 
@@ -286,6 +292,7 @@ class SearchBar(GladeSlaveDelegate):
         self._searching_by_date = searching_by_date
         self._animate_search_icon_id = -1
         self._extra_query_callback = None
+        self._query_callback = self._default_query_callback
         self._blocked_results_counter = None
         self._result_strings = None
         self._int_fields = []
@@ -456,6 +463,9 @@ class SearchBar(GladeSlaveDelegate):
 
         return AND(*queries)
 
+    def _default_query_callback(self, table, query, queries):
+        return table.select(query, **queries)
+
     def _run_query(self):
         # Performing search
 
@@ -464,7 +474,7 @@ class SearchBar(GladeSlaveDelegate):
         kwargs = dict(connection=self._conn, distinct=True)
         kwargs.update(self._query_args)
         query = self._build_query()
-        search_results = self._table.select(query, **kwargs)
+        search_results = self._query_callback(self._table, query, kwargs)
 
         total = search_results.count()
         if total > self.max_search_results:
@@ -526,6 +536,22 @@ class SearchBar(GladeSlaveDelegate):
         """
         self._extra_query_callback = query
 
+    def set_query_callback(self, callback):
+        """
+        Sets the query callback which allows you to do custom queries,
+        the arguments sent are, in order;
+          - table: an SQLObject
+          - query: the query
+          - query args: additional query args sent in through the
+                        searchbar constructor (FIXME: remove)
+        The return value of the function should be the return value
+        of the select
+        @param callback: a callable
+        """
+        if not callable(callback):
+            raise TypeError
+        self._query_callback = callback
+
     def set_focus(self):
         self._slave.set_focus()
 
@@ -575,4 +601,5 @@ class SearchBar(GladeSlaveDelegate):
                      status_name=status_name, extra_filters=extra_filters,
                      #start_date=start_date, end_date=end_date,
                      status=status, *args, **kwargs)
+
 
