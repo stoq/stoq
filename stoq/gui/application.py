@@ -297,6 +297,7 @@ class SearchableAppWindow(AppWindow):
             self.searchbar.register_extra_query_callback(extra_query)
         self.searchbar.set_result_strings(*self.searchbar_result_strings)
         self.searchbar.set_searchbar_labels(*self.searchbar_labels)
+        self.searchbar.set_query_callback(self.query)
         self.searchbar.connect('before-search-activate',
                                self.on_searchbar_before_activate)
         self.searchbar.connect('search-activate', self.on_searchbar_activate)
@@ -374,3 +375,9 @@ class SearchableAppWindow(AppWindow):
         @returns: a method that will be called by filter slave
         """
         return self.searchbar.search_items
+
+    def query(self, table, query, queries):
+        """Override this to control the queries made by the
+        searchbar, see searchbar.set_query_callback for documentation
+        """
+        return table.select(query, **queries)
