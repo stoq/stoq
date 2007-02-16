@@ -213,10 +213,9 @@ class LoginHelper:
 
                 return user
 
-        raise LoginError
         if dialog:
             dialog.destroy()
-        self._abort("Depleted attempts of authentication")
+        raise LoginError("Depleted attempts of authentication")
 
     #
     # Exit strategies

@@ -33,7 +33,7 @@ import sys
 
 from kiwi.component import provide_utility
 from kiwi.log import Logger, set_log_file
-from stoqlib.exceptions import StoqlibError
+from stoqlib.exceptions import LoginError, StoqlibError
 from stoqlib.lib.message import error
 
 from stoq.lib.applist import get_application_names
@@ -181,8 +181,11 @@ def _run_app(options, appname):
     from stoq.gui.runner import ApplicationRunner
     runner = ApplicationRunner(options)
 
-    if not runner.login():
-        return
+    try:
+        if not runner.login():
+            return
+    except LoginError, e:
+        error(e)
 
     if not appname:
         appname = runner.choose()
