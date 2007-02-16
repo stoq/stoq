@@ -46,7 +46,8 @@ def register_iconsets():
                  ("stoq-till-app", "till_24.png"),
                  ("stoq-warehouse-app", "warehouse_24.png"),
                  ("stoq-purchase-app", "gnome-gnomine48px.png"),
-                 ("stoq-sales-app", "gnome-log48px.png")]
+                 ("stoq-sales-app", "gnome-log48px.png"),
+                 ("stoq-payable-app", "gnome-money-red48px.png")]
 
     iconfactory = gtk.IconFactory()
     stock_ids = gtk.stock_list_ids()
