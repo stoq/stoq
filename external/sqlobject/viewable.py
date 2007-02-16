@@ -122,6 +122,8 @@ class Viewable(object):
                 clause = AND(clause, cls.clause)
             else:
                 clause = cls.clause
+        if columns:
+            cls.columns.update(columns)
 
         return ViewableSelectResults(cls, clause,
                                      clauseTables=clauseTables,
