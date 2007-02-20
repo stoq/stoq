@@ -32,9 +32,10 @@ from kiwi.ui.widgets.list import Column, SummaryLabel
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.database.database import finish_transaction
 from stoqlib.database.runtime import new_transaction, get_current_branch
-from stoqlib.domain.person import Person
 from stoqlib.domain.interfaces import ISellable, IBranch, IStorable
+from stoqlib.domain.person import Person
 from stoqlib.domain.product import (Product, ProductAdaptToSellable)
+from stoqlib.domain.views import ProductFullStockView
 from stoqlib.lib.message import warning
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX, ALL_BRANCHES
 from stoqlib.gui.wizards.receivingwizard import ReceivingOrderWizard
@@ -44,7 +45,6 @@ from stoqlib.gui.dialogs.productretention import ProductRetentionDialog
 from stoqlib.reporting.product import ProductReport
 
 from stoq.gui.application import SearchableAppWindow
-from stoq.gui.warehouse.view import WarehouseView
 
 _ = gettext.gettext
 
@@ -53,7 +53,7 @@ class WarehouseApp(SearchableAppWindow):
     app_name = _('Warehouse')
     app_icon_name = 'stoq-warehouse-app'
     gladefile = "warehouse"
-    searchbar_table = WarehouseView
+    searchbar_table = ProductFullStockView
     searchbar_result_strings = (_('product'), _('products'))
     searchbar_labels = (_('Matching:'),)
     filter_slave_label = _('Show products at:')
@@ -130,8 +130,8 @@ class WarehouseApp(SearchableAppWindow):
         branch = self.filter_slave.get_selected_status()
         if branch == ALL_ITEMS_INDEX:
             branch = None
-        return WarehouseView.select_by_branch(query, branch,
-                                              connection=self.conn)
+        return ProductFullStockView.select_by_branch(query, branch,
+                                                     connection=self.conn)
 
     #
     # Callbacks
