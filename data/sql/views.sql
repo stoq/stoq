@@ -55,7 +55,6 @@
 -- Callsites:
 --
 --   stoqlib/gui/search/sellablesearch.py
---   stoqlib/gui/search/productsearch.py
 --   stoqlib/reporting/product.py
 --
 CREATE VIEW sellable_view AS
