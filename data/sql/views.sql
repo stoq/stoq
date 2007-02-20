@@ -158,25 +158,6 @@ CREATE VIEW sellable_full_stock_view AS
 
 
 --
--- Stores information about products and stock information in all
--- branch companies.
---
--- Available fields are: the same fields of sellable_full_stock_view
---
--- Callsites:
---
---   stoqlib/gui/search/productsearch.py
---
-CREATE VIEW product_full_stock_view AS
-
-  SELECT * 
-
-  FROM sellable_full_stock_view 
-
-  WHERE product_id IS NOT NULL;
-
-
---
 -- Stores information about services
 --
 -- Available fields are:

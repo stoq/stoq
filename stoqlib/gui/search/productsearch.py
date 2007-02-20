@@ -30,9 +30,9 @@ import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
 from kiwi.argcheck import argcheck
-from sqlobject.sqlbuilder import AND
 
-from stoqlib.domain.product import Product, ProductFullStockView
+from stoqlib.domain.product import Product
+from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.productslave import ProductFilterSlave
 from stoqlib.gui.search.sellablesearch import SellableSearch, SellableView
@@ -106,7 +106,7 @@ class ProductSearch(SellableSearch):
 
     @argcheck(SellableView)
     def get_editor_model(self, model):
-        return Product.get(model.product_id, connection=self.conn)
+        return model.product
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=int, sorted=True,
@@ -126,16 +126,13 @@ class ProductSearch(SellableSearch):
                        data_type=Decimal, width=100)]
 
     def get_extra_query(self):
-        branch = self.filter_slave.get_selected_branch()
         status = self.filter_slave.get_selected_status()
-        if branch != ALL_ITEMS_INDEX:
-            self.set_searchtable(SellableView)
-            q1 = self.search_table.q.branch_id == branch.id
-            if status == ALL_ITEMS_INDEX:
-                return q1
-            else:
-                return AND(q1, self.search_table.q.status == status)
-        else:
-            self.set_searchtable(ProductFullStockView)
-            if status != ALL_ITEMS_INDEX:
-                return self.search_table.q.status == status
+        if status != ALL_ITEMS_INDEX:
+            return self.search_table.q.status == status
+
+    def query(self, table, query, args):
+        branch = self.filter_slave.get_selected_branch()
+        if branch == ALL_ITEMS_INDEX:
+            branch = None
+        return ProductFullStockView.select_by_branch(query, branch,
+                                                     connection=self.conn)
