@@ -29,13 +29,12 @@ from decimal import Decimal
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
-from kiwi.argcheck import argcheck
 
 from stoqlib.domain.product import Product
 from stoqlib.domain.views import ProductFullStockView
 from stoqlib.gui.editors.producteditor import ProductEditor
 from stoqlib.gui.slaves.productslave import ProductFilterSlave
-from stoqlib.gui.search.sellablesearch import SellableSearch, SellableView
+from stoqlib.gui.search.sellablesearch import SellableSearch
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import ALL_ITEMS_INDEX
@@ -104,9 +103,8 @@ class ProductSearch(SellableSearch):
     # SearchEditor Hooks
     #
 
-    @argcheck(SellableView)
-    def get_editor_model(self, model):
-        return model.product
+    def get_editor_model(self, product_full_stock_view):
+        return product_full_stock_view.product
 
     def get_columns(self):
         return [Column('code', title=_('Code'), data_type=int, sorted=True,
