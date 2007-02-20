@@ -159,6 +159,7 @@ class SearchDialog(BasicDialog):
                                     columns, query_args=query_args,
                                     filter_slave=self.get_filter_slave(),
                                     searching_by_date=use_dates)
+        self.search_bar.set_query_callback(self.query)
         extra_query = self.get_extra_query
         if extra_query:
             self.search_bar.register_extra_query_callback(extra_query)
@@ -333,6 +334,12 @@ class SearchDialog(BasicDialog):
         """ Subclass can have an 'update_widgets', and this method will be
         called when a signal is emitted by 'Filter' or 'Clear' buttons and
         also when a list item is selected. """
+
+    def query(self, table, query, queries):
+        """Override this to control the queries made by the
+        searchbar, see searchbar.set_query_callback for documentation
+        """
+        return table.select(query, **queries)
 
     #
     # Specification of methods that all subclasses *must* to implement
