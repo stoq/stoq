@@ -200,7 +200,6 @@ def get_current_branch(conn):
     Fetches the current branch company.
 
     @returns: the current branch
-    @rtype: an object
     @rtype: an object implementing IBranch
     """
 
