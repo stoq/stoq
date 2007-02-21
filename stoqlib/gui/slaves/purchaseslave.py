@@ -49,3 +49,12 @@ class PurchasePaymentSlave(BaseEditorSlave):
         self._setup_widgets()
         self.proxy = self.add_proxy(self.model,
                                     PurchasePaymentSlave.proxy_widgets)
+        self._update_widgets()
+
+    def on_installments_number__changed(self, widget):
+        self._update_widgets()
+
+    def _update_widgets(self):
+        installments_is_one = self.installments_number.get_value() == 1
+        self.intervals.set_sensitive(not installments_is_one)
+        self.interval_type_combo.set_sensitive(not installments_is_one)
