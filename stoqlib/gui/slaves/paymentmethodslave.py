@@ -49,7 +49,7 @@ class _CheckBillSettingsSlave(BaseEditorSlave):
     model_type = BillPM
     gladefile = 'CheckBillSettingsSlave'
     proxy_widgets = ('installments_number',
-                     'monthly_interest',
+                     'interest',
                      'daily_penalty')
 
     def setup_proxies(self):
