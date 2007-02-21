@@ -35,19 +35,20 @@ _ = stoqlib_gettext
 class FilterSlave(GladeSlaveDelegate):
     """A generic slave for statuses management useful when combined with
     SearchBar as a filter_slave.
-
-    statuses    = a list of tuples where each item has this format:
-                  (string, data). This tuple will be used when filling the
-                  statuses-combo
-    selected    = the data we want to select in the combo. This argument
-                  must be one of the elements in the position 1 (one) of
-                  statuses tuple argument.
     """
+
     gladefile = 'FilterSlave'
     gsignal('status-changed')
 
-
     def __init__(self, statuses, selected=None):
+        """
+        @param statuses: a list of tuples where each item has this format:
+          (string, data). This tuple will be used when filling the
+          statuses-combo
+        @param selected: the data we want to select in the combo. This argument
+          must be one of the elements in the position 1 (one) of
+          statuses tuple argument.
+        """
         GladeSlaveDelegate.__init__(self, gladefile=self.gladefile)
         if not isinstance(statuses, (tuple, list)):
             raise TypeError('Argument statuses must be of typle list or '

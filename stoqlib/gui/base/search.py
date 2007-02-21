@@ -78,27 +78,19 @@ class SearchDialog(BasicDialog):
     implement a setup_slaves method and call its equivalent base class method
     as in:
 
-    def setup_slave(self):
-        SearchDialog.setup_slaves(self)
+    >>> def setup_slave(self):
+    ...    SearchDialog.setup_slaves(self)
 
     or then, call it in its constructor, like:
 
-    def __init__(self, *args):
-        SearchDialog.__init__(self)
+    >>> def __init__(self, *args):
+    ...     SearchDialog.__init__(self)
 
     Some important parameters:
-        table = the table type which we will query on to get the objects.
-        searchbar_labels = labels for SearchBar entry and date fields
-        searchbar_result_strings = a tuple where each item has a singular
-                                   and a plural form for searchbar results
-                                   label
-    Important callbacks:
-        on_details_button_clicked: Subclasses must define this method
-                                   properly when a details dialog is
-                                   needed with SearchDialog
-        on_print_button_clicked: Subclasses must define this method
-                                 properly when printing data is
-                                 needed with SearchDialog
+    @cvar table: the table type which we will query on to get the objects.
+    @cvar searchbar_labels: labels for SearchBar entry and date fields
+    @cvar searchbar_result_strings: a tuple where each item has a singular
+      and a plural form for searchbar results label
     """
     main_label_text = ''
     title = ''
@@ -113,6 +105,16 @@ class SearchDialog(BasicDialog):
     @argcheck(Transaction, object, object, bool, basestring, int)
     def __init__(self, conn, table=None, search_table=None, hide_footer=True,
                  title='', selection_mode=None):
+        """
+        @param conn:
+        @param table:
+        @param editor_class:
+        @param search_table:
+        @param hide_footer:
+        @param title:
+        @param selection_mode:
+        """
+
         self.conn = conn
         search_table = search_table or self.search_table
         table = table or self.table
@@ -381,10 +383,6 @@ class SearchEditor(SearchDialog):
 
     This is also a subclass of SearchDialog and the same rules are required.
 
-    Some important parameters:
-    interface = The interface which we need to apply to the objects in
-                kiwi list to get adapter for the editor.
-
     Simple example:
 
     >>> class CarSearch(SearchEditor):
@@ -400,21 +398,21 @@ class SearchEditor(SearchDialog):
     ...                         expand=True)]
 
     This will create a new editor called CarSearch.
-    - It will be populated using the table Car.
-    - The title of the editor is "Car Search".
-    - To create new Car objects or to edit an existing Car object the
-      CarEditor table will be used, which needs to be a subclass of BaseEditor.
-    - The size of the new dialog will be 465 pixels wide and 390 pixels high.
-    - When displaying results, the verb car and cars will be used, eg:
-      1 car or 34 cars.
-    - The get_columns() methods is required to be implemented, otherwise
-      there's no way to know which data is going to be displayed.
-      get_columns must return a list of kiwi objectlist columns.
-      In this case we will display two columns, brand and description.
-      They will be fetched from the car object using the attribute brand or
-      description. Both of them are strings (data_type=str), the width of
-      the first column is 90 pixels and the second column is expanded so
-      it uses the rest of the available width.
+      - It will be populated using the table Car.
+      - The title of the editor is "Car Search".
+      - To create new Car objects or to edit an existing Car object the
+        CarEditor table will be used, which needs to be a subclass of BaseEditor.
+      - The size of the new dialog will be 465 pixels wide and 390 pixels high.
+      - When displaying results, the verb car and cars will be used, eg:
+        1 car or 34 cars.
+      - The get_columns() methods is required to be implemented, otherwise
+        there's no way to know which data is going to be displayed.
+        get_columns must return a list of kiwi objectlist columns.
+        In this case we will display two columns, brand and description.
+        They will be fetched from the car object using the attribute brand or
+        description. Both of them are strings (data_type=str), the width of
+        the first column is 90 pixels and the second column is expanded so
+        it uses the rest of the available width.
 
     """
     model_editor_lookup_attr = 'id'
@@ -425,6 +423,19 @@ class SearchEditor(SearchDialog):
                  search_table=None, hide_footer=True,
                  title='', selection_mode=gtk.SELECTION_BROWSE,
                  hide_toolbar=False):
+        """
+        @param conn:
+        @param table:
+        @param editor_class:
+        @param interface: The interface which we need to apply to the objects in
+          kiwi list to get adapter for the editor.
+        @param search_table:
+        @param hide_footer:
+        @param title:
+        @param selection_mode:
+        @param hide_toolbar:
+        """
+
         self.interface = interface
 
         SearchDialog.__init__(self, conn, table, search_table,

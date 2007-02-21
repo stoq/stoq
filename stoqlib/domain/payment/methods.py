@@ -426,20 +426,17 @@ class _AbstractCheckBillMethodMixin(object):
         total interest. The result value is a tuple where the first item
         is the payment list and the second one is the interest total value
 
-        payment_group       = a AbstractPaymentGroup instance
-        installments_number = the number of installments for payment
-                              generation
-        first_duedate       = The duedate for the first payment created
-        interval_type       = a constant which define the interval type used
-                              to generate payments. See lib/defaults.py,
-                              INTERVALTYPE_*
-        intervals           = number of intervals useful to calculate
-                              payment due dates
-        total_value         = the sum of all the payments. Note that payment
-                              values are total_value divided by
-                              installments_number
-        interest            = a Decimal instance in the format
-                              0 <= interest <= 100
+        @param payment_group: a AbstractPaymentGroup instance
+        @param installments_number: the number of installments for payment
+           generation
+        @param first_duedate: The duedate for the first payment created
+        @param interval_type: a constant which define the interval type used
+           to generate payments. See lib/defaults.py, INTERVALTYPE_*
+        @param intervals: number of intervals useful to calculate
+           payment due dates
+        @param total_value: the sum of all the payments. Note that payment
+           values are total_value divided by installments_number
+        @param interest: a Decimal instance in the format 0 <= interest <= 100
         """
         value = self._calculate_payment_value(total_value,
                                               installments_number,
@@ -713,16 +710,15 @@ class PaymentMethodDetails(InheritableModel):
     @argcheck(AbstractPaymentGroup, int, datetime, Decimal)
     def setup_inpayments(self, payment_group, installments_number,
                          first_duedate, total_value):
-        """Return a list of newly created inpayments and its total
-        payment list.
+        """
+        Return a list of newly created inpayments and its total payment list.
 
-        payment_group       = a AbstractPaymentGroup instance
-        installments_number = the number of installments for payment
-                              generation
-        first_duedate       = The duedate for the first payment created
-        total_value         = the sum of all the payments. Note that payment
-                              values are total_value divided by
-                              installments_number
+        @param payment_group: AbstractPaymentGroup instance
+        @param installments_number: the number of installments for payment
+           generation
+        @param first_duedate: The duedate for the first payment created
+        @param total_value: the sum of all the payments. Note that payment
+           values are total_value divided by installments_number
         """
         method = self.get_payment_method()
         max = self.get_max_installments_number()

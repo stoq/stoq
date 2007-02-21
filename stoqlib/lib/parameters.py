@@ -282,7 +282,10 @@ class ParameterAccess(ClassInittableObject):
 
     Usage:
 
-        parameter = sysparam(conn).parameter_name
+    >>> from stoqlib.lib.parameters import sysparam
+    >>> from stoqlib.database.runtime import get_connection
+    >>> conn = get_connection()
+    >>> parameter = sysparam(conn).parameter_name
     """
 
     # New parameters must always be defined here

@@ -44,11 +44,10 @@ _ = stoqlib_gettext
 
 class ReceivingOrderDetailsDialog(BaseEditor):
     """This dialog shows some important details about purchase receiving
-        orders like:
-         -history of received products
-         -Invoice Details
-         -Order details such transporter, supplier, etc.
-
+    orders like:
+     - history of received products
+     - Invoice Details
+     - Order details such transporter, supplier, etc.
     """
 
     title = _("Receiving Order Details")

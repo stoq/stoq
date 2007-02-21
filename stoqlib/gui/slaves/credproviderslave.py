@@ -23,9 +23,7 @@
 ##               Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-stoq/gui/slaves/credprovider.py
-
-    Cred Provider editor slaves implementation.
+Credit Provider editor
 """
 
 

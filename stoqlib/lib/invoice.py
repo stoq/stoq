@@ -55,17 +55,26 @@ class SysCoordinate:
     """ A simple class to allow us define a simple matrix and put data on
     it easily, e.g:
 
-    ROWS_NUMBER, COLS_NUMBER = 80, 25
-    syscoord = SysCoordinate(ROWS_NUMBER, COLS_NUMBER)
-    syscoord.insert_string(10, 20, 'A string') # alright
-    syscoord.insert_string(81, 20, 'Foo') # ValueError, 81 > COLS_NUMBER
-    syscoord.insert_string(78, 20, 'Bar') # The string is truncate, since
-                                          # 'Bar' reaches the last column
-    raw_data = syscoord.get_data() # Returns the raw matrix, i.e, a list
-                                   # of lists
-    formatted_data = syscoord.get_data_as_string() # returns the matrix
-                                                   # properly formatted.
+    >>> syscoord = SysCoordinate(80, 25)
+    >>> syscoord.insert_string(10, 20, 'A string')
+
+    If you insert a string which has a column or line value which is out of
+    range, a ValueError will be raised
+
+    >>> syscoord.insert_string(81, 20, 'Foo')
+    Traceback (most recent call last):
+    ValueError: ...
+
+    >>> syscoord.insert_string(78, 20, 'Bar')
+    >>> raw_data = syscoord.get_data()
+    ...
+
+    To return the matrix properly formatted, call:
+    >>> syscoord.get_data_as_string()
+    ...
+
     """
+
     def __init__(self, lines, cols):
         self._lines = lines
         self._cols = cols

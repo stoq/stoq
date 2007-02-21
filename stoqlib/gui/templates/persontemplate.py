@@ -248,14 +248,17 @@ class _CompanyEditorTemplate(BaseEditorSlave):
 class BasePersonRoleEditor(BaseEditor):
     """A base class for person role editors. This class can not be
     instantiated directly.
-    Notes:
-        role_type   = This argument represents one of the following
-                      constants of Person domain class: ROLE_INDIVIDUAL
-                      or ROLE_COMPANY
     """
 
     def __init__(self, conn, model=None, role_type=None, person=None,
                  visual_mode=False):
+        """
+        @param conn: a database connection
+        @param model:
+        @param none_type: None, ROLE_INDIVIDUAL or ROLE_COMPANY
+        @param person:
+        @param visual_mode:
+        """
         if not (model or role_type is not None):
             raise ValueError('A role_type attribute is required')
         self.role_type = role_type

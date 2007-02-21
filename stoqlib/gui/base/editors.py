@@ -161,13 +161,11 @@ class BaseEditor(BaseEditorSlave):
     """ Base class for editor dialogs. It offers methods of
     BaseEditorSlave, a windows title and OK/Cancel buttons.
 
-    model_name      =  the model type name of the model we are editing.
-                       This value will be showed in the title of
-                       the editor and can not be merely the attribute
-                       __name__ of the object for usability reasons.
-                       Callsites will decide what could be the best name
-                       applicable in each situation.
-
+    @cvar model_name: the model type name of the model we are editing.
+       This value will be showed in the title of the editor and can not
+       be merely the attribute __name__ of the object for usability reasons.
+       Call sites will decide what could be the best name applicable in each
+       situation.
     """
 
     model_name = None
