@@ -453,10 +453,10 @@ def run_dialog(dialog, parent=None, *args, **kwargs):
     Runs a dialog and return the return value of it.
     If dialog is a class it will be instantiated before running the dialog.
 
-    @dialog: the dialog, could be a class or instance
-    @parent: parent of the dialog
-    @args: custom positional argument
-    @kwargs: custom keyword arguments
+    @param dialog: the dialog, could be a class or instance
+    @param parent: parent of the dialog
+    @param args: custom positional argument
+    @param kwargs: custom keyword arguments
     """
 
     if dialog is None:

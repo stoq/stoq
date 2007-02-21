@@ -20,16 +20,13 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 """
-stoqlib/reporting/printing.py:
-
-    Implements the ReportTemplate class, an BaseReportTemplate extension
-    that allows footer and header drawing.
+Implements the ReportTemplate class, an BaseReportTemplate extension
+that allows footer and header drawing.
 """
 import datetime
 
 from reportlab.lib.units import mm
 
-# sibling imports
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.reporting.base.template import BaseReportTemplate
 from stoqlib.reporting.base.default_style import (HIGHLIGHT_COLOR, SPACING,
@@ -50,18 +47,15 @@ class ReportTemplate(BaseReportTemplate):
                  do_footer=True, **kwargs):
         """ Common parameters to BaseReportTemplate was ommited, maybe
         you want look at BaseReportTemplate documentation?
-
         @param timestamp: The time when the report was created must be
                           drawed at the report footer? Defaults to False.
-        @type:            bool
-
+        @type timestamp:  bool
         @param do_header: Must a header be drawed on top of the report?
                           Defaults to True.
-        @type:            bool
-
+        @type do_header:  bool
         @param do_footer: Must a footer be drawed on each report page?
                           Defaults to True.
-        @type:            bool
+        @type do_footer:  bool
 
         """
         if timestamp and not do_footer:
@@ -85,7 +79,8 @@ class ReportTemplate(BaseReportTemplate):
     def draw_footer(self, canvas):
         """Implementation of BaseReportTemplate hook. This method is called on
         footer drawing time if this object has the time_stamp attribute set to
-        True (see this class constructor documentation.). The footer format is:
+        True (see this class constructor documentation.).
+        The footer format is::
 
             DATE [TIME] Page X
 
@@ -98,7 +93,7 @@ class ReportTemplate(BaseReportTemplate):
         if self.timestamp:
             date_string += ts.strftime(" %X")
         page_number = _("Page % 2d") % self.get_page_number()
-        
+
         # Let's start drawing
         canvas.setFillColor(HIGHLIGHT_COLOR)
         canvas.rect(self.leftMargin, self.bottomMargin, self.width,

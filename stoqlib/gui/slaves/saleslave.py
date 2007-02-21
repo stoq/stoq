@@ -47,11 +47,6 @@ _ = stoqlib_gettext
 
 class DiscountSurchargeSlave(BaseEditorSlave):
     """A slave for discounts and surcharge management
-
-    Notes:
-        after_value_changed_handler     = a function which will be called
-                                          always after a discount or surcharge
-                                          is changed
     """
     gladefile = 'DiscountChargeSlave'
     proxy_widgets = ('discount_value',

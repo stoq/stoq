@@ -347,31 +347,25 @@ class ObjectTableBuilder(ColumnTableBuilder):
                  progress_handler=None, table_line=TABLE_LINE,
                  extra_row=None, summary_row=None):
         """
-        @param objs:   A instance list, where each instance is a table row.
-        @type:         list.
-
-        @param columns:A list of ObjectTableColumn, representing the table
-                       columns.
-        @type:         list
-
-        @param style:  The table style.
-        @type:         TableStyle
-
-        @param width:  The table width.
-        @type:         int
-
+        @param objs: A instance list, where each instance is a table row.
+        @type  objs: list.
+        @param columns: A list of ObjectTableColumn, representing the
+          table columns.
+        @type  columns: list
+        @param style: The table style.
+        @type  style: TableStyle
+        @param width: The table width.
+        @type  width: int
         @param table_line: Define the type of the line that is inserted between
-                       the table rows.
-        @type:         One of TABLE_LINE or TABLE_LINE_BLANK constants.
-
+          the table rows.
+        @type table_line: One of TABLE_LINE or TABLE_LINE_BLANK constants.
         @param extra_row: An object with data to be inserted right after
-                       the table. This data is included on the report as
-                       a normal data table after this object table.
-        @type:         list
-
+          the table. This data is included on the report as a normal data
+          table after this object table.
+        @type extra_row: list
         @param summary_row: A list of strings to be inserted after the table
-                       and that means the sum of one or more columns.
-        @type:         list
+          and that means the sum of one or more columns.
+        @type summary_row: list
         """
         if extra_row and summary_row:
             raise ValueError("You can't use extra_row and summary_row at "
