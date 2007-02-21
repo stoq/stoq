@@ -53,15 +53,14 @@ _ = stoqlib_gettext
 class SellableUnit(Domain):
     """ A class used to represent the sellable unit.
 
-    - I{description}: The unit description
-    - I{unit_index}:  This column defines if this object represents a custom
-                      product unit (created by the user through the product
-                      editor) or a 'native unit', like 'Km', 'Lt' and 'pc'.
-                      This data is used mainly to interact with stoqdrivers,
-                      since when adding an item in a coupon we need to know
-                      if its unit must be specified as a description (using
-                      CUSTOM_PM constant) or as an index (using UNIT_*). Also,
-                      this is directly related to the DeviceSettings editor.
+    @cvar description: The unit description
+    @cvar unit_index:  This column defines if this object represents a custom
+      product unit (created by the user through the product editor) or
+      a 'native unit', like 'Km', 'Lt' and 'pc'.
+      This data is used mainly to interact with stoqdrivers, since when adding
+      an item in a coupon we need to know if its unit must be specified as
+      a description (using CUSTOM_PM constant) or as an index (using UNIT_*).
+      Also, this is directly related to the DeviceSettings editor.
     """
     _inheritable = False
     description = UnicodeCol()
@@ -71,11 +70,11 @@ class ASellableCategory(InheritableModel):
     """ Abstract class for sellable's category. This class can represents a
     sellable's category as well its base category.
 
-    - I{description}: The category description
-    - I{suggested_markup}: Define the suggested markup when calculating the
-                           sellable's price.
-    - I{salesperson_comission}: A percentage comission suggested for all the
-                                sales which products belongs to this category.
+    @cvar description: The category description
+    @cvar suggested_markup: Define the suggested markup when calculating the
+       sellable's price.
+    @cvar salesperson_comission: A percentage comission suggested for all the
+       sales which products belongs to this category.
     """
     description = UnicodeCol()
     suggested_markup = DecimalCol(default=0)

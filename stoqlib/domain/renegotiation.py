@@ -46,10 +46,12 @@ _ = stoqlib_gettext
 class RenegotiationData(Domain):
     """A base class for sale order renegotiations
 
-    Note: if return_total > 0: the store must return money to customer
-          if return_total < 0: the customer must pay to store this value
-          if return_total = 0: there is no financial transaction tied with
-                               this return operation
+    Note::
+
+        if return_total > 0: the store must return money to customer
+        if return_total < 0: the customer must pay to store this value
+        if return_total = 0: there is no financial transaction tied with
+                             this return operation
     """
 
     reason = UnicodeCol(default=None)
