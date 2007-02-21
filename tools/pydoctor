@@ -1,0 +1,5 @@
+#!/bin/sh
+export PYTHONPATH=/mondo/local/pydoctor/lib/python2.4/site-packages:$PYTHONPATH
+export PATH=/mondo/local/pydoctor/bin:$PATH
+
+pydoctor --add-package=stoqlib --project-name="Stoqlib" --make-html
