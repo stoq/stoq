@@ -702,11 +702,19 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
 
     @classmethod
     def get_card_providers(cls, conn):
-        return cls._get_providers(conn, cls.PROVIDER_CARD)
+        """Get a list of all credit card providers.
+        @param conn: a database connection
+        """
+        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_CARD,
+                            connection=conn)
 
     @classmethod
     def get_finance_companies(cls, conn):
-        return cls._get_providers(conn, cls.PROVIDER_FINANCE)
+        """Get a list of all financial credit providers.
+        @param conn: a database connection
+        """
+        return cls.selectBy(is_active=True, provider_type=cls.PROVIDER_FINANCE,
+                            connection=conn)
 
     #
     # IActive implementation
@@ -724,21 +732,6 @@ class PersonAdaptToCreditProvider(_PersonAdapter):
         if self.is_active:
             return _('Active')
         return _('Inactive')
-
-    @classmethod
-    def _get_providers(cls, conn, provider_type=None):
-        """Get a list of all credit providers.
-        If provider_type is provided, we will only search for this type.
-        Available types are these constants: PROVIDER_CARD and
-                                             PROVIDER_FINANCE.
-        """
-        q1 = cls.q.is_active == True
-        if provider_type is not None:
-            q2 = cls.q.provider_type == provider_type
-            query = AND(q1, q2)
-        else:
-            query = q1
-        return cls.select(query, connection=conn)
 
 Person.registerFacet(PersonAdaptToCreditProvider, ICreditProvider)
 
