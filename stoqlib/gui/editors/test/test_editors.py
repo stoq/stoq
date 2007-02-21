@@ -38,7 +38,10 @@ from stoqlib.domain.test.domaintest import DomainTest
 def get_all_slaves():
     slaves = []
     for klass in get_all_classes('stoqlib/gui'):
-        if not issubclass(klass, BaseEditorSlave):
+        try:
+            if not issubclass(klass, BaseEditorSlave):
+                continue
+        except TypeError:
             continue
         if klass.__name__[0] == '_':
             continue
