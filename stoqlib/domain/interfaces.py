@@ -70,14 +70,14 @@ class ISellable(Interface):
     only its reference as a sellable. Concrete items are created by
     IContainer routines.
 
-    @itype status enum
-    @itype price float
-    @itype description string
-    @itype markup float
-    @itype cost float
-    @itype mas_discount float
-    @itype commission float
-    @itype on_sale_price float
+    @type status: enum
+    @type price: float
+    @type description: string
+    @type markup: float
+    @type cost: float
+    @type mas_discount: float
+    @type commission: float
+    @type on_sale_price: float
     """
 
     status = Attribute('status the sellable is in')
@@ -230,14 +230,14 @@ class IIndividual(IPersonFacet):
     """Being or characteristic of a single person, concerning one
     person exclusively
 
-    @itype cpf string
-    @itype birth_location integer
-    @itype occupation string
-    @itype martial_status enum
-    @itype spouse Individual
-    @itype father_name string
-    @itype mother_name string
-    @itype rg_expedition_local string
+    @type cpf: string
+    @type birth_location: integer
+    @type occupation: string
+    @type martial_status: enum
+    @type spouse: Individual
+    @type father_name: string
+    @type mother_name: string
+    @type rg_expedition_local: string
     """
 
     cpf = Attribute('A Brazilian government register number which allow to '

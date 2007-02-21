@@ -444,10 +444,15 @@ class Sale(Domain):
         return currency(subtotal)
 
     def get_total_sale_amount(self):
-        """Return the total value paid by the client. This can be
-        calculated by:.
-        Sale total = Sum(product and service prices) + surcharge +
-                     interest - discount"""
+        """
+        Fetches the total value  paid by the client.
+        It can be calculated as::
+
+            Sale total = Sum(product and service prices) + surcharge +
+                             interest - discount
+
+        @returns: the total value
+        """
         surcharge_value = self.surcharge_value or Decimal(0)
         discount_value = self.discount_value or Decimal(0)
         subtotal = self.get_sale_subtotal()

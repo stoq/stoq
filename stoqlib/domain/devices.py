@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006, 2007 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,10 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ## Author(s):   Henrique Romano <henrique@async.com.br>
-##            Johan Dahlin    <jdahlin@async.com.br>
+##              Johan Dahlin    <jdahlin@async.com.br>
 ##
 """
-stoq/domain/devices.py
-
-   Domain classes related to stoqdrivers package.
+Domain classes related to stoqdrivers package.
 """
 
 from sqlobject import UnicodeCol, IntCol, PickleCol, ForeignKey, BoolCol
@@ -49,11 +47,11 @@ _ = stoqlib_gettext
 class DeviceConstants(Domain):
     """ This class stores information about custom device constants.
     There is only an dictionary attribute, where keys and its values
-    are in the following form:
+    are in the following form::
 
-    {
-     CONSTANT_ID: value,
-    }
+        {
+         CONSTANT_ID: value,
+        }
     """
     implements(IDriverConstants)
 
