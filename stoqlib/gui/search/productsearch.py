@@ -77,6 +77,8 @@ class ProductSearch(SellableSearch):
             self._hide_column('cost')
         if hide_price_column:
             self._hide_column('price')
+        self.set_edit_button_sensitive(False)
+        self.klist.connect('selection-changed', self.on_selection_changed)
 
     def _hide_column(self, colname):
         column = self.klist.get_column_by_name(colname)
@@ -134,3 +136,7 @@ class ProductSearch(SellableSearch):
             branch = None
         return ProductFullStockView.select_by_branch(query, branch,
                                                      connection=self.conn)
+
+    def on_selection_changed(self, klist, selected):
+        can_edit = bool(selected)
+        self.set_edit_button_sensitive(can_edit)
