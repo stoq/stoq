@@ -25,9 +25,7 @@
 ##
 ##
 """
-stoqdrivers/devices/printers/virtual/Simple.py:
-
-    A simple implementation of a virtual printer.
+A simple implementation of a virtual printer.
 """
 from decimal import Decimal
 

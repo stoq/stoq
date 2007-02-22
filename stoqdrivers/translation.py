@@ -22,9 +22,7 @@
 ## USA.
 ##
 """
-stoqdrivers/translation.py:
-
-    Stoqdrivers translation functions
+Stoqdrivers translation functions
 """
 
 import gettext

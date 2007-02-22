@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/scales/toled/PrixIII.py:
-
-    Implementation of Toled Prix III driver.
+Implementation of Toled Prix III driver.
 """
 
 from serial import EIGHTBITS, STOPBITS_ONE, PARITY_EVEN

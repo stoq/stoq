@@ -25,9 +25,7 @@
 ##              Henrique Romano  <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/daruma/FS345.py:
-
-    Daruma printer drivers implementation
+Daruma FS345 driver
 """
 import time
 from decimal import Decimal

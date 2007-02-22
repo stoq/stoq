@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/perto/Pay2023.py:
-
-    PertoPay 2023 driver implementation.
+PertoPay 2023 driver implementation.
 """
 
 from datetime import datetime
@@ -149,17 +147,18 @@ class Pay2023(SerialBase, BaseChequePrinter):
         self.handle_error(command, result)
 
     def handle_error(self, cmd, reply):
-        """ Reply format:
+        """
+        Reply format::
 
             {CMD_ID;REPLY_CODE;REPLY_DESCRIPTION;CMD_SIZE}
 
         Where '{' is the reply prefix and '}' the suffix
 
         Note that the REPLY_DESCRIPTION field is composed by the following
-        sections:
+        sections::
 
-        NomeErro="A_STRING"
-        Circunstancia="THE_REPLY_DESCRIPTION_ITSELF"
+          NomeErro="A_STRING"
+          Circunstancia="THE_REPLY_DESCRIPTION_ITSELF"
         """
         # removing REPLY_PREFIX and REPLY_SUFFIX
         reply = reply[1:-1]

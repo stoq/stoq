@@ -24,9 +24,7 @@
 ## Author(s): Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/base.py:
-
-    Generic base class implementation for all devices.
+Generic base class implementation for all devices.
 """
 
 import gobject

@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/capabilities.py:
-
-    Driver Capability management.
+Driver Capability management.
 """
 
 from kiwi.argcheck import argcheck, number

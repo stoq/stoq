@@ -24,9 +24,7 @@
 ## Author(s):   Adriano Monteiro        <adriano@globalret.com.br>
 ##
 """
-stoqdrivers/log.py
-
-    Base logging module
+Base logging module
 """
 
 import sys

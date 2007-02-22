@@ -25,9 +25,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/constants.py:
-
-    StoqDrivers constants
+StoqDrivers constants
 """
 
 from stoqdrivers.translation import stoqdrivers_gettext

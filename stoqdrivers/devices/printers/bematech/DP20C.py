@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/drivers/bematech/DP20C.py:
-
-    Drivers implementation for Bematech DP20C
+Bematech DP20C driver
 """
 
 from datetime import datetime

@@ -25,9 +25,7 @@
 ##              Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/configparser.py:
-
-    Useful routines when parsing the configuration file
+Useful routines when parsing the configuration file
 """
 import os
 from ConfigParser import ConfigParser

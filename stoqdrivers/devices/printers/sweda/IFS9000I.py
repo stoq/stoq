@@ -24,9 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/sweda/IFS9000I.py:
-
-    Sweda IFS9000I printer driver implementation.
+Sweda IFS9000I driver
 """
 
 import string
@@ -516,8 +514,10 @@ class IFS9000I(SerialBase):
         self.send_command(self.CMD_ITEM_CANCEL, item_id)
 
     def coupon_add_surcharge(self, item_id, value, description):
-        """ Valid surcharge types are: "51": "surcharge"
-                                   "52": "surcharge IOF"
+        """
+        Valid surcharge types are::
+          "51": "surcharge"
+          "52": "surcharge IOF"
         The arguments item_id and descriptions only exit for API
         compatibility
         """

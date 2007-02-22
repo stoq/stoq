@@ -25,10 +25,9 @@
 ##              Henrique Romano       <henrique@async.com.br>
 ##
 """
-stoqdrivers/drivers/bematech/MP25.py:
-
-    Drivers implementation for Bematech printers.
+Bematech MP25 driver
 """
+
 from decimal import Decimal
 
 from zope.interface import implements

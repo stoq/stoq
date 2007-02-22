@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/readers/barcode/reader.py:
-
-    Barcode reader interface implementation.
+Barcode reader interface implementation.
 """
 
 from zope.interface import providedBy

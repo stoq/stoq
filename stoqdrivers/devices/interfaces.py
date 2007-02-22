@@ -26,9 +26,7 @@
 ##              Johan Dahlin                <jdahlin@async.com.br>
 ##
 """
-stoqdrivers/devices/interfaces.py:
-
-    Stoqdrivers interfaces specification
+Stoqdrivers interfaces specification
 """
 
 from decimal import Decimal
@@ -92,7 +90,7 @@ class IDevice(Interface):
 class ICouponPrinter(IDevice):
     """ Describes coupon related tasks for a printer.
 
-    Workflow
+    Workflow::
 
                                     --<--                     --<--
                                    |     |                   |     |
@@ -153,17 +151,17 @@ class ICouponPrinter(IDevice):
                           UNIT_METERS, UNIT_WEIGHT, UNIT_CUSTOM.
 
         @param discount:  discount in %
-        @type  discount   Decimal between 0-100
+        @type  discount:  Decimal between 0-100
 
         @param surcharge: surcharge in %
-        @type  surcharge  Decimal between 0-100
+        @type  surcharge: Decimal between 0-100
 
         @param unit_desc: A 2-byte string representing the unit that applies to
                           the product.
         @type unit_desc:  str
 
         @rtype:           Decimal
-        @returns          identifier of added item
+        @returns:        identifier of added item
         """
 
     def coupon_cancel_item(item_id):
@@ -190,7 +188,7 @@ class ICouponPrinter(IDevice):
         @type discount:   Decimal between 0-100
 
         @param surcharge: surcharge in %
-        @type  surcharge  Decimal between 0-100
+        @type  surcharge: Decimal between 0-100
 
         @param taxcode:   constant to descrive the tax
         @type  taxcode:   integer constant one of: TAX_NONE, TAX_SUBSTITUTION,
@@ -218,7 +216,7 @@ class ICouponPrinter(IDevice):
         @type custom_pm:  str
 
         @rtype:           Decimal
-        @returns          the total remaining amount
+        @returns:         the total remaining amount
         """
 
     def coupon_close(message=''):

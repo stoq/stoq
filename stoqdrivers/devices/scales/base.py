@@ -24,9 +24,7 @@
 ## Author(s): Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/scales/base.py:
-
-    Useful functions related to all scales supported by stoqdrivers
+Useful functions related to all scales supported by stoqdrivers
 """
 
 import os

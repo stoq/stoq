@@ -24,9 +24,7 @@
 ## Author(s):   Evandro Vale Miquelito      <evandro@async.com.br>
 ##
 """
-stoqdrivers/exceptions.py:
-
-    StoqDrivers exceptions definition
+StoqDrivers exceptions definition
 """
 
 class CriticalError(Exception):

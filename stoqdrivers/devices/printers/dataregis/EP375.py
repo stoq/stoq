@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/dataregis/EP375.py:
-
-    Dataregis 375-EP printer drivers implementation
+Dataregis EP 275 drivers
 """
 
 import time
@@ -193,7 +191,7 @@ class EP375Status:
         """ This method parse the result of the 'GET_STATUS' command (see
         chart below).
 
-        Status format:
+        Status format::
 
           L S N N S K
           | | | | | |

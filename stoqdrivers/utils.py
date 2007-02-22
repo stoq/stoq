@@ -24,9 +24,7 @@
 ## Author(s): Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/utils.py:
-
-    Functions for general use.
+Functions for general use.
 """
 
 import os
@@ -48,10 +46,9 @@ def encode_text(text, encoding):
     normalizes the string (currently only for ascii)
 
     @param text:       text to convert
-    @type:             str
+    @type text:        str
     @param encoding:   encoding to use
-    @type:             str
-
+    @type text:        str
     @returns:          converted text
     """
     if not isinstance(text, unicode):

@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/daruma/FS2100.py:
-
-    Driver implementation for Daruma FS2100
+Daruma FS2100 driver
 """
 
 import operator

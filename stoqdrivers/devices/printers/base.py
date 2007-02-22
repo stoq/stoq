@@ -24,9 +24,7 @@
 ## Author(s): Henrique Romano             <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/base.py:
-
-    Generic base class implementation for all printers
+Generic base class implementation for all printers
 """
 import os
 

@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano  <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/scales/scales.py:
-
-    Base class implementation for all the scales drivers.
+Base class implementation for all the scales drivers.
 """
 
 from stoqdrivers.devices.scales.base import BaseScale

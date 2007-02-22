@@ -24,9 +24,7 @@
 ## Author(s):   Henrique Romano <henrique@async.com.br>
 ##
 """
-stoqdrivers/devices/printers/daruma/FS600MFD.py:
-
-  Driver implementation for Daruma FS600MFD
+Daruma FS600MFD driver
 """
 
 from stoqdrivers.devices.printers.daruma.FS345 import FS345
