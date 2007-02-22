@@ -146,22 +146,11 @@ class StartPurchaseStep(WizardEditorStep):
                 _("Expected receival date must be set to today or "
                   "a future date"))
 
-from stoqlib.gui.base.lists import AdditionListSlave
-
-class PurchaseListSlave(AdditionListSlave):
-    def run_editor(self, model):
-        # Model is a PurchaseOrder, fetch the product since we're
-        # actually editing products.
-        if model:
-            model = model.sellable.get_adapted()
-        return AdditionListSlave.run_editor(self, model)
-
 class PurchaseItemStep(SellableItemStep):
     """ Wizard step for purchase order's items selection """
     model_type = PurchaseOrder
     item_table = PurchaseItem
     summary_label_text = "<b>%s</b>" % _('Total Ordered:')
-    list_slave_class = PurchaseListSlave
 
     #
     # Helper methods
@@ -171,6 +160,11 @@ class PurchaseItemStep(SellableItemStep):
         sellables = ASellable.get_unblocked_sellables(self.conn, storable=True)
         self.item.prefill([(sellable.get_description(), sellable)
                            for sellable in sellables])
+
+    def setup_slaves(self):
+        SellableItemStep.setup_slaves(self)
+        self.hide_add_and_edit_buttons()
+
 
     #
     # SellableItemStep virtual methods
