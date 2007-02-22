@@ -37,20 +37,19 @@ class ProductFullStockView(Viewable):
     Stores information about products.
     This view is used to query stock information on a certain branch.
 
-    Available fields are:
-     id                 - the id of the asellable table
-     code               - the sellable code
-     barcode            - the sellable barcode
-     status             - the sellable status
-     cost               - the sellable cost
-     price              - the sellable price
-     is_valid_model     - the sellable is_valid_model system attribute
-     description        - the sellable description
-     unit               - the unit of the product
-     product_id         - the id of the product table
-     supplier_name      - the supplier name of the product
-     branch_id          - the id of person_adapt_to_branch table
-     stock              - the stock of the product
+    @cvar id: the id of the asellable table
+    @cvar code: the sellable code
+    @cvar barcode: the sellable barcode
+    @cvar status: the sellable status
+    @cvar cost: the sellable cost
+    @cvar price: the sellable price
+    @cvar is_valid_model: the sellable is_valid_model system attribute
+    @cvar description: the sellable description
+    @cvar unit: the unit of the product
+    @cvar product_id: the id of the product table
+    @cvar supplier_name: the supplier name of the product
+    @cvar branch_id: the id of person_adapt_to_branch table
+    @cvar stock: the stock of the product
      """
 
     columns = dict(
