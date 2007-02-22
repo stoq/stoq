@@ -132,12 +132,15 @@ class AdditionListSlave(GladeSlaveDelegate):
             self.klist[item_idx] = clone
             model.__class__.delete(model.id, connection=self.conn)
             return
+
         if edit_mode and model in self.klist:
             self.emit('on-edit-item', result)
             self.klist.update(result)
         else:
-            self.emit('on-add-item', result)
             self.klist.append(result)
+            # Emit the signal after we added the item to the list to be able to
+            # check the length of the list in our validation callbacks.
+            self.emit('on-add-item', result)
 
         # As we have a selection extended mode for kiwi list, we
         # need to unselect everything before select the new instance.
