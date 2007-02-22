@@ -243,12 +243,18 @@ class APaymentMethod(InheritableModel):
             group_desc = payment_group.get_group_description()
             description = _(u'1/1 %s for %s') % (self.description,
                                                  group_desc)
+
+        # We only need a till for inpayments
+        if iface is IInPayment:
+            till = Till.get_current(conn)
+        else:
+            till = None
         payment = Payment(connection=conn, group=payment_group,
                           method=self, destination=destination,
                           method_details=method_details,
                           due_date=due_date, value=value,
                           base_value=base_value,
-                          till=Till.get_current(conn),
+                          till=till,
                           description=description)
         return payment.addFacet(iface, connection=conn)
 
