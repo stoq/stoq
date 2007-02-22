@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -28,14 +28,16 @@ import os
 import sys
 import unittest
 
+_doctest_flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
+
 def create_doctest(pattern):
-    flags = doctest.ELLIPSIS | doctest.REPORT_ONLY_FIRST_FAILURE
+
 
     def _test_one(self, filename):
         failures, tries = doctest.testfile(filename, verbose=False,
                                            module_relative=False,
                                            raise_on_error=False,
-                                           optionflags=flags)
+                                           optionflags=_doctest_flags)
         if failures:
             raise AssertionError('%d test(s) failed in doctest %s, see above' % (
                 failures, os.path.basename(filename)))
@@ -51,3 +53,19 @@ def create_doctest(pattern):
         func.__name__ = name
     return type('DocTest', (unittest.TestCase,), namespace)
 
+# Monkeys of all countries, unite!
+# This is done so we can use ellipsis in the tests.
+try:
+    from twisted.trial import runner
+    from twisted.trial.runner import PyUnitTestCase, TestSuite
+
+    class DocTestSuite(TestSuite):
+        def __init__(self, testModule):
+            TestSuite.__init__(self)
+            suite = doctest.DocTestSuite(testModule,
+                                         optionflags=_doctest_flags)
+            for test in suite._tests:
+                self.addTest(PyUnitTestCase(test))
+    runner.DocTestSuite = DocTestSuite
+except ImportError:
+    pass

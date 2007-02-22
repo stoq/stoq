@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2006-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,110 @@
 ## Author(s):       Johan Dahlin                <jdahlin@async.com.br>
 ##
 
-"""Component infrastructure for Stoqlib"""
+"""
+Component infrastructure for Stoqlib
+
+Stoqlib uses the adapter pattern U{http://en.wikipedia.org/wiki/Adapter_pattern}
+to solve a specific set of problems, most noticeable roles for Persons.
+
+First we need an object that we can adapt into something else.
+It needs to be a subclass of AdaptableSQLObject:
+
+    >>> from stoqlib.lib.component import Adaptable
+    >>> class Bike(Adaptable):
+    ...     pass
+
+We have no facets, yet so getFacetTypes() will return an empty list:
+
+    >>> Bike.getFacetTypes()
+    []
+
+Let's define an interface for something we can adapt
+
+    >>> from zope.interface.interface import Interface
+    >>> class ISuspension(Interface):
+    ...    def lockout():
+    ...        pass
+    ...    def is_locked():
+    ...        pass
+
+To be able to adapt our object into the interface we need to create an
+adapter which needs to be a subclass of Adapter
+
+    >>> from stoqlib.lib.component import Adapter
+    >>> class BikeAdaptToSuspension(Adapter):
+    ...     def __init__(self, original):
+    ...         Adapter.__init__(self, original)
+    ...         self.locked = False
+    ...     def lockout(self):
+    ...         self.locked = True
+    ...     def is_locked(self):
+    ...         return self.locked
+
+We need to register the adapter, to attach the adapter to the
+adaptable object, which will return the
+
+    >>> Bike.registerFacet(BikeAdaptToSuspension, ISuspension)
+
+If we try to register the same facet twice we'll receive an exception:
+
+    >>> Bike.registerFacet(BikeAdaptToSuspension, ISuspension)
+    Traceback (most recent call last):
+        ...
+    TypeError: Bike does already have a facet for interface ISuspension
+
+Now, if you want to listen the adapter types for a specific interface you
+can call getFacetTypes():
+
+    >>> Bike.getFacetTypes()
+    [<class '...BikeAdaptToSuspension'>]
+
+    >>> bike = Bike()
+    >>> ISuspension(bike)
+    Traceback (most recent call last):
+        ...
+    TypeError: ('Could not adapt', ...)
+
+TypeError should never be caught in user code, so if we want to check
+if a certain object implements an adapter or not we should pass in a
+default object as the second argument to the interface "casting":
+
+    >>> ISuspension(bike, False)
+    False
+
+To attach an adapter to an object, we use addFacet, which will return
+the adapted object, which will return the adapter.
+
+    >>> bike.addFacet(ISuspension)
+    <...BikeAdaptToSuspension object at ...>
+
+Call addFacet with the same interface again raises a
+
+    >>> bike.addFacet(ISuspension)
+    Traceback (most recent call last):
+        ...
+    AdapterError: Bike already has a facet for interface ISuspension
+
+We can now adapt the object:
+
+    >>> suspension = ISuspension(bike)
+    >>> suspension
+    <...BikeAdaptToSuspension object at ...>
+
+And we can call methods on the object, which are part of the interface:
+
+    >>> suspension.is_locked()
+    False
+    >>> suspension.lockout()
+    >>> suspension.is_locked()
+    True
+
+To fetch the adaptable/adapted object call get_adapted():
+
+    >>> suspension.get_adapted()
+    <...Bike object at ...>
+
+"""
 
 from kiwi.python import qual, namedAny
 from zope.interface.interface import InterfaceClass, adapter_hooks
@@ -34,7 +137,14 @@ from stoqlib.exceptions import AdapterError
 #
 
 class Adapter(object):
+    """
+    Adapter base class, all adapters must subclass this.
+    """
     def __init__(self, adaptable):
+        """
+        Creates a new Adapted for I{adaptable}
+        @param adaptable: the adapted object
+        """
         self._adaptable = adaptable
 
     def __ne__(self, other):
@@ -46,9 +156,16 @@ class Adapter(object):
         return self._adaptable.id == other._adaptable.id
 
     def get_adapted(self):
+        """
+        Get the adapted object
+        @returns: the adapted object
+        """
         return self._adaptable
 
 class Adaptable(object):
+    """
+    Adapter base class, everything you want to adapt must subclass this.
+    """
 
     def __init__(self):
         self._adapterCache = {}
@@ -165,7 +282,9 @@ class Adaptable(object):
 
     def removeFacet(self, iface, *args, **kwargs):
         """
-        @param iface:
+        Removes a facet from the current object
+
+        @param iface: interface of the facet to remove
         """
         if not isinstance(iface, InterfaceClass):
             raise TypeError('iface must be an Interface')
