@@ -2,7 +2,7 @@
 # vi:si:et:sw=4:sts=4:ts=4
 
 ##
-## Copyright (C) 2005,2006 Async Open Source <http://www.async.com.br>
+## Copyright (C) 2005-2007 Async Open Source <http://www.async.com.br>
 ## All rights reserved
 ##
 ## This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,55 @@
 ## Foundation, Inc., or visit: http://www.gnu.org/.
 ##
 ##  Author(s):  Evandro Vale Miquelito      <evandro@async.com.br>
+##              Johan Dahlin                <jdahlin@async.com.br>
 ##              Henrique Romano             <henrique@async.com.br>
 ##              Daniel Saran R. da Cunha    <daniel@async.com.br>
 ##              Ariqueli Tejada Fonseca     <aritf@async.com.br>
 ##              Bruno Rafael Garcia         <brg@async.com.br>
 ##
-""" Person domain classes for Stoq applications """
+"""
+Person domain classes
+
+The Person domain classes in Stoqlib are special since the normal Person
+class is very small and additional functionality is provided through
+facets (adapters).
+
+There are currently the following Person facets available:
+
+  - Branch
+  - BankBranch
+  - Client
+  - Company
+  - CreditProvider
+  - Employee
+  - Individual
+  - SalesPerson
+  - Supplier
+  - Transporter
+  - User
+
+To create a new person, just issue the following:
+
+    >>> from stoqlib.database.runtime import new_transaction
+    >>> trans = new_transaction()
+
+    >>> person = Person(name="A new person", connection=trans)
+
+To assign a new role to a person, use addFacet method, for instance
+to make a person into a company:
+
+    >>> person.addFacet(ICompany, connection=trans)
+
+The company facet provides additional persistent information related to
+companies, see L{stoqlib.domain.interfaces.IClient} for more information
+
+To access the facet, do:
+
+    >>> company = ICompany(person)
+
+See L{stoqlib.lib.component} for more information on adapters.
+
+"""
 
 import datetime
 
