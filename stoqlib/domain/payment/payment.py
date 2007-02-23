@@ -24,7 +24,7 @@
 ##
 """ Payment management implementations."""
 
-from datetime import datetime
+import datetime
 from decimal import Decimal
 
 from kiwi.argcheck import argcheck
@@ -92,7 +92,7 @@ class Payment(Domain):
 
     identifier = AutoIncCol('stoqlib_payment_identifier_seq')
     status = IntCol(default=STATUS_PREVIEW)
-    open_date = DateTimeCol(default=datetime.now)
+    open_date = DateTimeCol(default=datetime.datetime.now)
     due_date = DateTimeCol()
     paid_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
@@ -137,7 +137,7 @@ class Payment(Domain):
         return self.statuses[self.status]
 
     def get_days_late(self):
-        days_late = datetime.today() - self.due_date
+        days_late = datetime.datetime.today() - self.due_date
         if days_late.days < 0:
             return 0
         else:
@@ -156,7 +156,7 @@ class Payment(Domain):
         paid_value = paid_value or (self.value - self.discount +
                                     self.interest)
         self.paid_value = paid_value
-        self.paid_date = paid_date or datetime.now()
+        self.paid_date = paid_date or datetime.datetime.now()
         self.status = self.STATUS_PAID
 
     def submit(self, submit_date=None):
@@ -191,7 +191,7 @@ class Payment(Domain):
                        % self.identifier)
         payment.description = description
         payment.value *= -1
-        payment.due_date = datetime.now()
+        payment.due_date = datetime.datetime.now()
 
     def cancel(self):
         # TODO Check for till entries here and call cancel_till_entry if
@@ -200,7 +200,7 @@ class Payment(Domain):
             raise StoqlibError("Invalid status for cancel operation, "
                                 "got %s" % self.get_status_str())
         self.status = self.STATUS_CANCELLED
-        self.cancel_date = datetime.now()
+        self.cancel_date = datetime.datetime.now()
 
     def get_payable_value(self):
         """ Returns the calculated payment value with the daily penalty.
@@ -227,6 +227,7 @@ class Payment(Domain):
         days = (datetime.now() - self.due_date).days
         if days <= 0:
             return currency(0)
+
         return currency(days * self.method.daily_penalty / 100 * self.value)
 
     def get_interest(self):
@@ -267,7 +268,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     implements(IPaymentGroup, IContainer)
 
     status = IntCol(default=STATUS_OPEN)
-    open_date = DateTimeCol(default=datetime.now)
+    open_date = DateTimeCol(default=datetime.datetime.now)
     close_date = DateTimeCol(default=None)
     cancel_date = DateTimeCol(default=None)
     default_method = IntCol(default=METHOD_MONEY)
@@ -313,7 +314,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
     def add_payment(self, value, description, method, destination=None,
                     due_date=None):
         if due_date is None:
-            due_date = datetime.now()
+            due_date = datetime.datetime.now()
         """Create a new payment and add it to the group"""
         from stoqlib.domain.till import Till
         conn = self.get_connection()
@@ -352,7 +353,8 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         branch = get_current_branch(conn)
         return table(connection=conn, invoice_number=invoice_number,
                      cfop=cfop, drawee=drawee, branch=branch,
-                     date=datetime.now(), payment_group=self, **kwargs)
+                     date=datetime.datetime.now(),
+                     payment_group=self, **kwargs)
 
     def create_icmsipi_book_entry(self, cfop, invoice_number, icms_value,
                                   ipi_value=Decimal(0)):
@@ -395,7 +397,7 @@ class AbstractPaymentGroup(InheritableModelAdapter):
         for payment in self._get_unpaid_payments():
             payment.cancel()
         self.status = AbstractPaymentGroup.STATUS_CANCELLED
-        self.cancel_date = datetime.now()
+        self.cancel_date = datetime.datetime.now()
         self.revert_fiscal_entry(invoice_number)
 
     @argcheck(Decimal, unicode, object)
