@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
 <!DOCTYPE glade-interface SYSTEM "http://gazpacho.sicem.biz/gazpacho-0.1.dtd">
-<glade-interface>
+<glade-interface domain="stoqlib">
     <widget class="GtkWindow" id="StationEditor">
         <property name="default_height">250</property>
         <property name="default_width">440</property>
