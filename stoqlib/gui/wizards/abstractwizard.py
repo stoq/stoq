@@ -66,9 +66,9 @@ class SellableItemStep(WizardEditorStep):
 
     Optionally buttons to modify the list
 
-    - Add
-    - Remove
-    - Edit
+      - Add
+      - Remove
+      - Edit
 
     """
     # FIXME: Rename to SellableItemStep
