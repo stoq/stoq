@@ -240,7 +240,7 @@ class Payment(Domain):
             return currency(0)
 
         # Don't add interest if we pay in time!
-        if self.due_date.date() <= datetime.date.today():
+        if self.due_date.date() >= datetime.date.today():
             return currency(0)
 
         return currency(self.method.interest / 100 * self.value)
