@@ -224,7 +224,7 @@ class Payment(Domain):
         if not self.method.daily_penalty:
             return currency(0)
 
-        days = (datetime.now() - self.due_date).days
+        days = (datetime.date.today() - self.due_date.date()).days
         if days <= 0:
             return currency(0)
 
