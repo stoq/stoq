@@ -25,14 +25,14 @@
 """ Installment confirmation slave """
 
 import datetime
-import gettext
 
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
 
 from stoqlib.gui.editors.baseeditor import BaseEditor
+from stoqlib.lib.translation import stoqlib_gettext
 
-_ = gettext.gettext
+_ = stoqlib_gettext
 
 class _ConfirmationModel(object):
     def __init__(self, payments):
