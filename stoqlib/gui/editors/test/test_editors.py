@@ -30,7 +30,7 @@ from twisted.trial.unittest import SkipTest
 
 from stoqlib.database.runtime import get_current_station, get_current_user
 from stoqlib.lib.introspection import get_all_classes
-from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.domain.person import Person
 
 from stoqlib.domain.test.domaintest import DomainTest

@@ -29,7 +29,7 @@ from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import print_report
 from stoqlib.domain.purchase import PurchaseOrder
 from stoqlib.domain.interfaces import IPaymentGroup

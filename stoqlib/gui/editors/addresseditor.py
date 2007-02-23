@@ -28,7 +28,7 @@
 from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListDialog
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 from stoqlib.gui.slaves.addressslave import AddressSlave
 from stoqlib.domain.address import Address, CityLocation

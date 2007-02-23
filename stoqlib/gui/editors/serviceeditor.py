@@ -30,7 +30,7 @@ import datetime
 from kiwi.datatypes import currency, ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.service import ServiceSellableItem, Service
 from stoqlib.domain.sellable import BaseSellableInfo
 from stoqlib.gui.editors.sellableeditor import SellableEditor

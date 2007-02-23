@@ -33,7 +33,7 @@ from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.validators import validate_password
-from stoqlib.gui.base.editors import BaseEditor, BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditor, BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.profileeditor import UserProfileEditor
 from stoqlib.domain.profile import UserProfile

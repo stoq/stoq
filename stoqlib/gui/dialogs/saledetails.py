@@ -35,7 +35,7 @@ from kiwi.ui.widgets.list import Column, SummaryLabel, ColoredColumn
 from stoqlib.exceptions import StoqlibError
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.lib.defaults import payment_value_colorize
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog, print_report
 from stoqlib.gui.dialogs.clientdetails import ClientDetailsDialog
 from stoqlib.domain.interfaces import IClient, IPaymentGroup

@@ -29,7 +29,7 @@ from kiwi.python import enum
 from kiwi.ui.delegates import GladeSlaveDelegate
 from kiwi.utils import gsignal
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.database.runtime import get_connection
 from stoqlib.domain.payment.destination import PaymentDestination
 from stoqlib.domain.payment.methods import (FinanceDetails,

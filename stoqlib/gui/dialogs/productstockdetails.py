@@ -34,7 +34,7 @@ from kiwi.ui.objectlist import Column
 from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.domain.product import (ProductAdaptToSellable,
                                     ProductSellableItem)
 from stoqlib.domain.interfaces import IStorable

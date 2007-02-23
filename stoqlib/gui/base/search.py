@@ -36,7 +36,7 @@ from sqlobject.dbconnection import Transaction
 from stoqlib.database.database import rollback_and_begin
 from stoqlib.exceptions import DatabaseInconsistency
 from stoqlib.gui.base.dialogs import BasicDialog, run_dialog
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.searchbar import SearchBar
 from stoqlib.lib.component import Adapter
 from stoqlib.lib.translation import stoqlib_gettext

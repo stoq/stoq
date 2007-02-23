@@ -26,7 +26,7 @@
 """ Individual edition template slaves implementation.  """
 
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import get_country_states
 from stoqlib.domain.address import CityLocation
 from stoqlib.domain.interfaces import IIndividual

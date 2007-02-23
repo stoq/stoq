@@ -36,7 +36,7 @@ from kiwi.ui.widgets.list import SummaryLabel
 
 from stoqlib.domain.interfaces import IClient, IPaymentGroup
 from stoqlib.domain.sale import Sale
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.editors.personeditor import ClientEditor
 from stoqlib.gui.wizards.personwizard import run_person_role_dialog
 from stoqlib.lib.translation import stoqlib_gettext

@@ -46,7 +46,7 @@ from stoqlib.lib.defaults import (get_method_names, METHOD_MONEY, METHOD_CHECK,
                                   UNKNOWN_CHARACTER)
 from stoqlib.domain.devices import DeviceSettings, DeviceConstants
 from stoqlib.domain.person import BranchStation
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.dialogs import run_dialog
 
 _ = stoqlib_gettext

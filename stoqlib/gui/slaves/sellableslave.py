@@ -23,7 +23,7 @@
 ##
 """ Slaves for sellables """
 
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.domain.sellable import OnSaleInfo
 
 

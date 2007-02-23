@@ -32,7 +32,7 @@ from kiwi.ui.views import SlaveView
 from kiwi.datatypes import format_price, currency, ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.lib.defaults import interval_types, INTERVALTYPE_MONTH, \
      DECIMAL_PRECISION
 from stoqlib.lib.drivers import get_current_cheque_printer_settings

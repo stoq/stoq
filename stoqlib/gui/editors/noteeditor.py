@@ -22,7 +22,7 @@
 ## Author(s):       Henrique Romano             <henrique@async.com.br>
 ##
 
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 class NoteEditor(BaseEditor):
     """ Simple editor that offers a label and a textview. """

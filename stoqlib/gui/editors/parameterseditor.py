@@ -29,7 +29,7 @@ from kiwi.ui.widgets.combo import ProxyComboEntry
 
 from stoqlib.domain.base import AbstractModel
 from stoqlib.domain.parameter import ParameterData
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.lib.parameters import sysparam, get_parameter_details
 from stoqlib.lib.translation import stoqlib_gettext
 

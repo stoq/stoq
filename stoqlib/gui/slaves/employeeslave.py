@@ -34,7 +34,7 @@ from kiwi.ui.widgets.list import Column
 from kiwi.datatypes import ValidationError
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditorSlave
+from stoqlib.gui.editors.baseeditor import BaseEditorSlave
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.interfaces import IEmployee, ISalesPerson

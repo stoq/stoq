@@ -24,7 +24,7 @@
 """ Sellable category editors implementation"""
 
 from stoqlib.lib.translation import stoqlib_gettext
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 from stoqlib.lib.parameters import sysparam
 from stoqlib.domain.sellable import BaseSellableCategory, SellableCategory

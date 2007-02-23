@@ -30,7 +30,7 @@ import gettext
 from kiwi.datatypes import currency
 from kiwi.ui.objectlist import Column
 
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 
 _ = gettext.gettext
 

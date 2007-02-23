@@ -30,7 +30,7 @@ from kiwi.datatypes import ValidationError
 from kiwi.ui.widgets.list import Column
 from stoqlib.lib.translation import stoqlib_gettext
 from stoqlib.gui.base.lists import AdditionListSlave, SimpleListDialog
-from stoqlib.gui.base.editors import BaseEditor
+from stoqlib.gui.editors.baseeditor import BaseEditor
 from stoqlib.gui.base.columns import ForeignKeyColumn
 from stoqlib.gui.base.dialogs import run_dialog
 from stoqlib.gui.editors.noteeditor import NoteEditor
