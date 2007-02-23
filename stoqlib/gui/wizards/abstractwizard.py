@@ -243,7 +243,7 @@ class SellableItemStep(WizardEditorStep):
             self.item_table.delete(item.id, connection=self.conn)
         self._refresh_next()
 
-    def _on_list_slave__after_delete_items(self, slave, items):
+    def _on_list_slave__after_delete_items(self, slave):
         self._update_total()
 
     def _on_list_slave__add_item(self, slave, item):
