@@ -238,6 +238,11 @@ class Payment(Domain):
         """
         if not self.method.interest:
             return currency(0)
+
+        # Do add interest if we pay in time!
+        if self.due_date.date() == datetime.date.today():
+            return currency(0)
+
         return currency(self.method.interest / 100 * self.value)
 
     def get_thirdparty(self):
