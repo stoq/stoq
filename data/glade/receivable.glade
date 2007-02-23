@@ -189,12 +189,6 @@
                     </packing>
                 </child>
                 <child>
-                    <packing>
-                        <property name="expand">False</property>
-                        <property name="position">1</property>
-                    </packing>
-                </child>
-                <child>
                     <widget class="GtkVBox" id="vbox4">
                         <property name="visible">True</property>
                         <child>
@@ -244,33 +238,19 @@
                                         <child>
                                             <widget class="GtkButton" id="details_button">
                                                 <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">Details</property>
                                                 <property name="visible">True</property>
-                                                <child>
-                                                    <widget class="GtkAlignment" id="GtkAlignment1">
-                                                        <property name="visible">True</property>
-                                                        <child>
-                                                            <widget class="GtkHBox" id="GtkHBox1">
-                                                                <property name="visible">True</property>
-                                                                <child>
-                                                                    <widget class="GtkImage" id="GtkImage1">
-                                                                        <property name="file">kfind16px.png</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                </child>
-                                                                <child>
-                                                                    <widget class="GtkLabel" id="GtkLabel1">
-                                                                        <property name="label" context="yes" translatable="yes">Details</property>
-                                                                        <property name="visible">True</property>
-                                                                    </widget>
-                                                                    <packing>
-                                                                        <property name="position">1</property>
-                                                                    </packing>
-                                                                </child>
-                                                            </widget>
-                                                        </child>
-                                                    </widget>
-                                                </child>
                                             </widget>
+                                        </child>
+                                        <child>
+                                            <widget class="GtkButton" id="receive_button">
+                                                <property name="is_focus">True</property>
+                                                <property name="label" context="yes" translatable="yes">Receive payment</property>
+                                                <property name="visible">True</property>
+                                            </widget>
+                                            <packing>
+                                                <property name="position">1</property>
+                                            </packing>
                                         </child>
                                     </widget>
                                     <packing>
@@ -285,7 +265,7 @@
                         </child>
                     </widget>
                     <packing>
-                        <property name="position">2</property>
+                        <property name="position">1</property>
                     </packing>
                 </child>
             </widget>

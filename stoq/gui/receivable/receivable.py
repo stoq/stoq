@@ -33,6 +33,8 @@ import gettext
 import gtk
 from kiwi.datatypes import currency
 from kiwi.ui.widgets.list import Column, SummaryLabel
+from stoqlib.database.database import finish_transaction
+from stoqlib.database.runtime import new_transaction
 from stoqlib.domain.payment.payment import Payment
 from stoqlib.domain.sale import SaleView
 from stoqlib.gui.base.dialogs import run_dialog
@@ -41,6 +43,7 @@ from stoqlib.lib.defaults import ALL_ITEMS_INDEX
 
 from stoq.gui.application import SearchableAppWindow
 from stoq.gui.receivable.view import ReceivableView
+from stoqlib.gui.slaves.installmentslave import SaleInstallmentConfirmationSlave
 
 _ = gettext.gettext
 
@@ -55,8 +58,8 @@ class ReceivableApp(SearchableAppWindow):
     searchbar_result_strings = (_('payment'), _('payments'))
     searchbar_labels = (_('matching:'),)
     filter_slave_label = _('Show payments with status')
-    klist_selection_mode = gtk.SELECTION_MULTIPLE
     klist_name = 'receivables'
+    klist_selection_mode = gtk.SELECTION_MULTIPLE
 
     def __init__(self, app):
         SearchableAppWindow.__init__(self, app)
@@ -116,10 +119,52 @@ class ReceivableApp(SearchableAppWindow):
     # Private
     #
 
-    def _show_details(self, reveivable_view):
-        sale_view = SaleView.get(reveivable_view.sale_id)
+    def _show_details(self, receivable_view):
+        sale_view = SaleView.get(receivable_view.sale_id)
         run_dialog(SaleDetailsDialog, self, self.conn, sale_view)
 
+
+    def _receive(self, receivable_views):
+        """
+        Receives a list of items from a receivable_views, note that
+        the list of receivable_views must reference the same sale
+        @param receivable_views: a list of receivable_views
+        """
+        assert self._can_receive(receivable_views)
+
+        trans = new_transaction()
+
+        payments = [trans.get(view.payment) for view in receivable_views]
+
+        retval = run_dialog(SaleInstallmentConfirmationSlave, self, trans,
+                            payments=payments)
+
+        if finish_transaction(trans, retval):
+            for view in receivable_views:
+                view.sync()
+                self.receivables.update(view)
+
+        trans.close()
+
+    def _can_receive(self, receivable_views):
+        """
+        Determines if a list of receivable_views can be received.
+        To do so they must meet the following conditions:
+          - Be in the same sale
+          - The payment status needs to be set to PENDING
+        """
+
+        if not receivable_views:
+            return False
+
+        sale = receivable_views[0].sale
+        for receivable_view in receivable_views:
+            if receivable_view.sale != sale:
+                return False
+            if receivable_view.status != Payment.STATUS_PENDING:
+                return False
+        else:
+            return True
 
     #
     # Kiwi callbacks
@@ -127,8 +172,15 @@ class ReceivableApp(SearchableAppWindow):
 
     def on_details_button__clicked(self, button):
         if len(self.receivables):
-            if not self.receivables.get_selected_rows():
-                self.receivables.select(self.receivables[0])
-            self._show_details(self.receivables.get_selected_rows()[0])
+            selected = self.receivables.get_selected()
+            if not selected:
+                selected = self.receivables[0]
+                self.receivables.select(selected)
+            self._show_details(selected)
 
 
+    def on_receive_button__clicked(self, button):
+        self._receive(self.receivables.get_selected_rows())
+
+    def on_receivables__selection_changed(self, receivables, selected):
+        self.receive_button.set_sensitive(self._can_receive(selected))
