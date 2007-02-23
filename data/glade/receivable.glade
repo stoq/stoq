@@ -239,6 +239,7 @@
                                             <widget class="GtkButton" id="details_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">Details</property>
+                                                <property name="sensitive">False</property> 
                                                 <property name="visible">True</property>
                                             </widget>
                                         </child>
@@ -246,8 +247,9 @@
                                             <widget class="GtkButton" id="receive_button">
                                                 <property name="is_focus">True</property>
                                                 <property name="label" context="yes" translatable="yes">Receive payment</property>
+                                                <property name="sensitive">False</property> 
                                                 <property name="visible">True</property>
-                                            </widget>
+                                           </widget>
                                             <packing>
                                                 <property name="position">1</property>
                                             </packing>

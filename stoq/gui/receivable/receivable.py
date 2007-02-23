@@ -77,8 +77,6 @@ class ReceivableApp(SearchableAppWindow):
         self.list_vbox.pack_start(self.summary_label, False)
 
     def _update_widgets(self):
-        has_sales = len(self.receivables) > 0
-        self.details_button.set_sensitive(has_sales)
         self._update_total_label()
 
     def _update_total_label(self):
